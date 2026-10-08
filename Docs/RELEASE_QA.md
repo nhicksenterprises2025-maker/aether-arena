@@ -44,6 +44,14 @@ Meta advanced by zero matches throughout the requested active-battle run. The st
 
 Raw reports and launch-time executable/report hashes are under `Artifacts/QA/Performance/release-{ai-match,stress,stress-meta}-1920x1080`. The release QA archive includes those selected reports and sanitized native diagnostics. Headless 10,000-match cohort throughput is reported separately.
 
+## Public release delivery
+
+Version 1.0.0 is published as the repository's latest stable release. GitHub's server SHA-256 digests matched all six immutable uploaded payloads. Fresh anonymous downloads retrieved the entire 447,292,600-byte game ZIP and 428,171,368-byte MSI; both matched their exact tested local hashes.
+
+The released standalone launcher raised its actual `CheckButton.Click` against the unchanged default HTTPS latest-manifest endpoint. Its returned 1.0.0 manifest matched every one of the 51 game files and the version-pinned archive hash/size. Patch notes displayed, Install was enabled, and the isolated game/save fixtures remained unchanged. This public check fetched the manifest; its report does not claim an additional game installation.
+
+Sanitized reports are `Docs/QA/public-download-verification.json` and `Docs/QA/published-update-check.json`. Both accompany the public release separately from the pre-publication QA ZIP, and their hashes are included in the final `SHA256SUMS.txt`.
+
 ## Confirmed fixes during release QA
 
 - A Meteor zone created at an AI tick endpoint previously credited exposure before its birth. Revision 3 intersects each tick with the actual lifetime. Damage, DOT ticks, AI decisions and outcomes remain identical; native datasets have distinct fingerprints.

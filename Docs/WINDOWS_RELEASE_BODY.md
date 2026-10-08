@@ -29,3 +29,5 @@ Validation includes 36 deterministic core regressions, 21 complete seeded AI mat
 Actual 90-second Shipping measurements at 1920×1080 on a Ryzen 7 5700 / RTX 5060 / 32 GB Windows 11 host averaged about 60 FPS. Normal AI battle had a 16.874 ms p99 frame time and no frames over 50 ms. Heavy bridge waves reached 146 entities with Meta correctly paused; the stress runs retained several brief hitches, with a worst measured frame of 117.133 ms. Complete frame, CPU, GPU and memory measurements are included in the QA reports.
 
 The Windows game, launcher and MSI are unsigned.
+
+Public delivery checks passed: anonymous complete game ZIP and MSI downloads matched the tested hashes, and the released launcher's actual Check for Updates fetched the correct latest HTTPS manifest, displayed patch notes and enabled Install while preserving isolated saved data. `public-download-verification.json` and `published-update-check.json` record these post-publication checks; their hashes are included in `SHA256SUMS.txt`.
