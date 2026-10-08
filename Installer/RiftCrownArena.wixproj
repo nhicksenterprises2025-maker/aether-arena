@@ -1,0 +1,16 @@
+<Project Sdk="WixToolset.Sdk/4.0.6">
+  <PropertyGroup>
+    <OutputName>RiftCrownArena-Setup</OutputName>
+    <InstallerPlatform>x64</InstallerPlatform>
+    <OutputType>Package</OutputType>
+    <SuppressValidation>true</SuppressValidation>
+    <DefineConstants>ReleaseVersion=$(ReleaseVersion)</DefineConstants>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Product.wxs"/>
+    <Compile Include="GeneratedFiles.wxs"/>
+    <PackageReference Include="WixToolset.UI.wixext" Version="4.0.6"/>
+    <PackageReference Include="WixToolset.Util.wixext" Version="4.0.6"/>
+  </ItemGroup>
+</Project>

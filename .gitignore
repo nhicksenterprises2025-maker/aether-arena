@@ -29,3 +29,7 @@
 **/lab_v15.json
 **/Backups/
 **/Logs/
+/Build/Tools/
+/Build/NativeTests/
+/Build/Automation/
+/Installer/.tools/

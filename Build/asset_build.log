@@ -1,0 +1,820 @@
+C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Build\generate_assets.py:25: DeprecationWarning: 'World.use_nodes' is expected to be removed in Blender 6.0
+  scene.world.use_nodes=True; scene.world.node_tree.nodes['Background'].inputs[0].default_value=(.045,.065,.095,1)
+C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Build\generate_assets.py:84: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  m=bpy.data.materials.new(name); m.use_nodes=True
+RIFT_ASSET_BEGIN ironclad
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ironclad\\SK_ironclad.fbx'
+(bpy.data.armatures['SKEL_ironclad'], 'POSE')
+export finished in 0.0429 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ironclad\\SK_ironclad_LOD1.fbx'
+(bpy.data.armatures['SKEL_ironclad'], 'POSE')
+export finished in 0.0323 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ironclad\\SK_ironclad_LOD2.fbx'
+(bpy.data.armatures['SKEL_ironclad'], 'POSE')
+export finished in 0.0228 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ironclad\\SK_ironclad_LOD3.fbx'
+(bpy.data.armatures['SKEL_ironclad'], 'POSE')
+export finished in 0.0195 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ironclad\\AN_ironclad_Idle.fbx'
+export finished in 0.0821 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ironclad\\AN_ironclad_Locomotion.fbx'
+export finished in 0.0582 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ironclad\\AN_ironclad_Attack.fbx'
+export finished in 0.0579 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ironclad\\AN_ironclad_Hit.fbx'
+export finished in 0.0379 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ironclad\\AN_ironclad_Death.fbx'
+export finished in 0.0715 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ironclad\\AN_ironclad_Deploy.fbx'
+export finished in 0.0516 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ironclad\\AN_ironclad_Status.fbx'
+export finished in 0.0594 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ironclad\\AN_ironclad_Turn.fbx'
+export finished in 0.0513 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ironclad\\AN_ironclad_Acquire.fbx'
+export finished in 0.0457 sec.
+RIFT_ASSET_COMPLETE ironclad
+RIFT_ASSET_BEGIN ember_archer
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ember_archer\\SK_ember_archer.fbx'
+(bpy.data.armatures['SKEL_ember_archer'], 'POSE')
+export finished in 0.0353 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ember_archer\\SK_ember_archer_LOD1.fbx'
+(bpy.data.armatures['SKEL_ember_archer'], 'POSE')
+export finished in 0.0280 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ember_archer\\SK_ember_archer_LOD2.fbx'
+(bpy.data.armatures['SKEL_ember_archer'], 'POSE')
+export finished in 0.0222 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ember_archer\\SK_ember_archer_LOD3.fbx'
+(bpy.data.armatures['SKEL_ember_archer'], 'POSE')
+export finished in 0.0190 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ember_archer\\AN_ember_archer_Idle.fbx'
+export finished in 0.0868 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ember_archer\\AN_ember_archer_Locomotion.fbx'
+export finished in 0.0581 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ember_archer\\AN_ember_archer_Attack.fbx'
+export finished in 0.0571 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ember_archer\\AN_ember_archer_Hit.fbx'
+export finished in 0.0404 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ember_archer\\AN_ember_archer_Death.fbx'
+export finished in 0.1021 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ember_archer\\AN_ember_archer_Deploy.fbx'
+export finished in 0.0544 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ember_archer\\AN_ember_archer_Status.fbx'
+export finished in 0.0572 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ember_archer\\AN_ember_archer_Turn.fbx'
+export finished in 0.0537 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ember_archer\\AN_ember_archer_Acquire.fbx'
+export finished in 0.0495 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\ember_archer\\AN_ember_archer_DrawRelease.fbx'
+export finished in 0.0730 sec.
+RIFT_ASSET_COMPLETE ember_archer
+RIFT_ASSET_BEGIN twin_blades
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\twin_blades\\SK_twin_blades.fbx'
+(bpy.data.armatures['SKEL_twin_blades'], 'POSE')
+export finished in 0.0323 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\twin_blades\\SK_twin_blades_LOD1.fbx'
+(bpy.data.armatures['SKEL_twin_blades'], 'POSE')
+export finished in 0.0266 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\twin_blades\\SK_twin_blades_LOD2.fbx'
+(bpy.data.armatures['SKEL_twin_blades'], 'POSE')
+export finished in 0.0205 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\twin_blades\\SK_twin_blades_LOD3.fbx'
+(bpy.data.armatures['SKEL_twin_blades'], 'POSE')
+export finished in 0.0189 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\twin_blades\\AN_twin_blades_Idle.fbx'
+export finished in 0.0871 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\twin_blades\\AN_twin_blades_Locomotion.fbx'
+export finished in 0.0582 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\twin_blades\\AN_twin_blades_Attack.fbx'
+export finished in 0.0561 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\twin_blades\\AN_twin_blades_Hit.fbx'
+export finished in 0.0390 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\twin_blades\\AN_twin_blades_Death.fbx'
+export finished in 0.0725 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\twin_blades\\AN_twin_blades_Deploy.fbx'
+export finished in 0.0506 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\twin_blades\\AN_twin_blades_Status.fbx'
+export finished in 0.0561 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\twin_blades\\AN_twin_blades_Turn.fbx'
+export finished in 0.0505 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\twin_blades\\AN_twin_blades_Acquire.fbx'
+export finished in 0.0456 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\twin_blades\\AN_twin_blades_AlternateStrike.fbx'
+export finished in 0.0702 sec.
+RIFT_ASSET_COMPLETE twin_blades
+RIFT_ASSET_BEGIN arc_mage
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\arc_mage\\SK_arc_mage.fbx'
+(bpy.data.armatures['SKEL_arc_mage'], 'POSE')
+export finished in 0.0372 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\arc_mage\\SK_arc_mage_LOD1.fbx'
+(bpy.data.armatures['SKEL_arc_mage'], 'POSE')
+export finished in 0.0272 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\arc_mage\\SK_arc_mage_LOD2.fbx'
+(bpy.data.armatures['SKEL_arc_mage'], 'POSE')
+export finished in 0.0222 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\arc_mage\\SK_arc_mage_LOD3.fbx'
+(bpy.data.armatures['SKEL_arc_mage'], 'POSE')
+export finished in 0.0189 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\arc_mage\\AN_arc_mage_Idle.fbx'
+export finished in 0.0863 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\arc_mage\\AN_arc_mage_Locomotion.fbx'
+export finished in 0.0565 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\arc_mage\\AN_arc_mage_Attack.fbx'
+export finished in 0.0576 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\arc_mage\\AN_arc_mage_Hit.fbx'
+export finished in 0.0413 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\arc_mage\\AN_arc_mage_Death.fbx'
+export finished in 0.0730 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\arc_mage\\AN_arc_mage_Deploy.fbx'
+export finished in 0.0557 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\arc_mage\\AN_arc_mage_Status.fbx'
+export finished in 0.0614 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\arc_mage\\AN_arc_mage_Turn.fbx'
+export finished in 0.0545 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\arc_mage\\AN_arc_mage_Acquire.fbx'
+export finished in 0.0761 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\arc_mage\\AN_arc_mage_Cast.fbx'
+export finished in 0.0567 sec.
+RIFT_ASSET_COMPLETE arc_mage
+RIFT_ASSET_BEGIN tower_archer
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\tower_archer\\SK_tower_archer.fbx'
+(bpy.data.armatures['SKEL_tower_archer'], 'POSE')
+export finished in 0.0331 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\tower_archer\\SK_tower_archer_LOD1.fbx'
+(bpy.data.armatures['SKEL_tower_archer'], 'POSE')
+export finished in 0.0259 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\tower_archer\\SK_tower_archer_LOD2.fbx'
+(bpy.data.armatures['SKEL_tower_archer'], 'POSE')
+export finished in 0.0214 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\tower_archer\\SK_tower_archer_LOD3.fbx'
+(bpy.data.armatures['SKEL_tower_archer'], 'POSE')
+export finished in 0.0171 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\tower_archer\\AN_tower_archer_Idle.fbx'
+export finished in 0.0838 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\tower_archer\\AN_tower_archer_Locomotion.fbx'
+export finished in 0.0573 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\tower_archer\\AN_tower_archer_Attack.fbx'
+export finished in 0.0555 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\tower_archer\\AN_tower_archer_Hit.fbx'
+export finished in 0.0389 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\tower_archer\\AN_tower_archer_Death.fbx'
+export finished in 0.0717 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\tower_archer\\AN_tower_archer_Deploy.fbx'
+export finished in 0.0518 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\tower_archer\\AN_tower_archer_Status.fbx'
+export finished in 0.0565 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\tower_archer\\AN_tower_archer_Turn.fbx'
+export finished in 0.0522 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\tower_archer\\AN_tower_archer_Acquire.fbx'
+export finished in 0.0465 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\tower_archer\\AN_tower_archer_DrawRelease.fbx'
+export finished in 0.0632 sec.
+RIFT_ASSET_COMPLETE tower_archer
+RIFT_ASSET_BEGIN boulderback
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\boulderback\\SK_boulderback.fbx'
+(bpy.data.armatures['SKEL_boulderback'], 'POSE')
+export finished in 0.1007 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\boulderback\\SK_boulderback_LOD1.fbx'
+(bpy.data.armatures['SKEL_boulderback'], 'POSE')
+export finished in 0.0602 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\boulderback\\SK_boulderback_LOD2.fbx'
+(bpy.data.armatures['SKEL_boulderback'], 'POSE')
+export finished in 0.0387 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\boulderback\\SK_boulderback_LOD3.fbx'
+(bpy.data.armatures['SKEL_boulderback'], 'POSE')
+export finished in 0.0279 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\boulderback\\AN_boulderback_Idle.fbx'
+export finished in 0.1022 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\boulderback\\AN_boulderback_Locomotion.fbx'
+export finished in 0.0725 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\boulderback\\AN_boulderback_Attack.fbx'
+export finished in 0.0662 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\boulderback\\AN_boulderback_Hit.fbx'
+export finished in 0.0422 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\boulderback\\AN_boulderback_Death.fbx'
+export finished in 0.0911 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\boulderback\\AN_boulderback_Deploy.fbx'
+export finished in 0.0653 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\boulderback\\AN_boulderback_Status.fbx'
+export finished in 0.0661 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\boulderback\\AN_boulderback_Turn.fbx'
+export finished in 0.0585 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\boulderback\\AN_boulderback_Acquire.fbx'
+export finished in 0.0535 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\boulderback\\AN_boulderback_HeavyImpact.fbx'
+export finished in 0.1257 sec.
+RIFT_ASSET_COMPLETE boulderback
+RIFT_ASSET_BEGIN rambeast
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\rambeast\\SK_rambeast.fbx'
+(bpy.data.armatures['SKEL_rambeast'], 'POSE')
+export finished in 0.1126 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\rambeast\\SK_rambeast_LOD1.fbx'
+(bpy.data.armatures['SKEL_rambeast'], 'POSE')
+export finished in 0.0643 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\rambeast\\SK_rambeast_LOD2.fbx'
+(bpy.data.armatures['SKEL_rambeast'], 'POSE')
+export finished in 0.0413 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\rambeast\\SK_rambeast_LOD3.fbx'
+(bpy.data.armatures['SKEL_rambeast'], 'POSE')
+export finished in 0.0315 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\rambeast\\AN_rambeast_Idle.fbx'
+export finished in 0.1015 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\rambeast\\AN_rambeast_Locomotion.fbx'
+export finished in 0.0683 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\rambeast\\AN_rambeast_Attack.fbx'
+export finished in 0.0744 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\rambeast\\AN_rambeast_Hit.fbx'
+export finished in 0.0470 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\rambeast\\AN_rambeast_Death.fbx'
+export finished in 0.0844 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\rambeast\\AN_rambeast_Deploy.fbx'
+export finished in 0.0590 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\rambeast\\AN_rambeast_Status.fbx'
+export finished in 0.0644 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\rambeast\\AN_rambeast_Turn.fbx'
+export finished in 0.0595 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\rambeast\\AN_rambeast_Acquire.fbx'
+export finished in 0.0518 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\rambeast\\AN_rambeast_Charge.fbx'
+export finished in 0.0654 sec.
+RIFT_ASSET_COMPLETE rambeast
+RIFT_ASSET_BEGIN frost_fang
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\frost_fang\\SK_frost_fang.fbx'
+(bpy.data.armatures['SKEL_frost_fang'], 'POSE')
+export finished in 0.1183 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\frost_fang\\SK_frost_fang_LOD1.fbx'
+(bpy.data.armatures['SKEL_frost_fang'], 'POSE')
+export finished in 0.0629 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\frost_fang\\SK_frost_fang_LOD2.fbx'
+(bpy.data.armatures['SKEL_frost_fang'], 'POSE')
+export finished in 0.0426 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\frost_fang\\SK_frost_fang_LOD3.fbx'
+(bpy.data.armatures['SKEL_frost_fang'], 'POSE')
+export finished in 0.0346 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\frost_fang\\AN_frost_fang_Idle.fbx'
+export finished in 0.1165 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\frost_fang\\AN_frost_fang_Locomotion.fbx'
+export finished in 0.0665 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\frost_fang\\AN_frost_fang_Attack.fbx'
+export finished in 0.0766 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\frost_fang\\AN_frost_fang_Hit.fbx'
+export finished in 0.0504 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\frost_fang\\AN_frost_fang_Death.fbx'
+export finished in 0.0845 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\frost_fang\\AN_frost_fang_Deploy.fbx'
+export finished in 0.0597 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\frost_fang\\AN_frost_fang_Status.fbx'
+export finished in 0.0659 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\frost_fang\\AN_frost_fang_Turn.fbx'
+export finished in 0.0887 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\frost_fang\\AN_frost_fang_Acquire.fbx'
+export finished in 0.0536 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\frost_fang\\AN_frost_fang_FrostAttack.fbx'
+export finished in 0.0628 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\frost_fang\\AN_frost_fang_Breath.fbx'
+export finished in 0.1021 sec.
+RIFT_ASSET_COMPLETE frost_fang
+RIFT_ASSET_BEGIN sky_manta
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\sky_manta\\SK_sky_manta.fbx'
+(bpy.data.armatures['SKEL_sky_manta'], 'POSE')
+export finished in 0.0232 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\sky_manta\\SK_sky_manta_LOD1.fbx'
+(bpy.data.armatures['SKEL_sky_manta'], 'POSE')
+export finished in 0.0196 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\sky_manta\\SK_sky_manta_LOD2.fbx'
+(bpy.data.armatures['SKEL_sky_manta'], 'POSE')
+export finished in 0.0164 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\sky_manta\\SK_sky_manta_LOD3.fbx'
+(bpy.data.armatures['SKEL_sky_manta'], 'POSE')
+export finished in 0.0157 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\sky_manta\\AN_sky_manta_Idle.fbx'
+export finished in 0.0717 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\sky_manta\\AN_sky_manta_Locomotion.fbx'
+export finished in 0.0498 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\sky_manta\\AN_sky_manta_Attack.fbx'
+export finished in 0.0480 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\sky_manta\\AN_sky_manta_Hit.fbx'
+export finished in 0.0338 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\sky_manta\\AN_sky_manta_Death.fbx'
+export finished in 0.0639 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\sky_manta\\AN_sky_manta_Deploy.fbx'
+export finished in 0.0466 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\sky_manta\\AN_sky_manta_Status.fbx'
+export finished in 0.0513 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\sky_manta\\AN_sky_manta_Turn.fbx'
+export finished in 0.0440 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\sky_manta\\AN_sky_manta_Acquire.fbx'
+export finished in 0.0521 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\sky_manta\\AN_sky_manta_WingCycle.fbx'
+export finished in 0.0639 sec.
+RIFT_ASSET_COMPLETE sky_manta
+RIFT_ASSET_BEGIN vampire_bats
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\vampire_bats\\SK_vampire_bats.fbx'
+(bpy.data.armatures['SKEL_vampire_bats'], 'POSE')
+export finished in 0.0251 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\vampire_bats\\SK_vampire_bats_LOD1.fbx'
+(bpy.data.armatures['SKEL_vampire_bats'], 'POSE')
+export finished in 0.0193 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\vampire_bats\\SK_vampire_bats_LOD2.fbx'
+(bpy.data.armatures['SKEL_vampire_bats'], 'POSE')
+export finished in 0.0180 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\vampire_bats\\SK_vampire_bats_LOD3.fbx'
+(bpy.data.armatures['SKEL_vampire_bats'], 'POSE')
+export finished in 0.0150 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\vampire_bats\\AN_vampire_bats_Idle.fbx'
+export finished in 0.0741 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\vampire_bats\\AN_vampire_bats_Locomotion.fbx'
+export finished in 0.0493 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\vampire_bats\\AN_vampire_bats_Attack.fbx'
+export finished in 0.0507 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\vampire_bats\\AN_vampire_bats_Hit.fbx'
+export finished in 0.0331 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\vampire_bats\\AN_vampire_bats_Death.fbx'
+export finished in 0.0641 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\vampire_bats\\AN_vampire_bats_Deploy.fbx'
+export finished in 0.0454 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\vampire_bats\\AN_vampire_bats_Status.fbx'
+export finished in 0.0509 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\vampire_bats\\AN_vampire_bats_Turn.fbx'
+export finished in 0.0457 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\vampire_bats\\AN_vampire_bats_Acquire.fbx'
+export finished in 0.0433 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\vampire_bats\\AN_vampire_bats_WingCycle.fbx'
+export finished in 0.0360 sec.
+RIFT_ASSET_COMPLETE vampire_bats
+RIFT_ASSET_BEGIN storm_raven
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\storm_raven\\SK_storm_raven.fbx'
+(bpy.data.armatures['SKEL_storm_raven'], 'POSE')
+export finished in 0.0309 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\storm_raven\\SK_storm_raven_LOD1.fbx'
+(bpy.data.armatures['SKEL_storm_raven'], 'POSE')
+export finished in 0.0231 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\storm_raven\\SK_storm_raven_LOD2.fbx'
+(bpy.data.armatures['SKEL_storm_raven'], 'POSE')
+export finished in 0.0192 sec.
+Info: Applied modifier was not first, result may not be as expected
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\storm_raven\\SK_storm_raven_LOD3.fbx'
+(bpy.data.armatures['SKEL_storm_raven'], 'POSE')
+export finished in 0.0177 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\storm_raven\\AN_storm_raven_Idle.fbx'
+export finished in 0.0726 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\storm_raven\\AN_storm_raven_Locomotion.fbx'
+export finished in 0.0488 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\storm_raven\\AN_storm_raven_Attack.fbx'
+export finished in 0.0482 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\storm_raven\\AN_storm_raven_Hit.fbx'
+export finished in 0.0333 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\storm_raven\\AN_storm_raven_Death.fbx'
+export finished in 0.0632 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\storm_raven\\AN_storm_raven_Deploy.fbx'
+export finished in 0.0716 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\storm_raven\\AN_storm_raven_Status.fbx'
+export finished in 0.0498 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\storm_raven\\AN_storm_raven_Turn.fbx'
+export finished in 0.0456 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\storm_raven\\AN_storm_raven_Acquire.fbx'
+export finished in 0.0409 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\storm_raven\\AN_storm_raven_AuraCharge.fbx'
+export finished in 0.0634 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\storm_raven\\AN_storm_raven_Pulse.fbx'
+export finished in 0.0397 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\storm_raven\\AN_storm_raven_StunDischarge.fbx'
+export finished in 0.0438 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Characters\\storm_raven\\AN_storm_raven_WingCycle.fbx'
+export finished in 0.0698 sec.
+RIFT_ASSET_COMPLETE storm_raven
+RIFT_ASSET_BEGIN tower_guard
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_tower_guard.fbx'
+export finished in 0.0219 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_tower_guard_LOD1.fbx'
+export finished in 0.0161 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_tower_guard_LOD2.fbx'
+export finished in 0.0115 sec.
+RIFT_ASSET_COMPLETE tower_guard
+RIFT_ASSET_BEGIN tower_core
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_tower_core.fbx'
+export finished in 0.0277 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_tower_core_LOD1.fbx'
+export finished in 0.0206 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_tower_core_LOD2.fbx'
+export finished in 0.0130 sec.
+RIFT_ASSET_COMPLETE tower_core
+RIFT_ASSET_BEGIN archer_tower
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_archer_tower.fbx'
+export finished in 0.0191 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_archer_tower_LOD1.fbx'
+export finished in 0.0150 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_archer_tower_LOD2.fbx'
+export finished in 0.0117 sec.
+RIFT_ASSET_COMPLETE archer_tower
+RIFT_ASSET_BEGIN nova_flask
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_nova_flask.fbx'
+export finished in 0.0104 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_nova_flask_LOD1.fbx'
+export finished in 0.0093 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_nova_flask_LOD2.fbx'
+export finished in 0.0084 sec.
+RIFT_ASSET_COMPLETE nova_flask
+RIFT_ASSET_BEGIN bridge
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_bridge.fbx'
+export finished in 0.0154 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_bridge_LOD1.fbx'
+export finished in 0.0107 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_bridge_LOD2.fbx'
+export finished in 0.0087 sec.
+RIFT_ASSET_COMPLETE bridge
+RIFT_ASSET_BEGIN floor_tile
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_floor_tile.fbx'
+export finished in 0.0064 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_floor_tile_LOD1.fbx'
+export finished in 0.0071 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_floor_tile_LOD2.fbx'
+export finished in 0.0058 sec.
+RIFT_ASSET_COMPLETE floor_tile
+RIFT_ASSET_BEGIN lane_paver
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_lane_paver.fbx'
+export finished in 0.0059 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_lane_paver_LOD1.fbx'
+export finished in 0.0059 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_lane_paver_LOD2.fbx'
+export finished in 0.0054 sec.
+RIFT_ASSET_COMPLETE lane_paver
+RIFT_ASSET_BEGIN bank_segment
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_bank_segment.fbx'
+export finished in 0.0071 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_bank_segment_LOD1.fbx'
+export finished in 0.0063 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_bank_segment_LOD2.fbx'
+export finished in 0.0057 sec.
+RIFT_ASSET_COMPLETE bank_segment
+RIFT_ASSET_BEGIN boundary_stone
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_boundary_stone.fbx'
+export finished in 0.0063 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_boundary_stone_LOD1.fbx'
+export finished in 0.0058 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_boundary_stone_LOD2.fbx'
+export finished in 0.0062 sec.
+RIFT_ASSET_COMPLETE boundary_stone
+RIFT_ASSET_BEGIN grass_tuft
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_grass_tuft.fbx'
+export finished in 0.0061 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_grass_tuft_LOD1.fbx'
+export finished in 0.0056 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_grass_tuft_LOD2.fbx'
+export finished in 0.0068 sec.
+RIFT_ASSET_COMPLETE grass_tuft
+RIFT_ASSET_BEGIN shrub
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_shrub.fbx'
+export finished in 0.0078 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_shrub_LOD1.fbx'
+export finished in 0.0064 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_shrub_LOD2.fbx'
+export finished in 0.0057 sec.
+RIFT_ASSET_COMPLETE shrub
+RIFT_ASSET_BEGIN tree
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_tree.fbx'
+export finished in 0.0103 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_tree_LOD1.fbx'
+export finished in 0.0090 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_tree_LOD2.fbx'
+export finished in 0.0081 sec.
+RIFT_ASSET_COMPLETE tree
+RIFT_ASSET_BEGIN crystal_plinth
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_crystal_plinth.fbx'
+export finished in 0.0068 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_crystal_plinth_LOD1.fbx'
+export finished in 0.0083 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_crystal_plinth_LOD2.fbx'
+export finished in 0.0066 sec.
+RIFT_ASSET_COMPLETE crystal_plinth
+RIFT_ASSET_BEGIN banner
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_banner.fbx'
+export finished in 0.0060 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_banner_LOD1.fbx'
+export finished in 0.0068 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_banner_LOD2.fbx'
+export finished in 0.0061 sec.
+RIFT_ASSET_COMPLETE banner
+RIFT_ASSET_BEGIN ruin
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_ruin.fbx'
+export finished in 0.0077 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_ruin_LOD1.fbx'
+export finished in 0.0073 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_ruin_LOD2.fbx'
+export finished in 0.0069 sec.
+RIFT_ASSET_COMPLETE ruin
+RIFT_ASSET_BEGIN distant_island
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_distant_island.fbx'
+export finished in 0.0065 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_distant_island_LOD1.fbx'
+export finished in 0.0058 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_distant_island_LOD2.fbx'
+export finished in 0.0061 sec.
+RIFT_ASSET_COMPLETE distant_island
+RIFT_ASSET_BEGIN meteor_shard
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_meteor_shard.fbx'
+export finished in 0.0064 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_meteor_shard_LOD1.fbx'
+export finished in 0.0069 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_meteor_shard_LOD2.fbx'
+export finished in 0.0065 sec.
+RIFT_ASSET_COMPLETE meteor_shard
+RIFT_ASSET_BEGIN bullet_round
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_bullet_round.fbx'
+export finished in 0.0067 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_bullet_round_LOD1.fbx'
+export finished in 0.0060 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_bullet_round_LOD2.fbx'
+export finished in 0.0058 sec.
+RIFT_ASSET_COMPLETE bullet_round
+RIFT_ASSET_BEGIN tower_rubble
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_tower_rubble.fbx'
+export finished in 0.0074 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_tower_rubble_LOD1.fbx'
+export finished in 0.0066 sec.
+
+FBX export starting... 'C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Assets\\Export\\Environment\\SM_tower_rubble_LOD2.fbx'
+export finished in 0.0061 sec.
+RIFT_ASSET_COMPLETE tower_rubble
+C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Build\generate_assets.py:886: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  m=bpy.data.materials.new('RenderStageFloor');m.use_nodes=True
+00:44.813  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\ironclad.png'
+00:45.407  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\ember_archer.png'
+00:46.000  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\twin_blades.png'
+00:46.610  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\arc_mage.png'
+00:47.204  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\tower_archer.png'
+00:47.766  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\boulderback.png'
+00:48.344  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\rambeast.png'
+00:48.922  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\frost_fang.png'
+00:49.469  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\sky_manta.png'
+00:50.016  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\vampire_bats.png'
+00:50.594  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\storm_raven.png'
+00:51.157  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\tower_guard.png'
+00:51.735  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\tower_core.png'
+00:52.297  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\archer_tower.png'
+00:52.844  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\nova_flask.png'
+00:53.407  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\bridge.png'
+00:53.938  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\floor_tile.png'
+00:54.469  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\lane_paver.png'
+00:55.032  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\bank_segment.png'
+00:55.579  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\boundary_stone.png'
+00:56.157  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\grass_tuft.png'
+00:56.750  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\shrub.png'
+00:57.329  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\tree.png'
+00:57.875  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\crystal_plinth.png'
+00:58.407  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\banner.png'
+00:58.985  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\ruin.png'
+00:59.532  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\distant_island.png'
+01:00.063  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\meteor_shard.png'
+01:00.610  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\bullet_round.png'
+01:01.157  render           | Saved: 'C:\Users\Noah\OneDrive\Documents\ChatGPT\Aether Arena\Assets\Renders\tower_rubble.png'
+Info: Saved as "RiftCrown_ProductionAssets.blend"
+RIFT_ASSET_FINISHED 11 19
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit
