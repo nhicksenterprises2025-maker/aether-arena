@@ -1,0 +1,13 @@
+Rift Crown Arena V12.5 - Patch Notes Presentation Update
+
+- Redesigned the V12.0 Balance Patch section to look more professional.
+- Removed unchanged cards from the main balance patch display.
+- Added card-by-card balance panels for only the changed cards:
+  * Twin Blades
+  * Sky Manta
+  * Archer Tower
+  * Bullet Burst
+  * Nova Flask
+  * Vampire Bats
+- Mixed buff/nerf cards now show as ADJUSTED instead of blending into raw table rows.
+- Kept all gameplay and simulation systems unchanged.

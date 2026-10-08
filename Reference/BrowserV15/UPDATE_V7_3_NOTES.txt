@@ -1,0 +1,11 @@
+Rift Crown Arena V7.3 - Tower Aggro Retarget Hotfix
+
+Fixes:
+- Normal troops can now be pulled off a tower by a newly deployed valid defender.
+- Retargeting is event-driven at troop deployment, not only a periodic scan.
+- Adds a small pull bonus radius while a normal troop is hitting a tower.
+- Adds a short forced-target lock so the attacker does not instantly snap back to the tower.
+- Adds a troop-target leash so the attacker follows the defender briefly instead of immediately returning to tower targeting.
+- Ground melee still cannot target air.
+- Tower-only cards (Boulderback and Rambeast) still ignore troops by design.
+- Existing V7.2 facing, tile ranges, and pocket deployment are unchanged.

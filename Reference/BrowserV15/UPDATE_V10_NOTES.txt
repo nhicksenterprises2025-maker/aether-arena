@@ -1,0 +1,25 @@
+Rift Crown Arena V10 - Pathfinding / Card Art / Bug Audit
+
+PATHFINDING
+- Replaced the ground movement route layer with tile-based A* path solving.
+- Ground routes now respect the actual arena grid, live tower/building footprints, and bridge-only river crossings.
+- Dynamic targets trigger clean repaths when they move enough or the route expires.
+- Ground units never path onto water to chase flying targets; they find the nearest reachable ground/bridge tile instead.
+- Added diagonal corner-cut prevention around structures and bridge corners.
+- Added bridge congestion cost plus small per-unit bridge slot offsets to reduce stacking.
+- Stuck recovery now invalidates/rebuilds the route instead of blindly pushing a unit through blockers.
+- Melee attack distance uses the current navigable path when available.
+
+CARD ART
+- Rebuilt the art for Ironclad, Ember Archer, Twin Blades, Boulderback, Arc Mage, Rambeast, Sky Manta, Nova Flask, and Archer Tower.
+- Bullet Burst art was intentionally left unchanged as the quality/style reference.
+- No 3D model changes in this update.
+
+BUG AUDIT FIXES
+- Fixed forced-retarget lock not actually expiring after its configured timer.
+- Fixed dead troops/buildings remaining forever in live simulation arrays.
+- Fixed persistent-save hydration doing redundant POST writes while loading.
+- Hardened Node and PowerShell static-file path validation.
+- Verified all HTML IDs referenced by game.js exist and no duplicate IDs/functions are present.
+- Verified every SVG parses as valid XML.
+- Added pathfinding regression checks for center crossing, left bridge routing, flying target over water, and routing around a tower obstacle.

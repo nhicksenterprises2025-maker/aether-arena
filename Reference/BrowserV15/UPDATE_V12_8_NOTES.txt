@@ -1,0 +1,25 @@
+Rift Crown Arena V12.8 — Frost / Storm / Meteor Update
+
+NEW CARDS
+- Frost Fang: 5 Aether, 742 HP, 72 damage, 0.8s hit speed, 2.0 tiles/s, 1.1-tile melee range.
+  Melee hits apply a 30% movement slow for 2.0s. The effect refreshes and does not stack.
+- Storm Raven: 6 Aether flying ranged structure-only win condition. 1450 HP, 282 damage, 1.3s hit speed,
+  1.18 tiles/s and 5-tile range. Its 2-tile electric ring pulses every 3 seconds for 82 troop damage and
+  a 0.4-second stun to ground and air troops.
+- Meteor Shards: 5 Aether, 4.5-tile radius, 151 initial troop damage plus 6 damage/second for five seconds
+  to enemy ground/air troops that remain inside the zone.
+
+VISUALS / ANIMATION
+- Detailed Frost Fang fallback and Blender model with frost armor, saber fangs and crystal spines.
+- Detailed Storm Raven fallback and Blender model with animated wings, electric core and ring geometry.
+- New high-contrast card art for all three cards.
+- Frost slow hit/footstep FX, visible slowed-target frost FX, Storm Raven pulse/stun FX, lightning projectile FX,
+  and layered Meteor Shards falling-impact / danger-zone FX.
+
+CLEANUP
+- Persistent troop gravestone/corpse markers are removed. Unit groups are deleted shortly after the death FX window.
+
+META LAB
+- Meta storage version bumped so the old 11-card dataset cannot pollute the 14-card pool.
+- Frost movement control, Storm Raven aura/stun, and Meteor Shards dwell-time DoT are explicitly modeled.
+- 100 analytical games/min target retained.

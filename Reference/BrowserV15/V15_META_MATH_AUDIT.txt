@@ -1,0 +1,318 @@
+RIFT CROWN ARENA V15 — META LAB 2.0 MATHEMATICAL AUDIT
+Model: v15-event-2. Validated fingerprint: 47a565c8.
+
+WHAT IS MEASURED
+
+The new Meta Lab runs seeded headless battles in a Web Worker. Each match has
+eight unique cards per side, a shuffled four-card hand, a queue, a real capped
+Aether account, legal deployments, individual swarm members, towers, moving
+troops, projectiles, spell areas, status effects and building decay. Outcomes
+come from actual simulated HP loss, tower destruction and the live match rules.
+Damage, deaths, spell occupancy, status time, uses and spending are accumulated
+from those events. There is no Gaussian pressure score deciding the winner and
+no independent random telemetry appended after an outcome is chosen.
+
+The exact live CARD_LIBRARY, MATCH, GRID, ARENA, SIGHT, RETARGET, tower stats and
+AI personality constants are passed into the worker. They are not a separately
+maintained set of balance values. combat-rules.js provides shared targeting,
+spell damage, movement slow, stun refresh, directional sight and Aether helpers.
+V14 deck intelligence supplies coherent decks and mechanic-based counters.
+
+The simulation is a model, rather than an execution of Three.js rendered
+battles. It advances in 0.20-second steps; cooldown overshoot is retained within
+one step so attack cadence does not accrue idle-time attacks. Ground navigation
+uses committed bridge waypoints and reachable melee distance, rather than the
+rendered game's A* obstacle search, congestion and soft separation. Headless AI
+uses the same seven personality constraints, counters and synergy, with a
+simpler visible-board deployment policy. Projectile impacts retain a scheduled
+flight time calculated from live speed and source/target height. Visual effects,
+animation and gradual model rotation are omitted. Acquisition is performed at
+the headless step rate. These differences can change outcomes and should be
+considered when confirming a balance hypothesis in a playable match.
+
+No live card balance was changed. The full 6,262-character CARD_LIBRARY block,
+with line endings normalized, is identical to V14. All existing locked tower,
+regulation, overtime, tiebreak, Aether, targeting and special mechanic values
+remain in game.js. A rare Cycle deck cost inconsistency was repaired: the
+coherent draft constraint now enforces the already-tested 3.375 cost ceiling.
+This changes deck selection, not card stats.
+
+COMBAT AND BUDGET CHECKS
+
+Each side starts with 5 Aether and caps at 10. Spending is allowed only for a
+card currently in that side's hand when its actual cost is affordable. Played
+cards re-enter the queue. Unspent generation above the cap is recorded as leak.
+
+Generation is integrated across phase boundaries:
+  elapsed 0–120 seconds: 1 / 2.8 Aether per second;
+  elapsed 120–240 seconds: 2 / 2.8 per second;
+  elapsed 240–300 seconds: 3 / 2.8 per second.
+
+The regulation budget before leakage is:
+  5 + 120/2.8 + 60/1.4 = 90.7142857143.
+The full regulation plus overtime budget is:
+  5 + 120/2.8 + 120/1.4 + 60/(2.8/3) = 197.8571428571.
+Every accepted match checks spent <= generated budget, 0 <= remaining <= 10,
+valid eight-card decks, finite telemetry and positive duration.
+
+Regulation ends at exactly 180 seconds. Only a 0–0 regulation score starts
+120 seconds of sudden-death overtime. An overtime tower kill ends the match.
+If still 0–0, the lowest surviving tower HP determines the draining tiebreaker;
+simultaneous equal minima use total tower HP, then the seeded coin flip. The
+tiebreaker is 1–0; its artificial crown is not attributed to combat card damage.
+Core destruction sets the score to three crowns. Card attribution uses the
+actual increase from the previous score, avoiding double-counting a prior guard.
+
+Melee troops cannot hit flying units unless the card actually canHitAir. Flying
+troops ignore river crossing. Ranged units can fire across the river. Structure-
+targeting troops select defensive buildings by reachable distance until they
+enter attack range and lock. Ordinary troops retain targets within the actual
+troop leash, and deployment pulls respect sight, legality, temporary forced
+target duration and Crown Tower locks. Towers acquire troops, keep their target
+through their live +0.7 retention distance and activate the core when damaged
+or when a same-side guard falls. Defensive buildings acquire troops only,
+start on their 0.35-second cooldown and lose maxHP/lifetime HP per second.
+
+Frost applies its exact movement slow only on legal melee troop hits. Duration
+refreshes; the percentage never adds to itself and attack speed is unchanged.
+Storm Raven directs normal attacks at structures. Its independently timed aura
+damages nearby ground and air troops and refreshes stun; aura can pulse while
+Raven itself is stunned, matching live update order. Meteor's initial hit and
+five scheduled zone pulses affect troops only. A target must still be within
+the zone at a pulse. Arc projectiles hit their primary target and then each
+legal nearby splash recipient. Nova and Bullet use actual troop/structure
+damage, live circle radius and target-radius padding. Spells deploy immediately;
+the live game has no extra combat deployment delay to reproduce.
+
+CARD DENOMINATORS AND FORMULAS
+
+A card appearance is one side's deck containing the card, even if never played.
+Except for card WR, aggregate telemetry includes both mirror and non-mirror
+appearances. A per-game card value means per deck appearance, not per overall
+match and not per cast. This keeps a frequently picked card from looking more
+effective merely because it has accumulated more total matches.
+
+Pick% = appearances / number of included side decks * 100.
+There are two decks per match and eight slots per deck, so the sum across all
+14 card Pick% values is exactly 800% for any complete nonempty dataset or style /
+archetype intersection. This is not merely a large-sample approximation. Card
+type and sample filters intentionally show only a subset and can sum below 800%.
+
+Clean N counts only a card present on exactly one side of a match. If both decks
+contain that card, both appearances are excluded from its card WR signal. They
+still contribute picks and measured telemetry. The mirror-exclusion counter is
+the number of excluded appearances, rather than the number of unique matches.
+
+score = wins + 0.5 * draws in clean samples.
+Raw WR = score / clean N * 100; it is unavailable when clean N is zero.
+Adjusted WR = (score + 12) / (clean N + 24) * 100.
+The neutral Beta(12,12) prior pulls sparse samples toward 50%.
+
+95% CI is the Wilson interval of empirical clean score / N, with z = 1.96:
+  denominator = 1 + z²/N;
+  center = (p + z²/(2N)) / denominator;
+  half = z * sqrt((p*(1-p) + z²/(4N))/N) / denominator.
+Bounds are clamped to 0–100%. Zero samples show the full 0–100 interval.
+The Wilson interval describes raw observations; it is not a Bayesian posterior
+interval around the adjusted point. Half-credit draws use a fractional-score
+binomial approximation. Raw and adjusted WR stay separate in the UI and exports.
+
+Uses/Game = casts / appearances.
+Aether Spent/Game = actual cast costs / appearances.
+Troop, Tower, Building Damage/Game = actual HP removed in that target class /
+appearances. Requested damage beyond remaining HP is excluded from these totals.
+Damage Taken/Game = HP lost to attacks and spells / appearances; building decay
+is not incoming enemy damage.
+Kills/Game = last-hit troop or deployable-building kills / appearances.
+Deaths/Game = deployed entities destroyed / appearances, including decay.
+Average Lifetime = summed lifetime of all deployed entities / entities spawned,
+including surviving entities censored at match end. Swarm members count separately.
+Average Placement Tile = signed mean arena X and Z per cast. These are world
+coordinates across both teams; their Z mean can approach zero through mirrored
+placements and should not be read as a recommendation to deploy on the river.
+Average Kill Value = sum of defeated card cost / defeated swarm count, divided
+by kills. Crown Towers have no replacement-Aether cost in this calculation.
+Damage/Aether = (troop + tower + building HP removed) / actual Aether spent.
+Tower Damage/Aether = Crown Tower HP removed / actual Aether spent.
+Survival Rate = deployed entities still alive at match end / entities spawned.
+Unit lifetime/survival is not an applicable measure of an instantaneous spell.
+Opening-Hand Play Rate = opening-hand appearances played among that side's first
+four casts / opening-hand appearances. Each eligible card is counted at most once.
+First-Play Rate = occurrences as a side's first cast / card deck appearances.
+OT Play Rate = casts during overtime / all casts.
+Win-Condition Connection Rate = casts that caused Crown Tower HP damage / casts.
+Each cast counts once, regardless of attacks or the number of swarm members.
+Average Crown Contribution = actual crown increases attributed in proportion
+to each card's cumulative damage to the fallen tower / card appearances. The
+draining tiebreaker crown has no fabricated damaging-card attribution.
+
+BUILDING, SPELL AND SPECIAL MECHANIC METRICS
+
+Building damage prevented is actual incoming HP damage absorbed by the building.
+It is a measured prevention proxy, not a claim that all that damage would have
+otherwise hit a Crown Tower. Win-condition pulls count first acquisition of the
+building by each structure-targeting entity before a different hard lock; repeat
+scans do not count as new pulls. Lifetime utilization is actual building lifetime
+used / its total nominal deployed lifetime capacity, expressed as a percentage.
+
+Spell targets hit counts distinct target entities per cast, including newly
+hit Meteor occupants later in the zone. Aether value estimates removed HP /
+target maxHP times target card cost / swarm count; Towers have zero replacement
+Aether cost. This is an HP-fraction proxy rather than a forecast of future
+defense value. Overkill is requested spell damage above remaining target HP.
+Spell damage per cast and tower damage use actual removed HP and cast count.
+Spell kills are attributed to the damaging spell, including a lethal DoT pulse.
+
+Frost slow uptime is affected time / tracked remaining lifetime of targets that
+received Frost slow, beginning at first application. It measures observed
+target duty time, not a flat assumed bonus to damage or attack speed.
+Raven aura damage is separately tagged HP damage. Units stunned counts successful
+stun applications; the same surviving unit can receive more than one pulse.
+Average stun uptime uses affected / tracked target time after first application.
+When overlapping sources refresh an effect, the latest source owns subsequent
+measured status time, so the same target-time is not credited twice.
+Meteor zone occupancy is average living enemy troop occupants integrated over
+actual active zone seconds. It is a count, not a percentage. DoT ticks per cast
+counts scheduled zone pulses (up to five), not targets multiplied by pulses.
+Initial and DoT HP damage are tagged and reported separately. The maximum damage
+to a stationary, sufficiently healthy single target is 262 + 5*40 = 462; actual
+damage can be lower through death, movement, match end, or overlapping effects.
+
+Zero denominators never produce NaN or Infinity. Empty estimates use zero or
+explicit unavailable values according to the metric; they do not create samples.
+
+MATCHUP MATRIX AND EMPIRICAL SYNERGY
+
+Matchup cells compare the V14 stat-derived counter scores in opposite directions
+and display the difference on -100 to +100. This is estimated mechanical
+coverage, not a measured duel WR. Explanations are generated from actual legal
+targeting, air status, range, HP, swarm count, spell damage, radius, structure
+restriction, building decay/pulls, Frost slow and Raven's secondary aura.
+Spell-vs-spell cells explain that neither spell is a damageable body. No match
+observations or arbitrary duel outcomes are invented for this matrix.
+
+Pair Games counts side decks containing both cards when the opposing deck does
+not contain both. Joint mirror appearances are excluded from pair WR signals.
+Half-credit draws are included. Individual single-card clean statistics exclude
+their own mirrors independently, so the pair and card samples can differ.
+
+Expected Baseline = mean of the two cards' Bayesian adjusted clean WRs.
+Raw Pair WR = observed pair score / Pair Games * 100.
+Shrinkage prior = 48 games centered on the expected baseline.
+Adjusted Pair WR = (pair score + 48*baseline/100) / (Pair Games + 48) * 100.
+Raw Delta = Raw Pair WR - Expected Baseline.
+Synergy Delta = Raw Delta * Pair Games / (Pair Games + 48).
+The displayed pair Wilson CI describes empirical pair outcomes. N is always
+shown. A zero-sample pair has no empirical pair WR and no asserted positive
+synergy. Shared deck composition, personality, opposing decks and card selection
+can confound a pair delta; it measures association, not a causal interaction.
+
+ARCHETYPES, PERSONALITIES, FILTERS AND ALERTS
+
+All seven personality decks use coherent V14 deck generation. Sixteen percent
+of draws explore shuffled legal compositions with troop, spell, anti-air and
+win-condition coverage. Measured WR never feeds back into future deck sampling.
+The Cycle draft ceiling is tested across 1,000 deterministic seeds. Every card
+receives clean observations in the 10,000-game audit.
+
+Deck archetype labels are actual composition classifications and can overlap.
+Consequently archetype Pick% need not add to 100%, unlike the fixed card-slot
+total. Archetype WR, crowns and duration come from observed side outcomes.
+Best/weakest cards require at least 30 clean samples within the archetype;
+best/worst opposing archetypes require at least 30 observations.
+
+Card and pair filters use actual personality/archetype intersections. Archetype
+reports condition on the personality selection, and personality reports
+condition on the archetype selection. Their denominators use the included side
+decks. History is explicitly whole-dataset cumulative snapshots; the chart's
+100/500/1k/5k/10k/All selection changes the visible game span, not its population.
+
+Alert minimum clean N is 100. A WATCH requires adjusted WR >=53% or <=47% and
+the empirical Wilson interval entirely above or below 50%. CONCERN requires
+N>=400 and CI lower >=52% or upper <=48%. STRONG SIGNAL requires N>=1,000 and
+CI lower >=54% or upper <=46%. Supporting style slices require N>=100 and their
+own Wilson interval excluding 50%. Spell alerts use actual damage metrics,
+rather than claiming low unit survival. These are confidence-qualified model
+signals, not proof that a live card is overpowered. Multiple comparisons and
+deck-policy confounding remain relevant; the game does not automatically rebalance.
+
+HISTORY AND PATCH COMPARISONS
+
+Version, combat values, arena/match/grid/tower rules, personality configuration,
+deck-policy revision and combat-model revision form the dataset identity. A
+changed identity creates a new archive and never pools observations into the
+old one. Every new archive retains its actual card/rule/style inputs. Resetting
+the active dataset archives its prior run rather than silently erasing history.
+When an old event-model fingerprint cannot be loaded into the current model,
+its recorded clean N, score, appearances, uses, spending, damage and checkpoints
+are projected directly from saved aggregates with their original identity.
+They are not re-simulated or assigned the current model label. Unavailable new
+mechanics remain blank; compatible historical style/archetype card slices retain
+their own recorded denominator. Missing legacy building damage makes total-damage
+patch comparison unavailable, rather than assuming unknown damage was zero.
+
+Recent cumulative trend checkpoints are saved every 100 accepted games. Once
+the history exceeds 2,000 points, older points are thinned while recent points
+remain at 100-game resolution. Retained values are unchanged observations;
+no smoothed or synthetic WR samples are inserted. All spans can include the
+older, coarser checkpoints. This bounds worker cloning and disk-save growth.
+
+Patch comparisons subtract adjusted WR, pick%, actual damage per appearance and
+uses per appearance. The per-card Archetype Delta is the largest absolute change
+in that card's conditioned archetype WR, with the archetype name and all
+conditioned deltas available in the structured result. Clean N before and after
+is retained. Differences between model revisions can reflect model changes,
+rather than a card-balance change alone.
+
+No reusable per-card V12.8, V12.10 or exact V14 session datasets were supplied.
+Historical patch notes and audit summaries are preserved, but are not fabricated
+into a dataset. The old local save key spans V12.10 through V14; if present, it
+imports once as a limited archive with unknown exact session-version provenance.
+Only its actually recorded card metrics are shown. Unknown pair, style, status,
+history, damage-taken and patch-specific metrics stay unavailable. Requested
+historical comparison entries exist and explain missing evidence, with N=0
+instead of invented results or duplicated old counts.
+
+PERFORMANCE AND FINAL SANITY RUN
+
+The browser uses a dedicated Web Worker, yielding every four matches. Pause
+preserves pending validation work; resume continues it. Background scheduling
+is controlled separately from combat compute. Speed choices are 100, 250,
+500 and MAX SAFE games/minute. Worker MAX SAFE uses actual recent compute
+timings, reserves only 28% compute budget and caps at 2,000/minute; the controller
+can lower this further when the page becomes busy. Live battle pause/throttle
+is controlled by the game controller. Main UI updates and disk saves are bounded.
+
+The validation script ran the actual current event engine for 10,000 seeded
+matches on this machine. It does not claim those were rendered battles:
+  seed 151515; model v15-event-2; fingerprint 47a565c8;
+  elapsed wall time 72.19 seconds; approximately 8,311 games/minute unthrottled;
+  invalid simulations 0; NaN/Infinity count 0;
+  mirror-card appearances excluded 101,438;
+  total card Pick% 800.000%; all 14 cards had clean observations;
+  average game duration 280.78 simulated seconds;
+  average actual Aether spent 172.99 per side;
+  seven personality slices, ten archetypes and 91 distinct card pairs;
+  100 actual trend checkpoints; serialized dataset approximately 1.51 MB.
+
+The archived numeric V15_META_VALIDATION.json contains the actual full card
+metrics, sample sizes, confidence intervals, style/archetype counts and signal
+summaries. Browser responsiveness and the actual worker protocol are checked
+separately from the command-line throughput benchmark. Session games/minute
+excludes previously saved games after restoration, preventing a bogus huge rate.
+
+REPRODUCTION
+
+From this project folder, with the bundled/current Node runtime:
+  node --test tests/v15-meta.test.cjs tests/v15-worker.test.cjs
+  node tests/v15-meta-validation.cjs 10000
+
+The fixtures extract the live project CARD_LIBRARY and constants. The 20 new
+tests cover deterministic events, HP-to-telemetry reconciliation, shared rules,
+special mechanics, budgets, mirrors, all metrics, filters, pair shrinkage,
+confidence gates, invalid/nonfinite detection, restore identity and signed
+placement sums, restored rate correctness, future patch boundaries, historical
+unavailability, incompatible-model aggregate preservation, per-card archetype
+comparisons, seeded Cycle cost and the real
+worker's progress/pause/resume/rate/filter protocol. Existing V14 regression
+tests continue to check all locked stats, gameplay and coherent AI decks.

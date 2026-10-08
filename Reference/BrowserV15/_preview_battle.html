@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="theme-color" content="#070b15" />
+  <title>Rift Crown Arena</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body class="home-active">
+  <div id="game-shell">
+    <canvas id="game"></canvas>
+    <div class="screen-vignette"></div>
+
+    <section id="home-screen" aria-label="Rift Crown Arena home screen">
+      <header class="home-topbar">
+        <div class="home-brand">
+          <img src="./assets/ui/rift_mark.svg" alt="" />
+          <div>
+            <span>RIFT CROWN</span>
+            <strong>ARENA</strong>
+          </div>
+        </div>
+        <div class="home-season">
+          <span>SEASON 01</span>
+          <strong>THE FIRST FRACTURE</strong>
+        </div>
+        <div class="home-wallet">
+          <div class="wallet-chip"><i class="gem purple"></i><span>1,250</span></div>
+          <div class="wallet-chip"><i class="gem gold"></i><span>8,420</span></div>
+          <button id="home-help" class="icon-button" aria-label="How to play">?</button>
+        </div>
+      </header>
+
+      <main class="home-content">
+        <aside class="profile-panel glass-panel">
+          <div class="profile-banner">
+            <div class="profile-crest"><img src="./assets/ui/rift_mark.svg" alt="" /></div>
+            <div>
+              <small>WARDEN PROFILE</small>
+              <h2>RIFTBOUND</h2>
+            </div>
+          </div>
+          <div class="rank-row">
+            <div><span>RANK</span><strong>Bronze III</strong></div>
+            <div class="rank-medal">III</div>
+          </div>
+          <div class="profile-stats">
+            <div><strong>0</strong><span>WINS</span></div>
+            <div><strong>0</strong><span>CROWNS</span></div>
+            <div><strong>9</strong><span>CARDS</span></div>
+          </div>
+          <div class="quest-card">
+            <span class="quest-kicker">DAILY RIFT</span>
+            <strong>Destroy 4 Guard Towers</strong>
+            <div class="quest-progress"><i style="width:0%"></i></div>
+            <small>0 / 4</small>
+          </div>
+        </aside>
+
+        <section class="battle-panel">
+          <div class="mode-card">
+            <div class="mode-art">
+              <div class="mode-rift"></div>
+              <div class="mode-tower tower-left"></div>
+              <div class="mode-tower tower-right"></div>
+              <div class="mode-particles"></div>
+            </div>
+            <div class="mode-copy">
+              <span class="mode-label">FEATURED MODE</span>
+              <h1>CROWNFALL<br/>1V1</h1>
+              <p>Break through two lanes, claim Guard Towers, then shatter the enemy Core.</p>
+              <div class="mode-tags"><span>5 MIN</span><span>8 CARD DECK</span><span>TACTICAL AI</span></div>
+            </div>
+          </div>
+          <button id="home-battle" class="battle-button">
+            <span class="battle-glow"></span>
+            <span class="sword-mark">⚔</span>
+            <span><small>ENTER THE RIFT</small><strong>BATTLE</strong></span>
+          </button>
+          <div class="mode-footer"><span>Standard rules</span><i></i><span>2× Aether after 2:00</span><i></i><span>3× Aether final minute</span></div>
+        </section>
+
+        <aside class="deck-panel glass-panel">
+          <div class="panel-heading">
+            <div><small>LOADOUT</small><h3>BATTLE DECK</h3></div>
+            <span class="deck-score">AVG <strong id="home-avg-cost">3.5</strong></span>
+          </div>
+          <div id="home-deck-grid" class="home-deck-grid"></div>
+          <button id="open-deck" class="secondary-button">VIEW CARD DETAILS</button>
+          <div class="tip-box"><span>TACTICAL NOTE</span><p>Build pushes behind Boulderback or Rambeast, then layer ranged support once the tank commits.</p></div>
+        </aside>
+      </main>
+
+      <nav class="home-nav" aria-label="Main menu">
+        <button class="nav-item active"><span>⚔</span><strong>BATTLE</strong></button>
+        <button class="nav-item" data-panel="deck-modal"><span>▦</span><strong>CARDS</strong></button>
+        <button class="nav-item" data-panel="deck-modal"><span>◆</span><strong>LOADOUT</strong></button>
+        <button class="nav-item" id="training-btn"><span>◎</span><strong>TRAINING</strong></button>
+      </nav>
+      <div class="home-version">EARLY PROTOTYPE • V12 PATHFINDING + TIEBREAKER + VAMPIRE BATS</div>
+    </section>
+
+    <header id="top-hud" class="battle-ui">
+      <div class="score-block">
+        <div class="score blue"><span class="crown">◆</span><span id="player-crowns">0</span></div>
+        <div class="timer-stack"><small>REGULATION</small><div id="timer">5:00</div></div>
+        <div class="score red"><span id="enemy-crowns">0</span><span class="crown">◆</span></div>
+      </div>
+    </header>
+
+    <div id="double-aether" class="announcement hidden battle-ui">AETHER SURGE</div>
+    <div id="placement-hint" class="battle-ui hidden" aria-hidden="true"></div>
+
+    <section id="bottom-hud" class="battle-ui">
+      <div id="selected-card-panel" class="card-inspector hidden">
+        <div class="inspector-head"><span class="selection-kicker">CARD STATS</span><strong id="selected-name"></strong></div>
+        <div id="selected-desc"></div><div id="selected-stats" class="selected-stats"></div>
+      </div>
+
+      <div id="hand-wrap">
+        <div id="hand"></div>
+        <div id="next-card">
+          <div class="next-label">NEXT</div>
+          <div id="next-card-mini"></div>
+        </div>
+      </div>
+
+      <div id="aether-panel">
+        <div class="aether-label"><span>AETHER</span><strong id="aether-value">5.0</strong></div>
+        <div class="aether-track"><div id="aether-fill"></div><div class="aether-ticks"></div></div>
+      </div>
+    </section>
+
+    <div id="toast"></div>
+    <div id="drag-card-ghost" class="drag-card-ghost hidden" aria-hidden="true"></div>
+
+    <div id="help-modal" class="modal hidden">
+      <div class="modal-card">
+        <button class="close-modal" data-close="help-modal">×</button>
+        <span class="modal-kicker">FIELD MANUAL</span>
+        <h2>How to play</h2>
+        <p>Destroy enemy Guard Towers for crowns. Destroy the enemy Core Tower to win instantly.</p>
+        <ul>
+          <li>Drag a card onto your legal deployment tiles, or select it and click to deploy.</li>
+          <li>Each arena square is 1 tile. Guard Towers attack out to exactly 10 tiles.</li>
+          <li>Card attack range, aggro range, splash radius and spell radius are measured in arena tiles.</li>
+          <li>Destroy the enemy left or right Guard Tower to unlock a deployment pocket on that same enemy-side lane.</li>
+          <li>Archer Tower is a 3-Aether defensive building that attacks ground and air troops. Nova Flask can target anywhere.</li>
+          <li>Ground troops route through their lane bridge; flying troops cross the river directly.</li>
+          <li>Aether regenerates over time and doubles in the final minute.</li>
+          <li>Highest crown count wins at 0:00. Ties enter sudden overtime.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="deck-modal" class="modal hidden">
+      <div class="modal-card deck-modal-card">
+        <button class="close-modal" data-close="deck-modal">×</button>
+        <span class="modal-kicker">BATTLE DECK</span>
+        <h2>Your first eight Riftbound cards</h2>
+        <div id="deck-detail-grid" class="deck-detail-grid"></div>
+      </div>
+    </div>
+
+    <div id="end-screen" class="modal hidden">
+      <div class="modal-card end-card">
+        <div id="end-kicker">MATCH COMPLETE</div>
+        <h1 id="end-title">Victory</h1>
+        <div id="end-score">0 — 0</div>
+        <div class="end-actions">
+          <button id="restart-btn">REMATCH</button>
+          <button id="home-btn" class="secondary-button">HOME</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="loading-screen">
+      <img src="./assets/ui/rift_mark.svg" alt="" class="loader-mark"/>
+      <div class="loader-logo">RIFT CROWN</div>
+      <div class="loader-bar"><div></div></div>
+      <div class="loader-copy">Opening the fracture…</div>
+    </div>
+  </div>
+
+  <script type="module" src="./src/game.js"></script>
+</body>
+</html>

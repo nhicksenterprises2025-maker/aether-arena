@@ -1,0 +1,14 @@
+Rift Crown Arena V12.7 - Balance Patch
+
+Applied live stat changes:
+- Ironclad HP: 760 -> 840
+- Ember Archer: HP 385 -> 423; Damage 82 -> 152; Hit Speed 1.15s -> 1.55s; Range 6.6 -> 6.0 tiles
+- Boulderback: HP 1760 -> 1620; Damage 132 -> 129; Move 1.42 -> 1.30 tiles/s
+- Arc Mage: HP 515 -> 547; Damage 94 -> 101; Hit Speed 1.28s -> 1.15s; Range 6.1 -> 6.5 tiles
+- Rambeast: Move 2.75 -> 2.60 tiles/s; Charge Damage set explicitly to 255
+- Archer Tower: Cost 3 -> 4; Lifetime 30s -> 25s
+
+Directional sight remains 8 tiles front / 5 tiles rear for deployable combat cards.
+Spells remain manually targeted and do not use sight acquisition.
+Card detail DPS is derived from live Damage / Hit Speed.
+Meta Lab reads these live card values automatically; Rambeast's explicit 255 charge hit is included in its analytical tower-pressure model.

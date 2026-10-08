@@ -1,0 +1,19 @@
+Rift Crown Arena v12.10 — Freeze + Balance Update
+
+FREEZE / PERFORMANCE FIXES
+- Fixed a Frost Fang runtime crash caused by an uninitialized forward-direction reference in the ambient frost-breath animation.
+- Frame loop now schedules the next requestAnimationFrame before simulation work, preventing a recoverable JS exception from permanently stopping the match.
+- Meta Lab simulation automatically pauses while a live match is running and resumes in menus.
+- A* bridge congestion is snapshotted once per path calculation instead of rescanning every live unit for each explored node.
+- Reduced worst-case A* expansion budget and slightly relaxed routine repath frequency to reduce main-thread spikes.
+
+BALANCE
+- Boulderback: 118 damage, 2.00s hit speed.
+- Arc Mage: 120 damage, 1.00s hit speed, 17 tile/s projectile, 2.5 tile splash.
+- Rambeast: 880 HP, 140 damage, 1.40s hit speed; 255 charge remains.
+- Frost Fang: 1155 HP, 2.50 tiles/s.
+- Storm Raven: 1337 HP, 251 damage, 1.70s hit speed, 4.30 tile range.
+- Meteor Shards: 262 initial impact, 40 damage/s for the existing 5-second zone.
+
+META
+- Meta dataset key bumped so simulations restart cleanly on the new balance values.

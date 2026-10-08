@@ -1,0 +1,13 @@
+Rift Crown Arena V7.1 - Tower Lock / Aggro Redirect Hotfix
+
+FIXED
+- Normal troops are no longer permanently locked onto a tower once they begin attacking it.
+- Deploying a valid defender inside their sight/aggro range can now pull them off the tower.
+- Retarget checks happen faster while a normal troop is focused on a tower.
+- Closest valid defender is prioritized, with a small bias for defenders placed in the attacker's path.
+- Air-target restrictions are respected during retargeting:
+  * Ground melee still cannot be pulled toward / attack flying units.
+  * Ground ranged that can hit air can retarget to air units.
+- Tower-only units are intentionally unchanged:
+  * Boulderback stays locked onto towers.
+  * Rambeast stays locked onto towers.

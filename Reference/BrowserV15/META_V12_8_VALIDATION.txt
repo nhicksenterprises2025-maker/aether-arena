@@ -1,0 +1,52 @@
+Rift Crown Arena V12.8 — Meta Lab Validation
+
+The Meta Lab remains an analytical balance simulator at ~100 games/minute. V12.8 resets the stored
+meta dataset because the card pool and card mechanics changed materially.
+
+New mechanic math included in V12.8:
+
+1. Frost Fang
+   - Raw DPS: 72 / 0.8 = 90.0 DPS.
+   - Slow: 30% movement reduction, 2.0s refresh duration, non-stacking.
+   - Because 2.0s duration exceeds the 0.8s hit interval, slow uptime after first contact is effectively 100%
+     while Frost Fang stays connected to a ground target.
+   - Meta counter math applies the movement-control value only to ground cards and weights the effect more
+     strongly against structure-targeting ground win conditions, which lose more pressure when slowed.
+
+2. Storm Raven
+   - Direct structure DPS: 282 / 1.3 = 216.92 DPS.
+   - Lightning ring: 82 / 3.0 = 27.33 raw area DPS while enemies remain within 2 tiles.
+   - Stun duty cycle: 0.4 / 3.0 = 13.33% maximum local action denial.
+   - Meta model adds aura damage and stun control to troop/defensive contribution while keeping direct attack
+     pressure in the structure-only tower-pressure model.
+
+3. Meteor Shards
+   - Initial damage: 151.
+   - Maximum stationary-target damage: 151 + (6 x 5) = 181.
+   - Live gameplay applies 6 damage once per second only while the enemy troop remains inside the 4.5-tile zone.
+   - The Meta Lab therefore does NOT assume all targets receive the full 181 damage. It estimates dwell time from
+     target movement speed and spell radius and clamps it to the five-second zone duration.
+   - Crown/building damage is 0 because this card's supplied targeting was Area Ground/Air troops.
+
+Statistical checks retained from V12.3:
+   - card win rate excludes mirror-card games for that card;
+   - 24-game neutral Bayesian prior reduces tiny-sample extremes;
+   - Wilson 95% confidence interval is shown for non-mirror samples;
+   - deck pick rates do not feed back from observed win rate;
+   - card use is constrained by the live Aether economy;
+   - cards are sampled without duplicates inside an 8-card deck.
+
+Pool sanity:
+   - 14 cards live after V12.8.
+   - 8 unique cards per deck.
+   - Across a large unbiased sample, total Pick% across all cards should converge to ~800%, because every deck
+     contains eight cards. Archetype weighting changes individual Pick%, not that total.
+
+Important:
+   - Meta Lab results are analytical projections, not rendered-battle telemetry. They are appropriate for finding
+     likely balance outliers and matchup patterns, then should be confirmed against live battle results.
+
+10,000-game deck-sampling sanity check (20,000 simulated deck drafts):
+   - Total Pick% across the 14-card pool = exactly 800.0%.
+   - Individual Pick% remained in a narrow ~55–59% band under the current three archetype weights.
+   - This indicates the style weighting is influencing archetypes without starving any card of samples.

@@ -1,0 +1,48 @@
+RIFT CROWN ARENA V15 — META LAB 2.0
+
+Implemented
+- Replaced the old analytical menu loop with seeded headless event combat in a
+  yielding Web Worker. Added 100/250/500 per minute, benchmarked MAX SAFE,
+  manual pause, live battle pause and main-thread responsiveness throttling.
+- Shared live spell damage, Frost/stun refresh and directional sight helpers;
+  passed the exact live card library, match rules, arena, retarget settings,
+  tower stats and all seven AI personality settings into the worker.
+- Added complete per-card, building, spell, Frost, Raven and Meteor telemetry,
+  adjusted/raw WR, clean N, Wilson intervals and explicit metric definitions.
+- Added mechanical matchup reports, empirical pair samples and shrunk synergy,
+  ten overlapping archetypes, seven personality slices and confidence alerts.
+- Added fingerprint-separated history and archives, patch comparison, cumulative
+  trends, interactive filters/sorting, and CSV/JSON exports for six subjects.
+- Added Developer-accessible numerical validation and actual 10,000-game runs.
+- Recorded real live play, damage, death, status, Aether, crown, tower and AI
+  events. Added sampled-position replay viewer, speed/seek controls/bookmarks,
+  saved replay history, import/export and post-match charts/card/team analysis.
+- Added independent disk telemetry save endpoint without changing profile/deck
+  save format. Queued writes, local fallback and hydration preserve archives.
+
+Bugs corrected during integration
+- AI spell-cycle, defensive and support casts now receive replay play identities.
+- Projectile, splash, spell, DoT and Raven aura damage retain card attribution.
+- Forced resource/hand snapshots around paid plays and Developer Aether edits.
+- Restored signed placement sums correctly; excluded historical games from new
+  session throughput; avoided counting guard/core crown rewards twice.
+- Reset archives the previous analytical run. Missing old patch telemetry remains
+  unavailable; legacy saves are not assigned a fabricated exact version.
+- Finished/abandoned replay saves are awaited before menu/restart reloads.
+- A rare expensive Cycle deck is repaired within its intended cost constraint
+  while preserving strategic coverage and every live card stat.
+- Tiebreaker tower falls now create replay bookmarks without invented damage
+  attribution; simultaneous falls retain one awarded crown.
+- Added F9 / Ctrl+Shift+V access to the hidden menu validation tab.
+- Fixed the actual recorder envelope in combined disk saves; migrated early
+  wrapped replay archives without losing Meta history.
+- Reset ignores canceled worker results and waits for its acknowledgment;
+  completed validation survives intervening live-battle filter messages.
+- MAX SAFE scheduling now delivers its advertised rate up to 2,000/minute;
+  the debt budget scales with the selected rate instead of capping at 1,200.
+- Archived exports retain the selected dataset identity.
+
+Preservation
+All 14 live card definitions, MATCH, ARENA, GRID, NAV, SIGHT, RETARGET, POCKET
+and AI_STYLES constants are unchanged. All 30 asset files retain their original
+hashes. Every V14 project file remains included. No balance or art was removed.

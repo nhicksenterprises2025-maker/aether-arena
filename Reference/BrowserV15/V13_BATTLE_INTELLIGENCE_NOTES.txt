@@ -1,0 +1,49 @@
+RIFT CROWN ARENA — V13.0 BATTLE INTELLIGENCE
+
+PRIMARY GOAL
+V13 is a private-game intelligence/testing update. It does not change the live V12.10 card balance.
+
+AI BRAINS
+- Beatdown
+- Aggro
+- Control
+- Cycle
+- Split Lane
+- Spell Cycle
+- Counter Push
+
+AI INTELLIGENCE
+- Estimates player Aether from observed card costs + live regeneration.
+- Tracks recent observed player card cycle.
+- Uses observed counter-cycle information when choosing a push anchor.
+- Can punish opposite lane after a large player commitment when estimated player Aether is low.
+- Can intentionally damage-trade when its own live push is materially stronger.
+- Defensive card selection scores Aether cost, splash, air coverage, tank-killing value and building pulls.
+- Counter Push personality converts lower-HP surviving defenders into offense more aggressively.
+- Cycle / Spell Cycle personalities can finish low Crown Towers with efficient spell pressure.
+- Late-game lead protection remains conservative.
+
+PRIVATE DEVELOPER LAB
+- Pause battle simulation.
+- 0.25x / 0.5x / 1x / 2x / 4x simulation speed.
+- Add/subtract/max Player or AI Aether.
+- Spawn any card for either team by arming spawn mode and clicking an arena tile.
+- Change AI personality live.
+- Toggle enemy AI on/off.
+- Set HP on any living Crown Tower.
+- Clear all troops and player buildings without resetting Crown Towers.
+- Live AI readout: current decision, reason, phase, AI Aether, estimated player Aether and observed card cycle.
+
+OPTIONAL DEBUG OVERLAYS
+- A* ground paths.
+- Directional sight (8-tile front / 5-tile rear).
+- Attack ranges.
+- Target lines and Crown Tower hard-lock lines.
+- Arena tile-coordinate labels.
+
+V12.10 PRESERVED
+- Current card balance remains exactly V12.10.
+- 3:00 regulation / conditional 2:00 overtime / live tiebreaker unchanged.
+- Pocket deployment unchanged.
+- Freeze/crash protections unchanged.
+- Meta Lab still pauses during live rendered matches.

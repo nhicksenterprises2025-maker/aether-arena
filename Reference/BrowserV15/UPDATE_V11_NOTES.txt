@@ -1,0 +1,23 @@
+Rift Crown Arena V11
+
+1. Facing correction
+- Blender-generated troop models use a dedicated forward-axis pivot.
+- Player troops: back faces camera while advancing toward enemy side.
+- Enemy troops: front faces camera while advancing toward player side.
+- Fix covers Sky Manta and every other generated troop model without changing the model geometry.
+
+2. Structure lock
+- Tower-only troops hard-lock to a structure after entering attack range / beginning the attack.
+- Newly placed buildings cannot pull them away after that lock.
+- Lock clears only when the structure dies.
+- Normal troops preserve Clash-style defender retargeting.
+
+3. Guard Tower
+- Guard Tower range = 10 tiles.
+
+4. Live Meta Lab
+- Target rate: 100 accelerated headless bot games per minute.
+- UI refresh: once per second.
+- Columns: Pick%, Win%, Uses/Game, Troop Damage/Game, Tower Damage/Game, Kills/Game, Deaths/Game, Damage/Aether, Balance Delta.
+- Interactive sorting, filter, search, pause/resume, reset, CSV export.
+- Simulation includes Beatdown/Aggro/Control deck tendencies, current card stats, basic synergies and counters.

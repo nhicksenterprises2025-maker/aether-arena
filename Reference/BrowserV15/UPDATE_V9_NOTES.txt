@@ -1,0 +1,42 @@
+Rift Crown Arena V9 — Core Dormancy / Bullet Burst / Persistent Profile / Visual Clarity
+
+CORE RULES
+- Core Tower no longer attacks at match start.
+- A team's Core Tower activates only after one of that team's Guard Towers is destroyed.
+- Added dormant and active Core aura states plus activation FX.
+
+NEW CARD: BULLET BURST
+- Cost: 2 Aether
+- Category: Small Spell
+- Radius: 2.2 tiles
+- Troop damage: 145
+- Tower/building damage: 55
+- 7-round tracer volley
+- Hits ground and air in the target area
+- Added card art, stats, loadout support and AI usage.
+
+READABILITY
+- Removed numeric HP text from troops/buildings.
+- Troops use slim HP bars shown only when damaged/recently engaged.
+- Buildings use slim HP bars.
+- Tower HP remains exact.
+- Removed ordinary troop damage-number clutter; tower damage numbers are smaller and shorter.
+
+ARENA TILE CLARITY
+- Rebuilt grid with line geometry above grass and river.
+- Every 1x1 tile line is continuous.
+- Stronger 4-tile guide lines.
+- Clear arena perimeter.
+
+PROFILE / SAVING
+- Added editable Warden profile.
+- Saves username, ID, W/L/D, matches, crowns, currencies and active deck.
+- Server-backed save stored at %LOCALAPPDATA%\RiftCrownArena\player_save.json.
+- This persists across dynamic launcher ports and newly extracted game versions.
+
+VISUAL PASS
+- Bullet tracer/impact FX.
+- Core dormant/activation FX.
+- Extra attack FX for Ember Archer, Arc Mage, Sky Manta and Twin Blades.
+- Added model details to all procedural fallback units and Archer Tower.
+- Blender Model Forge upgraded to V9 with another geometry/material polish layer.

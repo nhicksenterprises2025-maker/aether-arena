@@ -1,0 +1,20 @@
+Rift Crown Arena V7 - Air Targeting / Card UI / Visual Pass
+
+Gameplay fixes:
+- Ground melee troops can no longer hit air troops.
+- Specifically fixes cases like Ironclad damaging Sky Manta.
+- Ground ranged cards are now clearly labeled in deck/menu UI.
+- Card details now show:
+  * Category
+  * Combat Class
+  * Targeting mode
+
+Visual/content pass:
+- Improved deck/detail card presentation with better framed art and class/target badges.
+- Added extra fallback model detail to Ironclad, Ember Archer, Arc Mage, and Sky Manta.
+- Improved per-unit animations: melee sway, ranged recoil, mage pulse, manta flap, boulderback stomp, rambeast charge posture.
+
+Main edited files:
+- src/game.js
+- styles.css
+- UPDATE_V7_NOTES.txt

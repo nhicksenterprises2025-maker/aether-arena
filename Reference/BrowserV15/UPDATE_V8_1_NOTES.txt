@@ -1,0 +1,19 @@
+Rift Crown Arena V0.8.1 — Bridge Pathing + Loadout Builder
+
+Bridge/pathing fixes
+- Ground troops now commit to one bridge while crossing instead of switching bridge choices mid-crossing.
+- Bridge crowd separation no longer pushes units sideways off the bridge route.
+- Bridge constraint now clamps lateral position without resetting Z progress.
+- Added short stuck detection/recovery near bridge mouths.
+- Melee attack range now uses navigable bridge distance, preventing troops from stopping at the river edge because an enemy across the water looked close in straight-line distance.
+- Ranged troops still use direct distance so they can legitimately shoot across the river.
+
+Loadout builder
+- Loadout now opens a dedicated deck builder instead of the card encyclopedia.
+- Battle decks are exactly 8 unique cards.
+- Click a current deck slot to remove it.
+- Click a card in All Cards to add it.
+- Save Loadout applies the deck to the next battle and persists it in local storage.
+- Reset Default restores the default 8-card deck.
+- Home Battle Deck and average Aether cost update immediately after saving.
+- Cards tab still opens the full card-details encyclopedia.

@@ -1,0 +1,18 @@
+Rift Crown Arena V12.6 - Directional Sight Update
+
+Target acquisition:
+- All deployable combat cards now use directional sight.
+- Forward 180 degrees: 8 tiles.
+- Rear 180 degrees: 5 tiles.
+- This replaces the old single aggro radius for live target acquisition.
+- Air/ground targeting restrictions are still respected.
+- Crown Tower hard-lock rules are unchanged.
+- Attack range remains separate from sight range.
+
+Archer Tower:
+- Uses the same 8-tile front / 5-tile rear sight system.
+- Its 7-tile attack range still caps how far it can shoot.
+
+UI:
+- Card details now show Front Sight and Rear Sight instead of the old Aggro Range value.
+- Spells do not use sight because they are manually targeted area effects.

@@ -1,0 +1,98 @@
+RIFT CROWN ARENA V15 — VALIDATION REPORT
+Verified 8 October 2026. Baseline: preserved Rift Crown Arena V14.
+
+AUTOMATED REGRESSIONS
+167 JavaScript tests passed; zero failures, skipped tests or unfinished tests.
+Command: node --test tests/*.test.cjs tests/combat-regressions.cjs
+All 14 JavaScript source/server files pass node --check.
+Three Blender source/collection tests pass without rebuilding the models.
+Both Node and PowerShell HTTP server regression suites pass with isolated saves.
+
+Coverage includes all live cards, airborne/ground and structure targeting,
+Frost/stun refresh, Raven direct/aura separation, spell areas and DoT ticks,
+projectile and splash damage, building decay/pulls, tower locks/core activation,
+directional sight, actual A* bridge navigation/movement, pockets and deployment,
+Aether, 3:00 regulation, 0–0 overtime and draining tiebreaker, final-result guards,
+Developer Lab speed/spawns/edits/cleanup, all seven live AI personalities,
+private-information guards, eight-card rotation, five named deck presets,
+profile/deck migration, asynchronous hydration, failed/queued writes and training.
+
+V15 checks resolve deterministic event combat and reconcile HP damage with card
+telemetry. They verify budget limits, mirrors, 800% picks, finite specialized
+metrics, conditional style/archetype samples, empirical pair shrinkage, confidence
+thresholds, fingerprinted archives, prior-model evidence, per-card patch deltas,
+1000 seeded Cycle drafts, worker yielding/pause/resume/filters/benchmarking,
+replay seek/speeds/bookmarks/lifecycle, abandoned matches and live damage sources.
+
+Combined save tests execute the actual game persistLabSave function with the
+real recorder, store and persistence module, then reload into a new recorder.
+Early wrapped envelopes migrate. Controller regressions cover canceled reset
+messages, validation completion through live-battle filter responses and an
+advertised 2000/min MAX SAFE rate delivering 2000 ±1 scheduled games in 60 ticks.
+
+HTTP checks include UTF-8 profile/deck/preset and large lab-data round trips,
+separate save files, invalid/oversized/aborted request preservation, supported
+methods, static asset MIME types, path traversal/malformed URLs and write failure
+recovery. Test data never replaces the user's actual account save.
+
+ACTUAL 10,000-GAME COMMAND-LINE RUN
+Model v15-event-2; fingerprint 47a565c8; seed 151515.
+Accepted 10,000; invalid 0; NaN/Infinity 0.
+Wall time 72.19s; unthrottled throughput 8311/min.
+Mirror appearances excluded 101,438; pick total 800.000%.
+Mean simulated duration 280.78s.
+Mean actual Aether spent 172.99/side.
+All 14 cards have clean observations; all seven styles, ten archetypes and 91
+pairs are sampled. Full card metrics and intervals: V15_META_VALIDATION.json.
+
+ACTUAL BROWSER WEB WORKER RUN
+Started from visible Meta Validation controls, using F9 to reveal the hidden tab.
+Requested/completed/accepted 10,000 games in one job;
+invalid 0; NaN/Infinity 0.
+Job wall time 128.36s, including UI interactions
+and manual pause/resume. Cumulative dataset total 10,011 includes the
+small pre-validation sample. Pick total 800.000%; mirror exclusions
+101,590. Mean duration 280.83s;
+actual spend 173.05/side. Worker compute rate is reported
+separately from scheduling and elapsed wall time. UI remains interactive during
+the run; browser validation includes the 375 x 812 viewport.
+Exact report: V15_BROWSER_VALIDATION.json.
+
+BROWSER FUNCTIONAL CHECKS
+Desktop checks verify all 14 cards/40 sortable metric fields, intersecting
+filters, numeric ordering, 182 interactive off-diagonal matchup cells and the
+actual Frost Fang versus Vampire Bats air-targeting explanation, 91 pair rows,
+seven personality columns, archetype slices, confidence alerts, trend windows,
+missing patch values and filtered JSON export with dataset definitions.
+All six subjects export in both CSV and JSON: 14 card rows, 196 matchup
+rows, 91 pairs, ten archetypes, seven personalities and 14 patch-comparison
+rows. CSV widths are consistent; JSON retains the selected dataset identity.
+An actual AI battle completed at 1:58; background simulation paused throughout
+live combat and resumed at its result. Analysis populated 14 team metrics, five
+played-card rows and both timelines. Replay pause/play, all five speeds, ±5s
+seek and event bookmarks work; absent overtime/spell moments are disabled.
+Reload restored the validation dataset and saved replay from disk. RESET
+retained a 10,245-game prior run; the fresh run resumed to 83 games. Disk
+held both archives and the replay. Desktop and 375 x 812 mobile checks show
+no horizontal page overflow; collapsed mobile filters keep reports and matrix
+explanations accessible. Console errors are empty. The isolated test server
+was stopped, temporary tab closed and viewport override restored.
+
+PRESERVATION
+CARD_LIBRARY (14 cards), MATCH, ARENA, GRID, NAV, SIGHT, RETARGET, POCKET and
+AI_STYLES match the V14 baseline exactly, with only line endings normalized.
+All 30 original assets retain identical SHA-256 hashes. Blender generator source
+and .blend project are unchanged. All retained V14 source/assets/documents are
+present. See V15_PRESERVATION_CHECK.json for the full asset hashes.
+The Cycle deck-selection repair changes coherent sampling, not card balance.
+
+MODEL LIMITS
+Headless timing uses 0.20s steps; committed bridge routing and visible-board AI
+approximate rendered A* congestion/separation and live tactical decisions.
+Statistical confidence concerns model observations, not proof of live balance.
+Replays use exact recorded gameplay events and interpolate sampled positions.
+Building prevention and spell Aether value are explicitly defined proxies.
+Missing V12.8/V12.10/exact-V14 telemetry stays unavailable. Older saved evidence
+is never fabricated, pooled into a new fingerprint or relabeled as a new model.
+The existing pinned Three.js CDN dependency remains needed for playing.
+Definitions and complete formulas: V15_META_MATH_AUDIT.txt.

@@ -1,0 +1,17 @@
+Rift Crown Arena V7.4 - Pocket Deployment Hotfix
+
+Fixed:
+- Destroying the left enemy Guard Tower now unlocks a real left-lane enemy-side deployment corridor.
+- Destroying the right enemy Guard Tower now unlocks a real right-lane enemy-side deployment corridor.
+- Pocket deployment starts just beyond the bridge and extends through / slightly behind the destroyed Guard Tower.
+- Left and right lanes unlock independently.
+- Drag/drop and click placement use the exact same validator.
+- The visible pocket overlay now matches the legal placement bounds and is easier to see.
+- Enemy AI uses the same pocket legality rules.
+
+Preserved:
+- V7.3 deployment-triggered retargeting hotfix.
+- Ground melee cannot target air.
+- Tile-based ranges.
+- 9-tile Guard Tower range.
+- Unit facing fix.

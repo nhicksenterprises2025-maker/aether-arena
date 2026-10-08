@@ -1,0 +1,27 @@
+Rift Crown Arena V12.2 - Pocket / Lane / Match Flow Hotfix
+
+Pocket placement
+- Player pocket after taking an enemy Guard Tower is limited to that matching lane only.
+- Pocket Z tiles are restricted to the lane strip from the river edge to the former Guard Tower approach.
+- Pocket no longer extends onto or behind the enemy Core Tower.
+- Enemy AI uses mirrored bounds.
+- Pocket overlay geometry and placement legality use identical bounds.
+
+Lane selection
+- Removed random lane assignment for center placements.
+- A tile center with x < 0 starts left lane.
+- A tile center with x > 0 starts right lane.
+
+Match flow
+- Regulation: 3:00.
+- If any tower has been taken by the end of regulation, the match ends at 3:00.
+- Only 0-0 at 3:00 triggers 2:00 sudden-death overtime.
+- Any tower taken during overtime ends the match immediately.
+- If overtime also expires 0-0, live tower-health tiebreaker begins.
+
+Aether
+- First two regulation minutes: 1x (+1 per 2.8s).
+- Regulation minute 3: 2x (+1 per 1.4s).
+- Overtime minute 1: 2x.
+- Overtime minute 2: 3x (+1 per ~0.933s).
+- Maximum remains 10.

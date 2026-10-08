@@ -1,0 +1,23 @@
+Rift Crown Arena V5 - Gameplay / HUD / Pathing Pass
+
+Implemented:
+- Compact in-match HUD so the player Core/King tower stays visible more often.
+- Removed the in-match hover/inspect stat overlay that was blocking view.
+- Added visible 1x1 arena placement tiles and tile-snapped troop deployment.
+- Improved ground-unit pathing to behave more lane/bridge oriented like Clash Royale.
+- Added soft same-team separation to reduce clumping/jamming.
+- Added 3 enemy AI play styles with per-match style randomization:
+  * Beatdown
+  * Aggro
+  * Control
+- Improved troop health readability:
+  * Thicker health bars
+  * Numeric HP chips above units during combat/damage/movement
+  * Better bar colors and frame contrast
+- Kept tower numeric health plates working through one authoritative update path.
+- Enhanced deployment / combat FX and some unit animation feel.
+- Slightly adjusted battle camera to show more of the player side.
+
+Main edited files:
+- src/game.js
+- styles.css

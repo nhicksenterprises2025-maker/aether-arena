@@ -1,0 +1,34 @@
+Rift Crown Arena V12 - Full Systems / Balance Update
+
+Balance patch applied:
+- Ironclad: 3 cost, 760 HP, 96 damage, 1.00s hit speed, 2.25 move, 1.35 range, 5.2 aggro.
+- Ember Archer: 3 cost, 385 HP, 82 damage, 1.15s hit speed, 2.35 move, 6.6 range, 7.2 aggro.
+- Twin Blades: 2 cost, 262 HP each, 58 damage each, 0.72s hit speed, 3.35 move, 1.2 range, 5 aggro.
+- Boulderback: 5 cost, 1760 HP, 132 damage, 1.55s hit speed, 1.42 move, 1.5 range.
+- Arc Mage: 4 cost, 515 HP, 94 damage, 1.28s hit speed, 2.0 move, 6.1 range, 7 aggro.
+- Rambeast: 4 cost, 900 HP, 146 damage, 1.34s hit speed, 2.75 move, 1.45 range.
+- Sky Manta: 3 cost, 480 HP, 77 damage, 0.92s hit speed, 3.05 move, 3.4 range, 6 aggro.
+- Archer Tower: 3 cost, 850 HP, 75 damage, 1.10s hit speed, 7 tile range.
+- Bullet Burst: 2 cost, 175 troop damage, 2.2 tile radius.
+- Nova Flask: 4 cost, 375 troop damage, 3.25 tile radius.
+- NEW Vampire Bats: 5 cost, 5 flying melee units, 174 HP each, 86 damage each, 1.05s hit speed, 1.95 move, 2 tile range, 6 aggro, Ground + Air.
+
+Systems:
+- Ground navigation rebuilt with radius-aware A* routing.
+- Bridges use explicit entry -> crossing -> exit waypoints.
+- Heavy units such as Boulderback commit to a bridge and cannot bounce between bridge cells mid-crossing.
+- Friendly bridge congestion/separation tuned to queue instead of sideways jamming.
+- Structure-aware obstacle avoidance and stuck-route recovery added.
+- Crown Tower targets are now absolute hard locks as soon as a troop commits to that tower; troop/building deployment cannot redirect it.
+- Hard lock clears only when the locked tower is destroyed or the attacker dies.
+- Placement now snaps to exact centers of 1x1 arena tiles.
+- Troop preview highlights the complete selected tile.
+- Building placement highlights every occupied footprint tile.
+- Pocket deployment uses the same tile-center legality system.
+- 5:00 regulation.
+- 0:00-2:00 elapsed: 1x Aether (+1 / 2.8s).
+- 2:00-4:00 elapsed: 2x Aether (+1 / 1.4s).
+- 4:00-5:00 elapsed: 3x Aether (+1 / ~0.933s).
+- 0-0 regulation result starts a live Crown Tower HP drain tiebreaker; first side to lose a tower loses 0-1 / 1-0.
+- V12 card-art pass applied while retaining the existing 3D model set.
+- Meta simulator/storage updated to include Vampire Bats and V12 balance data.

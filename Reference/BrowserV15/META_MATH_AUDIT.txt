@@ -1,0 +1,44 @@
+RIFT CROWN ARENA V12.3 — META LAB MATH AUDIT
+
+Major problems found in the previous simulator
+1. Match-length/Aether mismatch
+   - Old model used metaUses = 300 / (20 + cost*5.2), effectively estimating full five-minute usage every game.
+   - Live regulation is only 3:00 unless the match is 0-0.
+   - Live regulation Aether before leakage = 5 + 120/2.8 + 60/1.4 = 90.7142857.
+   - The old formula could imply ~8.4 uses for a 3-cost card, which would consume ~25 Aether for that one card alone. Across eight cards this approximated a full five-minute Aether budget even when regulation should have ended.
+
+2. Mirror-card dilution
+   - Decks contain 8 of 11 cards, so the same card appears on both sides frequently.
+   - Old card win rate counted both copies: the winning copy got a win and the losing copy got a loss.
+   - This mechanically drags every card toward 50%, masking real card impact.
+   - V12.3 uses only non-mirror games for card-specific win rate. Mirror matches still count for Pick%, Uses/Game, damage and other telemetry.
+
+3. Early-sample noise
+   - Old table reported raw win rate immediately and treated N>=5 as enough to name a top card.
+   - V12.3 uses a neutral 24-game Bayesian prior for ADJ WIN% and a Wilson 95% confidence interval.
+   - Results under 30 non-mirror samples are marked uncertain.
+
+4. Self-reinforcing draft bias
+   - Old metaStyleFit included learned=(observedWinRate-50), so random early win-rate noise changed future card selection frequency.
+   - This feedback term is removed.
+   - Archetype preference remains, but it is blended toward uniform exploration so every card receives samples.
+
+5. Incomparable value scales
+   - Old metaCardProfile could generate values around ~96 for Ironclad troop pressure, ~600 for Nova Flask, and ~1000 for Archer Tower before usage multipliers.
+   - These were added into one score without normalization, allowing building/spell formulas to dominate for mathematical reasons unrelated to live play.
+   - V12.3 estimates comparable per-use outputs and then applies the actual Aether-limited usage count.
+
+6. Matchup blindness
+   - V12.3 now accounts for Ground/Air target restrictions, swarm unit count, splash, spell radius/damage vs opposing HP, defensive-building distraction against tower-only cards, range first-strike pressure, and archetype-specific spending behavior.
+
+V12.3 validation sanity run
+- 10,000 analytical matches
+- Pick% total across all cards: exactly 800% (8 slots per deck)
+- Non-mirror sample range: ~3,800–4,100 per card
+- Adjusted win-rate span in that run: ~42.6% to ~64.2%
+- Regulation Aether budget: 90.7142857
+- No NaN/non-finite outputs
+- Per-card Uses/Game sanity bounds passed (1 to 7; normal results cluster around 3–4)
+
+Interpretation
+The Meta Lab is still an analytical simulator, not telemetry from 100 fully rendered live matches per minute. V12.3 makes the analytical estimate internally consistent with the live card stats, Aether economy, deck size, targeting rules and match structure, and adds statistical uncertainty so unstable samples are visible instead of presented as exact truth.

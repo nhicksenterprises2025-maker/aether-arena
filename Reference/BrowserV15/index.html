@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="theme-color" content="#070b15" />
+  <title>Rift Crown Arena — V15</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body class="home-active">
+  <div id="game-shell">
+    <canvas id="game"></canvas>
+    <div class="screen-vignette"></div>
+
+    <section id="home-screen" aria-label="Rift Crown Arena home screen">
+      <header class="home-topbar">
+        <div class="home-brand">
+          <img src="./assets/ui/rift_mark.svg" alt="" />
+          <div>
+            <span>RIFT CROWN</span>
+            <strong>ARENA</strong>
+          </div>
+        </div>
+        <div class="home-season">
+          <span>SEASON 01</span>
+          <strong>THE FIRST FRACTURE</strong>
+        </div>
+        <div class="home-wallet">
+          <div class="wallet-chip"><i class="gem purple"></i><span id="wallet-gems">1,250</span></div>
+          <div class="wallet-chip"><i class="gem gold"></i><span id="wallet-gold">8,420</span></div>
+          <button id="home-help" class="icon-button" aria-label="How to play">?</button>
+        </div>
+      </header>
+
+      <main class="home-content">
+        <aside class="profile-panel glass-panel">
+          <div class="profile-banner">
+            <div class="profile-crest"><img src="./assets/ui/rift_mark.svg" alt="" /></div>
+            <div>
+              <small>WARDEN PROFILE</small>
+              <h2 id="profile-name">RIFTBOUND</h2>
+            </div>
+          </div>
+          <div class="rank-row">
+            <div><span>RANK</span><strong>Bronze III</strong></div>
+            <div class="rank-medal">III</div>
+          </div>
+          <div class="profile-stats">
+            <div><strong id="profile-wins">0</strong><span>WINS</span></div>
+            <div><strong id="profile-crowns">0</strong><span>CROWNS</span></div>
+            <div><strong id="profile-cards">10</strong><span>CARDS</span></div>
+          </div>
+          <button id="profile-edit" class="profile-edit-button">EDIT LOCAL PROFILE</button>
+          <div class="quest-card">
+            <span class="quest-kicker">DAILY RIFT</span>
+            <strong>Destroy 4 Guard Towers</strong>
+            <div class="quest-progress"><i style="width:0%"></i></div>
+            <small>0 / 4</small>
+          </div>
+        </aside>
+
+        <section class="battle-panel">
+          <div class="mode-card">
+            <div class="mode-art">
+              <div class="mode-rift"></div>
+              <div class="mode-tower tower-left"></div>
+              <div class="mode-tower tower-right"></div>
+              <div class="mode-particles"></div>
+            </div>
+            <div class="mode-copy">
+              <span class="mode-label">FEATURED MODE</span>
+              <h1>CROWNFALL<br/>1V1</h1>
+              <p>Break through two lanes, claim Guard Towers, then shatter the enemy Core.</p>
+              <div class="mode-tags"><span>3 MIN + 2 MIN OT</span><span>8 CARD DECK</span><span>TACTICAL AI</span></div>
+            </div>
+          </div>
+          <button id="home-battle" class="battle-button">
+            <span class="battle-glow"></span>
+            <span class="sword-mark">⚔</span>
+            <span><small>ENTER THE RIFT</small><strong>BATTLE</strong></span>
+          </button>
+          <div class="mode-footer"><span>3:00 regulation</span><i></i><span>0–0 unlocks 2:00 OT</span><i></i><span>3× Aether final OT minute</span></div>
+          <div id="home-battle-deck-profile" class="home-deck-profile home-battle-deck-profile" aria-label="Your deck profile"></div>
+        </section>
+
+        <aside class="deck-panel glass-panel">
+          <div class="panel-heading">
+            <div><small>LOADOUT</small><h3>BATTLE DECK</h3></div>
+            <span class="deck-score">AVG <strong id="home-avg-cost">3.5</strong></span>
+          </div>
+          <div id="home-deck-grid" class="home-deck-grid"></div>
+          <div id="home-deck-profile" class="home-deck-profile" aria-label="Your deck profile"></div>
+          <div class="deck-panel-actions"><button id="open-loadout" class="secondary-button primary-loadout">EDIT LOADOUT</button><button id="open-deck" class="secondary-button">VIEW CARD DETAILS</button></div>
+          <div class="tip-box"><span>TACTICAL NOTE</span><p>Build pushes behind Boulderback or Rambeast, then layer ranged support once the tank commits.</p></div>
+        </aside>
+      </main>
+
+      <nav class="home-nav" aria-label="Main menu">
+        <button class="nav-item active"><span>⚔</span><strong>BATTLE</strong></button>
+        <button class="nav-item" data-panel="deck-modal"><span>▦</span><strong>CARDS</strong></button>
+        <button class="nav-item" data-panel="loadout-modal"><span>◆</span><strong>LOADOUT</strong></button>
+        <button class="nav-item" data-panel="meta-modal"><span>▤</span><strong>META</strong></button>
+        <button class="nav-item" data-panel="replay-history-modal"><span>▷</span><strong>REPLAYS</strong></button>
+        <button class="nav-item" data-panel="patch-notes-modal"><span>✦</span><strong>PATCH NOTES</strong></button>
+        <button class="nav-item" id="training-btn"><span>◎</span><strong>TRAINING</strong></button>
+      </nav>
+      <div class="home-version">PRIVATE LAB BUILD • V15.0 META LAB 2.0</div>
+    </section>
+
+    <header id="top-hud" class="battle-ui">
+      <div class="score-block">
+        <div class="score blue"><span class="crown">◆</span><span id="player-crowns">0</span></div>
+        <div class="timer-stack"><small>REGULATION</small><div id="timer">3:00</div></div>
+        <div class="score red"><span id="enemy-crowns">0</span><span class="crown">◆</span></div>
+      </div>
+    </header>
+
+    <button id="dev-toggle" class="dev-toggle battle-ui" type="button">DEV</button>
+    <aside id="dev-panel" class="dev-panel battle-ui hidden" aria-label="Developer sandbox">
+      <div class="dev-panel-head"><div><small>PRIVATE SANDBOX</small><strong>DEVELOPER LAB</strong></div><button id="dev-close" type="button">×</button></div>
+      <div class="dev-status" id="dev-status">AI ready • 1× speed</div>
+
+      <section class="dev-section">
+        <h4>TIME</h4>
+        <div class="dev-speed-row">
+          <button data-dev-speed="0">PAUSE</button><button data-dev-speed="0.25">¼×</button><button data-dev-speed="0.5">½×</button><button data-dev-speed="1" class="active">1×</button><button data-dev-speed="2">2×</button><button data-dev-speed="4">4×</button>
+        </div>
+      </section>
+
+      <section class="dev-section">
+        <h4>AETHER</h4>
+        <div class="dev-dual">
+          <div><span>YOU</span><div class="dev-button-row"><button data-dev-aether="player:-1">−1</button><button data-dev-aether="player:1">+1</button><button data-dev-aether="player:10">MAX</button></div></div>
+          <div><span>AI</span><div class="dev-button-row"><button data-dev-aether="enemy:-1">−1</button><button data-dev-aether="enemy:1">+1</button><button data-dev-aether="enemy:10">MAX</button></div></div>
+        </div>
+      </section>
+
+      <section class="dev-section">
+        <h4>SPAWN CARD</h4>
+        <div class="dev-form-row"><select id="dev-spawn-team"><option value="player">Friendly</option><option value="enemy">Enemy</option></select><select id="dev-spawn-card"></select></div>
+        <button id="dev-arm-spawn" class="dev-wide" type="button">ARM SPAWN • CLICK A TILE</button>
+      </section>
+
+      <section class="dev-section">
+        <h4>AI BRAIN</h4>
+        <div class="dev-form-row"><select id="dev-ai-style"></select><button id="dev-ai-toggle" type="button">AI ON</button></div>
+        <div id="dev-ai-readout" class="dev-readout">Waiting for match…</div>
+      </section>
+
+      <section class="dev-section">
+        <h4>DECK MATCHUP · PRIVATE</h4>
+        <div id="dev-matchup-report" class="dev-readout">Enter a battle to inspect the analytical matchup.</div>
+      </section>
+
+      <section class="dev-section">
+        <h4>TOWER HP</h4>
+        <div class="dev-form-row"><select id="dev-tower-select"></select><input id="dev-tower-hp" type="number" min="0" max="5000" step="1" value="2250"></div>
+        <button id="dev-apply-tower" class="dev-wide" type="button">APPLY HP</button>
+      </section>
+
+      <section class="dev-section">
+        <h4>DEBUG OVERLAYS</h4>
+        <div class="dev-check-grid">
+          <label><input id="dev-show-paths" type="checkbox"> Paths</label>
+          <label><input id="dev-show-sight" type="checkbox"> Sight</label>
+          <label><input id="dev-show-ranges" type="checkbox"> Attack Range</label>
+          <label><input id="dev-show-targets" type="checkbox"> Targets / Locks</label>
+          <label><input id="dev-show-tiles" type="checkbox"> Tile Coordinates</label>
+        </div>
+      </section>
+
+      <section class="dev-section dev-danger">
+        <button id="dev-meta-validation" class="dev-wide" type="button">META VALIDATION</button>
+        <button id="dev-clear-field" class="dev-wide" type="button">CLEAR TROOPS + BUILDINGS</button>
+      </section>
+    </aside>
+
+    <div id="double-aether" class="announcement hidden battle-ui">AETHER SURGE</div>
+    <div id="placement-hint" class="battle-ui hidden" aria-hidden="true"></div>
+
+    <section id="bottom-hud" class="battle-ui">
+      <div id="selected-card-panel" class="card-inspector hidden">
+        <div class="inspector-head"><span class="selection-kicker">CARD STATS</span><strong id="selected-name"></strong></div>
+        <div id="selected-desc"></div><div id="selected-stats" class="selected-stats"></div>
+      </div>
+
+      <div id="hand-wrap">
+        <div id="hand"></div>
+        <div id="next-card">
+          <div class="next-label">NEXT</div>
+          <div id="next-card-mini"></div>
+        </div>
+      </div>
+
+      <div id="aether-panel">
+        <div class="aether-label"><span>AETHER</span><strong id="aether-value">5.0</strong></div>
+        <div class="aether-track"><div id="aether-fill"></div><div class="aether-ticks"></div></div>
+      </div>
+    </section>
+
+    <div id="toast"></div>
+    <div id="drag-card-ghost" class="drag-card-ghost hidden" aria-hidden="true"></div>
+
+    <div id="help-modal" class="modal hidden">
+      <div class="modal-card">
+        <button class="close-modal" data-close="help-modal">×</button>
+        <span class="modal-kicker">FIELD MANUAL</span>
+        <h2>How to play</h2>
+        <p>Destroy enemy Guard Towers for crowns. Destroy the enemy Core Tower to win instantly.</p>
+        <ul>
+          <li>Drag a card onto your legal deployment tiles, or select it and click to deploy.</li>
+          <li>Each arena square is 1 tile. Guard Towers attack out to exactly 10 tiles.</li>
+          <li>Card attack range, aggro range, splash radius and spell radius are measured in arena tiles.</li>
+          <li>Destroy the enemy left or right Guard Tower to unlock only the matching lane pocket between the river and the former Guard Tower approach. The pocket never reaches the enemy Core Tower.</li>
+          <li>Archer Tower is a 4-Aether defensive building. Vampire Bats are a 5-unit flying swarm. Frost Fang slows ground targets, Storm Raven is a flying structure-only win condition, and Meteor Shards is a large damage-over-time spell.</li>
+          <li>Core Towers stay dormant and do not fire until one of their own Guard Towers is destroyed.</li>
+          <li>Ground troops route through their lane bridge; flying troops cross the river directly.</li>
+          <li>Aether is 1× for the first two minutes, 2× for regulation minute three and overtime minute one, then 3× for the final overtime minute.</li>
+          <li>Regulation lasts 3:00. Only a 0–0 score unlocks 2:00 sudden-death overtime. If OT also ends 0–0, the live tower-HP tiebreaker begins.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="deck-modal" class="modal hidden">
+      <div class="modal-card deck-modal-card">
+        <button class="close-modal" data-close="deck-modal">×</button>
+        <span class="modal-kicker">BATTLE DECK</span>
+        <h2>All Riftbound Cards</h2>
+        <div id="deck-detail-grid" class="deck-detail-grid"></div>
+      </div>
+    </div>
+
+
+
+    <div id="loadout-modal" class="modal hidden">
+      <div class="modal-card loadout-modal-card">
+        <button class="close-modal" data-close="loadout-modal">×</button>
+        <div class="loadout-header">
+          <div>
+            <span class="modal-kicker">DECK WORKSHOP</span>
+            <h2>Build Your Battle Deck</h2>
+            <p>Choose 8 unique cards. Save a named loadout or take the current draft straight into training.</p>
+          </div>
+          <div class="loadout-summary">
+            <span>DECK <strong id="loadout-count">8 / 8</strong></span>
+            <span>AVG AETHER <strong id="loadout-avg">3.5</strong></span>
+          </div>
+        </div>
+        <div class="loadout-preset-bar">
+          <div id="loadout-presets" class="loadout-presets" role="group" aria-label="Saved deck presets"></div>
+          <label class="loadout-name-label">DECK NAME <input id="loadout-preset-name" type="text" maxlength="24" autocomplete="off" spellcheck="false" /></label>
+        </div>
+        <div class="loadout-workspace">
+          <div class="loadout-cards-column">
+            <section class="loadout-section">
+              <div class="loadout-section-title"><strong>CURRENT DRAFT</strong><span>Click a slot to remove that card</span></div>
+              <div id="loadout-slots" class="loadout-slots"></div>
+            </section>
+            <section class="loadout-section card-pool-section">
+              <div class="loadout-section-title"><strong>ALL 14 CARDS</strong><span>Click to add / remove · inspect to compare</span></div>
+              <div id="loadout-card-pool" class="loadout-card-pool"></div>
+            </section>
+            <section id="loadout-card-inspection" class="loadout-inspection hidden" aria-label="Selected card intelligence"></section>
+          </div>
+          <aside class="loadout-strategy-column" aria-label="Live deck analysis">
+            <div id="loadout-analysis" class="loadout-analysis"></div>
+            <div id="loadout-synergies" class="loadout-synergies"></div>
+          </aside>
+        </div>
+        <div class="loadout-footer">
+          <div id="loadout-feedback" class="loadout-feedback" role="status" aria-live="polite"></div>
+          <div class="loadout-actions">
+            <button id="loadout-reset" class="secondary-button">RESET DEFAULT</button>
+            <button id="loadout-test" class="secondary-button loadout-test" type="button">◎ TEST DECK</button>
+            <button id="loadout-save" class="battle-button loadout-save"><span><small>SAVE + SET BATTLE DECK</small><strong>SAVE LOADOUT</strong></span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="meta-modal" class="modal hidden">
+      <div class="modal-card meta-modal-card">
+        <button class="close-modal" data-close="meta-modal">×</button>
+        <div class="meta-header">
+          <div>
+            <span class="modal-kicker">BALANCE LAB</span>
+            <h2>Meta Lab <span>2.0</span></h2>
+            <p>Study the current card pool, deck pairs and bot strategies. Live card rules drive the simulations; sampled results retain their confidence intervals.</p>
+          </div>
+          <div class="meta-summary">
+            <div><span>SIM GAMES</span><strong id="meta-games">0</strong></div>
+            <div><span>RATE</span><strong id="meta-rate">100/min</strong></div>
+            <div><span>TOP ADJ WIN%</span><strong id="meta-top">—</strong></div>
+          </div>
+        </div>
+        <div class="meta-controls">
+          <label>SIM SPEED <select id="meta-speed"><option value="100">100/min</option><option value="250">250/min</option><option value="500">500/min</option><option value="max">MAX SAFE</option></select></label>
+          <button id="meta-pause" class="secondary-button">PAUSE SIM</button>
+          <button id="meta-reset" class="secondary-button danger-soft">RESET DATA</button>
+          <span id="meta-sim-status" class="meta-run-status" role="status">Preparing simulation…</span>
+          <label class="meta-export-subject">EXPORT <select id="meta-export-subject"><option value="cards">Card Meta</option><option value="matchups">Matchups</option><option value="synergies">Synergies</option><option value="archetypes">Deck Archetypes</option><option value="personalities">AI Personalities</option><option value="patchComparisons">Patch Comparisons</option></select></label>
+          <label>FORMAT <select id="meta-export-format"><option value="csv">CSV</option><option value="json">JSON</option></select></label>
+          <button id="meta-export" class="secondary-button">EXPORT</button>
+        </div>
+        <nav class="meta-tabs" aria-label="Meta Lab sections" role="tablist">
+          <button data-meta-tab="cards" class="active" role="tab" aria-selected="true">CARDS</button><button data-meta-tab="matchups" role="tab" aria-selected="false">MATCHUPS</button><button data-meta-tab="synergies" role="tab" aria-selected="false">SYNERGIES</button><button data-meta-tab="archetypes" role="tab" aria-selected="false">ARCHETYPES</button><button data-meta-tab="personalities" role="tab" aria-selected="false">AI STYLES</button><button data-meta-tab="alerts" role="tab" aria-selected="false">SIGNALS</button><button data-meta-tab="history" role="tab" aria-selected="false">TRENDS</button><button data-meta-tab="patches" role="tab" aria-selected="false">PATCHES</button><button data-meta-tab="validation" class="hidden" role="tab" aria-selected="false">VALIDATION</button>
+        </nav>
+        <details class="meta-filter-disclosure" id="meta-filter-disclosure" open><summary>FILTERS <span id="meta-filter-summary">Card pool and sample slice</span></summary><div class="meta-filter-bar">
+          <label>TYPE <select id="meta-filter"><option value="all">All cards</option><option value="Troop">Troops</option><option value="Spell">Spells</option><option value="Building">Buildings</option></select></label>
+          <label>COST <select id="meta-cost"><option value="all">Any Aether</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option></select></label>
+          <label>TRAIT <select id="meta-trait"><option value="all">Any trait</option><option value="air">Air</option><option value="ground">Ground</option><option value="winCondition">Win condition</option><option value="splash">Splash / area</option><option value="swarm">Swarm</option></select></label>
+          <label>AI STYLE <select id="meta-style"><option value="all">All styles</option><option value="beatdown">Beatdown</option><option value="aggro">Aggro</option><option value="control">Control</option><option value="cycle">Cycle</option><option value="split">Split Lane</option><option value="spell_cycle">Spell Cycle</option><option value="counter">Counter Push</option></select></label>
+          <label>ARCHETYPE <select id="meta-archetype"><option value="all">All decks</option><option>Beatdown</option><option>Control</option><option>Cycle</option><option>Bridge Pressure</option><option>Split Lane</option><option>Air Pressure</option><option>Siege</option><option>Spell Control</option><option>Defensive</option><option>Hybrid</option></select></label>
+          <label>PATCH <select id="meta-version"><option value="current">Current dataset</option></select></label>
+          <label>MIN CLEAN N <input id="meta-min-sample" type="number" min="0" step="10" value="0" inputmode="numeric" /></label>
+          <label class="meta-search-label">SEARCH <input id="meta-search" type="search" placeholder="Card name…" autocomplete="off" /></label>
+        </div></details>
+        <div id="meta-content" class="meta-content" role="tabpanel" aria-label="Card analytics"></div>
+        <div class="meta-footnote" id="meta-stat-note">Adjusted card win rate excludes mirrors and shrinks toward 50% with a 24-game neutral prior. Raw win rate remains separate. 95% CI describes clean samples; N is always shown. Card pick-rate totals approach 800% for eight-card decks. Simulation results are analytical estimates.</div>
+      </div>
+    </div>
+
+    <div id="patch-notes-modal" class="modal hidden">
+      <div class="modal-card patch-notes-card">
+        <button class="close-modal" data-close="patch-notes-modal">×</button>
+        <div class="patch-notes-header">
+          <div>
+            <span class="modal-kicker">LIVE CHANGELOG</span>
+            <h2>Patch Notes</h2>
+            <p>Full gameplay and balance history for the current build. Card changes show the previous value and the live value now used in battle.</p>
+          </div>
+          <div class="patch-version-badge"><small>CURRENT BUILD</small><strong>V15.0</strong></div>
+        </div>
+
+        <section class="patch-section hotfix">
+          <div class="patch-section-title"><span>V15.0</span><div><h3>Meta Lab 2.0</h3><small>A balance laboratory and match review desk built around the existing game. Live card balance is preserved.</small></div></div>
+          <div class="patch-grid">
+            <article><strong>Responsive Simulation</strong><p>Choose 100, 250 or 500 games per minute, or let MAX SAFE measure the available budget. Background simulation pauses during a real battle.</p></article>
+            <article><strong>Card Telemetry + Matrices</strong><p>Inspect economy, damage, survival, timing and special mechanics. Compare targeting matchups and sampled pair synergy with clean sample sizes and uncertainty.</p></article>
+            <article><strong>Strategy + History</strong><p>Compare all ten deck archetypes and seven AI styles, inspect confidence-gated balance signals, track trends and retain separate datasets by balance version.</p></article>
+            <article><strong>Battle Replays</strong><p>Review recorded match events at multiple speeds, seek through the timeline and jump to important moments.</p></article>
+            <article><strong>Match Analysis</strong><p>Review spending, leaked Aether, damage, trades, card contributions and tower health after a battle.</p></article>
+            <article><strong>Exports + Validation</strong><p>Export six analytical datasets as CSV or JSON. Developer Lab provides a 10,000-game validation run with economy, pick-rate and numerical checks.</p></article>
+          </div>
+        </section>
+
+        <section class="patch-section hotfix">
+          <div class="patch-section-title"><span>V14.0</span><div><h3>Deck Ecosystem &amp; Strategic Depth</h3><small>A deeper workshop for the existing 14 cards. Live card balance and match rules remain unchanged.</small></div></div>
+          <div class="patch-grid">
+            <article><strong>Advanced Deck Workshop</strong><p>Compare the full card pool, eight deck slots, cost curve, unit and targeting coverage, average HP, deployment DPS and attack range. Composition updates the profile, strengths and weaknesses as you edit.</p></article>
+            <article><strong>Five Named Presets</strong><p>Save five separate eight-card loadouts with custom names. Saved presets and the active battle deck persist with your existing local profile.</p></article>
+            <article><strong>Analytical Synergy</strong><p>Every deck pair receives a 0–100 score with reasons from tank support, range, spells, anti-air, splash, status control and cost coverage.</p></article>
+            <article><strong>Card Intelligence</strong><p>Inspect each card's role, suggested uses, best and weakest matchups, common partners, best defensive answer and offensive partner alongside its exact live stats.</p></article>
+            <article><strong>Strategy-Aware AI Decks</strong><p>All seven personalities build coherent decks, then use their own composition, available answers, win conditions and rotation in battle. Player Aether and hand remain estimated from observed plays.</p></article>
+            <article><strong>Test + Private Matchup</strong><p>Test the current draft immediately in training. Your home screen shows your deck profile; projected matchup, threats, answers and lane guidance are confined to Developer Lab.</p></article>
+          </div>
+        </section>
+
+
+        <section class="patch-section hotfix">
+          <div class="patch-section-title"><span>V13.0</span><div><h3>Battle Intelligence</h3><small>Smarter live AI decisions plus a private developer sandbox for testing the game your way.</small></div></div>
+          <div class="patch-grid">
+            <article><strong>7 AI Personalities</strong><p>Beatdown, Aggro, Control, Cycle, Split Lane, Spell Cycle and Counter Push now use different Aether thresholds, defense bias, risk tolerance and pressure patterns.</p></article>
+            <article><strong>Aether Estimation</strong><p>The AI estimates your Aether from observed plays and regeneration instead of reading your exact value, then uses that estimate to decide when an opposite-lane punish is safe.</p></article>
+            <article><strong>Cycle Awareness</strong><p>Recently observed player cards are tracked so the AI can estimate when known counters have cycled back before committing a new push anchor.</p></article>
+            <article><strong>Damage Trading</strong><p>Aggressive brains can accept light tower damage if their own live pressure is significantly more dangerous rather than defending automatically.</p></article>
+            <article><strong>Smarter Defense</strong><p>Defense now scores card cost, air coverage, splash, tank-killing value, building pulls and current threat composition to reduce over-defense.</p></article>
+            <article><strong>Developer Lab</strong><p>Pause, ¼×/½×/1×/2×/4× simulation, edit Aether, spawn any card, set tower HP, toggle AI, switch AI style and clear the battlefield.</p></article>
+            <article><strong>Path Debugger</strong><p>Optional overlays show A* paths, attack ranges, directional sight, current targets, hard locks and tile coordinates without cluttering normal play.</p></article>
+            <article><strong>Live AI Readout</strong><p>The panel shows the current AI decision, reasoning, estimated player Aether, phase and recently observed card cycle.</p></article>
+            <article><strong>Balance Preserved</strong><p>V12.10 card stats, freeze protections, match flow and placement rules remain unchanged underneath the new intelligence layer.</p></article>
+          </div>
+        </section>
+
+        <section class="patch-section balance-showcase hotfix current-balance">
+          <div class="patch-section-title"><span>V12.10</span><div><h3>Freeze Fix + Balance Patch</h3><small>Runtime stability hotfix plus live stat changes. Only changed cards are shown.</small></div></div>
+          <div class="patch-balance-summary"><div><strong>6 cards changed</strong><span>Boulderback • Arc Mage • Rambeast • Frost Fang • Storm Raven • Meteor Shards</span></div><small>The Meta Lab dataset resets for this balance version so old samples do not contaminate the new live numbers.</small></div>
+          <div class="balance-card-list">
+            <article class="balance-card nerf"><div class="balance-card-head"><div><h4>Boulderback</h4><small>Siege Tank / Ground Siege</small></div><span class="change-pill nerf">NERF</span></div><div class="stat-change-grid"><div class="stat-change nerf"><span>Damage</span><strong>129 → 118</strong><em>-11 (-8.5%)</em></div><div class="stat-change nerf"><span>Hit Speed</span><strong>1.55s → 2.00s</strong><em>29.0% slower</em></div></div></article>
+            <article class="balance-card buff"><div class="balance-card-head"><div><h4>Arc Mage</h4><small>Splash Ranged / Ground Ranged</small></div><span class="change-pill buff">BUFF</span></div><div class="stat-change-grid"><div class="stat-change buff"><span>Damage</span><strong>101 → 120</strong><em>+19 (+18.8%)</em></div><div class="stat-change buff"><span>Hit Speed</span><strong>1.15s → 1.00s</strong><em>13.0% faster</em></div><div class="stat-change buff"><span>Projectile Speed</span><strong>14 → 17 tiles/s</strong><em>+21.4%</em></div><div class="stat-change buff"><span>Splash Radius</span><strong>2.2 → 2.5 tiles</strong><em>+0.3 tile</em></div></div></article>
+            <article class="balance-card nerf"><div class="balance-card-head"><div><h4>Rambeast</h4><small>Charger / Ground Charger</small></div><span class="change-pill nerf">NERF</span></div><div class="stat-change-grid"><div class="stat-change nerf"><span>HP</span><strong>900 → 880</strong><em>-20 (-2.2%)</em></div><div class="stat-change nerf"><span>Damage</span><strong>146 → 140</strong><em>-6 (-4.1%)</em></div><div class="stat-change nerf"><span>Hit Speed</span><strong>1.34s → 1.40s</strong><em>4.5% slower</em></div><div class="stat-change"><span>Charge Damage</span><strong>255</strong><em>Unchanged</em></div></div></article>
+            <article class="balance-card buff"><div class="balance-card-head"><div><h4>Frost Fang</h4><small>Frost Ground Melee</small></div><span class="change-pill buff">BUFF</span></div><div class="stat-change-grid"><div class="stat-change buff"><span>HP</span><strong>742 → 1155</strong><em>+413 (+55.7%)</em></div><div class="stat-change buff"><span>Move Speed</span><strong>2.0 → 2.5 tiles/s</strong><em>+25%</em></div></div></article>
+            <article class="balance-card nerf"><div class="balance-card-head"><div><h4>Storm Raven</h4><small>Flying Ranged Win Condition</small></div><span class="change-pill nerf">NERF</span></div><div class="stat-change-grid"><div class="stat-change nerf"><span>HP</span><strong>1450 → 1337</strong><em>-113 (-7.8%)</em></div><div class="stat-change nerf"><span>Damage</span><strong>282 → 251</strong><em>-31 (-11.0%)</em></div><div class="stat-change nerf"><span>Hit Speed</span><strong>1.30s → 1.70s</strong><em>30.8% slower</em></div><div class="stat-change nerf"><span>Range</span><strong>5.0 → 4.3 tiles</strong><em>-0.7 tile</em></div></div></article>
+            <article class="balance-card buff"><div class="balance-card-head"><div><h4>Meteor Shards</h4><small>Damage-over-Time Spell</small></div><span class="change-pill buff">BUFF</span></div><div class="stat-change-grid"><div class="stat-change buff"><span>Initial Damage</span><strong>151 → 262</strong><em>+111 (+73.5%)</em></div><div class="stat-change buff"><span>DoT</span><strong>6/s → 40/s</strong><em>5-second zone</em></div></div></article>
+          </div>
+          <div class="patch-grid" style="margin-top:12px"><article><strong>Freeze Crash Fixed</strong><p>Frost Fang's ambient breath animation referenced an uninitialized forward vector and could stop the requestAnimationFrame loop. Direction is now derived safely from its target/movement.</p></article><article><strong>Frame Recovery Guard</strong><p>The next animation frame is scheduled before simulation work, so an unexpected recoverable runtime error no longer permanently kills the match loop.</p></article><article><strong>Performance Protection</strong><p>The Meta simulator pauses during live matches and A* bridge congestion is cached per route calculation instead of rescanning every unit at every explored path node.</p></article></div>
+        </section>
+
+        <section class="patch-section balance-showcase prior-balance">
+          <div class="patch-section-title"><span>V12.8</span><div><h3>Frost / Storm / Meteor Update</h3><small>Three new cards, status-effect simulation support, detailed new models/art, and cleaner deaths.</small></div></div>
+          <div class="patch-balance-summary">
+            <div><strong>3 new cards</strong><span>Frost Fang • Storm Raven • Meteor Shards</span></div>
+            <small>Meta data was reset so old simulations do not contaminate the new 14-card pool.</small>
+          </div>
+          <div class="balance-card-list">
+            <article class="balance-card new-card"><div class="balance-card-head"><div><h4>Frost Fang</h4><small>Frost Ground Melee</small></div><span class="change-pill new">NEW CARD</span></div><div class="new-card-sheet"><div><span>Cost</span><strong>5</strong></div><div><span>HP</span><strong>742</strong></div><div><span>Damage</span><strong>72</strong></div><div><span>Hit Speed</span><strong>0.80s</strong></div><div><span>Move</span><strong>2.0 tiles/s</strong></div><div><span>Range</span><strong>1.1 tiles</strong></div><div><span>Targets</span><strong>Ground</strong></div><div><span>Special</span><strong>30% slow</strong></div></div></article>
+            <article class="balance-card new-card"><div class="balance-card-head"><div><h4>Storm Raven</h4><small>Flying Ranged Win Condition</small></div><span class="change-pill new">NEW CARD</span></div><div class="new-card-sheet"><div><span>Cost</span><strong>6</strong></div><div><span>HP</span><strong>1450</strong></div><div><span>Damage</span><strong>282</strong></div><div><span>Hit Speed</span><strong>1.30s</strong></div><div><span>Move</span><strong>1.18 tiles/s</strong></div><div><span>Range</span><strong>5 tiles</strong></div><div><span>Targets</span><strong>Structures</strong></div><div><span>Storm Ring</span><strong>82 dmg / 3s</strong></div></div></article>
+            <article class="balance-card new-card"><div class="balance-card-head"><div><h4>Meteor Shards</h4><small>Damage Over Time Spell</small></div><span class="change-pill new">NEW CARD</span></div><div class="new-card-sheet"><div><span>Cost</span><strong>5</strong></div><div><span>Initial</span><strong>151</strong></div><div><span>DoT</span><strong>6/s × 5s</strong></div><div><span>Max / target</span><strong>181</strong></div><div><span>Radius</span><strong>4.5 tiles</strong></div><div><span>Targets</span><strong>Ground + Air</strong></div></div></article>
+          </div>
+          <div class="patch-grid" style="margin-top:12px"><article><strong>No Gravestones</strong><p>Troop deaths now clean up after the short death FX window. No persistent gravestone/corpse marker is created.</p></article><article><strong>Status FX</strong><p>Frost Fang adds ice-hit/footstep FX. Storm Raven has animated wings, lightning projectiles, a visible electric ring pulse and stun sparks. Meteor Shards uses falling shard impacts plus a persistent danger-zone effect.</p></article><article><strong>Meta Lab Updated</strong><p>The analytical model now accounts for Frost slow control, Storm Raven aura DPS/stun uptime and Meteor Shards expected dwell-time damage instead of treating them like plain stat sticks.</p></article></div>
+        </section>
+
+        <section class="patch-section balance-showcase prior-balance">
+          <div class="patch-section-title"><span>V12.7</span><div><h3>Balance Patch</h3><small>Current live card balance. Only cards changed from V12.6 are shown.</small></div></div>
+          <div class="patch-balance-summary">
+            <div><strong>6 cards adjusted</strong><span>Ironclad • Ember Archer • Boulderback • Arc Mage • Rambeast • Archer Tower</span></div>
+            <small>DPS shown in card details is calculated from live Damage ÷ Hit Speed, so combat and UI always match.</small>
+          </div>
+          <div class="balance-card-list">
+            <article class="balance-card buff">
+              <div class="balance-card-head"><div><h4>Ironclad</h4><small>Fighter / Ground Melee</small></div><span class="change-pill buff">BUFF</span></div>
+              <div class="stat-change-grid one-col">
+                <div class="stat-change buff"><span>HP</span><strong>760 → 840</strong><em>+80 (+10.5%)</em></div>
+              </div>
+            </article>
+            <article class="balance-card mixed">
+              <div class="balance-card-head"><div><h4>Ember Archer</h4><small>Ranged / Ground Ranged</small></div><span class="change-pill mixed">REWORK</span></div>
+              <div class="stat-change-grid">
+                <div class="stat-change buff"><span>HP</span><strong>385 → 423</strong><em>+38 (+9.9%)</em></div>
+                <div class="stat-change buff"><span>Damage</span><strong>82 → 152</strong><em>+70 (+85.4%)</em></div>
+                <div class="stat-change nerf"><span>Hit Speed</span><strong>1.15s → 1.55s</strong><em>34.8% slower</em></div>
+                <div class="stat-change nerf"><span>Range</span><strong>6.6 → 6.0 tiles</strong><em>-0.6 tile</em></div>
+                <div class="stat-change buff"><span>Actual DPS</span><strong>71.3 → 98.1</strong><em>+37.5%</em></div>
+              </div>
+            </article>
+            <article class="balance-card nerf">
+              <div class="balance-card-head"><div><h4>Boulderback</h4><small>Siege Tank / Ground Siege</small></div><span class="change-pill nerf">NERF</span></div>
+              <div class="stat-change-grid">
+                <div class="stat-change nerf"><span>HP</span><strong>1760 → 1620</strong><em>-140 (-8.0%)</em></div>
+                <div class="stat-change nerf"><span>Damage</span><strong>132 → 129</strong><em>-3 (-2.3%)</em></div>
+                <div class="stat-change nerf"><span>Move Speed</span><strong>1.42 → 1.30</strong><em>-8.5%</em></div>
+                <div class="stat-change nerf"><span>Actual DPS</span><strong>85.2 → 83.2</strong><em>-2.3%</em></div>
+              </div>
+            </article>
+            <article class="balance-card buff">
+              <div class="balance-card-head"><div><h4>Arc Mage</h4><small>Splash Ranged / Ground Ranged</small></div><span class="change-pill buff">BUFF</span></div>
+              <div class="stat-change-grid">
+                <div class="stat-change buff"><span>HP</span><strong>515 → 547</strong><em>+32 (+6.2%)</em></div>
+                <div class="stat-change buff"><span>Damage</span><strong>94 → 101</strong><em>+7 (+7.4%)</em></div>
+                <div class="stat-change buff"><span>Hit Speed</span><strong>1.28s → 1.15s</strong><em>10.2% faster</em></div>
+                <div class="stat-change buff"><span>Range</span><strong>6.1 → 6.5 tiles</strong><em>+0.4 tile</em></div>
+                <div class="stat-change buff"><span>Actual DPS</span><strong>73.4 → 87.8</strong><em>+19.6%</em></div>
+              </div>
+            </article>
+            <article class="balance-card nerf">
+              <div class="balance-card-head"><div><h4>Rambeast</h4><small>Charger / Ground Charger</small></div><span class="change-pill nerf">NERF</span></div>
+              <div class="stat-change-grid">
+                <div class="stat-change nerf"><span>Move Speed</span><strong>2.75 → 2.60</strong><em>-5.5%</em></div>
+                <div class="stat-change nerf"><span>Charge Damage</span><strong>277 → 255</strong><em>-22 (-7.9%)</em></div>
+              </div>
+            </article>
+            <article class="balance-card nerf">
+              <div class="balance-card-head"><div><h4>Archer Tower</h4><small>Building / Defensive Building</small></div><span class="change-pill nerf">NERF</span></div>
+              <div class="stat-change-grid">
+                <div class="stat-change nerf"><span>Aether Cost</span><strong>3 → 4</strong><em>+1 cost</em></div>
+                <div class="stat-change nerf"><span>Lifetime</span><strong>30s → 25s</strong><em>-5s (-16.7%)</em></div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="patch-section hotfix">
+          <div class="patch-section-title"><span>V12.3</span><div><h3>Meta Lab Accuracy Rebuild</h3><small>The balance simulator now uses the real match economy and statistically corrected card win rates.</small></div></div>
+          <div class="patch-grid">
+            <article><strong>Real Aether Budget</strong><p>The old model effectively spent enough Aether for a full five-minute match every simulation. V12.3 uses the real 3:00 regulation budget (~90.7 available Aether before leakage) and only adds overtime Aether when the simulated match actually reaches 0–0 overtime.</p></article>
+            <article><strong>Mirror Bias Removed</strong><p>When both decks contain the same card, that game no longer counts toward that card's balance win-rate signal. With 8-card decks from a small pool, mirror appearances were heavily pulling every card toward 50%.</p></article>
+            <article><strong>Bayesian Win Rate</strong><p>ADJ WIN% uses a neutral 24-game prior so tiny samples cannot immediately report extreme 30% or 70% results. The effect fades naturally as real simulation samples accumulate.</p></article>
+            <article><strong>95% Confidence Interval</strong><p>The table now shows a Wilson 95% interval and the non-mirror sample size. Yellow results have fewer than 30 clean samples and should not be treated as stable.</p></article>
+            <article><strong>No Feedback Loop</strong><p>Observed card win rate no longer changes how often the simulator drafts that card. The old feedback term could reinforce early noise and distort Pick%.</p></article>
+            <article><strong>Comparable Card Math</strong><p>Troops, buildings, spells, swarms, air targeting, splash and tower-only pressure are now evaluated with matchup-sensitive per-use models on comparable scales instead of the old raw-value formulas that massively inflated buildings and heavy spells.</p></article>
+          </div>
+        </section>
+
+
+        <section class="patch-section hotfix">
+          <div class="patch-section-title"><span>V12.2</span><div><h3>Pocket / Lane / Match Flow Hotfix</h3><small>Deployment pockets now match the visible lane zone, center tiles choose their own lane, and regulation is 3:00.</small></div></div>
+          <div class="patch-grid">
+            <article><strong>Pocket Size Corrected</strong><p>Destroying a Guard Tower unlocks only the matching lane rectangle between the river and the former Guard Tower approach. It no longer extends backward onto the enemy Core Tower.</p></article>
+            <article><strong>Visible Zone = Legal Zone</strong><p>The pocket overlay and placement validator now use the same exact X/Z bounds, so every highlighted pocket tile is legal and every unhighlighted enemy-side tile stays locked.</p></article>
+            <article><strong>Center Lane Choice Fixed</strong><p>A unit placed on the middle-left tile starts in the left lane; a unit placed on the middle-right tile starts in the right lane. The old random center-lane assignment is removed.</p></article>
+            <article><strong>3:00 Regulation</strong><p>If any Crown Tower has been taken by 3:00, regulation ends immediately. A tied non-zero crown score ends as a draw rather than opening the special 0–0 overtime.</p></article>
+            <article><strong>2:00 0–0 Overtime</strong><p>Only a 0–0 game after regulation receives two extra sudden-death minutes. The first tower destroyed during overtime immediately ends the match.</p></article>
+            <article><strong>Aether Timeline</strong><p>1× for the first two regulation minutes, 2× for regulation minute three and overtime minute one, then 3× for the final overtime minute. If OT also ends 0–0, the live tower-HP tiebreaker begins.</p></article>
+          </div>
+        </section>
+        <section class="patch-section hotfix">
+          <div class="patch-section-title"><span>V12.1</span><div><h3>Target Priority Hotfix</h3><small>Normal troops notice enemy troops again without breaking Crown Tower hard-locks.</small></div></div>
+          <div class="patch-grid">
+            <article><strong>Troop Priority Restored</strong><p>Normal troops continuously scan for reachable valid enemy troops inside their aggro range while traveling toward a Crown Tower.</p></article>
+            <article><strong>Hard-Lock Timing Fixed</strong><p>A Crown Tower is no longer hard-locked just because it was selected as a travel target. The permanent lock begins only when the attacker physically reaches attack range.</p></article>
+            <article><strong>Bridge Combat Fixed</strong><p>Bridge commitment now commits the route—not the target. A troop can notice and fight a valid enemy while still finishing its committed bridge crossing.</p></article>
+            <article><strong>Deployment Pull Restored</strong><p>Deploying a valid defender can redirect a normal attacker before it reaches Crown Tower attack range, including while that attacker is crossing a bridge.</p></article>
+            <article><strong>Tower Lock Preserved</strong><p>Once the attacker reaches a Crown Tower and begins the attack, troop placement, building placement and periodic target scans can no longer pull it away.</p></article>
+            <article><strong>Win Conditions</strong><p>Boulderback and Rambeast can still be pulled by a defensive building while traveling. Once they begin attacking a Crown Tower or building, that structure remains locked until destroyed.</p></article>
+          </div>
+        </section>
+
+        <section class="patch-section balance-showcase">
+          <div class="patch-section-title"><span>V12.0</span><div><h3>Balance Patch</h3><small>Only cards with live stat changes are shown below.</small></div></div>
+          <div class="patch-balance-summary">
+            <div><strong>6 cards changed</strong><span>2 direct buffs • 1 rework/mixed card • 2 spell buffs • 1 new card</span></div>
+            <small>Unchanged cards are omitted to keep patch notes clean and balance-focused.</small>
+          </div>
+          <div class="balance-card-list">
+            <article class="balance-card buff">
+              <div class="balance-card-head"><div><h4>Twin Blades</h4><small>Swarm / Ground Melee</small></div><span class="change-pill buff">BUFF</span></div>
+              <div class="stat-change-grid one-col">
+                <div class="stat-change"><span>HP per unit</span><strong>225 → 262</strong><em>+37 (+16.4%)</em></div>
+              </div>
+            </article>
+            <article class="balance-card buff">
+              <div class="balance-card-head"><div><h4>Sky Manta</h4><small>Flying / Flying Ranged</small></div><span class="change-pill buff">BUFF</span></div>
+              <div class="stat-change-grid">
+                <div class="stat-change"><span>HP</span><strong>440 → 480</strong><em>+40 (+9.1%)</em></div>
+                <div class="stat-change"><span>Damage</span><strong>70 → 77</strong><em>+7 (+10.0%)</em></div>
+              </div>
+            </article>
+            <article class="balance-card mixed">
+              <div class="balance-card-head"><div><h4>Archer Tower</h4><small>Building / Defensive Building</small></div><span class="change-pill mixed">ADJUSTED</span></div>
+              <div class="stat-change-grid">
+                <div class="stat-change nerf"><span>HP</span><strong>900 → 850</strong><em>-50 (-5.6%)</em></div>
+                <div class="stat-change nerf"><span>Damage</span><strong>78 → 75</strong><em>-3 (-3.8%)</em></div>
+                <div class="stat-change nerf"><span>Hit Speed</span><strong>1.00s → 1.10s</strong><em>10% slower</em></div>
+                <div class="stat-change buff"><span>Range</span><strong>6.5 → 7.0 tiles</strong><em>+0.5 tile</em></div>
+              </div>
+            </article>
+            <article class="balance-card buff">
+              <div class="balance-card-head"><div><h4>Bullet Burst</h4><small>Small Spell</small></div><span class="change-pill buff">BUFF</span></div>
+              <div class="stat-change-grid one-col">
+                <div class="stat-change"><span>Troop Damage</span><strong>145 → 175</strong><em>+30 (+20.7%)</em></div>
+              </div>
+            </article>
+            <article class="balance-card buff">
+              <div class="balance-card-head"><div><h4>Nova Flask</h4><small>Heavy Spell</small></div><span class="change-pill buff">BUFF</span></div>
+              <div class="stat-change-grid one-col">
+                <div class="stat-change"><span>Troop Damage</span><strong>320 → 375</strong><em>+55 (+17.2%)</em></div>
+              </div>
+            </article>
+            <article class="balance-card new-card">
+              <div class="balance-card-head"><div><h4>Vampire Bats</h4><small>Air Swarm</small></div><span class="change-pill new">NEW CARD</span></div>
+              <div class="new-card-sheet">
+                <div><span>Cost</span><strong>5</strong></div>
+                <div><span>Units</span><strong>5</strong></div>
+                <div><span>HP</span><strong>174 each</strong></div>
+                <div><span>Damage</span><strong>86 each</strong></div>
+                <div><span>Hit Speed</span><strong>1.05s</strong></div>
+                <div><span>Move</span><strong>1.95 tiles/s</strong></div>
+                <div><span>Range</span><strong>2 tiles</strong></div>
+                <div><span>Targets</span><strong>Ground + Air</strong></div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="patch-section">
+          <div class="patch-section-title"><span>V12.0</span><div><h3>System Changes</h3><small>Original V12 systems; current match timing is superseded by V12.2 above.</small></div></div>
+          <div class="patch-grid system-grid">
+            <article><strong>Match Flow (superseded)</strong><p>V12 originally used five-minute regulation. V12.2 now uses 3:00 regulation plus a conditional 2:00 overtime only when regulation ends 0–0.</p></article>
+            <article><strong>Aether Rates</strong><p>1× = +1 every 2.8s. 2× = +1 every 1.4s. 3× = +1 every ~0.933s. Maximum remains 10.</p></article>
+            <article><strong>Live 0–0 Tiebreaker</strong><p>If regulation and the conditional two-minute overtime both finish 0–0, combat stops and surviving Crown Tower HP drains evenly until the first tower falls. The result becomes 1–0.</p></article>
+            <article><strong>Bridge Pathing</strong><p>Radius-aware A* routing uses explicit bridge entrance, center and exit points, with congestion handling, obstacle clearance and stuck recovery.</p></article>
+            <article><strong>Tile-Center Placement</strong><p>Cards deploy at the center of a full 1×1 tile. Building previews show every occupied tile, and invalid/blocked tiles display red.</p></article>
+            <article><strong>Vampire Bats</strong><p>Added a five-unit Air Swarm: 5 Aether, 174 HP each, 86 damage, 1.05s hit speed, 1.95 tiles/s, 2-tile range and Ground + Air targeting.</p></article>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div id="account-modal" class="modal hidden">
+      <div class="modal-card account-modal-card">
+        <button class="close-modal" data-close="account-modal">×</button>
+        <span class="modal-kicker">LOCAL ACCOUNT</span>
+        <h2>Warden Profile</h2>
+        <p class="account-note">Your profile, record, currencies and deck are saved locally in this browser on this device.</p>
+        <label class="account-field"><span>WARDEN NAME</span><input id="account-username" maxlength="18" autocomplete="off" spellcheck="false" /></label>
+        <div class="account-info-grid">
+          <div><span>PLAYER ID</span><strong id="account-id">RC-000000</strong></div>
+          <div><span>MATCHES</span><strong id="account-matches">0</strong></div>
+          <div><span>RECORD</span><strong id="account-record">0-0-0</strong></div>
+          <div><span>SAVE TYPE</span><strong>LOCAL</strong></div>
+        </div>
+        <button id="account-save" class="battle-button account-save"><span><small>STORE ON THIS DEVICE</small><strong>SAVE PROFILE</strong></span></button>
+      </div>
+    </div>
+
+    <div id="end-screen" class="modal hidden">
+      <div class="modal-card end-card">
+        <div id="end-kicker">MATCH COMPLETE</div>
+        <h1 id="end-title">Victory</h1>
+        <div id="end-score">0 — 0</div>
+        <div class="end-actions">
+          <button id="restart-btn">REMATCH</button>
+          <button id="home-btn" class="secondary-button">HOME</button>
+        </div>
+        <div class="end-review-actions"><button id="end-analysis" class="secondary-button">MATCH ANALYSIS</button><button id="end-replay" class="secondary-button">WATCH REPLAY</button></div>
+      </div>
+    </div>
+
+    <div id="match-analysis-modal" class="modal hidden"><div class="modal-card match-analysis-modal-card"><button class="close-modal" data-close="match-analysis-modal" aria-label="Close match analysis">×</button><div id="match-analysis-content"></div></div></div>
+    <div id="replay-modal" class="modal hidden"><div class="modal-card replay-modal-card"><button class="close-modal" data-close="replay-modal" aria-label="Close replay viewer">×</button><div id="replay-viewer"></div></div></div>
+    <div id="replay-history-modal" class="modal hidden"><div class="modal-card replay-modal-card"><button class="close-modal" data-close="replay-history-modal" aria-label="Close recorded battles">×</button><span class="modal-kicker">BATTLE RECORDS</span><h2>Recorded Battles</h2><p class="replay-note">Review saved event replays and match analysis from this device.</p><div id="replay-history-content"></div></div></div>
+
+    <div id="loading-screen">
+      <img src="./assets/ui/rift_mark.svg" alt="" class="loader-mark"/>
+      <div class="loader-logo">RIFT CROWN</div>
+      <div class="loader-bar"><div></div></div>
+      <div class="loader-copy">Opening the fracture…</div>
+    </div>
+  </div>
+
+  <script type="module" src="./src/game.js"></script>
+</body>
+</html>

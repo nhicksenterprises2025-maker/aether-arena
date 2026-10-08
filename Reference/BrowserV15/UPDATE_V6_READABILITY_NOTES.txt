@@ -1,0 +1,23 @@
+Rift Crown Arena V6 - Readability Hotfix
+
+Main fixes from the supplied battle screenshots:
+- Rebuilt troop HP display as one large exact HP plate.
+- Exact troop HP is always visible while the troop is alive.
+- Removed the duplicate tiny plane-style troop health bar.
+- HP plates dynamically scale by camera distance so far-away units stay readable.
+- Rebuilt tower HP plates at higher resolution with larger exact HP text and thicker health meters.
+- Tower HP plates also scale by camera distance.
+- Player/enemy HP borders are strongly color coded.
+- Simplified in-match card UI: large name, role, cost and artwork only.
+- Removed tiny HP/DPS text and tiny stat ribbons from the in-match hand.
+- Full exact card statistics remain in the deck/details screens outside combat.
+- Slightly adjusted the battle camera so the player Core Tower sits higher above the hand.
+- Reduced the darkness/height of the bottom HUD background.
+
+V5 features retained:
+- 3 AI play styles (Beatdown, Aggro, Control)
+- bridge/lane pathing improvements
+- soft unit separation
+- placement tile grid and snapped placement
+- drag/drop cards
+- tactical AI push construction

@@ -1,0 +1,115 @@
+RIFT CROWN ARENA V14.0 — DECK ECOSYSTEM & STRATEGIC DEPTH
+Completed 2026-10-08
+
+SCOPE AND PRESERVATION
+Built on the cleaned V13 Battle Intelligence project. The original V13 project
+is preserved separately. No cards or game systems were removed. No new cards
+were added and no live balance patch was introduced. Existing art, models,
+arena, animation/FX, targeting, navigation, rules, profile, Meta Lab, Developer
+Lab, launchers and historical notes are retained.
+
+ADVANCED DECK WORKSHOP
+- Full 14-card pool, eight unique draft slots, add/remove controls and separate
+  inspection controls. Exactly-eight validation blocks incomplete saves/tests.
+- Average Aether, cost curve, troop/spell/building counts, air and ground-only
+  coverage, dedicated win conditions, splash/area and swarm counts.
+- Average HP, direct DPS and range with visible aggregation notes. Swarm HP/DPS
+  use complete deployments; spells do not dilute troop/building averages.
+- Composition-derived profile, strengths and weaknesses update immediately.
+- Existing visual identity preserved with a sticky action footer and mobile
+  home profile/workshop layout.
+
+ARCHETYPES AND SHARED ANALYTICS
+- Pure deck analyzer derives Beatdown, Control, Cycle, Bridge Pressure, Split
+  Lane, Air Pressure, Siege, Spell Control, Defensive and Hybrid labels.
+- Multiple labels are supported; the primary profile remains readable.
+- All mechanics come from the live library. Analytical calls do not mutate
+  card values or gameplay state.
+- Partial, corrupt, duplicate and unknown-card inputs are handled without NaN,
+  misleading denominators or accidental prototype-property cards.
+
+SYNERGY AND CARD INTELLIGENCE
+- All 28 pairs in a complete deck receive explained 0–100 scores; the compact
+  top-pair view expands to expose every pair.
+- Scoring derives tank/support, anti-air, splash, cost, range, win-condition
+  support, spell coverage, defense, statuses and swarms from actual mechanics.
+  There is no manually enumerated table of every card pair.
+- All 14 cards receive role, suggested uses, Best Against, Weak Against/Common
+  Counters, Common Partners, Best Defensive Answer and Best Offensive Partner.
+- Ground melee cannot directly counter flyers. Structure attacks cannot apply
+  direct troop damage. Raven's ring, Frost refresh, splash, charge, building
+  pull/lifetime and Meteor dwell contribute where mechanically appropriate.
+  Spell survival is distinguished from cancelling a cast.
+
+PRESETS AND TRAINING
+- Five independent named presets, initially Deck 1 through Deck 5.
+- Names are trimmed, sanitized and limited to 24 characters.
+- Tabs select drafts. SAVE LOADOUT persists the selected preset and activates
+  it for battle. Saving does not alter a running battle's hand/rotation.
+- TEST DECK saves the selected draft and opens training. From an existing match
+  it waits for queued saves before reload and training autostart.
+- RESET DEFAULT changes the draft without deleting other saved presets.
+
+SAVE COMPATIBILITY
+- Existing profile/deck fields, browser keys and /api/save contract remain.
+- Saves add deckPresets with five named decks and the active preset ID.
+- Valid old V13 decks migrate into Deck 1. Missing/corrupt records recover
+  defaults while preserving good named records.
+- Local fallback, queued snapshots and late-hydration protection remain.
+- A pending marker protects newer data after failed writes and retries it
+  during hydration. Fetches have bounded timeouts.
+- Manual Battle/Training and reload autostart wait for disk hydration.
+
+MATCHUP PREVIEW AND AI
+- Own deck profile is visible before battle on desktop and mobile.
+- Opponent deck, composition advantage, lane plan, threats, counters, AI hand/
+  cycle, strengths, weaknesses and win conditions appear only in Developer Lab.
+- All seven V13 personalities generate coherent eight-card decks with suitable
+  win conditions, support, defense, anti-air and spell coverage.
+- The brain uses its own profile, legal counter scores, pair synergy, own
+  rotation and existing personality tactics when defending or pushing.
+- Counter readiness uses observed player plays/cycle. Player Aether is still
+  estimated. Decisions do not read the player's private hand/Aether or the
+  private matchup report.
+
+CARD DETAILS
+- Exact hit speed, movement, range, footprint and projectile speed to two
+  decimals where needed. Full original stats and special mechanics retained.
+- Buildings show stationary movement/count; spells label irrelevant fields
+  N/A and show count, targeting and actual structure damage.
+- Meteor maximum stationary damage 462 and structure damage 0 are explicit.
+- Frost refresh/no stacking, Raven Ground + Air ring and Ram charge remain
+  clear. Strategy notes expand beneath the primary grid.
+
+BUGS FIXED DURING V14
+1. Training/restart reload raced queued saves. Reload now waits for them.
+2. Failed server writes let stale disk data replace newer local presets/profile
+   on reload. Pending-marker protection keeps/retries local data.
+3. Manual Battle/Training started before slow disk hydration and used a hand
+   inconsistent with the restored preset. Both paths now await hydration.
+4. Details rounded exact values such as 0.72, 1.35 and 1.45; fixed precision and
+   filled missing spell/building fields without changing live stats.
+5. Meta Lab excluded Raven aura from troop answers while direct structure DPS
+   could be valued as troop DPS. Only actual aura/stun contributes now.
+6. AI defense could select ground-only answers against air. Legal analytical
+   target filtering prevents those unusable defenses.
+7. Removed obsolete manual counter hints, superseded workshop handlers and an
+   unused deck-average helper after shared implementations replaced them.
+8. Fixed modal grid sizing and compacted mobile navigation so dialogs and the
+   Training button fit the phone viewport instead of overflowing horizontally.
+
+V13 CLEANUP FIXES RETAINED
+- Stationary card selection, server deck persistence, profile/deck validation,
+  stale hydration protection and serialized saves.
+- Meteor fifth DoT tick (full 462 stationary damage).
+- Correct sandbox speed/time, paused slow/stun/death cleanup and immediate
+  cessation of damaging updates after a match result.
+- Shared/cached model and transient-effect resource cleanup.
+- Malformed URL handling, UTF-8/atomic server saves and Blender collection reuse.
+
+VALIDATION
+112 JavaScript regressions and 3 Blender source/collection regressions passed.
+Node and PowerShell HTTP/save suites passed with isolated temporary saves.
+Browser checks cover five preset names/reload, draft edge cases, TEST DECK,
+seven AI reports, card details, Meta Lab and desktop/mobile layout.
+See V14_QA_REPORT.txt for scope, assumptions and locked balance confirmation.

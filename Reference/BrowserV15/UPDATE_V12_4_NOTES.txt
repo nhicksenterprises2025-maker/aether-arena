@@ -1,0 +1,8 @@
+Rift Crown Arena V12.4 - Visual Clarity Hotfix
+
+- Lowered overall scene exposure to reduce washed-out battlefield lighting.
+- Reduced sun/fill/rim light intensity for better board readability.
+- Slightly cooled and darkened sky/fog palette.
+- Moved decorative cloud banks farther to the horizon and much higher so they do not cover the arena.
+- Reduced cloud count and opacity.
+- Kept gameplay systems and meta math unchanged.

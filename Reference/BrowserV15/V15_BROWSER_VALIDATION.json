@@ -1,0 +1,29 @@
+{
+  "source": "Actual V15 Web Worker, started through the visible Meta Validation UI using F9",
+  "testOrigin": "http://localhost:8136",
+  "isolatedSaveDirectory": "C:/Users/Noah/OneDrive/Documents/ChatGPT/Aether Arena/.v15-ui-verification-saves",
+  "games": 10011,
+  "gamesSimulated": 10011,
+  "invalidSimulations": 0,
+  "nanCount": 0,
+  "mirrorExclusions": 101590,
+  "averageDuration": 280.8308233165682,
+  "averageAetherSpent": 173.04694835680752,
+  "averageAetherLeaked": 0.011237638597155509,
+  "pickRateTotal": 800,
+  "gamesPerMinute": 4407.857031209332,
+  "computeGamesPerMinute": 8163.992046132285,
+  "workerUtilization": 53.99144200902995,
+  "workerUsage": "Web Worker; 4-match yielding chunks",
+  "model": "v15-event-2",
+  "fingerprint": "47a565c8",
+  "sanity": true,
+  "validationRun": {
+    "requested": 10000,
+    "completed": 10000,
+    "accepted": 10000,
+    "invalidSimulations": 0,
+    "nanCount": 0,
+    "wallMilliseconds": 128363.39999999851
+  }
+}

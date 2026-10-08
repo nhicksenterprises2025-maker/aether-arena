@@ -1,0 +1,41 @@
+RIFT CROWN ARENA V0.8 - SYSTEMS UPGRADE
+
+BUG FIXES
+- Fixed splash projectiles visually hitting a tower but failing to damage the primary tower.
+- Rebuilt ground target distance around navigable bridge routes instead of straight-line distance through water.
+- Ground units are constrained to legal bridge crossings.
+- Dynamic bridge selection now updates lane state after pulls/retargets.
+- Better target selection against troops, Guard/Core Towers, and player buildings.
+- Building-targeting units now recognize defensive buildings as valid structures.
+- Added structure avoidance and improved same-team separation.
+
+NEW CARD: ARCHER TOWER
+- Cost: 3 Aether
+- Building
+- HP: 900
+- Damage: 78
+- Hit speed: 1.0 s
+- DPS: 78
+- Range: 6.5 tiles
+- Targets: Ground + Air troops
+- Lifetime: 30 s
+- Footprint: 1.65 x 1.65 tiles
+- Has dedicated SVG card art, procedural 3D fallback, Blender GLB model generator, arrow projectile, health display, construction FX, and AI defensive usage.
+
+PLACEMENT V2
+- Building footprint collision validation.
+- Placement tile + radius feedback.
+- Exact valid/invalid color feedback.
+- Drag a card back over the hand to return it without spending Aether.
+- Esc cancels selected/dragged placement.
+- Right-click cancels selected/dragged placement.
+- Invalid/out-of-arena drag releases keep the card.
+
+VISUAL / ANIMATION PASS
+- Improved card frames and detail badges.
+- Real arrow-shaped projectiles for Ember Archer / Archer Tower.
+- Construction effects for buildings.
+- Ground movement dust.
+- Rambeast charge trails.
+- Existing per-card attack/hover/hit animations retained and refined.
+- Model Forge V8 adds another silhouette/detail pass and Archer Tower GLB generation.

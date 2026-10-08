@@ -1,0 +1,11 @@
+Rift Crown Arena v12.9
+
+Quick polish patch focused on the three newest cards and overall UI comfort.
+
+CHANGES
+- Frost Fang: stronger model silhouette, extra armor/crystal detail, better motion, frost-breath ambient effect, beefier hit FX and footsteps.
+- Storm Raven: upgraded model silhouette, wing detail, stronger flap animation, more electric spark ambience, larger/more dramatic storm pulse FX.
+- Meteor Shards: upgraded card art, larger impact burst, more falling shards, improved persistent zone visuals and ember activity during the DoT window.
+- UI comfort pass: made in-battle HUD/card hand larger with responsive clamp sizing so readability improves without creating major overlap.
+- Aether bar, next-card panel, timer/score block, and card typography were all enlarged moderately.
+- Updated Blender procedural source for Frost Fang and Storm Raven so rebuilt GLBs also look better.

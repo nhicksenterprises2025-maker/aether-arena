@@ -1,0 +1,26 @@
+Rift Crown Arena V7.2 - Facing / Tile Range / Pocket Deployment
+
+FIXES / CHANGES
+- Corrected troop facing orientation.
+  * Player troops are authored facing -Z and now begin/move toward the enemy while showing their backs to the player camera.
+  * Enemy troops begin/move toward the player while showing their fronts.
+- Guard Tower combat range is now exactly 9 arena tiles.
+- Card distance stats now use arena tile units in the deck/details menu:
+  * movement speed = tiles/s
+  * attack range = tiles
+  * aggro range = tiles
+  * splash radius = tiles
+  * spell radius = tiles
+- Unit combat distances are tied to GRID.tile so arena tiles are the authoritative distance scale.
+- Added Clash-style lane pocket deployment:
+  * Destroy enemy left Guard Tower -> left enemy-side pocket unlocks.
+  * Destroy enemy right Guard Tower -> right enemy-side pocket unlocks.
+  * The other lane remains locked until its Guard Tower is destroyed.
+  * Pocket deployment still snaps to arena tiles.
+  * A subtle cyan pocket zone appears when unlocked.
+- Help menu updated with 9-tile Guard Tower range and pocket rules.
+- Full symmetry pass completed:
+  * Enemy AI now obeys legal deployment rules and can use unlocked pockets after destroying your matching Guard Tower.
+  * Aggro AI uses pocket pressure most often; Control uses it selectively; Beatdown usually still back-builds.
+  * Support troops can be added from an unlocked pocket when an AI push has already crossed deep into your side.
+- Field Manual now documents 1-tile grid units, 9-tile Guard Tower range, bridge routing, and pocket deployment.
