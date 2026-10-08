@@ -6,18 +6,21 @@ Datasets capture all fourteen card definitions, rule metadata, combat model, dec
 
 ## Recorded execution
 
-On 2026-10-08, actual Unreal automation ran six tests with zero failures. Five reported `Success`; the profile backup recovery fixture reported `SuccessWithWarnings` because its expected recovery warning was logged. The report is `Build/Automation/20261008-140554/Report/index.json`, with raw Unreal logs alongside it.
+On 2026-10-08, the latest actual Unreal automation run completed nine tests with zero failures. Eight reported `Success`; the profile backup recovery fixture reported `SuccessWithWarnings` because its expected recovery warning was logged. The report is `Build/Automation/20261008-154026/Report/index.json`, with raw Unreal logs alongside it.
 
 | Test | Actual checks |
 | --- | --- |
-| `Rift.Meta.AggregationEconomy` | A seeded complete native match, bank/spend/leak conservation, card-spend agreement, sixteen deck appearances, clean samples plus mirrors, real crowns/duration, immutable definitions, unavailable empty-sample efficiencies, deliberately invalid economy rejection. |
+| `Rift.Meta.AggregationEconomy` | A seeded complete native match, bank/spend/leak conservation, card-spend agreement, sixteen deck appearances, clean samples plus mirrors, real crowns/duration, immutable definitions, unavailable empty-sample efficiencies, deliberately invalid economy rejection, future-schema/missing-checkpoint/negative-seed resume rejection. |
 | `Rift.Meta.WorkerPauseAndRecovery` | Real worker pauses during battle and manual pause, completes four matches then another finite batch, records five valid economies and zero invalid economies, and excludes paused waits from reported active simulation time. |
 | `Rift.Integration.CardData` | Native card asset bindings and canonical definitions. |
 | `Rift.Integration.ProfilePersistence` | Isolated native persistence, migration and backup recovery. |
 | `Rift.Integration.ReplayTimeline` | Actual native replay recording/import/seek behavior. |
 | `Rift.Integration.SnapshotRoundtrip` | Snapshot round trips and malformed input handling. |
+| `Rift.Integration.PausedResultAndReplayEvents` | Terminal match results while paused, replay event preservation and recorded timelines. |
+| `Rift.Integration.ConnectedUI` | Actual UMG action callbacks, loadout/settings persistence and restart behavior. |
+| `Rift.Integration.FullLengthReplay` | Complete congested and paid-play matches, asynchronous finalization, compressed archive import, timeline validation and exact JSON reimport. |
 
-The two Meta tests use private in-memory fixtures. Integration tests use isolated save roots. No real player saves are read by this QA. The resume-schema and malformed-checkpoint assertions added after this report require a subsequent incremental automation run; this report does not claim those new assertions already ran.
+The two Meta tests use private in-memory fixtures. Integration tests use isolated save roots. No real player saves are read by this QA. This latest run includes the resume-schema and malformed-checkpoint assertions, telemetry revision 3, and the compiled asynchronous replay-save UI gating. Replay files use the native `.riftreplay` archive while imports remain compatible with legacy native `.json` replays.
 
 The installed-engine-compatible Shipping target also compiled and linked successfully. Compilation is separate evidence from a cooked package, actual renderer performance or installer execution.
 

@@ -5,22 +5,28 @@
     <MediaTemplate EmbedCab="yes" CompressionLevel="high"/>
     <Property Id="ARPCOMMENTS" Value="Native Windows game with a self-contained launcher. Uninstall preserves your profile, decks, settings and replays."/>
     <Property Id="ARPURLINFOABOUT" Value="https://github.com/nhicksenterprises2025-maker/aether-arena"/>
+    <Icon Id="ApplicationIcon" SourceFile="BrandAssets/Application.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="ApplicationIcon"/>
     <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch Rift Crown Arena"/>
     <Property Id="WixShellExecTarget" Value="[#LauncherExecutable]"/>
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER"/>
+    <Property Id="INSTALLFOLDER" Secure="yes"/>
+    <Property Id="REMEMBERED_INSTALL_FOLDER" Secure="yes"><RegistrySearch Id="InstalledInstallFolder" Root="HKCU" Key="Software\RiftCrownArena\Installer" Name="InstallFolder" Type="raw"/></Property>
+    <SetProperty Id="INSTALLFOLDER" Value="[REMEMBERED_INSTALL_FOLDER]" Before="CostFinalize" Sequence="both" Condition="REMEMBERED_INSTALL_FOLDER AND NOT INSTALLFOLDER"/>
     <Property Id="REMEMBERED_GAME_CACHE" Secure="yes"><RegistrySearch Id="InstalledGameCache" Root="HKCU" Key="Software\RiftCrownArena\Installer" Name="GameCache" Type="raw"/></Property>
     <WixVariable Id="WixUILicenseRtf" Value="DistributionNotice.rtf"/>
+    <WixVariable Id="WixUIBannerBmp" Value="BrandAssets/Banner.bmp"/>
+    <WixVariable Id="WixUIDialogBmp" Value="BrandAssets/Dialog.bmp"/>
     <ui:WixUI Id="WixUI_FeatureTree"/>
     <CustomAction Id="LaunchApplication" BinaryRef="Wix4UtilCA_X64" DllEntry="WixShellExec" Impersonate="yes"/>
     <UI><Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="LaunchApplication" Condition="WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 AND NOT Installed"/></UI>
     <StandardDirectory Id="LocalAppDataFolder"><Directory Id="ProgramsFolder" Name="Programs"><Directory Id="INSTALLFOLDER" Name="RiftCrownArena"/></Directory></StandardDirectory>
-    <StandardDirectory Id="ProgramMenuFolder"><Directory Id="StartMenuFolder" Name="Rift Crown Arena"/></StandardDirectory>
-    <StandardDirectory Id="DesktopFolder"/>
+    <StandardDirectory Id="ProgramMenuFolder"><Directory Id="RiftStartMenuFolder" Name="Rift Crown Arena"/></StandardDirectory>
     <!-- The updater owns Game; player saves and diagnostics live outside the install tree. -->
-    <DirectoryRef Id="INSTALLFOLDER"><Component Id="ManagedGameCache" Guid="{9DD7A9CD-D261-4D3D-8A91-6F67E7182A32}"><RegistryValue Root="HKCU" Key="Software\RiftCrownArena\Installer" Name="GameCache" Type="string" Value="[INSTALLFOLDER]Game" KeyPath="yes"/><util:RemoveFolderEx Id="RemoveManagedGameCache" Property="REMEMBERED_GAME_CACHE" On="uninstall"/><RemoveFolder Id="RemoveEmptyInstallFolder" On="uninstall"/></Component></DirectoryRef>
-    <DirectoryRef Id="StartMenuFolder"><Component Id="StartMenuShortcut" Guid="{08882EC5-243B-481C-B7E9-D74C1B51A59C}"><Shortcut Id="StartMenuLaunch" Name="Rift Crown Arena" Target="[INSTALLFOLDER]Launcher\RiftCrownLauncher.exe" WorkingDirectory="INSTALLFOLDER"/><RemoveFolder Id="RemoveStartMenu" On="uninstall"/><RegistryValue Root="HKCU" Key="Software\RiftCrownArena\Installer" Name="StartMenu" Type="integer" Value="1" KeyPath="yes"/></Component></DirectoryRef>
-    <DirectoryRef Id="DesktopFolder"><Component Id="DesktopShortcut" Guid="{93CC00C3-F1D6-456B-A78F-53A865F2762D}"><Shortcut Id="DesktopLaunch" Name="Rift Crown Arena" Target="[INSTALLFOLDER]Launcher\RiftCrownLauncher.exe" WorkingDirectory="INSTALLFOLDER"/><RegistryValue Root="HKCU" Key="Software\RiftCrownArena\Installer" Name="Desktop" Type="integer" Value="1" KeyPath="yes"/></Component></DirectoryRef>
-    <Feature Id="CoreGame" Title="Rift Crown Arena" Description="Native Windows game and self-contained launcher" Level="1" Absent="disallow" ConfigurableDirectory="INSTALLFOLDER"><ComponentGroupRef Id="DistributionFiles"/><ComponentRef Id="StartMenuShortcut"/><ComponentRef Id="ManagedGameCache"/></Feature>
+    <DirectoryRef Id="INSTALLFOLDER"><Component Id="ManagedGameCache" Guid="{9DD7A9CD-D261-4D3D-8A91-6F67E7182A32}"><RegistryValue Root="HKCU" Key="Software\RiftCrownArena\Installer" Name="GameCache" Type="string" Value="[INSTALLFOLDER]Game" KeyPath="yes"/><RegistryValue Root="HKCU" Key="Software\RiftCrownArena\Installer" Name="InstallFolder" Type="string" Value="[INSTALLFOLDER]"/><util:RemoveFolderEx Id="RemoveManagedGameCache" Property="REMEMBERED_GAME_CACHE" On="uninstall"/><RemoveFolder Id="RemoveEmptyInstallFolder" On="uninstall"/><RemoveFolder Id="RemoveEmptyProgramsFolder" Directory="ProgramsFolder" On="uninstall"/></Component></DirectoryRef>
+    <DirectoryRef Id="RiftStartMenuFolder"><Component Id="StartMenuShortcut" Guid="{08882EC5-243B-481C-B7E9-D74C1B51A59C}"><Shortcut Id="StartMenuLaunch" Name="Rift Crown Arena" Target="[INSTALLFOLDER]Launcher\RiftCrownLauncher.exe" WorkingDirectory="INSTALLFOLDER"/><RemoveFolder Id="RemoveStartMenu" On="uninstall"/><RegistryValue Root="HKCU" Key="Software\RiftCrownArena\Installer" Name="StartMenu" Type="integer" Value="1" KeyPath="yes"/></Component></DirectoryRef>
+    <StandardDirectory Id="DesktopFolder"><Component Id="DesktopShortcut" Guid="{93CC00C3-F1D6-456B-A78F-53A865F2762D}"><Shortcut Id="DesktopLaunch" Name="Rift Crown Arena" Target="[INSTALLFOLDER]Launcher\RiftCrownLauncher.exe" WorkingDirectory="INSTALLFOLDER"/><RegistryValue Root="HKCU" Key="Software\RiftCrownArena\Installer" Name="Desktop" Type="integer" Value="1" KeyPath="yes"/></Component></StandardDirectory>
+    <Feature Id="CoreGame" Title="Rift Crown Arena" Description="Native Windows game and self-contained launcher" Level="1" AllowAbsent="no" ConfigurableDirectory="INSTALLFOLDER"><ComponentGroupRef Id="DistributionFiles"/><ComponentRef Id="StartMenuShortcut"/><ComponentRef Id="ManagedGameCache"/></Feature>
     <Feature Id="DesktopShortcutFeature" Title="Desktop shortcut" Level="2"><ComponentRef Id="DesktopShortcut"/></Feature>
   </Package>
 </Wix>

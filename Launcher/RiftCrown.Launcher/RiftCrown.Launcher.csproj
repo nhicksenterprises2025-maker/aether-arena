@@ -15,9 +15,11 @@
     <PublishTrimmed>false</PublishTrimmed>
     <DebugType>embedded</DebugType>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>../../Installer/BrandAssets/Application.ico</ApplicationIcon>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../RiftCrown.UpdateCore/RiftCrown.UpdateCore.csproj" />
+    <Resource Include="../../Installer/BrandAssets/Application.ico" Link="Assets/Application.ico" />
   </ItemGroup>
 </Project>

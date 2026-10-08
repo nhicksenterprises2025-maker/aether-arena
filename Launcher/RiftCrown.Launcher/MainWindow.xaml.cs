@@ -18,6 +18,7 @@ public partial class MainWindow : Window
     private ReleaseManifest? available;
     private CancellationTokenSource? operation;
     private Process? launchedGame;
+    private Task? playCommandOperation;
     private bool busy;
     private readonly System.Windows.Threading.DispatcherTimer processPoll = new() { Interval = TimeSpan.FromSeconds(2) };
 
@@ -179,7 +180,7 @@ public partial class MainWindow : Window
     {
         var release = installed;
         if (release is null || IsGameRunning()) return;
-        await PerformAsync(async token =>
+        await (playCommandOperation = PerformAsync(async token =>
         {
             SetStatus("Starting Rift Crown Arena…");
             var executable = await Task.Run(() => manager.ValidateEntryPointAsync(release, token), token);
@@ -189,7 +190,7 @@ public partial class MainWindow : Window
             launchedGame = Process.Start(start) ?? throw new IOException("Windows did not start the packaged game.");
             log.Write($"Started game {release.Version}, process {launchedGame.Id}.");
             SetStatus("Rift Crown Arena is running."); Progress.Value = 100;
-        });
+        }));
     }
 
     private void Cancel_Click(object sender, RoutedEventArgs e) => operation?.Cancel();

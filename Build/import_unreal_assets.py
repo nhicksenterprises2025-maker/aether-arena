@@ -88,6 +88,8 @@ def material(name, base, normal, orm, mask, glow=False, glass=False):
     path = "/Game/Rift/Materials/" + name
     m = LIB.load_asset(path) if LIB.does_asset_exist(path) else TOOLS.create_asset(name, "/Game/Rift/Materials", unreal.Material, unreal.MaterialFactoryNew())
     unreal.MaterialEditingLibrary.delete_all_material_expressions(m)
+    unreal.MaterialEditingLibrary.set_base_material_usage(m, unreal.MaterialUsage.MATUSAGE_SKELETAL_MESH)
+    unreal.MaterialEditingLibrary.set_base_material_usage(m, unreal.MaterialUsage.MATUSAGE_INSTANCED_STATIC_MESHES)
     def sample(tex, x, y):
         n = unreal.MaterialEditingLibrary.create_material_expression(m, unreal.MaterialExpressionTextureSample, x, y)
         n.set_editor_property("texture", tex)
@@ -125,7 +127,27 @@ def material(name, base, normal, orm, mask, glow=False, glass=False):
     unreal.MaterialEditingLibrary.connect_material_expressions(frost_lerp, "", flash_lerp, "A")
     unreal.MaterialEditingLibrary.connect_material_expressions(highlight, "", flash_lerp, "B")
     unreal.MaterialEditingLibrary.connect_material_expressions(flash, "", flash_lerp, "Alpha")
-    unreal.MaterialEditingLibrary.connect_material_property(flash_lerp, "", unreal.MaterialProperty.MP_BASE_COLOR)
+    grid = unreal.MaterialEditingLibrary.create_material_expression(m, unreal.MaterialExpressionScalarParameter, 70, -500)
+    grid.set_editor_property("parameter_name", "RiftGridStrength")
+    grid.set_editor_property("default_value", 0.0)
+    gain = unreal.MaterialEditingLibrary.create_material_expression(m, unreal.MaterialExpressionScalarParameter, 70, -620)
+    gain.set_editor_property("parameter_name", "RiftBaseColorGain")
+    gain.set_editor_property("default_value", 1.0)
+    world = unreal.MaterialEditingLibrary.create_material_expression(m, unreal.MaterialExpressionWorldPosition, 70, -750)
+    field = unreal.MaterialEditingLibrary.create_material_expression(m, unreal.MaterialExpressionCustom, 300, 0)
+    field.set_editor_property("output_type", unreal.CustomMaterialOutputType.CMOT_FLOAT3)
+    field_inputs = []
+    for input_name in ("Base", "World", "Grid", "Gain"):
+        value = unreal.CustomInput()
+        value.set_editor_property("input_name", input_name)
+        field_inputs.append(value)
+    field.set_editor_property("inputs", field_inputs)
+    # One-meter boundaries surround half-integer gameplay tile centers. The
+    # derivative softens the narrow seams at distant camera resolutions.
+    field.set_editor_property("code", "float2 d=abs(frac(World.xy/100.0+0.5)-0.5)*100.0; float aa=max(length(fwidth(World.xy)),0.25); float seam=1.0-smoothstep(1.0,2.5+aa,min(d.x,d.y)); return Base*Gain*(1.0-0.58*saturate(Grid)*seam);")
+    for source, output, input_name in ((flash_lerp,"","Base"),(world,"","World"),(grid,"","Grid"),(gain,"","Gain")):
+        unreal.MaterialEditingLibrary.connect_material_expressions(source, output, field, input_name)
+    unreal.MaterialEditingLibrary.connect_material_property(field, "", unreal.MaterialProperty.MP_BASE_COLOR)
     unreal.MaterialEditingLibrary.connect_material_property(n, "RGB", unreal.MaterialProperty.MP_NORMAL)
     unreal.MaterialEditingLibrary.connect_material_property(o, "R", unreal.MaterialProperty.MP_AMBIENT_OCCLUSION)
     unreal.MaterialEditingLibrary.connect_material_property(o, "G", unreal.MaterialProperty.MP_ROUGHNESS)
@@ -138,6 +160,17 @@ def material(name, base, normal, orm, mask, glow=False, glass=False):
         unreal.MaterialEditingLibrary.connect_material_expressions(b, "RGB", mul, "A")
         unreal.MaterialEditingLibrary.connect_material_expressions(strength, "", mul, "B")
         unreal.MaterialEditingLibrary.connect_material_property(mul, "", unreal.MaterialProperty.MP_EMISSIVE_COLOR)
+    elif not glass:
+        trim = unreal.MaterialEditingLibrary.create_material_expression(m, unreal.MaterialExpressionMultiply, 300, -350)
+        trim_gain = unreal.MaterialEditingLibrary.create_material_expression(m, unreal.MaterialExpressionScalarParameter, 70, -900)
+        trim_gain.set_editor_property("parameter_name", "RiftTeamEmissive")
+        trim_gain.set_editor_property("default_value", 0.0)
+        trim_color = unreal.MaterialEditingLibrary.create_material_expression(m, unreal.MaterialExpressionMultiply, 70, -350)
+        unreal.MaterialEditingLibrary.connect_material_expressions(team, "", trim_color, "A")
+        unreal.MaterialEditingLibrary.connect_material_expressions(mk, "R", trim_color, "B")
+        unreal.MaterialEditingLibrary.connect_material_expressions(trim_color, "", trim, "A")
+        unreal.MaterialEditingLibrary.connect_material_expressions(trim_gain, "", trim, "B")
+        unreal.MaterialEditingLibrary.connect_material_property(trim, "", unreal.MaterialProperty.MP_EMISSIVE_COLOR)
     if glass:
         m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_TRANSLUCENT)
         alpha = unreal.MaterialEditingLibrary.create_material_expression(m, unreal.MaterialExpressionConstant, -100, 700)
@@ -168,7 +201,9 @@ def presentation_material(name, domain=None, shader="particle"):
         m.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_UNLIT)
         m.set_editor_property("two_sided", True)
     if shader == "particle":
-        unreal.MaterialEditingLibrary.set_material_usage(m, unreal.MaterialUsage.MATUSAGE_NIAGARA_SPRITES)
+        unreal.MaterialEditingLibrary.set_base_material_usage(m, unreal.MaterialUsage.MATUSAGE_NIAGARA_SPRITES)
+    elif shader == "water":
+        unreal.MaterialEditingLibrary.set_base_material_usage(m, unreal.MaterialUsage.MATUSAGE_INSTANCED_STATIC_MESHES)
     def node(cls, **props):
         n = unreal.MaterialEditingLibrary.create_material_expression(m, cls)
         for k, v in props.items():
@@ -201,7 +236,13 @@ def presentation_material(name, domain=None, shader="particle"):
         else:
             code="float2 p=abs(UV*2-1); float r=Shape>.5?max(p.x,p.y):length(p); float edge=saturate((1-r)*80)*saturate((r-.87)*45); return saturate(edge*.75+(r<.95?.12:0));"
         custom.set_editor_property("code", code)
-        unreal.MaterialEditingLibrary.connect_material_property(custom, "", unreal.MaterialProperty.MP_OPACITY)
+        opacity = custom
+        if shader == "particle":
+            particle = node(unreal.MaterialExpressionParticleColor)
+            opacity = node(unreal.MaterialExpressionMultiply)
+            unreal.MaterialEditingLibrary.connect_material_expressions(custom, "", opacity, "A")
+            unreal.MaterialEditingLibrary.connect_material_expressions(particle, "A", opacity, "B")
+        unreal.MaterialEditingLibrary.connect_material_property(opacity, "", unreal.MaterialProperty.MP_OPACITY)
         unreal.MaterialEditingLibrary.connect_material_property(color, "", unreal.MaterialProperty.MP_EMISSIVE_COLOR)
     unreal.MaterialEditingLibrary.connect_material_expressions(uv, "", custom, "UV")
     unreal.MaterialEditingLibrary.recompile_material(m)
@@ -241,6 +282,36 @@ def card_data():
         save(data)
 
 def main():
+    if "-RiftMaterialsOnly" in unreal.SystemLibrary.get_command_line():
+        textures = [LIB.load_asset("/Game/Rift/Textures/T_RiftAtlas_" + suffix) for suffix in ("BaseColor","Normal","ORM","TeamMask")]
+        if any(t is None for t in textures):
+            raise RuntimeError("Authored material atlas textures are missing")
+        REPORT["materials"] = [material(name, *textures, name == "M_RiftGlow", name == "M_RiftGlass").get_path_name() for name in ("M_RiftSurface","M_RiftGlow","M_RiftGlass")]
+        REPORT["materials"].append(presentation_material("M_RiftParticle").get_path_name())
+        REPORT["materials"].append(presentation_material("M_RiftWater", shader="water").get_path_name())
+        return
+    if "-RiftPhysicsOnly" in unreal.SystemLibrary.get_command_line():
+        REPORT["physicsFinalization"] = json.loads(unreal.RiftEditorAssetLibrary.finalize_imported_physics_assets_json())
+        if REPORT["physicsFinalization"]["errors"]:
+            raise RuntimeError(REPORT["physicsFinalization"]["errors"])
+        unreal.AssetRegistryHelpers.get_asset_registry().scan_files_synchronous([
+            str(ROOT / f"Unreal/RiftCrownArena/Content/Rift/Characters/{card}/SK_{card}_PhysicsAsset.uasset")
+            for card in MANIFEST["characters"]], True)
+        REPORT["validation"] = json.loads(unreal.RiftEditorAssetLibrary.inspect_imported_assets_json())
+        if any(not c.get("physicsRegisteredOnDisk", False) for c in REPORT["validation"]["cards"] if c.get("physics")):
+            raise RuntimeError("Generated physics assets did not enter the on-disk registry")
+        return
+    if "-RiftMaterialUsageOnly" in unreal.SystemLibrary.get_command_line():
+        for name in ("M_RiftSurface", "M_RiftGlow", "M_RiftGlass", "M_RiftWater"):
+            asset = LIB.load_asset("/Game/Rift/Materials/" + name)
+            if asset is None:
+                raise RuntimeError("Missing authored material " + name)
+            unreal.MaterialEditingLibrary.set_base_material_usage(asset, unreal.MaterialUsage.MATUSAGE_INSTANCED_STATIC_MESHES)
+            if name != "M_RiftWater":
+                unreal.MaterialEditingLibrary.set_base_material_usage(asset, unreal.MaterialUsage.MATUSAGE_SKELETAL_MESH)
+            unreal.MaterialEditingLibrary.recompile_material(asset)
+            save(asset)
+        return
     if "-RiftImportProbe" in unreal.SystemLibrary.get_command_line():
         mesh = import_file(ROOT/MANIFEST["characters"]["ironclad"]["mesh"]["file"], "/Game/Rift/ImportDiagnostics", "SK_ironclad_clean", mesh_options(skeletal=True))
         asset = LIB.load_asset("/Game/Rift/Cards/DA_ironclad")
@@ -320,6 +391,12 @@ def main():
         save(sound)
     if not LIB.save_directory("/Game/Rift", False, True):
         raise RuntimeError("Could not save authored imports before presentation binding")
+    REPORT["physicsFinalization"] = json.loads(unreal.RiftEditorAssetLibrary.finalize_imported_physics_assets_json())
+    if REPORT["physicsFinalization"]["errors"]:
+        raise RuntimeError(REPORT["physicsFinalization"]["errors"])
+    unreal.AssetRegistryHelpers.get_asset_registry().scan_files_synchronous([
+        str(ROOT / f"Unreal/RiftCrownArena/Content/Rift/Characters/{card}/SK_{card}_PhysicsAsset.uasset")
+        for card in MANIFEST["characters"]], True)
     # The authored arena is populated by the runtime presentation actor using
     # the same tile geometry and deterministic decoration seed in every build.
     REPORT["presentation"] = json.loads(unreal.RiftEditorAssetLibrary.build_presentation_assets_json())
@@ -339,4 +416,5 @@ except Exception as error:
     raise
 finally:
     (ROOT / "Artifacts/QA").mkdir(parents=True, exist_ok=True)
-    (ROOT / "Artifacts/QA/unreal_asset_import.json").write_text(json.dumps(REPORT, indent=2), encoding="utf-8")
+    report_name = "unreal_asset_materials.json" if "-RiftMaterialsOnly" in unreal.SystemLibrary.get_command_line() else "unreal_asset_physics.json" if "-RiftPhysicsOnly" in unreal.SystemLibrary.get_command_line() else "unreal_asset_material_usage.json" if "-RiftMaterialUsageOnly" in unreal.SystemLibrary.get_command_line() else "unreal_asset_probe.json" if "-RiftImportProbe" in unreal.SystemLibrary.get_command_line() else "unreal_asset_import.json"
+    (ROOT / "Artifacts/QA" / report_name).write_text(json.dumps(REPORT, indent=2), encoding="utf-8")

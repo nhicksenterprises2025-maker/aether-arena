@@ -3,6 +3,11 @@
 #include "RiftUIWidget.h"
 #include "RiftMatchSubsystem.h"
 #include "RiftProfileSubsystem.h"
+#include "RiftReplaySubsystem.h"
+#include "Presentation/RiftBattleAudioSubsystem.h"
+#include "Dom/JsonObject.h"
+#include "Serialization/JsonSerializer.h"
+#include "Serialization/JsonWriter.h"
 #include "RiftMetaSimulationSubsystem.h"
 #include "Presentation/RiftArenaPresentation.h"
 #include "EngineUtils.h"
@@ -26,10 +31,30 @@ void ARiftGameMode::BeginPlay()
 {
     Super::BeginPlay();
     GetWorld()->SpawnActor<ARiftArenaPresentation>();
+    FString AudioSmokePath;
+    if(FParse::Value(FCommandLine::Get(),TEXT("RiftAudioSmoke="),AudioSmokePath))
+    {
+        FTimerHandle AudioTimer;GetWorld()->GetTimerManager().SetTimer(AudioTimer,[this,AudioSmokePath]()
+        {
+            auto* PC=Cast<ARiftPlayerController>(GetWorld()->GetFirstPlayerController());
+            auto* Audio=GetGameInstance()->GetSubsystem<URiftBattleAudioSubsystem>();
+            Audio->RunAudioSmoke(PC?PC->Interface.Get():nullptr,[AudioSmokePath](const FString& Result)
+            {
+            IFileManager::Get().MakeDirectory(*FPaths::GetPath(AudioSmokePath),true);
+            bool Saved=FFileHelper::SaveStringToFile(Result,*AudioSmokePath,FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM);
+            TSharedPtr<FJsonObject> Report;auto Reader=TJsonReaderFactory<>::Create(Result);
+            bool Passed=Saved&&FJsonSerializer::Deserialize(Reader,Report)&&Report.IsValid()&&Report->GetBoolField(TEXT("passed"));
+            RIFT_LOG(LogRift,Log,TEXT("Native audio smoke %s: %s"),Passed?TEXT("passed"):TEXT("failed"),*AudioSmokePath);
+            FPlatformMisc::RequestExitWithStatus(false,Passed?0:2);
+            });
+        },6.f,false);
+    }
     FString CapturePath;
     if(FParse::Value(FCommandLine::Get(),TEXT("RiftCapture="),CapturePath))
     {
         FString Page=TEXT("Home"),Scenario;FParse::Value(FCommandLine::Get(),TEXT("RiftCapturePage="),Page);FParse::Value(FCommandLine::Get(),TEXT("RiftVisualScenario="),Scenario);
+        auto CapturedEvents=MakeShared<TMap<FString,int32>>();
+        GetWorld()->GetSubsystem<URiftMatchSubsystem>()->OnEvent.AddLambda([CapturedEvents](const rift::Event& Event){++CapturedEvents->FindOrAdd(UTF8_TO_TCHAR(Event.type.c_str()));});
         FTimerHandle SetupTimer;GetWorld()->GetTimerManager().SetTimer(SetupTimer,[this,Page,Scenario]()
         {
             auto* PC=Cast<ARiftPlayerController>(GetWorld()->GetFirstPlayerController());if(!PC||!PC->Interface)return;
@@ -52,14 +77,53 @@ void ARiftGameMode::BeginPlay()
                         Sim->Spawn(Team,"frost_fang",{Lane*5.,Z});Sim->Spawn(Team,"storm_raven",{Lane*9.,Z});
                     }
                 }
+                else if(Scenario==TEXT("effects"))
+                {
+                    // All showcase attacks/statuses are emitted by ordinary
+                    // simulation mechanics from tagged sandbox deployments.
+                    Sim->Spawn(rift::Team::Player,"frost_fang",{-8,3});Sim->Spawn(rift::Team::Enemy,"ironclad",{-8,1});
+                    Sim->Spawn(rift::Team::Player,"ember_archer",{-10,6});Sim->Spawn(rift::Team::Enemy,"boulderback",{0,1});
+                    Sim->Spawn(rift::Team::Player,"arc_mage",{-2,5});Sim->Spawn(rift::Team::Player,"sky_manta",{2,5});
+                    Sim->Spawn(rift::Team::Player,"storm_raven",{8,3});Sim->Spawn(rift::Team::Enemy,"boulderback",{8,1});
+                    Sim->Spawn(rift::Team::Enemy,"archer_tower",{9,2});
+                    Sim->Spawn(rift::Team::Enemy,"vampire_bats",{7,1});Sim->Spawn(rift::Team::Player,"rambeast",{0,8});
+                    FTimerHandle SpellsTimer;GetWorld()->GetTimerManager().SetTimer(SpellsTimer,[this]()
+                    {
+                        auto* Current=GetWorld()->GetSubsystem<URiftMatchSubsystem>();if(auto* Combat=Current->Simulation())
+                        {Combat->Spawn(rift::Team::Player,"meteor_shards",{0,3});Combat->Spawn(rift::Team::Enemy,"bullet_burst",{-8,3});Combat->Spawn(rift::Team::Player,"nova_flask",{0,0});Current->FlushEvents();}
+                    },2.f,true,3.f);
+                }
+                else if(Scenario==TEXT("placement"))Match->SetSpeed(0);
+                if(Scenario!=TEXT("roster")&&Scenario!=TEXT("placement"))
+                {float CaptureSpeed=1;FParse::Value(FCommandLine::Get(),TEXT("RiftCaptureSpeed="),CaptureSpeed);Match->SetSpeed(FMath::Clamp(CaptureSpeed,.25f,4.f));}
                 Match->FlushEvents();
             }
             PC->Interface->Navigate(Page);
         },.5f,false);
         float Delay=6;FParse::Value(FCommandLine::Get(),TEXT("RiftCaptureDelay="),Delay);bool Quit=FParse::Param(FCommandLine::Get(),TEXT("RiftQuitAfterCapture"));
-        FTimerHandle CaptureTimer;GetWorld()->GetTimerManager().SetTimer(CaptureTimer,[CapturePath,Quit]()
+        FTimerHandle CaptureTimer;GetWorld()->GetTimerManager().SetTimer(CaptureTimer,[this,CapturePath,Quit,CapturedEvents]()
         {
-            IFileManager::Get().MakeDirectory(*FPaths::GetPath(CapturePath),true);FScreenshotRequest::RequestScreenshot(CapturePath,true,false,false,FIntRect(),true);
+            IFileManager::Get().MakeDirectory(*FPaths::GetPath(CapturePath),true);
+            auto Snapshot=MakeShared<FJsonObject>();auto EventCounts=MakeShared<FJsonObject>();
+            for(const auto& Pair:*CapturedEvents)EventCounts->SetNumberField(Pair.Key,Pair.Value);
+            Snapshot->SetObjectField(TEXT("events"),EventCounts);
+            auto* Match=GetWorld()->GetSubsystem<URiftMatchSubsystem>();Snapshot->SetNumberField(TEXT("speed"),Match->GetSpeed());
+            if(const auto* State=Match->ViewState())
+            {
+                int32 Alive=0,Slowed=0,Stunned=0;for(const auto& Entity:State->entities)if(!Entity.dead){++Alive;if(Entity.slowUntil>State->elapsed)++Slowed;if(Entity.stunUntil>State->elapsed)++Stunned;}
+                Snapshot->SetNumberField(TEXT("elapsed"),State->elapsed);Snapshot->SetNumberField(TEXT("aliveEntities"),Alive);
+                Snapshot->SetNumberField(TEXT("slowedEntities"),Slowed);Snapshot->SetNumberField(TEXT("stunnedEntities"),Stunned);
+                Snapshot->SetNumberField(TEXT("projectiles"),State->projectiles.size());Snapshot->SetNumberField(TEXT("hazards"),State->hazards.size());
+            }
+            FString PreviewCard;if(FParse::Value(FCommandLine::Get(),TEXT("RiftPreviewCard="),PreviewCard))if(const auto* Card=rift::FindCard(TCHAR_TO_UTF8(*PreviewCard)))if(auto* Sim=Match->Simulation())
+            {
+                float X=0,Y=7;FParse::Value(FCommandLine::Get(),TEXT("RiftPreviewX="),X);FParse::Value(FCommandLine::Get(),TEXT("RiftPreviewY="),Y);const auto Tile=rift::SnapToTile({X,Y});
+                Snapshot->SetStringField(TEXT("previewCard"),PreviewCard);Snapshot->SetNumberField(TEXT("previewX"),Tile.x);Snapshot->SetNumberField(TEXT("previewY"),Tile.z);
+                Snapshot->SetBoolField(TEXT("previewValid"),Sim->CanPlace(rift::Team::Player,*Card,Tile));Snapshot->SetNumberField(TEXT("previewFootprintTiles"),Card->footprint);Snapshot->SetNumberField(TEXT("previewRadiusTiles"),Card->spellRadius);
+            }
+            FString SnapshotText;auto Writer=TJsonWriterFactory<>::Create(&SnapshotText);FJsonSerializer::Serialize(Snapshot,Writer);
+            FFileHelper::SaveStringToFile(SnapshotText,*(FPaths::ChangeExtension(CapturePath,TEXT("state.json"))),FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM);
+            FScreenshotRequest::RequestScreenshot(CapturePath,true,false,false,FIntRect(),true);
             if(Quit)FScreenshotRequest::OnScreenshotRequestProcessed().AddLambda([](){FPlatformMisc::RequestExit(false);});
         },FMath::Max(1.f,Delay),false);
     }
@@ -78,6 +142,13 @@ void ARiftGameMode::BeginPlay()
         },2.f,true);
     }
 }
+void ARiftGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+    if(auto* World=GetWorld())if(auto* Match=World->GetSubsystem<URiftMatchSubsystem>())Match->LeaveMatch();
+    if(auto* GI=GetGameInstance())if(auto* Replay=GI->GetSubsystem<URiftReplaySubsystem>())Replay->FlushPendingWrites();
+    Super::EndPlay(EndPlayReason);
+}
+
 ARiftPlayerController::ARiftPlayerController()
 {bShowMouseCursor=true;PrimaryActorTick.bCanEverTick=true;}
 void ARiftPlayerController::BeginPlay()
@@ -85,10 +156,14 @@ void ARiftPlayerController::BeginPlay()
     Super::BeginPlay();
     CameraActor=GetWorld()->SpawnActor<AActor>();
     ArenaCamera=NewObject<UCameraComponent>(CameraActor,TEXT("ArenaCamera"));CameraActor->SetRootComponent(ArenaCamera);ArenaCamera->RegisterComponent();
-    CameraActor->SetActorLocation(FVector(0,3600,5400));CameraActor->SetActorRotation(UKismetMathLibrary::FindLookAtRotation(CameraActor->GetActorLocation(),FVector(0,-150,0)));
+    CameraActor->SetActorLocation(FVector(0,3600,5400));CameraActor->SetActorRotation(UKismetMathLibrary::FindLookAtRotation(CameraActor->GetActorLocation(),FVector(0,200,0)));
     ArenaCamera->ProjectionMode=ECameraProjectionMode::Orthographic;ArenaCamera->OrthoWidth=8000;ArenaCamera->bConstrainAspectRatio=false;ArenaCamera->bAutoCalculateOrthoPlanes=true;
+    ArenaCamera->AspectRatioAxisConstraint=EAspectRatioAxisConstraint::AspectRatio_MaintainXFOV;
+    ArenaCamera->bOverrideAspectRatioAxisConstraint=true;
     ArenaCamera->PostProcessSettings.bOverride_AutoExposureMethod=true;ArenaCamera->PostProcessSettings.AutoExposureMethod=EAutoExposureMethod::AEM_Manual;
     ArenaCamera->PostProcessSettings.bOverride_AutoExposureBias=true;ArenaCamera->PostProcessSettings.AutoExposureBias=0;
+    ArenaCamera->PostProcessSettings.bOverride_AutoExposureApplyPhysicalCameraExposure=true;
+    ArenaCamera->PostProcessSettings.AutoExposureApplyPhysicalCameraExposure=false;
     SetViewTarget(CameraActor);
     Interface=CreateWidget<URiftUIWidget>(this,URiftUIWidget::StaticClass());Interface->AddToViewport();
     FInputModeGameAndUI Mode;Mode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);Mode.SetHideCursorDuringCapture(false);SetInputMode(Mode);
@@ -113,8 +188,15 @@ bool ARiftPlayerController::CursorTile(FVector2D& Out)const
 }
 void ARiftPlayerController::PlayerTick(float DeltaTime)
 {
-    Super::PlayerTick(DeltaTime);int32 Width,Height;GetViewportSize(Width,Height);if(ArenaCamera&&Height>0)ArenaCamera->OrthoWidth=4700.f*float(Width)/Height*CameraZoom;
+    Super::PlayerTick(DeltaTime);int32 Width,Height;GetViewportSize(Width,Height);if(ArenaCamera&&Height>0)ArenaCamera->OrthoWidth=5350.f*float(Width)/Height*CameraZoom;
     if(!Arena)for(TActorIterator<ARiftArenaPresentation> It(GetWorld());It;++It){Arena=*It;break;}
+    FString CapturePath,PreviewCard;
+    if(Arena&&Interface&&Interface->IsBattleView()&&FParse::Value(FCommandLine::Get(),TEXT("RiftCapture="),CapturePath)&&FParse::Value(FCommandLine::Get(),TEXT("RiftPreviewCard="),PreviewCard))
+        if(const auto* Preview=rift::FindCard(TCHAR_TO_UTF8(*PreviewCard)))if(auto* Sim=GetWorld()->GetSubsystem<URiftMatchSubsystem>()->Simulation())
+        {
+            float X=0,Y=7;FParse::Value(FCommandLine::Get(),TEXT("RiftPreviewX="),X);FParse::Value(FCommandLine::Get(),TEXT("RiftPreviewY="),Y);const auto Snapped=rift::SnapToTile({X,Y});
+            Arena->SetPlacementPreview(FVector2D(Snapped.x,Snapped.z),Sim->CanPlace(rift::Team::Player,*Preview,Snapped),Preview->spellRadius,Preview->spell,Preview->building?Preview->footprint:0);return;
+        }
     FVector2D Tile=FVector2D::ZeroVector;const auto* C=Interface?rift::FindCard(TCHAR_TO_UTF8(*Interface->SelectedCardId())):nullptr;
     bool Visible=Interface&&Interface->IsBattleView()&&C&&CursorTile(Tile);
     if(!Visible&&Arena)Arena->ClearPlacementPreview();

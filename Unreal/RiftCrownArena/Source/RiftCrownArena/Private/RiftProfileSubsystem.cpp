@@ -1,5 +1,4 @@
 #include "RiftProfileSubsystem.h"
-#include "RiftDiagnostics.h"
 #include "Engine/Engine.h"
 #include "Framework/Application/SlateApplication.h"
 #include "GameFramework/GameUserSettings.h"
@@ -11,6 +10,7 @@
 #include "Misc/Parse.h"
 #include "Misc/Paths.h"
 #include "Misc/SecureHash.h"
+#include "RiftDiagnostics.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
 #include "Simulation/RiftSimulation.h"
@@ -70,7 +70,7 @@ FString CleanName(const FString &Name, bool Deck, bool ImportedUnicode = false) 
         const bool ASCII = (C >= 'A' && C <= 'Z') || (C >= 'a' && C <= 'z') || (C >= '0' && C <= '9');
         const bool Allowed =
             Deck ? (C >= 32 && C != '<' && C != '>' && C != '"' && C != '\'' && C != '&' && C != '`')
-                                 : (ASCII || (ImportedUnicode && C >= 128) || C == '_' || C == '-');
+                 : (ASCII || (ImportedUnicode && C >= 128) || C == '_' || C == '-');
         if (!Allowed)
             continue;
         if (Space)
@@ -327,6 +327,13 @@ bool URiftProfileSubsystem::LoadFile(const FString &Filename, bool Browser) {
     return true;
 }
 bool URiftProfileSubsystem::AtomicWrite(const FString &Filename, const FString &Contents, FString &Error) {
+    FTCHARToUTF8 UTF8(*Contents);
+    TArray<uint8> Bytes;
+    Bytes.Append(reinterpret_cast<const uint8 *>(UTF8.Get()), UTF8.Length());
+    return AtomicWriteBytes(Filename, Bytes, Error);
+}
+bool URiftProfileSubsystem::AtomicWriteBytes(const FString &Filename, const TArray<uint8> &Contents,
+                                             FString &Error) {
     Error.Empty();
     auto &Files = FPlatformFileManager::Get().GetPlatformFile();
     if (!Files.CreateDirectoryTree(*FPaths::GetPath(Filename))) {
@@ -335,7 +342,7 @@ bool URiftProfileSubsystem::AtomicWrite(const FString &Filename, const FString &
     }
     const FString Suffix = FGuid::NewGuid().ToString(EGuidFormats::Digits),
                   Temp = Filename + TEXT(".tmp-") + Suffix;
-    if (!FFileHelper::SaveStringToFile(Contents, *Temp, FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM)) {
+    if (!FFileHelper::SaveArrayToFile(Contents, *Temp)) {
         Files.DeleteFile(*Temp);
         Error = TEXT("Unable to write save; check free space and permissions.");
         return false;
@@ -476,14 +483,16 @@ void URiftProfileSubsystem::ApplySettings() {
     if (!G)
         return;
     int32 DisplayWidth = Settings.Width, DisplayHeight = Settings.Height;
-    FString Capture;
-    if (FParse::Value(FCommandLine::Get(), TEXT("RiftCapture="), Capture)) {
+    FString QAOutput;
+    if (FParse::Value(FCommandLine::Get(), TEXT("RiftCapture="), QAOutput) ||
+        FParse::Value(FCommandLine::Get(), TEXT("RiftPerfReport="), QAOutput) ||
+        FParse::Value(FCommandLine::Get(), TEXT("RiftAudioSmoke="), QAOutput)) {
         FParse::Value(FCommandLine::Get(), TEXT("ResX="), DisplayWidth);
         FParse::Value(FCommandLine::Get(), TEXT("ResY="), DisplayHeight);
         DisplayWidth = FMath::Clamp(DisplayWidth, 800, 7680);
         DisplayHeight = FMath::Clamp(DisplayHeight, 600, 4320);
     }
-    // Capture resolution changes the active viewport, while saved profile preferences remain intact.
+    // QA resolution changes the active viewport, while saved profile preferences remain intact.
     G->SetScreenResolution(FIntPoint(DisplayWidth, DisplayHeight));
     G->SetFullscreenMode(EWindowMode::Type(Settings.WindowMode));
     G->SetVSyncEnabled(Settings.VSync);

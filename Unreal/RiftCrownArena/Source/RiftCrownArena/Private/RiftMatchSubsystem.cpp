@@ -8,7 +8,12 @@
 #include "Misc/Parse.h"
 
 void URiftMatchSubsystem::Initialize(FSubsystemCollectionBase& Collection){Super::Initialize(Collection);}
-void URiftMatchSubsystem::Deinitialize(){LeaveMatch();Super::Deinitialize();}
+void URiftMatchSubsystem::Deinitialize()
+{
+    // World EndPlay saves the final replay while all GI services are available.
+    // GI subsystem teardown order is not a dependency shutdown order.
+    Match.reset();ReplayView=nullptr;OnChanged.Clear();OnEvent.Clear();Super::Deinitialize();
+}
 TStatId URiftMatchSubsystem::GetStatId()const{RETURN_QUICK_DECLARE_CYCLE_STAT(URiftMatchSubsystem,STATGROUP_Tickables);}
 bool URiftMatchSubsystem::IsTickable()const{return GetWorld()&&GetWorld()->IsGameWorld()&&(Match||ReplayView);}
 void URiftMatchSubsystem::StartMatch(bool Training,bool BothAI)
@@ -29,8 +34,8 @@ void URiftMatchSubsystem::LeaveMatch()
 {
     if(auto* GI=GetWorld()?GetWorld()->GetGameInstance():nullptr)
     {
-        if(Match)GI->GetSubsystem<URiftReplaySubsystem>()->EndRecording(Match->State(),Match->State().phase!=rift::Phase::Finished);
-        GI->GetSubsystem<URiftMetaSimulationSubsystem>()->SetBattleActive(false);
+        if(auto* Replay=GI->GetSubsystem<URiftReplaySubsystem>();Replay&&Match)Replay->EndRecording(Match->State(),Match->State().phase!=rift::Phase::Finished);
+        if(auto* Meta=GI->GetSubsystem<URiftMetaSimulationSubsystem>())Meta->SetBattleActive(false);
     }
     Match.reset();ReplayView=nullptr;OnChanged.Broadcast();
 }

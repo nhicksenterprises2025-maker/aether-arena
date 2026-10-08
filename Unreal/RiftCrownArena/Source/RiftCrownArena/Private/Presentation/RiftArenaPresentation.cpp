@@ -58,10 +58,17 @@ ARiftArenaPresentation::ARiftArenaPresentation()
     PrimaryActorTick.bCanEverTick=true;PrimaryActorTick.TickGroup=TG_PostUpdateWork;
     Scene=CreateDefaultSubobject<USceneComponent>(TEXT("AuthoredArenaRoot"));SetRootComponent(Scene);Scene->SetMobility(EComponentMobility::Static);
     auto* Sun=CreateDefaultSubobject<UDirectionalLightComponent>(TEXT("AfternoonKey"));Sun->SetupAttachment(Scene);
-    Sun->SetRelativeRotation(FRotator(-52,-24,0));Sun->SetIntensity(3.f);
+    Sun->SetMobility(EComponentMobility::Movable);Sun->LightSourceAngle=1.5f;Sun->SetForwardShadingPriority(1);
+    Sun->SetRelativeRotation(FRotator(-52,-24,0));Sun->SetIntensity(6.f);
     Sun->SetLightColor(FLinearColor(1.f,.89f,.74f));Sun->CastShadows=true;
+    auto* Fill=CreateDefaultSubobject<UDirectionalLightComponent>(TEXT("EquipmentFill"));Fill->SetupAttachment(Scene);
+    Fill->SetMobility(EComponentMobility::Movable);Fill->SetRelativeRotation(FRotator(-58,156,0));
+    Fill->SetIntensity(2.5f);Fill->SetLightColor(FLinearColor(.64f,.76f,.90f));Fill->CastShadows=false;
+    Fill->bAtmosphereSunLight=false;
+    Fill->SetForwardShadingPriority(0);
     auto* Sky=CreateDefaultSubobject<USkyLightComponent>(TEXT("SoftSkyFill"));Sky->SetupAttachment(Scene);
-    Sky->SetIntensity(.65f);Sky->SetLightColor(FLinearColor(.58f,.71f,.86f));Sky->bRealTimeCapture=true;
+    Sky->SetMobility(EComponentMobility::Movable);
+    Sky->SetIntensity(2.f);Sky->SetLightColor(FLinearColor(.72f,.81f,.94f));Sky->bRealTimeCapture=true;
     auto* Atmosphere=CreateDefaultSubobject<USkyAtmosphereComponent>(TEXT("RiftSky"));Atmosphere->SetupAttachment(Scene);
     auto* Fog=CreateDefaultSubobject<UExponentialHeightFogComponent>(TEXT("DistantIslandHaze"));Fog->SetupAttachment(Scene);
     Fog->SetFogDensity(.008f);Fog->SetFogInscatteringColor(FLinearColor(.12f,.20f,.27f));Fog->SetStartDistance(3800.f);
@@ -120,10 +127,17 @@ UHierarchicalInstancedStaticMeshComponent* ARiftArenaPresentation::Instances(FNa
     Component->SetStaticMesh(Mesh);Component->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     Component->SetGenerateOverlapEvents(false);Component->SetMobility(EComponentMobility::Static);
     Component->RegisterComponent();AddInstanceComponent(Component);Environment.Add(Key,Component);
+    if (MeshId==TEXT("floor_tile") && Team!=9)
+        for (int32 Index=0;Index<Component->GetNumMaterials();++Index)
+            if (auto* Dynamic=Component->CreateDynamicMaterialInstance(Index))
+            {Dynamic->SetScalarParameterValue(TEXT("RiftGridStrength"),.35f);Dynamic->SetScalarParameterValue(TEXT("RiftBaseColorGain"),1.12f);}
     if (Team>=0)
         for (int32 Index=0;Index<Component->GetNumMaterials();++Index)
             if (auto* Dynamic=Component->CreateDynamicMaterialInstance(Index))
+            {
                 Dynamic->SetVectorParameterValue(TEXT("TeamColor"),ARiftUnitVisual::TeamColor(Team==0?rift::Team::Player:rift::Team::Enemy));
+                Dynamic->SetScalarParameterValue(TEXT("RiftTeamEmissive"),.12f);
+            }
     return Component;
 }
 void ARiftArenaPresentation::Place(FName Mesh,FVector Position,FRotator Rotation,FVector Scale,int32 Team)
@@ -177,7 +191,7 @@ void ARiftArenaPresentation::ConstructArena()
         }
     }
     // The authored eroded island supports the field rather than a stock cube.
-    Place(TEXT("distant_island"),FVector(0,0,-125),FRotator::ZeroRotator,FVector(12,18,3.8));
+    Place(TEXT("distant_island"),FVector(0,0,-125),FRotator::ZeroRotator,FVector(10.5,14,3.8));
     for (int32 Index=0;Index<6;++Index)
     {
         const float Angle=Index*UE_TWO_PI/6;

@@ -398,7 +398,9 @@ void Match::FixedStep(double dt) {
                 Distance(e.position, h.position) <= h.radius + e.radius * .2)
                 ++occupants;
         auto &tele = state_.telemetry[Index(h.team)][h.cardId];
-        const double activeDt = std::min(dt, std::max(0., h.expires - old));
+        // AI may cast at this tick's endpoint; exposure begins at the cast,
+        // rather than crediting occupants for time before the hazard existed.
+        const double activeDt = std::max(0., std::min(state_.elapsed, h.expires) - std::max(old, h.born));
         tele.zoneOccupancy += occupants * activeDt;
         tele.zoneSeconds += activeDt;
         while (h.nextTick <= state_.elapsed + Epsilon && h.nextTick <= h.expires + Epsilon && h.ticks < 5) {
@@ -548,7 +550,9 @@ bool Match::Play(Team team, int index, Vec2 p, const std::string &reason) {
         return false;
     const PlayId play = nextPlay_++;
     const double before = state_.aether[t];
-    state_.aether[t] -= c->cost;
+    // Affordability permits floating-point residue at the exact cost boundary.
+    // Never persist a negative bank after paying an affordable canonical cost.
+    state_.aether[t] = std::max(0.0, state_.aether[t] - c->cost);
     state_.spent[t] += c->cost;
     auto &tele = state_.telemetry[t][c->id];
     tele.spent += c->cost;

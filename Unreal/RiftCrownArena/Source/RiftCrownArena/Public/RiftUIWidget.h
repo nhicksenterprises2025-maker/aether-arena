@@ -36,7 +36,7 @@ public:
     TArray<FVector2D> SeriesA,SeriesB;
     FString Caption;
 protected:
-    void NativeConstruct()override;
+    TSharedRef<SWidget> RebuildWidget()override;
     int32 NativePaint(const FPaintArgs&,const FGeometry&,const FSlateRect&,FSlateWindowElementList&,int32,const FWidgetStyle&,bool)const override;
 };
 
@@ -57,6 +57,7 @@ public:
     UFUNCTION(BlueprintCallable) bool PlacementIsSandbox()const{return bSpawnArmed;}
     UFUNCTION(BlueprintCallable) int32 PlacementTeam()const;
 protected:
+    TSharedRef<SWidget> RebuildWidget()override;
     void NativeConstruct()override;
     void NativeTick(const FGeometry&,float Delta)override;
 private:
@@ -74,6 +75,7 @@ private:
     UPROPERTY() TObjectPtr<UTextBlock> ReplayPosition;
     UPROPERTY() TObjectPtr<URiftValueSlider> ReplaySeek;
     UPROPERTY() TArray<TObjectPtr<UTextBlock>> HandText;
+    UPROPERTY() TArray<TObjectPtr<UTextBlock>> HandCost;
     UPROPERTY() TArray<TObjectPtr<URiftActionButton>> HandButtons;
     UPROPERTY() TObjectPtr<UEditableTextBox> NameInput;
     UPROPERTY() TObjectPtr<UEditableTextBox> PresetName;
@@ -102,7 +104,7 @@ private:
     TArray<FString> HandArtIds;
     TSharedPtr<FJsonObject> MetaDetail;
     int32 HandIndex=-1,PresetIndex=0,MinSample=0;
-    bool bDev=false,bSpawnArmed=false,bSortDescending=true,bMetaPaused=true,bDraftLoaded=false,bEndPresented=false;
+    bool bDev=false,bSpawnArmed=false,bSortDescending=true,bMetaPaused=true,bDraftLoaded=false,bEndPresented=false,bEndReplaySaving=false,bReplayListSaving=false;
     float RefreshClock=0,MetaClock=0;
     TArray<FString> Draft;
     UTextBlock* Text(const FString&,int32 Size=16,FLinearColor Color=FLinearColor(.9f,.9f,.85f,1));

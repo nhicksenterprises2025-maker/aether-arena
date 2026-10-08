@@ -108,9 +108,34 @@ FString URiftEditorAssetLibrary::InspectImportedAssetsJSON()
         {
             FVector Bounds=Mesh->GetBounds().BoxExtent*2;O->SetNumberField(TEXT("widthCm"),Bounds.Y);O->SetNumberField(TEXT("lengthCm"),Bounds.X);O->SetNumberField(TEXT("heightCm"),Bounds.Z);
             O->SetNumberField(TEXT("bones"),Mesh->GetRefSkeleton().GetNum());O->SetNumberField(TEXT("lods"),Mesh->GetLODNum());O->SetBoolField(TEXT("physics"),Mesh->GetPhysicsAsset()!=nullptr);
+            if(auto* Physics=Mesh->GetPhysicsAsset())
+            {
+                O->SetNumberField(TEXT("physicsBodies"),Physics->SkeletalBodySetups.Num());O->SetNumberField(TEXT("physicsConstraints"),Physics->ConstraintSetup.Num());
+                O->SetNumberField(TEXT("physicsObjectFlags"),uint32(Physics->GetFlags()));O->SetNumberField(TEXT("physicsPackageFlags"),uint32(Physics->GetOutermost()->GetPackageFlags()));
+                O->SetBoolField(TEXT("physicsIsAsset"),Physics->IsAsset());auto& Registry=FModuleManager::LoadModuleChecked<FAssetRegistryModule>(TEXT("AssetRegistry")).Get();
+                O->SetBoolField(TEXT("physicsRegisteredOnDisk"),Registry.DoesPackageExistOnDisk(Physics->GetOutermost()->GetFName()));
+            }
             if(Bounds.Z<15||Bounds.Z>600)Errors.Add(MakeShared<FJsonValueString>(TEXT("Unexpected imported character height ")+Id));
         }
         Entries.Add(MakeShared<FJsonValueObject>(O));
     }
     Report->SetArrayField(TEXT("cards"),Entries);Report->SetArrayField(TEXT("errors"),Errors);return Json(Report);
+}
+
+FString URiftEditorAssetLibrary::FinalizeImportedPhysicsAssetsJSON()
+{
+    auto Report=MakeShared<FJsonObject>();TArray<TSharedPtr<FJsonValue>> Entries,Errors;
+    const TCHAR* Ids[]={TEXT("ironclad"),TEXT("ember_archer"),TEXT("twin_blades"),TEXT("boulderback"),TEXT("arc_mage"),TEXT("rambeast"),TEXT("sky_manta"),TEXT("vampire_bats"),TEXT("frost_fang"),TEXT("storm_raven"),TEXT("tower_archer")};
+    for(const auto* Id:Ids)
+    {
+        auto* Mesh=LoadObject<USkeletalMesh>(nullptr,*FString::Printf(TEXT("/Game/Rift/Characters/%s/SK_%s.SK_%s"),Id,Id,Id));
+        auto* Physics=Mesh?Mesh->GetPhysicsAsset():nullptr;
+        if(!Physics||Physics->SkeletalBodySetups.IsEmpty()){Errors.Add(MakeShared<FJsonValueString>(FString(TEXT("Missing generated physics bodies: "))+Id));continue;}
+        auto Entry=MakeShared<FJsonObject>();Entry->SetStringField(TEXT("id"),Id);Entry->SetNumberField(TEXT("originalFlags"),uint32(Physics->GetFlags()));
+        Physics->ClearFlags(RF_Transient);Physics->SetFlags(RF_Public|RF_Standalone);Physics->MarkPackageDirty();FAssetRegistryModule::AssetCreated(Physics);
+        Entry->SetNumberField(TEXT("bodies"),Physics->SkeletalBodySetups.Num());Entry->SetBoolField(TEXT("saved"),SaveAsset(Physics));
+        if(!Entry->GetBoolField(TEXT("saved")))Errors.Add(MakeShared<FJsonValueString>(FString(TEXT("Could not persist physics asset: "))+Id));
+        Entries.Add(MakeShared<FJsonValueObject>(Entry));
+    }
+    Report->SetArrayField(TEXT("physicsAssets"),Entries);Report->SetArrayField(TEXT("errors"),Errors);return Json(Report);
 }

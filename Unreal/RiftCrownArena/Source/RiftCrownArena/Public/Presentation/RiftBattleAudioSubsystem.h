@@ -5,6 +5,7 @@
 
 class UAudioComponent;
 class USoundBase;
+class URiftUIWidget;
 
 UCLASS()
 class RIFTCROWNARENA_API URiftBattleAudioSubsystem : public UGameInstanceSubsystem
@@ -17,6 +18,8 @@ public:
     void RefreshVolumes();
     void PlayEffect(FName Name, FVector Position, float Gain=1.f, float Pitch=1.f);
     UFUNCTION(BlueprintCallable) void PlayUI(FName Name=TEXT("ui_click"));
+    FString RunAudioSmokeJSON(URiftUIWidget* Interface);
+    void RunAudioSmoke(URiftUIWidget* Interface,TFunction<void(const FString&)> Completed);
 private:
     USoundBase* Sound(FName Name);
     UPROPERTY() TMap<FName,TObjectPtr<USoundBase>> Sounds;

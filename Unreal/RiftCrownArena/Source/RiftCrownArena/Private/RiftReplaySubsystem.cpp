@@ -1,18 +1,73 @@
 #include "RiftReplaySubsystem.h"
+#include "Async/Async.h"
 #include "Engine/GameInstance.h"
 #include "Engine/World.h"
 #include "HAL/FileManager.h"
+#include "Misc/Compression.h"
+#include "Misc/Crc.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
+#include "Policies/CondensedJsonPrintPolicy.h"
+#include "RiftDiagnostics.h"
 #include "RiftMatchSubsystem.h"
 #include "RiftProfileSubsystem.h"
 #include "Serialization/JsonSerializer.h"
 #include <limits>
 #include <type_traits>
 
+struct FRiftReplayWriteJob {
+    FString Filename, Path, Error;
+    TFuture<void> Work;
+    bool Saved = false;
+    double ValidateMS = 0, SerializeMS = 0, CompressMS = 0, WriteMS = 0;
+    int32 Events = 0, Samples = 0, Characters = 0, StoredBytes = 0;
+};
+
 namespace {
 constexpr int64 ReplayLimit = 64 * 1024 * 1024;
+constexpr int32 DecodedLimit = 256 * 1024 * 1024, ArchiveHeaderSize = 24;
+constexpr uint8 ArchiveMagic[] = {'R', 'I', 'F', 'T', 'R', 'E', 'P', '1'};
 constexpr double MaxTime = 3600;
+void ArchiveUInt32(uint8 *At, uint32 Value) {
+    for (int I = 0; I < 4; ++I)
+        At[I] = uint8(Value >> (8 * I));
+}
+uint32 ReadArchiveUInt32(const uint8 *At) {
+    uint32 Value = 0;
+    for (int I = 0; I < 4; ++I)
+        Value |= uint32(At[I]) << (8 * I);
+    return Value;
+}
+bool EncodeRecording(const FString &Text, TArray<uint8> &Archive, FString &Error) {
+    FTCHARToUTF8 UTF8(*Text);
+    const int32 RawBytes = UTF8.Length();
+    if (RawBytes <= 0 || RawBytes > DecodedLimit) {
+        Error = TEXT("Replay exceeds the 256 MB decoded JSON limit.");
+        return false;
+    }
+    int32 CompressedBytes = FCompression::CompressMemoryBound(NAME_Zlib, RawBytes);
+    if (CompressedBytes <= 0) {
+        Error = TEXT("Replay compression is unavailable.");
+        return false;
+    }
+    Archive.SetNumUninitialized(ArchiveHeaderSize + CompressedBytes);
+    if (!FCompression::CompressMemory(NAME_Zlib, Archive.GetData() + ArchiveHeaderSize, CompressedBytes,
+                                      UTF8.Get(), RawBytes) ||
+        int64(CompressedBytes) + ArchiveHeaderSize > ReplayLimit) {
+        Archive.Reset();
+        Error = TEXT("Replay compression failed or exceeds the 64 MB native archive limit.");
+        return false;
+    }
+    Archive.SetNum(ArchiveHeaderSize + CompressedBytes, EAllowShrinking::No);
+    FMemory::Memcpy(Archive.GetData(), ArchiveMagic, UE_ARRAY_COUNT(ArchiveMagic));
+    ArchiveUInt32(Archive.GetData() + 8, uint32(RawBytes));
+    ArchiveUInt32(Archive.GetData() + 12, FCrc::MemCrc32(UTF8.Get(), RawBytes));
+    ArchiveUInt32(Archive.GetData() + 16, uint32(CompressedBytes));
+    ArchiveUInt32(Archive.GetData() + 20,
+                  FCrc::MemCrc32(Archive.GetData() + ArchiveHeaderSize, CompressedBytes));
+    Error.Empty();
+    return true;
+}
 FString FS(const std::string &S) {
     return UTF8_TO_TCHAR(S.c_str());
 }
@@ -160,16 +215,20 @@ struct Reader {
     X(spent)                                                                                                 \
     X(troopDamage)                                                                                           \
     X(towerDamage)                                                                                           \
-    X(buildingDamage) X(damageTaken) X(kills) X(deaths) X(killValue) X(lifetime) X(slowTime) X(stunTime)     \
-        X(initialDamage) X(dotDamage) X(auraDamage) X(overkill) X(prevented) X(spellValue) X(zoneOccupancy)  \
-            X(zoneSeconds) X(crownContribution) X(buildingLifetime) X(buildingCapacity)                      \
-                X(slowTrackedSeconds) X(stunTrackedSeconds)
+    X(buildingDamage)                                                                                        \
+    X(damageTaken)                                                                                           \
+    X(kills)                                                                                                 \
+    X(deaths)                                                                                                \
+    X(killValue) X(lifetime) X(slowTime) X(stunTime) X(initialDamage) X(dotDamage) X(auraDamage) X(overkill) \
+        X(prevented) X(spellValue) X(zoneOccupancy) X(zoneSeconds) X(crownContribution) X(buildingLifetime)  \
+            X(buildingCapacity) X(slowTrackedSeconds) X(stunTrackedSeconds)
 #define TELEMETRY_COUNTS(X)                                                                                  \
     X(plays)                                                                                                 \
     X(spawns)                                                                                                \
     X(surviving)                                                                                             \
-    X(pulls) X(connected) X(targets) X(openingPlays) X(firstPlays) X(overtimePlays) X(stunned) X(dotTicks)   \
-        X(openingEligible)
+    X(pulls)                                                                                                 \
+    X(connected)                                                                                             \
+    X(targets) X(openingPlays) X(firstPlays) X(overtimePlays) X(stunned) X(dotTicks) X(openingEligible)
 TSharedRef<FJsonObject> Telemetry(const rift::CardTelemetry &T) {
     auto O = MakeShared<FJsonObject>();
 #define FIELD(K) O->SetNumberField(TEXT(#K), double(T.K));
@@ -178,7 +237,7 @@ TSharedRef<FJsonObject> Telemetry(const rift::CardTelemetry &T) {
     FIELD(placementX)
     FIELD(placementZ)
 #undef FIELD
-        return O;
+    return O;
 }
 bool ReadTelemetry(const TSharedPtr<FJsonObject> &O, rift::CardTelemetry &T) {
     Reader R(O);
@@ -194,16 +253,23 @@ bool ReadTelemetry(const TSharedPtr<FJsonObject> &O, rift::CardTelemetry &T) {
     X(id)                                                                                                    \
     X(target)                                                                                                \
     X(hardLock)                                                                                              \
-    X(forcedTarget) X(playId) X(slowSource) X(stunSource) X(hp) X(maxHp) X(radius) X(cooldown) X(born)       \
-        X(died) X(slowPct) X(slowUntil) X(stunUntil) X(forcedUntil) X(chargeTime) X(auraClock)               \
-            X(repathClock) X(scanClock) X(stuckClock) X(stuckTime) X(stuckDistance) X(slowTrackedFrom)       \
-                X(stunTrackedFrom) X(lane) X(bridge) X(memberCount)
+    X(forcedTarget)                                                                                          \
+    X(playId)                                                                                                \
+    X(slowSource)                                                                                            \
+    X(stunSource)                                                                                            \
+    X(hp) X(maxHp) X(radius) X(cooldown) X(born) X(died) X(slowPct) X(slowUntil) X(stunUntil) X(forcedUntil) \
+        X(chargeTime) X(auraClock) X(repathClock) X(scanClock) X(stuckClock) X(stuckTime) X(stuckDistance)   \
+            X(slowTrackedFrom) X(stunTrackedFrom) X(lane) X(bridge) X(memberCount)
 #define EVENT_NUMBERS(X)                                                                                     \
     X(sequence)                                                                                              \
     X(time)                                                                                                  \
     X(source)                                                                                                \
-    X(target) X(playId) X(amount) X(requested) X(overkill) X(hp) X(maxHp) X(aetherBefore) X(aetherAfter)     \
-        X(until) X(targetCost) X(handIndex) X(count) X(crowns)
+    X(target)                                                                                                \
+    X(playId)                                                                                                \
+    X(amount)                                                                                                \
+    X(requested)                                                                                             \
+    X(overkill) X(hp) X(maxHp) X(aetherBefore) X(aetherAfter) X(until) X(targetCost) X(handIndex) X(count)   \
+        X(crowns)
 TSharedRef<FJsonObject> EventJSON(const rift::Event &E) {
     auto O = MakeShared<FJsonObject>();
     O->SetStringField(TEXT("type"), FS(E.type));
@@ -216,7 +282,7 @@ TSharedRef<FJsonObject> EventJSON(const rift::Event &E) {
     FIELD(targetTeam)
     FIELD(targetKind)
 #undef FIELD
-        O->SetBoolField(TEXT("sandbox"), E.sandbox);
+    O->SetBoolField(TEXT("sandbox"), E.sandbox);
     O->SetBoolField(TEXT("openingHand"), E.openingHand);
     O->SetBoolField(TEXT("firstPlay"), E.firstPlay);
     O->SetBoolField(TEXT("overtime"), E.overtime);
@@ -265,13 +331,58 @@ FString SafeReplayPath(const FString &Name) {
                            FPaths::GetCleanFilename(Name));
 }
 bool ReadRecordingFile(const FString &Filename, TSharedPtr<FJsonObject> &Out, FString &Text, FString &Error) {
-    const int64 Size = IFileManager::Get().FileSize(*Filename);
-    if (Size < 0 || Size > ReplayLimit) {
-        Error = TEXT("Replay is missing or exceeds the 64 MB limit.");
+    TUniquePtr<FArchive> File(IFileManager::Get().CreateFileReader(*Filename));
+    const int64 Size = File ? File->TotalSize() : -1;
+    if (Size <= 0 || Size > DecodedLimit) {
+        Error = TEXT("Replay is missing or exceeds the 256 MB JSON input limit.");
         return false;
     }
-    if (!FFileHelper::LoadFileToString(Text, *Filename) ||
-        !FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Text), Out)) {
+    uint8 Header[ArchiveHeaderSize] = {};
+    if (Size >= ArchiveHeaderSize)
+        File->Serialize(Header, ArchiveHeaderSize);
+    const bool Native = FPaths::GetExtension(Filename).Equals(TEXT("riftreplay"), ESearchCase::IgnoreCase) ||
+                        FMemory::Memcmp(Header, ArchiveMagic, 7) == 0;
+    if (Native) {
+        if (Size <= ArchiveHeaderSize || Size > ReplayLimit ||
+            FMemory::Memcmp(Header, ArchiveMagic, UE_ARRAY_COUNT(ArchiveMagic)) != 0) {
+            Error = TEXT("Invalid, unsupported or oversized native replay archive header.");
+            return false;
+        }
+        const uint32 RawBytes = ReadArchiveUInt32(Header + 8), CRC = ReadArchiveUInt32(Header + 12),
+                     CompressedBytes = ReadArchiveUInt32(Header + 16),
+                     CompressedCRC = ReadArchiveUInt32(Header + 20);
+        if (RawBytes == 0 || RawBytes > uint32(DecodedLimit)) {
+            Error = TEXT("Native replay declares an unsupported decoded JSON size.");
+            return false;
+        }
+        if (int64(CompressedBytes) != Size - ArchiveHeaderSize) {
+            Error = TEXT("Native replay payload size does not match its header.");
+            return false;
+        }
+        TArray<uint8> Compressed, Raw;
+        Compressed.SetNumUninitialized(int32(Size - ArchiveHeaderSize));
+        File->Serialize(Compressed.GetData(), Compressed.Num());
+        if (File->IsError() || FCrc::MemCrc32(Compressed.GetData(), Compressed.Num()) != CompressedCRC) {
+            Error = TEXT("Native replay compressed payload checksum is invalid.");
+            return false;
+        }
+        Raw.SetNumUninitialized(int32(RawBytes));
+        if (!FCompression::UncompressMemory(NAME_Zlib, Raw.GetData(), RawBytes, Compressed.GetData(),
+                                            Compressed.Num()) ||
+            FCrc::MemCrc32(Raw.GetData(), Raw.Num()) != CRC) {
+            Error = TEXT("Native replay payload is truncated or corrupt.");
+            return false;
+        }
+        FUTF8ToTCHAR Decoded(reinterpret_cast<const ANSICHAR *>(Raw.GetData()), Raw.Num());
+        Text = FString(Decoded.Length(), Decoded.Get());
+    } else {
+        File.Reset();
+        if (!FFileHelper::LoadFileToString(Text, *Filename)) {
+            Error = TEXT("Unreadable replay JSON.");
+            return false;
+        }
+    }
+    if (!FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Text), Out)) {
         Error = TEXT("Unreadable replay JSON.");
         return false;
     }
@@ -358,7 +469,11 @@ TSharedRef<FJsonObject> URiftReplaySubsystem::SnapshotJSON(const rift::Snapshot 
         FIELD(id)
         FIELD(source)
         FIELD(target)
-        FIELD(playId) FIELD(team) FIELD(damage) FIELD(splash) FIELD(remaining) FIELD(duration)
+        FIELD(playId)
+        FIELD(team)
+        FIELD(damage)
+        FIELD(splash)
+        FIELD(remaining) FIELD(duration)
 #undef FIELD
             R->SetStringField(TEXT("cardId"), FS(P.cardId));
         Point(R, TEXT("origin"), P.origin);
@@ -372,9 +487,12 @@ TSharedRef<FJsonObject> URiftReplaySubsystem::SnapshotJSON(const rift::Snapshot 
         FIELD(playId)
         FIELD(team)
         FIELD(radius)
-        FIELD(born) FIELD(nextTick) FIELD(expires) FIELD(ticks)
+        FIELD(born)
+        FIELD(nextTick)
+        FIELD(expires)
+        FIELD(ticks)
 #undef FIELD
-            R->SetStringField(TEXT("cardId"), FS(H.cardId));
+        R->SetStringField(TEXT("cardId"), FS(H.cardId));
         Point(R, TEXT("position"), H.position);
         Hazards.Add(MakeShared<FJsonValueObject>(R));
     }
@@ -498,7 +616,11 @@ bool URiftReplaySubsystem::SnapshotFromJSON(const TSharedPtr<FJsonObject> &O, ri
             FIELD(id)
             FIELD(source)
             FIELD(target)
-            FIELD(playId) FIELD(damage) FIELD(splash) FIELD(remaining) FIELD(duration)
+            FIELD(playId)
+            FIELD(damage)
+            FIELD(splash)
+            FIELD(remaining)
+            FIELD(duration)
 #undef FIELD
                 T.Number(TEXT("team"), P.team, 0, 1, true);
             if (!P.cardId.empty() && !rift::FindCard(P.cardId))
@@ -516,9 +638,11 @@ bool URiftReplaySubsystem::SnapshotFromJSON(const TSharedPtr<FJsonObject> &O, ri
             FIELD(playId)
             FIELD(radius)
             FIELD(born)
-            FIELD(nextTick) FIELD(expires) FIELD(ticks)
+            FIELD(nextTick)
+            FIELD(expires)
+            FIELD(ticks)
 #undef FIELD
-                T.Number(TEXT("team"), H.team, 0, 1, true);
+            T.Number(TEXT("team"), H.team, 0, 1, true);
             if (!rift::FindCard(H.cardId))
                 T.Valid = false;
             R.Valid &= T.Valid;
@@ -774,33 +898,99 @@ void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E) {
         P.splash = Card ? Card->splash : 0;
         P.duration = P.remaining = FMath::Max(0.0, E.until - E.time);
         State.projectiles.push_back(P);
-    } else if (E.type == "hazard_tick")
+    } else if (E.type == "hazard_tick") {
         for (auto &H : State.hazards)
             if (H.playId == E.playId) {
                 ++H.ticks;
                 H.nextTick += 1;
                 break;
-            } else if (E.type == "phase") {
-                State.phase = E.reason == "overtime" ? rift::Phase::Overtime : rift::Phase::Tiebreaker;
-                State.phaseElapsed = 0;
-                State.timeRemaining = State.phase == rift::Phase::Overtime ? 120 : 0;
-                if (State.phase == rift::Phase::Tiebreaker) {
-                    State.projectiles.clear();
-                    State.hazards.clear();
-                }
-            } else if (E.type == "match_end") {
-                State.phase = rift::Phase::Finished;
-                State.winner = int(E.amount);
-                State.resultReason = E.reason;
-            } else if (E.type == "ai_decision") {
-                auto &AI = State.ai[Team];
-                AI.style = E.cardId;
-                const auto P = E.reason.find(": ");
-                AI.decision = E.reason.substr(0, P);
-                AI.reason = P == std::string::npos ? E.reason : E.reason.substr(P + 2);
             }
+    } else if (E.type == "phase") {
+        State.phase = E.reason == "overtime" ? rift::Phase::Overtime : rift::Phase::Tiebreaker;
+        State.phaseElapsed = 0;
+        State.timeRemaining = State.phase == rift::Phase::Overtime ? 120 : 0;
+        if (State.phase == rift::Phase::Tiebreaker) {
+            State.projectiles.clear();
+            State.hazards.clear();
+        }
+    } else if (E.type == "match_end") {
+        State.phase = rift::Phase::Finished;
+        State.winner = int(E.amount);
+        State.resultReason = E.reason;
+    } else if (E.type == "ai_decision") {
+        auto &AI = State.ai[Team];
+        AI.style = E.cardId;
+        const auto P = E.reason.find(": ");
+        AI.decision = E.reason.substr(0, P);
+        AI.reason = P == std::string::npos ? E.reason : E.reason.substr(P + 2);
+    }
 }
 } // namespace
+void URiftReplaySubsystem::Initialize(FSubsystemCollectionBase &Collection) {
+    Collection.InitializeDependency<URiftProfileSubsystem>();
+    Super::Initialize(Collection);
+}
+void URiftReplaySubsystem::Deinitialize() {
+    // World EndPlay owns the final recording save. GameInstance services may
+    // already be removed here, so cleanup must not call another subsystem.
+    // World EndPlay flushes and publishes while Profile is alive. Late teardown
+    // waits for filesystem jobs only and never looks up another GI subsystem.
+    CompleteWrites(true, false);
+    Recording.Reset();
+    Loaded.Reset();
+    RecordedEvents.Reset();
+    RecordedSamples.Reset();
+    PlaybackEvents.Reset();
+    PlaybackTime = PlaybackDuration = 0;
+    EventCursor = 0;
+    Super::Deinitialize();
+}
+bool URiftReplaySubsystem::IsTickable() const {
+    return !IsTemplate() && IsSaving();
+}
+TStatId URiftReplaySubsystem::GetStatId() const {
+    RETURN_QUICK_DECLARE_CYCLE_STAT(URiftReplaySubsystem, STATGROUP_Tickables);
+}
+void URiftReplaySubsystem::Tick(float DeltaTime) {
+    CompleteWrites(false);
+}
+void URiftReplaySubsystem::CompleteWrites(bool Wait, bool Publish) {
+    // Publish in recording order even when a later small file finishes first.
+    while (!PendingWrites.IsEmpty()) {
+        auto Job = PendingWrites[0];
+        if (!Wait && !Job->Work.IsReady())
+            break;
+        Job->Work.Get();
+        PendingWrites.RemoveAt(0);
+        if (Job->Saved) {
+            if (Job->Filename == LatestQueuedFilename) {
+                LatestFilename = Job->Filename;
+                LastError.Empty();
+            }
+            auto *GI = Publish ? GetGameInstance() : nullptr;
+            auto *Profile = GI ? GI->GetSubsystem<URiftProfileSubsystem>() : nullptr;
+            if (Profile) {
+                Profile->ReplayFiles.AddUnique(Job->Filename);
+                if (!Profile->Save())
+                    RIFT_LOG(LogRift, Warning, TEXT("Replay saved but profile index could not be saved: %s"),
+                             *Profile->LastError);
+            }
+        } else {
+            if (Job->Filename == LatestQueuedFilename)
+                LastError = Job->Error;
+            RIFT_LOG(LogRift, Warning, TEXT("Replay could not be saved: %s"), *Job->Error);
+        }
+        RIFT_LOG(LogRift, Log,
+                 TEXT("Replay write %s: saved=%d events=%d samples=%d chars=%d stored=%d validate=%.2fms "
+                      "serialize=%.2fms compress=%.2fms write=%.2fms"),
+                 *Job->Filename, Job->Saved, Job->Events, Job->Samples, Job->Characters, Job->StoredBytes,
+                 Job->ValidateMS, Job->SerializeMS, Job->CompressMS, Job->WriteMS);
+    }
+}
+bool URiftReplaySubsystem::FlushPendingWrites() {
+    CompleteWrites(true);
+    return LastError.IsEmpty();
+}
 void URiftReplaySubsystem::BeginRecording(const rift::MatchOptions &Options, bool Training) {
     Recording = MakeShared<FJsonObject>();
     RecordedEvents.Reset();
@@ -848,21 +1038,47 @@ void URiftReplaySubsystem::EndRecording(const rift::Snapshot &State, bool Abando
     Recording->SetObjectField(TEXT("result"), SnapshotJSON(State));
     Recording->SetArrayField(TEXT("events"), RecordedEvents);
     Recording->SetArrayField(TEXT("states"), RecordedSamples);
-    FString Text;
-    LatestFilename = S(Recording, TEXT("id")) + TEXT(".json");
-    if (ValidateRecording(Recording, LastError) &&
-        FJsonSerializer::Serialize(Recording.ToSharedRef(), TJsonWriterFactory<>::Create(&Text)) &&
-        URiftProfileSubsystem::AtomicWrite(SafeReplayPath(LatestFilename), Text, LastError)) {
-        auto *GI = GetGameInstance();
-        auto *P = GI ? GI->GetSubsystem<URiftProfileSubsystem>() : nullptr;
-        if (P) {
-            P->ReplayFiles.AddUnique(LatestFilename);
-            P->Save();
-        }
-    }
-    Recording.Reset();
+    auto Job = MakeShared<FRiftReplayWriteJob, ESPMode::ThreadSafe>();
+    Job->Filename = S(Recording, TEXT("id")) + TEXT(".riftreplay");
+    Job->Path = SafeReplayPath(Job->Filename);
+    LatestQueuedFilename = Job->Filename;
+    Job->Events = RecordedEvents.Num();
+    Job->Samples = RecordedSamples.Num();
+    // Transfer the completed JSON tree. No UObject, live recording or profile is read by the worker.
+    auto Document = MoveTemp(Recording);
     RecordedEvents.Reset();
     RecordedSamples.Reset();
+    LatestFilename.Empty();
+    LastError.Empty();
+    Job->Work = Async(EAsyncExecution::ThreadPool, [Job, Document = MoveTemp(Document)]() {
+        FString Text;
+        double Started = FPlatformTime::Seconds();
+        const bool Valid = URiftReplaySubsystem::ValidateRecording(Document, Job->Error);
+        Job->ValidateMS = (FPlatformTime::Seconds() - Started) * 1000;
+        if (!Valid)
+            return;
+        Started = FPlatformTime::Seconds();
+        const bool Serialized = FJsonSerializer::Serialize(
+            Document.ToSharedRef(),
+            TJsonWriterFactory<TCHAR, TCondensedJsonPrintPolicy<TCHAR>>::Create(&Text));
+        Job->SerializeMS = (FPlatformTime::Seconds() - Started) * 1000;
+        Job->Characters = Text.Len();
+        if (!Serialized) {
+            Job->Error = TEXT("Replay JSON could not be serialized.");
+            return;
+        }
+        TArray<uint8> Archive;
+        Started = FPlatformTime::Seconds();
+        const bool Encoded = EncodeRecording(Text, Archive, Job->Error);
+        Job->CompressMS = (FPlatformTime::Seconds() - Started) * 1000;
+        if (!Encoded)
+            return;
+        Job->StoredBytes = Archive.Num();
+        Started = FPlatformTime::Seconds();
+        Job->Saved = URiftProfileSubsystem::AtomicWriteBytes(Job->Path, Archive, Job->Error);
+        Job->WriteMS = (FPlatformTime::Seconds() - Started) * 1000;
+    });
+    PendingWrites.Add(MoveTemp(Job));
 }
 bool URiftReplaySubsystem::OpenReplay(const FString &Filename) {
     FString Text;
@@ -1031,8 +1247,10 @@ bool URiftReplaySubsystem::ImportReplay(const FString &Filename) {
     TSharedPtr<FJsonObject> O;
     if (!ReadRecordingFile(Filename, O, Text, LastError))
         return false;
-    const FString Name = FGuid::NewGuid().ToString(EGuidFormats::Digits) + TEXT(".json");
-    if (!URiftProfileSubsystem::AtomicWrite(SafeReplayPath(Name), Text, LastError))
+    const FString Name = FGuid::NewGuid().ToString(EGuidFormats::Digits) + TEXT(".riftreplay");
+    TArray<uint8> Archive;
+    if (!EncodeRecording(Text, Archive, LastError) ||
+        !URiftProfileSubsystem::AtomicWriteBytes(SafeReplayPath(Name), Archive, LastError))
         return false;
     auto *GI = GetGameInstance();
     auto *P = GI ? GI->GetSubsystem<URiftProfileSubsystem>() : nullptr;

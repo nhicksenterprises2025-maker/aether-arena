@@ -48,24 +48,40 @@ int32 URiftBattleOverlay::NativePaint(const FPaintArgs& Args,const FGeometry& Ge
             Text(Position+FVector2D(-7,8),FString::Printf(TEXT("%.0fs"),FMath::Max(0.,Hazard.expires-State->elapsed)),FLinearColor(1.f,.68f,.39f,.9f));
     }
     TArray<FSlateRect> Occupied;
-    for (const auto& Entity:State->entities)
+    for (int32 LabelPriority=0;LabelPriority<3;++LabelPriority) for (const auto& Entity:State->entities)
     {
+        const int32 EntityPriority=Entity.kind==rift::EntityKind::Troop?2:Entity.kind==rift::EntityKind::Building?1:0;
+        if (EntityPriority!=LabelPriority) continue;
         if (Entity.dead) continue;const auto* Visual=Presentation->Visual(Entity.id);if (!Visual) continue;
         FVector2D Position;if (!Project(Visual->HealthLocation(),Position)) continue;
         if (Position.X<0 || Position.Y<0 || Position.X>Extent.X || Position.Y>Extent.Y) continue;
         const bool Tower=Entity.kind!=rift::EntityKind::Troop;
-        const float Width=Tower?74.f:Entity.memberCount>=5?32.f:48.f;
-        const float Height=Tower?6.f:4.f;
+        const float Width=Tower?74.f:Entity.memberCount>=5?18.f:Entity.memberCount>1?38.f:48.f;
+        const float Height=Tower?6.f:Entity.memberCount>=5?3.f:4.f;
         Position-=FVector2D(Width*.5f,10);
-        // Separate individual swarm bars without introducing a group HP value.
-        for (int32 Attempt=0;Attempt<5;++Attempt)
+        const FVector2D Anchor=Position;
+        const bool Status=Entity.stunUntil>State->elapsed || Entity.slowUntil>State->elapsed || Entity.charged;
+        const bool Dormant=Entity.kind==rift::EntityKind::Core && !Entity.active;
+        // Reserve the numbers and statuses as well as the bar. Nearby buildings
+        // and royal towers need the same collision separation as troop swarms.
+        auto LabelArea=[&]()
+        {return FSlateRect(Position.X-2,Position.Y-(Tower?18.f:2.f),Position.X+Width+2,
+            Position.Y+Height+(Dormant||Status?19.f:5.f));};
+        for (int32 Attempt=0;Attempt<12;++Attempt)
         {
-            const FSlateRect Area(Position.X-2,Position.Y-2,Position.X+Width+2,Position.Y+Height+14);
+            const FSlateRect Area=LabelArea();
             bool Intersects=false;for (const auto& Previous:Occupied) if (FSlateRect::DoRectanglesIntersect(Area,Previous)) {Intersects=true;break;}
-            if (!Intersects || Tower) break;Position.Y-=Height+6;
+            if (!Intersects) break;
+            Position.Y-=Tower?22.f:Height+6.f;
         }
-        Occupied.Add(FSlateRect(Position.X-2,Position.Y-2,Position.X+Width+2,Position.Y+Height+3));
+        Occupied.Add(LabelArea());
         const FLinearColor Color=ARiftUnitVisual::TeamColor(Entity.team);
+        if (Anchor.Y-Position.Y>3)
+        {
+            TArray<FVector2D> Leader{Position+FVector2D(Width*.5f,Height+1),Anchor+FVector2D(Width*.5f,Height+3)};
+            FSlateDrawElement::MakeLines(Elements,Top+1,Geometry.ToPaintGeometry(),Leader,ESlateDrawEffect::None,
+                FLinearColor(Color.R,Color.G,Color.B,.35f),true,1.f);
+        }
         Box(Position-FVector2D(1,1),FVector2D(Width+2,Height+2),FLinearColor(.025f,.038f,.045f,.95f));
         Box(Position,FVector2D(Width,Height),FLinearColor(.15f,.19f,.21f,.9f));
         const float Fraction=float(FMath::Clamp(Entity.hp/FMath::Max(1.,Entity.maxHp),0.,1.));

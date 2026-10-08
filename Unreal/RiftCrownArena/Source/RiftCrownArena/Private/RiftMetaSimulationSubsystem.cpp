@@ -55,7 +55,7 @@ namespace
     FString FS(const std::string& S){return UTF8_TO_TCHAR(S.c_str());}
     bool DatasetCanResume(const TSharedPtr<FJsonObject>& Dataset)
     {
-        if(!Dataset||Number(Dataset,TEXT("schemaVersion"),-1)!=1||String(Dataset,TEXT("fingerprint"))!=URiftMetaSimulationSubsystem::Fingerprint()||String(Dataset,TEXT("model"))!=TEXT("rift-native-1")||String(Dataset,TEXT("deckPolicy"))!=TEXT("native-observed-2")||Number(Dataset,TEXT("telemetryRevision"),-1)!=2)return false;
+        if(!Dataset||Number(Dataset,TEXT("schemaVersion"),-1)!=1||String(Dataset,TEXT("fingerprint"))!=URiftMetaSimulationSubsystem::Fingerprint()||String(Dataset,TEXT("model"))!=TEXT("rift-native-1")||String(Dataset,TEXT("deckPolicy"))!=TEXT("native-observed-2")||Number(Dataset,TEXT("telemetryRevision"),-1)!=3)return false;
         const TSharedPtr<FJsonObject>* Buckets=nullptr;const TArray<TSharedPtr<FJsonValue>>* Points=nullptr;
         if(!Dataset->TryGetObjectField(TEXT("buckets"),Buckets)||!Dataset->TryGetArrayField(TEXT("checkpoints"),Points))return false;
         double Games=-1,Invalid=-1,Seed=-1;
@@ -70,7 +70,7 @@ namespace
         auto O=MakeShared<FJsonObject>();
         O->SetNumberField(TEXT("schemaVersion"),1);O->SetStringField(TEXT("id"),FGuid::NewGuid().ToString(EGuidFormats::Digits));O->SetStringField(TEXT("createdAt"),FDateTime::UtcNow().ToIso8601());
         O->SetStringField(TEXT("version"),TEXT("1.0.0"));O->SetStringField(TEXT("model"),TEXT("rift-native-1"));O->SetStringField(TEXT("deckPolicy"),TEXT("native-observed-2"));O->SetStringField(TEXT("fingerprint"),URiftMetaSimulationSubsystem::Fingerprint());
-        O->SetNumberField(TEXT("games"),0);O->SetNumberField(TEXT("invalid"),0);O->SetNumberField(TEXT("seed"),151515);O->SetNumberField(TEXT("simulationWallSeconds"),0);O->SetNumberField(TEXT("economyChecks"),0);O->SetNumberField(TEXT("economyInvalid"),0);O->SetNumberField(TEXT("maximumEconomyResidual"),0);O->SetNumberField(TEXT("telemetryRevision"),2);
+        O->SetNumberField(TEXT("games"),0);O->SetNumberField(TEXT("invalid"),0);O->SetNumberField(TEXT("seed"),151515);O->SetNumberField(TEXT("simulationWallSeconds"),0);O->SetNumberField(TEXT("economyChecks"),0);O->SetNumberField(TEXT("economyInvalid"),0);O->SetNumberField(TEXT("maximumEconomyResidual"),0);O->SetNumberField(TEXT("telemetryRevision"),3);
         O->SetObjectField(TEXT("buckets"),MakeShared<FJsonObject>());O->SetArrayField(TEXT("checkpoints"),{});
         TArray<TSharedPtr<FJsonValue>> CardSnapshot;
         for(const auto& Card:rift::Cards())
@@ -170,7 +170,7 @@ namespace
 
 FString URiftMetaSimulationSubsystem::Fingerprint()
 {
-    FString Canonical=TEXT("rift-native-1|native-observed-2|ai-v15-port-2|nav-grid-a-star-1|telemetry-2|arena28x42|river1.65|bridges7.2,4.2|sight8,5|phase180,120|aether2.8,120,240|drain180|coreGuardOnly|hardlockAtRange|pocket2,13.2,2.25,9.25");
+    FString Canonical=TEXT("rift-native-1|native-observed-2|ai-v15-port-2|nav-grid-a-star-1|telemetry-3|arena28x42|river1.65|bridges7.2,4.2|sight8,5|phase180,120|aether2.8,120,240|drain180|coreGuardOnly|hardlockAtRange|pocket2,13.2,2.25,9.25");
     for(const auto& C:rift::Cards())
     {
         Canonical+=FS(C.id);
@@ -234,7 +234,7 @@ void URiftMetaSimulationSubsystem::Reset(){Stop();Persist();Data=NewDataset();Cu
 void URiftMetaSimulationSubsystem::Persist()
 {
     if(!bDirty||!Data||bBattle)return;FString Error;
-    if(URiftProfileSubsystem::AtomicWrite(FPaths::Combine(URiftProfileSubsystem::SaveRoot(),TEXT("Meta"),CurrentFile),Text(Data),Error)){auto* P=GetGameInstance()->GetSubsystem<URiftProfileSubsystem>();P->MetaFiles.AddUnique(CurrentFile);P->Save();bDirty=false;RIFT_LOG(LogRift,Log,TEXT("Meta dataset %s saved: %.0f matches"),*CurrentFile,Number(Data,TEXT("games")));}else{LastError=Error;RIFT_LOG(LogRift,Error,TEXT("Meta save failed: %s"),*Error);}
+    if(URiftProfileSubsystem::AtomicWrite(FPaths::Combine(URiftProfileSubsystem::SaveRoot(),TEXT("Meta"),CurrentFile),Text(Data),Error)){if(auto* Instance=GetGameInstance())if(auto* P=Instance->GetSubsystem<URiftProfileSubsystem>()){P->MetaFiles.AddUnique(CurrentFile);P->Save();}bDirty=false;RIFT_LOG(LogRift,Log,TEXT("Meta dataset %s saved: %.0f matches"),*CurrentFile,Number(Data,TEXT("games")));}else{LastError=Error;RIFT_LOG(LogRift,Error,TEXT("Meta save failed: %s"),*Error);}
 }
 FString URiftMetaSimulationSubsystem::Status()const
 {FString State=bBattle?TEXT("Paused during battle"):bPaused||!Worker?TEXT("Paused"):Future.IsReady()?TEXT("Batch complete"):TEXT("Simulating");return FString::Printf(TEXT("%s · %.0f matches · %.0f invalid · %.1fs active simulation time · %s"),*State,Number(Data,TEXT("games")),Number(Data,TEXT("invalid")),Number(Data,TEXT("simulationWallSeconds")),*String(Data,TEXT("fingerprint")).Left(8));}

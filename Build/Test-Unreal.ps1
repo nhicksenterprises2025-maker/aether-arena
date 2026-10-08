@@ -7,11 +7,12 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 $projectPath = Join-Path $repoRoot 'Unreal\RiftCrownArena\RiftCrownArena.uproject'
 $runRoot = Join-Path $repoRoot ('Build\Automation\' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
 $saveRoot = Join-Path $runRoot 'UserData'
+$engineUserRoot = Join-Path $runRoot 'EngineUserData'
 $reportRoot = Join-Path $runRoot 'Report'
-New-Item -ItemType Directory -Path $saveRoot, $reportRoot -Force | Out-Null
+New-Item -ItemType Directory -Path $saveRoot, $engineUserRoot, $reportRoot -Force | Out-Null
 $editor = Join-Path $EngineRoot 'Engine\Binaries\Win64\UnrealEditor-Cmd.exe'
 if (!(Test-Path -LiteralPath $editor)) { throw "Unreal commandlet not found: $editor" }
-& $editor $projectPath '-unattended' '-NullRHI' '-nosound' '-nopause' '-stdout' '-FullStdOutLogOutput' '-RiftAutomationSandbox' "-RiftSaveRoot=$saveRoot" "-ReportExportPath=$reportRoot" "-ExecCmds=Automation RunTests $Filter" '-TestExit=Automation Test Queue Empty' "-abslog=$runRoot\UnrealIntegration.log"
+& $editor $projectPath '-unattended' '-NullRHI' '-nosound' '-nopause' '-stdout' '-FullStdOutLogOutput' '-RiftAutomationSandbox' "-RiftSaveRoot=$saveRoot" "-UserDir=$engineUserRoot" "-ReportExportPath=$reportRoot" "-ExecCmds=Automation RunTests $Filter" '-TestExit=Automation Test Queue Empty' "-abslog=$runRoot\UnrealIntegration.log"
 if ($LASTEXITCODE -ne 0) { throw "Unreal integration automation failed with exit code $LASTEXITCODE" }
 $report = Join-Path $reportRoot 'index.json'
 if (!(Test-Path -LiteralPath $report)) { throw "Automation did not export a report: $report" }

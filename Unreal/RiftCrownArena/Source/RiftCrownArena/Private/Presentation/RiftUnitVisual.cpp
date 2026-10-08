@@ -37,6 +37,7 @@ void ARiftUnitVisual::ColorMesh(UMeshComponent* Component,FLinearColor Color)
         if (auto* Material=Component->CreateDynamicMaterialInstance(Index))
         {
             Material->SetVectorParameterValue(TEXT("TeamColor"),Color);
+            Material->SetScalarParameterValue(TEXT("RiftTeamEmissive"),.12f);
             Materials.Add(Material);
         }
 }

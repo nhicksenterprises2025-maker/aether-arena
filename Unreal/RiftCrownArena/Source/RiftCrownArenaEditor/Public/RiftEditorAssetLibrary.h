@@ -10,4 +10,5 @@ class RIFTCROWNARENAEDITOR_API URiftEditorAssetLibrary : public UBlueprintFuncti
 public:
     UFUNCTION(BlueprintCallable) static FString BuildPresentationAssetsJSON();
     UFUNCTION(BlueprintCallable) static FString InspectImportedAssetsJSON();
+    UFUNCTION(BlueprintCallable) static FString FinalizeImportedPhysicsAssetsJSON();
 };
