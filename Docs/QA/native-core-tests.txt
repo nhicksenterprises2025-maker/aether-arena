@@ -1,0 +1,45 @@
+RiftSimulation.cpp
+RiftCombat.cpp
+RiftPathfinding.cpp
+RiftDeckAnalysis.cpp
+RiftAI.cpp
+RiftSimulationTests.cpp
+Generating Code...
+PASS complete exact roster and swarm DPS
+PASS deck validation rejects duplicates and unknown
+PASS half-integer snapping and finite bounds
+PASS start towers dormant Core guard-only activation
+PASS own bank and lane pocket deployment
+PASS building full footprint and collision
+PASS paid hand rotation and invalid play no cost
+PASS DEV free spawn no bank or cycle
+PASS Bullet Burst one hit seven VFX five member kills
+PASS Nova no friendly fire and exact structures
+PASS Meteor initial and inclusive fifth DOT tick no structures
+PASS AI Meteor zone exposure begins at its cast endpoint
+PASS front rear sight and legal targeting
+PASS Crown hardlock survives defender before next hit
+PASS travel target pull before Crown range
+PASS structure-only building pull and hardlock
+PASS Frost nonstacking slow and honest uptime
+PASS Raven delayed troop-only ring and stun
+PASS Archer lifetime25s and absorption denominators
+PASS Affordable floating residue cannot produce a negative paid bank
+PASS Aether boundary integral exact 180/300 budget
+PASS only score0-0 enters overtime
+PASS tiebreaker freezes combat .85s then seeded one crown
+PASS finished result rejects damage deployment and progress
+PASS both bridge routes legal and ground progress
+PASS pause zero and frame independent fixed-step determinism
+PASS all seven coherent AI decks
+PASS mechanical counters and symmetric91 pair analysis
+PASS AI symmetric seeded decisions and paid economy
+PASS all card intelligence roles answers partners and honest spell resistance
+PASS event attribution sequence and drain once
+PASS AI never reads hidden opponent deck hand or bank
+PASS charged Ram hit and actual projectile splash attribution
+PASS mixed specials and bridge congestion stress
+PASS placement means count paid casts rather than swarm members
+SOAK 21 complete matches wall seconds 3.90502
+PASS twenty-one full seeded AI-v-AI matches all styles
+Native authoritative simulation: 36 scenarios passed.

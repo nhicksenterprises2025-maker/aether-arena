@@ -1,0 +1,44 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "DREYCKOH",
+			"instance": "A1CD37DD483663722FC18786439363AF",
+			"instanceName": "DREYCKOH-34252",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (25H2) [10.0.26200.9457] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 5060",
+			"cPUModel": "AMD Ryzen 7 5700                               ",
+			"rAMInGB": 32,
+			"renderMode": "SM6",
+			"rHI": "",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.10.08-20.19.32",
+	"succeeded": 1,
+	"succeededWithWarnings": 0,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 1.5237951278686523,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "ConnectedUI",
+			"fullTestPath": "Rift.Integration.ConnectedUI",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"A1CD37DD483663722FC18786439363AF"
+			],
+			"duration": 1.5237951278686523,
+			"dateTime": "2026.10.08-20.19.30",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}

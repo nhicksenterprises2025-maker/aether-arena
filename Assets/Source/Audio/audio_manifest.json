@@ -1,0 +1,335 @@
+{
+  "schemaVersion": 1,
+  "originalSource": "Build/generate_audio.py",
+  "sampleRate": 44100,
+  "sounds": {
+    "sword_hit": {
+      "file": "Assets/Source/Audio/sword_hit.wav",
+      "duration": 0.6999773242630386,
+      "sha256": "edfd70797a7ac79884f80492cefeef3807f071e9c49f87c27fefe5ebf0d3fa01",
+      "loop": false,
+      "peak": 0.72,
+      "channels": 1
+    },
+    "tower_hit": {
+      "file": "Assets/Source/Audio/tower_hit.wav",
+      "duration": 1.1499773242630384,
+      "sha256": "892b6c4b46379ee3942bb87c750afd83b9f3d1f780a9a2864c81e1cd68061607",
+      "loop": false,
+      "peak": 0.72,
+      "channels": 1
+    },
+    "shield_hit": {
+      "file": "Assets/Source/Audio/shield_hit.wav",
+      "duration": 0.6999773242630386,
+      "sha256": "f852d198b269430673a701444a852ca66e20fb5ad6e41fed88d94baeed22e747",
+      "loop": false,
+      "peak": 0.72,
+      "channels": 1
+    },
+    "building_hit": {
+      "file": "Assets/Source/Audio/building_hit.wav",
+      "duration": 1.1499773242630384,
+      "sha256": "62156774b8e1d1a5779207e37ee06cc5312dd98d82dda5ca8b7b925b3008db99",
+      "loop": false,
+      "peak": 0.72,
+      "channels": 1
+    },
+    "sword_attack": {
+      "file": "Assets/Source/Audio/sword_attack.wav",
+      "duration": 0.6999773242630386,
+      "sha256": "5f23f061fdfc5a90f169c84c1054d660f0c2ffe872886bec02c9b58b1b14b764",
+      "loop": false,
+      "peak": 0.62,
+      "channels": 1
+    },
+    "dual_attack": {
+      "file": "Assets/Source/Audio/dual_attack.wav",
+      "duration": 0.6999773242630386,
+      "sha256": "a05571d83ea6b46e51c822e93bf9e05307fa63a193ef91deaaa28710fae42a33",
+      "loop": false,
+      "peak": 0.62,
+      "channels": 1
+    },
+    "arrow_flight": {
+      "file": "Assets/Source/Audio/arrow_flight.wav",
+      "duration": 0.6999773242630386,
+      "sha256": "929fe31864dbf4c6d1f70bbfd625b93231a20bfd95102c19e54a08a143188300",
+      "loop": false,
+      "peak": 0.5492092967033386,
+      "channels": 1
+    },
+    "charge": {
+      "file": "Assets/Source/Audio/charge.wav",
+      "duration": 0.6999773242630386,
+      "sha256": "4ff3f5dd09c7afa1b2fe5877c919560ec5f1cc280f505d32e19149446d828c3d",
+      "loop": false,
+      "peak": 0.62,
+      "channels": 1
+    },
+    "wing_air": {
+      "file": "Assets/Source/Audio/wing_air.wav",
+      "duration": 0.6999773242630386,
+      "sha256": "20eecc5ea16e374e1b5ec87fb0cf690c75cf47709a65cffe68586a73f7207d32",
+      "loop": false,
+      "peak": 0.5896086096763611,
+      "channels": 1
+    },
+    "bow_release": {
+      "file": "Assets/Source/Audio/bow_release.wav",
+      "duration": 0.8,
+      "sha256": "c895928f62d58817c1048330f7b6dfb2a17a655f4a21d750c91003e5c8259ba4",
+      "loop": false,
+      "peak": 0.42547371983528137,
+      "channels": 1
+    },
+    "arrow_hit": {
+      "file": "Assets/Source/Audio/arrow_hit.wav",
+      "duration": 0.6,
+      "sha256": "d5472edaca2da466db10f45bf5efcb25e55c5042c4149a24f3198384e728bd50",
+      "loop": false,
+      "peak": 0.5294280648231506,
+      "channels": 1
+    },
+    "heavy_slam": {
+      "file": "Assets/Source/Audio/heavy_slam.wav",
+      "duration": 0.85,
+      "sha256": "8e417fb483d374ac9b5781556ba4b67b95690b10354055585286b1aa02db043b",
+      "loop": false,
+      "peak": 0.6678330898284912,
+      "channels": 1
+    },
+    "tower_destroy": {
+      "file": "Assets/Source/Audio/tower_destroy.wav",
+      "duration": 2.4,
+      "sha256": "7f44c10bc4013452f6b698cda09c2fc557837b6049ad3ffe5bbc0cabc75c9142",
+      "loop": false,
+      "peak": 0.72,
+      "channels": 1
+    },
+    "arc_cast": {
+      "file": "Assets/Source/Audio/arc_cast.wav",
+      "duration": 1.3999773242630384,
+      "sha256": "239ece723a9be66940d6f8d3052382d08701bd4ce065023a751fafbd61339650",
+      "loop": false,
+      "peak": 0.41646480560302734,
+      "channels": 1
+    },
+    "arc_impact": {
+      "file": "Assets/Source/Audio/arc_impact.wav",
+      "duration": 1.3999773242630384,
+      "sha256": "4fd5a3306add4dba712633b40c7ce0a6ea7e2ca14986b4fd3fb4ceddefd2b7b1",
+      "loop": false,
+      "peak": 0.4353748559951782,
+      "channels": 1
+    },
+    "manta_cast": {
+      "file": "Assets/Source/Audio/manta_cast.wav",
+      "duration": 1.3999773242630384,
+      "sha256": "7f8c926dd1a6068769687d4d46e19060cf957ff405b60117e8aba3eecf5d65f7",
+      "loop": false,
+      "peak": 0.43393197655677795,
+      "channels": 1
+    },
+    "manta_impact": {
+      "file": "Assets/Source/Audio/manta_impact.wav",
+      "duration": 1.3999773242630384,
+      "sha256": "e58ca48379d78e4738eea68e3a4349b097e385746ba465c479eb9269eb1abe41",
+      "loop": false,
+      "peak": 0.46073612570762634,
+      "channels": 1
+    },
+    "frost_attack": {
+      "file": "Assets/Source/Audio/frost_attack.wav",
+      "duration": 1.3999773242630384,
+      "sha256": "14b65b1e58663dee36820fb0c071676f233169df26d22dadb6d01b49afa8b165",
+      "loop": false,
+      "peak": 0.44305819272994995,
+      "channels": 1
+    },
+    "frost_slow": {
+      "file": "Assets/Source/Audio/frost_slow.wav",
+      "duration": 1.3999773242630384,
+      "sha256": "2626f5841188815d98afc1a1007d04cb9326bb83414ca000127f3bebecf2d27b",
+      "loop": false,
+      "peak": 0.4081268906593323,
+      "channels": 1
+    },
+    "storm_bolt": {
+      "file": "Assets/Source/Audio/storm_bolt.wav",
+      "duration": 1.3999773242630384,
+      "sha256": "4158d48bec7f9d571000c2d8973cc41d0594c9f2a96b825c8cabb29c757fd492",
+      "loop": false,
+      "peak": 0.65,
+      "channels": 1
+    },
+    "storm_pulse": {
+      "file": "Assets/Source/Audio/storm_pulse.wav",
+      "duration": 1.3999773242630384,
+      "sha256": "1a146b3aead91b289237f379bb090fc487aaab7c9cd69fee4aec61f5bb456fbb",
+      "loop": false,
+      "peak": 0.6184617877006531,
+      "channels": 1
+    },
+    "stun": {
+      "file": "Assets/Source/Audio/stun.wav",
+      "duration": 1.3999773242630384,
+      "sha256": "9a100762b6e487d231e5eb0491ae6184f10b37d79b02c0107f5d4ff2ff3fc230",
+      "loop": false,
+      "peak": 0.6403003334999084,
+      "channels": 1
+    },
+    "nova_impact": {
+      "file": "Assets/Source/Audio/nova_impact.wav",
+      "duration": 1.3999773242630384,
+      "sha256": "1d5f6c1add9be75601bf3846081884a776e7cdc017153e8dba09b6288e13135b",
+      "loop": false,
+      "peak": 0.4253109395503998,
+      "channels": 1
+    },
+    "bullet_burst": {
+      "file": "Assets/Source/Audio/bullet_burst.wav",
+      "duration": 0.65,
+      "sha256": "790f7bf791eb5efd584cdcda6af80555707e9babb70c0104becc79801be08eec",
+      "loop": false,
+      "peak": 0.35180118680000305,
+      "channels": 1
+    },
+    "meteor_impact": {
+      "file": "Assets/Source/Audio/meteor_impact.wav",
+      "duration": 2.0,
+      "sha256": "f5189a5747f3ce3a517a005e46d31e2e2f5ad3030375dc7c83e17d6cf454b474",
+      "loop": false,
+      "peak": 0.72,
+      "channels": 1
+    },
+    "meteor_tick": {
+      "file": "Assets/Source/Audio/meteor_tick.wav",
+      "duration": 0.8,
+      "sha256": "cc9cf563f5f0110bfbba927d4eef5b5029bc27f2b2007722cda39eceac997c1b",
+      "loop": false,
+      "peak": 0.4657505750656128,
+      "channels": 1
+    },
+    "bat_bite": {
+      "file": "Assets/Source/Audio/bat_bite.wav",
+      "duration": 0.5,
+      "sha256": "39a1f5499a75840f75716d6d53ebdaa1be4d779ee347491d44e6826d98bdd779",
+      "loop": false,
+      "peak": 0.2780883014202118,
+      "channels": 1
+    },
+    "deploy": {
+      "file": "Assets/Source/Audio/deploy.wav",
+      "duration": 1.1,
+      "sha256": "d1add1d93f4702165eab86073fed493bd2d62f3b69936e106abbbd841563e69c",
+      "loop": false,
+      "peak": 0.4217129349708557,
+      "channels": 1
+    },
+    "core_awaken": {
+      "file": "Assets/Source/Audio/core_awaken.wav",
+      "duration": 2.6,
+      "sha256": "e3f4583763c79cae30c8a876e3c7a2835774fc341726cde3d7eede3973363123",
+      "loop": false,
+      "peak": 0.619044840335846,
+      "channels": 1
+    },
+    "ui_click": {
+      "file": "Assets/Source/Audio/ui_click.wav",
+      "duration": 0.24,
+      "sha256": "b196b72d1f8b1fa62a1b095d3d129d56a0811f9051ad4ae6076c207fc72feec4",
+      "loop": false,
+      "peak": 0.3138810992240906,
+      "channels": 1
+    },
+    "ui_hover": {
+      "file": "Assets/Source/Audio/ui_hover.wav",
+      "duration": 0.24,
+      "sha256": "e9cc8860271a21d3e19cc44749f1210efefb72d1b46882ece6010429bfc920d6",
+      "loop": false,
+      "peak": 0.32064762711524963,
+      "channels": 1
+    },
+    "ui_error": {
+      "file": "Assets/Source/Audio/ui_error.wav",
+      "duration": 0.24,
+      "sha256": "1653bf06c98084a10c86ebed4beccdfb7d194dad045a109ba630982ee4590c71",
+      "loop": false,
+      "peak": 0.23715341091156006,
+      "channels": 1
+    },
+    "ui_save": {
+      "file": "Assets/Source/Audio/ui_save.wav",
+      "duration": 0.24,
+      "sha256": "4559216db3b38b588be08699c4c5fca9a21c5adba516aabc1984b67766bd5cfd",
+      "loop": false,
+      "peak": 0.3771039843559265,
+      "channels": 1
+    },
+    "aether_two": {
+      "file": "Assets/Source/Audio/aether_two.wav",
+      "duration": 2.5,
+      "sha256": "f32f193ebfe01028be0890d2f9d5b0306bd1fab01ed5b8caced0020ea25ccccf",
+      "loop": false,
+      "peak": 0.43437957763671875,
+      "channels": 1
+    },
+    "aether_three": {
+      "file": "Assets/Source/Audio/aether_three.wav",
+      "duration": 2.5,
+      "sha256": "0cafd4bd1b58da7fa6a0741a1ce81590b0e2d86e23cef57ae65cb093c99fecce",
+      "loop": false,
+      "peak": 0.43848150968551636,
+      "channels": 1
+    },
+    "overtime": {
+      "file": "Assets/Source/Audio/overtime.wav",
+      "duration": 2.5,
+      "sha256": "acb857324e6014e9901180274a2e6b7330d6ae2f0fcd08adf80ca00744d886a9",
+      "loop": false,
+      "peak": 0.40781018137931824,
+      "channels": 1
+    },
+    "tiebreaker": {
+      "file": "Assets/Source/Audio/tiebreaker.wav",
+      "duration": 2.5,
+      "sha256": "151f3e632c0d1b3155d4892e2061a5d514e5f1c5181465ea63f7ba87175b1112",
+      "loop": false,
+      "peak": 0.3532966375350952,
+      "channels": 1
+    },
+    "victory": {
+      "file": "Assets/Source/Audio/victory.wav",
+      "duration": 2.5,
+      "sha256": "746b9d10fa197150e7edf7fa01e55dfc4e9b6385bf203411c3fafebda417eafa",
+      "loop": false,
+      "peak": 0.468849778175354,
+      "channels": 1
+    },
+    "defeat": {
+      "file": "Assets/Source/Audio/defeat.wav",
+      "duration": 2.5,
+      "sha256": "b3271cfae608de0ef1547e8c4b41878413d01c6ac65485ae77ea7f5d9ffeced0",
+      "loop": false,
+      "peak": 0.4886883497238159,
+      "channels": 1
+    },
+    "music_rift": {
+      "file": "Assets/Source/Audio/music_rift.wav",
+      "duration": 40.0,
+      "sha256": "c154be396d67ed932c35dc92cce2c9ada67d6fc4e3aacd3cf1425ea945a7c1af",
+      "loop": true,
+      "peak": 0.15201707184314728,
+      "channels": 1
+    },
+    "river_ambience": {
+      "file": "Assets/Source/Audio/river_ambience.wav",
+      "duration": 8.0,
+      "sha256": "0093ba36d5257435bf36ea8c9004142ec6c87e3175b75fdde4862ad2abd18283",
+      "loop": true,
+      "peak": 0.04712019860744476,
+      "channels": 1
+    }
+  }
+}

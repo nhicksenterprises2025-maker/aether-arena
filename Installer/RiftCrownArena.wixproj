@@ -1,0 +1,21 @@
+<Project Sdk="WixToolset.Sdk/4.0.6">
+  <PropertyGroup>
+    <OutputName>RiftCrownArena-Setup</OutputName>
+    <InstallerPlatform>x64</InstallerPlatform>
+    <OutputType>Package</OutputType>
+    <SuppressValidation>false</SuppressValidation>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- The product is deliberately fixed per-user; same-version rebuilt packages may upgrade. -->
+    <SuppressIces>ICE61;ICE91</SuppressIces>
+    <!-- LastResort.ttf is a private language-neutral resource; do not register it as a system font. -->
+    <SuppressSpecificWarnings>1101</SuppressSpecificWarnings>
+    <DefineConstants>ReleaseVersion=$(ReleaseVersion)</DefineConstants>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Product.wxs"/>
+    <Compile Include="GeneratedFiles.wxs"/>
+    <PackageReference Include="WixToolset.UI.wixext" Version="4.0.6"/>
+    <PackageReference Include="WixToolset.Util.wixext" Version="4.0.6"/>
+  </ItemGroup>
+</Project>

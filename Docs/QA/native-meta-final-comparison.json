@@ -1,0 +1,86 @@
+{
+  "type": "Strict historical aggregate comparison, separate from validity",
+  "strictEquivalence": false,
+  "targetMatches": 10000,
+  "completeObserved": true,
+  "comparedRetainedFields": 67915,
+  "differentChecks": 11171,
+  "baselineDataset": "Artifacts/QA/NativeMeta10000Revision3/Meta/FE17A39B4A6DB64F585824A4C16D43F8.json",
+  "baselineDatasetSha256": "548e288e1a26fea259468e6c297e9618b009736c1277a95db6c2443c12236cc6",
+  "finalDataset": "Artifacts/QA/native-meta10000-final-core/UserData/Meta/78EF7F0B46E9905DF6EE9F84810BD043.json",
+  "finalDatasetSha256": "c38a2546485b328cf54ed704269b2a1d3ba0b67f7d08fa401b8aacba5abf6772",
+  "fingerprint": "695685f9ebb53185d4f45b257e866354",
+  "telemetryRevision": 3,
+  "canonicalCardSnapshotUnchanged": true,
+  "canonicalRuleSnapshotUnchanged": true,
+  "stylePopulationUnchanged": true,
+  "allCardDeckAppearancesAndCleanSamplesUnchanged": true,
+  "finalValidityReport": "Docs/QA/native-meta-final-validity.json",
+  "isolatedCausalWitness": "Docs/QA/bank-normalization-witness.json",
+  "measuredTotals": {
+    "drawMatches": {
+      "before": 2639.0,
+      "final": 2641.0,
+      "difference": 2.0
+    },
+    "totalPaidCasts": {
+      "before": 589720,
+      "final": 589781,
+      "difference": 61
+    },
+    "totalSpawnedMembers": {
+      "before": 590171,
+      "final": 590238,
+      "difference": 67
+    },
+    "totalPaidAether": {
+      "before": 1901199,
+      "final": 1901405,
+      "difference": 206
+    },
+    "totalLeakedAether": {
+      "before": 520.1250000539931,
+      "final": 520.0059524357351,
+      "difference": -0.1190476182579232
+    },
+    "simulatedSeconds": {
+      "before": 1894402.466666881,
+      "final": 1894509.116666881,
+      "difference": 106.64999999990687
+    }
+  },
+  "exampleDifferences": [
+    "duration: retained gameplay/economy aggregate: 1894509.116666881 vs 1894402.466666881",
+    "buckets.split|Air Pressure.crowns: retained gameplay/economy aggregate: 1948 vs 1947",
+    "buckets.split|Air Pressure.duration: retained gameplay/economy aggregate: 480022.500000117 vs 479886.600000117",
+    "buckets.split|Air Pressure.spent: retained gameplay/economy aggregate: 238480 vs 238364",
+    "buckets.split|Air Pressure.opponents.Beatdown.score: retained gameplay/economy aggregate: 650.5 vs 650",
+    "buckets.split|Air Pressure.opponents.Split Lane.score: retained gameplay/economy aggregate: 545.5 vs 545",
+    "buckets.split|Air Pressure.opponents.Hybrid.score: retained gameplay/economy aggregate: 1046 vs 1045.5",
+    "buckets.split|Air Pressure.opponents.Control.score: retained gameplay/economy aggregate: 570.5 vs 570",
+    "buckets.split|Air Pressure.opponents.Air Pressure.score: retained gameplay/economy aggregate: 435.5 vs 435",
+    "buckets.split|Air Pressure.opponents.Defensive.score: retained gameplay/economy aggregate: 527.5 vs 527",
+    "buckets.split|Air Pressure.opponents.Bridge Pressure.score: retained gameplay/economy aggregate: 761 vs 760.5",
+    "buckets.split|Air Pressure.pairs.boulderback+sky_manta.score: retained gameplay/economy aggregate: 497.5 vs 497",
+    "buckets.split|Air Pressure.pairs.boulderback+storm_raven.score: retained gameplay/economy aggregate: 608 vs 607.5",
+    "buckets.split|Air Pressure.pairs.boulderback+rambeast.score: retained gameplay/economy aggregate: 611.5 vs 611",
+    "buckets.split|Air Pressure.pairs.boulderback+twin_blades.score: retained gameplay/economy aggregate: 612.5 vs 612",
+    "buckets.split|Air Pressure.pairs.arc_mage+boulderback.score: retained gameplay/economy aggregate: 299.5 vs 299",
+    "buckets.split|Air Pressure.pairs.sky_manta+vampire_bats.score: retained gameplay/economy aggregate: 238 vs 237.5",
+    "buckets.split|Air Pressure.pairs.boulderback+bullet_burst.score: retained gameplay/economy aggregate: 332.5 vs 332",
+    "buckets.split|Air Pressure.pairs.twin_blades+vampire_bats.score: retained gameplay/economy aggregate: 303 vs 302.5",
+    "buckets.split|Air Pressure.pairs.rambeast+vampire_bats.score: retained gameplay/economy aggregate: 293.5 vs 293",
+    "buckets.split|Air Pressure.pairs.storm_raven+vampire_bats.score: retained gameplay/economy aggregate: 318 vs 317.5",
+    "buckets.split|Air Pressure.pairs.arc_mage+vampire_bats.score: retained gameplay/economy aggregate: 115.5 vs 115",
+    "buckets.split|Air Pressure.pairs.bullet_burst+vampire_bats.score: retained gameplay/economy aggregate: 234 vs 233.5",
+    "buckets.split|Air Pressure.pairs.boulderback+vampire_bats.score: retained gameplay/economy aggregate: 228.5 vs 228",
+    "buckets.split|Air Pressure.draws: retained gameplay/economy aggregate: 662 vs 661"
+  ],
+  "limits": [
+    "Strict comparison differences are reported, not suppressed or relabeled as passing equality.",
+    "The post-payment zero clamp corrects an invalid negative bank and can advance later floating-point AI affordability/plan thresholds, changing some seeded actions and outcomes.",
+    "Card/rule values and deck populations are unchanged; this does not imply identical seed outcomes.",
+    "Active core wall times vary with scheduling and are excluded from gameplay equality.",
+    "Different checks count overlapping aggregate fields, not different matches; the complete changed-match count is not retained in this aggregate dataset."
+  ]
+}

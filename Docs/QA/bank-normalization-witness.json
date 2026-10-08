@@ -1,0 +1,58 @@
+{
+  "matchesCompared": 25,
+  "range": [
+    626,
+    650
+  ],
+  "changedMatchCount": 1,
+  "sourceDifference": "Only post-payment subtraction versus max(0, subtraction), isolated generated copies; production files unchanged.",
+  "compiler": "MSVC14.51 x64 /O2 /fp:precise C++20",
+  "productionStepSeconds": 0.2,
+  "seed": 2392134702,
+  "matchOrdinal": 626,
+  "initialNegativePayment": {
+    "team": "Enemy",
+    "cardId": "sky_manta",
+    "time": 72.79999999999715,
+    "bankBefore": 2.999999999998958,
+    "bankAfterBeforeFix": -1.0418332863082469e-12,
+    "bankAfterFinal": 0.0
+  },
+  "firstPaidActionDifference": {
+    "paidPlayOrdinal": 36,
+    "cardId": "twin_blades",
+    "team": "Enemy",
+    "beforeTime": 135.8833333333336,
+    "finalTime": 135.60000000000005
+  },
+  "terminalBefore": {
+    "winner": "Enemy",
+    "crowns": [
+      1,
+      2
+    ],
+    "elapsed": 180.00000000003539,
+    "paidAether": [
+      87.0,
+      89.0
+    ]
+  },
+  "terminalFinal": {
+    "winner": "Draw",
+    "crowns": [
+      1,
+      1
+    ],
+    "elapsed": 180.00000000003539,
+    "paidAether": [
+      90.0,
+      86.0
+    ]
+  },
+  "runner": "Build/Tests/Compare-BankNormalization.ps1",
+  "source": "Build/Tests/RiftBankNormalizationWitness.cpp",
+  "limits": [
+    "This witness compares25 selected actual simulation seeds; it does not count every changed match in the completed10000 cohort.",
+    "Generated counterfactual copies deliberately restore only the historical subtraction; final production sources are unchanged."
+  ]
+}

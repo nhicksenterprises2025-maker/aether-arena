@@ -29,3 +29,10 @@
 **/lab_v15.json
 **/Backups/
 **/Logs/
+**/*.log
+**/FileOpenOrder/
+/Build/Tools/
+/Build/NativeTests/
+/Build/Automation/
+/Installer/.tools/
+/Installer/GeneratedFiles.wxs

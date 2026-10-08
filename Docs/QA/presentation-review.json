@@ -1,0 +1,1315 @@
+{
+  "schema": 1,
+  "reviewedUTC": "2026-10-08T17:24:39.988531-04:00",
+  "method": "Original native Unreal offscreen PNG inspection plus actual state/CPU particle buffers and readonly on-disk AssetRegistry loads",
+  "captureCount": 28,
+  "captures": [
+    {
+      "stem": "battle-roster-final-camera-1280x720",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-1280x720.png",
+          "sha256": "0221fe30013782c9c914aa869428852aa76ab443602572974af0c3cc2c1bbf79",
+          "bytes": 1166790
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-1280x720.json",
+          "sha256": "c56ede6551786a9e4f69ee4f53b18c01d5021eb7f9cd4253eb37aca160ee7504",
+          "bytes": 1615
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-1280x720.state.json",
+          "sha256": "5a1502cab614bbd33e64bb2c4a13e642965e31f22636b4c0d98a8af88b0e6dcb",
+          "bytes": 244
+        }
+      ],
+      "observation": "Full legal field, both cores/tower health, upper HUD and hand/Aether/next fit. Tile seams and team trim are visible. Stylized model and repetitive terrain detail remain below illustration detail.",
+      "actualDimensions": [
+        1280,
+        720
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "card_play": 22,
+        "entity_spawn": 32
+      },
+      "totalParticles": null
+    },
+    {
+      "stem": "battle-roster-final-camera-1600x900",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-1600x900.png",
+          "sha256": "e42cbba17da70e72c9d7c867b5bd56f4df02581224ec237a3093264235d76481",
+          "bytes": 1790853
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-1600x900.json",
+          "sha256": "2a4cb372d449b03742862c774f8ba9de0835939213a91aae1d4e678d8ae4b269",
+          "bytes": 1615
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-1600x900.state.json",
+          "sha256": "5a1502cab614bbd33e64bb2c4a13e642965e31f22636b4c0d98a8af88b0e6dcb",
+          "bytes": 244
+        }
+      ],
+      "observation": "Full legal field, both cores/tower health, upper HUD and hand/Aether/next fit. Tile seams and team trim are visible. Stylized model and repetitive terrain detail remain below illustration detail.",
+      "actualDimensions": [
+        1600,
+        900
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "card_play": 22,
+        "entity_spawn": 32
+      },
+      "totalParticles": null
+    },
+    {
+      "stem": "battle-roster-final-camera-1920x1080",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-1920x1080.png",
+          "sha256": "e6985f955aa2262399de7fa9bbbf4507a2ddf24055e6725570e63aedc6ac3b98",
+          "bytes": 2535710
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-1920x1080.json",
+          "sha256": "f85e9747e2496b6d721300828cd01bec40b22609a5cef1a19fb95f8157745ae0",
+          "bytes": 1621
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-1920x1080.state.json",
+          "sha256": "5a1502cab614bbd33e64bb2c4a13e642965e31f22636b4c0d98a8af88b0e6dcb",
+          "bytes": 244
+        }
+      ],
+      "observation": "Full legal field, both cores/tower health, upper HUD and hand/Aether/next fit. Tile seams and team trim are visible. Stylized model and repetitive terrain detail remain below illustration detail.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "card_play": 22,
+        "entity_spawn": 32
+      },
+      "totalParticles": null
+    },
+    {
+      "stem": "battle-roster-final-camera-1920x1200",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-1920x1200.png",
+          "sha256": "7d3c478393c7326b5fb2f63c1cb1ea1c13851e4f9faa80d6d6cbe256c96ebf5b",
+          "bytes": 2847904
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-1920x1200.json",
+          "sha256": "e499c677f2d55f6484e9bd0b31e11ef55cc61bd93c31e35bb3cbe341b239beb7",
+          "bytes": 1621
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-1920x1200.state.json",
+          "sha256": "5a1502cab614bbd33e64bb2c4a13e642965e31f22636b4c0d98a8af88b0e6dcb",
+          "bytes": 244
+        }
+      ],
+      "observation": "Full legal field, both cores/tower health, upper HUD and hand/Aether/next fit. Tile seams and team trim are visible. Stylized model and repetitive terrain detail remain below illustration detail.",
+      "actualDimensions": [
+        1920,
+        1200
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "card_play": 22,
+        "entity_spawn": 32
+      },
+      "totalParticles": null
+    },
+    {
+      "stem": "battle-roster-final-camera-2560x1440",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-2560x1440.png",
+          "sha256": "85718a83cf04435529440957dfce9b3cb23e43f772ba96435e75022bab4a85f9",
+          "bytes": 4550124
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-2560x1440.json",
+          "sha256": "9d6e7ee5ff5c6a2e2653776f7faa4828e0cbad573b2a85c64480bc94e2034b5f",
+          "bytes": 1620
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-2560x1440.state.json",
+          "sha256": "5a1502cab614bbd33e64bb2c4a13e642965e31f22636b4c0d98a8af88b0e6dcb",
+          "bytes": 244
+        }
+      ],
+      "observation": "Full legal field, both cores/tower health, upper HUD and hand/Aether/next fit. Tile seams and team trim are visible. Stylized model and repetitive terrain detail remain below illustration detail.",
+      "actualDimensions": [
+        2560,
+        1440
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "card_play": 22,
+        "entity_spawn": 32
+      },
+      "totalParticles": null
+    },
+    {
+      "stem": "battle-roster-final-camera-2560x1600",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-2560x1600.png",
+          "sha256": "19cc80f873676886580f5d01c8351500878e9d87d9e22de5911f767372025c9e",
+          "bytes": 5125048
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-2560x1600.json",
+          "sha256": "f68f64fdd1bf8d73f6ae1cf6771d8bc235c07be870e5dad6a2b0c3c7ad2862b1",
+          "bytes": 1621
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-2560x1600.state.json",
+          "sha256": "5a1502cab614bbd33e64bb2c4a13e642965e31f22636b4c0d98a8af88b0e6dcb",
+          "bytes": 244
+        }
+      ],
+      "observation": "Full legal field, both cores/tower health, upper HUD and hand/Aether/next fit. Tile seams and team trim are visible. Stylized model and repetitive terrain detail remain below illustration detail.",
+      "actualDimensions": [
+        2560,
+        1600
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "card_play": 22,
+        "entity_spawn": 32
+      },
+      "totalParticles": null
+    },
+    {
+      "stem": "battle-roster-final-camera-3440x1440",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-3440x1440.png",
+          "sha256": "457bd9c6bb27806a355e8216ef023b14ba2212f88f01528b3faa8886587457dd",
+          "bytes": 5831936
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-3440x1440.json",
+          "sha256": "891dcbfc7f289ce973ced8e8105a4646935d15129c5b5b38772a8cf9fb6d94e2",
+          "bytes": 1621
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-3440x1440.state.json",
+          "sha256": "5a1502cab614bbd33e64bb2c4a13e642965e31f22636b4c0d98a8af88b0e6dcb",
+          "bytes": 244
+        }
+      ],
+      "observation": "Full legal field, both cores/tower health, upper HUD and hand/Aether/next fit. Tile seams and team trim are visible. Stylized model and repetitive terrain detail remain below illustration detail.",
+      "actualDimensions": [
+        3440,
+        1440
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "card_play": 22,
+        "entity_spawn": 32
+      },
+      "totalParticles": null
+    },
+    {
+      "stem": "battle-roster-final-camera-3840x2160",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-3840x2160.png",
+          "sha256": "d867d812842d6b6fb33b630e5be219e8d68348f4881cfc262cec617168a68c37",
+          "bytes": 9908897
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-3840x2160.json",
+          "sha256": "c94f446d2c745c3f3921e785f6c690808e191d51ee48510e4e58e5bb5ff5014f",
+          "bytes": 1621
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-3840x2160.state.json",
+          "sha256": "5a1502cab614bbd33e64bb2c4a13e642965e31f22636b4c0d98a8af88b0e6dcb",
+          "bytes": 244
+        }
+      ],
+      "observation": "Full legal field, both cores/tower health, upper HUD and hand/Aether/next fit. Tile seams and team trim are visible. Stylized model and repetitive terrain detail remain below illustration detail.",
+      "actualDimensions": [
+        3840,
+        2160
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "card_play": 22,
+        "entity_spawn": 32
+      },
+      "totalParticles": null
+    },
+    {
+      "stem": "battle-roster-final-camera-2560x1080",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-2560x1080.png",
+          "sha256": "63058773848ebeff698462fcd2a681396558e345af5c3e16ed53acb038ae3e32",
+          "bytes": 3325036
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-2560x1080.json",
+          "sha256": "209ccba2914b2a1dd6f15522adf67bab9a6ff2d42a7288ad3a92c0cbf597423e",
+          "bytes": 1621
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-roster-final-camera-2560x1080.state.json",
+          "sha256": "5a1502cab614bbd33e64bb2c4a13e642965e31f22636b4c0d98a8af88b0e6dcb",
+          "bytes": 244
+        }
+      ],
+      "observation": "Full legal field, both cores/tower health, upper HUD and hand/Aether/next fit. Tile seams and team trim are visible. Stylized model and repetitive terrain detail remain below illustration detail.",
+      "actualDimensions": [
+        2560,
+        1080
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "card_play": 22,
+        "entity_spawn": 32
+      },
+      "totalParticles": null
+    },
+    {
+      "stem": "battle-congestion-final-2d-1920x1080",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/battle-congestion-final-2d-1920x1080.png",
+          "sha256": "009a44cabe10c157263ae23c26db2bb416aa8ae58c79c69c91258f6be22b6aab",
+          "bytes": 2528210
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-congestion-final-2d-1920x1080.json",
+          "sha256": "0dab45fd75d622e03336bf0a1fca7e2909e97cd7bc0b7c7253f9fda1f32415b6",
+          "bytes": 1608
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-congestion-final-2d-1920x1080.state.json",
+          "sha256": "c5c1f076f21bed6792bc316bd8903f5be44c5daea91c2ab37bb3f51c56841272",
+          "bytes": 385
+        }
+      ],
+      "observation": "Individual bars/statuses retained with compact two-dimensional placement and short leaders. Tower/status bounds receive priority. Dense body overlap remains during bridge combat.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 7.349999999999979,
+      "speed": 1,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "card_play": 48,
+        "entity_spawn": 128,
+        "attack": 441,
+        "damage": 450,
+        "death": 76,
+        "slow": 8,
+        "aura": 8,
+        "projectile_launch": 13,
+        "stun": 10
+      },
+      "totalParticles": null
+    },
+    {
+      "stem": "placement-final-rear-corner",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/placement-final-rear-corner.png",
+          "sha256": "d04eb80b40fd3c2504f004011843c46a965334ad9f3e3a3c6aa7bf8a99b41b73",
+          "bytes": 2493404
+        },
+        {
+          "path": "Artifacts/QA/Visual/placement-final-rear-corner.json",
+          "sha256": "923f9f961c80f1bd8d366c76b7776682c102f4941ad45994745dbfafb6c28afc",
+          "bytes": 1543
+        },
+        {
+          "path": "Artifacts/QA/Visual/placement-final-rear-corner.state.json",
+          "sha256": "5b38f1e3d220e4ccc8d75d79a6ba801cc76692a5456440239a6c747eb8ea4024",
+          "bytes": 350
+        }
+      ],
+      "observation": "Actual CanPlace accepts Ironclad at (13.5,20.5); full cyan one-tile square lies above hand. At 1920x1080 observed approximately x1222..1243/y800..821.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2
+      },
+      "totalParticles": null
+    },
+    {
+      "stem": "placement-final-building-legal",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/placement-final-building-legal.png",
+          "sha256": "5954f0e0c4dda9f3f85d1e96629317272fc09db5b556bdb39a71a07c812e49a1",
+          "bytes": 2494224
+        },
+        {
+          "path": "Artifacts/QA/Visual/placement-final-building-legal.json",
+          "sha256": "c325ad4a1d358a13b519b0d0445fc6e2a39ae7cf9902db04e0a8fff92afda1c1",
+          "bytes": 1485
+        },
+        {
+          "path": "Artifacts/QA/Visual/placement-final-building-legal.state.json",
+          "sha256": "c5afaef6dd0cfc6f6992a0986fa2541239399829f356ed8867eec0d78839ec7c",
+          "bytes": 369
+        }
+      ],
+      "observation": "Actual CanPlace accepts Archer Tower at (0.5,7.5); complete cyan1.65-tile square.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2
+      },
+      "totalParticles": null
+    },
+    {
+      "stem": "placement-final-building-river",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/placement-final-building-river.png",
+          "sha256": "cfe6e5b502e9c54c6ec866b3ccf0b39d72cae8285b7caf65ebf6f6748631c458",
+          "bytes": 2493785
+        },
+        {
+          "path": "Artifacts/QA/Visual/placement-final-building-river.json",
+          "sha256": "bfec56d63442302b680d3a5257196fd228fb04667399af9d0c3b83e3d53acd1e",
+          "bytes": 1494
+        },
+        {
+          "path": "Artifacts/QA/Visual/placement-final-building-river.state.json",
+          "sha256": "be965da36661d0a0bcb97cb8613faf7c98a50c5505fa850fe26263af8c854a22",
+          "bytes": 370
+        }
+      ],
+      "observation": "Actual CanPlace rejects Archer Tower at (0.5,0.5); red full-footprint unavailable preview.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2
+      },
+      "totalParticles": null
+    },
+    {
+      "stem": "placement-final-building-occupied",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/placement-final-building-occupied.png",
+          "sha256": "597c225975a0f38b5ad92502b0a8cf3e61928f787c36c10d29c0d189e1155a24",
+          "bytes": 2494603
+        },
+        {
+          "path": "Artifacts/QA/Visual/placement-final-building-occupied.json",
+          "sha256": "845f5958a0ca4e967dc5a5b1b6e34fc77ede4d00dad0e3e152e178ef26d66f80",
+          "bytes": 1499
+        },
+        {
+          "path": "Artifacts/QA/Visual/placement-final-building-occupied.state.json",
+          "sha256": "f770242614e7c11311fe6ce5f7cfe1378949d82c69424068d07a23b1557e2d85",
+          "bytes": 371
+        }
+      ],
+      "observation": "Actual CanPlace rejects occupied Core area (0.5,16.5); red full-footprint preview.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2
+      },
+      "totalParticles": null
+    },
+    {
+      "stem": "placement-final-opponent-pocket",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/placement-final-opponent-pocket.png",
+          "sha256": "d942a4e80d983ad64ae3067590410bbf0dbe5d5aba5f1120e49aa6dc52b3d555",
+          "bytes": 2494579
+        },
+        {
+          "path": "Artifacts/QA/Visual/placement-final-opponent-pocket.json",
+          "sha256": "5bd87333d45a7be7837a27d0ce600b79ba6e252ed3e93e7ae9fcf67b6cd07051",
+          "bytes": 1505
+        },
+        {
+          "path": "Artifacts/QA/Visual/placement-final-opponent-pocket.state.json",
+          "sha256": "79237351d9042293d61e8d05d6f7bb1f7413f3613b7e5233d0d2f33bc895e3b0",
+          "bytes": 350
+        }
+      ],
+      "observation": "Actual CanPlace rejects Ironclad at (7.5,-5.5) while enemy Guard is alive; red one-tile preview.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2
+      },
+      "totalParticles": null
+    },
+    {
+      "stem": "placement-final-spell-radius",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/placement-final-spell-radius.png",
+          "sha256": "8e0ee61f10a8c435769d256600c7b3814c6a098f277a568b82168c673f646de7",
+          "bytes": 2498911
+        },
+        {
+          "path": "Artifacts/QA/Visual/placement-final-spell-radius.json",
+          "sha256": "903d6ac556a4ac5b9965c0ecb48ec4b658c7fa55711d04bade1807330be7d4a4",
+          "bytes": 1499
+        },
+        {
+          "path": "Artifacts/QA/Visual/placement-final-spell-radius.state.json",
+          "sha256": "79faed7b02f65bb79b583700cf1290e9fa6faf5e3c46da13dc98ba58df0a4808",
+          "bytes": 353
+        }
+      ],
+      "observation": "Actual CanPlace accepts Nova at (0.5,0.5); full3.25-tile radius ring, elliptical in camera projection.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2
+      },
+      "totalParticles": null
+    },
+    {
+      "stem": "home-final-1920x1080",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/home-final-1920x1080.png",
+          "sha256": "a6cae2d57a82eac0c92b1716ccb5b21ab6f5ae2a5d6e7b724ac62db0a181fa95",
+          "bytes": 972549
+        },
+        {
+          "path": "Artifacts/QA/Visual/home-final-1920x1080.json",
+          "sha256": "785bf812dd62515ca2df928ce383c94d92654833edc25e98fa51e05ce1ec72a8",
+          "bytes": 1439
+        },
+        {
+          "path": "Artifacts/QA/Visual/home-final-1920x1080.state.json",
+          "sha256": "2959446721a67bc7536a9da73a648e75a5dd1b81dfef7e0358f38f0f9f646c3f",
+          "bytes": 38
+        }
+      ],
+      "observation": "All eight selected original cards, names/costs, navigation and entry actions visible.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": null,
+      "speed": 1,
+      "events": {},
+      "totalParticles": null
+    },
+    {
+      "stem": "cards-final-1920x1080",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/cards-final-1920x1080.png",
+          "sha256": "50e4f01820f90dc03b266959a1b0f9b5c89a75de8382d5f82b1b590202ce9a3e",
+          "bytes": 1800526
+        },
+        {
+          "path": "Artifacts/QA/Visual/cards-final-1920x1080.json",
+          "sha256": "be91f5419b9e646aa91c2bb635b761a1d019bd85b7ed2d5291e1e53d467cb557",
+          "bytes": 1413
+        },
+        {
+          "path": "Artifacts/QA/Visual/cards-final-1920x1080.state.json",
+          "sha256": "2959446721a67bc7536a9da73a648e75a5dd1b81dfef7e0358f38f0f9f646c3f",
+          "bytes": 38
+        }
+      ],
+      "observation": "All14 original card illustrations/names/costs visible.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": null,
+      "speed": 1,
+      "events": {},
+      "totalParticles": null
+    },
+    {
+      "stem": "meta-final-table-1920x1080",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/meta-final-table-1920x1080.png",
+          "sha256": "3a98b3c1bd53ad38b1e1ae1ec3622b496921d06af16f80eb1fcb3d3ee15ff268",
+          "bytes": 395742
+        },
+        {
+          "path": "Artifacts/QA/Visual/meta-final-table-1920x1080.json",
+          "sha256": "53c22177ef4efb7a6faf12062aa44747235452262f206d3fa970826e73ffb8c1",
+          "bytes": 1508
+        },
+        {
+          "path": "Artifacts/QA/Visual/meta-final-table-1920x1080.state.json",
+          "sha256": "2959446721a67bc7536a9da73a648e75a5dd1b81dfef7e0358f38f0f9f646c3f",
+          "bytes": 38
+        }
+      ],
+      "observation": "Equal table cells align to headers; whole counts, two-decimal metrics and both95% confidence bounds readable; dark/ivory controls.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": null,
+      "speed": 1,
+      "events": {},
+      "totalParticles": null
+    },
+    {
+      "stem": "settings-final-combo-1920x1080",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/settings-final-combo-1920x1080.png",
+          "sha256": "44fd89956297780242498945f12b017e36929bda21ff8a150bed46b808945bae",
+          "bytes": 406008
+        },
+        {
+          "path": "Artifacts/QA/Visual/settings-final-combo-1920x1080.json",
+          "sha256": "f2061a6a1b634f34e7e81e469748da064399d9e0d88a2e64934ddc022f4b9f04",
+          "bytes": 1476
+        },
+        {
+          "path": "Artifacts/QA/Visual/settings-final-combo-1920x1080.state.json",
+          "sha256": "2959446721a67bc7536a9da73a648e75a5dd1b81dfef7e0358f38f0f9f646c3f",
+          "bytes": 38
+        }
+      ],
+      "observation": "Shared dark/ivory Combos, sliders and Apply controls readable and within page.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": null,
+      "speed": 1,
+      "events": {},
+      "totalParticles": null
+    },
+    {
+      "stem": "patch-notes-final-1920x1080",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/patch-notes-final-1920x1080.png",
+          "sha256": "7a22e05afc9b16bf204e7906759b51062c685de3d754c4af9a80423bb1d1ed6f",
+          "bytes": 490346
+        },
+        {
+          "path": "Artifacts/QA/Visual/patch-notes-final-1920x1080.json",
+          "sha256": "0300101e1c067b742df0d47c8efb5bdb1a1e3da61cb816a84f67eeef72548671",
+          "bytes": 1435
+        },
+        {
+          "path": "Artifacts/QA/Visual/patch-notes-final-1920x1080.state.json",
+          "sha256": "2959446721a67bc7536a9da73a648e75a5dd1b81dfef7e0358f38f0f9f646c3f",
+          "bytes": 38
+        }
+      ],
+      "observation": "Headings, patch prose and navigation readable.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": null,
+      "speed": 1,
+      "events": {},
+      "totalParticles": null
+    },
+    {
+      "stem": "loadout-final-width-1920x1080",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/loadout-final-width-1920x1080.png",
+          "sha256": "bc566172c1f7ba122c6102ea3860d898446458dddaa456b7aa1096b989870974",
+          "bytes": 924508
+        },
+        {
+          "path": "Artifacts/QA/Visual/loadout-final-width-1920x1080.json",
+          "sha256": "6b78b197a39806bef6be25365d270c37d7c8a921f57814cd859c5dc7cd522098",
+          "bytes": 1557
+        },
+        {
+          "path": "Artifacts/QA/Visual/loadout-final-width-1920x1080.state.json",
+          "sha256": "2959446721a67bc7536a9da73a648e75a5dd1b81dfef7e0358f38f0f9f646c3f",
+          "bytes": 38
+        }
+      ],
+      "observation": "All eight full selected-card names/art/costs fit, including single-line Boulderback. Deck-name input readable. Below-scroll catalog is not shown by this screenshot.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": null,
+      "speed": 1,
+      "events": {},
+      "totalParticles": null
+    },
+    {
+      "stem": "niagara-all17-final-immediate",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/niagara-all17-final-immediate.png",
+          "sha256": "6fcf2527027a163718cb30db2122cc4ec10541d3f386a9e0e3ba7f1026c45366",
+          "bytes": 2494311
+        },
+        {
+          "path": "Artifacts/QA/Visual/niagara-all17-final-immediate.json",
+          "sha256": "55daa8974ade311807ab89d56378fb87d697a3b0f0c3908d1487dad98fcf29ab",
+          "bytes": 1643
+        },
+        {
+          "path": "Artifacts/QA/Visual/niagara-all17-final-immediate.state.json",
+          "sha256": "c5f9cdd6172f883f5c0ac6638ec6a7a799d43b7aa0c2e991a7701150f8296d9f",
+          "bytes": 21192
+        }
+      ],
+      "observation": "Warm shader cache; no Preparing Shaders message. Small colored spark clusters/flight points visible. All17 positive particle systems and bounded nonzero sprite dimensions verified from actual buffers. Init alpha is not current rendered alpha.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2
+      },
+      "totalParticles": 156
+    },
+    {
+      "stem": "niagara-all17-final-lifecycle",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/niagara-all17-final-lifecycle.png",
+          "sha256": "bd29bb72284a4ff1b798768ced4864dee863ec76977472c7d71db79c8a8472de",
+          "bytes": 2493488
+        },
+        {
+          "path": "Artifacts/QA/Visual/niagara-all17-final-lifecycle.json",
+          "sha256": "b58ad792a7b0351a4cfd370103c922fc44932381e584d51ce544d5908d390e40",
+          "bytes": 1601
+        },
+        {
+          "path": "Artifacts/QA/Visual/niagara-all17-final-lifecycle.state.json",
+          "sha256": "84ea61645f3854850426251f992af62010babd63cba012a366b570f3ab684667",
+          "bytes": 10660
+        }
+      ],
+      "observation": "Finite bursts finished; seven flight/status particles still alive after1.217085s. Small persistent colored points visible. Color buffers unavailable for these templates; renderer-default color applies.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2
+      },
+      "totalParticles": 7
+    },
+    {
+      "stem": "battle-effects-final-particles-1920x1080",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/battle-effects-final-particles-1920x1080.png",
+          "sha256": "5d1876ff0576c220c25c104df741028ea50e6f764d6a52e3395bf98a1e115174",
+          "bytes": 2518149
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-effects-final-particles-1920x1080.json",
+          "sha256": "e3e4998efb45c98de4ec53465552fca7a59650f840e2add68f5e5143635d502f",
+          "bytes": 1614
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-effects-final-particles-1920x1080.state.json",
+          "sha256": "7aa7654de819bf3f33e44e871dabb4a5c231e352bb233b020bc302dd57e5b904",
+          "bytes": 18803
+        }
+      ],
+      "observation": "Actual ordinary combat, colored effects, STUN/-30%/CHARGE and hazard boundary/timer visible;93 actual particles. Single frame does not prove continuous animation/contact.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 3.049999999999994,
+      "speed": 1,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "card_play": 13,
+        "entity_spawn": 10,
+        "attack": 25,
+        "projectile_launch": 18,
+        "damage": 24,
+        "slow": 4,
+        "aura": 1,
+        "stun": 1
+      },
+      "totalParticles": 93
+    },
+    {
+      "stem": "battle-effects-final-particles-quarter-1920x1080",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/battle-effects-final-particles-quarter-1920x1080.png",
+          "sha256": "4ea826b7eee3005600ce56ef34c07fdff3d83ec0ab0bee5b503a925145971cc6",
+          "bytes": 2516973
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-effects-final-particles-quarter-1920x1080.json",
+          "sha256": "af1ef0a4b39f31b606f6c9957299ad2bc5375e2204c428bb09d9a82409dc0791",
+          "bytes": 1624
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-effects-final-particles-quarter-1920x1080.state.json",
+          "sha256": "e8c9de0dc9ab6c9debfa84379432b807b7dc7a0a82e817b5bf444aa10ab54b49",
+          "bytes": 10972
+        }
+      ],
+      "observation": "Actual quarter-speed combat with projectiles/status/hazard activity;four persistent particles. Transient burst timing differs from simulation time.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 3.183333333333327,
+      "speed": 0.25,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "card_play": 13,
+        "entity_spawn": 10,
+        "attack": 27,
+        "projectile_launch": 19,
+        "damage": 27,
+        "slow": 4,
+        "aura": 1,
+        "stun": 1
+      },
+      "totalParticles": 4
+    },
+    {
+      "stem": "battle-effects-final-particles-quadruple-1920x1080",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/battle-effects-final-particles-quadruple-1920x1080.png",
+          "sha256": "b97938ef87ed1efc0da84cfb9fd65a6b3311113e8c9d159b4fd4a8be06d7c01d",
+          "bytes": 2483454
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-effects-final-particles-quadruple-1920x1080.json",
+          "sha256": "fd56b92c5ea2b84ac301525fbeb178676e98a5dc36cc17fcd79792db33a2388f",
+          "bytes": 1627
+        },
+        {
+          "path": "Artifacts/QA/Visual/battle-effects-final-particles-quadruple-1920x1080.state.json",
+          "sha256": "f3d9edea15c1b04c69b4033840b971fb59ce412df3e71f5fde6ccb7df1f8ad83",
+          "bytes": 41819
+        }
+      ],
+      "observation": "Actual quadruple-speed combat with projectiles/status/hazard activity;142 actual particles. Single frame does not prove continuous transitions.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 3.3166666666666598,
+      "speed": 4,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "card_play": 13,
+        "entity_spawn": 10,
+        "attack": 27,
+        "projectile_launch": 19,
+        "damage": 28,
+        "slow": 4,
+        "aura": 1,
+        "stun": 1
+      },
+      "totalParticles": 142
+    },
+    {
+      "stem": "frost-breath-final-1920x1080",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/frost-breath-final-1920x1080.png",
+          "sha256": "d7d05092a74322f7f592f3e15c0bbc9f65947096b86d819bf51f720e5adb85ac",
+          "bytes": 2496505
+        },
+        {
+          "path": "Artifacts/QA/Visual/frost-breath-final-1920x1080.json",
+          "sha256": "af67d7e2b8a308a7b7408f00b540ff2a505aaee96dd1ab7c7dda17b1199bf0a6",
+          "bytes": 1888
+        },
+        {
+          "path": "Artifacts/QA/Visual/frost-breath-final-1920x1080.state.json",
+          "sha256": "5faaeb5963f8ab5374223e9944380a84febec1d4edca2140701a3fa770472af1",
+          "bytes": 33290
+        }
+      ],
+      "observation": "Both Frost Fang entities use the real Breath clip after ordinary simulation is paused; two subtle mouth Frost puffs contain8 particles each and do not obscure gameplay. This frame does not certify continuous breathing/combat transitions.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 0.8833333333333344,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "card_play": 22,
+        "entity_spawn": 32,
+        "attack": 4,
+        "projectile_launch": 4,
+        "damage": 4
+      },
+      "totalParticles": 16
+    }
+  ],
+  "niagaraGraphRepair": {
+    "historicalFailure": "battle-effects-niagara-diagnostic-1920x1080: zero actual particles and zero spawned particles",
+    "all17ImmediateTotalParticles": 156,
+    "all17": [
+      {
+        "system": "/Game/Rift/VFX/NS_RiftDeploy.NS_RiftDeploy",
+        "particles": 12,
+        "totalSpawned": 12,
+        "age": 0.1335059106349945,
+        "spriteDimensionsCmRange": [
+          50,
+          50,
+          50,
+          50
+        ],
+        "initialColorAlphaAvailable": true,
+        "initialAlphaMax": 1,
+        "alphaInterpretation": "Suffix resolver selects Initial.Color when present; not current rendered alpha. Persistent templates omit Color and use engine renderer default."
+      },
+      {
+        "system": "/Game/Rift/VFX/NS_RiftImpact.NS_RiftImpact",
+        "particles": 7,
+        "totalSpawned": 7,
+        "age": 0.1335059106349945,
+        "spriteDimensionsCmRange": [
+          4.655698299407959,
+          2.8379898071289062,
+          5.539007186889648,
+          8.72671127319336
+        ],
+        "initialColorAlphaAvailable": true,
+        "initialAlphaMax": 1,
+        "alphaInterpretation": "Suffix resolver selects Initial.Color when present; not current rendered alpha. Persistent templates omit Color and use engine renderer default."
+      },
+      {
+        "system": "/Game/Rift/VFX/NS_RiftArrowFlight.NS_RiftArrowFlight",
+        "particles": 1,
+        "totalSpawned": 1,
+        "age": 0.1335059106349945,
+        "spriteDimensionsCmRange": [
+          10,
+          10,
+          10,
+          10
+        ],
+        "initialColorAlphaAvailable": false,
+        "initialAlphaMax": null,
+        "alphaInterpretation": "Suffix resolver selects Initial.Color when present; not current rendered alpha. Persistent templates omit Color and use engine renderer default."
+      },
+      {
+        "system": "/Game/Rift/VFX/NS_RiftArcFlight.NS_RiftArcFlight",
+        "particles": 1,
+        "totalSpawned": 1,
+        "age": 0.1335059106349945,
+        "spriteDimensionsCmRange": [
+          10,
+          10,
+          10,
+          10
+        ],
+        "initialColorAlphaAvailable": false,
+        "initialAlphaMax": null,
+        "alphaInterpretation": "Suffix resolver selects Initial.Color when present; not current rendered alpha. Persistent templates omit Color and use engine renderer default."
+      },
+      {
+        "system": "/Game/Rift/VFX/NS_RiftMantaFlight.NS_RiftMantaFlight",
+        "particles": 1,
+        "totalSpawned": 1,
+        "age": 0.1335059106349945,
+        "spriteDimensionsCmRange": [
+          10,
+          10,
+          10,
+          10
+        ],
+        "initialColorAlphaAvailable": false,
+        "initialAlphaMax": null,
+        "alphaInterpretation": "Suffix resolver selects Initial.Color when present; not current rendered alpha. Persistent templates omit Color and use engine renderer default."
+      },
+      {
+        "system": "/Game/Rift/VFX/NS_RiftStormFlight.NS_RiftStormFlight",
+        "particles": 1,
+        "totalSpawned": 1,
+        "age": 0.1335059106349945,
+        "spriteDimensionsCmRange": [
+          10,
+          10,
+          10,
+          10
+        ],
+        "initialColorAlphaAvailable": false,
+        "initialAlphaMax": null,
+        "alphaInterpretation": "Suffix resolver selects Initial.Color when present; not current rendered alpha. Persistent templates omit Color and use engine renderer default."
+      },
+      {
+        "system": "/Game/Rift/VFX/NS_RiftTowerFlight.NS_RiftTowerFlight",
+        "particles": 1,
+        "totalSpawned": 1,
+        "age": 0.1335059106349945,
+        "spriteDimensionsCmRange": [
+          10,
+          10,
+          10,
+          10
+        ],
+        "initialColorAlphaAvailable": false,
+        "initialAlphaMax": null,
+        "alphaInterpretation": "Suffix resolver selects Initial.Color when present; not current rendered alpha. Persistent templates omit Color and use engine renderer default."
+      },
+      {
+        "system": "/Game/Rift/VFX/NS_RiftBulletBurst.NS_RiftBulletBurst",
+        "particles": 7,
+        "totalSpawned": 7,
+        "age": 0.1335059106349945,
+        "spriteDimensionsCmRange": [
+          6.10202693939209,
+          3.0801796913146973,
+          7.223147392272949,
+          10.554314613342285
+        ],
+        "initialColorAlphaAvailable": true,
+        "initialAlphaMax": 1,
+        "alphaInterpretation": "Suffix resolver selects Initial.Color when present; not current rendered alpha. Persistent templates omit Color and use engine renderer default."
+      },
+      {
+        "system": "/Game/Rift/VFX/NS_RiftNova.NS_RiftNova",
+        "particles": 24,
+        "totalSpawned": 24,
+        "age": 0.1335059106349945,
+        "spriteDimensionsCmRange": [
+          3.2628567218780518,
+          3.2628567218780518,
+          7.1302924156188965,
+          7.1302924156188965
+        ],
+        "initialColorAlphaAvailable": true,
+        "initialAlphaMax": 1,
+        "alphaInterpretation": "Suffix resolver selects Initial.Color when present; not current rendered alpha. Persistent templates omit Color and use engine renderer default."
+      },
+      {
+        "system": "/Game/Rift/VFX/NS_RiftMeteor.NS_RiftMeteor",
+        "particles": 18,
+        "totalSpawned": 18,
+        "age": 0.1335059106349945,
+        "spriteDimensionsCmRange": [
+          13.600776672363281,
+          6.071853160858154,
+          18.631153106689453,
+          39.60768127441406
+        ],
+        "initialColorAlphaAvailable": true,
+        "initialAlphaMax": 1,
+        "alphaInterpretation": "Suffix resolver selects Initial.Color when present; not current rendered alpha. Persistent templates omit Color and use engine renderer default."
+      },
+      {
+        "system": "/Game/Rift/VFX/NS_RiftMeteorTick.NS_RiftMeteorTick",
+        "particles": 5,
+        "totalSpawned": 5,
+        "age": 0.1335059106349945,
+        "spriteDimensionsCmRange": [
+          50,
+          50,
+          50,
+          50
+        ],
+        "initialColorAlphaAvailable": true,
+        "initialAlphaMax": 1,
+        "alphaInterpretation": "Suffix resolver selects Initial.Color when present; not current rendered alpha. Persistent templates omit Color and use engine renderer default."
+      },
+      {
+        "system": "/Game/Rift/VFX/NS_RiftFrost.NS_RiftFrost",
+        "particles": 8,
+        "totalSpawned": 8,
+        "age": 0.1335059106349945,
+        "spriteDimensionsCmRange": [
+          6.8374152183532715,
+          3.282768487930298,
+          8.377870559692383,
+          13.55246639251709
+        ],
+        "initialColorAlphaAvailable": true,
+        "initialAlphaMax": 1,
+        "alphaInterpretation": "Suffix resolver selects Initial.Color when present; not current rendered alpha. Persistent templates omit Color and use engine renderer default."
+      },
+      {
+        "system": "/Game/Rift/VFX/NS_RiftSlow.NS_RiftSlow",
+        "particles": 1,
+        "totalSpawned": 1,
+        "age": 0.1335059106349945,
+        "spriteDimensionsCmRange": [
+          10,
+          10,
+          10,
+          10
+        ],
+        "initialColorAlphaAvailable": false,
+        "initialAlphaMax": null,
+        "alphaInterpretation": "Suffix resolver selects Initial.Color when present; not current rendered alpha. Persistent templates omit Color and use engine renderer default."
+      },
+      {
+        "system": "/Game/Rift/VFX/NS_RiftStun.NS_RiftStun",
+        "particles": 1,
+        "totalSpawned": 1,
+        "age": 0.1335059106349945,
+        "spriteDimensionsCmRange": [
+          10,
+          10,
+          10,
+          10
+        ],
+        "initialColorAlphaAvailable": false,
+        "initialAlphaMax": null,
+        "alphaInterpretation": "Suffix resolver selects Initial.Color when present; not current rendered alpha. Persistent templates omit Color and use engine renderer default."
+      },
+      {
+        "system": "/Game/Rift/VFX/NS_RiftAura.NS_RiftAura",
+        "particles": 20,
+        "totalSpawned": 20,
+        "age": 0.1335059106349945,
+        "spriteDimensionsCmRange": [
+          50,
+          50,
+          50,
+          50
+        ],
+        "initialColorAlphaAvailable": true,
+        "initialAlphaMax": 1,
+        "alphaInterpretation": "Suffix resolver selects Initial.Color when present; not current rendered alpha. Persistent templates omit Color and use engine renderer default."
+      },
+      {
+        "system": "/Game/Rift/VFX/NS_RiftTowerDestroy.NS_RiftTowerDestroy",
+        "particles": 32,
+        "totalSpawned": 32,
+        "age": 0.1335059106349945,
+        "spriteDimensionsCmRange": [
+          3.3018958568573,
+          3.3018958568573,
+          6.863014221191406,
+          6.863014221191406
+        ],
+        "initialColorAlphaAvailable": true,
+        "initialAlphaMax": 1,
+        "alphaInterpretation": "Suffix resolver selects Initial.Color when present; not current rendered alpha. Persistent templates omit Color and use engine renderer default."
+      },
+      {
+        "system": "/Game/Rift/VFX/NS_RiftCoreAwaken.NS_RiftCoreAwaken",
+        "particles": 16,
+        "totalSpawned": 16,
+        "age": 0.1335059106349945,
+        "spriteDimensionsCmRange": [
+          50,
+          50,
+          50,
+          50
+        ],
+        "initialColorAlphaAvailable": true,
+        "initialAlphaMax": 1,
+        "alphaInterpretation": "Suffix resolver selects Initial.Color when present; not current rendered alpha. Persistent templates omit Color and use engine renderer default."
+      }
+    ],
+    "persistentAfterOneSecond": [
+      {
+        "system": "/Game/Rift/VFX/NS_RiftArrowFlight.NS_RiftArrowFlight",
+        "age": 1.217085361480713,
+        "particles": 1,
+        "spriteSize": "X=10.000 Y=10.000"
+      },
+      {
+        "system": "/Game/Rift/VFX/NS_RiftArcFlight.NS_RiftArcFlight",
+        "age": 1.217085361480713,
+        "particles": 1,
+        "spriteSize": "X=10.000 Y=10.000"
+      },
+      {
+        "system": "/Game/Rift/VFX/NS_RiftMantaFlight.NS_RiftMantaFlight",
+        "age": 1.217085361480713,
+        "particles": 1,
+        "spriteSize": "X=10.000 Y=10.000"
+      },
+      {
+        "system": "/Game/Rift/VFX/NS_RiftStormFlight.NS_RiftStormFlight",
+        "age": 1.217085361480713,
+        "particles": 1,
+        "spriteSize": "X=10.000 Y=10.000"
+      },
+      {
+        "system": "/Game/Rift/VFX/NS_RiftTowerFlight.NS_RiftTowerFlight",
+        "age": 1.217085361480713,
+        "particles": 1,
+        "spriteSize": "X=10.000 Y=10.000"
+      },
+      {
+        "system": "/Game/Rift/VFX/NS_RiftStun.NS_RiftStun",
+        "age": 1.217085361480713,
+        "particles": 1,
+        "spriteSize": "X=10.000 Y=10.000"
+      },
+      {
+        "system": "/Game/Rift/VFX/NS_RiftSlow.NS_RiftSlow",
+        "age": 1.217085361480713,
+        "particles": 1,
+        "spriteSize": "X=10.000 Y=10.000"
+      }
+    ],
+    "lifecycleTotalParticles": 7,
+    "currentRenderedAlphaMeasuredForAllSystems": false
+  },
+  "assetAudit": {
+    "path": "Artifacts/QA/unreal_asset_audit.json",
+    "sha256": "d4da12575d569e47c762a0691bbf2cf6a7ec61b7ece9cdca20f3812d271ad9ad",
+    "assetCount": 263,
+    "classCounts": {
+      "AnimSequence": 113,
+      "Material": 7,
+      "NiagaraSystem": 17,
+      "PhysicsAsset": 11,
+      "RiftCardData": 14,
+      "SkeletalMesh": 11,
+      "Skeleton": 11,
+      "SoundWave": 41,
+      "StaticMesh": 19,
+      "Texture2D": 18,
+      "World": 1
+    },
+    "nativeCards": 14,
+    "errors": [],
+    "mapQualification": "World generic load omitted; native Arena captures verify actual map load"
+  },
+  "audioEvidence": "Artifacts/QA/Audio/native-audio-postmix64/audio-smoke.json",
+  "limits": [
+    "Character surfaces and terrain remain stylized and simpler than detailed card illustrations; no full production art certification.",
+    "Screenshots do not prove continuous animation transitions, exact visible contact timing or replay seek cleanup.",
+    "Alpha diagnostic is initialization Color when available; persistent renderer fallback alpha comes from installed engine source, not a current GPU opacity readback.",
+    "No acoustic listening, perceived balance or audible soundtrack seam review.",
+    "Loadout below-scroll catalog is not visible in selected-card screenshot.",
+    "Final Shipping performance and installed Play are separate release-pipeline evidence."
+  ],
+  "frostBreath": {
+    "captureStem": "frost-breath-final-1920x1080",
+    "qaFlag": "RiftBreathSmoke",
+    "actualElapsed": 0.8833333333333344,
+    "pausedSpeed": 0,
+    "boundAnimationAssets": [
+      {
+        "entityId": 33,
+        "assetId": "frost_fang",
+        "clip": "Breath",
+        "animationAsset": "/Game/Rift/Characters/frost_fang/Animations/AN_frost_fang_Breath.AN_frost_fang_Breath",
+        "positionSeconds": 1.1003693342208862
+      },
+      {
+        "entityId": 34,
+        "assetId": "frost_fang",
+        "clip": "Breath",
+        "animationAsset": "/Game/Rift/Characters/frost_fang/Animations/AN_frost_fang_Breath.AN_frost_fang_Breath",
+        "positionSeconds": 1.2160556316375732
+      }
+    ],
+    "mouthPuffs": 2,
+    "liveParticles": 16,
+    "puffAge": 0.166668102145195,
+    "runtimeModuleSha256": "5cc353a2acb11ede59d5d3aef366fe02fee620265d64a21e72b5b07754d81333",
+    "priority": "Idle only, lower priority than deploy/movement/attack/hit/acquire/turn/stun/death",
+    "cosmeticCadenceSimulationSeconds": 2.4,
+    "noGameplayEventsDamageOrStatuses": true
+  },
+  "sourceReview": {
+    "path": "Artifacts/QA/presentation_final_review.json",
+    "sha256": "9b2114e8da1ce058c27ff887b9c5fa2f3dea42c869719025a51defeb6ffa1e69",
+    "originalReviewedCaptureCount": 29,
+    "excludedProfileCaptures": 1,
+    "reason": "Player Profile page captures are outside the public synthetic evidence whitelist."
+  }
+}
