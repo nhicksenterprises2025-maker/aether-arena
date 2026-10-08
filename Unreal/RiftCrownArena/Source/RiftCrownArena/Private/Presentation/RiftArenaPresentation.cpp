@@ -23,6 +23,15 @@
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraSystem.h"
+#include "NiagaraSystemInstanceController.h"
+#include "NiagaraSystemInstance.h"
+#include "NiagaraEmitterInstance.h"
+#include "NiagaraDataSetAccessor.h"
+#include "Dom/JsonObject.h"
+#include "Serialization/JsonSerializer.h"
+#include "Serialization/JsonWriter.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
 #include "TimerManager.h"
 
 namespace
@@ -98,6 +107,16 @@ void ARiftArenaPresentation::BeginPlay()
     EventHandle=Match->OnEvent.AddUObject(this,&ARiftArenaPresentation::OnSimulationEvent);
     MatchHandle=Match->OnChanged.AddUObject(this,&ARiftArenaPresentation::OnMatchChanged);
     Synchronize(0.f);
+    // Explicit native QA only: let the paused roster finish deployment through
+    // ordinary simulation, then inspect its actual idle animation bindings.
+    if(FParse::Param(FCommandLine::Get(),TEXT("RiftBreathSmoke")))
+    {
+        FTimerHandle StartTimer;GetWorld()->GetTimerManager().SetTimer(StartTimer,[this]()
+        {
+            if(!Match||!Match->IsActive())return;Match->SetSpeed(1);
+            FTimerHandle StopTimer;GetWorld()->GetTimerManager().SetTimer(StopTimer,[this](){if(Match)Match->SetSpeed(0);},.65f,false);
+        },.75f,false);
+    }
 }
 void ARiftArenaPresentation::EndPlay(const EEndPlayReason::Type Reason)
 {
@@ -214,6 +233,7 @@ void ARiftArenaPresentation::ClearVisuals()
     for (auto& Entry:SlowEffects) if (Entry.Value) Entry.Value->DestroyComponent();SlowEffects.Reset();
     for (auto& Entry:StunEffects) if (Entry.Value) Entry.Value->DestroyComponent();StunEffects.Reset();
     for (auto& Effect:TransientEffects) if (Effect.IsValid()) Effect->DestroyComponent();TransientEffects.Reset();
+    NextFrostBreath.Reset();FrostBreathPuffs=0;
     LastSeed=0;LastTime=-1;ResultDeathClock=0;AetherStage=1;ClearPlacementPreview();
 }
 void ARiftArenaPresentation::OnMatchChanged()
@@ -242,6 +262,19 @@ void ARiftArenaPresentation::Synchronize(float DeltaSeconds)
             Units.Add(Entity.id,Actor);
         }
         Actor->Synchronize(Entity,*State,DeltaSeconds);
+        if(Actor->CurrentAnimation()==TEXT("Breath")&&!Actor->IsDead()&&State->phase!=rift::Phase::Finished)
+        {
+            auto* Next=NextFrostBreath.Find(Entity.id);
+            if(!Next||State->elapsed>=*Next)
+            {
+                // Idle mouth ambience reuses the authored finite Frost effect;
+                // it has no event, damage, status or simulation-side ownership.
+                const FVector Mouth=Actor->AttackLocation();
+                if(auto* Puff=SpawnEffect(TEXT("Frost"),Mouth,Entity.team,60))
+                {Puff->SetWorldRotation(Actor->GetActorRotation());++FrostBreathPuffs;}
+                NextFrostBreath.Add(Entity.id,State->elapsed+2.4);
+            }
+        }
         if (State->phase==rift::Phase::Finished && Actor->IsDead()) Actor->AdvanceDeath(State->elapsed+ResultDeathClock);
     }
     TArray<uint64> Removed;
@@ -253,7 +286,7 @@ void ARiftArenaPresentation::Synchronize(float DeltaSeconds)
             else {Entry.Value->AdvanceDeath(State->elapsed+ResultDeathClock);if (Entry.Value->IsExpired(State->elapsed+ResultDeathClock)) Removed.Add(Entry.Key);}
         }
     }
-    for (uint64 Id:Removed) {Units[Id]->Destroy();Units.Remove(Id);}
+    for (uint64 Id:Removed) {Units[Id]->Destroy();Units.Remove(Id);NextFrostBreath.Remove(Id);}
     SynchronizeProjectiles(*State);SynchronizeHazards(*State);SynchronizeStatuses(*State);DrawDeveloperOverlay(*State);
     TransientEffects.RemoveAllSwap([](const auto& Effect){return !Effect.IsValid();});
     const int32 Stage=State->phase==rift::Phase::Regulation?(State->elapsed>=120?2:1):State->phaseElapsed>=60?3:2;
@@ -266,6 +299,103 @@ UNiagaraSystem* ARiftArenaPresentation::Effect(FName Name)
     auto* System=LoadObject<UNiagaraSystem>(nullptr,*FString::Printf(TEXT("/Game/Rift/VFX/NS_Rift%s.NS_Rift%s"),*Name.ToString(),*Name.ToString()));
     Effects.Add(Name,System);if (!System) RIFT_LOG(LogRift,Error,TEXT("Authored Niagara system missing: %s"),*Name.ToString());
     return System;
+}
+void ARiftArenaPresentation::ShowcaseNiagara()
+{
+    const TCHAR* Names[]={TEXT("Deploy"),TEXT("Impact"),TEXT("ArrowFlight"),TEXT("ArcFlight"),TEXT("MantaFlight"),TEXT("StormFlight"),TEXT("TowerFlight"),TEXT("BulletBurst"),TEXT("Nova"),TEXT("Meteor"),TEXT("MeteorTick"),TEXT("Frost"),TEXT("Slow"),TEXT("Stun"),TEXT("Aura"),TEXT("TowerDestroy"),TEXT("CoreAwaken")};
+    for(int32 Index=0;Index<UE_ARRAY_COUNT(Names);++Index)
+    {
+        const FName Name(Names[Index]);const bool Persistent=Name.ToString().EndsWith(TEXT("Flight"))||Name==TEXT("Slow")||Name==TEXT("Stun");
+        auto* Component=SpawnEffect(Name,FVector((-10+5*(Index%5))*100,(-12+7*(Index/5))*100,75),rift::Team::Player,150,Persistent);
+        if(Component&&Persistent)
+        {
+            // This explicit capture fixture holds loop components long enough
+            // for a second lifecycle sample, then disposes every QA component.
+            TransientEffects.Add(Component);const TWeakObjectPtr<UNiagaraComponent> Weak(Component);FTimerHandle Cleanup;
+            GetWorld()->GetTimerManager().SetTimer(Cleanup,FTimerDelegate::CreateLambda([Weak](){if(Weak.IsValid())Weak->DestroyComponent();}),3.f,false);
+        }
+    }
+}
+FString ARiftArenaPresentation::NiagaraDiagnosticsJSON()
+{
+    auto Report=MakeShared<FJsonObject>();TArray<TSharedPtr<FJsonValue>> Entries;
+    TArray<TSharedPtr<FJsonValue>> Animations;
+    for(const auto& Pair:Units)if(auto* Unit=Pair.Value.Get())
+    {
+        auto Entry=MakeShared<FJsonObject>();Entry->SetNumberField(TEXT("entityId"),double(Pair.Key));
+        Entry->SetStringField(TEXT("assetId"),Unit->PresentationAssetId());Entry->SetStringField(TEXT("clip"),Unit->CurrentAnimation().ToString());
+        Entry->SetStringField(TEXT("animationAsset"),Unit->AnimationAssetPath());Entry->SetNumberField(TEXT("positionSeconds"),Unit->AnimationPosition());
+        Animations.Add(MakeShared<FJsonValueObject>(Entry));
+    }
+    Report->SetArrayField(TEXT("unitAnimations"),Animations);
+    Report->SetBoolField(TEXT("breathSmoke"),FParse::Param(FCommandLine::Get(),TEXT("RiftBreathSmoke")));
+    Report->SetNumberField(TEXT("frostBreathPuffs"),FrostBreathPuffs);
+    TSet<UNiagaraComponent*> Components;
+    for(const auto& Pair:Projectiles)if(Pair.Value)Components.Add(Pair.Value.Get());
+    for(const auto& Pair:Hazards)if(Pair.Value)Components.Add(Pair.Value.Get());
+    for(const auto& Pair:SlowEffects)if(Pair.Value)Components.Add(Pair.Value.Get());
+    for(const auto& Pair:StunEffects)if(Pair.Value)Components.Add(Pair.Value.Get());
+    for(const auto& Component:TransientEffects)if(Component.IsValid())Components.Add(Component.Get());
+    int32 TotalParticles=0;
+    for(auto* Component:Components)
+    {
+        auto Entry=MakeShared<FJsonObject>();auto* System=Component->GetAsset();
+        Entry->SetStringField(TEXT("system"),System?System->GetPathName():TEXT("missing"));
+        Entry->SetBoolField(TEXT("ready"),System&&System->IsReadyToRun());
+        Entry->SetBoolField(TEXT("valid"),System&&System->IsValid());
+        Entry->SetBoolField(TEXT("active"),Component->IsActive());Entry->SetBoolField(TEXT("visible"),Component->IsVisible());
+        Entry->SetBoolField(TEXT("complete"),Component->IsComplete());
+        Entry->SetStringField(TEXT("location"),Component->GetComponentLocation().ToString());
+        Entry->SetStringField(TEXT("scale"),Component->GetComponentScale().ToString());
+        TArray<UMaterialInterface*> UsedMaterials;Component->GetUsedMaterials(UsedMaterials);
+        TArray<TSharedPtr<FJsonValue>> Materials;for(auto* Material:UsedMaterials)if(Material)Materials.Add(MakeShared<FJsonValueString>(Material->GetPathName()));
+        Entry->SetArrayField(TEXT("materials"),Materials);
+        TArray<TSharedPtr<FJsonValue>> Emitters;
+        if(auto Controller=Component->GetSystemInstanceController();Controller&&Controller->IsValid())
+        {
+            // Finish concurrent work before reading CPU buffers through the
+            // controller's explicitly unsafe access point on the game thread.
+            Controller->WaitForConcurrentTickAndFinalize();Entry->SetNumberField(TEXT("age"),Controller->GetAge());
+            if(auto* Instance=Controller->GetSystemInstance_Unsafe())for(const auto& Emitter:Instance->GetEmitters())
+            {
+                auto E=MakeShared<FJsonObject>();const int32 Count=Emitter->GetNumParticles();TotalParticles+=Count;
+                E->SetNumberField(TEXT("particles"),Count);E->SetNumberField(TEXT("totalSpawned"),Emitter->GetTotalSpawnedParticles());
+                E->SetNumberField(TEXT("executionState"),uint32(Emitter->GetExecutionState()));
+                E->SetBoolField(TEXT("localSpace"),Emitter->IsLocalSpace());E->SetNumberField(TEXT("simTarget"),uint32(Emitter->GetSimTarget()));
+                if(Count>0&&Emitter->GetSimTarget()==ENiagaraSimTarget::CPUSim)
+                {
+                    const auto& Data=Emitter->GetParticleData();
+                    // Compiled CPU datasets can strip the Particles namespace.
+                    // Resolve the actual recorded names, retaining an explicit
+                    // unavailable flag instead of interpreting missing data as zero.
+                    FName ColorName(TEXT("Particles.Color")),SizeName(TEXT("Particles.SpriteSize"));
+                    TArray<TSharedPtr<FJsonValue>> Variables;
+                    for(const auto& Variable:Data.GetVariables())
+                    {
+                        const FString Name=Variable.GetName().ToString();Variables.Add(MakeShared<FJsonValueString>(Name));
+                        if(Name==TEXT("Color")||Name.EndsWith(TEXT(".Color")))ColorName=Variable.GetName();
+                        if(Name==TEXT("SpriteSize")||Name.EndsWith(TEXT(".SpriteSize")))SizeName=Variable.GetName();
+                    }
+                    E->SetArrayField(TEXT("dataVariables"),Variables);
+                    auto Colors=FNiagaraDataSetAccessor<FLinearColor>::CreateReader(Data,ColorName);
+                    E->SetBoolField(TEXT("colorDataAvailable"),Colors.IsValid());
+                    if(Colors.IsValid()){FLinearColor Minimum,Maximum;Colors.GetMinMax(Minimum,Maximum);E->SetNumberField(TEXT("alphaMin"),Minimum.A);E->SetNumberField(TEXT("alphaMax"),Maximum.A);}
+                    auto Sizes=FNiagaraDataSetAccessor<FVector2f>::CreateReader(Data,SizeName);
+                    E->SetBoolField(TEXT("sizeDataAvailable"),Sizes.IsValid());
+                    if(Sizes.IsValid())
+                    {
+                        FVector2f Minimum,Maximum;Sizes.GetMinMax(Minimum,Maximum);E->SetStringField(TEXT("spriteSize"),Sizes.Get(0).ToString());
+                        E->SetNumberField(TEXT("spriteWidthMin"),Minimum.X);E->SetNumberField(TEXT("spriteHeightMin"),Minimum.Y);
+                        E->SetNumberField(TEXT("spriteWidthMax"),Maximum.X);E->SetNumberField(TEXT("spriteHeightMax"),Maximum.Y);
+                    }
+                }
+                Emitters.Add(MakeShared<FJsonValueObject>(E));
+            }
+        }
+        Entry->SetArrayField(TEXT("emitters"),Emitters);Entries.Add(MakeShared<FJsonValueObject>(Entry));
+    }
+    Report->SetNumberField(TEXT("totalParticles"),TotalParticles);Report->SetArrayField(TEXT("components"),Entries);
+    FString Result;FJsonSerializer::Serialize(Report,TJsonWriterFactory<>::Create(&Result));return Result;
 }
 void ARiftArenaPresentation::SetEffectParameters(UNiagaraComponent* Component,rift::Team Team,float Radius,FVector Source,FVector Target,FLinearColor Color)
 {

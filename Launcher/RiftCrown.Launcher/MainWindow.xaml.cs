@@ -19,6 +19,7 @@ public partial class MainWindow : Window
     private CancellationTokenSource? operation;
     private Process? launchedGame;
     private Task? playCommandOperation;
+    private Task? updateCheckCommandOperation;
     private bool busy;
     private readonly System.Windows.Threading.DispatcherTimer processPoll = new() { Interval = TimeSpan.FromSeconds(2) };
 
@@ -148,7 +149,7 @@ public partial class MainWindow : Window
         });
     }
 
-    private async void Check_Click(object sender, RoutedEventArgs e) => await CheckForUpdatesAsync();
+    private async void Check_Click(object sender, RoutedEventArgs e) => await (updateCheckCommandOperation = CheckForUpdatesAsync());
     private async void Update_Click(object sender, RoutedEventArgs e)
     {
         var release = available;

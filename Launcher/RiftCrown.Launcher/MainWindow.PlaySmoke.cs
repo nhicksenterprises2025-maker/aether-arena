@@ -99,6 +99,7 @@ public partial class MainWindow
             SafeFiles.AtomicWrite(Path.Combine(saveRoot, "launcher-play-self-test.json"), ReleaseJson.Write(new
             {
                 passed = true, utc = DateTime.UtcNow, version = ReleaseManager.LauncherVersion, installed = release.Version,
+                launcherSha256 = await SafeFiles.HashAsync(Environment.ProcessPath ?? throw new IOException("The actual launcher process path is unavailable."), token),
                 routedCommand = "PlayButton.Click", verifiedGameFiles = verification.Checked, bootstrapProcessId = bootstrapId,
                 bootstrapExitCode = bootstrap.ExitCode, nativeProcessId = nativeId, nativeExitCode = nativeProcess.ExitCode,
                 nativeExecutable, nativeSha256 = nativeEntry.Sha256, saveRoot, saveRootSource = "RIFT_SAVE_ROOT environment",

@@ -6,7 +6,7 @@ Datasets capture all fourteen card definitions, rule metadata, combat model, dec
 
 ## Recorded execution
 
-On 2026-10-08, the latest actual Unreal automation run completed nine tests with zero failures. Eight reported `Success`; the profile backup recovery fixture reported `SuccessWithWarnings` because its expected recovery warning was logged. The report is `Build/Automation/20261008-154026/Report/index.json`, with raw Unreal logs alongside it.
+On 2026-10-08, the full actual Unreal automation suite completed nine tests with zero failures. Eight reported `Success`; the profile backup recovery fixture reported `SuccessWithWarnings` because its expected recovery warning was logged. The report is `Build/Automation/20261008-154026/Report/index.json`, with raw Unreal logs alongside it. After the final table/Combo styling changes, the connected production UI callback test passed again with zero warnings/errors at `Build/Automation/20261008-160858/Report/index.json`.
 
 | Test | Actual checks |
 | --- | --- |
@@ -38,4 +38,17 @@ Worker active simulation time measures construction and step execution, excludin
 
 ## Larger validation
 
-The requested 10,000-match validation must execute native matches through the explicit validation harness and preserve its generated evidence. Historical browser 10,000-match reports do not establish a native result. This document does not claim that larger native run has completed.
+The current authoritative native core completed an isolated 10,000-match run with initial seed `151515`, telemetry revision 3 and fingerprint `695685f9ebb53185d4f45b257e866354`. Its final validity audit is `Artifacts/QA/native-meta10000-final-core/audit-validity-final.json`.
+
+| Measurement | Actual result |
+| --- | --- |
+| Completed matches / attempts | 10,000 / 10,000 |
+| Validity audit | 488,780 checks; zero failures |
+| Invalid matches / invalid economies | 0 / 0 |
+| Deck observations | 20,000 |
+| Aggregate buckets / cumulative checkpoints | 82 / 400 |
+| Maximum terminal economy residual | 0.017857143 Aether |
+| Active simulation wall time | 1,268.84 seconds, excluding worker pause/rate waits |
+| Final exported rows | Validated against the recorded dataset |
+
+This is native execution evidence. The audit validates the current run's economy, aggregates, card definitions and export consistency. It does not establish byte-identical aggregate values across separate historical runs, and historical browser reports do not substitute for this native result.

@@ -3,10 +3,19 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Components/Slider.h"
+#include "Components/ComboBoxString.h"
 #include "Dom/JsonObject.h"
 #include "RiftUIWidget.generated.h"
 
 class UCanvasPanel; class UVerticalBox; class UHorizontalBox; class UTextBlock; class UEditableTextBox; class UComboBoxString; class UProgressBar; class UImage;
+
+UCLASS()
+class RIFTCROWNARENA_API URiftComboBox : public UComboBoxString
+{
+    GENERATED_BODY()
+public:
+    URiftComboBox(const FObjectInitializer& ObjectInitializer);
+};
 
 UCLASS()
 class RIFTCROWNARENA_API URiftActionButton : public UButton

@@ -1,6 +1,6 @@
 #include "RiftProfileSubsystem.h"
 #include "Engine/Engine.h"
-#include "Framework/Application/SlateApplication.h"
+#include "Engine/UserInterfaceSettings.h"
 #include "GameFramework/GameUserSettings.h"
 #include "HAL/PlatformFileManager.h"
 #include "HAL/PlatformMisc.h"
@@ -477,8 +477,9 @@ void URiftProfileSubsystem::RecordResult(int32 Winner, int32 PlayerCrowns) {
 }
 void URiftProfileSubsystem::ApplySettings() {
     NormalizeSettings(Settings);
-    if (FSlateApplication::IsInitialized())
-        FSlateApplication::Get().SetApplicationScale(Settings.UIScale);
+    // The game layer multiplies its viewport DPI curve by this value. Global Slate
+    // window scaling is cancelled by SGameLayerManager's viewport normalization.
+    GetMutableDefault<UUserInterfaceSettings>()->ApplicationScale = Settings.UIScale;
     auto *G = GEngine ? GEngine->GetGameUserSettings() : nullptr;
     if (!G)
         return;

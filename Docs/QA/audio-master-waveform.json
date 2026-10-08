@@ -1,0 +1,417 @@
+{
+  "sounds": [
+    {
+      "name": "aether_three",
+      "samples": 110250,
+      "peak": 0.43845942564165163,
+      "dc": 1.0200517679732396e-06,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": -0.0003051850947599719,
+      "loopJump": null
+    },
+    {
+      "name": "aether_two",
+      "samples": 110250,
+      "peak": 0.434369945371868,
+      "dc": 1.8634975582078285e-06,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": -0.0006103701895199438,
+      "loopJump": null
+    },
+    {
+      "name": "arc_cast",
+      "samples": 61739,
+      "peak": 0.4164555803094577,
+      "dc": -0.000906134630340047,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": -0.0013428144169438765,
+      "loopJump": null
+    },
+    {
+      "name": "arc_impact",
+      "samples": 61739,
+      "peak": 0.43534653767509995,
+      "dc": -8.403897559927694e-05,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": -0.0013428144169438765,
+      "loopJump": null
+    },
+    {
+      "name": "arrow_flight",
+      "samples": 30869,
+      "peak": 0.5491805780205695,
+      "dc": 0.002052248900302748,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.0,
+      "loopJump": null
+    },
+    {
+      "name": "arrow_hit",
+      "samples": 26460,
+      "peak": 0.5294045838801233,
+      "dc": 0.00015222115811123045,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.0,
+      "loopJump": null
+    },
+    {
+      "name": "bat_bite",
+      "samples": 22050,
+      "peak": 0.2780846583452864,
+      "dc": 2.8114398321357416e-05,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.0,
+      "loopJump": null
+    },
+    {
+      "name": "bow_release",
+      "samples": 35280,
+      "peak": 0.42545854060487687,
+      "dc": -8.311276616932568e-06,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.0,
+      "loopJump": null
+    },
+    {
+      "name": "building_hit",
+      "samples": 50714,
+      "peak": 0.7199926755577257,
+      "dc": -0.0003239424781327454,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.0,
+      "loopJump": null
+    },
+    {
+      "name": "bullet_burst",
+      "samples": 28665,
+      "peak": 0.35178685872981963,
+      "dc": -0.0007907344208239273,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.0,
+      "loopJump": null
+    },
+    {
+      "name": "charge",
+      "samples": 30869,
+      "peak": 0.619983520004883,
+      "dc": 9.821208109577766e-06,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.0,
+      "loopJump": null
+    },
+    {
+      "name": "core_awaken",
+      "samples": 114660,
+      "peak": 0.619037446211127,
+      "dc": -0.000191933104619649,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.001098666341135899,
+      "loopJump": null
+    },
+    {
+      "name": "defeat",
+      "samples": 110250,
+      "peak": 0.48866237372966703,
+      "dc": 1.1915090447934905e-05,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": -0.0006103701895199438,
+      "loopJump": null
+    },
+    {
+      "name": "deploy",
+      "samples": 48510,
+      "peak": 0.4217047639393292,
+      "dc": 9.933834600637874e-05,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.0005798516800439467,
+      "loopJump": null
+    },
+    {
+      "name": "dual_attack",
+      "samples": 30869,
+      "peak": 0.619983520004883,
+      "dc": -0.0017675564572133349,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.0,
+      "loopJump": null
+    },
+    {
+      "name": "frost_attack",
+      "samples": 61739,
+      "peak": 0.44303720206305125,
+      "dc": 7.90330483010793e-05,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": -0.0028077028717917417,
+      "loopJump": null
+    },
+    {
+      "name": "frost_slow",
+      "samples": 61739,
+      "peak": 0.40812402722251045,
+      "dc": 0.0005201260786017891,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": -0.0028077028717917417,
+      "loopJump": null
+    },
+    {
+      "name": "heavy_slam",
+      "samples": 37485,
+      "peak": 0.6678060243537706,
+      "dc": 0.00020916963849659253,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.0,
+      "loopJump": null
+    },
+    {
+      "name": "manta_cast",
+      "samples": 61739,
+      "peak": 0.43391216772972807,
+      "dc": 0.0008781865585011219,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": -0.0012512588885158849,
+      "loopJump": null
+    },
+    {
+      "name": "manta_impact",
+      "samples": 61739,
+      "peak": 0.4607074190496536,
+      "dc": -0.00012016449932860243,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": -0.0012512588885158849,
+      "loopJump": null
+    },
+    {
+      "name": "meteor_impact",
+      "samples": 88200,
+      "peak": 0.7199926755577257,
+      "dc": 8.011143338933929e-05,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": -0.0003662221137119663,
+      "loopJump": null
+    },
+    {
+      "name": "meteor_tick",
+      "samples": 35280,
+      "peak": 0.4657429731131931,
+      "dc": -0.0005331760073028509,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.0,
+      "loopJump": null
+    },
+    {
+      "name": "music_rift",
+      "samples": 1764000,
+      "peak": 0.15201269569994202,
+      "dc": 5.26119034505085e-06,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.0,
+      "loopJump": 0.0
+    },
+    {
+      "name": "nova_impact",
+      "samples": 61739,
+      "peak": 0.4253059480574969,
+      "dc": -0.0004738794566764928,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": -0.0007019257179479354,
+      "loopJump": null
+    },
+    {
+      "name": "overtime",
+      "samples": 110250,
+      "peak": 0.4077883236182745,
+      "dc": 7.669903497151295e-06,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 6.103701895199438e-05,
+      "loopJump": null
+    },
+    {
+      "name": "river_ambience",
+      "samples": 352800,
+      "peak": 0.04709006012146367,
+      "dc": 2.4697847725371062e-05,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.0,
+      "loopJump": 0.0
+    },
+    {
+      "name": "shield_hit",
+      "samples": 30869,
+      "peak": 0.7199926755577257,
+      "dc": -0.0001123012734422235,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.0,
+      "loopJump": null
+    },
+    {
+      "name": "storm_bolt",
+      "samples": 61739,
+      "peak": 0.6499832148197882,
+      "dc": 0.00021065477908199977,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.001892147587511826,
+      "loopJump": null
+    },
+    {
+      "name": "storm_pulse",
+      "samples": 61739,
+      "peak": 0.6184575945310831,
+      "dc": -0.0004392235312346702,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.001892147587511826,
+      "loopJump": null
+    },
+    {
+      "name": "stun",
+      "samples": 61739,
+      "peak": 0.6402783288064211,
+      "dc": -0.00028924343826082375,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.001892147587511826,
+      "loopJump": null
+    },
+    {
+      "name": "sword_attack",
+      "samples": 30869,
+      "peak": 0.619983520004883,
+      "dc": -0.0003261226370737064,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.0,
+      "loopJump": null
+    },
+    {
+      "name": "sword_hit",
+      "samples": 30869,
+      "peak": 0.7199926755577257,
+      "dc": 7.634323436899488e-05,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.0,
+      "loopJump": null
+    },
+    {
+      "name": "tiebreaker",
+      "samples": 110250,
+      "peak": 0.3532822656941435,
+      "dc": -9.7725665173751e-06,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": -0.0005493331705679495,
+      "loopJump": null
+    },
+    {
+      "name": "tower_destroy",
+      "samples": 105840,
+      "peak": 0.7199926755577257,
+      "dc": 0.00024085141935636118,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.0,
+      "loopJump": null
+    },
+    {
+      "name": "tower_hit",
+      "samples": 50714,
+      "peak": 0.7199926755577257,
+      "dc": -0.00022441701754597897,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.0,
+      "loopJump": null
+    },
+    {
+      "name": "ui_click",
+      "samples": 10584,
+      "peak": 0.31385235145115514,
+      "dc": 4.968196506721765e-06,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": -0.0014648884548478652,
+      "loopJump": null
+    },
+    {
+      "name": "ui_error",
+      "samples": 10584,
+      "peak": 0.2371288186284982,
+      "dc": -0.00014567225044665325,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.0005493331705679495,
+      "loopJump": null
+    },
+    {
+      "name": "ui_hover",
+      "samples": 10584,
+      "peak": 0.3206274605548265,
+      "dc": 1.6147359511109625e-07,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.00024414807580797754,
+      "loopJump": null
+    },
+    {
+      "name": "ui_save",
+      "samples": 10584,
+      "peak": 0.3770867030854213,
+      "dc": 2.897874340833067e-05,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.0035401470992156743,
+      "loopJump": null
+    },
+    {
+      "name": "victory",
+      "samples": 110250,
+      "peak": 0.46882534257026887,
+      "dc": -2.034567298399813e-07,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.00021362956633198035,
+      "loopJump": null
+    },
+    {
+      "name": "wing_air",
+      "samples": 30869,
+      "peak": 0.5895870845667898,
+      "dc": 0.00027400221525683197,
+      "clippedSamples": 0,
+      "start": 0.0,
+      "end": 0.0,
+      "loopJump": null
+    }
+  ],
+  "all41Valid": true,
+  "loopEndpointsWithinOnePCMLevel": true,
+  "listeningAssessment": "Not performed; waveform continuity is not a listening review"
+}

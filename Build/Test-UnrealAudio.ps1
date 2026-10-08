@@ -13,6 +13,8 @@ $engineUserRoot = Join-Path $qaRoot 'EngineUser'
 if ($Name -notmatch '^[a-z0-9][a-z0-9_-]*$') { throw 'QA name must contain lowercase letters, digits, underscores or hyphens.' }
 if (!$Executable) { $Executable = Join-Path $EngineRoot 'Engine\Binaries\Win64\UnrealEditor-Cmd.exe' }
 if (!(Test-Path -LiteralPath $Executable)) { throw "Audio QA executable not found: $Executable" }
+$Executable = (Resolve-Path -LiteralPath $Executable).Path
+$riftAudioExecutableHash = (Get-FileHash -LiteralPath $Executable -Algorithm SHA256).Hash.ToLowerInvariant()
 $isEditor = [System.IO.Path]::GetFileNameWithoutExtension($Executable) -in @('UnrealEditor','UnrealEditor-Cmd')
 $workingDirectory = if ($isEditor) { $repoRoot } else { Split-Path -Parent $Executable }
 New-Item -ItemType Directory -Path $qaRoot,$saveRoot,$engineUserRoot -Force | Out-Null
@@ -38,7 +40,7 @@ $errors = @()
 if (Test-Path -LiteralPath $logPath) { $errors = @(Select-String -LiteralPath $logPath -Pattern 'LogRift: Error:|Fatal error[:!]?|Unhandled Exception:|Assertion failed:|Authored audio asset missing' | ForEach-Object { $_.Line }) }
 $passed = $false
 if ($freshReport) { $passed = (Get-Content -LiteralPath $reportPath -Raw | ConvertFrom-Json).passed -eq $true }
-$run = [ordered]@{ executable=$Executable; editor=$isEditor; workingDirectory=$workingDirectory; audioDisabled=$false;
+$run = [ordered]@{ executable=$Executable; executableSha256=$riftAudioExecutableHash; editor=$isEditor; workingDirectory=$workingDirectory; audioDisabled=$false;
     engineUserRoot=$engineUserRoot; report=$reportPath; engineLog=$logPath; freshReport=$freshReport;
     timedOut=$timedOut; exitCode=$process.ExitCode; seconds=[math]::Round(((Get-Date)-$started).TotalSeconds,2); passed=$passed; errors=$errors }
 [System.IO.File]::WriteAllText((Join-Path $qaRoot 'run.json'),($run | ConvertTo-Json -Depth 10),[System.Text.UTF8Encoding]::new($false))

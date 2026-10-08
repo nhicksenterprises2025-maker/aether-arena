@@ -51,13 +51,15 @@ Run these scripts from PowerShell 7 with the repository as the working directory
 ./Build/Package-WindowsRelease.ps1 -Version 1.0.0 -GamePackage ./Artifacts/Game/Windows
 ./Build/Test-LauncherPlay.ps1
 ./Installer/Build-Installer.ps1 -Version 1.0.0
-./Installer/Test-Installer.ps1
+./Installer/Test-Installer.ps1 -Msi $PreviousSameFamilyMsi -UpgradeMsi ./Artifacts/Installer/RiftCrownArena-Setup.msi
 ./Build/Finalize-WindowsRelease.ps1 -Version 1.0.0
 ```
 
 `Build-Launcher.ps1` publishes the real self-contained launcher, runs the isolated update integration suite and launches the published executable's noninteractive WPF smoke check. The smoke check requires explicit isolated install and save paths and renders an actual WPF preview.
 
-`Package-WindowsRelease.ps1` refuses to manufacture a release without a real staged `RiftCrownArena.exe`. It invokes app-local runtime staging before recording every file's size and SHA-256, verifies the actual ZIP entries and copied installation tree against those records, and constructs a fresh `Artifacts/Distribution` with the initial installation pointer. A prior distribution is retained beside it, preventing stale release files from accumulating in the next installer. Packaging does not contact GitHub. Supply `-BuildLog` when the current Shipping log is at another path, or `-ToolchainRoot` when the build's compiler path is known explicitly.
+For the release lifecycle check, set `$PreviousSameFamilyMsi` to a retained actual previously compiled MSI with the same UpgradeCode and a distinct ProductCode. The current release's measured baseline is `Artifacts/QA/ReleaseCandidates/Verified-20261008-211709/RiftCrownArena-Setup.msi`. A fresh-install-only test can omit these arguments, but the finalizer requires the complete upgrade-inclusive lifecycle evidence.
+
+`Package-WindowsRelease.ps1` refuses to manufacture a release without a real staged `RiftCrownArena.exe`. It preserves any `.pdb` debug symbols separately under `Artifacts/Symbols/<version>/<batch>/`, verifies their unchanged hashes, and keeps all game executables, DLLs and runtime assets in the player package. It then invokes app-local runtime staging before recording every file's size and SHA-256, verifies the actual ZIP entries and copied installation tree against those records, and constructs a fresh `Artifacts/Distribution` with the initial installation pointer. A prior distribution is retained beside it, preventing stale release files from accumulating in the next installer. Packaging does not contact GitHub. Supply `-BuildLog` when the current Shipping log is at another path, or `-ToolchainRoot` when the build's compiler path is known explicitly.
 
 `Build-Installer.ps1` refuses to compile without the actual distribution launcher and `Game/installed.json`. It generates component definitions from real distribution files and compiles a WiX 4 MSI with standard database validation enabled. Per-user components use stable GUIDs and HKCU key paths, following [ICE38](https://learn.microsoft.com/en-us/windows/win32/msi/ice38), and newly created directories have explicit empty-folder removal entries for [ICE64](https://learn.microsoft.com/en-us/windows/win32/msi/ice64). Validation treats warnings as errors with documented exceptions for fixed per-user scope (ICE91), intentional same-version major upgrades (ICE61), and a neutral language declaration for the private LastResort font resource (WiX1101). The private font is not registered as a system font. WiX is restored as project-local NuGet build dependencies; no globally installed compiler is required. An unsigned installer remains unsigned unless a publisher signing identity is explicitly supplied.
 
@@ -65,7 +67,7 @@ Run these scripts from PowerShell 7 with the repository as the working directory
 
 `Test-Installer.ps1` runs the actual compiled MSI in a fresh workspace QA directory, verifies every bundled file hash, exercises both Start menu and optional desktop shortcuts, and executes the installed WPF launcher smoke check. An optional `-UpgradeMsi` accepts a distinct real product in the same upgrade family for a major-upgrade preservation test. The test then invokes the installed launcher's actual Play command and validates the resulting bootstrap/native process exits, manifest identity, renderer capture and environment save-root forwarding. A separate native launch exposes loaded CRT module paths for verification against packaged files and manifest hashes. The test repairs a deliberately missing registered game executable and tests uninstall cleanup with separate save fixtures. It first refuses existing related MSI products, a matching Start menu folder or an existing matching desktop shortcut, preventing the test from replacing an existing installation. Its measured report is `Artifacts/QA/installer-tests.json`; script existence alone does not establish a passed installer result.
 
-`Finalize-WindowsRelease.ps1` checks that the measured published Play, installer build and complete installed lifecycle reports identify the exact current archive, native executable, launcher and MSI hashes. It requires all 31 update checks, ten published WPF controls and at least 51 installed lifecycle assertions. It then copies the compiled MSI into `Artifacts/Release`, writes one `SHA256SUMS.txt` covering the ZIP, MSI and manifest, and records `windows-release-verification.json`. Stale provisional QA prevents finalization. This script does not publish files or establish separate native gameplay/performance validation results.
+`Finalize-WindowsRelease.ps1` checks that the measured published Play, installer build and complete installed lifecycle reports identify the exact current archive, native executable, launcher and MSI hashes. It requires all 31 update checks, ten published WPF controls and at least 51 installed lifecycle assertions. It then copies the compiled MSI and standalone self-contained launcher into `Artifacts/Release`, writes one `SHA256SUMS.txt` covering the ZIP, MSI, launcher and manifest, and records `windows-release-verification.json`. Stale provisional QA prevents finalization. This script does not publish files or establish separate native gameplay/performance validation results.
 
 ## Manifest and transactional activation
 
@@ -85,7 +87,12 @@ Publish the actual files generated in `Artifacts/Release`, plus the compiled ins
 - `update-manifest.json`
 - `SHA256SUMS.txt`
 - The compiled `RiftCrownArena-Setup.msi`
+- The self-contained standalone `RiftCrownLauncher.exe`
 - Relevant native, launcher and installer QA reports
 - `windows-release-verification.json`, which identifies the actual Windows asset hashes and matched lifecycle evidence
 
 The archive's manifest URL is version-pinned to `releases/download/v<version>/...`; the launcher discovers it through the latest release's manifest. Attach the archive named in that manifest to the same version tag. Never upload private player saves, signing credentials, local dependency caches or development build intermediates.
+
+After the final release is public and selected as GitHub's latest release, run `./Build/Test-PublishedUpdate.ps1`. It invokes the actual released launcher's Check for Updates routed event against the default HTTPS endpoint, matches the complete final local manifest, verifies displayed patch notes and Install availability, and confirms unchanged isolated game/save data. It does not download or install the game. Record its actual result from `Artifacts/QA/published-update-check.json` separately from pre-publication build checks.
+
+The MSI installs the launcher and bundled game together. The standalone launcher can install the release through its update endpoint; its default managed `Game` folder sits beside that executable, and Settings can select another location. The game ZIP can also be extracted and started directly with `RiftCrownArena.exe`. Keep its complete directory tree together.

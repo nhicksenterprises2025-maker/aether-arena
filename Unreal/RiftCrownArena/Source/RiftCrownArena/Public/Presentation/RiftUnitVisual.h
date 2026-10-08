@@ -34,6 +34,10 @@ public:
     uint64 EntityId=0;
     bool IsTower() const { return Kind!=rift::EntityKind::Troop; }
     bool IsDead() const { return bDead; }
+    const FString& PresentationAssetId() const { return AssetId; }
+    FName CurrentAnimation() const { return CurrentClip; }
+    FString AnimationAssetPath() const;
+    float AnimationPosition() const;
     static FLinearColor TeamColor(rift::Team Team);
 private:
     void SetClip(FName Name, double Position, bool Loop=false);

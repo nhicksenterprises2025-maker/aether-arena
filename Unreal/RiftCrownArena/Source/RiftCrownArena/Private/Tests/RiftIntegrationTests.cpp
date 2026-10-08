@@ -7,6 +7,7 @@
 #include "Engine/Engine.h"
 #include "Engine/GameInstance.h"
 #include "Engine/SkeletalMesh.h"
+#include "Engine/UserInterfaceSettings.h"
 #include "Engine/World.h"
 #include "HAL/PlatformFileManager.h"
 #include "JsonObjectConverter.h"
@@ -76,6 +77,14 @@ bool FRiftConnectedUIIntegrationTest::RunTest(const FString &Parameters) {
             "Connected UI fixture requires isolated -RiftSaveRoot/-UserDir and -RiftAutomationSandbox."));
         return false;
     }
+    auto *UISettings = GetMutableDefault<UUserInterfaceSettings>();
+    const float OriginalApplicationScale = UISettings->ApplicationScale;
+    const FIntPoint DPISizes[] = {{1280, 720}, {1600, 900}, {1920, 1080}, {3440, 1440}};
+    TArray<float> BaseDPIScales;
+    UISettings->ApplicationScale = 1.f;
+    for (const auto Size : DPISizes)
+        BaseDPIScales.Add(UISettings->GetDPIScaleBasedOnSize(Size));
+    UISettings->ApplicationScale = OriginalApplicationScale;
     auto *GI = NewObject<UGameInstance>(GEngine);
     GI->InitializeStandalone(FName(*FGuid::NewGuid().ToString(EGuidFormats::Digits)));
     auto *World = GI->GetWorld();
@@ -101,6 +110,7 @@ bool FRiftConnectedUIIntegrationTest::RunTest(const FString &Parameters) {
     ON_SCOPE_EXIT {
         if (GI)
             Shutdown(GI, UI);
+        UISettings->ApplicationScale = OriginalApplicationScale;
     };
     auto Click = [&](const TCHAR *Label, bool Last = false) {
         auto *Button = ActiveButton(UI, Label, Last);
@@ -238,6 +248,28 @@ bool FRiftConnectedUIIntegrationTest::RunTest(const FString &Parameters) {
     }
     if (!Click(TEXT("APPLY & SAVE SETTINGS")))
         return false;
+    auto CheckGameDPIScale = [&](float Factor) {
+        for (int32 I = 0; I < UE_ARRAY_COUNT(DPISizes); ++I) {
+            const float Actual = UISettings->GetDPIScaleBasedOnSize(DPISizes[I]);
+            TestTrue(FString::Printf(TEXT("Production UI scale %.2f multiplies the preserved DPI curve at %dx%d"),
+                                     Factor, DPISizes[I].X, DPISizes[I].Y),
+                     FMath::IsNearlyEqual(Actual, BaseDPIScales[I] * Factor, 1e-5f));
+        }
+    };
+    CheckGameDPIScale(1.13f);
+    // Exercise the actual minimum/maximum slider callbacks and return to the
+    // persisted value. This would fail when only Slate window scaling is changed.
+    for (const float Factor : {.65f, 1.6f, 1.13f}) {
+        const auto CurrentSliders = ActiveWidgets<URiftValueSlider>(Canvas);
+        if (!TestEqual(TEXT("The rebuilt Settings panel retains all six live sliders"),
+                       CurrentSliders.Num(), 6))
+            return false;
+        CurrentSliders[4]->SetValue(Factor);
+        CurrentSliders[4]->OnValueChanged.Broadcast(Factor);
+        if (!Click(TEXT("APPLY & SAVE SETTINGS")))
+            return false;
+        CheckGameDPIScale(Factor);
+    }
     const auto SavedSettings = Profile->Settings;
     TestTrue(TEXT("Production Apply saves the selected viewport, VSync, cap and deployment mode"),
              SavedSettings.Width == 1600 && SavedSettings.Height == 900 && SavedSettings.WindowMode == 2 &&
@@ -276,6 +308,7 @@ bool FRiftConnectedUIIntegrationTest::RunTest(const FString &Parameters) {
             FMath::IsNearlyEqual(Reloaded.SFXVolume, .73f) && FMath::IsNearlyEqual(Reloaded.UIVolume, .34f) &&
             FMath::IsNearlyEqual(Reloaded.UIScale, 1.13f) &&
             FMath::IsNearlyEqual(Reloaded.CameraSpeed, 1.47f));
+    CheckGameDPIScale(1.13f);
     Profile->Settings = OriginalSettings;
     Profile->ApplySettings();
     TestTrue(TEXT("Fixture restores its isolated engine settings"), Profile->Save());

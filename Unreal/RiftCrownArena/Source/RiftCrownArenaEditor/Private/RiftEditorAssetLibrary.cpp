@@ -5,6 +5,7 @@
 #include "NiagaraScript.h"
 #include "NiagaraSpriteRendererProperties.h"
 #include "NiagaraSystemFactoryNew.h"
+#include "NiagaraEditorUtilities.h"
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "Materials/MaterialInterface.h"
 #include "Engine/SkeletalMesh.h"
@@ -22,7 +23,7 @@ namespace
 bool SaveAsset(UObject* Object,const FString& Extension=FPackageName::GetAssetPackageExtension())
 {
     UPackage* Package=Object->GetOutermost();Package->MarkPackageDirty();FString Filename=FPackageName::LongPackageNameToFilename(Package->GetName(),Extension);
-    FSavePackageArgs Args;Args.TopLevelFlags=RF_Public|RF_Standalone;Args.SaveFlags=SAVE_NoError;
+    FSavePackageArgs Args;Args.TopLevelFlags=RF_Public|RF_Standalone;
     return UPackage::SavePackage(Package,Object,*Filename,Args);
 }
 FString Json(const TSharedRef<FJsonObject>& Object){FString Text;FJsonSerializer::Serialize(Object,TJsonWriterFactory<>::Create(&Text));return Text;}
@@ -47,8 +48,16 @@ FString URiftEditorAssetLibrary::BuildPresentationAssetsJSON()
         FString Name=TEXT("NS_Rift")+FString(Recipe.Name),Path=TEXT("/Game/Rift/VFX/")+Name;
         auto* Source=LoadObject<UNiagaraEmitter>(nullptr,*FString::Printf(TEXT("/Niagara/DefaultAssets/Templates/Emitters/%s.%s"),Recipe.Emitter,Recipe.Emitter));
         if(!Source||!Material){Errors.Add(MakeShared<FJsonValueString>(TEXT("Missing emitter template or authored particle material: ")+Name));continue;}
-        auto* Package=CreatePackage(*Path);auto* System=FindObject<UNiagaraSystem>(Package,*Name);
-        if(!System){System=NewObject<UNiagaraSystem>(Package,*Name,RF_Public|RF_Standalone);UNiagaraSystemFactoryNew::InitializeSystem(System,true);System->AddEmitterHandle(*Source,FName(Recipe.Name),Source->GetExposedVersion().VersionGuid);FAssetRegistryModule::AssetCreated(System);}
+        auto* System=LoadObject<UNiagaraSystem>(nullptr,*(Path+TEXT(".")+Name));
+        auto* Package=System?System->GetOutermost():CreatePackage(*Path);
+        if(System)Package->FullyLoad();
+        if(!System){System=NewObject<UNiagaraSystem>(Package,*Name,RF_Public|RF_Standalone|RF_Transactional);UNiagaraSystemFactoryNew::InitializeSystem(System,true);FAssetRegistryModule::AssetCreated(System);}
+        // Handles alone are not executable system-graph nodes. Follow the
+        // installed Niagara factory's editor utility, including on existing
+        // generated assets, so regeneration repairs previously empty graphs.
+        TSet<FGuid> PreviousHandles;for(const auto& Handle:System->GetEmitterHandles())PreviousHandles.Add(Handle.GetId());
+        if(!PreviousHandles.IsEmpty())System->RemoveEmitterHandlesById(PreviousHandles);
+        FNiagaraEditorUtilities::AddEmitterToSystem(*System,*Source,Source->GetExposedVersion().VersionGuid);
         auto& Params=System->GetExposedParameters();
         Params.SetParameterValue(FLinearColor(.12f,.7f,.95f,1),FNiagaraVariable(FNiagaraTypeDefinition::GetColorDef(),TEXT("User.Color")),true);
         Params.SetParameterValue(100.f,FNiagaraVariable(FNiagaraTypeDefinition::GetFloatDef(),TEXT("User.Radius")),true);
@@ -66,24 +75,26 @@ FString URiftEditorAssetLibrary::BuildPresentationAssetsJSON()
                 if(!Script)continue;TArray<FNiagaraVariable> Variables;Script->RapidIterationParameters.GetParameters(Variables);
                 for(const auto& Var:Variables)
                 {
-                    FString Key=Var.GetName().ToString();bool Changed=false;
+                    FString Key=Var.GetName().ToString();const FString NormalizedKey=Key.Replace(TEXT(" "),TEXT(""));bool Changed=false;
                     if(Var.GetType()==FNiagaraTypeDefinition::GetFloatDef())
                     {
                         float Value=Script->RapidIterationParameters.GetParameterValue<float>(Var);
-                        if(Key.Contains(TEXT("Lifetime"))){Value=Recipe.Life;Changed=true;}
-                        else if(Key.EndsWith(TEXT("VelocityStrength"))||Key.EndsWith(TEXT("VelocitySpeed"))){Value=Recipe.Speed;Changed=true;}
+                        if(NormalizedKey.Contains(TEXT("Lifetime"))){Value=Recipe.Life;Changed=true;}
+                        else if(NormalizedKey.EndsWith(TEXT("VelocityStrength"))||NormalizedKey.EndsWith(TEXT("VelocitySpeed"))){Value=Recipe.Speed;Changed=true;}
                         if(Changed)Script->RapidIterationParameters.SetParameterValue(Value,Var);
                     }
-                    else if(Var.GetType()==FNiagaraTypeDefinition::GetIntDef()&&(Key.Contains(TEXT("SpawnCount"))||Key.EndsWith(TEXT("SpawnBurstInstantaneous.SpawnCount"))))
+                    else if(Var.GetType()==FNiagaraTypeDefinition::GetIntDef()&&NormalizedKey.Contains(TEXT("SpawnCount")))
                     {Script->RapidIterationParameters.SetParameterValue(Recipe.Count,Var);Changed=true;}
-                    else if(Var.GetType()==FNiagaraTypeDefinition::GetVec2Def()&&Key.Contains(TEXT("SpriteSize")))
+                    else if(Var.GetType()==FNiagaraTypeDefinition::GetVec2Def()&&NormalizedKey.Contains(TEXT("InitializeParticle.SpriteSize")))
                     {Script->RapidIterationParameters.SetParameterValue(FVector2f(Recipe.Size,Recipe.Size),Var);Changed=true;}
                     if(Changed)Tuned.Add(MakeShared<FJsonValueString>(Key));
                 }
             }
         }
         System->SetFixedBounds(FBox(FVector(-700,-700,-300),FVector(700,700,700)));System->RequestCompile(true);System->WaitForCompilationComplete(false,false);
-        Entry->SetArrayField(TEXT("tunedParameters"),Tuned);Entry->SetBoolField(TEXT("saved"),SaveAsset(System));Effects.Add(MakeShared<FJsonValueObject>(Entry));
+        Entry->SetArrayField(TEXT("tunedParameters"),Tuned);Entry->SetBoolField(TEXT("saved"),SaveAsset(System));
+        if(!Entry->GetBoolField(TEXT("saved")))Errors.Add(MakeShared<FJsonValueString>(TEXT("Failed saving Niagara system: ")+Name));
+        Effects.Add(MakeShared<FJsonValueObject>(Entry));
     }
     FString MapPath=TEXT("/Game/Rift/Maps/Arena"),MapFile=FPackageName::LongPackageNameToFilename(MapPath,FPackageName::GetMapPackageExtension());
     if(!FPaths::FileExists(MapFile))

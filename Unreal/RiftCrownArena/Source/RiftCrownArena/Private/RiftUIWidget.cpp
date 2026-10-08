@@ -61,8 +61,14 @@ namespace
     FString Metric(const TSharedPtr<FJsonObject>& Object,const TCHAR* Key)
     {
         double Number=0;if(!Object||!Object->TryGetNumberField(Key,Number)||!FMath::IsFinite(Number))return TEXT("unavailable");
-        return FString::SanitizeFloat(Number,2);
+        const FString Name(Key);
+        const bool Count=Name.EndsWith(TEXT("N"))||Name==TEXT("appearances")||Name==TEXT("mirrorExclusions")||Name==TEXT("games")||Name==TEXT("n")||Name==TEXT("plays")||Name==TEXT("spawns")||Name==TEXT("kills")||Name==TEXT("wins")||Name==TEXT("losses")||Name==TEXT("draws")||Name==TEXT("matches")||Name==TEXT("count");
+        return Count?FString::Printf(TEXT("%.0f"),Number):FString::Printf(TEXT("%.2f"),Number);
     }
+}
+URiftComboBox::URiftComboBox(const FObjectInitializer& ObjectInitializer):Super(ObjectInitializer)
+{
+    InitFont(FCoreStyle::GetDefaultFontStyle("Regular",14));InitForegroundColor(Ivory);
 }
 void URiftActionButton::Bind(TFunction<void()> Callback,bool OnPress){Action=MoveTemp(Callback);OnReleased.AddDynamic(this,&URiftActionButton::InvokeRelease);if(OnPress)OnPressed.AddDynamic(this,&URiftActionButton::Invoke);else OnClicked.AddDynamic(this,&URiftActionButton::Invoke);}
 void URiftActionButton::Invoke(){if(GetWorld()&&GetWorld()->GetGameInstance())if(auto* Audio=GetWorld()->GetGameInstance()->GetSubsystem<URiftBattleAudioSubsystem>())Audio->PlayUI(TEXT("ui_click"));if(Action)Action();}
@@ -95,6 +101,7 @@ UWidget* URiftUIWidget::Illustration(const FString& CardId,float Width,UImage** 
 }
 URiftActionButton* URiftUIWidget::CardButton(const FString& CardId,float Width,TFunction<void()> Action,bool Selected)
 {
+    Width=FMath::Max(128.0f,Width);
     const auto* Card=rift::FindCard(TCHAR_TO_UTF8(*CardId));auto* W=Button(TEXT(""),MoveTemp(Action));W->SetBackgroundColor(Selected?FLinearColor(.17,.30,.31,1):FLinearColor(.055,.085,.09,1));
     auto CardStyle=W->GetStyle();CardStyle.SetNormalPadding(FMargin(4));CardStyle.SetPressedPadding(FMargin(4,5,4,3));W->SetStyle(CardStyle);
     auto* Column=WidgetTree->ConstructWidget<UVerticalBox>();Add(Column,Illustration(CardId,Width),0);
@@ -111,7 +118,14 @@ UEditableTextBox* URiftUIWidget::Edit(const FString& Value,const FString& Hint)
     EditStyle.SetFont(FCoreStyle::GetDefaultFontStyle("Regular",14));EditStyle.TextStyle.SetColorAndOpacity(Ivory);EditStyle.SetForegroundColor(Ivory);EditStyle.SetFocusedForegroundColor(Ivory);EditStyle.SetReadOnlyForegroundColor(Muted);EditStyle.SetBackgroundColor(FLinearColor::White);EditStyle.SetPadding(FMargin(10,8));
     EditStyle.SetBackgroundImageNormal(FSlateColorBrush(FLinearColor(.035,.065,.075,1)));EditStyle.SetBackgroundImageHovered(FSlateColorBrush(FLinearColor(.06,.11,.125,1)));EditStyle.SetBackgroundImageFocused(FSlateColorBrush(FLinearColor(.085,.16,.18,1)));EditStyle.SetBackgroundImageReadOnly(FSlateColorBrush(FLinearColor(.045,.07,.08,1)));W->SetWidgetStyle(EditStyle);return W;
 }
-UComboBoxString* URiftUIWidget::Combo(const TArray<FString>& Values,const FString& Selected){auto* W=WidgetTree->ConstructWidget<UComboBoxString>();for(auto V:Values)W->AddOption(V);if(Values.Contains(Selected))W->SetSelectedOption(Selected);else if(Values.Num())W->SetSelectedIndex(0);return W;}
+UComboBoxString* URiftUIWidget::Combo(const TArray<FString>& Values,const FString& Selected)
+{
+    auto* W=WidgetTree->ConstructWidget<URiftComboBox>();auto Control=W->GetWidgetStyle();auto ComboButton=Control.ComboButtonStyle;auto ButtonStyle=ComboButton.ButtonStyle;
+    ButtonStyle.SetNormal(FSlateColorBrush(FLinearColor(.045,.085,.10,1)));ButtonStyle.SetHovered(FSlateColorBrush(FLinearColor(.08,.15,.17,1)));ButtonStyle.SetPressed(FSlateColorBrush(FLinearColor(.10,.21,.23,1)));ButtonStyle.SetDisabled(FSlateColorBrush(FLinearColor(.045,.065,.07,1)));ButtonStyle.SetNormalForeground(Ivory);ButtonStyle.SetHoveredForeground(Ivory);ButtonStyle.SetPressedForeground(Ivory);ButtonStyle.SetDisabledForeground(Muted);ButtonStyle.SetNormalPadding(FMargin(8,6));ButtonStyle.SetPressedPadding(FMargin(8,6));
+    ComboButton.SetButtonStyle(ButtonStyle);ComboButton.SetMenuBorderBrush(FSlateColorBrush(FLinearColor(.035,.065,.075,1)));ComboButton.SetMenuBorderPadding(FMargin(1));ComboButton.DownArrowImage.TintColor=Brass;Control.SetComboButtonStyle(ComboButton);Control.SetMenuRowPadding(FMargin(8,6));W->SetWidgetStyle(Control);W->SetContentPadding(FMargin(8,5));
+    auto Item=W->GetItemStyle();Item.SetTextColor(Ivory);Item.SetSelectedTextColor(Ivory);Item.SetEvenRowBackgroundBrush(FSlateColorBrush(FLinearColor(.035,.065,.075,1)));Item.SetOddRowBackgroundBrush(FSlateColorBrush(FLinearColor(.045,.075,.085,1)));Item.SetEvenRowBackgroundHoveredBrush(FSlateColorBrush(FLinearColor(.10,.21,.23,1)));Item.SetOddRowBackgroundHoveredBrush(FSlateColorBrush(FLinearColor(.10,.21,.23,1)));Item.SetActiveBrush(FSlateColorBrush(FLinearColor(.12,.27,.29,1)));Item.SetActiveHoveredBrush(FSlateColorBrush(FLinearColor(.14,.30,.32,1)));Item.SetInactiveBrush(FSlateColorBrush(FLinearColor(.09,.18,.20,1)));Item.SetInactiveHoveredBrush(FSlateColorBrush(FLinearColor(.12,.25,.27,1)));W->SetItemStyle(Item);
+    for(const auto& V:Values)W->AddOption(V);if(Values.Contains(Selected))W->SetSelectedOption(Selected);else if(Values.Num())W->SetSelectedIndex(0);return W;
+}
 void URiftUIWidget::Say(const FString& Message){Notice=Message;if(NoticeText){NoticeText->SetText(FText::FromString(Message));NoticeText->SetToolTipText(FText::FromString(Message));}if(!Message.IsEmpty())if(auto* Audio=GetGameInstance()->GetSubsystem<URiftBattleAudioSubsystem>()){FString Lower=Message.ToLower();if(Lower.Contains(TEXT("cannot"))||Lower.Contains(TEXT("invalid"))||Lower.Contains(TEXT("error"))||Lower.Contains(TEXT("blocked"))||Lower.Contains(TEXT("failed")))Audio->PlayUI(TEXT("ui_error"));else if(Lower.Contains(TEXT("saved"))||Lower.Contains(TEXT("exported"))||Lower.Contains(TEXT("imported"))||Lower.Contains(TEXT("applied"))||Lower.Contains(TEXT("recorded")))Audio->PlayUI(TEXT("ui_save"));}}
 TSharedRef<SWidget> URiftUIWidget::RebuildWidget()
 {
@@ -350,7 +364,7 @@ TArray<TSharedPtr<FJsonObject>> URiftUIWidget::FilterRows(TArray<TSharedPtr<FJso
         }
         return false;
     });
-    Values.Sort([this](const auto& A,const auto& B){double VA=JN(A,*SortKey,-DBL_MAX),VB=JN(B,*SortKey,-DBL_MAX);return VA==VB?JS(A,TEXT("name"))<JS(B,TEXT("name")):bSortDescending?VA>VB:VA<VB;});return Values;
+    Values.Sort([this](const auto& A,const auto& B){if(SortKey==TEXT("name")||SortKey==TEXT("availability")){const FString VA=JS(A,*SortKey),VB=JS(B,*SortKey);return bSortDescending?VA>VB:VA<VB;}double VA=JN(A,*SortKey,-DBL_MAX),VB=JN(B,*SortKey,-DBL_MAX);return VA==VB?JS(A,TEXT("name"))<JS(B,TEXT("name")):bSortDescending?VA>VB:VA<VB;});return Values;
 }
 void URiftUIWidget::Meta()
 {
@@ -413,17 +427,28 @@ void URiftUIWidget::MetaRows()
         Add(Rows,Text(TEXT("PERSONALITY TOTALS"),17,Brass));for(auto StyleRow:M->StyleRows(ArchetypeFilter))Add(Rows,Button(JS(StyleRow,TEXT("name"))+TEXT(" · Adjusted ")+Metric(StyleRow,TEXT("adjustedWinRate"))+TEXT("% · N ")+Metric(StyleRow,TEXT("cleanN"))+TEXT(" · Duration ")+Metric(StyleRow,TEXT("averageDuration"))+TEXT("s · Leaked Aether/game ")+Metric(StyleRow,TEXT("leakedPerGame")),[this,StyleRow](){MetaDetail=StyleRow;MetaRows();}));return;
     }
     auto Values=Tab==TEXT("Archetypes")?M->ArchetypeRows(StyleFilter):Tab==TEXT("Alerts")?M->AlertRows(StyleFilter,ArchetypeFilter):Tab==TEXT("Patches")?M->PatchRows(MetaBaseline?MetaBaseline->GetSelectedOption():TEXT("V15")):M->CardRows(StyleFilter,ArchetypeFilter);Values=FilterRows(Values,Tab==TEXT("Cards")||Tab==TEXT("Patches")||Tab==TEXT("Alerts"));
-    auto* Header=Row(Rows);TArray<FString> Columns=Tab==TEXT("Patches")?TArray<FString>{TEXT("name"),TEXT("delta"),TEXT("baselineN"),TEXT("cleanN")}:Tab==TEXT("Archetypes")?TArray<FString>{TEXT("name"),TEXT("pickRate"),TEXT("adjustedWinRate"),TEXT("cleanN"),TEXT("averageCrowns"),TEXT("averageDuration")}:TArray<FString>{TEXT("name"),TEXT("pickRate"),TEXT("adjustedWinRate"),TEXT("rawWinRate"),TEXT("cleanN"),TEXT("damagePerAether"),TEXT("towerDamagePerAether")};
-    for(const auto& Key:Columns)Add(Header,Button(Pretty(Key),[this,Key](){bSortDescending=SortKey==Key?!bSortDescending:true;SortKey=Key;MetaRows();}),true);
     if(Values.IsEmpty())Add(Rows,Text(Tab==TEXT("Alerts")?TEXT("No card currently meets the confidence and sample-size requirements for an alert."):TEXT("No recorded rows meet these filters."),17));
+    if(Tab==TEXT("Alerts"))
+    {
+        for(const auto& Value:Values)Add(Rows,Button(JS(Value,TEXT("severity"))+TEXT(" · ")+JS(Value,TEXT("name"))+TEXT(" · ")+JS(Value,TEXT("direction"))+TEXT(" · ")+JS(Value,TEXT("alert")),[this,Value](){MetaDetail=Value;MetaRows();}));return;
+    }
+    const TArray<FString> Columns=Tab==TEXT("Patches")?TArray<FString>{TEXT("name"),TEXT("availability"),TEXT("delta"),TEXT("baselineN"),TEXT("cleanN"),TEXT("adjustedWinRate"),TEXT("ciLow")}:Tab==TEXT("Archetypes")?TArray<FString>{TEXT("name"),TEXT("pickRate"),TEXT("adjustedWinRate"),TEXT("ciLow"),TEXT("cleanN"),TEXT("averageCrowns"),TEXT("averageDuration")}:TArray<FString>{TEXT("name"),TEXT("pickRate"),TEXT("adjustedWinRate"),TEXT("rawWinRate"),TEXT("ciLow"),TEXT("cleanN"),TEXT("damagePerAether"),TEXT("towerDamagePerAether")};
+    const TMap<FString,FString> Labels={{TEXT("name"),Tab==TEXT("Archetypes")?TEXT("ARCHETYPE"):TEXT("CARD")},{TEXT("availability"),TEXT("BASELINE STATUS")},{TEXT("pickRate"),TEXT("PICK %")},{TEXT("adjustedWinRate"),TEXT("ADJUSTED %")},{TEXT("rawWinRate"),TEXT("RAW %")},{TEXT("ciLow"),TEXT("95% CI")},{TEXT("cleanN"),TEXT("CLEAN N")},{TEXT("baselineN"),TEXT("BASELINE N")},{TEXT("delta"),TEXT("DELTA")},{TEXT("averageCrowns"),TEXT("CROWNS / GAME")},{TEXT("averageDuration"),TEXT("DURATION (s)")},{TEXT("damagePerAether"),TEXT("DAMAGE / AETHER")},{TEXT("towerDamagePerAether"),TEXT("TOWER / AETHER")}};
+    auto* Header=WidgetTree->ConstructWidget<UHorizontalBox>();Add(Rows,Header,0);
+    for(const auto& Key:Columns)
+    {
+        const FString Label=Labels.FindChecked(Key)+(SortKey==Key?(bSortDescending?TEXT(" ↓"):TEXT(" ↑")):TEXT(""));auto* SortButton=Button(Label,[this,Key](){bSortDescending=SortKey==Key?!bSortDescending:true;SortKey=Key;MetaRows();},SortKey==Key);SortButton->SetToolTipText(FText::FromString(Key==TEXT("ciLow")?TEXT("Sort by the lower confidence bound. Values show both bounds of the 95% interval."):TEXT("Sort by ")+Pretty(Key)));Add(Header,SortButton,true,2);
+    }
     for(const auto& Value:Values)
     {
-        FString Label=JS(Value,TEXT("name"));
-        if(Tab==TEXT("Alerts"))Label=JS(Value,TEXT("severity"))+TEXT(" · ")+Label+TEXT(" · ")+JS(Value,TEXT("direction"))+TEXT(" · ")+JS(Value,TEXT("alert"));
-        else if(Tab==TEXT("Patches"))Label+=TEXT(" · ")+JS(Value,TEXT("availability"))+TEXT(" · Δ ")+Metric(Value,TEXT("delta"))+TEXT(" · baseline N ")+Metric(Value,TEXT("baselineN"))+TEXT(" · current N ")+Metric(Value,TEXT("cleanN"));
-        else if(Tab==TEXT("Archetypes"))Label+=TEXT(" · Pick ")+Metric(Value,TEXT("pickRate"))+TEXT("% · Adjusted ")+Metric(Value,TEXT("adjustedWinRate"))+TEXT("% · N ")+Metric(Value,TEXT("cleanN"))+TEXT(" · Crowns/game ")+Metric(Value,TEXT("averageCrowns"))+TEXT(" · Duration ")+Metric(Value,TEXT("averageDuration"))+TEXT("s");
-        else Label+=TEXT(" · Pick ")+Metric(Value,TEXT("pickRate"))+TEXT("% · Adjusted ")+Metric(Value,TEXT("adjustedWinRate"))+TEXT("% · Raw ")+Metric(Value,TEXT("rawWinRate"))+TEXT("% · 95% CI ")+Metric(Value,TEXT("ciLow"))+TEXT("–")+Metric(Value,TEXT("ciHigh"))+TEXT(" · N ")+Metric(Value,TEXT("cleanN"))+TEXT(" · Damage/Aether ")+Metric(Value,TEXT("damagePerAether"))+TEXT(" · Tower/Aether ")+Metric(Value,TEXT("towerDamagePerAether"));
-        Add(Rows,Button(Label,[this,Value](){MetaDetail=Value;MetaRows();}));
+        auto* RowButton=Button(TEXT(""),[this,Value](){MetaDetail=Value;MetaRows();});auto RowStyle=RowButton->GetStyle();RowStyle.SetNormalPadding(FMargin(0));RowStyle.SetPressedPadding(FMargin(0));RowButton->SetStyle(RowStyle);auto* Cells=WidgetTree->ConstructWidget<UHorizontalBox>();RowButton->SetContent(Cells);if(auto* ContentSlot=Cast<UButtonSlot>(Cells->Slot)){ContentSlot->SetHorizontalAlignment(HAlign_Fill);ContentSlot->SetVerticalAlignment(VAlign_Fill);ContentSlot->SetPadding(FMargin(0));}
+        for(const auto& Key:Columns)
+        {
+            FString Label=Key==TEXT("name")||Key==TEXT("availability")?JS(Value,*Key):Metric(Value,*Key);
+            if(Key==TEXT("ciLow")){const FString Low=Metric(Value,TEXT("ciLow")),High=Metric(Value,TEXT("ciHigh"));Label=JN(Value,TEXT("cleanN"))>0&&Low!=TEXT("unavailable")&&High!=TEXT("unavailable")?Low+TEXT("–")+High:TEXT("unavailable");}
+            auto* Cell=WidgetTree->ConstructWidget<UBorder>();Cell->SetBrushColor(FLinearColor(0,0,0,0));Cell->SetPadding(FMargin(10,9));Cell->SetClipping(EWidgetClipping::ClipToBounds);auto* ValueText=Text(Label,13,Key==TEXT("name")?Ivory:Key==TEXT("ciLow")?Muted:Cyan);ValueText->SetAutoWrapText(false);ValueText->SetTextOverflowPolicy(ETextOverflowPolicy::Ellipsis);ValueText->SetJustification(Key==TEXT("name")||Key==TEXT("availability")?ETextJustify::Left:ETextJustify::Center);ValueText->SetToolTipText(FText::FromString(Label));Cell->SetContent(ValueText);Add(Cells,Cell,true,2);
+        }
+        Add(Rows,RowButton,0);
     }
 }
 void URiftUIWidget::ExportMeta()

@@ -30,6 +30,8 @@ From the repository root:
 
 Pass `-EngineRoot` to Unreal scripts for a different installation path. Pass the actual final Shipping build log to `Package-WindowsRelease.ps1 -BuildLog` when it is outside the default QA log path. A matching compiler's app-local runtime is selected from that log and its imported symbols are checked before packaging. Installer upgrade QA accepts a distinct real MSI in the same upgrade family through `-UpgradeMsi`.
 
+Shipping staging excludes debug symbols. If an incremental archive contains older `.pdb` files, the release packager moves them intact into a unique `Artifacts/Symbols/<version>` directory and records their lengths and hashes. Every game asset, executable and required runtime remains in the player package.
+
 ## Runtime responsibilities
 
 | Component | Responsibility |
@@ -65,6 +67,9 @@ Run Blender scripts with the installed Blender executable in background mode. Im
 
 # Actual sound-enabled mixer and connected audio settings.
 ./Build/Test-UnrealAudio.ps1 -Executable ./Artifacts/Game/Windows/RiftCrownArena.exe
+
+# Actual particle spawning and persistent-effect lifecycle in Shipping.
+./Build/Test-UnrealVFX.ps1 -Executable ./Artifacts/Game/Windows/RiftCrownArena.exe
 
 # A fresh 10,000-match cohort, using a frozen built runtime and isolated saves.
 ./Build/Validate-NativeMeta.ps1 -Games 10000

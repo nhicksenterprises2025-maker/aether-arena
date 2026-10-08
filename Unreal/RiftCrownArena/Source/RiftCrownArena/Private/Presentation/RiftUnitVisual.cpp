@@ -108,6 +108,13 @@ void ARiftUnitVisual::SetClip(FName Name,double NormalizedPosition,bool Loop)
     Character->SetPosition(float(Fraction*Animation->GetPlayLength()),false);
     Character->TickAnimation(0.f,false);Character->RefreshBoneTransforms();
 }
+FString ARiftUnitVisual::AnimationAssetPath()const
+{
+    auto* Node=Character->GetSingleNodeInstance();auto* Asset=Node?Node->GetCurrentAsset():nullptr;
+    return Asset?Asset->GetPathName():FString();
+}
+float ARiftUnitVisual::AnimationPosition()const
+{auto* Node=Character->GetSingleNodeInstance();return Node?Node->GetCurrentTime():0.f;}
 void ARiftUnitVisual::AttackAt(double Time,double Damage)
 {
     if (bDead) return;
@@ -201,7 +208,7 @@ void ARiftUnitVisual::Synchronize(const rift::Entity& Entity,const rift::Snapsho
         const bool Charging=AssetId==TEXT("rambeast") && Entity.charged;
         SetClip(Charging?TEXT("Charge"):TEXT("Locomotion"),GaitClock+AnimationPhase,true);
     }
-    else SetClip(bFlying?TEXT("WingCycle"):TEXT("Idle"),Time*.7+AnimationPhase,true);
+    else SetClip(bFlying?TEXT("WingCycle"):AssetId==TEXT("frost_fang")?TEXT("Breath"):TEXT("Idle"),Time*.7+AnimationPhase,true);
 }
 FVector ARiftUnitVisual::HealthLocation()const
 {

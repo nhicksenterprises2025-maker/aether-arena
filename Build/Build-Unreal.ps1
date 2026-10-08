@@ -9,7 +9,9 @@ $projectPath = Join-Path $repoRoot 'Unreal\RiftCrownArena\RiftCrownArena.uprojec
 $outputRoot = Join-Path $repoRoot 'Artifacts\Game'
 if (!(Test-Path -LiteralPath $projectPath)) { throw "Project not found: $projectPath" }
 if ($Package) {
-    & (Join-Path $EngineRoot 'Engine\Build\BatchFiles\RunUAT.bat') BuildCookRun "-project=$projectPath" -noP4 -platform=Win64 "-clientconfig=$Configuration" -build -cook -stage -pak -iostore -archive "-archivedirectory=$outputRoot" -prereqs -unattended -utf8output
+    $riftDebugStageArgs = @()
+    if ($Configuration -eq 'Shipping') { $riftDebugStageArgs += '-nodebuginfo' }
+    & (Join-Path $EngineRoot 'Engine\Build\BatchFiles\RunUAT.bat') BuildCookRun "-project=$projectPath" -noP4 -platform=Win64 "-clientconfig=$Configuration" -build -cook -stage -pak -iostore -archive "-archivedirectory=$outputRoot" -prereqs -unattended -utf8output @riftDebugStageArgs
 } else {
     & (Join-Path $EngineRoot 'Engine\Build\BatchFiles\Build.bat') RiftCrownArenaEditor Win64 Development "-Project=$projectPath" -WaitMutex -NoHotReloadFromIDE
 }

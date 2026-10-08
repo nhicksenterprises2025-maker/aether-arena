@@ -13,6 +13,7 @@ $riftMeasureRepo = Split-Path -Parent $PSScriptRoot
 if (!$Executable) { $Executable = Join-Path $riftMeasureRepo 'Artifacts\Game\Windows\RiftCrownArena.exe' }
 if (!(Test-Path -LiteralPath $Executable)) { throw "Real native game executable not found: $Executable" }
 $Executable = (Resolve-Path -LiteralPath $Executable).Path
+$riftMeasureExecutableHash = (Get-FileHash -LiteralPath $Executable -Algorithm SHA256).Hash.ToLowerInvariant()
 $riftMeasureIsEditor = [System.IO.Path]::GetFileNameWithoutExtension($Executable) -match '^UnrealEditor(-Cmd)?$'
 if (!$Name) { $Name = "$(if ($Stress) {'stress'} else {'ai-match'})-$(if ($WithMeta) {'meta-requested'} else {'meta-paused'})-${Width}x${Height}" }
 if ($Name -notmatch '^[a-z0-9][a-z0-9_-]*$') { throw 'Use a lowercase alphanumeric QA report name.' }
@@ -40,4 +41,9 @@ if (!(Test-Path -LiteralPath $riftMeasureJson) -or (Get-Item -LiteralPath $riftM
 $riftMeasured = Get-Content -LiteralPath $riftMeasureJson -Raw | ConvertFrom-Json
 if ($riftMeasured.frame.samples -lt 100 -or $riftMeasured.width -ne $Width -or $riftMeasured.height -ne $Height) { throw 'Measurement has insufficient frames or incorrect output dimensions.' }
 if ($WithMeta -and $riftMeasured.metaGamesDuringBattle -ne 0) { throw 'Background Meta advanced while the battle was active.' }
+$riftMeasureRun = [ordered]@{ passed=$true; utc=[DateTime]::UtcNow.ToString('o'); executable=$Executable; executableSha256=$riftMeasureExecutableHash;
+    editor=$riftMeasureIsEditor; exitCode=$riftMeasureProcess.ExitCode; report=$riftMeasureJson;
+    reportSha256=(Get-FileHash -LiteralPath $riftMeasureJson -Algorithm SHA256).Hash.ToLowerInvariant();
+    saveRoot=$riftMeasureSaves; seconds=[math]::Round(((Get-Date)-$riftMeasureStarted).TotalSeconds,2) }
+[IO.File]::WriteAllText((Join-Path $riftMeasureRoot 'run.json'),($riftMeasureRun | ConvertTo-Json -Depth 8),[Text.UTF8Encoding]::new($false))
 Write-Output ($riftMeasured | ConvertTo-Json -Depth 20)

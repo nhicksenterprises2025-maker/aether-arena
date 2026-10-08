@@ -36,6 +36,9 @@ public:
     float PreviewFootprint() const { return PlacementFootprint; }
     bool PreviewIsSpell() const { return bPlacementSpell; }
     bool PreviewIsValid() const { return bPlacementValid; }
+    // On-demand native QA; never runs during ordinary rendering.
+    FString NiagaraDiagnosticsJSON();
+    void ShowcaseNiagara();
 private:
     void ConstructArena();
     UHierarchicalInstancedStaticMeshComponent* Instances(FName Mesh, int32 Team=-1);
@@ -70,6 +73,7 @@ private:
     UPROPERTY() TMap<uint64,TObjectPtr<UNiagaraComponent>> StunEffects;
     UPROPERTY() TMap<uint32,TObjectPtr<UMaterialInstanceDynamic>> ParticleMaterials;
     TMap<uint64,FVector> ProjectileOrigins;
+    TMap<uint64,double> NextFrostBreath;
     TArray<TWeakObjectPtr<UNiagaraComponent>> TransientEffects;
     TSet<FName> MissingAssets;
     FDelegateHandle EventHandle, MatchHandle;
@@ -77,6 +81,7 @@ private:
     double LastTime=-1;
     float ResultDeathClock=0;
     int32 AetherStage=1;
+    int32 FrostBreathPuffs=0;
     FVector2D PlacementTile=FVector2D::ZeroVector;
     float PlacementRadius=0, PlacementFootprint=0;
     bool bPreview=false, bPlacementValid=false, bPlacementSpell=false;

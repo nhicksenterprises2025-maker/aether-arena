@@ -83,24 +83,32 @@ void ARiftGameMode::BeginPlay()
                     // simulation mechanics from tagged sandbox deployments.
                     Sim->Spawn(rift::Team::Player,"frost_fang",{-8,3});Sim->Spawn(rift::Team::Enemy,"ironclad",{-8,1});
                     Sim->Spawn(rift::Team::Player,"ember_archer",{-10,6});Sim->Spawn(rift::Team::Enemy,"boulderback",{0,1});
-                    Sim->Spawn(rift::Team::Player,"arc_mage",{-2,5});Sim->Spawn(rift::Team::Player,"sky_manta",{2,5});
+                    Sim->Spawn(rift::Team::Player,"arc_mage",{1,5});Sim->Spawn(rift::Team::Player,"sky_manta",{3,5});
                     Sim->Spawn(rift::Team::Player,"storm_raven",{8,3});Sim->Spawn(rift::Team::Enemy,"boulderback",{8,1});
                     Sim->Spawn(rift::Team::Enemy,"archer_tower",{9,2});
-                    Sim->Spawn(rift::Team::Enemy,"vampire_bats",{7,1});Sim->Spawn(rift::Team::Player,"rambeast",{0,8});
-                    FTimerHandle SpellsTimer;GetWorld()->GetTimerManager().SetTimer(SpellsTimer,[this]()
+                    Sim->Spawn(rift::Team::Player,"rambeast",{0,8});
+                    auto NextSpell=MakeShared<double>(3.0);
+                    FTimerHandle SpellsTimer;GetWorld()->GetTimerManager().SetTimer(SpellsTimer,[this,NextSpell]()
                     {
                         auto* Current=GetWorld()->GetSubsystem<URiftMatchSubsystem>();if(auto* Combat=Current->Simulation())
-                        {Combat->Spawn(rift::Team::Player,"meteor_shards",{0,3});Combat->Spawn(rift::Team::Enemy,"bullet_burst",{-8,3});Combat->Spawn(rift::Team::Player,"nova_flask",{0,0});Current->FlushEvents();}
-                    },2.f,true,3.f);
+                            if(Combat->State().elapsed>=*NextSpell)
+                            {*NextSpell+=2.0;Combat->Spawn(rift::Team::Player,"meteor_shards",{0,3});Combat->Spawn(rift::Team::Enemy,"bullet_burst",{-8,3});Combat->Spawn(rift::Team::Player,"nova_flask",{0,0});Current->FlushEvents();}
+                    },.02f,true);
                 }
-                else if(Scenario==TEXT("placement"))Match->SetSpeed(0);
-                if(Scenario!=TEXT("roster")&&Scenario!=TEXT("placement"))
+                else if(Scenario==TEXT("placement")||Scenario==TEXT("effects17"))Match->SetSpeed(0);
+                if(Scenario!=TEXT("roster")&&Scenario!=TEXT("placement")&&Scenario!=TEXT("effects17"))
                 {float CaptureSpeed=1;FParse::Value(FCommandLine::Get(),TEXT("RiftCaptureSpeed="),CaptureSpeed);Match->SetSpeed(FMath::Clamp(CaptureSpeed,.25f,4.f));}
                 Match->FlushEvents();
             }
             PC->Interface->Navigate(Page);
         },.5f,false);
         float Delay=6;FParse::Value(FCommandLine::Get(),TEXT("RiftCaptureDelay="),Delay);bool Quit=FParse::Param(FCommandLine::Get(),TEXT("RiftQuitAfterCapture"));
+        FString EffectScenario;FParse::Value(FCommandLine::Get(),TEXT("RiftVisualScenario="),EffectScenario);
+        if(EffectScenario==TEXT("effects17"))
+        {
+            float Age=.12f;FParse::Value(FCommandLine::Get(),TEXT("RiftEffectAge="),Age);FTimerHandle ShowcaseTimer;
+            GetWorld()->GetTimerManager().SetTimer(ShowcaseTimer,[this](){for(TActorIterator<ARiftArenaPresentation> It(GetWorld());It;++It){It->ShowcaseNiagara();break;}},FMath::Max(.75f,Delay-Age),false);
+        }
         FTimerHandle CaptureTimer;GetWorld()->GetTimerManager().SetTimer(CaptureTimer,[this,CapturePath,Quit,CapturedEvents]()
         {
             IFileManager::Get().MakeDirectory(*FPaths::GetPath(CapturePath),true);
@@ -120,6 +128,12 @@ void ARiftGameMode::BeginPlay()
                 float X=0,Y=7;FParse::Value(FCommandLine::Get(),TEXT("RiftPreviewX="),X);FParse::Value(FCommandLine::Get(),TEXT("RiftPreviewY="),Y);const auto Tile=rift::SnapToTile({X,Y});
                 Snapshot->SetStringField(TEXT("previewCard"),PreviewCard);Snapshot->SetNumberField(TEXT("previewX"),Tile.x);Snapshot->SetNumberField(TEXT("previewY"),Tile.z);
                 Snapshot->SetBoolField(TEXT("previewValid"),Sim->CanPlace(rift::Team::Player,*Card,Tile));Snapshot->SetNumberField(TEXT("previewFootprintTiles"),Card->footprint);Snapshot->SetNumberField(TEXT("previewRadiusTiles"),Card->spellRadius);
+            }
+            for(TActorIterator<ARiftArenaPresentation> It(GetWorld());It;++It)
+            {
+                TSharedPtr<FJsonObject> Niagara;
+                if(FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(It->NiagaraDiagnosticsJSON()),Niagara))Snapshot->SetObjectField(TEXT("niagara"),Niagara);
+                break;
             }
             FString SnapshotText;auto Writer=TJsonWriterFactory<>::Create(&SnapshotText);FJsonSerializer::Serialize(Snapshot,Writer);
             FFileHelper::SaveStringToFile(SnapshotText,*(FPaths::ChangeExtension(CapturePath,TEXT("state.json"))),FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM);
@@ -156,7 +170,7 @@ void ARiftPlayerController::BeginPlay()
     Super::BeginPlay();
     CameraActor=GetWorld()->SpawnActor<AActor>();
     ArenaCamera=NewObject<UCameraComponent>(CameraActor,TEXT("ArenaCamera"));CameraActor->SetRootComponent(ArenaCamera);ArenaCamera->RegisterComponent();
-    CameraActor->SetActorLocation(FVector(0,3600,5400));CameraActor->SetActorRotation(UKismetMathLibrary::FindLookAtRotation(CameraActor->GetActorLocation(),FVector(0,200,0)));
+    CameraActor->SetActorLocation(FVector(0,3600,5400));CameraActor->SetActorRotation(UKismetMathLibrary::FindLookAtRotation(CameraActor->GetActorLocation(),FVector(0,500,0)));
     ArenaCamera->ProjectionMode=ECameraProjectionMode::Orthographic;ArenaCamera->OrthoWidth=8000;ArenaCamera->bConstrainAspectRatio=false;ArenaCamera->bAutoCalculateOrthoPlanes=true;
     ArenaCamera->AspectRatioAxisConstraint=EAspectRatioAxisConstraint::AspectRatio_MaintainXFOV;
     ArenaCamera->bOverrideAspectRatioAxisConstraint=true;

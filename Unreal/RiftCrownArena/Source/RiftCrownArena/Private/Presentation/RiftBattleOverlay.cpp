@@ -62,23 +62,52 @@ int32 URiftBattleOverlay::NativePaint(const FPaintArgs& Args,const FGeometry& Ge
         const FVector2D Anchor=Position;
         const bool Status=Entity.stunUntil>State->elapsed || Entity.slowUntil>State->elapsed || Entity.charged;
         const bool Dormant=Entity.kind==rift::EntityKind::Core && !Entity.active;
-        // Reserve the numbers and statuses as well as the bar. Nearby buildings
-        // and royal towers need the same collision separation as troop swarms.
-        auto LabelArea=[&]()
-        {return FSlateRect(Position.X-2,Position.Y-(Tower?18.f:2.f),Position.X+Width+2,
-            Position.Y+Height+(Dormant||Status?19.f:5.f));};
-        for (int32 Attempt=0;Attempt<12;++Attempt)
+        // Reserve the complete label, including text that is wider than a swarm
+        // bar. Search a bounded two-dimensional neighbourhood so bridge queues
+        // do not become tall columns of health bars above unrelated units.
+        const float LabelWidth=FMath::Max(Width,Status?48.f:Dormant?62.f:0.f);
+        auto LabelArea=[&](FVector2D Point)
+        {return FSlateRect(Point.X-2,Point.Y-(Tower?18.f:2.f),Point.X+LabelWidth+2,
+            Point.Y+Height+(Dormant||Status?19.f:5.f));};
+        struct FLabelCandidate {FVector2D Offset;float Distance;};
+        TArray<FLabelCandidate,TInlineAllocator<81>> Candidates;
+        const float StepX=FMath::Clamp(LabelWidth+6.f,24.f,30.f);
+        const float StepY=FMath::Clamp(Height+(Status||Dormant?23.f:6.f),10.f,18.f);
+        for (int32 Row=-4;Row<=4;++Row) for (int32 Column=-4;Column<=4;++Column)
         {
-            const FSlateRect Area=LabelArea();
-            bool Intersects=false;for (const auto& Previous:Occupied) if (FSlateRect::DoRectanglesIntersect(Area,Previous)) {Intersects=true;break;}
-            if (!Intersects) break;
-            Position.Y-=Tower?22.f:Height+6.f;
+            const FVector2D Offset(Column*StepX,Row*StepY);
+            Candidates.Add({Offset,float(Offset.SizeSquared())});
         }
-        Occupied.Add(LabelArea());
-        const FLinearColor Color=ARiftUnitVisual::TeamColor(Entity.team);
-        if (Anchor.Y-Position.Y>3)
+        Candidates.Sort([](const FLabelCandidate& A,const FLabelCandidate& B)
         {
-            TArray<FVector2D> Leader{Position+FVector2D(Width*.5f,Height+1),Anchor+FVector2D(Width*.5f,Height+3)};
+            if (A.Distance!=B.Distance) return A.Distance<B.Distance;
+            if (A.Offset.Y!=B.Offset.Y) return A.Offset.Y<B.Offset.Y;
+            return A.Offset.X<B.Offset.X;
+        });
+        float BestOverlap=TNumericLimits<float>::Max();
+        for (const auto& Candidate:Candidates)
+        {
+            const FVector2D CandidatePosition=Anchor+Candidate.Offset;
+            const FSlateRect Area=LabelArea(CandidatePosition);
+            if (Area.Left<2 || Area.Top<2 || Area.Right>Extent.X-2 || Area.Bottom>Extent.Y-2) continue;
+            float Overlap=0;
+            for (const auto& Previous:Occupied)
+            {
+                const float IntersectionWidth=FMath::Min(Area.Right,Previous.Right)-FMath::Max(Area.Left,Previous.Left);
+                const float IntersectionHeight=FMath::Min(Area.Bottom,Previous.Bottom)-FMath::Max(Area.Top,Previous.Top);
+                if (IntersectionWidth>0 && IntersectionHeight>0) Overlap+=IntersectionWidth*IntersectionHeight;
+            }
+            if (Overlap<BestOverlap) {BestOverlap=Overlap;Position=CandidatePosition;}
+            if (Overlap==0) break;
+        }
+        Occupied.Add(LabelArea(Position));
+        const FLinearColor Color=ARiftUnitVisual::TeamColor(Entity.team);
+        if (FVector2D::Distance(Anchor,Position)>3)
+        {
+            const FVector2D Target=Anchor+FVector2D(Width*.5f,Height+3);
+            const FVector2D Edge(FMath::Clamp(Target.X,Position.X,Position.X+Width),
+                FMath::Clamp(Target.Y,Position.Y,Position.Y+Height));
+            TArray<FVector2D> Leader{Edge,Target};
             FSlateDrawElement::MakeLines(Elements,Top+1,Geometry.ToPaintGeometry(),Leader,ESlateDrawEffect::None,
                 FLinearColor(Color.R,Color.G,Color.B,.35f),true,1.f);
         }

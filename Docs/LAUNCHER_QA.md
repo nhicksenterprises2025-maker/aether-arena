@@ -11,7 +11,7 @@ The actual .NET 8 projects restored, compiled and published successfully on this
 | Published executable startup/resources | Passed | `Artifacts/QA/launcher-published-smoke.json` |
 | Connected WPF commands/resources | 10 controls checked; real settings, invalid-save and cancel routed commands exercised | Same published smoke report |
 | Rendered WPF content | Real retained-mode WPF rendering captured | `Artifacts/QA/launcher-preview.png` |
-| Published WPF Play → packaged game | Actual `PlayButton.Click`, all 52 packaged files verified, bootstrap and native Shipping process exited 0 | `Artifacts/QA/launcher-play-smoke.json` |
+| Published WPF Play → final packaged game | Actual `PlayButton.Click`, all 51 packaged files verified, bootstrap and native Shipping process exited 0 | `Artifacts/QA/launcher-play-smoke.json` |
 | Real game launched through WPF | 1280×720 Home render, D3D12 Shipping diagnostics, environment save-root forwarding, isolated engine configuration and byte-identical legacy save fixture | `Artifacts/QA/launcher-play-home.png` and the Play report |
 
 The fixture uses temporary directories and a private loopback HTTP listener. The published smoke check receives fresh GUID-named install and save directories. Neither suite reads or modifies the real player profile.
@@ -24,13 +24,17 @@ Hostile-path checks cover traversal, absolute paths, Windows device names, alter
 
 The WPF smoke check loads the actual application's compiled resources, constructs its command controls, raises routed settings/save/cancel actions and renders a PNG. The separate Play smoke uses the published executable and a verified real package. It raises the application's actual Play routed event, observes the actual UE bootstrap and Shipping child, checks their exit codes, decodes the native capture, and validates the child's structured diagnostics. The game receives `RIFT_SAVE_ROOT` through the launcher's normal environment handling; no command-line save-root override masks that behavior. These QA flags require explicit isolated installation and save roots.
 
-The Play evidence was measured against the first provisional Shipping package. That package's Home render predates the final menu polish. The installer lifecycle test repeats Play using the actual installed launcher after the final package is rebuilt.
+The current Play evidence was measured against the final 1.0.0 Shipping package on 2026-10-08 after the authored FrostFang animation connection. It identifies the exact launcher SHA-256 (`ca533a10c0c125a8ef3f172aa54ea5afdaec0bd9f03fd8d4ce581306e6624215`) and native executable SHA-256 (`981ff75a5c837fa74c2a3f1a00c21794fdc418d39504c12ced1ca3331ce63a86`). The actual 1280×720 Home capture was inspected: all eight active-loadout illustrations, names, costs and main actions fit. The 51-file player inventory preserves the complete executable/assets/runtime tree. Matching 236,097,536-byte development symbols are retained separately under `Artifacts/Symbols/1.0.0/native-981ff75a5c83` with unchanged size and hash; no PDB appears in the player inventory. The installer lifecycle test repeats Play using the actual installed launcher.
 
 ## Re-run
 
 ```powershell
 ./Build/Build-Launcher.ps1
 ./Build/Test-LauncherPlay.ps1
+# After the exact final assets are published as the latest public GitHub release:
+./Build/Test-PublishedUpdate.ps1
 ```
 
 The build script fails if compilation, any integration assertion or the published executable's smoke check fails. The Play script requires `Artifacts/Distribution` to contain the actual packaged game, and fails on launch, render, save isolation or clean-exit errors. Reports are regenerated from measured execution. Installer verification is recorded separately after Unreal packaging.
+
+The public update test runs the actual standalone release launcher with `--self-test-update`, fresh isolated install/save roots, and the final local manifest as its expectation. It raises the real `CheckButton.Click` event against the unchanged default HTTPS GitHub latest-manifest endpoint. It validates the complete returned manifest, version-pinned package URL, displayed patch notes and available Install action, and confirms that the game inventory and legacy save fixture remain unchanged. It downloads only the manifest. Its measured report is `Artifacts/QA/published-update-check.json`; this route has been prepared but cannot establish a successful public check until the final release is actually published.

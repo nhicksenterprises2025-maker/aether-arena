@@ -12,9 +12,33 @@ $repoRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 if(-not $GamePackage){$GamePackage=Join-Path $repoRoot 'Artifacts/Game/Windows'}
 $packageRoot=[IO.Path]::GetFullPath($GamePackage)
 if(-not (Test-Path -LiteralPath (Join-Path $packageRoot 'RiftCrownArena.exe') -PathType Leaf)){throw 'Actual packaged RiftCrownArena.exe is missing. Run Unreal Shipping packaging first.'}
-& (Join-Path $PSScriptRoot 'Stage-AppLocalRuntime.ps1') -GamePackage $packageRoot -ToolchainRoot $ToolchainRoot -BuildLog $BuildLog
 if($Version -notmatch '^\d+\.\d+\.\d+(\.\d+)?$'){throw 'Release version must be numeric with three or four components.'}
 if($Repository -notmatch '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$'){throw 'Invalid GitHub repository name.'}
+# Debug symbols are preserved as development artifacts before the player inventory is frozen.
+# Only .pdb files are separated; executables, DLLs, assets, and runtime resources stay in the game.
+$symbols=@(Get-ChildItem -LiteralPath $packageRoot -Filter '*.pdb' -File -Recurse)
+if($symbols.Count){
+    $symbolsRoot=[IO.Path]::GetFullPath((Join-Path $repoRoot 'Artifacts/Symbols'))
+    $symbolBatch=[IO.Path]::GetFullPath((Join-Path $symbolsRoot ($Version+'/'+[Guid]::NewGuid().ToString('N'))))
+    if(-not $symbolBatch.StartsWith($symbolsRoot+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){throw 'Debug-symbol preservation path escaped its artifact root.'}
+    $symbolRecords=[Collections.Generic.List[object]]::new()
+    foreach($symbol in $symbols){
+        $source=[IO.Path]::GetFullPath($symbol.FullName)
+        if(-not $source.StartsWith($packageRoot+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase) -or ($symbol.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0){throw 'Debug symbol is linked or outside the packaged game.'}
+        for($ancestor=$symbol.Directory;$ancestor -and $ancestor.FullName.StartsWith($packageRoot,[StringComparison]::OrdinalIgnoreCase);$ancestor=$ancestor.Parent){if(($ancestor.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0){throw 'Debug symbol is inside a linked package directory.'}}
+        $relative=[IO.Path]::GetRelativePath($packageRoot,$source)
+        $destination=[IO.Path]::GetFullPath((Join-Path $symbolBatch $relative))
+        if(-not $destination.StartsWith($symbolBatch+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){throw 'Debug-symbol destination escaped the preserved batch.'}
+        $digest=(Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash.ToLowerInvariant();$symbolSize=$symbol.Length
+        New-Item -ItemType Directory -Path ([IO.Path]::GetDirectoryName($destination)) -Force | Out-Null
+        Move-Item -LiteralPath $source -Destination $destination
+        if((Get-Item -LiteralPath $destination).Length -ne $symbolSize -or (Get-FileHash -LiteralPath $destination -Algorithm SHA256).Hash.ToLowerInvariant() -ne $digest){throw 'Preserved debug-symbol bytes failed verification.'}
+        $symbolRecords.Add([ordered]@{path=$relative.Replace('\','/');size=$symbolSize;sha256=$digest;preservedPath=$destination})
+    }
+    [IO.File]::WriteAllText((Join-Path $symbolBatch 'symbols.json'),([ordered]@{utc=[DateTime]::UtcNow.ToString('o');version=$Version;sourcePackage=$packageRoot;files=$symbolRecords.ToArray()}|ConvertTo-Json -Depth 8),[Text.UTF8Encoding]::new($false))
+    Write-Output "Preserved $($symbols.Count) debug-symbol files separately: $symbolBatch"
+}
+& (Join-Path $PSScriptRoot 'Stage-AppLocalRuntime.ps1') -GamePackage $packageRoot -ToolchainRoot $ToolchainRoot -BuildLog $BuildLog
 if($PatchNotesFile){$PatchNotes=Get-Content -LiteralPath $PatchNotesFile -Raw}
 if($PatchNotes.Length -gt 131072){throw 'Patch notes exceed launcher limits.'}
 $launcherRoot=Join-Path $repoRoot 'Artifacts/Launcher'

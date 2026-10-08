@@ -2,8 +2,10 @@ param(
     [string]$EngineRoot = 'C:\Program Files\Epic Games\UE_5.8',
     [string]$Executable = '',
     [string]$Page = 'Battle',
-    [ValidateSet('','roster','congestion','effects','placement')][string]$Scenario = '',
+    [ValidateSet('','roster','congestion','effects','effects17','placement')][string]$Scenario = '',
+    [ValidateRange(0.05,2)][float]$EffectAge = 0.12,
     [ValidateRange(0.25,4)][float]$Speed = 1,
+    [switch]$BreathSmoke,
     [string]$PreviewCard = '',
     [float]$PreviewX = 0,
     [float]$PreviewY = 7,
@@ -21,6 +23,8 @@ $saveRoot = Join-Path $repoRoot 'Artifacts\QA\VisualSave'
 $engineUserRoot = Join-Path $saveRoot 'EngineUser'
 if (!$Executable) { $Executable = Join-Path $EngineRoot 'Engine\Binaries\Win64\UnrealEditor-Cmd.exe' }
 if (!(Test-Path -LiteralPath $Executable)) { throw "Capture executable not found: $Executable" }
+$Executable = (Resolve-Path -LiteralPath $Executable).Path
+$riftCaptureExecutableHash = (Get-FileHash -LiteralPath $Executable -Algorithm SHA256).Hash.ToLowerInvariant()
 $isEditor = [System.IO.Path]::GetFileNameWithoutExtension($Executable) -in @('UnrealEditor','UnrealEditor-Cmd')
 $workingDirectory = if ($isEditor) { $repoRoot } else { Split-Path -Parent $Executable }
 if (!$Name) { $Name = ($Page.ToLowerInvariant() -replace '[^a-z0-9]+','-') + $(if ($Scenario) { '-' + $Scenario } else { '' }) + "-${Width}x${Height}" }
@@ -45,6 +49,8 @@ $arguments = @(
 )
 if ($isEditor) { $arguments = @(('"' + $projectPath + '"')) + $arguments }
 if ($Scenario) { $arguments += "-RiftVisualScenario=$Scenario" }
+if ($BreathSmoke) { $arguments += '-RiftBreathSmoke' }
+if ($Scenario -eq 'effects17') { $arguments += '-RiftEffectAge=' + $EffectAge.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
 if ($Scenario -in @('effects','congestion')) { $arguments += '-RiftCaptureSpeed=' + $Speed.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
 if ($PreviewCard) {
     if ($PreviewCard -notmatch '^[a-z_]+$') { throw 'Preview card must be an original card ID.' }
@@ -83,11 +89,11 @@ if (Test-Path -LiteralPath $logPath) {
     $errors = @(Select-String -LiteralPath $logPath -Pattern 'LogRift: Error:|LogUIActionRouter: Error:|Fatal error[:!]?|Unhandled Exception:|Assertion failed:|Failed to load.*(/Game/Rift|Rift/)|Authored .* missing|LogMaterial: (Error:|Warning:.*(Failed to compile|Default Material|missing usage flag))|LogShaderCompilers: Error:' | ForEach-Object { $_.Line })
 }
 $report = [ordered]@{
-    schema = 1; name = $Name; page = $Page; scenario = $Scenario; speed = $Speed;
+    schema = 1; name = $Name; page = $Page; scenario = $Scenario; speed = $Speed; breathSmoke = [bool]$BreathSmoke;
     state = $statePath; stateCaptured = $stateCaptured;
     width = $Width; height = $Height; actualWidth = $actualWidth; actualHeight = $actualHeight;
     resolutionMatches = $resolutionMatches; delay = $Delay;
-    screenshot = $capturePath; engineLog = $logPath; executable = $Executable;
+    screenshot = $capturePath; engineLog = $logPath; executable = $Executable; executableSha256 = $riftCaptureExecutableHash;
     editor = $isEditor; workingDirectory = $workingDirectory; engineUserRoot = $engineUserRoot;
     captured = $freshCapture; timedOut = $timedOut; exitCode = $process.ExitCode;
     seconds = [math]::Round(((Get-Date)-$started).TotalSeconds,2);
