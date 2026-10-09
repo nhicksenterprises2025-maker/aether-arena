@@ -23,14 +23,15 @@ param(
     [int]$Height = 1080,
     [float]$Delay = 6,
     [int]$TimeoutSeconds = 180,
+    [string]$ExpectedVersion = '',
     [string]$Name = ''
 )
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
+. (Join-Path $PSScriptRoot 'ShippingDiagnostics.ps1')
+$ExpectedVersion = Get-RiftExpectedGameVersion $repoRoot $ExpectedVersion
 $projectPath = Join-Path $repoRoot 'Unreal\RiftCrownArena\RiftCrownArena.uproject'
 $captureRoot = Join-Path $repoRoot 'Artifacts\QA\Visual'
-$saveRoot = Join-Path $repoRoot 'Artifacts\QA\VisualSave'
-$engineUserRoot = Join-Path $saveRoot 'EngineUser'
 if (!$Executable) { $Executable = Join-Path $EngineRoot 'Engine\Binaries\Win64\UnrealEditor-Cmd.exe' }
 if (!(Test-Path -LiteralPath $Executable)) { throw "Capture executable not found: $Executable" }
 $Executable = (Resolve-Path -LiteralPath $Executable).Path
@@ -39,6 +40,9 @@ $isEditor = [System.IO.Path]::GetFileNameWithoutExtension($Executable) -in @('Un
 $workingDirectory = if ($isEditor) { $repoRoot } else { Split-Path -Parent $Executable }
 if (!$Name) { $Name = ($Page.ToLowerInvariant() -replace '[^a-z0-9]+','-') + $(if ($Scenario) { '-' + $Scenario } else { '' }) + "-${Width}x${Height}" }
 if ($Name -notmatch '^[a-z0-9][a-z0-9_-]*$') { throw 'Capture name must contain lowercase letters, digits, underscores or hyphens.' }
+$runRoot = Join-Path $repoRoot ('Artifacts/QA/VisualRuns/' + $Name + '-' + [Guid]::NewGuid().ToString('N'))
+$saveRoot = Join-Path $runRoot 'Save'
+$engineUserRoot = Join-Path $runRoot 'EngineUser'
 New-Item -ItemType Directory -Path $captureRoot,$saveRoot,$engineUserRoot -Force | Out-Null
 $capturePath = Join-Path $captureRoot ($Name + '.png')
 $logPath = Join-Path $captureRoot ($Name + '.log')
@@ -93,6 +97,7 @@ while (!$process.HasExited) {
     $process.Refresh()
 }
 $process.WaitForExit()
+$finished = [DateTime]::UtcNow
 $freshCapture = (Test-Path -LiteralPath $capturePath) -and ((Get-Item -LiteralPath $capturePath).LastWriteTime -ge $started.AddSeconds(-1))
 $actualWidth = 0
 $actualHeight = 0
@@ -136,17 +141,26 @@ if ($Phase) {
     }
 }
 $errors = @()
-if (Test-Path -LiteralPath $logPath) {
-    $errors = @(Select-String -LiteralPath $logPath -Pattern 'LogRift: Error:|LogUIActionRouter: Error:|Fatal error[:!]?|Unhandled Exception:|Assertion failed:|Failed to load.*(/Game/Rift|Rift/)|Authored .* missing|LogMaterial: (Error:|Warning:.*(Failed to compile|Default Material|missing usage flag))|LogShaderCompilers: Error:' | ForEach-Object { $_.Line })
+$errorPattern='LogRift: Error:|LogUIActionRouter: Error:|Fatal error[:!]?|Unhandled Exception:|Assertion failed:|Failed to load.*(/Game/Rift|Rift/)|Authored .* missing|LogMaterial: (Error:|Warning:.*(Failed to compile|Default Material|missing usage flag))|LogShaderCompilers: Error:'
+$diagnosticSource='editor-engine-log'; $nativeDiagnosticLogs=@(); $diagnosticVerification=$null
+if ($isEditor) {
+    if ((Test-Path -LiteralPath $logPath) -and (Get-Item -LiteralPath $logPath).LastWriteTimeUtc -ge $started.ToUniversalTime()) {
+        $errors = @(Select-String -LiteralPath $logPath -Pattern $errorPattern | ForEach-Object { $_.Line })
+    } else { $errors=@('Fresh Editor engine log missing.') }
+} else {
+    $diagnostics=Get-RiftShippingDiagnostics -RepoRoot $repoRoot -DestinationRoot $runRoot -SaveRoot $saveRoot -EngineUserRoot $engineUserRoot -ProcessId $process.Id -ExpectedVersion $ExpectedVersion -StartedUTC $started -FinishedUTC $finished -ErrorPattern $errorPattern
+    $errors=@($diagnostics.errors); $diagnosticSource=$diagnostics.diagnosticSource; $nativeDiagnosticLogs=@($diagnostics.nativeDiagnosticLogs); $diagnosticVerification=$diagnostics.diagnosticVerification; $logPath=$diagnostics.engineLog
 }
+$riftCapturePassed=!$timedOut -and $freshCapture -and $stateCaptured -and $resolutionMatches -and $riftPhaseFixturePassed -and $riftCameraFramingPassed -and $riftModelEnvelopeCheckPassed -and $process.ExitCode -eq 0 -and $errors.Count -eq 0
 $report = [ordered]@{
-    schema = 1; name = $Name; page = $Page; scenario = $Scenario; inspectCard = $InspectCard; speed = $Speed; breathSmoke = [bool]$BreathSmoke; uiScale=$UIScale; zoom=$Zoom;
+    schema = 1; version=$ExpectedVersion; passed=[bool]$riftCapturePassed; name = $Name; page = $Page; scenario = $Scenario; inspectCard = $InspectCard; speed = $Speed; breathSmoke = [bool]$BreathSmoke; uiScale=$UIScale; zoom=$Zoom;
     state = $statePath; stateCaptured = $stateCaptured; phaseFixture = $Phase; phaseFixturePassed = $riftPhaseFixturePassed; allowExternalInput = [bool]$AllowExternalInput;
     cameraFramingRequired = $riftCameraFramingRequired; cameraFramingPassed = $riftCameraFramingPassed; cameraFraming = $riftCameraFraming;
     modelEnvelopeAvailable = $riftModelEnvelopeAvailable; modelEnvelopePassed = $riftModelEnvelopePassed;
     width = $Width; height = $Height; actualWidth = $actualWidth; actualHeight = $actualHeight;
     resolutionMatches = $resolutionMatches; delay = $Delay;
     screenshot = $capturePath; engineLog = $logPath; executable = $Executable; executableSha256 = $riftCaptureExecutableHash;
+    diagnosticSource=$diagnosticSource; nativeDiagnosticLogs=$nativeDiagnosticLogs; diagnosticVerification=$diagnosticVerification;
     editor = $isEditor; workingDirectory = $workingDirectory; engineUserRoot = $engineUserRoot;
     captured = $freshCapture; timedOut = $timedOut; exitCode = $process.ExitCode;
     seconds = [math]::Round(((Get-Date)-$started).TotalSeconds,2);
@@ -154,4 +168,4 @@ $report = [ordered]@{
 }
 [System.IO.File]::WriteAllText($reportPath,($report | ConvertTo-Json -Depth 20),[System.Text.UTF8Encoding]::new($false))
 Write-Output ($report | ConvertTo-Json -Depth 20)
-if ($timedOut -or !$freshCapture -or !$stateCaptured -or !$resolutionMatches -or !$riftPhaseFixturePassed -or !$riftCameraFramingPassed -or !$riftModelEnvelopeCheckPassed -or $process.ExitCode -ne 0 -or $errors.Count -gt 0) { throw "Unreal capture failed; inspect $reportPath" }
+if (!$riftCapturePassed) { throw "Unreal capture failed; inspect $reportPath" }

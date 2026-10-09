@@ -1,0 +1,4335 @@
+{
+  "schema": 1,
+  "version": "1.3.0",
+  "passed": true,
+  "utc": "2026-10-09T19:18:27.9401741Z",
+  "scope": "Authored model/equipment fit, fourteen model-rendered card portraits, embedded UI typography, card drag/return routing, native regression and Windows delivery",
+  "nativeExecutableSha256": "42c76768e584c3e0f26c17ec7c84b9d2b2a49be07784e0441b9a088a92f8387d",
+  "modelBuild": "UE-1.3.0",
+  "modelSourceSha256": "e05ec2783365cef7543c600bfbf236f7a96e457a2424ca2b2d809540be290cd6",
+  "portraitCount": 14,
+  "fontFamily": "Barlow Semi Condensed",
+  "fontWeights": [
+    "Regular",
+    "Medium",
+    "SemiBold",
+    "Bold"
+  ],
+  "dragChecks": 29,
+  "integrationTests": 15,
+  "captureNames": [
+    "model130-home",
+    "model130-cards",
+    "model130-loadout",
+    "model130-settings",
+    "model130-notes",
+    "model130-ironclad-detail",
+    "model130-archer-detail",
+    "model130-twins-detail",
+    "model130-mage-detail",
+    "model130-roster",
+    "model130-projectiles",
+    "model130-roster-720-large-ui",
+    "model130-roster-16-10",
+    "model130-roster-wide",
+    "model130-paused",
+    "model130-training",
+    "model130-replay",
+    "model130-spell-windup"
+  ],
+  "physicalSourcePortraits": 14,
+  "physicalSourceActionPoses": 54,
+  "modelReview": "Artifacts/QA/model130-production-model-review.json",
+  "performance": {
+    "schema": 1,
+    "build": "Shipping",
+    "cpu": "AMD Ryzen 7 5700                               ",
+    "gpu": "NVIDIA GeForce RTX 5060",
+    "stress": false,
+    "metaRequested": true,
+    "warmupSeconds": 8,
+    "measuredSeconds": 90,
+    "frame": {
+      "samples": 5401,
+      "meanMs": 16.667726476740736,
+      "p95Ms": 16.803298145532608,
+      "p99Ms": 16.93359762430191,
+      "maxMs": 17.227303236722946
+    },
+    "gameThread": {
+      "samples": 5401,
+      "meanMs": 1.429590908449417,
+      "p95Ms": 1.9753999710083008,
+      "p99Ms": 2.4100000858306885,
+      "maxMs": 5.897200107574463
+    },
+    "renderThread": {
+      "samples": 5401,
+      "meanMs": 2.4318940194309517,
+      "p95Ms": 3.0178000926971436,
+      "p99Ms": 3.5215001106262207,
+      "maxMs": 5.0808000564575195
+    },
+    "gpuFrame": {
+      "samples": 5401,
+      "meanMs": 3.893711091059046,
+      "p95Ms": 4.125100135803223,
+      "p99Ms": 4.2870001792907715,
+      "maxMs": 5.2170000076293945
+    },
+    "hitchesOver50Ms": [],
+    "peakEntities": 13,
+    "peakProjectiles": 5,
+    "peakHazards": 0,
+    "metaGamesDuringBattle": 0,
+    "metaStatus": "Paused during battle · 0 matches · 0 invalid · 0.0s active simulation time · b3968027",
+    "processPeakPhysicalBytes": 1149263872,
+    "width": 1920,
+    "height": 1080
+  },
+  "inputs": [
+    {
+      "path": "Artifacts/Game-1.3.0/Windows/RiftCrownArena/Content/Rift/Fonts/Barlow-OFL.txt",
+      "sha256": "186d750eb496a4c17a76385f82be6aea2ac1cf2de074a811d63786cf374ea73f",
+      "bytes": 4377
+    },
+    {
+      "path": "Artifacts/QA/app-local-runtime.json",
+      "sha256": "00e72d7ee2ddb4e0dae1ea368965da54b8fde8064f9196064694d2b931d88146",
+      "bytes": 6106
+    },
+    {
+      "path": "Artifacts/QA/Audio/model130-shipping-audio/audio-smoke.json",
+      "sha256": "dfe5edc0d3c615488e6c09093d4cbd81d5d47d3a6cd2474a1a84cc7d2c006c38",
+      "bytes": 5590
+    },
+    {
+      "path": "Artifacts/QA/Audio/model130-shipping-audio/Diagnostics/RiftGame-2026-10-09-26836-19-15-02-0.log",
+      "sha256": "a0c1d25ddb50990928b779d4b49ecec122fc154a24aad2f758abb54c45342d63",
+      "bytes": 1468
+    },
+    {
+      "path": "Artifacts/QA/Audio/model130-shipping-audio/run.json",
+      "sha256": "bf1f1ccba42c29d5b1ae5dbbd1d05736f497065963bf252a178f1d8c4c5b4edf",
+      "bytes": 2094
+    },
+    {
+      "path": "Artifacts/QA/CardDrag/model130-drag-shipping-8a4e805b660e4524b09e3ade316152e5/card-drag-smoke.json",
+      "sha256": "f0ed7811e50e05090708185853cefc0470588364ac2a4f54b5a51175d250ad85",
+      "bytes": 11448
+    },
+    {
+      "path": "Artifacts/QA/CardDrag/model130-drag-shipping-8a4e805b660e4524b09e3ade316152e5/Diagnostics/RiftGame-2026-10-09-12080-19-03-47-0.log",
+      "sha256": "47120428fe1dcccbd8d6abfafba5d9abd1b988a3350145d47fe4bcb729e6014c",
+      "bytes": 11751
+    },
+    {
+      "path": "Artifacts/QA/CardDrag/model130-drag-shipping-verification.json",
+      "sha256": "46ed03db19445c9c89b879f9070988f62e3cd3d936c7c9e60f526453ae034bb9",
+      "bytes": 17106
+    },
+    {
+      "path": "Artifacts/QA/font-import.json",
+      "sha256": "54e7bce4fb621c6fe36bfbb5bc9c36010e02827b6bc3585d00627f97b26d6a03",
+      "bytes": 1283
+    },
+    {
+      "path": "Artifacts/QA/installer-build.json",
+      "sha256": "4163a9779733bdfb33630ac6b3516c8c25fe2eb8ed28672b3865d0d0ba4fa303",
+      "bytes": 933
+    },
+    {
+      "path": "Artifacts/QA/installer-tests.json",
+      "sha256": "884a59e2b66b688fc8325ad308b00d8f4e514f905d4901886bec0a6d2d638fa8",
+      "bytes": 5431
+    },
+    {
+      "path": "Artifacts/QA/launcher-play-smoke.json",
+      "sha256": "8da0b10fc820897dd53a15f7200afb3ba0833895330a70c47520bdfe125ae951",
+      "bytes": 2101
+    },
+    {
+      "path": "Artifacts/QA/model-card-portraits.json",
+      "sha256": "e5e96057f0ef4a47f526411c7249c5d582f4132c25f043e38e9f2ab09fbd6cb5",
+      "bytes": 56433
+    },
+    {
+      "path": "Artifacts/QA/model130-audit-final/engine.log",
+      "sha256": "d3bc9de43a10b6d7e2bef0a9ae23fb555a00b2b4d635da6af8db4a898439fb85",
+      "bytes": 223925
+    },
+    {
+      "path": "Artifacts/QA/model130-before/asset_manifest.json",
+      "sha256": "cdf4bf24bacf8f6abeac8a7d63b6143aaf613f706f33efdba7b2504ffa9da05d",
+      "bytes": 118409
+    },
+    {
+      "path": "Artifacts/QA/model130-final-visual-review.json",
+      "sha256": "170e964745961745d4134237ec6adb9a44bf236d1bc537a409ee01aa4963cb3b",
+      "bytes": 5642
+    },
+    {
+      "path": "Artifacts/QA/model130-hierarchy-inspection.json",
+      "sha256": "8aac1787927c1d0a97f0e0d56ac11efe9a9a098f81c7d0a5265de91196f07a37",
+      "bytes": 46
+    },
+    {
+      "path": "Artifacts/QA/model130-import-final/engine.log",
+      "sha256": "dbee959fe010398daf5bd2f98f10d3a81a99c47cb8e41484c4896e9df19ba32a",
+      "bytes": 951490
+    },
+    {
+      "path": "Artifacts/QA/model130-portable-tests.log",
+      "sha256": "fb135c32c46ecab3ad122571172b85ca6bbd0beaa4cb0608534106b3cdb1f8ed",
+      "bytes": 2504
+    },
+    {
+      "path": "Artifacts/QA/model130-production-model-review.json",
+      "sha256": "e6d41adee1d784bc47342e1772a991d41c3ef46557065c08dde0689efb2a187f",
+      "bytes": 34205
+    },
+    {
+      "path": "Artifacts/QA/model130-shipping-vfx-verification.json",
+      "sha256": "b3f5da806d49db04a5ef9f3700251cb07db133b4856826d14e73f572dbaf39ec",
+      "bytes": 8967
+    },
+    {
+      "path": "Artifacts/QA/Performance/model130-final-normal-meta/Diagnostics/RiftGame-2026-10-09-12084-19-15-33-0.log",
+      "sha256": "ce3c08a543e3ebbcca22657ab7255c00563e5aff04c7a3756d38f71353fe717f",
+      "bytes": 2260
+    },
+    {
+      "path": "Artifacts/QA/Performance/model130-final-normal-meta/performance.json",
+      "sha256": "bc365999a3f89875e2b5eca3cd51981401be042be4590d5f3e0ff5dec16b2c12",
+      "bytes": 1221
+    },
+    {
+      "path": "Artifacts/QA/Performance/model130-final-normal-meta/run.json",
+      "sha256": "b16decfc56feacc721daff6bad5369890a300c10c9f0623158228477f0dfd617",
+      "bytes": 2063
+    },
+    {
+      "path": "Artifacts/QA/spell121-first-native-integration.json",
+      "sha256": "f6bbe92d5b82a40ec9b15919f87b02f44e90b8773df92b811e26e66b105b10bd",
+      "bytes": 33460
+    },
+    {
+      "path": "Artifacts/QA/spell121-meta100/context.json",
+      "sha256": "55e58cde60e12e61170d8499affcd82c83d350ed83d9f6396a67f611acc34ab8",
+      "bytes": 1671
+    },
+    {
+      "path": "Artifacts/QA/spell121-meta100/engine.log",
+      "sha256": "c7cd33e4010f6f59b92ef3332ad0f2fb21ba4dcdc61c77d5528b2ff4e2fdd25b",
+      "bytes": 185778
+    },
+    {
+      "path": "Artifacts/QA/spell121-meta100/run.json",
+      "sha256": "5e40fa4a886ffa6d2a8bf12d1e222ac71905f0c913758cbe72fc19e5f2ac7d64",
+      "bytes": 668
+    },
+    {
+      "path": "Artifacts/QA/spell121-meta100/UserData/meta-validation.json",
+      "sha256": "12a9ba99dd9e0b60ff53cee01c742fac28d978480ff1edec416c206f6fe4dc34",
+      "bytes": 24266
+    },
+    {
+      "path": "Artifacts/QA/spell121-meta100/UserData/Meta/CD301F9A4E942F25F9FB66A344F32D3F.json",
+      "sha256": "47fe5a435a5e4d95f8d77ca45217b75def8f28139fc939a8880e2d36f57105aa",
+      "bytes": 1848201
+    },
+    {
+      "path": "Artifacts/QA/unreal_asset_audit_run.json",
+      "sha256": "00f77d98ae2f2a4fbb098ff4c2a469090c8aaa4d0995069d1339a4eb07637996",
+      "bytes": 1145
+    },
+    {
+      "path": "Artifacts/QA/unreal_asset_audit.json",
+      "sha256": "03b7cc17cb09a238460fd3080c39114a96f16b11495234bf4ab0c61d2de9bf2f",
+      "bytes": 287921
+    },
+    {
+      "path": "Artifacts/QA/unreal_asset_import_run.json",
+      "sha256": "7b184e5d8c07dbf8f93c70ece9b35a352d4b92cd8ce7cab7ce511a1e282b7d32",
+      "bytes": 1148
+    },
+    {
+      "path": "Artifacts/QA/unreal_asset_import.json",
+      "sha256": "50a7a5d21194bd9c810b253fa0db1d1768a9731f2d0056bc86918e3f1817e319",
+      "bytes": 221092
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-archer-detail.json",
+      "sha256": "436f0d593acf4b4b92b8ad5bca0c5c346af6bb8a6e144a5ef4163731be6b8d94",
+      "bytes": 8357
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-archer-detail.png",
+      "sha256": "eb57352da8b63d5fc2a3184ae8f9109a2e015dc41752b0c15d37dccd89d6fb76",
+      "bytes": 364599
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-archer-detail.state.json",
+      "sha256": "aadaa03532a86fec0fb67b10dac1bb36225f7593808893bce4e963987c7b5408",
+      "bytes": 5658
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-cards.json",
+      "sha256": "94d0a1019723994e2c56717b24ffa2bd140379f9069bd511a279939cfe2593e2",
+      "bytes": 8272
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-cards.png",
+      "sha256": "932c3d94bcabe84a9129b59d7790f7e512384cdca98c71cfb87c0129360b0a38",
+      "bytes": 773998
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-cards.state.json",
+      "sha256": "aadaa03532a86fec0fb67b10dac1bb36225f7593808893bce4e963987c7b5408",
+      "bytes": 5658
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-home.json",
+      "sha256": "99ef14af19abc66f31596d389cce4133b80a1c51ae2fdbe8d5e377c5e7c33921",
+      "bytes": 8262
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-home.png",
+      "sha256": "9c1d954cfc906463e402b34823993e324a744bba1830dcd9b24756b3b0f58330",
+      "bytes": 529995
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-home.state.json",
+      "sha256": "aadaa03532a86fec0fb67b10dac1bb36225f7593808893bce4e963987c7b5408",
+      "bytes": 5658
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-ironclad-detail.json",
+      "sha256": "28633b042a832bb4a108dd2d3ba14e5c61d3ed85cdb9bd44062813769920bd80",
+      "bytes": 8375
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-ironclad-detail.png",
+      "sha256": "45db2170bb0a8d9031391cab800d1889e37b7ad9fe10c25bdf3431711f4b9d45",
+      "bytes": 381652
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-ironclad-detail.state.json",
+      "sha256": "aadaa03532a86fec0fb67b10dac1bb36225f7593808893bce4e963987c7b5408",
+      "bytes": 5658
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-loadout.json",
+      "sha256": "7351df8fdb4174c2aa152ae73e50d9c311ce2e6f0155540e203f898670950f47",
+      "bytes": 8292
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-loadout.png",
+      "sha256": "49d855136d8d1c39ba942477f6c6ba84b7dc31843ecd3de4369d430189b30d4a",
+      "bytes": 422741
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-loadout.state.json",
+      "sha256": "aadaa03532a86fec0fb67b10dac1bb36225f7593808893bce4e963987c7b5408",
+      "bytes": 5658
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-mage-detail.json",
+      "sha256": "d4383fa3ff16e7e8fa260209a7e0c401df8352d12584cbfb0e43ca6010f2e9bf",
+      "bytes": 8339
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-mage-detail.png",
+      "sha256": "313c3027b7ae9abdb50c0fe1ed9f0c643d42646e1be9584d3deb6defc82fd0a8",
+      "bytes": 364589
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-mage-detail.state.json",
+      "sha256": "aadaa03532a86fec0fb67b10dac1bb36225f7593808893bce4e963987c7b5408",
+      "bytes": 5658
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-notes.json",
+      "sha256": "ff73ea36cffc8e0318f0c48da90790ef522e25733ed56266cdd42631d0eb0da4",
+      "bytes": 8277
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-notes.png",
+      "sha256": "b94501211023808b34ff5f993adb9aba3f2ac98940c5cc6ad0dae648b5cf01c1",
+      "bytes": 327915
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-notes.state.json",
+      "sha256": "aadaa03532a86fec0fb67b10dac1bb36225f7593808893bce4e963987c7b5408",
+      "bytes": 5658
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-paused.json",
+      "sha256": "a496c2bad96eb7a06b59e146a20bb947534165140f16d6747fa51c7d7877ab64",
+      "bytes": 26870
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-paused.png",
+      "sha256": "6a2afa9a2afdf5a6a58aca84e972677254eba89525755cf85bae8ba339ab66f2",
+      "bytes": 896218
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-paused.state.json",
+      "sha256": "01bd93d0e1228298272da37d6d7598dd577dabaeec18ebb6fb78789d3fa825d1",
+      "bytes": 35024
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-projectiles.json",
+      "sha256": "c738968436390e0bd53417025a488cd39741921d96432441cede761052835e09",
+      "bytes": 16804
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-projectiles.png",
+      "sha256": "8a9e4ecdd75fc119f0e6f1ed0e8cef1c9cef29e164ee5ce8bc1b247fe89fdbda",
+      "bytes": 2535941
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-projectiles.state.json",
+      "sha256": "b6e66fa8b46a428cfa843d8cffd796b001584728fbe143650f9e1ab3f1433761",
+      "bytes": 40431
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-replay.json",
+      "sha256": "b6566f1a504a88f35d5c93033bba2b468a9d02f8ae9d0b1a3ee2f3941ddf9032",
+      "bytes": 12859
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-replay.png",
+      "sha256": "00d5a0de94e6999dabba8d0385c61357fd7bba83ff6f8b8a9589ab82b5218de5",
+      "bytes": 2301342
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-replay.state.json",
+      "sha256": "6819bd8caf7d23d2187d4bcfa1d8e0dd4ffb4f78431e83ebbc1f81eaf2ab185f",
+      "bytes": 12983
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-roster-16-10.json",
+      "sha256": "85b13efcf197504f2338cb4c557ec0eaa934697596c378554f1fea43abb3ccc2",
+      "bytes": 26988
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-roster-16-10.png",
+      "sha256": "3e850f6364cdd6b7acba119505a46ee6f25f17ca008af15378d417ef1f3389e0",
+      "bytes": 2015554
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-roster-16-10.state.json",
+      "sha256": "ce81e4e37f339d922042af032da045fd371ca44b6041af02641d1ac9f5ad804f",
+      "bytes": 35076
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-roster-720-large-ui.json",
+      "sha256": "d66f4a061165ae82953a36ce09c0966fff25844a7dc200f163bbd1a8df477f13",
+      "bytes": 27001
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-roster-720-large-ui.png",
+      "sha256": "c0bef7a85ab9058bb0fc8656474691b5ed245d3c71857bcfa6ae4697b74f5b4b",
+      "bytes": 1027464
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-roster-720-large-ui.state.json",
+      "sha256": "1a824704861e84517d19f4f95aa4c78fa861e3aa594afe4cf84eb83ce5f14916",
+      "bytes": 35047
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-roster-wide.json",
+      "sha256": "e850ba236369df5683e7b750a3f905b10c81c7328cbde0ca3041788d7b951587",
+      "bytes": 26907
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-roster-wide.png",
+      "sha256": "69d3a4884c088f5a43c0a1a54dcdbc0c8923e2a365345db624560f5902ecda4a",
+      "bytes": 3286318
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-roster-wide.state.json",
+      "sha256": "0953bc13f61d98dda6ed138c21361de778edf883001a8d1d84c835527b90117e",
+      "bytes": 34988
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-roster.json",
+      "sha256": "61073ffcaf531983476ee7f753b3382d0f580f767cd6d78b8a8ae7cb52d12f97",
+      "bytes": 26874
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-roster.png",
+      "sha256": "8e5e1949c5e219f1078fa867af7a1cb885ed51330d78a54b1da683c62c150521",
+      "bytes": 2561968
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-roster.state.json",
+      "sha256": "01bd93d0e1228298272da37d6d7598dd577dabaeec18ebb6fb78789d3fa825d1",
+      "bytes": 35024
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-settings.json",
+      "sha256": "3378537290672e899d27efc24b86f9aa1aa1976b2bded0f224d26c361b846cfc",
+      "bytes": 8302
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-settings.png",
+      "sha256": "8126f56f957e73c54d4ba212b517710120771cbab07e96b18421ef08f682bb30",
+      "bytes": 189669
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-settings.state.json",
+      "sha256": "aadaa03532a86fec0fb67b10dac1bb36225f7593808893bce4e963987c7b5408",
+      "bytes": 5658
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-spell-windup.json",
+      "sha256": "4ede338091dd9c5bfaad1e7277ae8d23314595d75b902d1fcf68f5de43204a29",
+      "bytes": 18225
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-spell-windup.png",
+      "sha256": "cb74d2865b06afb7e5f849e410f5fdce3fbe9a1d58bf7334a18ddaf2100d56cd",
+      "bytes": 2512197
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-spell-windup.state.json",
+      "sha256": "088b946d7c51cdbbf774861c444984f6a750eb9435e8c10b1ae80ce560600429",
+      "bytes": 44045
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-training.json",
+      "sha256": "07e798abe5c0886df90efa9309f964c985ad5695d1b00c60667201c422ac4617",
+      "bytes": 26920
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-training.png",
+      "sha256": "3d3951432c76b9d69ebfa561051624b374a37ad0a50318aa5de385a830392238",
+      "bytes": 2413285
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-training.state.json",
+      "sha256": "eef7344cc243cf1bafa78ca6b91da6dbdf96472565257b66664c0d5f5b079354",
+      "bytes": 35056
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-twins-detail.json",
+      "sha256": "335c826e88e4ba40a12fe311cb42d1ef6f56ccfb595697dc5424e76c9c925d12",
+      "bytes": 8351
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-twins-detail.png",
+      "sha256": "2e0faed01071c888ef2332fbf3f49c2b63a619bcd7ad26e1a868e0d0283dca76",
+      "bytes": 386722
+    },
+    {
+      "path": "Artifacts/QA/Visual/model130-twins-detail.state.json",
+      "sha256": "aadaa03532a86fec0fb67b10dac1bb36225f7593808893bce4e963987c7b5408",
+      "bytes": 5658
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/model130-archer-detail-4c165b7502ee46108d0812a96eee0318/Diagnostics/RiftGame-2026-10-09-2024-19-08-59-0.log",
+      "sha256": "dc77faae99d989933a9aa573a9b3c68a07cf7e2e202e6b9811c03813882060c4",
+      "bytes": 1227
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/model130-cards-63be2abc446c4d358befa70fa10f9cf7/Diagnostics/RiftGame-2026-10-09-19432-19-08-11-0.log",
+      "sha256": "4c1681a694a02a98a16c3e12409b88f15f81c76d5ddf60c6df2ff1c6f82a60cd",
+      "bytes": 1212
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/model130-home-aadb0b24915b4f3591766c5b7398c3ff/Diagnostics/RiftGame-2026-10-09-17652-19-08-02-0.log",
+      "sha256": "640d7ab1725037eb81ce1be1b5943adef475bb8fb8cc5c8be5b411e14e27302a",
+      "bytes": 1210
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/model130-ironclad-detail-0d179aad2768414295ec17ec8fe274c4/Diagnostics/RiftGame-2026-10-09-35320-19-08-49-0.log",
+      "sha256": "98e0458b1a89eb1389f209b8f450392ffb5ecc0eb786f67a900a9a9c194e8ad8",
+      "bytes": 1232
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/model130-loadout-d79ad82295864e169ff3148044bacefe/Diagnostics/RiftGame-2026-10-09-35056-19-08-21-0.log",
+      "sha256": "c6719b849a5027920a60ad3691ee974ec87cfdfd3569d73c9a01640ae7df5e62",
+      "bytes": 1216
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/model130-mage-detail-6d0ff7cf1fc34acca2c61f6cffebda43/Diagnostics/RiftGame-2026-10-09-34648-19-09-17-0.log",
+      "sha256": "d6f80b07d15078c6df05392cb3d290df615f577170dc747b697a9c88b8fc8b15",
+      "bytes": 1224
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/model130-notes-b0eb8b4dab794bb892b7dd619839181f/Diagnostics/RiftGame-2026-10-09-28768-19-08-40-0.log",
+      "sha256": "42fee8698ccc93938787ffe77695700a98efff6bf7881769b24cd71362ec0162",
+      "bytes": 1212
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/model130-paused-4027556568af4a69be53f949eef11402/Diagnostics/RiftGame-2026-10-09-3940-19-10-15-0.log",
+      "sha256": "39b6f0b47b4b5a68b901da508ad40a11aa3683b8426bd982f7ab266931cb4291",
+      "bytes": 1981
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/model130-projectiles-72066342a20146698e2c6c7a69c4d58e/Diagnostics/RiftGame-2026-10-09-10464-19-09-37-0.log",
+      "sha256": "d64c2361e9310d58a6ac3a39254763c481629246fc9844c3f8da64fe08655d6d",
+      "bytes": 2190
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/model130-replay-21b66547378247aa9076a78358f74b9b/Diagnostics/RiftGame-2026-10-09-20544-19-14-42-0.log",
+      "sha256": "6df99ac3feb3e7b1462d8285e05c10ef4a85aec60845e098a9dd35819ad66d42",
+      "bytes": 1993
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/model130-roster-16-10-0ba04771652a49e6bc0967be42832441/Diagnostics/RiftGame-2026-10-09-27408-19-09-56-0.log",
+      "sha256": "27fa26794903ec8faa8d2ee3553d43bc1b91d93beedc03637b6a19b7c0783602",
+      "bytes": 1994
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/model130-roster-24d6f801be114cce98b981180c588bfe/Diagnostics/RiftGame-2026-10-09-26900-19-09-27-0.log",
+      "sha256": "70f8671932d0e84e1a602a4c0e4697ab809664b265078a3ba0d99e3abcae5e66",
+      "bytes": 1982
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/model130-roster-720-large-ui-85c472609aef4ce49c53f5702c91d4d2/Diagnostics/RiftGame-2026-10-09-9600-19-09-46-0.log",
+      "sha256": "0706c365f4a89bdc135ce5a6d93f916c091f66f85a2849b64403cfd23ddbd186",
+      "bytes": 2007
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/model130-roster-wide-abfbd67991294b9e8f8f449892df1fa5/Diagnostics/RiftGame-2026-10-09-10168-19-10-05-0.log",
+      "sha256": "9b726cd1491389ddd9cf827031e9a0adfb03962d1ff151b4082f898f505fab65",
+      "bytes": 1992
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/model130-settings-718f8092029d49609d827309b664429c/Diagnostics/RiftGame-2026-10-09-18996-19-08-30-0.log",
+      "sha256": "77aadcf0569c07e57ab687bc27f274f3a9be0763584124c896afe2e06be45f87",
+      "bytes": 1218
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/model130-spell-windup-a7d27709661f44a18b1208ccf57924a9/Diagnostics/RiftGame-2026-10-09-18548-19-14-53-0.log",
+      "sha256": "b721282d67ee788a0189b5e2021ca0217e60832005d9cb96d91ccf41d2e6d588",
+      "bytes": 2171
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/model130-training-5556141c4efb4a75ae733e9088ed53b7/Diagnostics/RiftGame-2026-10-09-4404-19-10-24-0.log",
+      "sha256": "27e14ddea63ee2c0aea943270345ef94d8d33bebfb0a409144273f93061a0a98",
+      "bytes": 1985
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/model130-twins-detail-1937b3f630a5413da1cb312982b5d010/Diagnostics/RiftGame-2026-10-09-17776-19-09-08-0.log",
+      "sha256": "721068cd6702dce52b94280460376d7139b96f5887649a9b4a46905a8c8c46d7",
+      "bytes": 1226
+    },
+    {
+      "path": "Artifacts/Release/update-manifest.json",
+      "sha256": "4444a5e74d75178ced52416fa46fa6065624cccf72a07b94245c16e52c8cd627",
+      "bytes": 10645
+    },
+    {
+      "path": "Artifacts/Release/windows-release-verification.json",
+      "sha256": "4d4a14bc31cfcf1257ed0ba8177418d98ce5751954cf355ec463a1dc92977245",
+      "bytes": 1082
+    },
+    {
+      "path": "Assets/asset_manifest.json",
+      "sha256": "9a22575ae1356d7ae787c646d05d83f97920db6645846f319a982cf725309a7a",
+      "bytes": 126881
+    },
+    {
+      "path": "Assets/asset_qa_report.json",
+      "sha256": "ae9cb408c7e960e3772df5221bb27cec774604698e36e8dc44de5162bb1619e0",
+      "bytes": 156251
+    },
+    {
+      "path": "Assets/Export/Characters/arc_mage/AN_arc_mage_Acquire.fbx",
+      "sha256": "c0e0a27d5c1f700c569de32ae859e7b9834c52770cddef1108c5493b76430753",
+      "bytes": 200236
+    },
+    {
+      "path": "Assets/Export/Characters/arc_mage/AN_arc_mage_Attack.fbx",
+      "sha256": "b0648f1923aacc3dec6fc10e8a7df9457bd9c48f58803bf1cf6d0e32520a90ef",
+      "bytes": 228796
+    },
+    {
+      "path": "Assets/Export/Characters/arc_mage/AN_arc_mage_Cast.fbx",
+      "sha256": "5b1642d6d26e4e96567b131b0539617018b157337578f3edc3171d0dc39a8ba7",
+      "bytes": 228796
+    },
+    {
+      "path": "Assets/Export/Characters/arc_mage/AN_arc_mage_Death.fbx",
+      "sha256": "120ea5ea3cd3b1b0c2c7f8464f077d9dd806f88184f15fcb2225c2229f64161c",
+      "bytes": 241292
+    },
+    {
+      "path": "Assets/Export/Characters/arc_mage/AN_arc_mage_Deploy.fbx",
+      "sha256": "75f19773e35c3866680da03817680bc60ec7562efc5d57c8d35951847a8e04eb",
+      "bytes": 214508
+    },
+    {
+      "path": "Assets/Export/Characters/arc_mage/AN_arc_mage_Hit.fbx",
+      "sha256": "f50a98082c998385a73e709c0c189b2054c7bc404b181bf57dcbb21383241694",
+      "bytes": 200236
+    },
+    {
+      "path": "Assets/Export/Characters/arc_mage/AN_arc_mage_Idle.fbx",
+      "sha256": "e17ae9c04dc93446594632cae742affdfe73b19ce35efe3ef12cd5e5ae4d8281",
+      "bytes": 251868
+    },
+    {
+      "path": "Assets/Export/Characters/arc_mage/AN_arc_mage_Locomotion.fbx",
+      "sha256": "cfc0dcf3509a375614562228208e49beba1514c2add631ccc0e2528db1defd39",
+      "bytes": 228796
+    },
+    {
+      "path": "Assets/Export/Characters/arc_mage/AN_arc_mage_Status.fbx",
+      "sha256": "3a2401640b66003414f8a31a7e941bd2ce770a66c389619c167555601f052fab",
+      "bytes": 228796
+    },
+    {
+      "path": "Assets/Export/Characters/arc_mage/AN_arc_mage_Turn.fbx",
+      "sha256": "25f8b5986a9be11bc8761f0032e3442e3af383bf9c48e295d6a983cea60066f0",
+      "bytes": 214508
+    },
+    {
+      "path": "Assets/Export/Characters/arc_mage/SK_arc_mage_LOD1.fbx",
+      "sha256": "07b519069b13dd9f443aa90a5e46d5d8a9915dce5c2af007cd021cec9ec1e185",
+      "bytes": 492252
+    },
+    {
+      "path": "Assets/Export/Characters/arc_mage/SK_arc_mage_LOD2.fbx",
+      "sha256": "f279fcb2860ecd40714697a14440ab2dba9a32455d8535b9fb77a78dfc115ba9",
+      "bytes": 313372
+    },
+    {
+      "path": "Assets/Export/Characters/arc_mage/SK_arc_mage_LOD3.fbx",
+      "sha256": "f793fc0d8dbfccc63ef40de492278c7dd32d9befe3d3bd51ac92a07b14e0b48f",
+      "bytes": 199452
+    },
+    {
+      "path": "Assets/Export/Characters/arc_mage/SK_arc_mage.fbx",
+      "sha256": "21628aad857c30217a7df1bb1570d49d726a16de0a964c22e636a387b5a656de",
+      "bytes": 745628
+    },
+    {
+      "path": "Assets/Export/Characters/boulderback/AN_boulderback_Acquire.fbx",
+      "sha256": "436077dcc4c6df232738f8cc6ed8a8f3650f5b3bd7e938c11d948bb8b7cf0762",
+      "bytes": 214908
+    },
+    {
+      "path": "Assets/Export/Characters/boulderback/AN_boulderback_Attack.fbx",
+      "sha256": "c59eeff6818a9da32dc1b01a87702de6060273f039de54039961bd3f1758fb71",
+      "bytes": 245660
+    },
+    {
+      "path": "Assets/Export/Characters/boulderback/AN_boulderback_Death.fbx",
+      "sha256": "28b6634788d1c1692cece6aa9e29e4be9918c4aac5758bba1c9af3dbd9359634",
+      "bytes": 251660
+    },
+    {
+      "path": "Assets/Export/Characters/boulderback/AN_boulderback_Deploy.fbx",
+      "sha256": "6b0c110a39b226c7d854d4520770ef90fb8cfa6386926f5b453b050a61de2105",
+      "bytes": 230284
+    },
+    {
+      "path": "Assets/Export/Characters/boulderback/AN_boulderback_HeavyImpact.fbx",
+      "sha256": "bca82dacd5b84c3dea1fc710dd77f2ba999d56feac78134d660671d329d31a49",
+      "bytes": 270892
+    },
+    {
+      "path": "Assets/Export/Characters/boulderback/AN_boulderback_Hit.fbx",
+      "sha256": "2496131552e30e86df35dc6e642cd8a3a8d1b87c41c736970d746c1bc76a8cd9",
+      "bytes": 214908
+    },
+    {
+      "path": "Assets/Export/Characters/boulderback/AN_boulderback_Idle.fbx",
+      "sha256": "a1d715d7babfdbc8af13c21682b0ed585b204606d49153426fb5207b9b392756",
+      "bytes": 264764
+    },
+    {
+      "path": "Assets/Export/Characters/boulderback/AN_boulderback_Locomotion.fbx",
+      "sha256": "9ccbe5f4a86839efb32c5e210bdbb7a206e6c249be44ed54cb099a0c031c9695",
+      "bytes": 245660
+    },
+    {
+      "path": "Assets/Export/Characters/boulderback/AN_boulderback_Status.fbx",
+      "sha256": "7e5a82cce3203cb568388cf7360821800acfd2954cc434afc4ebae5295e12bc8",
+      "bytes": 245660
+    },
+    {
+      "path": "Assets/Export/Characters/boulderback/AN_boulderback_Turn.fbx",
+      "sha256": "115e71444d40c12a9ebfd8ef8701673b14afc35c8fbcd4550682fc7837d1bb3d",
+      "bytes": 230284
+    },
+    {
+      "path": "Assets/Export/Characters/boulderback/SK_boulderback_LOD1.fbx",
+      "sha256": "ea85df2c10a227d830725376926bfecd767419f518a6d7f193da0282373e3782",
+      "bytes": 814460
+    },
+    {
+      "path": "Assets/Export/Characters/boulderback/SK_boulderback_LOD2.fbx",
+      "sha256": "cf8e8faddf62aa54e72e8a149008de357cfdc0a10b2b6e2c2a420d5317b33c7d",
+      "bytes": 459292
+    },
+    {
+      "path": "Assets/Export/Characters/boulderback/SK_boulderback_LOD3.fbx",
+      "sha256": "3e314b21286dfd8183a77ffc67c92addd548c7115afbf692a4d182bcbeb498ca",
+      "bytes": 274108
+    },
+    {
+      "path": "Assets/Export/Characters/boulderback/SK_boulderback.fbx",
+      "sha256": "92fc85ffee512a1e156c2f770c3a76f7fde9f154de7d86681f37c5f55cc8026b",
+      "bytes": 1435420
+    },
+    {
+      "path": "Assets/Export/Characters/ember_archer/AN_ember_archer_Acquire.fbx",
+      "sha256": "58a079bb744472de20cb4accd34d276ae58c0bfdb5f001444d8b952e7ea8541b",
+      "bytes": 200252
+    },
+    {
+      "path": "Assets/Export/Characters/ember_archer/AN_ember_archer_Attack.fbx",
+      "sha256": "718b7efdefb5e096b8745ca57c80d2dcf9c7bf47314cd1a2ca12154765482450",
+      "bytes": 228796
+    },
+    {
+      "path": "Assets/Export/Characters/ember_archer/AN_ember_archer_Death.fbx",
+      "sha256": "5b44c22d2ae5f7e73b6f845e5186f1e38b77554343748f7c32b661fe12aeeff0",
+      "bytes": 241404
+    },
+    {
+      "path": "Assets/Export/Characters/ember_archer/AN_ember_archer_Deploy.fbx",
+      "sha256": "96e763c3bb1907dcc26775da7f6f777e8566df50bec6b90c8477a340d3646285",
+      "bytes": 214524
+    },
+    {
+      "path": "Assets/Export/Characters/ember_archer/AN_ember_archer_DrawRelease.fbx",
+      "sha256": "13e7b900561c1a6885cb426d653b43cd5bb14a007fcdf35fec090b7bb03bbeab",
+      "bytes": 239452
+    },
+    {
+      "path": "Assets/Export/Characters/ember_archer/AN_ember_archer_Hit.fbx",
+      "sha256": "0179bb8d35fadbde3848146572029f87e0472ea516c880010cfdadb99895fb91",
+      "bytes": 200252
+    },
+    {
+      "path": "Assets/Export/Characters/ember_archer/AN_ember_archer_Idle.fbx",
+      "sha256": "b84335282ae6b084f89a4f2da583f91d092157c0707439ed3e80059c271bfaa1",
+      "bytes": 252092
+    },
+    {
+      "path": "Assets/Export/Characters/ember_archer/AN_ember_archer_Locomotion.fbx",
+      "sha256": "a9a9d6dc6c889f02706f786245f47e110fa37257882094e639927ccdd5e36028",
+      "bytes": 228796
+    },
+    {
+      "path": "Assets/Export/Characters/ember_archer/AN_ember_archer_Status.fbx",
+      "sha256": "19235da17b9aeaf13ca1abbdf55477b954f25b391020f9357b07b961ea2c6e6f",
+      "bytes": 228796
+    },
+    {
+      "path": "Assets/Export/Characters/ember_archer/AN_ember_archer_Turn.fbx",
+      "sha256": "3aa7a0a90023e456ac20effed344c3cb112b25916e4eab1644e007c95b878638",
+      "bytes": 214524
+    },
+    {
+      "path": "Assets/Export/Characters/ember_archer/SK_ember_archer_LOD1.fbx",
+      "sha256": "158defe1a85d60a683ded1fbe77e355c7c857fccbd3906a0cde341ee70131038",
+      "bytes": 438076
+    },
+    {
+      "path": "Assets/Export/Characters/ember_archer/SK_ember_archer_LOD2.fbx",
+      "sha256": "a38f1b071e1aee72052d6b1251c515def8ff37ff35f1ec02d7e502149162a719",
+      "bytes": 280972
+    },
+    {
+      "path": "Assets/Export/Characters/ember_archer/SK_ember_archer_LOD3.fbx",
+      "sha256": "b5827feefd6f13d00f8384d2ee0888c8cf9f67d25ac3488fe1cfc2a863103ea4",
+      "bytes": 181532
+    },
+    {
+      "path": "Assets/Export/Characters/ember_archer/SK_ember_archer.fbx",
+      "sha256": "3df2997dd6f3ca74b33f26264e7a585dd0e97d635cd4249695d7d901610dffd0",
+      "bytes": 670588
+    },
+    {
+      "path": "Assets/Export/Characters/frost_fang/AN_frost_fang_Acquire.fbx",
+      "sha256": "1eaf1be8ce643208e7d90ebb7402070a93fcb9c4e473a2f30f38c402bf6bdb5a",
+      "bytes": 214908
+    },
+    {
+      "path": "Assets/Export/Characters/frost_fang/AN_frost_fang_Attack.fbx",
+      "sha256": "608f21fd7520229c2945f2879281db140e532272cd2004e02b7ba213daeebd5c",
+      "bytes": 245660
+    },
+    {
+      "path": "Assets/Export/Characters/frost_fang/AN_frost_fang_Breath.fbx",
+      "sha256": "70b0e329cd61630bd878a5c07f7c3de8166a6f807aa8546dddff5ce3ff4ed500",
+      "bytes": 263916
+    },
+    {
+      "path": "Assets/Export/Characters/frost_fang/AN_frost_fang_Death.fbx",
+      "sha256": "7dc72575ca47d940e34ff8cad3efb33227b925fb38a1a1a4cc5c629c66c64d4a",
+      "bytes": 251644
+    },
+    {
+      "path": "Assets/Export/Characters/frost_fang/AN_frost_fang_Deploy.fbx",
+      "sha256": "5d8d5fe90f3168d0889a05788c634d064e5527f84b0a0b85c315e329c3d05c3d",
+      "bytes": 230284
+    },
+    {
+      "path": "Assets/Export/Characters/frost_fang/AN_frost_fang_FrostAttack.fbx",
+      "sha256": "9b80abe3b1ce33d9d4bda0254d2454610ff0d496b0f6fae4550d555c8ff0a497",
+      "bytes": 230284
+    },
+    {
+      "path": "Assets/Export/Characters/frost_fang/AN_frost_fang_Hit.fbx",
+      "sha256": "975e3047e6ff9c0ade48c9935e0a72d0f13bb32aba141a2cd0a4d7903ac9991c",
+      "bytes": 214908
+    },
+    {
+      "path": "Assets/Export/Characters/frost_fang/AN_frost_fang_Idle.fbx",
+      "sha256": "3ca063feddf79322f3ac935223d71a696189d1a19366f0a68fef1c1401750c51",
+      "bytes": 264764
+    },
+    {
+      "path": "Assets/Export/Characters/frost_fang/AN_frost_fang_Locomotion.fbx",
+      "sha256": "d7e606a6d8bb86f3e15a8a6c68c1cc415aa7872136e246b567ca4a424d0fc413",
+      "bytes": 245660
+    },
+    {
+      "path": "Assets/Export/Characters/frost_fang/AN_frost_fang_Status.fbx",
+      "sha256": "322d1ae9d5ad160754f99254f1aa5bab0a655768ac8c7eae7c7b1b4b302492db",
+      "bytes": 245660
+    },
+    {
+      "path": "Assets/Export/Characters/frost_fang/AN_frost_fang_Turn.fbx",
+      "sha256": "d4e3cc6fce42ef72a21a2a27d6683dccfc319beb0478484ac483bd51f2ba015c",
+      "bytes": 230284
+    },
+    {
+      "path": "Assets/Export/Characters/frost_fang/SK_frost_fang_LOD1.fbx",
+      "sha256": "f29fbd875cdb683f4347e31b3d1c10c2a37e7b86eb54dc977b76610d834c6037",
+      "bytes": 772380
+    },
+    {
+      "path": "Assets/Export/Characters/frost_fang/SK_frost_fang_LOD2.fbx",
+      "sha256": "c7f35d4aa27ab61462e4f2c0aaf15bd761b19d7efb7e413bc6efe33c3f6cdec7",
+      "bytes": 452636
+    },
+    {
+      "path": "Assets/Export/Characters/frost_fang/SK_frost_fang_LOD3.fbx",
+      "sha256": "ffa96a7be904a55123917fa229d12fc41ce56f74560731178f57150dc64bfc85",
+      "bytes": 274460
+    },
+    {
+      "path": "Assets/Export/Characters/frost_fang/SK_frost_fang.fbx",
+      "sha256": "e9c53d0b9ef1a9d0033415e5a5748a4c36c7c2f08d609a843b63a967f17ed510",
+      "bytes": 1370396
+    },
+    {
+      "path": "Assets/Export/Characters/ironclad/AN_ironclad_Acquire.fbx",
+      "sha256": "d1dfcc75d8693118f834f48b8219d54f4d9ac27aebc9a47855fb7bae77da0e1f",
+      "bytes": 200236
+    },
+    {
+      "path": "Assets/Export/Characters/ironclad/AN_ironclad_Attack.fbx",
+      "sha256": "309b795b8c507a0dfd71d39300f26f178f039f7f75327b1ad44b5306807f9fec",
+      "bytes": 228796
+    },
+    {
+      "path": "Assets/Export/Characters/ironclad/AN_ironclad_Death.fbx",
+      "sha256": "e61e2c8eb0011e71516c6fa135284f613309aeb23f3b290c79717fd82af4b175",
+      "bytes": 241452
+    },
+    {
+      "path": "Assets/Export/Characters/ironclad/AN_ironclad_Deploy.fbx",
+      "sha256": "49ac09bbd86e7103878e4373455be2461af6e25b44b791405687b754bfbb2545",
+      "bytes": 214508
+    },
+    {
+      "path": "Assets/Export/Characters/ironclad/AN_ironclad_Hit.fbx",
+      "sha256": "176ef7910a816555a989962af0a7cbaa4cbe5d59405a9809f86e57c97eb8b3b1",
+      "bytes": 200236
+    },
+    {
+      "path": "Assets/Export/Characters/ironclad/AN_ironclad_Idle.fbx",
+      "sha256": "2347596162d6eae7299769be6d06ffd7dc3964e6d7abad20454784c52e27521c",
+      "bytes": 252076
+    },
+    {
+      "path": "Assets/Export/Characters/ironclad/AN_ironclad_Locomotion.fbx",
+      "sha256": "41eadbac7c4d6685ef165078521d6882da695a88256cd29500dcec159c330543",
+      "bytes": 228796
+    },
+    {
+      "path": "Assets/Export/Characters/ironclad/AN_ironclad_Status.fbx",
+      "sha256": "82d2c5e8335b7168bea4ff2c2d9af1c90b8560c60a80a08314d3ffeaea284974",
+      "bytes": 228796
+    },
+    {
+      "path": "Assets/Export/Characters/ironclad/AN_ironclad_Turn.fbx",
+      "sha256": "214a7da3899bc30b636ab2b508340ec5bbf9db6b8ff09d841bbb50220b8446a7",
+      "bytes": 214508
+    },
+    {
+      "path": "Assets/Export/Characters/ironclad/SK_ironclad_LOD1.fbx",
+      "sha256": "8055198b96c318fa1801b3b319cd6206a5a7c27cb496811e7e4fb7454f9288ea",
+      "bytes": 427916
+    },
+    {
+      "path": "Assets/Export/Characters/ironclad/SK_ironclad_LOD2.fbx",
+      "sha256": "84523a8e81db3cfbd9514277331e5c99e056de9df4e0e2f72f357cd3a92a8ad9",
+      "bytes": 278892
+    },
+    {
+      "path": "Assets/Export/Characters/ironclad/SK_ironclad_LOD3.fbx",
+      "sha256": "244eabbb743dd74b24e73ebe4d3658614567cfa5b90002512ac391fdbd42351f",
+      "bytes": 183516
+    },
+    {
+      "path": "Assets/Export/Characters/ironclad/SK_ironclad.fbx",
+      "sha256": "0cc389218b3ee59ed171cf8c18bcba860196e95c4ecbdb2af1a363f99812caf1",
+      "bytes": 635180
+    },
+    {
+      "path": "Assets/Export/Characters/rambeast/AN_rambeast_Acquire.fbx",
+      "sha256": "16ef4d484f43f0c650068f80cff36e0e4063b578c79163047b73fbe4c0f93f6d",
+      "bytes": 214908
+    },
+    {
+      "path": "Assets/Export/Characters/rambeast/AN_rambeast_Attack.fbx",
+      "sha256": "53ab1c17199287f4d2bc07b63cbb4da45732b3e906bb1525dae49c29c0e3d193",
+      "bytes": 245644
+    },
+    {
+      "path": "Assets/Export/Characters/rambeast/AN_rambeast_Charge.fbx",
+      "sha256": "b760c5e07c88fa9d3b4f227454a504ad81970ec736210e9824fa9e6b83807abe",
+      "bytes": 245644
+    },
+    {
+      "path": "Assets/Export/Characters/rambeast/AN_rambeast_Death.fbx",
+      "sha256": "71e47bd6be50d64e5da2631730aef4c813a5eef65c28ef79c047dd1f228d03f3",
+      "bytes": 251644
+    },
+    {
+      "path": "Assets/Export/Characters/rambeast/AN_rambeast_Deploy.fbx",
+      "sha256": "d2ea1af61d36827f02b61eda706d430906a04f9f61927247aa181fcaaf8b235c",
+      "bytes": 230284
+    },
+    {
+      "path": "Assets/Export/Characters/rambeast/AN_rambeast_Hit.fbx",
+      "sha256": "6dfa919fc6bfd0a753f9bff7b240d5b5913072adc7503c7c2b4890edca1f8916",
+      "bytes": 214908
+    },
+    {
+      "path": "Assets/Export/Characters/rambeast/AN_rambeast_Idle.fbx",
+      "sha256": "140215b44cb45e077d37e21c09af3ca5a8da72a6992ff87aa386be110bb7ec84",
+      "bytes": 264764
+    },
+    {
+      "path": "Assets/Export/Characters/rambeast/AN_rambeast_Locomotion.fbx",
+      "sha256": "44f0703b4ec60cffeabb848ee006b6078ad1a0955b8a9e45a4c753c4fd6cd4b5",
+      "bytes": 245644
+    },
+    {
+      "path": "Assets/Export/Characters/rambeast/AN_rambeast_Status.fbx",
+      "sha256": "8b43f7bbea75319d6ae7db3b640645ca6c51d220271925bb5c96201b9bd70ab3",
+      "bytes": 245644
+    },
+    {
+      "path": "Assets/Export/Characters/rambeast/AN_rambeast_Turn.fbx",
+      "sha256": "515c85b18695cac4dc9b41d84bc695b4e8aee6fbc8beca1795ad24c2c9e60041",
+      "bytes": 230284
+    },
+    {
+      "path": "Assets/Export/Characters/rambeast/SK_rambeast_LOD1.fbx",
+      "sha256": "754363537afcd3696a0fc7ac1b04bf46c1eb8ca77864805adef3faf88801b32f",
+      "bytes": 1076268
+    },
+    {
+      "path": "Assets/Export/Characters/rambeast/SK_rambeast_LOD2.fbx",
+      "sha256": "2fce749e30d5c34cd7dc99b46f4159ac1fc5102741d6ad3488f72ec6797e36fb",
+      "bytes": 584444
+    },
+    {
+      "path": "Assets/Export/Characters/rambeast/SK_rambeast_LOD3.fbx",
+      "sha256": "10a51e1a453cb3eb0bebd363899a1993f24e72b274e401c4ea6abe87306398ea",
+      "bytes": 341564
+    },
+    {
+      "path": "Assets/Export/Characters/rambeast/SK_rambeast.fbx",
+      "sha256": "72f251be12d58de1d46a32d651fe5ad4f99d05781c382141343e72fbd6cf0327",
+      "bytes": 2030348
+    },
+    {
+      "path": "Assets/Export/Characters/sky_manta/AN_sky_manta_Acquire.fbx",
+      "sha256": "50e3fb68e6e186a4162ac989682790db82ddf02c85b9da07495f6365b9d7664f",
+      "bytes": 163964
+    },
+    {
+      "path": "Assets/Export/Characters/sky_manta/AN_sky_manta_Attack.fbx",
+      "sha256": "401a96c2209122637cff08416efa5dcf95415c8446dbadd6a9d5aaeee56fb504",
+      "bytes": 187036
+    },
+    {
+      "path": "Assets/Export/Characters/sky_manta/AN_sky_manta_Death.fbx",
+      "sha256": "b4275d8c98a41981d7db63523e6038995dadf49117abf749ae7c27f1bbb413c5",
+      "bytes": 197164
+    },
+    {
+      "path": "Assets/Export/Characters/sky_manta/AN_sky_manta_Deploy.fbx",
+      "sha256": "c78c6f9d05cf626563dfe1ce285e47628c805486df0012fb9c31f0bf9a7849df",
+      "bytes": 175500
+    },
+    {
+      "path": "Assets/Export/Characters/sky_manta/AN_sky_manta_Hit.fbx",
+      "sha256": "ebe04961b9587988af50abb33ac6b8d42146417b8b0cb5253d366f79b7abd124",
+      "bytes": 163964
+    },
+    {
+      "path": "Assets/Export/Characters/sky_manta/AN_sky_manta_Idle.fbx",
+      "sha256": "e3a210328da18189e3f273e8ff708814c4dd1254a15febfd575119b940bd4fc3",
+      "bytes": 209740
+    },
+    {
+      "path": "Assets/Export/Characters/sky_manta/AN_sky_manta_Locomotion.fbx",
+      "sha256": "82768fd27085b2907a695caf5a2f00f9fd96f064b79e74256d83a68d7b933d27",
+      "bytes": 187036
+    },
+    {
+      "path": "Assets/Export/Characters/sky_manta/AN_sky_manta_Status.fbx",
+      "sha256": "0d1c919ae4c05a10efdfd33f81451b28e920f8978de7c9f7972b2fafd210d240",
+      "bytes": 187036
+    },
+    {
+      "path": "Assets/Export/Characters/sky_manta/AN_sky_manta_Turn.fbx",
+      "sha256": "6088a0bda407c7dcef3423337b67b5a83d1f949a8834d5242c9df757fb0a4b26",
+      "bytes": 175500
+    },
+    {
+      "path": "Assets/Export/Characters/sky_manta/AN_sky_manta_WingCycle.fbx",
+      "sha256": "09d3e8405e7721bf59ec190755d9d205a589f5aa2621032ee34d29a7f73e0ad0",
+      "bytes": 188556
+    },
+    {
+      "path": "Assets/Export/Characters/sky_manta/SK_sky_manta_LOD1.fbx",
+      "sha256": "23ab5920e6a50728ff8cc21a78be2e788f8539f1b334b8b8b5b897dc57deb642",
+      "bytes": 365052
+    },
+    {
+      "path": "Assets/Export/Characters/sky_manta/SK_sky_manta_LOD2.fbx",
+      "sha256": "2e8d736216da557d01e9ccb1690939620058e60176e09ca9cb1e11d152a7f0ed",
+      "bytes": 225244
+    },
+    {
+      "path": "Assets/Export/Characters/sky_manta/SK_sky_manta_LOD3.fbx",
+      "sha256": "9ad5daab2bc9a0829324c82f0143e0f8c17e11bda5fd3f4a6c0c76b5e376dd6f",
+      "bytes": 148604
+    },
+    {
+      "path": "Assets/Export/Characters/sky_manta/SK_sky_manta.fbx",
+      "sha256": "238ea347eaa0a606988466684f86da774ec009c8050416756eaf0fb637f54fd4",
+      "bytes": 622428
+    },
+    {
+      "path": "Assets/Export/Characters/storm_raven/AN_storm_raven_Acquire.fbx",
+      "sha256": "49de9556b58a4fadb34d1c72bec9023512246d9638d46aa793a1a2fe573d45d7",
+      "bytes": 163980
+    },
+    {
+      "path": "Assets/Export/Characters/storm_raven/AN_storm_raven_Attack.fbx",
+      "sha256": "fb57e61d2faf3de85c797f8584ff613222d6476536dbb48b743ed10eb9dee011",
+      "bytes": 187036
+    },
+    {
+      "path": "Assets/Export/Characters/storm_raven/AN_storm_raven_AuraCharge.fbx",
+      "sha256": "e4ad5d7b1b6ca92c9217fc770dbe35aee46de5a2b763415c563d5b4368a05f33",
+      "bytes": 192108
+    },
+    {
+      "path": "Assets/Export/Characters/storm_raven/AN_storm_raven_Death.fbx",
+      "sha256": "0fc813b8a0ceac49a63cbfc73525870e2e510927fcf12f87d233a29291a408fe",
+      "bytes": 197164
+    },
+    {
+      "path": "Assets/Export/Characters/storm_raven/AN_storm_raven_Deploy.fbx",
+      "sha256": "eb8e8e57f53061d208e6f88d5d265edeeb55859d3cc9068a00d84ed32719b1f9",
+      "bytes": 175500
+    },
+    {
+      "path": "Assets/Export/Characters/storm_raven/AN_storm_raven_Hit.fbx",
+      "sha256": "f01dc6235c71d6c7fe3c34de7ed59ca0508db09d6755b19ccd843237f5c5c71e",
+      "bytes": 163980
+    },
+    {
+      "path": "Assets/Export/Characters/storm_raven/AN_storm_raven_Idle.fbx",
+      "sha256": "a49d3ec75de1ca5889289261656c87e9530b4a84896b7dbcc65b4f4baf01aa8c",
+      "bytes": 209756
+    },
+    {
+      "path": "Assets/Export/Characters/storm_raven/AN_storm_raven_Locomotion.fbx",
+      "sha256": "da1085bf40a9ad0199d8ef1ba5d0d5c495593f0fc16a93cc09230a9807c83eba",
+      "bytes": 187036
+    },
+    {
+      "path": "Assets/Export/Characters/storm_raven/AN_storm_raven_Pulse.fbx",
+      "sha256": "800ec82ef2e951f514f2b9f749f7f0eb862b44b702e50cb92c28a1ad94277a58",
+      "bytes": 163980
+    },
+    {
+      "path": "Assets/Export/Characters/storm_raven/AN_storm_raven_Status.fbx",
+      "sha256": "671f672f27f2e4e9e2a2bd3df5b02b34c1d14f8e76bade7a0b071b01fdca84e9",
+      "bytes": 187036
+    },
+    {
+      "path": "Assets/Export/Characters/storm_raven/AN_storm_raven_StunDischarge.fbx",
+      "sha256": "a4780d8417465764a133eb6f16ee23294af1ef410b1641b871b568ee3544b659",
+      "bytes": 163980
+    },
+    {
+      "path": "Assets/Export/Characters/storm_raven/AN_storm_raven_Turn.fbx",
+      "sha256": "fafccdd4fb8e2daa401c375beb4630645b0c38113a38020f334c35c58fc72989",
+      "bytes": 175500
+    },
+    {
+      "path": "Assets/Export/Characters/storm_raven/AN_storm_raven_WingCycle.fbx",
+      "sha256": "8d439a3133d8b388f2f40830de54a3e4721e02de7491995d341ccfb55c9c326f",
+      "bytes": 180364
+    },
+    {
+      "path": "Assets/Export/Characters/storm_raven/SK_storm_raven_LOD1.fbx",
+      "sha256": "050b05aa896e70ce15cfd7408e899f0d8860b17581a5375e622358fc149ba8ec",
+      "bytes": 438988
+    },
+    {
+      "path": "Assets/Export/Characters/storm_raven/SK_storm_raven_LOD2.fbx",
+      "sha256": "e907c14d9a83a5f8d759341631da02b68e85fa52defcc4f34bc3292b794c1a50",
+      "bytes": 274268
+    },
+    {
+      "path": "Assets/Export/Characters/storm_raven/SK_storm_raven_LOD3.fbx",
+      "sha256": "619e22f3b8ce9f37be3de9c60bc6c9c540f3cadffcd0b3e59368adba06c58570",
+      "bytes": 176540
+    },
+    {
+      "path": "Assets/Export/Characters/storm_raven/SK_storm_raven.fbx",
+      "sha256": "9a1480876b257edfd3e31862709c041dba66e5f3d5bcdf82481456122255d20f",
+      "bytes": 761212
+    },
+    {
+      "path": "Assets/Export/Characters/tower_archer/AN_tower_archer_Acquire.fbx",
+      "sha256": "1c9271bae1d0c380f959547266ce3ff4f057a158b791a34ecc90b5950c86e7ba",
+      "bytes": 200252
+    },
+    {
+      "path": "Assets/Export/Characters/tower_archer/AN_tower_archer_Attack.fbx",
+      "sha256": "9df1bba160ae0751456a34d638469cc81fd46cd91bea6f9c5410eb010c5be5de",
+      "bytes": 228796
+    },
+    {
+      "path": "Assets/Export/Characters/tower_archer/AN_tower_archer_Death.fbx",
+      "sha256": "73f85b87bdd6eef38da123ed60ddba5f2aff3d6a41e83595ca5c01b759cc19ed",
+      "bytes": 241404
+    },
+    {
+      "path": "Assets/Export/Characters/tower_archer/AN_tower_archer_Deploy.fbx",
+      "sha256": "00c0207b5b2e2548d97f7df472bb92584ffa09f4e0fedae2831b69e71d65cf12",
+      "bytes": 214524
+    },
+    {
+      "path": "Assets/Export/Characters/tower_archer/AN_tower_archer_DrawRelease.fbx",
+      "sha256": "bfe22132bc4b8e018a2693a56d0018123deafcb825af89c7f3bca5ca0150007d",
+      "bytes": 217228
+    },
+    {
+      "path": "Assets/Export/Characters/tower_archer/AN_tower_archer_Hit.fbx",
+      "sha256": "b069433e893e285082e7e594f089a4b0f89cb974f6199110650e9c412a47fa43",
+      "bytes": 200252
+    },
+    {
+      "path": "Assets/Export/Characters/tower_archer/AN_tower_archer_Idle.fbx",
+      "sha256": "12560b325117cb880bb45e3ce0c6808a92865d6232f401179e25f7a842191a6c",
+      "bytes": 252092
+    },
+    {
+      "path": "Assets/Export/Characters/tower_archer/AN_tower_archer_Locomotion.fbx",
+      "sha256": "985577febfec35d06d41c9a9f2e60da8af306aaac46c6e8752fdc37d1526d076",
+      "bytes": 228796
+    },
+    {
+      "path": "Assets/Export/Characters/tower_archer/AN_tower_archer_Status.fbx",
+      "sha256": "81a90e9815de3ca85e38cd992cbae9e97e4d9fb3ba8a35ae3324d6e25c5f6d60",
+      "bytes": 228796
+    },
+    {
+      "path": "Assets/Export/Characters/tower_archer/AN_tower_archer_Turn.fbx",
+      "sha256": "e8b91215df4af3a124c0a48748131cc2c69dac4bf8a4a18d1127b31037c02447",
+      "bytes": 214524
+    },
+    {
+      "path": "Assets/Export/Characters/tower_archer/SK_tower_archer_LOD1.fbx",
+      "sha256": "5f3c1f2b732c5525314c6ce451048624a30d65bb2a0e1350a45e340e5c69ab0c",
+      "bytes": 438028
+    },
+    {
+      "path": "Assets/Export/Characters/tower_archer/SK_tower_archer_LOD2.fbx",
+      "sha256": "fd86fefb95da450ce3b3b3a5d625403e7e1ccabda6bfcbca0353686a219d9871",
+      "bytes": 280972
+    },
+    {
+      "path": "Assets/Export/Characters/tower_archer/SK_tower_archer_LOD3.fbx",
+      "sha256": "f0b779ed7b03a14aaa4b8ab7b99356fcae5127e74bb46b3cd7c50b5510480ccb",
+      "bytes": 181548
+    },
+    {
+      "path": "Assets/Export/Characters/tower_archer/SK_tower_archer.fbx",
+      "sha256": "b1e0872961a867270477b6fd074829eb41b69e9816f1ab240aab0f0ecd3cf199",
+      "bytes": 670428
+    },
+    {
+      "path": "Assets/Export/Characters/twin_blades/AN_twin_blades_Acquire.fbx",
+      "sha256": "9e4a401f747ba904381e3a92a5394fc8921017974c30610a7bf3f970be325006",
+      "bytes": 200252
+    },
+    {
+      "path": "Assets/Export/Characters/twin_blades/AN_twin_blades_AlternateStrike.fbx",
+      "sha256": "b0dd4ec412f599c3914d7b62cf7aef4e59c0d658bd8a001b7ffc70b2b0045fbf",
+      "bytes": 236508
+    },
+    {
+      "path": "Assets/Export/Characters/twin_blades/AN_twin_blades_Attack.fbx",
+      "sha256": "0187f47a1d7fa33424905dc730eaa76125bfc9cc307c59847e271e8ca8434e38",
+      "bytes": 228796
+    },
+    {
+      "path": "Assets/Export/Characters/twin_blades/AN_twin_blades_Death.fbx",
+      "sha256": "ca2e6d1e1d79104c0054b24c7e64bf1347db1116ed4e6d219cf54a0b1b676486",
+      "bytes": 241180
+    },
+    {
+      "path": "Assets/Export/Characters/twin_blades/AN_twin_blades_Deploy.fbx",
+      "sha256": "f3d7e2a740ac2f1bb779f19e5ecdfdd6677e1b257f727fb69410a831ecef7c2f",
+      "bytes": 214524
+    },
+    {
+      "path": "Assets/Export/Characters/twin_blades/AN_twin_blades_Hit.fbx",
+      "sha256": "0ed23d396c3de35a85f51c8197e2ae4b65b001bfc8d041dac1f0792a9f5240fb",
+      "bytes": 200252
+    },
+    {
+      "path": "Assets/Export/Characters/twin_blades/AN_twin_blades_Idle.fbx",
+      "sha256": "1ce4b664f6f70827794a850f70039f17d2552a8e99148850b37428e108cd7255",
+      "bytes": 251884
+    },
+    {
+      "path": "Assets/Export/Characters/twin_blades/AN_twin_blades_Locomotion.fbx",
+      "sha256": "e8833a478d371ae76f44be880404c43fb90363751ae69c2c141963af13c556bd",
+      "bytes": 228796
+    },
+    {
+      "path": "Assets/Export/Characters/twin_blades/AN_twin_blades_Status.fbx",
+      "sha256": "3c82ddbe1bd0383599321a421d6dc04edf4689ac841e34107292c66279d5d6b1",
+      "bytes": 228796
+    },
+    {
+      "path": "Assets/Export/Characters/twin_blades/AN_twin_blades_Turn.fbx",
+      "sha256": "089e281c663298d9065de3c64bd29580c7c38e23c0994f75b9d2f054950293b7",
+      "bytes": 214524
+    },
+    {
+      "path": "Assets/Export/Characters/twin_blades/SK_twin_blades_LOD1.fbx",
+      "sha256": "e8577552ce4b95d031cfc7b0474105718ca922c095ede6cffe1c18b3c6247a54",
+      "bytes": 486780
+    },
+    {
+      "path": "Assets/Export/Characters/twin_blades/SK_twin_blades_LOD2.fbx",
+      "sha256": "62c88fdfda4328a925f1e48271a15aa7c8e4f69dc41f81f782808f23b7731444",
+      "bytes": 312780
+    },
+    {
+      "path": "Assets/Export/Characters/twin_blades/SK_twin_blades_LOD3.fbx",
+      "sha256": "c7961b199944dbcf755f8a88300a8b12ec0d7687227ca2538e2ff62942a2e9c9",
+      "bytes": 199884
+    },
+    {
+      "path": "Assets/Export/Characters/twin_blades/SK_twin_blades.fbx",
+      "sha256": "3a14017174407b9740ed1294f4e38f418d241e1e58ce4731bbdb42dc4b4ae339",
+      "bytes": 726892
+    },
+    {
+      "path": "Assets/Export/Characters/vampire_bats/AN_vampire_bats_Acquire.fbx",
+      "sha256": "528c22a6affc8f0e1219ad95fd51332757feaefb58339d081cfcf09d300edd35",
+      "bytes": 163980
+    },
+    {
+      "path": "Assets/Export/Characters/vampire_bats/AN_vampire_bats_Attack.fbx",
+      "sha256": "d7c9ec531c2adddc1c56210b87a0501bb8a0761d41e0585e17b6e8056c4f6d09",
+      "bytes": 187036
+    },
+    {
+      "path": "Assets/Export/Characters/vampire_bats/AN_vampire_bats_Death.fbx",
+      "sha256": "118cd18cc98c006fdafc746b743e8efca3adddd79c38c096de20de9a9737ac79",
+      "bytes": 197180
+    },
+    {
+      "path": "Assets/Export/Characters/vampire_bats/AN_vampire_bats_Deploy.fbx",
+      "sha256": "f9548f7e86db5c45336ab228b5e28993eae448482d16e9bc9c061d69bbad8a3f",
+      "bytes": 175500
+    },
+    {
+      "path": "Assets/Export/Characters/vampire_bats/AN_vampire_bats_Hit.fbx",
+      "sha256": "c59fa91c9fb8b52f0cfd2c87360f3dc22ddcb7c1b7b9ff43e7e387ecc42cdcf5",
+      "bytes": 163980
+    },
+    {
+      "path": "Assets/Export/Characters/vampire_bats/AN_vampire_bats_Idle.fbx",
+      "sha256": "53496f578d8a46e51f93225cf33c684ee1df68cea4a9d1dc6178ba8ddf5e3bec",
+      "bytes": 209788
+    },
+    {
+      "path": "Assets/Export/Characters/vampire_bats/AN_vampire_bats_Locomotion.fbx",
+      "sha256": "0ab8a58255deae2e633d0ec4faf16b01596a306748881015525e7d3223244944",
+      "bytes": 187036
+    },
+    {
+      "path": "Assets/Export/Characters/vampire_bats/AN_vampire_bats_Status.fbx",
+      "sha256": "819885c9cb69d43bb3b7a83df79192da2ee2c250a054b0fbec7b4b548589f9a2",
+      "bytes": 187036
+    },
+    {
+      "path": "Assets/Export/Characters/vampire_bats/AN_vampire_bats_Turn.fbx",
+      "sha256": "ef2ef6ae275bf0bb3e53c1ac125ef340df8c62711a0c508e1bd72a5e65236ea0",
+      "bytes": 175500
+    },
+    {
+      "path": "Assets/Export/Characters/vampire_bats/AN_vampire_bats_WingCycle.fbx",
+      "sha256": "7a95df45c47592de1818ea7e6d60849a518dc23455b54b5f9f4310f5d4f34b53",
+      "bytes": 163980
+    },
+    {
+      "path": "Assets/Export/Characters/vampire_bats/SK_vampire_bats_LOD1.fbx",
+      "sha256": "d6149d275cfc8b0dc10352d4689a68d1f89aecf21b709c44aa5fcd36bc0e9de6",
+      "bytes": 300236
+    },
+    {
+      "path": "Assets/Export/Characters/vampire_bats/SK_vampire_bats_LOD2.fbx",
+      "sha256": "417bf7ac0b429525a99e371d8bf704b2322aa832338d8152d6e33cd1dbde9dd2",
+      "bytes": 192652
+    },
+    {
+      "path": "Assets/Export/Characters/vampire_bats/SK_vampire_bats_LOD3.fbx",
+      "sha256": "2153a911f9c42baf3a3b4732871e1ccd6d6a74a403ac37c224605ac5567d9d59",
+      "bytes": 130972
+    },
+    {
+      "path": "Assets/Export/Characters/vampire_bats/SK_vampire_bats.fbx",
+      "sha256": "22df583bb28c0e0fe77bbd75adb09cb4ad9f8421609447216d0bd47e58a1f56b",
+      "bytes": 482156
+    },
+    {
+      "path": "Assets/Export/Environment/SM_arc_projectile_LOD1.fbx",
+      "sha256": "34195a5ae669813e412cd57a8cf659f5331bbd8a744b302e38c7f1dc83e38313",
+      "bytes": 25532
+    },
+    {
+      "path": "Assets/Export/Environment/SM_arc_projectile_LOD2.fbx",
+      "sha256": "117c12e3535914e01c270463c257b17f6b6c6be4845b906162a08bc56179f5bb",
+      "bytes": 24796
+    },
+    {
+      "path": "Assets/Export/Environment/SM_arc_projectile.fbx",
+      "sha256": "a8ce3e80fa0114d13922e9fa684218d919a010bc3a34460314c782e2906d2e93",
+      "bytes": 26652
+    },
+    {
+      "path": "Assets/Export/Environment/SM_archer_tower_LOD1.fbx",
+      "sha256": "59efdecc807c3f1d50ebe10e4e3f41dcb2bfc3a129f5dd04bfb33d3624aa47b6",
+      "bytes": 270268
+    },
+    {
+      "path": "Assets/Export/Environment/SM_archer_tower_LOD2.fbx",
+      "sha256": "1e9398e127f0a869710b41e2ca3fe7d316f1e961b7b8b5e25bdceb7afb828f00",
+      "bytes": 137644
+    },
+    {
+      "path": "Assets/Export/Environment/SM_archer_tower.fbx",
+      "sha256": "bc4f15ec691b3e69d12c23147a17223456a628fdec51c34fb8f1335865954f25",
+      "bytes": 344316
+    },
+    {
+      "path": "Assets/Export/Environment/SM_arrow_projectile_LOD1.fbx",
+      "sha256": "5e8f8b8c9ea9caaf72dfc922456fdc3bee0560083fa285d6f799a5152098eb10",
+      "bytes": 35212
+    },
+    {
+      "path": "Assets/Export/Environment/SM_arrow_projectile_LOD2.fbx",
+      "sha256": "04b35d64a18ee9649305f94f529904ef5b78900e3467a16387896240dcd311b3",
+      "bytes": 29788
+    },
+    {
+      "path": "Assets/Export/Environment/SM_arrow_projectile.fbx",
+      "sha256": "92d3d12e307b3737c611ad829d6f7c9f17bec9b49828ff567346d8e6d75a2947",
+      "bytes": 40428
+    },
+    {
+      "path": "Assets/Export/Environment/SM_bank_segment_LOD1.fbx",
+      "sha256": "ea3379d95f6f3374a26bb5eef736f84e4ab7d358df84ae6b540ed699217ca40a",
+      "bytes": 38988
+    },
+    {
+      "path": "Assets/Export/Environment/SM_bank_segment_LOD2.fbx",
+      "sha256": "692628f4b55c2b0b807660f66e6760beffca528592528ff214be482c77221598",
+      "bytes": 28524
+    },
+    {
+      "path": "Assets/Export/Environment/SM_bank_segment.fbx",
+      "sha256": "3b6c08a024115409b0cfec3074a845adc0c548b8533bc7a77ed1d19f71c881d4",
+      "bytes": 40364
+    },
+    {
+      "path": "Assets/Export/Environment/SM_banner_LOD1.fbx",
+      "sha256": "5b2374d98a6d5931a434d99d7da628e6be87f4fc4957e20326731df9a171069b",
+      "bytes": 25964
+    },
+    {
+      "path": "Assets/Export/Environment/SM_banner_LOD2.fbx",
+      "sha256": "6a2b6e7c8f6c232eaf361f4cf062da792c0b2335e189975c7f69b551897e5aeb",
+      "bytes": 23564
+    },
+    {
+      "path": "Assets/Export/Environment/SM_banner.fbx",
+      "sha256": "3fb80645f123383b8b2f511b5f7b545319f146fc2fa8dcac56caea7f388a1023",
+      "bytes": 30044
+    },
+    {
+      "path": "Assets/Export/Environment/SM_boundary_stone_LOD1.fbx",
+      "sha256": "62928d1c0c595ed3a1269e8e5edd3ab9d98291625878b0ed9604a23d607d7d8b",
+      "bytes": 30236
+    },
+    {
+      "path": "Assets/Export/Environment/SM_boundary_stone_LOD2.fbx",
+      "sha256": "914f131cfc730f012a5b7f1fa5a538c45e29e4fb8471cdbba7f3172999616934",
+      "bytes": 25260
+    },
+    {
+      "path": "Assets/Export/Environment/SM_boundary_stone.fbx",
+      "sha256": "c117b7aac81736895f36262291ba29a01260ebe0c99e95e432c9eddf95c812dd",
+      "bytes": 35852
+    },
+    {
+      "path": "Assets/Export/Environment/SM_bridge_LOD1.fbx",
+      "sha256": "f8bace4988a3f456b8af4f95e1279a689d8f78e8039b4ae02aad193d0fba3942",
+      "bytes": 155212
+    },
+    {
+      "path": "Assets/Export/Environment/SM_bridge_LOD2.fbx",
+      "sha256": "e6d953bac8f8f2a1d1beac822147956f7b477ec336ad40852a58d03163b4efcf",
+      "bytes": 87708
+    },
+    {
+      "path": "Assets/Export/Environment/SM_bridge.fbx",
+      "sha256": "ff3b0b0eca4f032948dd5acc6f9fbea849c71ebffe9377f13676da500cc4cb61",
+      "bytes": 192652
+    },
+    {
+      "path": "Assets/Export/Environment/SM_bullet_round_LOD1.fbx",
+      "sha256": "a35582c32eee78cd4ef322589039da4fe7b104495e375f802bda8ea2c9829e5a",
+      "bytes": 41068
+    },
+    {
+      "path": "Assets/Export/Environment/SM_bullet_round_LOD2.fbx",
+      "sha256": "55fdab5f3625b7c33d0b665ab4b962ad52d182d95079e0e12dbf0dc6825cbe92",
+      "bytes": 30972
+    },
+    {
+      "path": "Assets/Export/Environment/SM_bullet_round.fbx",
+      "sha256": "91dadef5c2307162b09c47b97101eab9e4254e08bf44e4188b241037586c1f2c",
+      "bytes": 49516
+    },
+    {
+      "path": "Assets/Export/Environment/SM_crystal_plinth_LOD1.fbx",
+      "sha256": "9fa434109000c4364f7d596fcc66e84f18d59ba57d365ca107524fe755a4df1f",
+      "bytes": 29692
+    },
+    {
+      "path": "Assets/Export/Environment/SM_crystal_plinth_LOD2.fbx",
+      "sha256": "f6c5ffbf5ee32ecb1c9694a6f52b9409d4de0149e17f53d6ec4ad8cd652d9b5d",
+      "bytes": 26636
+    },
+    {
+      "path": "Assets/Export/Environment/SM_crystal_plinth.fbx",
+      "sha256": "5efa3009043ddcd5a466a15175f56819d65855f271630a2732407e5a81df46a9",
+      "bytes": 32412
+    },
+    {
+      "path": "Assets/Export/Environment/SM_distant_island_LOD1.fbx",
+      "sha256": "1d6fc82d7bbbcce9c301bd509c444f4327a804930c07f9bc3e0bd6b43bf9a1c9",
+      "bytes": 30988
+    },
+    {
+      "path": "Assets/Export/Environment/SM_distant_island_LOD2.fbx",
+      "sha256": "7b22ada85948d749ef979d16cafa087b0beaf9d5b34e37dfb68fc8ca06d06f58",
+      "bytes": 25612
+    },
+    {
+      "path": "Assets/Export/Environment/SM_distant_island.fbx",
+      "sha256": "6d3711076a923345401f91e473bacdaeea7abafa16cef8d1f0515943419646aa",
+      "bytes": 36236
+    },
+    {
+      "path": "Assets/Export/Environment/SM_floor_tile_LOD1.fbx",
+      "sha256": "2e59339907a3eff1b5029a865dfa432b138862984ae945c97ae2be032fe5f309",
+      "bytes": 36924
+    },
+    {
+      "path": "Assets/Export/Environment/SM_floor_tile_LOD2.fbx",
+      "sha256": "62bdef8e41304d2f365a25f2fba2625e8c93364bf2ac7e190e2788a5b46cbc16",
+      "bytes": 28828
+    },
+    {
+      "path": "Assets/Export/Environment/SM_floor_tile.fbx",
+      "sha256": "a46f2f7fe9a4d0791db120996777f86085d15eb81a333e007895def4c6df02a8",
+      "bytes": 42940
+    },
+    {
+      "path": "Assets/Export/Environment/SM_grass_tuft_LOD1.fbx",
+      "sha256": "6a77dbe39dd86440ecabd5baece12a5f2531b1d229c87fb28bbff572e7d2413a",
+      "bytes": 29196
+    },
+    {
+      "path": "Assets/Export/Environment/SM_grass_tuft_LOD2.fbx",
+      "sha256": "738aef69e5a0fd2a593c4fd41ff294fc2bdf5c2462eed86f59f534bd440906f5",
+      "bytes": 24956
+    },
+    {
+      "path": "Assets/Export/Environment/SM_grass_tuft.fbx",
+      "sha256": "89dfd6cf604e9be6143446d4347dafa9f366e493c1ec287d13dc0f647c841671",
+      "bytes": 34604
+    },
+    {
+      "path": "Assets/Export/Environment/SM_guard_cannon_LOD1.fbx",
+      "sha256": "1e9004c569192767078b38f9bc571293b15b312136bd9d4fdb56e7de5251898a",
+      "bytes": 65532
+    },
+    {
+      "path": "Assets/Export/Environment/SM_guard_cannon_LOD2.fbx",
+      "sha256": "45e01fcff6ee13661d8c1d202f601a1a080ec39ba618ec6217662565c8b5c63c",
+      "bytes": 45660
+    },
+    {
+      "path": "Assets/Export/Environment/SM_guard_cannon.fbx",
+      "sha256": "f12767da3fd3d685552d647149065dd389c8f52f0e782d64f468f68768a9256a",
+      "bytes": 83020
+    },
+    {
+      "path": "Assets/Export/Environment/SM_lane_paver_LOD1.fbx",
+      "sha256": "535bc6fc922002a582c67599b16abadccca45cc09946c769a69027a14febabd4",
+      "bytes": 23996
+    },
+    {
+      "path": "Assets/Export/Environment/SM_lane_paver_LOD2.fbx",
+      "sha256": "5242c8ac3a6dfbacb0ed7f937492ec8c50d93341b3715b6264ef27d666d2bb46",
+      "bytes": 22060
+    },
+    {
+      "path": "Assets/Export/Environment/SM_lane_paver.fbx",
+      "sha256": "5962508f94816352ea59d720a52f3874f13c329c522ab55edc156a2b8eb3eb87",
+      "bytes": 25596
+    },
+    {
+      "path": "Assets/Export/Environment/SM_manta_projectile_LOD1.fbx",
+      "sha256": "978283604a21cfa3b5936bdf11ffa2a7ad644fcc47e80d20e923663b7ed8bcc0",
+      "bytes": 23020
+    },
+    {
+      "path": "Assets/Export/Environment/SM_manta_projectile_LOD2.fbx",
+      "sha256": "5154d598743b72bebeaf8b4bbcbb78e103e62ef0d24ef026908e36d85bee73f6",
+      "bytes": 22204
+    },
+    {
+      "path": "Assets/Export/Environment/SM_manta_projectile.fbx",
+      "sha256": "c37e02a8866dc290378b07cb46bf6c572fb33e0108e93a2eabf5f5870fd47767",
+      "bytes": 24124
+    },
+    {
+      "path": "Assets/Export/Environment/SM_meteor_shard_LOD1.fbx",
+      "sha256": "a6146913ad9d9eecc3b0c3f0effa06d568d3e913fb1ac5cd288b453336788a9b",
+      "bytes": 27148
+    },
+    {
+      "path": "Assets/Export/Environment/SM_meteor_shard_LOD2.fbx",
+      "sha256": "8a4f6f1c533f078e741b835f1f3620e1962e6b6fc338d545f2b129c1d6fe4e98",
+      "bytes": 25132
+    },
+    {
+      "path": "Assets/Export/Environment/SM_meteor_shard.fbx",
+      "sha256": "9c01b747dbe7b3ec9836ae7f5045b5f5ee7a82d345f0185a46f4037af3a59ee8",
+      "bytes": 29820
+    },
+    {
+      "path": "Assets/Export/Environment/SM_nova_flask_LOD1.fbx",
+      "sha256": "38b7971969e44edead3038e9369b2a075218644e1db7f439521fd3c6aab02186",
+      "bytes": 97356
+    },
+    {
+      "path": "Assets/Export/Environment/SM_nova_flask_LOD2.fbx",
+      "sha256": "932255e580559affebc4aff775714f2baa944bf772ff0ac16c361f4200e36f6f",
+      "bytes": 62172
+    },
+    {
+      "path": "Assets/Export/Environment/SM_nova_flask.fbx",
+      "sha256": "30e978ea7e7b8108bfc1a86470defe1eccdac3ee8339bf8aa5fea86610e3b9fe",
+      "bytes": 127900
+    },
+    {
+      "path": "Assets/Export/Environment/SM_projectile_trail_LOD1.fbx",
+      "sha256": "78ca77910f13ab583d0a1f3b5e672259c38e5de04de1fa38541703e34b1b1b23",
+      "bytes": 21548
+    },
+    {
+      "path": "Assets/Export/Environment/SM_projectile_trail_LOD2.fbx",
+      "sha256": "688f7deeed29b6badca53ac794a40f104cdbb13e73d6b3c724800aac0c1b7a48",
+      "bytes": 21164
+    },
+    {
+      "path": "Assets/Export/Environment/SM_projectile_trail.fbx",
+      "sha256": "d7c2b97a0557bb2046398d0887486b748ef1f0fd11217c53ddb59830232d101e",
+      "bytes": 21788
+    },
+    {
+      "path": "Assets/Export/Environment/SM_ruin_LOD1.fbx",
+      "sha256": "6a956d58d12fbf69e82288f78cf05a061252b155301aff5d2204d8e994a79c76",
+      "bytes": 50828
+    },
+    {
+      "path": "Assets/Export/Environment/SM_ruin_LOD2.fbx",
+      "sha256": "b3ddbf5d15da93b785818aa16067c336ee0bec49a505a3c5d41ca4c16acbf7a2",
+      "bytes": 34380
+    },
+    {
+      "path": "Assets/Export/Environment/SM_ruin.fbx",
+      "sha256": "a733cbd54ca06a5acabda0c24284cf49487a2c9a7a8a6f752fefc834bff2b5ed",
+      "bytes": 57356
+    },
+    {
+      "path": "Assets/Export/Environment/SM_shrub_LOD1.fbx",
+      "sha256": "b63191dd334e7ec57e735e4d43608a22d3ef81f804ba4fab95c05481277495c1",
+      "bytes": 38524
+    },
+    {
+      "path": "Assets/Export/Environment/SM_shrub_LOD2.fbx",
+      "sha256": "ae98b3a609601b2350a77255228e01a8735ad2f28bfed0a30ad3ecaa23b41c8b",
+      "bytes": 30348
+    },
+    {
+      "path": "Assets/Export/Environment/SM_shrub.fbx",
+      "sha256": "514e057f2a038c715ae9259e4248bc5ccea0138df79a3fd95dae928ac74b15df",
+      "bytes": 50492
+    },
+    {
+      "path": "Assets/Export/Environment/SM_storm_projectile_LOD1.fbx",
+      "sha256": "036a61a86bafd3432997a0cf5980daa985247a34399ea46e97dcdca5a59f610d",
+      "bytes": 24428
+    },
+    {
+      "path": "Assets/Export/Environment/SM_storm_projectile_LOD2.fbx",
+      "sha256": "53abc65222974c6833b8e0b3296e703193f2c80d4b8323c3aba4e2f0f9a88f6d",
+      "bytes": 22860
+    },
+    {
+      "path": "Assets/Export/Environment/SM_storm_projectile.fbx",
+      "sha256": "f08c3ff38baa8632dac895ec60e256a48e7eb962ad8dedf4cce4779ce5994b4c",
+      "bytes": 26444
+    },
+    {
+      "path": "Assets/Export/Environment/SM_tower_core_LOD1.fbx",
+      "sha256": "36fa5305dc179e9333f84dc716ec2b4b9fde465e143e1aa26038b3dcf8723c88",
+      "bytes": 332444
+    },
+    {
+      "path": "Assets/Export/Environment/SM_tower_core_LOD2.fbx",
+      "sha256": "3aee2e93a577f45f353b78954b50ad263d3fc2df7ec709a9717b6934ebe298d0",
+      "bytes": 170604
+    },
+    {
+      "path": "Assets/Export/Environment/SM_tower_core.fbx",
+      "sha256": "fb8ede9edb6aafc9c6fe0d746345c51a8e6f04fb72b0d681294dbdb825e5e029",
+      "bytes": 397308
+    },
+    {
+      "path": "Assets/Export/Environment/SM_tower_guard_LOD1.fbx",
+      "sha256": "42539140330ad4ba9d61d2146e1ae1d502097fe1e2a346957089197eb13e2a9b",
+      "bytes": 236268
+    },
+    {
+      "path": "Assets/Export/Environment/SM_tower_guard_LOD2.fbx",
+      "sha256": "0d2dd66a5e2f227f46125040d0240741f3e550575a59f987aae3b2b347c60274",
+      "bytes": 124188
+    },
+    {
+      "path": "Assets/Export/Environment/SM_tower_guard.fbx",
+      "sha256": "dc5164c623f26b3a7df1fdbcecb1205edc8a58eab132d059125a4254ab7f77b6",
+      "bytes": 281500
+    },
+    {
+      "path": "Assets/Export/Environment/SM_tower_rubble_LOD1.fbx",
+      "sha256": "92204d929770def08dc771203a55653b522b414d3e6493ad950989644bcb7f40",
+      "bytes": 54252
+    },
+    {
+      "path": "Assets/Export/Environment/SM_tower_rubble_LOD2.fbx",
+      "sha256": "8018385a04d0ddbb4bc50fd40675b8d9bf0bde5b72f6c50c94bf6dbeecefe26c",
+      "bytes": 35516
+    },
+    {
+      "path": "Assets/Export/Environment/SM_tower_rubble.fbx",
+      "sha256": "03c02bb1dd54b5d20be07537ee07b9a1a44b5cc0678776fd552be27441e5cb13",
+      "bytes": 72284
+    },
+    {
+      "path": "Assets/Export/Environment/SM_tree_LOD1.fbx",
+      "sha256": "82d47a7a61c3312625a892413cf6c8084c863538c220a4fafa750aecffdb9ca8",
+      "bytes": 109452
+    },
+    {
+      "path": "Assets/Export/Environment/SM_tree_LOD2.fbx",
+      "sha256": "81bc883df6e0cdd0e882edcf7c51266fd302f792edf190c1d62573233bbd1a4e",
+      "bytes": 68316
+    },
+    {
+      "path": "Assets/Export/Environment/SM_tree.fbx",
+      "sha256": "dcadeccff1ecf624d6732de3780bda14934750c7f1657247fafe133edb9d5fcf",
+      "bytes": 152012
+    },
+    {
+      "path": "Assets/Fonts/BarlowSemiCondensed/BarlowSemiCondensed-Bold.ttf",
+      "sha256": "0fb7401b4bb43e284bebf66c69fb42b5462380cbfd352a69fa0fb3f0a774c31a",
+      "bytes": 170604
+    },
+    {
+      "path": "Assets/Fonts/BarlowSemiCondensed/BarlowSemiCondensed-Medium.ttf",
+      "sha256": "b5961bc7009f4e08ffce90931ddca85545357b8f260f2ed1b37c3241ce71c2db",
+      "bytes": 163992
+    },
+    {
+      "path": "Assets/Fonts/BarlowSemiCondensed/BarlowSemiCondensed-Regular.ttf",
+      "sha256": "d8f081920de05d27990f42299e84d358d2e2fcadd41b94461b2dd42a519d6ff8",
+      "bytes": 164164
+    },
+    {
+      "path": "Assets/Fonts/BarlowSemiCondensed/BarlowSemiCondensed-SemiBold.ttf",
+      "sha256": "76b0db666060f767d7f9707d1fe8f668eeb114c0a2eab90fd657e454ab6b171c",
+      "bytes": 168500
+    },
+    {
+      "path": "Assets/Fonts/BarlowSemiCondensed/OFL.txt",
+      "sha256": "186d750eb496a4c17a76385f82be6aea2ac1cf2de074a811d63786cf374ea73f",
+      "bytes": 4377
+    },
+    {
+      "path": "Assets/Fonts/BarlowSemiCondensed/provenance.json",
+      "sha256": "daa2a3cfac3a3fcf756d41dd706ba5a5a73426bb7aebbc375ba87d41d01a4dd3",
+      "bytes": 2041
+    },
+    {
+      "path": "Assets/Renders/arc_mage.png",
+      "sha256": "57ad1c576dce6488f3fe777b12f74365ef52121ef94d9c5cb8b4021bf946b1ed",
+      "bytes": 1154399
+    },
+    {
+      "path": "Assets/Renders/arc_projectile.png",
+      "sha256": "3f7fea2b3606a5d9e53158136e363e160399a66ebfacd784ed5b80d2bc7c7af7",
+      "bytes": 1001288
+    },
+    {
+      "path": "Assets/Renders/archer_tower.png",
+      "sha256": "a6483e24fae90a2a26727fc2434c979d8925bdf880cddbf6818c6935099dfe5c",
+      "bytes": 1336143
+    },
+    {
+      "path": "Assets/Renders/arrow_projectile.png",
+      "sha256": "f5b46882a6018338ef61d496433a41df081de98d2366a952f7bfbf8648a81654",
+      "bytes": 1002766
+    },
+    {
+      "path": "Assets/Renders/bank_segment.png",
+      "sha256": "7dc62088bbe23a1221d34337525eb7f3307a801e1312f6717d70e4b7c4924ac2",
+      "bytes": 1095309
+    },
+    {
+      "path": "Assets/Renders/banner.png",
+      "sha256": "70a170fd32dcc1e9296875c34ad6bf6bf0d410489014d682d66bf763dd95c1f2",
+      "bytes": 1050677
+    },
+    {
+      "path": "Assets/Renders/boulderback.png",
+      "sha256": "68627cd59b62934971d962a830c8b29a561002dc17c78405d3cd3c144448fe41",
+      "bytes": 1216866
+    },
+    {
+      "path": "Assets/Renders/boundary_stone.png",
+      "sha256": "52781599d8b2f67f9b53640dee8ed95042dc521b9c7b5db5a18325105984926e",
+      "bytes": 1067480
+    },
+    {
+      "path": "Assets/Renders/bridge.png",
+      "sha256": "65ad4842706b34780e54e31c05dcf08ade1fe7f5ba1113a3d28e2be354e93e3d",
+      "bytes": 1207667
+    },
+    {
+      "path": "Assets/Renders/bullet_round.png",
+      "sha256": "bdaf3ba84df1b940d70f4382f35906e2518f9ce67a3dc6fa8e19d3f27f4a836a",
+      "bytes": 988782
+    },
+    {
+      "path": "Assets/Renders/characters_contact.png",
+      "sha256": "41815f2992ecc89f55fdc1b6c68f81feba7e7b164598de27fbd8a576f799a657",
+      "bytes": 1882459
+    },
+    {
+      "path": "Assets/Renders/creature_motion_contact.png",
+      "sha256": "3c673e075d695ba254b9e081ffd8e5053dfcee2690faf42ca1208b3fa063e1e6",
+      "bytes": 2277842
+    },
+    {
+      "path": "Assets/Renders/crystal_plinth.png",
+      "sha256": "0e4643a75e4b777d8e1db639024306de8772846e661bd5b8f4f7f305f1d5b7a9",
+      "bytes": 1137025
+    },
+    {
+      "path": "Assets/Renders/distant_island.png",
+      "sha256": "a00b735abfaa98b48ecc1023ff592a98a3d32481efeb30baa0294bba1eac9d56",
+      "bytes": 1063564
+    },
+    {
+      "path": "Assets/Renders/ember_archer.png",
+      "sha256": "dbc0c0a158010e6d715d546589269d20eb66d6e547aa1fa646d17d65014bc8b1",
+      "bytes": 1180471
+    },
+    {
+      "path": "Assets/Renders/environment_contact.png",
+      "sha256": "49e76cde814d7ce8cff870ecdf2ed04c0efd62b9bb612c90f6abe65e05874cbf",
+      "bytes": 1367498
+    },
+    {
+      "path": "Assets/Renders/equipment_contact.png",
+      "sha256": "1892307b7fd5cf566074c9d6e9fd4aa86fab694c56f99b60cf82195b06712562",
+      "bytes": 2747327
+    },
+    {
+      "path": "Assets/Renders/floor_tile.png",
+      "sha256": "a5f3618717ec3390b4310ffa1c60f26465096080c132fe211078b2289afb0a1b",
+      "bytes": 1025445
+    },
+    {
+      "path": "Assets/Renders/frost_fang.png",
+      "sha256": "1a1a25804d7bcbc7de80736f3ec7463e372034fc6afc5e7012d01ff272d649c7",
+      "bytes": 1179387
+    },
+    {
+      "path": "Assets/Renders/grass_tuft.png",
+      "sha256": "29e511002f680d06d7e11d487423cb9f05c40f5fe26a2422542653790f8c607d",
+      "bytes": 1030196
+    },
+    {
+      "path": "Assets/Renders/guard_cannon.png",
+      "sha256": "f2868f4742ce917a31385fee750657ea0ada124f5d8e31d8d46d7f8a149935b7",
+      "bytes": 1111659
+    },
+    {
+      "path": "Assets/Renders/ironclad.png",
+      "sha256": "e2d9b1d4c57156abf65a6cd9360bd3aaf35bf10da6f4b9314befe5d8ba50c3d6",
+      "bytes": 1172910
+    },
+    {
+      "path": "Assets/Renders/lane_paver.png",
+      "sha256": "08bf55fb11566c07059692d63a08228587d671d885878570deab1fe48cbc0d25",
+      "bytes": 1020183
+    },
+    {
+      "path": "Assets/Renders/manta_projectile.png",
+      "sha256": "efb57f403b23e0fef35e66fb7b71fd5816167814e95c2386fbf498e9db4c3148",
+      "bytes": 995399
+    },
+    {
+      "path": "Assets/Renders/meteor_shard.png",
+      "sha256": "5ad03327291d544b43fee584e2bb9d1baa847dd96a31032b6d2d35a1741de4a0",
+      "bytes": 1011020
+    },
+    {
+      "path": "Assets/Renders/model_cards_contact.png",
+      "sha256": "3f5d86f795eb9aa1e84e96400cff3f8b5bb9b6fcd53cabf90411ddef498b8e4f",
+      "bytes": 1565663
+    },
+    {
+      "path": "Assets/Renders/nova_flask.png",
+      "sha256": "6a2ef9046c227093ec40a0ca428fa89f006848bcefa08312d58fd3f8a20caf49",
+      "bytes": 1241586
+    },
+    {
+      "path": "Assets/Renders/Poses/arc_mage_Attack_25.png",
+      "sha256": "678ff1389d98a953149912aebd9430223655f071fb8917b59d6b94b18fb743c8",
+      "bytes": 469380
+    },
+    {
+      "path": "Assets/Renders/Poses/arc_mage_Attack_80.png",
+      "sha256": "50dc3c71b20aa4065b8695c1e27063f83fa91eb1e0f091e54d1b70de669415c9",
+      "bytes": 465557
+    },
+    {
+      "path": "Assets/Renders/Poses/arc_mage_Attack.png",
+      "sha256": "3a9b906e266bf0391b16ad0eda68cc40393055cd12dc0ebd6c2888bc6de90528",
+      "bytes": 467048
+    },
+    {
+      "path": "Assets/Renders/Poses/arc_mage_Death.png",
+      "sha256": "e4cbb437a1fe0935736802d6202a1957c129b38e35f848de66f64e46c7cdecca",
+      "bytes": 438620
+    },
+    {
+      "path": "Assets/Renders/Poses/arc_mage_Idle.png",
+      "sha256": "443b34c6091d41a24e46a56c800221b27693929f319c8a8e3c1bcb9a7e78e1e7",
+      "bytes": 464377
+    },
+    {
+      "path": "Assets/Renders/Poses/arc_mage_Locomotion.png",
+      "sha256": "2df868b6d489e5b5c5201c0699800c1c53e1917b80aa073cd81f261522c20eee",
+      "bytes": 470258
+    },
+    {
+      "path": "Assets/Renders/Poses/boulderback_Attack.png",
+      "sha256": "806655241934198c9ceaf6bd4e9f3b2a276d294958814fb70ce6a417dd15f009",
+      "bytes": 487921
+    },
+    {
+      "path": "Assets/Renders/Poses/boulderback_Death.png",
+      "sha256": "bef07287b95335886be9782579734d7b06defcccee901371f7eab7c4d487f9a9",
+      "bytes": 469053
+    },
+    {
+      "path": "Assets/Renders/Poses/boulderback_Idle.png",
+      "sha256": "8dd00dcb4e458f2a9bf16960d9a08d9620a5c9a831c545760dc223a49bfc0519",
+      "bytes": 489483
+    },
+    {
+      "path": "Assets/Renders/Poses/boulderback_Locomotion.png",
+      "sha256": "0fc1285afcd6f5d68bc69ecd09525aed61e1462624a4a7d363b83bcdc456cfd6",
+      "bytes": 491506
+    },
+    {
+      "path": "Assets/Renders/Poses/ember_archer_Attack_25.png",
+      "sha256": "917b9e604243f693b92fa8fadc610aff5942e8839a2d7bd0731f92d614b1b22c",
+      "bytes": 475173
+    },
+    {
+      "path": "Assets/Renders/Poses/ember_archer_Attack_80.png",
+      "sha256": "2e6bb7ca471260aac5ab6fd74424ab2cec3404fb5fedba66f451ffe666f1e5c4",
+      "bytes": 474974
+    },
+    {
+      "path": "Assets/Renders/Poses/ember_archer_Attack.png",
+      "sha256": "cb3b761d3b7c18b04a4ce5d8fed7aed700ce12512bafbe41b3f2914677b999f9",
+      "bytes": 472092
+    },
+    {
+      "path": "Assets/Renders/Poses/ember_archer_Death.png",
+      "sha256": "5fafe5ca1abab9f1bc9c5aa600557d6b2f10f05961c867e44d131642a5cd581a",
+      "bytes": 440233
+    },
+    {
+      "path": "Assets/Renders/Poses/ember_archer_Idle.png",
+      "sha256": "22163ff81cd5db75df83928689bf64728c36f7d0eb1652954894dae4928ca103",
+      "bytes": 475476
+    },
+    {
+      "path": "Assets/Renders/Poses/ember_archer_Locomotion.png",
+      "sha256": "f6da719e66c98461a14b81a161982eeca0baeaa8f5c840e953b772ed95ffeacf",
+      "bytes": 475265
+    },
+    {
+      "path": "Assets/Renders/Poses/frost_fang_Attack.png",
+      "sha256": "573e46aacdca08efb8818b279162b7405cbe919cd482cc7f5ecf7d8b1a60fc93",
+      "bytes": 470769
+    },
+    {
+      "path": "Assets/Renders/Poses/frost_fang_Death.png",
+      "sha256": "b476aa5d3a9f7fa93e7434aa8064e00159af2ee0ddf10bc68c7528b04f554382",
+      "bytes": 444669
+    },
+    {
+      "path": "Assets/Renders/Poses/frost_fang_Idle.png",
+      "sha256": "52c2f665b3f229c3694c809f2a57dc33b6bd066e069a9cb98224d1151d2d609c",
+      "bytes": 473725
+    },
+    {
+      "path": "Assets/Renders/Poses/frost_fang_Locomotion.png",
+      "sha256": "28c59dcb984a73c8fc886a6cb1b5699c062caf5224468a30517cd498b47659f0",
+      "bytes": 473349
+    },
+    {
+      "path": "Assets/Renders/Poses/ironclad_Attack_25.png",
+      "sha256": "828d10f301b98e49ec6037150c69a73852bb48cf8d08fff2186af6525f148e5a",
+      "bytes": 470941
+    },
+    {
+      "path": "Assets/Renders/Poses/ironclad_Attack_80.png",
+      "sha256": "f7bdabc67cf3284cce828e2b04bffe6d6d9713077e6116c8b732783e4e7f3535",
+      "bytes": 471451
+    },
+    {
+      "path": "Assets/Renders/Poses/ironclad_Attack.png",
+      "sha256": "55e912eca390976711d83580ff6c20f452327fa2e2a391b98960fa7a756b0835",
+      "bytes": 473489
+    },
+    {
+      "path": "Assets/Renders/Poses/ironclad_Death.png",
+      "sha256": "aaab4561be34144939b1f41bdd60598134953ac22cd6ba811fd53bb4e672a622",
+      "bytes": 443126
+    },
+    {
+      "path": "Assets/Renders/Poses/ironclad_Idle.png",
+      "sha256": "081f87d70a7f9e509937a19e03b64677cbcabe9d67d347633527ecabb726280f",
+      "bytes": 472027
+    },
+    {
+      "path": "Assets/Renders/Poses/ironclad_Locomotion.png",
+      "sha256": "d4f20d861ba5cfa382c1f549f9e62c94fcc57300470990f6bcd4a4e98624cf20",
+      "bytes": 473613
+    },
+    {
+      "path": "Assets/Renders/Poses/rambeast_Attack.png",
+      "sha256": "74dc2c3aa11e28ab0ca454031328c364affd4e181aa6243dc6db069a1f096c5b",
+      "bytes": 474424
+    },
+    {
+      "path": "Assets/Renders/Poses/rambeast_Death.png",
+      "sha256": "473ce95d6d5b99eb7f02057e3021acd03657cc3e8fb2ca94ee5dc0a437b4ee4c",
+      "bytes": 442410
+    },
+    {
+      "path": "Assets/Renders/Poses/rambeast_Idle.png",
+      "sha256": "db52e3608036beead6eebbd3230dfbfe6658ecebbaa1b38d489fa3fd1fdbb249",
+      "bytes": 476640
+    },
+    {
+      "path": "Assets/Renders/Poses/rambeast_Locomotion.png",
+      "sha256": "7425d60ede952e9eec01eb5444acb9e40a611df15577b2b6da603b18af309ea7",
+      "bytes": 476364
+    },
+    {
+      "path": "Assets/Renders/Poses/sky_manta_Attack.png",
+      "sha256": "329d6faf162ad6cc30b73836920987c5ab3a79566284f37a36e1d03f4426a841",
+      "bytes": 432304
+    },
+    {
+      "path": "Assets/Renders/Poses/sky_manta_Death.png",
+      "sha256": "ad7b703c0bfecb56e47fcc88dd9d34f7d22031243d767fe0c45e924f931cc4e5",
+      "bytes": 443072
+    },
+    {
+      "path": "Assets/Renders/Poses/sky_manta_Idle.png",
+      "sha256": "95a9a561e985677b03cda1f7cfd438218f29dc5e3dd475082a3e1cb3163d0f5f",
+      "bytes": 432980
+    },
+    {
+      "path": "Assets/Renders/Poses/sky_manta_Locomotion.png",
+      "sha256": "244a85090e85c5225629a722ecd9609e1620a4eec43c0897bb06c008cf272683",
+      "bytes": 433076
+    },
+    {
+      "path": "Assets/Renders/Poses/storm_raven_Attack.png",
+      "sha256": "74a4e3281f53efcdfd496b7a76ea8ed85627e78a184fa08e1ba7aa51696ee102",
+      "bytes": 445323
+    },
+    {
+      "path": "Assets/Renders/Poses/storm_raven_Death.png",
+      "sha256": "ab8da090de9177d37c96904672c6f51bd2b50581b8b473b5d0f4ad34e1a49640",
+      "bytes": 464274
+    },
+    {
+      "path": "Assets/Renders/Poses/storm_raven_Idle.png",
+      "sha256": "6e239c396493621c535ae6c7b4a90b644ca752f515793e51afe70611363bd982",
+      "bytes": 452284
+    },
+    {
+      "path": "Assets/Renders/Poses/storm_raven_Locomotion.png",
+      "sha256": "468704636f6e6517d504b58332d2901e9ea34d7597137ca5bf10f4124d293fd8",
+      "bytes": 445994
+    },
+    {
+      "path": "Assets/Renders/Poses/tower_archer_Attack_25.png",
+      "sha256": "0c63100d6eaeeb7716d881732d2404fb7ce88dffd296234a6772de7c82437505",
+      "bytes": 475169
+    },
+    {
+      "path": "Assets/Renders/Poses/tower_archer_Attack_80.png",
+      "sha256": "1f8ffca4207fede8d5f5690859c8d3ec0ec554318032e2e022f658cd25de3172",
+      "bytes": 474976
+    },
+    {
+      "path": "Assets/Renders/Poses/tower_archer_Attack.png",
+      "sha256": "50a2f0bd8e324b0b32b388bd554297671b2bedfe035e3e5f2021141bdf103644",
+      "bytes": 472093
+    },
+    {
+      "path": "Assets/Renders/Poses/tower_archer_Death.png",
+      "sha256": "c0ddb4c12e4da0a1126f65bade474d8aff87f1a92b225c3bd5064f5121d62a3e",
+      "bytes": 440318
+    },
+    {
+      "path": "Assets/Renders/Poses/tower_archer_Idle.png",
+      "sha256": "b3835ace55670901d30d9622f04df74a6d4360591d50eeed5ac9a6fe5f885b5e",
+      "bytes": 475476
+    },
+    {
+      "path": "Assets/Renders/Poses/tower_archer_Locomotion.png",
+      "sha256": "ab51c0757ce947c19e1d716b42fe451a7aee2ac26ff39ce0b89b8513e61e3e3a",
+      "bytes": 475265
+    },
+    {
+      "path": "Assets/Renders/Poses/twin_blades_Attack_25.png",
+      "sha256": "9fa34b33f18ac1b18915d9a8c3248f8b88136855d927965019ff7479e20d86ab",
+      "bytes": 468520
+    },
+    {
+      "path": "Assets/Renders/Poses/twin_blades_Attack_80.png",
+      "sha256": "f553da9f737d79b7fb4efc8b572b5e426c9abefb57d84647c31d66670db9b61e",
+      "bytes": 469927
+    },
+    {
+      "path": "Assets/Renders/Poses/twin_blades_Attack.png",
+      "sha256": "ef353ade0f1a5833301b40a3e7fc14cd43a864736d0ac085d1a2082010675eff",
+      "bytes": 470602
+    },
+    {
+      "path": "Assets/Renders/Poses/twin_blades_Death.png",
+      "sha256": "89c7895e0c06c0c839ad113eaba22f835ed7c570e17f1a4b5166b68efbbbaa9d",
+      "bytes": 437982
+    },
+    {
+      "path": "Assets/Renders/Poses/twin_blades_Idle.png",
+      "sha256": "e59199c567079951ab0f77a077172e764db90d4c99fa9ef653881595148ea498",
+      "bytes": 470319
+    },
+    {
+      "path": "Assets/Renders/Poses/twin_blades_Locomotion.png",
+      "sha256": "cd1b2673942d17ab7f6f40cdc325a62d5e86eac55f01c10ed3b651278f1af4f2",
+      "bytes": 469203
+    },
+    {
+      "path": "Assets/Renders/Poses/vampire_bats_Attack.png",
+      "sha256": "7c3f9aaaca98c1b65d199f168bcd0b4ebd303dcc335558483bf80e73c90d381d",
+      "bytes": 432312
+    },
+    {
+      "path": "Assets/Renders/Poses/vampire_bats_Death.png",
+      "sha256": "df7bf1d0f18b454a2b8cfccdd76379fb46866ebff96c886ecbcc8c0227dc0cac",
+      "bytes": 440721
+    },
+    {
+      "path": "Assets/Renders/Poses/vampire_bats_Idle.png",
+      "sha256": "64519c15007f1de8528196b8f47fc527985f4e1c347ce93726ee633d1583f111",
+      "bytes": 435870
+    },
+    {
+      "path": "Assets/Renders/Poses/vampire_bats_Locomotion.png",
+      "sha256": "68a543708218b37bf8ab77b83602e850d756f80762ac83a56b1615cc7651f5e0",
+      "bytes": 433595
+    },
+    {
+      "path": "Assets/Renders/projectile_trail.png",
+      "sha256": "aba5a692ee48efb5236d62a08a02921de54a68fbbf514ff8fa071405768e2b74",
+      "bytes": 1007411
+    },
+    {
+      "path": "Assets/Renders/rambeast.png",
+      "sha256": "517d7e540fba9f2fa5544d788f662d451151ef68037e95b2d5e3c55c9e2ef757",
+      "bytes": 1186043
+    },
+    {
+      "path": "Assets/Renders/ruin.png",
+      "sha256": "7c4d7daab0a6b55f1174e68c34aa4792a9b9c7432d34c194d11675f11ce738c9",
+      "bytes": 1206470
+    },
+    {
+      "path": "Assets/Renders/shrub.png",
+      "sha256": "b50c2da779f17e676a9db8c1236d23f3eded3e9e24b21ba9822fe8abf5faf0a2",
+      "bytes": 1079645
+    },
+    {
+      "path": "Assets/Renders/sky_manta.png",
+      "sha256": "74ec660330f024120c8e7cecf23671ee4639b3bb0bf5b1550418fb090fe39735",
+      "bytes": 1080400
+    },
+    {
+      "path": "Assets/Renders/storm_projectile.png",
+      "sha256": "7684c849d7c5eb2daf5a6bc2137a9e87a5eef7441496caadf645a761cec80847",
+      "bytes": 997549
+    },
+    {
+      "path": "Assets/Renders/storm_raven.png",
+      "sha256": "eb1b6f06724204b73bb89d8884e96056506906e39553cefedfe77404e0dd6984",
+      "bytes": 1117533
+    },
+    {
+      "path": "Assets/Renders/tower_archer.png",
+      "sha256": "d9bd9144aaf62459af3e14b8974e7a239ae655ef09895dd3e5c2fe6bdebcce8a",
+      "bytes": 1180484
+    },
+    {
+      "path": "Assets/Renders/tower_core.png",
+      "sha256": "6d1462ad22aac4211efb327058933fe74351c00e0b12b8128b52329caf00595a",
+      "bytes": 1300210
+    },
+    {
+      "path": "Assets/Renders/tower_guard.png",
+      "sha256": "d00096237149fe469196fcdaefdb8ab07001d34f9095e6b39c389b9901abfd68",
+      "bytes": 1406419
+    },
+    {
+      "path": "Assets/Renders/tower_rubble.png",
+      "sha256": "cf7d82038569d4b5e2f57733fdd61a1b047d2eb44a5a7be8dd5c0be1edcac10c",
+      "bytes": 1109878
+    },
+    {
+      "path": "Assets/Renders/tree.png",
+      "sha256": "b9392fa79e171cb23a38b6e3ea148202f0b788c1b7f77f72509b7c24fc8269a2",
+      "bytes": 1126607
+    },
+    {
+      "path": "Assets/Renders/twin_blades.png",
+      "sha256": "f9ae651c79dbbe92018b8fc41d1e78afa1c5d3e550f554b057a12026228cf89b",
+      "bytes": 1169118
+    },
+    {
+      "path": "Assets/Renders/vampire_bats.png",
+      "sha256": "16a2cd5b9aa4dcff2b8c233b5691c8a5d71d4574f1b270becccaddae4c75f32d",
+      "bytes": 1094666
+    },
+    {
+      "path": "Assets/Source/Audio/aether_three.wav",
+      "sha256": "080062afc13b579ece470e524e456f14f2c4bcc9f64b7a6e3da9aa1c88202251",
+      "bytes": 335204
+    },
+    {
+      "path": "Assets/Source/Audio/aether_two.wav",
+      "sha256": "f35fae823b57c3e43503511f84b09df4a41e3bd90998f638dd8476f63b62a688",
+      "bytes": 291104
+    },
+    {
+      "path": "Assets/Source/Audio/arc_cast.wav",
+      "sha256": "ee7e7f433cb1228e21e444f76e8937ff8caf070d9079b472df8fa63aceb0bf39",
+      "bytes": 84716
+    },
+    {
+      "path": "Assets/Source/Audio/arc_impact.wav",
+      "sha256": "b53b3d5064c5a0d5a434ca22ae3df60c0c5f97a3bd15da29bc2ba223cfde854b",
+      "bytes": 98828
+    },
+    {
+      "path": "Assets/Source/Audio/arrow_flight.wav",
+      "sha256": "935a12cdbfa633a7a8455bdba99333eb17c5f6fd580c390c68e7de7c24d2b4ad",
+      "bytes": 26504
+    },
+    {
+      "path": "Assets/Source/Audio/arrow_hit_v2.wav",
+      "sha256": "2d4cc5d8825bec4dc94e303d551d809128cffb2a68b62b3bd1fabfab30cac715",
+      "bytes": 30032
+    },
+    {
+      "path": "Assets/Source/Audio/arrow_hit_v3.wav",
+      "sha256": "5d8dd9f512281a44daba0cc4f0d5999f4385d4578a0cf76b37afb3cf65e78dcd",
+      "bytes": 30032
+    },
+    {
+      "path": "Assets/Source/Audio/arrow_hit.wav",
+      "sha256": "cde5932b8bd4a1f324e98a1ac2ecba9ce2f05fcd6baea6d6871fd62b374c0ce3",
+      "bytes": 30032
+    },
+    {
+      "path": "Assets/Source/Audio/audio_manifest.json",
+      "sha256": "ef9955a5129b05465e313f263edbcfb20646c59a7d4ebc8d3d393a869bacd87c",
+      "bytes": 31966
+    },
+    {
+      "path": "Assets/Source/Audio/bat_bite_v2.wav",
+      "sha256": "de22f0acc57c50c12b34a3726d1acdd59002d436617e7d3dd3a00d7c94bb0afd",
+      "bytes": 20330
+    },
+    {
+      "path": "Assets/Source/Audio/bat_bite_v3.wav",
+      "sha256": "4076733907c885d44d8823ce799381f721feadd27970aa10608400083be734a5",
+      "bytes": 20330
+    },
+    {
+      "path": "Assets/Source/Audio/bat_bite.wav",
+      "sha256": "c0b3813ef7bed22b5146a6c252dc6aab944b7660a0a123cd1995f1383011522d",
+      "bytes": 20330
+    },
+    {
+      "path": "Assets/Source/Audio/bow_release_v2.wav",
+      "sha256": "d3c250c8fb97e2597c5cde3a86c82630820d2989a79130b9ba46fa61aa36e7be",
+      "bytes": 31796
+    },
+    {
+      "path": "Assets/Source/Audio/bow_release_v3.wav",
+      "sha256": "e30951c03ad7fcef8d59d1aee0d5eb2bbd1e60ec2fd81b0afa83e1780b32cbe0",
+      "bytes": 31796
+    },
+    {
+      "path": "Assets/Source/Audio/bow_release.wav",
+      "sha256": "ad0c16024926d4282048df69b417d19d00136a134647a585ada0478c68956108",
+      "bytes": 31796
+    },
+    {
+      "path": "Assets/Source/Audio/building_hit_v2.wav",
+      "sha256": "48a95537eb13ade5afd03242940d91384a04c47b9dd4e849369bd92311f92fd9",
+      "bytes": 44144
+    },
+    {
+      "path": "Assets/Source/Audio/building_hit_v3.wav",
+      "sha256": "e3df4f9ebeff344a9e7c0c755481fdaaa02340c76afb07b3f8b2a01a82745086",
+      "bytes": 44144
+    },
+    {
+      "path": "Assets/Source/Audio/building_hit.wav",
+      "sha256": "54e26e90326358566468a33d0255960e1a0d857530cad19bdae0cafa2489592c",
+      "bytes": 44144
+    },
+    {
+      "path": "Assets/Source/Audio/bullet_burst.wav",
+      "sha256": "42555ce27bf83669b6f10ff3761a29238c0e5dc8824078d9d1dd13f6faba353d",
+      "bytes": 56492
+    },
+    {
+      "path": "Assets/Source/Audio/charge.wav",
+      "sha256": "8a49e8784170eb0550087b460c53f9c60ffec58d8ff1376bfbd3beea604f73a9",
+      "bytes": 57374
+    },
+    {
+      "path": "Assets/Source/Audio/core_awaken.wav",
+      "sha256": "a2991d1e5780332315f69fa14dff9d12efa5945473cf104be34895093f6f7d4b",
+      "bytes": 441044
+    },
+    {
+      "path": "Assets/Source/Audio/defeat.wav",
+      "sha256": "7e117cabc92228e0d409fced53e63dc7794fe1167480efadc7a54b991697a846",
+      "bytes": 423404
+    },
+    {
+      "path": "Assets/Source/Audio/deploy.wav",
+      "sha256": "5b83f01159a1f265e532f87e0d7fa4ff89c76963c5909b06c58e9fb657ca8387",
+      "bytes": 77660
+    },
+    {
+      "path": "Assets/Source/Audio/dual_attack_v2.wav",
+      "sha256": "3234b2003c8094a0ab887097d5c62345b709683753257fa22f5a93cc4455d0a8",
+      "bytes": 36206
+    },
+    {
+      "path": "Assets/Source/Audio/dual_attack_v3.wav",
+      "sha256": "d2b8b33374b87e861195e5df81cca162b2084a88e42e0a31faebd20c41a88284",
+      "bytes": 36206
+    },
+    {
+      "path": "Assets/Source/Audio/dual_attack.wav",
+      "sha256": "ce5b4e44c64d6610ae180146a7f9699237ddfd7163b67a72d518b0b6a4290b5f",
+      "bytes": 36206
+    },
+    {
+      "path": "Assets/Source/Audio/frost_attack.wav",
+      "sha256": "8dfe488388754fd4ad189a1d09817c80bac620ca430e28513b7b731349819d23",
+      "bytes": 102356
+    },
+    {
+      "path": "Assets/Source/Audio/frost_slow.wav",
+      "sha256": "be7079aefa9340473d3aaa231fc62bb8872f337ffffeb1fbae5490e35e4a17d0",
+      "bytes": 56492
+    },
+    {
+      "path": "Assets/Source/Audio/heavy_slam_v2.wav",
+      "sha256": "2d14279b7e4e1e46c6c62b19b572abbb6a394768c94487f61399a30a9aecbd33",
+      "bytes": 75896
+    },
+    {
+      "path": "Assets/Source/Audio/heavy_slam_v3.wav",
+      "sha256": "d63face91ab79bd63fd350c56ed363b793814a85541b67864876c613f52d30c6",
+      "bytes": 75896
+    },
+    {
+      "path": "Assets/Source/Audio/heavy_slam.wav",
+      "sha256": "8af5d95b97602b526f9b4463ccd45e4d511cc51cd051ea5fd27711756bc1575d",
+      "bytes": 75896
+    },
+    {
+      "path": "Assets/Source/Audio/manta_cast.wav",
+      "sha256": "8220243deb1c9e886001fa8aafdfc7aedfde3ff70779497079c5fe8838ad88c7",
+      "bytes": 105884
+    },
+    {
+      "path": "Assets/Source/Audio/manta_impact.wav",
+      "sha256": "827f884cc6714e6881cc4cb0078928d86f769505f0868f291dd1ef829a4d40f3",
+      "bytes": 119996
+    },
+    {
+      "path": "Assets/Source/Audio/meteor_impact.wav",
+      "sha256": "a9f74f0311e88881da3c24412cdd044c4d8721cca72bc099e2f12e3bdc03d5d9",
+      "bytes": 308744
+    },
+    {
+      "path": "Assets/Source/Audio/meteor_tick.wav",
+      "sha256": "f547c915369f78365f1396330125ac73e31b999cb487a88fbe6b18796249f645",
+      "bytes": 84716
+    },
+    {
+      "path": "Assets/Source/Audio/music_rift.wav",
+      "sha256": "972b3a720f78452e143e81e675e12da8d799b78fb2ebf6dc9aea174ece96e891",
+      "bytes": 6272044
+    },
+    {
+      "path": "Assets/Source/Audio/nova_impact.wav",
+      "sha256": "604b556c44a933c237cba80da87bd67da5e5ce504a7b7fb7c55c8225d264c085",
+      "bytes": 194084
+    },
+    {
+      "path": "Assets/Source/Audio/overtime.wav",
+      "sha256": "e827a69366871045cf295693c1cd36b7d403ddb473eb702193ee2af3a5877366",
+      "bytes": 405764
+    },
+    {
+      "path": "Assets/Source/Audio/Palette/sources.json",
+      "sha256": "6be6acdef54bd147ff89d36bd346cea54c3baa530e7427ef196ab7689407b682",
+      "bytes": 21284
+    },
+    {
+      "path": "Assets/Source/Audio/river_ambience.wav",
+      "sha256": "5a19fae69fe50ca052db0fd2ceda207fa81d6338b74a06a107aaf9a51104d028",
+      "bytes": 2116844
+    },
+    {
+      "path": "Assets/Source/Audio/shield_hit_v2.wav",
+      "sha256": "250ed830d01a38dbbe6660e4172bde26ac8efb64daeaea222c9cac705142c5fa",
+      "bytes": 45908
+    },
+    {
+      "path": "Assets/Source/Audio/shield_hit_v3.wav",
+      "sha256": "e2afc027f074b2b2b983758bd6435e5934d1c9f2d7a62214e8518ebaac6804f6",
+      "bytes": 45908
+    },
+    {
+      "path": "Assets/Source/Audio/shield_hit.wav",
+      "sha256": "deed0e6abbd020d189607825a65abd6c9e0f9ece66f3567b80ab95a7841ed315",
+      "bytes": 45908
+    },
+    {
+      "path": "Assets/Source/Audio/storm_bolt.wav",
+      "sha256": "368e1342399c3a231bb2bab547bb7a9e102b9dd565913a4ac33d65c93ae75c35",
+      "bytes": 91772
+    },
+    {
+      "path": "Assets/Source/Audio/storm_pulse.wav",
+      "sha256": "336c2d30bfa6115610811fafec283aa2c347c72f3506add9e94dbf9c492fa80f",
+      "bytes": 149984
+    },
+    {
+      "path": "Assets/Source/Audio/stun.wav",
+      "sha256": "8571e723906b257243924deb31e7bd35707214d7afb509443b2a1e269420fcaf",
+      "bytes": 49436
+    },
+    {
+      "path": "Assets/Source/Audio/sword_attack_v2.wav",
+      "sha256": "8a939b658cefd4dae46c873511824ab38ee00062b55eb86a5ce0fa213a42e142",
+      "bytes": 27386
+    },
+    {
+      "path": "Assets/Source/Audio/sword_attack_v3.wav",
+      "sha256": "af62f384598d0de87f578576bd135e421b01742e16e357e4fa0fd502b204357f",
+      "bytes": 27386
+    },
+    {
+      "path": "Assets/Source/Audio/sword_attack.wav",
+      "sha256": "191055bad1e9597533a6cde1938d0e2f99ce5afd117f8434ca4525191dd9cdd3",
+      "bytes": 27386
+    },
+    {
+      "path": "Assets/Source/Audio/sword_hit_v2.wav",
+      "sha256": "dfb25e25c35859d77d837c17cede4547c6cb2515600cb4d8af1263110fcb89f1",
+      "bytes": 40616
+    },
+    {
+      "path": "Assets/Source/Audio/sword_hit_v3.wav",
+      "sha256": "af3385ae75bf5248b42da6fc9b9fcbdf6c746b4560cf3e2a66c124c838038f29",
+      "bytes": 40616
+    },
+    {
+      "path": "Assets/Source/Audio/sword_hit.wav",
+      "sha256": "2316a030683163813cae493b0df89bc7a6f915f0d67754aac0e50282b62ddc49",
+      "bytes": 40616
+    },
+    {
+      "path": "Assets/Source/Audio/tiebreaker.wav",
+      "sha256": "c5cac3f54b153a4963fcb399267dbbd5211de96f3be379939ddcc6096b3d0f00",
+      "bytes": 405764
+    },
+    {
+      "path": "Assets/Source/Audio/tower_destroy.wav",
+      "sha256": "3587d924dc5e791c299c0c2501d6ec5293832b1d9ec651bad196dd2ed092bf0d",
+      "bytes": 361664
+    },
+    {
+      "path": "Assets/Source/Audio/tower_hit_v2.wav",
+      "sha256": "7e51e5a63a2bef2616acde0fa89f0e7c22dddab6223103e0abcd6f468f38b3b7",
+      "bytes": 57374
+    },
+    {
+      "path": "Assets/Source/Audio/tower_hit_v3.wav",
+      "sha256": "827e1588cba9bf1063110fd483a7bd57d458ac083cd5865abda81e6640ebbc25",
+      "bytes": 57374
+    },
+    {
+      "path": "Assets/Source/Audio/tower_hit.wav",
+      "sha256": "21668eb3d7ad42c1ccf4a83d2e039bfde5433bd8a7b982921075d985c329a6bd",
+      "bytes": 57374
+    },
+    {
+      "path": "Assets/Source/Audio/ui_click.wav",
+      "sha256": "81f2e738bc40a6a6be271b6ce2ebdf1e46bb7225cdee1e9aedc661ffe51c1f87",
+      "bytes": 26504
+    },
+    {
+      "path": "Assets/Source/Audio/ui_error.wav",
+      "sha256": "d1f203f31fc5ee10366f0f1eeb2b704effb6e01f91b68f36a3f666541b1604ba",
+      "bytes": 44144
+    },
+    {
+      "path": "Assets/Source/Audio/ui_hover.wav",
+      "sha256": "121635860ae54e4e9003ad2035b8a554b2c0109fdd53b83a00ba3b6dce156357",
+      "bytes": 19448
+    },
+    {
+      "path": "Assets/Source/Audio/ui_save.wav",
+      "sha256": "5b7f5e807c9f1033892dec2268377dd5c2f4f7cfa1953b91adfca62212af84b9",
+      "bytes": 109412
+    },
+    {
+      "path": "Assets/Source/Audio/victory.wav",
+      "sha256": "54f1f98712552c7ecd12b5b6ab8dbf090037d894385fb5bcce8a9496ab3ab316",
+      "bytes": 441044
+    },
+    {
+      "path": "Assets/Source/Audio/wing_air.wav",
+      "sha256": "73d849e2dd33a4cb17cff165446c43db8cd180be224a79e2b5babcd093e0ca64",
+      "bytes": 57374
+    },
+    {
+      "path": "Assets/Source/CardArt/arc_mage.png",
+      "sha256": "e54505a8c115fdf227203b05556b0fac578ae836cc855db6c8ce382f8099faba",
+      "bytes": 883278
+    },
+    {
+      "path": "Assets/Source/CardArt/archer_tower.png",
+      "sha256": "4e90cba543bcd33910b9c5f2c04d1c4e78dcc828c7d8db35496f6b47e5a3db82",
+      "bytes": 887872
+    },
+    {
+      "path": "Assets/Source/CardArt/boulderback.png",
+      "sha256": "54ae114f6d661ee4fbde6133bfbba203d6843e1e6f3ec8d0555a356ff410fda0",
+      "bytes": 839739
+    },
+    {
+      "path": "Assets/Source/CardArt/bullet_burst.png",
+      "sha256": "4a7e6bad04f930e3e2f2a1fc5ec4427694b62199d96c419cf0c1b1bc2ecb2523",
+      "bytes": 817457
+    },
+    {
+      "path": "Assets/Source/CardArt/ember_archer.png",
+      "sha256": "7fdc64d129ba4d0ef7cb7e450756fbe96943552a4c3f5d11dc591260e675dca8",
+      "bytes": 894940
+    },
+    {
+      "path": "Assets/Source/CardArt/frost_fang.png",
+      "sha256": "7f7b6ffd1e45a7ff8cff7852f5d7c3fb4feb64656775d6f3dc9625714f1d59b9",
+      "bytes": 866184
+    },
+    {
+      "path": "Assets/Source/CardArt/ironclad.png",
+      "sha256": "c1bd9c2da9d5aa83687f6d851bd1332642e6507a1c495b0f951c0517b84c5e13",
+      "bytes": 917694
+    },
+    {
+      "path": "Assets/Source/CardArt/meteor_shards.png",
+      "sha256": "78ec9f92da69b0757053357911fecc98b412fd51a3aeee2d5f824acd4229befd",
+      "bytes": 807391
+    },
+    {
+      "path": "Assets/Source/CardArt/model_portraits.json",
+      "sha256": "18a70b6359dda799132486182c9b5df4abe48996624ea38f42e6cf4298e45555",
+      "bytes": 32313
+    },
+    {
+      "path": "Assets/Source/CardArt/nova_flask.png",
+      "sha256": "c0f971569900f01cdc4942ed8fc951fca26d18f802f5dae9bbfc283fe21250f5",
+      "bytes": 901538
+    },
+    {
+      "path": "Assets/Source/CardArt/rambeast.png",
+      "sha256": "bcf41684a2686cb94c40dd1810ef79cf6a079f52367cc02d4859828a9c8bcc98",
+      "bytes": 851774
+    },
+    {
+      "path": "Assets/Source/CardArt/sky_manta.png",
+      "sha256": "620b7d3df503da37fd6ce6d8c2937b552965d45b852b4ced622fd203cc7eb586",
+      "bytes": 747605
+    },
+    {
+      "path": "Assets/Source/CardArt/storm_raven.png",
+      "sha256": "836b49b0180799a61272d755d5e23c24005c7e9d4f1ca4f9e5db9f6f44b3ca01",
+      "bytes": 772993
+    },
+    {
+      "path": "Assets/Source/CardArt/twin_blades.png",
+      "sha256": "8313fdbb24c7f0eabb7752afa4668a317b57956fbbad7861b8b2440efb46b684",
+      "bytes": 896963
+    },
+    {
+      "path": "Assets/Source/CardArt/vampire_bats.png",
+      "sha256": "8bad90fec5aba4c8a6ced4479a803bc1b74bcecc1adcc348261d5bfea9642516",
+      "bytes": 777120
+    },
+    {
+      "path": "Assets/Source/RiftCrown_ProductionAssets.blend",
+      "sha256": "e05ec2783365cef7543c600bfbf236f7a96e457a2424ca2b2d809540be290cd6",
+      "bytes": 12048439
+    },
+    {
+      "path": "Assets/Source/Textures/T_RiftAtlas_BaseColor.png",
+      "sha256": "0e1ff581e0bf06e8eed071aaab9f6c3bf8ce987894792b5a77faa36dde5ce426",
+      "bytes": 819582
+    },
+    {
+      "path": "Assets/Source/Textures/T_RiftAtlas_Normal.png",
+      "sha256": "69863677590fe90e5e26b7d30ef99c2ecaad6b354badad7adb0593a920847ec6",
+      "bytes": 183659
+    },
+    {
+      "path": "Assets/Source/Textures/T_RiftAtlas_ORM.png",
+      "sha256": "e5dc83ffd410f9af8faeaa669b78d20faaadb01c9e125624d23e4566844fd659",
+      "bytes": 1152488
+    },
+    {
+      "path": "Assets/Source/Textures/T_RiftAtlas_TeamMask.png",
+      "sha256": "f0750d38b0f709fdadf9bb815b3de1b37fc4a831c81d67864e44b117a53bd6ec",
+      "bytes": 14458
+    },
+    {
+      "path": "Build/asset_contact_sheet.py",
+      "sha256": "88831d745a2564d5ac9b89e5b92ea7e055535376e25ab215268be7ee49ad2fd8",
+      "bytes": 2952
+    },
+    {
+      "path": "Build/asset_import_provenance.py",
+      "sha256": "2167d5d45a397aee933d8b2ba0e0c6b11d650258878fc2fca639e4e936d8e7cd",
+      "bytes": 7319
+    },
+    {
+      "path": "Build/Capture-Unreal.ps1",
+      "sha256": "165bef748f06c10de2547324a60d5673fd0f705013dff4702bccd672641be139",
+      "bytes": 12167
+    },
+    {
+      "path": "Build/Curate-UnrealQA.ps1",
+      "sha256": "1ce6ca272b2fafba546739dc63330923241725a580beb9fdec9c1457214dec99",
+      "bytes": 8477
+    },
+    {
+      "path": "Build/generate_assets.py",
+      "sha256": "0f85f549755d7046c57d4a1d3dece209180f7ec4789e74f2b04e17f3f37279f5",
+      "bytes": 70166
+    },
+    {
+      "path": "Build/generate_audio.py",
+      "sha256": "4c63fb8247ad348081ec1e8faf9a6de394eecfc58747ecc4e58d84322ec2bdb0",
+      "bytes": 18790
+    },
+    {
+      "path": "Build/import_unreal_assets.py",
+      "sha256": "325e1f474c39b587337b19daf3248cf48dfe60328f6bc267d7cf76814bf799d3",
+      "bytes": 36989
+    },
+    {
+      "path": "Build/import_unreal_fonts.py",
+      "sha256": "81defea62707b68ae85ce4c011de2bd385bc14b565480ab28ae7a91e4f866af5",
+      "bytes": 4003
+    },
+    {
+      "path": "Build/inspect_unreal_assets.py",
+      "sha256": "befdd7d224b9dcc57feddf0ccc70ad0bcc33ff3ee48c758f9037b988e9fb38bc",
+      "bytes": 3894
+    },
+    {
+      "path": "Build/Measure-Unreal.ps1",
+      "sha256": "85abaa793b33e9bd319bc779da9e1b59f7ddfa6b07163f73d7e667008fd29659",
+      "bytes": 6219
+    },
+    {
+      "path": "Build/Package-ModelInputQAEvidence.ps1",
+      "sha256": "11e49b8c6ca316f8600bb99517bf937d5b71ec4d7f4812a735ea387c430a0fe3",
+      "bytes": 52029
+    },
+    {
+      "path": "Build/render_animation_review.py",
+      "sha256": "2223347e5ccbbfe480cadfa41ab5b60f5277a332b777a03a78779c336ab98584",
+      "bytes": 1707
+    },
+    {
+      "path": "Build/render_card_portraits.py",
+      "sha256": "efa82b14bb55809cb50ef3fbf34ebc56270fe1ec90bacab374604fab8c243801",
+      "bytes": 12040
+    },
+    {
+      "path": "Build/ShippingDiagnostics.ps1",
+      "sha256": "4f0d275ddc211931a82ad2cd8e645587e7d5016f488cddd6fdde8675ebc6c5ab",
+      "bytes": 6401
+    },
+    {
+      "path": "Build/Test-CardDrag.ps1",
+      "sha256": "a2593f23039ea3859ab65f97a7e78eaf5ec23913f495ccc57c634fdaadd56c89",
+      "bytes": 15930
+    },
+    {
+      "path": "Build/Test-LauncherPlay.ps1",
+      "sha256": "369d178f82b7926f514c8a2194d8421f8f54c4aa5e6e14be313fd892e2e97e6e",
+      "bytes": 3387
+    },
+    {
+      "path": "Build/Test-Unreal.ps1",
+      "sha256": "435ba4c25486b49f0ac164f8cb49f857f1a8cf2c3985a5081a23afab4da57ec6",
+      "bytes": 5277
+    },
+    {
+      "path": "Build/Test-UnrealAudio.ps1",
+      "sha256": "645b46badc892696525696edc11f6957c765f580c31ba3cf46de7d4ff8a81d61",
+      "bytes": 5057
+    },
+    {
+      "path": "Build/Test-UnrealVFX.ps1",
+      "sha256": "a2ee3591d09c4a718597bed491973c163fba2c9a5230cfc65ee23e6f5899d463",
+      "bytes": 5400
+    },
+    {
+      "path": "Build/Tests/Audit-NativeMeta.py",
+      "sha256": "d6a63be3821fa8e1ba347f0b55fb72e2a5ed8c85eea12deccf8e5df160faba48",
+      "bytes": 27161
+    },
+    {
+      "path": "Build/Tests/RiftSimulationTests.cpp",
+      "sha256": "6004be4069efa9100202b3be831eedf787df606192782da85cc6c7d4b9fa2dd2",
+      "bytes": 49753
+    },
+    {
+      "path": "Build/upgrade_card_models.py",
+      "sha256": "d8564e0db89fd6b0e35a08bc11e25bdf5326503d8b6cf0808d1e2d5f5982eed6",
+      "bytes": 62797
+    },
+    {
+      "path": "Build/validate_assets.py",
+      "sha256": "f8a0f2519b3c089980433c961bab3a304844a30175a9881a3a3dddb3d265008d",
+      "bytes": 8049
+    },
+    {
+      "path": "Build/validate_card_portraits.py",
+      "sha256": "1fb9d6d3c8d00ca448e62102ca5e1d14b8fd6ab743e4e268f1289616c38b30af",
+      "bytes": 12780
+    },
+    {
+      "path": "Docs/MODEL_INPUT_1.3.0.md",
+      "sha256": "0f69141e1ff17f3451417559b7dc79cd2571e20e29db2fc2c443907d2f3eff06",
+      "bytes": 3461
+    },
+    {
+      "path": "Docs/PATCH_NOTES_1.3.0.md",
+      "sha256": "112be486c282d6a90e09a771b8dc4ed9f85fe4c214107a500cc4924d69e39d37",
+      "bytes": 1219
+    },
+    {
+      "path": "Docs/QA/historical-native-integration-1.2.1.json",
+      "sha256": "30a48e20cf0232f788f216968f091d41b8e88d497db14579487a53447fea6c07",
+      "bytes": 33460
+    },
+    {
+      "path": "Docs/QA/native-integration.json",
+      "sha256": "d251fc9af16161beae1c217d7b2bfd814d5a64cfa6e63a8ee7f3ce4ee38fc27d",
+      "bytes": 35091
+    },
+    {
+      "path": "Docs/QA/spell-timing-meta-100.json",
+      "sha256": "97235bac33ff5dbcaeb9adb77c5fc695333f6439fefc5ff13de4525450f84967",
+      "bytes": 10264
+    },
+    {
+      "path": "Docs/UI_TYPOGRAPHY.md",
+      "sha256": "f8686a22387563aa830114e0615b1acd4fc0a5c49e3baf74452a74ba4ced06c8",
+      "bytes": 2157
+    },
+    {
+      "path": "Installer/Test-Installer.ps1",
+      "sha256": "602e4f70e6f2cecac358422b820cd86520369c79dc60260481f1942d01f5d103",
+      "bytes": 23380
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Config/DefaultEngine.ini",
+      "sha256": "d203dc05bd1a8d857f7773eb44529ce45637647a5d5638f52b4e9ee21ffec885",
+      "bytes": 1379
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Config/DefaultGame.ini",
+      "sha256": "9306510ca4484ab2098201b38af3334d5df94713181df5b92b2d98d4cb67d602",
+      "bytes": 808
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Config/DefaultInput.ini",
+      "sha256": "40f9320c2416a85aa30c765ce1d9c62b45c6a9ad52ef998d102f05b8819679fd",
+      "bytes": 9535
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_arc_mage.uasset",
+      "sha256": "9ae2637108daaeba2cfcd5b81cbd916412d6e7936e66a3e7d7a990bf1629d7c1",
+      "bytes": 8521
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_archer_tower.uasset",
+      "sha256": "95c110ccd42971b5f264fc0ba2bb73331561bfe721b4e50cc35cd31348a8afb8",
+      "bytes": 6571
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_boulderback.uasset",
+      "sha256": "9ee0732f18cdcd5cf1ff68bca3a41665a57212bb3fa0d8f80b067486afb912a5",
+      "bytes": 8577
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_bullet_burst.uasset",
+      "sha256": "b7e19d81e3a605d622e14632aa647551fc47ca66606357762893c36e5fe7e92a",
+      "bytes": 6167
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_ember_archer.uasset",
+      "sha256": "01d791b121899722d885eb8bf3a863be5bd78e2d55d82aa15d7b94de63737568",
+      "bytes": 8674
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_frost_fang.uasset",
+      "sha256": "ba8f4dd8f0c19e0adfbdb3b60efbf2aa6fc98801604a4b9eadf190b2bf3d0c00",
+      "bytes": 8772
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_ironclad.uasset",
+      "sha256": "f6cec5353fae2e89d36e43fc2290dc217a89c1872fa18accc110314630aca639",
+      "bytes": 8158
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_meteor_shards.uasset",
+      "sha256": "115cb47535f67d88f1b6e2ec6b32ba62a8834645f05f2c0b2966aee5c72304b4",
+      "bytes": 6232
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_nova_flask.uasset",
+      "sha256": "d28c896b1455f8db78b0430d0bd4a369efcb4d541a0c301d9c0f26c5c4f6dc29",
+      "bytes": 6052
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_rambeast.uasset",
+      "sha256": "092132cc44a55e60d3fb3c2b4d6b5f6e1681c347d8d7759f7ceb01ad2aa6682d",
+      "bytes": 8472
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_sky_manta.uasset",
+      "sha256": "b0e439376c1f396b769c277139b1b5e4f1393466a621107f9ae321101301170f",
+      "bytes": 8574
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_storm_raven.uasset",
+      "sha256": "933151db5a683747a2da09cf93a3d97f00162bf3fe7042645056ca40fe58148d",
+      "bytes": 9526
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_twin_blades.uasset",
+      "sha256": "cc097b2009b4c81b206bab4771f5782e22a57a28060eb19274ed054890b13357",
+      "bytes": 8565
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_vampire_bats.uasset",
+      "sha256": "d17e5a527270d63232d8f431ea57642674ee7df81ee6336225ae1ad58ca1f5ab",
+      "bytes": 8692
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Fonts/Barlow-OFL.txt",
+      "sha256": "186d750eb496a4c17a76385f82be6aea2ac1cf2de074a811d63786cf374ea73f",
+      "bytes": 4377
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Fonts/F_RiftUI.uasset",
+      "sha256": "79d4556b4434781bc969a82c75c283ffbe74229f151f2a240641e4ee04d713ea",
+      "bytes": 3977
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Fonts/FF_BarlowSemiCondensed_Bold.uasset",
+      "sha256": "58097e672ffbd5ee709ee330fcd12d3f6eec2b4cb33573932907ce4e7d5b7951",
+      "bytes": 172495
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Fonts/FF_BarlowSemiCondensed_Medium.uasset",
+      "sha256": "361ba07fe4743cf97d397fe0d3646663c73a7f9f336ab9a85b7f0594a1cf2656",
+      "bytes": 165895
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Fonts/FF_BarlowSemiCondensed_Regular.uasset",
+      "sha256": "40d0884510c106e6a7fed08d020bd2272a76cb047110f659cfc0adf2dda949a5",
+      "bytes": 166073
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Fonts/FF_BarlowSemiCondensed_SemiBold.uasset",
+      "sha256": "cbd822c6463565845bbf5f42db4c7de08fdb1346fe0d222aee49d92cdac6e82d",
+      "bytes": 170415
+    },
+    {
+      "path": "Unreal/RiftCrownArena/RiftCrownArena.uproject",
+      "sha256": "39fc040329e6d46e5087c74c0765c626ac16940daee8e662f67b7b2033acda4b",
+      "bytes": 745
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena.Target.cs",
+      "sha256": "283ee32c736fcdae9c0bf3f9c5fe8f26f5261a827db4db5a12a740a8138d5e17",
+      "bytes": 493
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftArenaPresentation.cpp",
+      "sha256": "3324311b48e533f80e314a71f854b7b3deabb2389cfe25cbd2d931c9cc634279",
+      "bytes": 76823
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftBattleAudioSubsystem.cpp",
+      "sha256": "7c2617b69b5f455699cff1ad85e9873a79147574dc81ce380ec2e66b79da51cd",
+      "bytes": 29957
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftBattleOverlay.cpp",
+      "sha256": "fedfb7b1c4ed6c559a5256f83d517a4278a21739ae964f05f9bcf50e63e8230e",
+      "bytes": 15671
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftTrainingOverlay.cpp",
+      "sha256": "27bf6b4160405cc89ddc38329b4723108b018d35e16e421022a18d52e63d658d",
+      "bytes": 5980
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftUnitVisual.cpp",
+      "sha256": "7066f3c77e4c43b74574f201c6417919db54ead28be92a74308788315156daa4",
+      "bytes": 24111
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftAssetLibrary.cpp",
+      "sha256": "d9e2f4bdad16de3302a16b330fb25356f738ea100a224a76041cee2b8f8b9160",
+      "bytes": 3046
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftBattleHUD.cpp",
+      "sha256": "39b55861478a1cc6dca30a4b2e29e1984105863e4e6b5ae400b9233f39b489b6",
+      "bytes": 23806
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftCollectionUI.cpp",
+      "sha256": "5ae7dc27b009a84032a7cfd9812b1295bee4303b17946d2b7e3f3b8764bf5c34",
+      "bytes": 18113
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftCrownArena.cpp",
+      "sha256": "b3cecae7f7bcb962f9e9729951b2c79b56aad833b7fde79dba1a6e209188e90e",
+      "bytes": 124
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftDiagnostics.cpp",
+      "sha256": "bdfd03a5c9b8f31098ebf73f62a81f12bffcbd6a05ccfd559461585d85b851d4",
+      "bytes": 4750
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftFieldManual.cpp",
+      "sha256": "1cbe10cabedf5825118d9d0f7dffdb07ebdf62eb9bc0d4606f9246fc7b7c2bde",
+      "bytes": 8689
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftGameMode.cpp",
+      "sha256": "240d5d6498effdfce6168b56f9aa41e326362663bc82fdaf7245614391a2caa5",
+      "bytes": 62602
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftHandButton.cpp",
+      "sha256": "b4f6815780b662b5a8950c7831c5e709d92862622f5276b6d1d35480959c059a",
+      "bytes": 4962
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftMatchSubsystem.cpp",
+      "sha256": "c0b89ba7cf16641b546078d86a6fb9ec90ac478ad7ce23898ce29282a182bc44",
+      "bytes": 9768
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftMetaSimulationSubsystem.cpp",
+      "sha256": "d5dc9628cb32c7b7ee1836fd06747c589f3d02ba87f043989c36293b82bd99a4",
+      "bytes": 45745
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftPerformanceCapture.cpp",
+      "sha256": "9e287a28260f6ae5a7cbca3995a2e28e12181b0fd4747c1707038e5628b19e33",
+      "bytes": 7292
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftProfileSubsystem.cpp",
+      "sha256": "306fb84b2f7ec1e8ea8e62892e1d38a7669577c04d4d9d52c3ca7f348d9c9403",
+      "bytes": 22175
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftReplaySubsystem.cpp",
+      "sha256": "5a0af0575622942c43e876f5e974de3130784803f04e91e7f4388f459f8a957d",
+      "bytes": 60365
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftReplayUI.cpp",
+      "sha256": "77199b01e7db0e8108f94347d4a7b39a7b257cec9c7dc719b59f20e0616812d6",
+      "bytes": 30477
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftTrainingPanel.cpp",
+      "sha256": "f24527c664a3108d500fed5cf4722845f37e0cd1bbdb31009f6aa2bf9d88d49c",
+      "bytes": 9350
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftTypography.cpp",
+      "sha256": "8d6f45373e0991955576bace26dad66a19ffabd1aa6090da76aa2ff6f52215d2",
+      "bytes": 1761
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftUIPrimitives.cpp",
+      "sha256": "cb653a1e9de5ede6bedf1ce4834f65d29df84e328afb11ba9d35aa8750e32179",
+      "bytes": 3237
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftUIWidget.cpp",
+      "sha256": "5c528f6a850e5e053d764aa3c4e0cd6d54e346e328cef0030a7f9fbd842885c1",
+      "bytes": 63470
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftAI.cpp",
+      "sha256": "6c49f975df3c4256c0871bfef5ccb147255f5c0404ff1f56680cadc41937a538",
+      "bytes": 23188
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftCombat.cpp",
+      "sha256": "3ce60d57341267ac5fc0afba01be33fa027262f66659fae7a13678505160ddaf",
+      "bytes": 13777
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftDeckAnalysis.cpp",
+      "sha256": "07d7063f15a66338892ccc65e603caa859cccd2b3d22fcd4257719bd059e21b2",
+      "bytes": 28525
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftPathfinding.cpp",
+      "sha256": "17dc4b4cccaf425f48134d907a22bff586b72332fa780832186be4555e3a6e17",
+      "bytes": 15558
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftSimulation.cpp",
+      "sha256": "60b60bbe25c2cb59a01658b0c7aafd39f9c88720b6362ec32a64a23e09875884",
+      "bytes": 36852
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftBattleInputTests.cpp",
+      "sha256": "4fbe27a4a7f8ef9659c5d78a4d1e16e41af3a6c7858e6f5646331b6126db96dd",
+      "bytes": 17467
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftCardDragSmoke.cpp",
+      "sha256": "859603875d81d38560a439bdd02ffcb43d2465840c060dcfe475da0eaaac72f2",
+      "bytes": 15721
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftIntegrationTests.cpp",
+      "sha256": "a6b2d218e641c7c8afbec22cb9e333258af8c0e0ac87112f640bcc271561a517",
+      "bytes": 81494
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftPresentationTests.cpp",
+      "sha256": "d027b77d9a0bf3269930a15b101fba78703221d65eb23ca730e5391994507913",
+      "bytes": 10525
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftProjectilePresentationTests.cpp",
+      "sha256": "4768c7e3a0cd25cc7d13a8781c15fc0f5c72cde625d0d25c871601f5564c0018",
+      "bytes": 3482
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftTypographyTests.cpp",
+      "sha256": "cfe1166bf1f92b5bc198078c316c7c741ce831fc0449d45b982beba0530921de",
+      "bytes": 5577
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftUnitMotionTests.cpp",
+      "sha256": "0d7a64b34e82ef082eedd1074473f59293c0db4e8f6838847e2a8f7fda764d24",
+      "bytes": 23139
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftArenaPresentation.h",
+      "sha256": "a9c31fe9d1c7747c64c34cab6d39d0ff6ae92437f3b0b024a53ef46bdacba448",
+      "bytes": 6633
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleAudioSubsystem.h",
+      "sha256": "c1fb344a9334157e34a439931bc8594d40d02720b5f27d14cb1c3b086269e1c6",
+      "bytes": 2156
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleLayout.h",
+      "sha256": "0d953944dccba5ffdd20cea601240a157769de54c929ba804fcef12f0ec4dd27",
+      "bytes": 799
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleOverlay.h",
+      "sha256": "ecc4bbd6d9a9a9e2729e51eaaa4fb64f5ea1ab712d6c44a389686876bb57187d",
+      "bytes": 1025
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftUnitVisual.h",
+      "sha256": "c8099aa871bdeb1f5ee9768360759f53031654d3070b0cccfda2acd62ec3a4ff",
+      "bytes": 4020
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftAssetLibrary.h",
+      "sha256": "8cfcb77f51d477773e87d37cff482542072825be38c95ea6ab43118dfc50e80b",
+      "bytes": 735
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftCardData.h",
+      "sha256": "b8956971c1192e714541db8ef11aac3501ba563df7d1752660414c7a9b86958e",
+      "bytes": 3451
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftDiagnostics.h",
+      "sha256": "93d91726c726127c03b310972a8482906dc45ec9936cc48adab01599f7750b42",
+      "bytes": 522
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftGameMode.h",
+      "sha256": "f66c2caef75a5d1f138d1c33f49c845fa77f76bbaa33bdd42bc8c1b5a5a1268e",
+      "bytes": 2999
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftHandButton.h",
+      "sha256": "4ba3b6c2c352b8ebdc399cab258bdd26f0cecc8bfb2421edbfd2866a22e4488d",
+      "bytes": 604
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftMatchSubsystem.h",
+      "sha256": "bd67f6f1dba4ab9199407a938258cd611748b8c97db898f2429d13fb93ac0c44",
+      "bytes": 3623
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftMetaSimulationSubsystem.h",
+      "sha256": "1b9a568b334ce2c0f57c891129a1f1d13cd3e00db5f7437efec6749e3295df3f",
+      "bytes": 2616
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftPerformanceCapture.h",
+      "sha256": "7962fa18d55571a6ac0b94c07eb17ff4b225472af687a898dd93ebe28879ec3c",
+      "bytes": 943
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftProfileSubsystem.h",
+      "sha256": "9a94ff3fb118194b4c296187b47e0f42bc1fae2d8d4187c58e1fb38ee9f22af6",
+      "bytes": 4074
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftReplaySubsystem.h",
+      "sha256": "35c7fa47599a4b132d58b4cdc619af1bdf818a86e1ec81806c866cb2c816e7ff",
+      "bytes": 3628
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftTypography.h",
+      "sha256": "7cac7b91d1224aea7555b932c24635ba369c3aae1209782e05f2c13f6119f840",
+      "bytes": 381
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftUIPrimitives.h",
+      "sha256": "93e9c0253a03efd8b64ccbf3bb8003c19cfb94e83edc660e56a844c6dcb101e4",
+      "bytes": 1198
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftUIWidget.h",
+      "sha256": "f4e0ad5ddfdede41af7d04143a8916b5f2a32ac599f6a16a03af338ee71652bf",
+      "bytes": 8951
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Simulation/RiftSimulation.h",
+      "sha256": "c453c1e2022f2821b05b7bdfa5f2cde0fa474040f9a85edcf2cff30e67c13817",
+      "bytes": 10006
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/RiftCrownArena.Build.cs",
+      "sha256": "2f629214df393aa0a385784eb9a752d1e47c9803f471ed69d7107f8a4e7866a3",
+      "bytes": 860
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor.Target.cs",
+      "sha256": "d8cad02a8fb12c7d19cb31a6da6ef8b7aa872415bf9860e7146541238b277e95",
+      "bytes": 417
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Private/RiftCrownArenaEditor.cpp",
+      "sha256": "487f1f731292b9b76e5e77d85ba045cac11b2045579faa5c421f57f682125e28",
+      "bytes": 95
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Private/RiftEditorAssetLibrary.cpp",
+      "sha256": "ee275b194bb70a1e77d0a1730b2caa0143f1f87697e48ce8515365e8ed85cc09",
+      "bytes": 15854
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Public/RiftEditorAssetLibrary.h",
+      "sha256": "3ed46978d15e2f9b279601a6e5339f1e89e983cb75dfa173e6410c75dfb5c372",
+      "bytes": 814
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/RiftCrownArenaEditor.Build.cs",
+      "sha256": "7f5d7d8cc4cda35f3d38ddce7d82e00f4d28cfac4c42d6c44be1eb146b954a2f",
+      "bytes": 517
+    }
+  ],
+  "importedAssetPins": [
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/SK_arc_mage_PhysicsAsset.uasset",
+      "sha256": "69d3ae89517e067682b789ef289d003e45042ccc76a0904e67495047435e8164",
+      "bytes": 6819
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/SK_arc_mage_Skeleton.uasset",
+      "sha256": "21b9bbf9a4f358d3dc083654f0979914522056db8b45af59bf5dd8f3d5491576",
+      "bytes": 7090
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/SK_arc_mage.uasset",
+      "sha256": "5b3347d4e9d7d38396243eae35af8cf9cac77247f03770873a8db629ba131778",
+      "bytes": 12743190
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/Animations/AN_arc_mage_Acquire.uasset",
+      "sha256": "156bb882da9199af65d573903566b4242578440399dc1b823c41b79e356e3752",
+      "bytes": 35424
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/Animations/AN_arc_mage_Attack.uasset",
+      "sha256": "e94f67160936955b352b7cf02d8c808180f0f44a4579fa9b885012ba55cda411",
+      "bytes": 51738
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/Animations/AN_arc_mage_Cast.uasset",
+      "sha256": "1c34f498934fe5d91ece7053f635a5d819b0248e1844267de79834302bf40bdd",
+      "bytes": 51726
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/Animations/AN_arc_mage_Death.uasset",
+      "sha256": "74875c6cfd2bcb6d08dc516689ed412500305b2da5f87d8784ed77432059ccbc",
+      "bytes": 74292
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/Animations/AN_arc_mage_Deploy.uasset",
+      "sha256": "fa8886ea20d2a562f45a21130c8013d2476a8ed699679226580d23c512be5d82",
+      "bytes": 35610
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/Animations/AN_arc_mage_Hit.uasset",
+      "sha256": "b7ff29b15f99449c92f6e4dfdd126fb3f6513720302bb846a32618c63d8d65fc",
+      "bytes": 34568
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/Animations/AN_arc_mage_Idle.uasset",
+      "sha256": "0b9ed9f92fcf9549d063a34f1c0b0d74cb316eaf7bb22e659bb6d77f652515d2",
+      "bytes": 38286
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/Animations/AN_arc_mage_Locomotion.uasset",
+      "sha256": "680ba176c95f834880fe6b780a30e850de609c9abca3e687a84593f5121e880d",
+      "bytes": 66162
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/Animations/AN_arc_mage_Status.uasset",
+      "sha256": "61d76964527187b22ffa20f58071e10b9d2cc56bed9e3218c93c68a5ebd5e371",
+      "bytes": 37338
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/Animations/AN_arc_mage_Turn.uasset",
+      "sha256": "3dbd24026b996b4f2ce0e1973089697669e466538b1b9335827f3ac8587668a1",
+      "bytes": 37134
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/SK_boulderback_PhysicsAsset.uasset",
+      "sha256": "1a932e6786b30d1f67fb31e3776f9b6870ae4d3996cd7a43de7c33815dcecd22",
+      "bytes": 13701
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/SK_boulderback_Skeleton.uasset",
+      "sha256": "432fd1fcdaa56cd7aaaf4c7e9d767c01ed16d8df9b8d95b905a2f991c330b620",
+      "bytes": 7652
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/SK_boulderback.uasset",
+      "sha256": "af9984f647cf31bb230b127be76229d6d36bb87df5f58529ca2df161769588cf",
+      "bytes": 13640671
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/Animations/AN_boulderback_Acquire.uasset",
+      "sha256": "77b098a90fc0b17a4b306c5dee96bf681accd9c507b87d65f37132b1b476e1d0",
+      "bytes": 40751
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/Animations/AN_boulderback_Attack.uasset",
+      "sha256": "7994ac37f339ff68ba43972e787d90f73bb7b0c5ea8ce9f13edba9c9d21b554f",
+      "bytes": 49769
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/Animations/AN_boulderback_Death.uasset",
+      "sha256": "1ce12d661908e74adc0223f52e9b85cc23472ddc10b2a0d0fa2b112122105bae",
+      "bytes": 58883
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/Animations/AN_boulderback_Deploy.uasset",
+      "sha256": "5a8a6f3b7af9846372e2f71ad91005f714ecff1d721799fd0759c6fa395fe082",
+      "bytes": 42089
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/Animations/AN_boulderback_HeavyImpact.uasset",
+      "sha256": "d2bd16b2c8e08614810a51729df7854f9c28153077a301c1ffd34191c853e9a5",
+      "bytes": 65159
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/Animations/AN_boulderback_Hit.uasset",
+      "sha256": "66febb002acfc51ade3db1d701790c95abd01f9ffdf199668613f6d6ec565892",
+      "bytes": 38487
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/Animations/AN_boulderback_Idle.uasset",
+      "sha256": "1a2b5bfb1cbce4791659bfa977173338208fe6f983579a5b13ea1ffd29e48965",
+      "bytes": 43997
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/Animations/AN_boulderback_Locomotion.uasset",
+      "sha256": "4487fd6f032a039cb706fe2746ab125c3cf0110f16678e793e7613ef1326356a",
+      "bytes": 83393
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/Animations/AN_boulderback_Status.uasset",
+      "sha256": "c9f8d17a25a2672215eacc19fb52f56798579020dffedc55b1c74b7287574f26",
+      "bytes": 44969
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/Animations/AN_boulderback_Turn.uasset",
+      "sha256": "bfe5aaff14bfac57620afc910783172dd893f920b695affc49729083a90b67dc",
+      "bytes": 44381
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/SK_ember_archer_PhysicsAsset.uasset",
+      "sha256": "36a9f5b357f7c38cd4d20344cc17d66191fe260e854c68b284098b9851e4741e",
+      "bytes": 6871
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/SK_ember_archer_Skeleton.uasset",
+      "sha256": "5e2c4a5edfdf9a208b03ec30aa5fb2a38608a128708e8f5227927a93697d3136",
+      "bytes": 7122
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/SK_ember_archer.uasset",
+      "sha256": "7be699491bc3ac453d2dfa086135a0607af2a3fca93a739641c3a68f81304b86",
+      "bytes": 11071177
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/Animations/AN_ember_archer_Acquire.uasset",
+      "sha256": "87d803ab8c4bef34595c8478854d7b01915a2244e72925bb232be699a8674379",
+      "bytes": 35492
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/Animations/AN_ember_archer_Attack.uasset",
+      "sha256": "b4a9d08e826a63e7bc7bb90f56076df28cac3a5860bd39dd536646e2c554d0d8",
+      "bytes": 55646
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/Animations/AN_ember_archer_Death.uasset",
+      "sha256": "4d09a94bdbcd55e8232b6229a98147170da7c56235afcb3dd157a85d42e9ed9c",
+      "bytes": 75800
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/Animations/AN_ember_archer_Deploy.uasset",
+      "sha256": "16bca8ae57d211f1f7c083b95e7d5ee7d9a0a1b17ccbcef22882785db872a490",
+      "bytes": 35678
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/Animations/AN_ember_archer_DrawRelease.uasset",
+      "sha256": "5e5dd10b12033ada40235182300daef6c180d836d914fb86f358b7381d737e1c",
+      "bytes": 67964
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/Animations/AN_ember_archer_Hit.uasset",
+      "sha256": "04b0fe05d37297302564bec70e258ade989afdf5213262a9abcc55bd715efd47",
+      "bytes": 34636
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/Animations/AN_ember_archer_Idle.uasset",
+      "sha256": "20896257b445b82698c41e21d468bfb42d4b7a820a893b7f09a211874ad6658d",
+      "bytes": 38354
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/Animations/AN_ember_archer_Locomotion.uasset",
+      "sha256": "ab6b6819d2a9f5f1670df675b3579a53bc61a26804bd7a19873639b07402b0c2",
+      "bytes": 68150
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/Animations/AN_ember_archer_Status.uasset",
+      "sha256": "32d4dc534b074f96b52d3a906b060eecc2b61372cea305d6e8b9845fd10fc8f1",
+      "bytes": 37406
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/Animations/AN_ember_archer_Turn.uasset",
+      "sha256": "91349c9ecb1b09023f5718ee854172b3f764cbb3b1ea114505a8056fbbfef7a6",
+      "bytes": 37202
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/SK_frost_fang_PhysicsAsset.uasset",
+      "sha256": "9c51563349b8141a06a40218591d4699f5f521d49c3e52b8f2ad5e54464556e8",
+      "bytes": 13689
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/SK_frost_fang_Skeleton.uasset",
+      "sha256": "6dcdc49d77d01f0897eadacbd1265f4adbf36faf9c069227058dec6365b78676",
+      "bytes": 7644
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/SK_frost_fang.uasset",
+      "sha256": "ec0e27dc2acc2fab138c30d3f85e2577b2cf8fe85145f46568c369ffa5d4c9c5",
+      "bytes": 14231963
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/Animations/AN_frost_fang_Acquire.uasset",
+      "sha256": "3e9ea74ea6f829b3e964b1d1c037e942095adbf9f890d15d530d98888082248f",
+      "bytes": 40734
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/Animations/AN_frost_fang_Attack.uasset",
+      "sha256": "d558b665303683b2cf2acfcda309e665cb448c558e4f520c69531691416aa763",
+      "bytes": 49752
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/Animations/AN_frost_fang_Breath.uasset",
+      "sha256": "82ba62861be667c5cd0a83a42ff519aeca7f36a495e095e930eb39b232690d73",
+      "bytes": 45912
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/Animations/AN_frost_fang_Death.uasset",
+      "sha256": "b83218980a2067456f1dea25b2405ee26ffeb0ebf3d34c8d698fcf1001c384ab",
+      "bytes": 58866
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/Animations/AN_frost_fang_Deploy.uasset",
+      "sha256": "818d54ee14aa6bb8236d1420524763e31dbf8ea690a400404e85fda2e28d23b0",
+      "bytes": 42072
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/Animations/AN_frost_fang_FrostAttack.uasset",
+      "sha256": "ba2c55e286bd68eab71fc42f509cdb48415271f09cd839f614fa67a32e563f7b",
+      "bytes": 45174
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/Animations/AN_frost_fang_Hit.uasset",
+      "sha256": "5c218a411f8ea5a623924c1d6e311f65bfca682c74f4a6d31a9cd3459d5004b5",
+      "bytes": 38470
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/Animations/AN_frost_fang_Idle.uasset",
+      "sha256": "d8b8344db699402fe91e13dbd99e2d66a44ded5127b366b779a4057ace39fa79",
+      "bytes": 43980
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/Animations/AN_frost_fang_Locomotion.uasset",
+      "sha256": "0d2c01f18f66362d5b9bc25ea1ba2d97ae3ddb9d85288766b984114b75644792",
+      "bytes": 83376
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/Animations/AN_frost_fang_Status.uasset",
+      "sha256": "2e6b21ceb76af5c65b3f5e5fe585bf9517db5ddcd28724f2accd8ede21776dc0",
+      "bytes": 44952
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/Animations/AN_frost_fang_Turn.uasset",
+      "sha256": "8e45fda3d7547d37e577e6c193a1bf794df6b8da51f27299e37533fc62c472df",
+      "bytes": 44364
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ironclad/SK_ironclad_PhysicsAsset.uasset",
+      "sha256": "51d3fbf39bff890498ed51310bd9d00fa0fb6979ff967c73451d4e78b5596a4e",
+      "bytes": 8478
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ironclad/SK_ironclad_Skeleton.uasset",
+      "sha256": "5bca560f0a0f54ffdb33e1d2d5cad58c043abc0d6a73ade12549fefb69acb0b6",
+      "bytes": 7090
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ironclad/SK_ironclad.uasset",
+      "sha256": "a5344d58c23bc9219405cdecc5da63422cfa642d0b27f9905ec05b94943c5fcf",
+      "bytes": 11728964
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ironclad/Animations/AN_ironclad_Acquire.uasset",
+      "sha256": "b7008f527c73f3ed949b090f71d321e2e1b4705285b5f9ce9e896706607971d1",
+      "bytes": 35424
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ironclad/Animations/AN_ironclad_Attack.uasset",
+      "sha256": "473f7e386bcd3701cc36117ed1da8560d240c9f8a75b2c56113a568352245a64",
+      "bytes": 49818
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ironclad/Animations/AN_ironclad_Death.uasset",
+      "sha256": "921ce0030e02be8aa11d5efc3eed226a9a530fff740c072e45c6bd09bc9c33bb",
+      "bytes": 75732
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ironclad/Animations/AN_ironclad_Deploy.uasset",
+      "sha256": "fd498ed629d2414aa4978dcfdbabee8bf842fbb02fee6e8759b633d273e272ff",
+      "bytes": 35610
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ironclad/Animations/AN_ironclad_Hit.uasset",
+      "sha256": "dbe4e0f95b1492bb42d54bd1bb7694182954b6fe2c690df188e3a1afb8504fbe",
+      "bytes": 34568
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ironclad/Animations/AN_ironclad_Idle.uasset",
+      "sha256": "80bb9f3326eedd6602276222657603d6f4463fa74b1624a4ea6a1a2aaa1bc014",
+      "bytes": 38286
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ironclad/Animations/AN_ironclad_Locomotion.uasset",
+      "sha256": "95485378c9ead729c7f40b93e3150061f0fab75b0e92460268d9b52d1a45747c",
+      "bytes": 68082
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ironclad/Animations/AN_ironclad_Status.uasset",
+      "sha256": "057c0b82b15eab00caa110e74cfdb83e3a48c2b3b5b2107f1e9b310576ee7e90",
+      "bytes": 37338
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ironclad/Animations/AN_ironclad_Turn.uasset",
+      "sha256": "ed845d75eb4563ae387da033225534e2507a3dc6bb8083494f54e27e46bb0ad7",
+      "bytes": 37134
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/SK_rambeast_PhysicsAsset.uasset",
+      "sha256": "97400ba9c810a24da9e660a6086e209ce76f0318393f6887c8c3f00b1927bbf3",
+      "bytes": 13665
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/SK_rambeast_Skeleton.uasset",
+      "sha256": "dc8a7f11157b091b36f8e4748dcfe9e83efee680fb4461a512a5ecaf19370633",
+      "bytes": 7628
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/SK_rambeast.uasset",
+      "sha256": "a1629d2ab8b95c4f4354270f58356732d9d45b492803194620476dc2e56bbda6",
+      "bytes": 15224082
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/Animations/AN_rambeast_Acquire.uasset",
+      "sha256": "1c9c8577922b49d0c0ee8d0ee6615638e721378ae371e36e5977142878c5571b",
+      "bytes": 40700
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/Animations/AN_rambeast_Attack.uasset",
+      "sha256": "d213e4a9a7fcc848a4e98427395b8bb8bb2950fb3c63457449e21c15917a5cc7",
+      "bytes": 49718
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/Animations/AN_rambeast_Charge.uasset",
+      "sha256": "98b69425e5b00fc9857e54c03f02b9c2e6cb00a3b76eb8d0d9eab28b360e9a02",
+      "bytes": 81398
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/Animations/AN_rambeast_Death.uasset",
+      "sha256": "39cbae84f939769aa4a4b411f06cbdfce80279ab3efa4799b1773edc21ebf188",
+      "bytes": 58832
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/Animations/AN_rambeast_Deploy.uasset",
+      "sha256": "fd3345050ec67269d1a1a8c5034c3e411e00d88eec8347fbff3345595e541a5e",
+      "bytes": 42038
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/Animations/AN_rambeast_Hit.uasset",
+      "sha256": "ae440d2f8a9a59a15629579de191f28e56072a3c97179295b1adbb84c2f0698e",
+      "bytes": 38436
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/Animations/AN_rambeast_Idle.uasset",
+      "sha256": "29591ea70edc33a08d1d095e8ded3a2b77dce9998c0a03438061cdbf3c493ecc",
+      "bytes": 43946
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/Animations/AN_rambeast_Locomotion.uasset",
+      "sha256": "27c595bdb3df9b2abd61eb18b212b1c39d5d5b1d0c60414433c7191503ae2f74",
+      "bytes": 83342
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/Animations/AN_rambeast_Status.uasset",
+      "sha256": "10fe90cc0978bb6a45a13542da545ddc602f29b035df79e1950c9f1737a3a398",
+      "bytes": 44918
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/Animations/AN_rambeast_Turn.uasset",
+      "sha256": "3560527760dea52cdff96d467f83e4d9468adc6e0fbb3b6bd97e09df637ad058",
+      "bytes": 44330
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/SK_sky_manta_PhysicsAsset.uasset",
+      "sha256": "8664d82794c2b4b72dbf968d00e0757c337114478d851f63ee483d63e89717d2",
+      "bytes": 6988
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/SK_sky_manta_Skeleton.uasset",
+      "sha256": "a57a27af0b48f232aeae698431ed383ef4093c07e8624b3f2725113e257bfbcc",
+      "bytes": 6141
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/SK_sky_manta.uasset",
+      "sha256": "a54913c47df4625b743e4ef97fa67e25779200f00c6bc3e2b5f7da4a896a6734",
+      "bytes": 6641248
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/Animations/AN_sky_manta_Acquire.uasset",
+      "sha256": "7a723048bf989ba103f38f3e2d958a524bd96f51321da3728fec7e1e7ac3df4d",
+      "bytes": 42605
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/Animations/AN_sky_manta_Attack.uasset",
+      "sha256": "25bba38a63d491c35e95618a821c9fa9bf792d8eea083cc17dd0f9f277a59774",
+      "bytes": 53159
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/Animations/AN_sky_manta_Death.uasset",
+      "sha256": "8ab7556a6baaaaeb314af7c090e6c037d3f5117a92dc92b73c279b2db0ccb745",
+      "bytes": 74273
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/Animations/AN_sky_manta_Deploy.uasset",
+      "sha256": "a80c085cdbe4ccf80c3f8d921dbf526e063faa90c395cdaeb6b70aea97230ea0",
+      "bytes": 46631
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/Animations/AN_sky_manta_Hit.uasset",
+      "sha256": "11b1e083a112c6ba7617f2263de461d5f9c636a01ea12fb7d2c7d60ace1430a1",
+      "bytes": 40469
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/Animations/AN_sky_manta_Idle.uasset",
+      "sha256": "8a37b9a754fafb2ac09d34cda8f50f7c41dff440fca8462df641656492405fa3",
+      "bytes": 70427
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/Animations/AN_sky_manta_Locomotion.uasset",
+      "sha256": "36907a3ad61da515d48e4f88d42cab0b32cb699c147d759d7c9071adad744877",
+      "bytes": 49343
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/Animations/AN_sky_manta_Status.uasset",
+      "sha256": "f3babb3d3e64d855125014a6bca97a32c6e3fa0a4a5046bfd07e341100f11da4",
+      "bytes": 53159
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/Animations/AN_sky_manta_Turn.uasset",
+      "sha256": "023d1ef87db630b686821497555cc063e5846ea8703296a472d85d870b36242e",
+      "bytes": 49691
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/Animations/AN_sky_manta_WingCycle.uasset",
+      "sha256": "d71aa8ba6612e19a45e3851747c11c76c76668c7a2890bea8d2bd7a479ce2bc8",
+      "bytes": 57785
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/SK_storm_raven_PhysicsAsset.uasset",
+      "sha256": "91c97df221a3696c761c2a806765e9dbd0a096f1b27de96b219c44961a155f92",
+      "bytes": 7012
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/SK_storm_raven_Skeleton.uasset",
+      "sha256": "81ba98a9c297bb4af575e973d6e613c5e7748f193c10aabd8b09624d3a4342c6",
+      "bytes": 6157
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/SK_storm_raven.uasset",
+      "sha256": "9d2b32df4eac7fc35e22f1857dc2b7d3a0f55d414b15aafaab923e68fc25ca5c",
+      "bytes": 9415068
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_Acquire.uasset",
+      "sha256": "6731af7d42f3637014a456b49029c54b5e1f2c91e72f0bb0a3b1354da1db719d",
+      "bytes": 42639
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_Attack.uasset",
+      "sha256": "b90454996effe0a9f829bd67ede6a4432ad7b2e688cb76dd0746324de6f72e93",
+      "bytes": 53193
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_AuraCharge.uasset",
+      "sha256": "251f4609c8bb21575474cf6bd40d74ec2737e35c53aabe091ced947766974612",
+      "bytes": 61377
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_Death.uasset",
+      "sha256": "6238159c4664253335462f6b6ff9cb470ccc1ee1f228d6064067bcc6d9e9cbb7",
+      "bytes": 74307
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_Deploy.uasset",
+      "sha256": "ed6c77567583874f6b669b2dac2e7925340e2b75773717b971957081527c9273",
+      "bytes": 46665
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_Hit.uasset",
+      "sha256": "19d3f8764825cbbaafcdf53499f41ef6d955072f6438a8d2b4a32373f71c8ffb",
+      "bytes": 40503
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_Idle.uasset",
+      "sha256": "1b0390599bb186fffd46541da2d39effbd6619b2124a6fbf515b0b310467e47f",
+      "bytes": 70461
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_Locomotion.uasset",
+      "sha256": "81689aaf7e0f73c06378252d083f5fe4462c5d46fa9969913f41225e3a1a780d",
+      "bytes": 49377
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_Pulse.uasset",
+      "sha256": "92e319ec05d85c9890f4bd93f2096f91518dc1bcaedb1e366c963097d34ce9ee",
+      "bytes": 41475
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_Status.uasset",
+      "sha256": "098d3d3bb07e7696269980b08351a7e111d8e4ca3fbb5fa3e78b4bf14b0ba1b6",
+      "bytes": 53193
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_StunDischarge.uasset",
+      "sha256": "a6c1495b4b838a8865d7387adaffe1cc6d72faebc51031244817085aff688f2e",
+      "bytes": 41523
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_Turn.uasset",
+      "sha256": "d9e2580f1bde08811d952ed26572b8b042af08e414a7c1b05700a8980d9651e5",
+      "bytes": 49725
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_WingCycle.uasset",
+      "sha256": "01044d4557197fb0eb79ca52f25a2d23acd7f9ab638f0931b88493004d6ba172",
+      "bytes": 52443
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/SK_tower_archer_PhysicsAsset.uasset",
+      "sha256": "653088b26f27c29016c0c28efb6ec6ce4b5c87a468a00d4f233953cac60f22ef",
+      "bytes": 6871
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/SK_tower_archer_Skeleton.uasset",
+      "sha256": "b12ea6495dc92f9f0c2665dd71e6aa731ddf3ce8b85236fe5078ab0eae7ec13e",
+      "bytes": 7122
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/SK_tower_archer.uasset",
+      "sha256": "7c61a8db43e65f4f819e25511d6ed493f74851c654ae86c07f108f809cbfe443",
+      "bytes": 11074510
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/Animations/AN_tower_archer_Acquire.uasset",
+      "sha256": "241f4b655434563cea7790b28badbd7e4fe60bb47a1dea629f88b4014c1999b2",
+      "bytes": 35492
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/Animations/AN_tower_archer_Attack.uasset",
+      "sha256": "9db69b0e22853caa78765a4d630667c80c84da9c9e39bc92068cf5e3d3281efe",
+      "bytes": 55646
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/Animations/AN_tower_archer_Death.uasset",
+      "sha256": "5bad09cf37c1fba0022e197a45e610fdc7748446750a0f63c6af0d19f647b60f",
+      "bytes": 75800
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/Animations/AN_tower_archer_Deploy.uasset",
+      "sha256": "3e9875283d4978bd0f6a2c3f0d9fbd357b17e164035324b5eb11d2ac81a3b7a7",
+      "bytes": 35678
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/Animations/AN_tower_archer_DrawRelease.uasset",
+      "sha256": "297a602d0f4d47fe469fe1b6cf43ae2982ea0290061a5d1c6834b8e2c3fbc7da",
+      "bytes": 57980
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/Animations/AN_tower_archer_Hit.uasset",
+      "sha256": "eae9cf1debf802a594c5e10a48d2d23277749e7a3fef3f3ec3d98613c48d43d4",
+      "bytes": 34636
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/Animations/AN_tower_archer_Idle.uasset",
+      "sha256": "96e2ed6e7fb4c67d32025913d546b8ff7853bdf2d0c1c0ad2f7b8a0b481839c8",
+      "bytes": 38354
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/Animations/AN_tower_archer_Locomotion.uasset",
+      "sha256": "de309b0f541c73911b2218c465e4235351a27d683d7955b469a6bbc2b128ecc0",
+      "bytes": 68150
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/Animations/AN_tower_archer_Status.uasset",
+      "sha256": "9036b219ef547432e9076a17ec2b57762285025666eaa81a753b32d4cc4770c4",
+      "bytes": 37406
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/Animations/AN_tower_archer_Turn.uasset",
+      "sha256": "f891524a6556e6d0182d7075b74adc8847ee75d3e2069b12dcdf9d77363130e0",
+      "bytes": 37202
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/SK_twin_blades_PhysicsAsset.uasset",
+      "sha256": "d4b556e97155c6f2c5b3eb9049649b89ca34f4ffe649fbb93ff153bfb04974c3",
+      "bytes": 5182
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/SK_twin_blades_Skeleton.uasset",
+      "sha256": "ef297576e730681aaf6dc930fd1c99090d693da896b877927ac677f783b3c7dd",
+      "bytes": 7114
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/SK_twin_blades.uasset",
+      "sha256": "47ff279f262f330f87f39b8edd0c343832ab0bc2f44f91a5c4a1a457e2aea4cc",
+      "bytes": 12464784
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/Animations/AN_twin_blades_Acquire.uasset",
+      "sha256": "2899abfe5282483f1d76a70300fb685375e15996454ea87c5542d2fab6df5c21",
+      "bytes": 35475
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/Animations/AN_twin_blades_AlternateStrike.uasset",
+      "sha256": "a3d8b30d2923e18bca21449a09ded272f4577f72d5fe8be3bc7daee19ef13805",
+      "bytes": 70659
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/Animations/AN_twin_blades_Attack.uasset",
+      "sha256": "417703de6b2996b11f7c1b428492a990d2bbe4dba758398f23c6d24793a3ada8",
+      "bytes": 57549
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/Animations/AN_twin_blades_Death.uasset",
+      "sha256": "78fbb6241361c2caaba23eae6042e84d16030ef8df33fabb75342b2587c02b98",
+      "bytes": 75783
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/Animations/AN_twin_blades_Deploy.uasset",
+      "sha256": "8f6117df6df36933aca60defe8502f8be634572228dfaa72fcf3465ec5f358c5",
+      "bytes": 35661
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/Animations/AN_twin_blades_Hit.uasset",
+      "sha256": "78e19192ec8fd82b32efcdc718b2b93a8f31334ea92e7d69b0c86a1ab0a3f7a9",
+      "bytes": 34619
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/Animations/AN_twin_blades_Idle.uasset",
+      "sha256": "d6af5e4dd59af7c42a6821ec9554baebf02580b59afe2a10f6f19f842a5851aa",
+      "bytes": 38337
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/Animations/AN_twin_blades_Locomotion.uasset",
+      "sha256": "8f67dc16c4e1fa4ea119427b00714c49885ac4040c1341e3a5921c07adbf0d75",
+      "bytes": 68133
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/Animations/AN_twin_blades_Status.uasset",
+      "sha256": "7dbcdb064e8992fede686c356b73315ec152666d7fd84fac4313063d617d6058",
+      "bytes": 37389
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/Animations/AN_twin_blades_Turn.uasset",
+      "sha256": "1f23ad3e0a8b440d44e4547a3d618f6985e84646ce188ab7f6da942ed208fbcd",
+      "bytes": 37185
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/SK_vampire_bats_PhysicsAsset.uasset",
+      "sha256": "497743bdff02ed8667b8a52842279f2840b50d3c8fc5173419ec704cf0dc77fe",
+      "bytes": 3184
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/SK_vampire_bats_Skeleton.uasset",
+      "sha256": "4f4c7fa94220553d78470ad18f5c8647462079b21c704d252561ef526189ddc5",
+      "bytes": 6165
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/SK_vampire_bats.uasset",
+      "sha256": "8d8da6110d08355db2f647e64336c6fe9489b20357250628a57936352f0e9bd5",
+      "bytes": 5555138
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/Animations/AN_vampire_bats_Acquire.uasset",
+      "sha256": "918e4584114ce4c8681c1ad5bf2bed9e01e0da209b382f3d8cf77caba958602f",
+      "bytes": 42656
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/Animations/AN_vampire_bats_Attack.uasset",
+      "sha256": "613771cec6545e04a86695dcf6e4ce94463f0148936ff04a3295a5afffa44212",
+      "bytes": 53210
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/Animations/AN_vampire_bats_Death.uasset",
+      "sha256": "8b6ebcc0e048c66c92fd8d3e3b1677ca228d80e247c8215740163edfca2bd20e",
+      "bytes": 74324
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/Animations/AN_vampire_bats_Deploy.uasset",
+      "sha256": "92231d8d6cae4613f6e3160282d488178a3c0c4e35c5609795fdbbd1bca1087f",
+      "bytes": 46682
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/Animations/AN_vampire_bats_Hit.uasset",
+      "sha256": "0805efbd711f05e1c008391855077dd298e7200c0333b57cc6d82a66aebf17dd",
+      "bytes": 40520
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/Animations/AN_vampire_bats_Idle.uasset",
+      "sha256": "6496154fac01b3784134d56aebf50e1858689ffffb4183a39acce1be0330220d",
+      "bytes": 70478
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/Animations/AN_vampire_bats_Locomotion.uasset",
+      "sha256": "02c7d4aa81971c8b47f9ebc223101e1b4fb762a247b31e22a1ac5b7ee8098eb0",
+      "bytes": 49394
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/Animations/AN_vampire_bats_Status.uasset",
+      "sha256": "925722f86c0e61df778aeae775761d5b3908e8ed98a900d7769d3c2b1ad1328e",
+      "bytes": 53210
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/Animations/AN_vampire_bats_Turn.uasset",
+      "sha256": "620c2a57c920d80580b41c91f69d0e2d51e96a512d9d8d94a618856957f4457a",
+      "bytes": 49742
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/Animations/AN_vampire_bats_WingCycle.uasset",
+      "sha256": "57ef9e1f3dad04d453c4370ffe92ec6f2d690cce02ef7c5befd7838ebb2ecda6",
+      "bytes": 39020
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_arc_mage.uasset",
+      "sha256": "68d9db7766bbd6841634459446b0a0b25e549cf0d097ec912c5ccdb7ce0f8840",
+      "bytes": 747598
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_archer_tower.uasset",
+      "sha256": "653c2c0f400298ec0d05ab21ef52706885f65b81c4f901c7fdbb8064a73cdb47",
+      "bytes": 758846
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_boulderback.uasset",
+      "sha256": "6108c807eecfedaf8dedfd4e29ace5ddd17e62961f4c72ae12ff694510c36b44",
+      "bytes": 696818
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_bullet_burst.uasset",
+      "sha256": "f70fbde66390a4ca9997224c939adeb701f983ebe211fadbf0a6b92bfb7db684",
+      "bytes": 686313
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_ember_archer.uasset",
+      "sha256": "9e7900ae57a4a33c7869cea333baa1e830b02ef78e8ad734955c7d9a2e6e02d9",
+      "bytes": 766077
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_frost_fang.uasset",
+      "sha256": "b0756a9bf336ff0a58593acc4054237f384930e70bc0f049f839324c6a9b2ae7",
+      "bytes": 717568
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_ironclad.uasset",
+      "sha256": "8359bab8382c77c8a2b8142ff0d3f879eb7288402324b964c0b8c36c4e1a3035",
+      "bytes": 791530
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_meteor_shards.uasset",
+      "sha256": "c20fc24e052978f2393efd8eaefbdc173d3c5ba9da1da549390985197d0cad9e",
+      "bytes": 674177
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_nova_flask.uasset",
+      "sha256": "058dbcd307c9fb463d92ff7ee8d6af2323152ceef1806a41ee3ac98536ceccca",
+      "bytes": 777686
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_rambeast.uasset",
+      "sha256": "4d67b27bc6d61844f81219ed04551dfe1e9708286064148187e4b87fed0fc5bb",
+      "bytes": 712362
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_sky_manta.uasset",
+      "sha256": "c586401661ba5b3b2b831d2d33a68c3b229c79915a9fbb04350c0b927db00f94",
+      "bytes": 638223
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_storm_raven.uasset",
+      "sha256": "61d399bd32c8cf7ce31431025dddc9f6fdebc554da803391d774a8d84f494fbe",
+      "bytes": 656351
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_twin_blades.uasset",
+      "sha256": "17b16d6991aef2f30e7933556233bf3ea89256ccdf7dd97d5c648a76acc7258b",
+      "bytes": 758804
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_vampire_bats.uasset",
+      "sha256": "fd79ac3092b7f399a4ed8555fc84496020f907fbb7564fdfd960590c324947df",
+      "bytes": 654057
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_arc_mage.uasset",
+      "sha256": "9ae2637108daaeba2cfcd5b81cbd916412d6e7936e66a3e7d7a990bf1629d7c1",
+      "bytes": 8521
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_archer_tower.uasset",
+      "sha256": "95c110ccd42971b5f264fc0ba2bb73331561bfe721b4e50cc35cd31348a8afb8",
+      "bytes": 6571
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_boulderback.uasset",
+      "sha256": "9ee0732f18cdcd5cf1ff68bca3a41665a57212bb3fa0d8f80b067486afb912a5",
+      "bytes": 8577
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_bullet_burst.uasset",
+      "sha256": "b7e19d81e3a605d622e14632aa647551fc47ca66606357762893c36e5fe7e92a",
+      "bytes": 6167
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_ember_archer.uasset",
+      "sha256": "01d791b121899722d885eb8bf3a863be5bd78e2d55d82aa15d7b94de63737568",
+      "bytes": 8674
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_frost_fang.uasset",
+      "sha256": "ba8f4dd8f0c19e0adfbdb3b60efbf2aa6fc98801604a4b9eadf190b2bf3d0c00",
+      "bytes": 8772
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_ironclad.uasset",
+      "sha256": "f6cec5353fae2e89d36e43fc2290dc217a89c1872fa18accc110314630aca639",
+      "bytes": 8158
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_meteor_shards.uasset",
+      "sha256": "115cb47535f67d88f1b6e2ec6b32ba62a8834645f05f2c0b2966aee5c72304b4",
+      "bytes": 6232
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_nova_flask.uasset",
+      "sha256": "d28c896b1455f8db78b0430d0bd4a369efcb4d541a0c301d9c0f26c5c4f6dc29",
+      "bytes": 6052
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_rambeast.uasset",
+      "sha256": "092132cc44a55e60d3fb3c2b4d6b5f6e1681c347d8d7759f7ceb01ad2aa6682d",
+      "bytes": 8472
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_sky_manta.uasset",
+      "sha256": "b0e439376c1f396b769c277139b1b5e4f1393466a621107f9ae321101301170f",
+      "bytes": 8574
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_storm_raven.uasset",
+      "sha256": "933151db5a683747a2da09cf93a3d97f00162bf3fe7042645056ca40fe58148d",
+      "bytes": 9526
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_twin_blades.uasset",
+      "sha256": "cc097b2009b4c81b206bab4771f5782e22a57a28060eb19274ed054890b13357",
+      "bytes": 8565
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_vampire_bats.uasset",
+      "sha256": "d17e5a527270d63232d8f431ea57642674ee7df81ee6336225ae1ad58ca1f5ab",
+      "bytes": 8692
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_arc_projectile.uasset",
+      "sha256": "7f7ce076fd09684ec64988bb88480a825fa82609c915c320519b67fc2ab2b5a4",
+      "bytes": 39826
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_archer_tower.uasset",
+      "sha256": "6f5d680edbb6223ae002aea3837f3754d25722e9db8c9f33af0af63c3386ddd5",
+      "bytes": 787247
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_arrow_projectile.uasset",
+      "sha256": "834a6a9c65dbd4869ef15381377c44a2572ca263c620f43857646d6bfdf6da60",
+      "bytes": 75898
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_bank_segment.uasset",
+      "sha256": "c0d36cee69581cc4471ff1869b205b8fa3b78ef306ee781330a46cef38e7b6c6",
+      "bytes": 86354
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_banner.uasset",
+      "sha256": "257e4f841432a565562f8565174b5d1dfdb784dcebe87b0b17267a775235032b",
+      "bytes": 56011
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_boundary_stone.uasset",
+      "sha256": "ea08012e76b317fdff0d4bca4f4945cfce313d8533da4444b124c0efb91ffdeb",
+      "bytes": 69248
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_bridge.uasset",
+      "sha256": "f4afdec7f5849b2b70f3eedc0d8884edae490e6fe205a3cba71ed41af5207972",
+      "bytes": 490730
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_bullet_round.uasset",
+      "sha256": "a232d9016c60fc4fbcbdce6ebed06f2180b3e432272d1e73613766cc69e42f45",
+      "bytes": 122741
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_crystal_plinth.uasset",
+      "sha256": "38a416902a486d08160091d600fa043124820d4f44e68aa8efa4d0eff181b918",
+      "bytes": 57612
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_distant_island.uasset",
+      "sha256": "52c955e0436bd5b118f90cf4a59c475e0b08f3aec0417363425310dd68c53a7f",
+      "bytes": 77525
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_floor_tile.uasset",
+      "sha256": "5c1416ae78307d44a4ea94f804e74843b7a1e48927ab9b85b917d6a961154b62",
+      "bytes": 93035
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_grass_tuft.uasset",
+      "sha256": "b7266fddd741ceea5f76c45786af8d2a42ec45eada2b304dc42261e8e1be7b20",
+      "bytes": 67797
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_guard_cannon.uasset",
+      "sha256": "9bc24280d7ea4e710b6bcce9123d1f555b0ddad81493fa703a510f4e6755a32c",
+      "bytes": 193407
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_lane_paver.uasset",
+      "sha256": "cd81e9e7bc44c08aa052d3d51176207119b20783d955c7269d40e0ff24d36721",
+      "bytes": 44759
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_manta_projectile.uasset",
+      "sha256": "ac111f2d0059e5ca0e74907ce7f611875db8f067a85c7792484e8c24f8744086",
+      "bytes": 38087
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_meteor_shard.uasset",
+      "sha256": "c2d9e68b84ad49b3ea044b353173c1f3f8fd5594d51c850f280a5669c6f6ee42",
+      "bytes": 45769
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_nova_flask.uasset",
+      "sha256": "c0ab8016c938a509cc6ff5e433363a630c24d570bdf70a4fd539e313c36e6479",
+      "bytes": 310447
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_projectile_trail.uasset",
+      "sha256": "8e34c5cda1fa8324bce27970cd2bb4003e5815577dce5048fea623d400b816bd",
+      "bytes": 31902
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_ruin.uasset",
+      "sha256": "2bb2283476fa119ad1b57b7b8871bd1cee723f93c84b19f86745b508262c14f3",
+      "bytes": 137669
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_shrub.uasset",
+      "sha256": "7df53981a25d6925322af464d3dfece91ff42ae4daa70bbfc7b9c7559abb8520",
+      "bytes": 108613
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_storm_projectile.uasset",
+      "sha256": "8fa36e6701e465ac42aeafa3b800b5bd4037c054d47f73cc3f3cf48575808234",
+      "bytes": 43837
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_tower_core.uasset",
+      "sha256": "3fa9034cb0246c73038d5fd1d904d851ba8ed3a4bef09900a353827120800721",
+      "bytes": 900256
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_tower_guard.uasset",
+      "sha256": "f3e62af4858b2cc5f5f55f457a6439e3518e74ef3b653483002b10f896d16513",
+      "bytes": 749578
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_tower_rubble.uasset",
+      "sha256": "b78a4d43fcb12800496b7fa152303871cd5fa8f13010ddead808faa22de7bb79",
+      "bytes": 156797
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_tree.uasset",
+      "sha256": "4a0af5a6c1ea1fa546e2b130b865dc1d02edec1f2bba435053125f1d03b19185",
+      "bytes": 428713
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Fonts/F_RiftUI.uasset",
+      "sha256": "79d4556b4434781bc969a82c75c283ffbe74229f151f2a240641e4ee04d713ea",
+      "bytes": 3977
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Fonts/FF_BarlowSemiCondensed_Bold.uasset",
+      "sha256": "58097e672ffbd5ee709ee330fcd12d3f6eec2b4cb33573932907ce4e7d5b7951",
+      "bytes": 172495
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Fonts/FF_BarlowSemiCondensed_Medium.uasset",
+      "sha256": "361ba07fe4743cf97d397fe0d3646663c73a7f9f336ab9a85b7f0594a1cf2656",
+      "bytes": 165895
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Fonts/FF_BarlowSemiCondensed_Regular.uasset",
+      "sha256": "40d0884510c106e6a7fed08d020bd2272a76cb047110f659cfc0adf2dda949a5",
+      "bytes": 166073
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Fonts/FF_BarlowSemiCondensed_SemiBold.uasset",
+      "sha256": "cbd822c6463565845bbf5f42db4c7de08fdb1346fe0d222aee49d92cdac6e82d",
+      "bytes": 170415
+    }
+  ],
+  "importedAssetInventoryScope": "Original imported asset hashes. Editor mesh/animation/texture bytes remain in the maintained repository and frozen native package; this evidence archive includes all raw FBX exports, authored source PNGs, and UFont/card-binding assets.",
+  "inheritedRulesAudit": {
+    "version": "1.2.1",
+    "games": 100,
+    "fingerprint": "b3968027993fd0ece72577b77c48d76e",
+    "runtimeSha256": "4d39a5c798f65200daf1d9121e6c715a471b9d64437764658d9ec4f36697c768",
+    "allSixAuthoritativeSourcesUnchanged": true,
+    "newBalanceCohortRun": false,
+    "historical10000GamesAreCurrent": false
+  },
+  "publicDelivery": "Pending publication; anonymous download and published-update reports are separate postpublication evidence."
+}

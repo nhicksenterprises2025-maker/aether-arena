@@ -1,6 +1,34 @@
 {
   "schema": 1,
+  "version": "1.3.0",
+  "provenance": {
+    "assetManifest": {
+      "file": "Assets/asset_manifest.json",
+      "bytes": 126881,
+      "sha256": "9a22575ae1356d7ae787c646d05d83f97920db6645846f319a982cf725309a7a"
+    },
+    "sourceBlend": {
+      "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
+      "bytes": 12048439,
+      "sha256": "e05ec2783365cef7543c600bfbf236f7a96e457a2424ca2b2d809540be290cd6"
+    },
+    "validatorScript": {
+      "file": "Build/validate_assets.py",
+      "bytes": 8049,
+      "sha256": "f8a0f2519b3c089980433c961bab3a304844a30175a9881a3a3dddb3d265008d"
+    }
+  },
   "checks": [
+    {
+      "name": "Production scene exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Production scene SHA256",
+      "passed": true,
+      "detail": ""
+    },
     {
       "name": "ironclad source mesh",
       "passed": true,
@@ -15,9 +43,9 @@
       "name": "ironclad dimension manifest",
       "passed": true,
       "detail": [
-        1.3939998149871826,
-        0.6705851554870605,
-        2.1924731731414795
+        1.3285150527954102,
+        0.6670000553131104,
+        2.1555709838867188
       ]
     },
     {
@@ -49,7 +77,7 @@
       "name": "ironclad every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 10248,
+        "vertices": 12322,
         "unweighted": 0
       }
     },
@@ -137,9 +165,9 @@
       "name": "ironclad three ordered LODs",
       "passed": true,
       "detail": [
-        9986,
-        4990,
-        2390
+        12120,
+        6060,
+        2896
       ]
     },
     {
@@ -426,9 +454,9 @@
       "name": "ember_archer dimension manifest",
       "passed": true,
       "detail": [
-        1.049999713897705,
-        1.1230882406234741,
-        1.8914785385131836
+        1.038766622543335,
+        0.6501976251602173,
+        1.8976101875305176
       ]
     },
     {
@@ -449,7 +477,7 @@
     {
       "name": "ember_archer consolidated material slots",
       "passed": true,
-      "detail": 2
+      "detail": 1
     },
     {
       "name": "ember_archer armature modifier",
@@ -460,7 +488,7 @@
       "name": "ember_archer every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 8054,
+        "vertices": 12688,
         "unweighted": 0
       }
     },
@@ -548,9 +576,9 @@
       "name": "ember_archer three ordered LODs",
       "passed": true,
       "detail": [
-        7866,
-        3930,
-        1880
+        12494,
+        6246,
+        2998
       ]
     },
     {
@@ -867,9 +895,9 @@
       "name": "twin_blades dimension manifest",
       "passed": true,
       "detail": [
-        1.1400001049041748,
-        0.5415657162666321,
-        1.8011819124221802
+        1.0735392570495605,
+        0.5861743688583374,
+        1.8132785558700562
       ]
     },
     {
@@ -901,7 +929,7 @@
       "name": "twin_blades every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 5814,
+        "vertices": 14553,
         "unweighted": 0
       }
     },
@@ -989,9 +1017,9 @@
       "name": "twin_blades three ordered LODs",
       "passed": true,
       "detail": [
-        5666,
-        2830,
-        1356
+        14366,
+        7182,
+        3448
       ]
     },
     {
@@ -1308,9 +1336,9 @@
       "name": "arc_mage dimension manifest",
       "passed": true,
       "detail": [
-        1.2630000114440918,
-        0.7260000705718994,
-        2.3225269317626953
+        1.1741681098937988,
+        0.6206409931182861,
+        2.276381254196167
       ]
     },
     {
@@ -1342,7 +1370,7 @@
       "name": "arc_mage every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 8998,
+        "vertices": 14357,
         "unweighted": 0
       }
     },
@@ -1430,9 +1458,9 @@
       "name": "arc_mage three ordered LODs",
       "passed": true,
       "detail": [
-        8712,
-        4355,
-        2088
+        14150,
+        7074,
+        3396
       ]
     },
     {
@@ -1749,9 +1777,9 @@
       "name": "tower_archer dimension manifest",
       "passed": true,
       "detail": [
-        1.049999713897705,
-        1.1230882406234741,
-        1.8914785385131836
+        1.038766622543335,
+        0.6501976251602173,
+        1.8976101875305176
       ]
     },
     {
@@ -1772,7 +1800,7 @@
     {
       "name": "tower_archer consolidated material slots",
       "passed": true,
-      "detail": 2
+      "detail": 1
     },
     {
       "name": "tower_archer armature modifier",
@@ -1783,7 +1811,7 @@
       "name": "tower_archer every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 8054,
+        "vertices": 12688,
         "unweighted": 0
       }
     },
@@ -1871,9 +1899,9 @@
       "name": "tower_archer three ordered LODs",
       "passed": true,
       "detail": [
-        7866,
-        3930,
-        1880
+        12494,
+        6246,
+        2998
       ]
     },
     {
@@ -2190,9 +2218,9 @@
       "name": "boulderback dimension manifest",
       "passed": true,
       "detail": [
-        1.3349417448043823,
+        1.239999771118164,
         2.2259891033172607,
-        2.3461179733276367
+        2.1162524223327637
       ]
     },
     {
@@ -2224,7 +2252,7 @@
       "name": "boulderback every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 19907,
+        "vertices": 20822,
         "unweighted": 0
       }
     },
@@ -2312,9 +2340,9 @@
       "name": "boulderback three ordered LODs",
       "passed": true,
       "detail": [
-        19830,
-        9914,
-        4758
+        20758,
+        10378,
+        4980
       ]
     },
     {
@@ -2631,9 +2659,9 @@
       "name": "rambeast dimension manifest",
       "passed": true,
       "detail": [
-        1.3683075904846191,
-        2.5663092136383057,
-        1.6128190755844116
+        1.2982109785079956,
+        2.5863091945648193,
+        1.7150214910507202
       ]
     },
     {
@@ -2665,7 +2693,7 @@
       "name": "rambeast every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 23422,
+        "vertices": 22267,
         "unweighted": 0
       }
     },
@@ -2753,9 +2781,9 @@
       "name": "rambeast three ordered LODs",
       "passed": true,
       "detail": [
-        23290,
-        11644,
-        5586
+        22192,
+        11096,
+        5324
       ]
     },
     {
@@ -3074,7 +3102,7 @@
       "detail": [
         1.2199997901916504,
         2.546309232711792,
-        1.9604722261428833
+        1.717002034187317
       ]
     },
     {
@@ -3106,7 +3134,7 @@
       "name": "frost_fang every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 23004,
+        "vertices": 20692,
         "unweighted": 0
       }
     },
@@ -3194,9 +3222,9 @@
       "name": "frost_fang three ordered LODs",
       "passed": true,
       "detail": [
-        22742,
-        11370,
-        5458
+        20578,
+        10288,
+        4938
       ]
     },
     {
@@ -3544,8 +3572,8 @@
       "passed": true,
       "detail": [
         3.126688003540039,
-        2.1502785682678223,
-        0.37999993562698364
+        2.1787590980529785,
+        0.344443678855896
       ]
     },
     {
@@ -3577,7 +3605,7 @@
       "name": "sky_manta every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 3998,
+        "vertices": 9858,
         "unweighted": 0
       }
     },
@@ -3665,9 +3693,9 @@
       "name": "sky_manta three ordered LODs",
       "passed": true,
       "detail": [
-        3938,
-        1968,
-        944
+        9800,
+        4900,
+        2352
       ]
     },
     {
@@ -3984,9 +4012,9 @@
       "name": "vampire_bats dimension manifest",
       "passed": true,
       "detail": [
-        2.2638726234436035,
-        1.2117503881454468,
-        0.7885020971298218
+        2.2638723850250244,
+        1.2457504272460938,
+        0.8178354501724243
       ]
     },
     {
@@ -4018,7 +4046,7 @@
       "name": "vampire_bats every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 3348,
+        "vertices": 7372,
         "unweighted": 0
       }
     },
@@ -4106,9 +4134,9 @@
       "name": "vampire_bats three ordered LODs",
       "passed": true,
       "detail": [
-        3266,
-        1632,
-        782
+        7298,
+        3648,
+        1750
       ]
     },
     {
@@ -4426,7 +4454,7 @@
       "passed": true,
       "detail": [
         3.332244396209717,
-        1.8476276397705078,
+        1.8566105365753174,
         0.7926256656646729
       ]
     },
@@ -4459,7 +4487,7 @@
       "name": "storm_raven every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 6982,
+        "vertices": 12186,
         "unweighted": 0
       }
     },
@@ -4547,9 +4575,9 @@
       "name": "storm_raven three ordered LODs",
       "passed": true,
       "detail": [
-        6352,
-        3186,
-        1528
+        11672,
+        5820,
+        2800
       ]
     },
     {
@@ -4979,6 +5007,46 @@
     },
     {
       "name": "tower_guard static LOD2 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "guard_cannon static FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "guard_cannon static FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "guard_cannon static FBX units",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "guard_cannon static materials",
+      "passed": true,
+      "detail": 2
+    },
+    {
+      "name": "guard_cannon static LOD1 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "guard_cannon static LOD1 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "guard_cannon static LOD2 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "guard_cannon static LOD2 SHA256",
       "passed": true,
       "detail": ""
     },
@@ -5903,46 +5971,6 @@
       "detail": ""
     },
     {
-      "name": "guard_cannon static FBX exists",
-      "passed": true,
-      "detail": ""
-    },
-    {
-      "name": "guard_cannon static FBX SHA256",
-      "passed": true,
-      "detail": ""
-    },
-    {
-      "name": "guard_cannon static FBX units",
-      "passed": true,
-      "detail": ""
-    },
-    {
-      "name": "guard_cannon static materials",
-      "passed": true,
-      "detail": 2
-    },
-    {
-      "name": "guard_cannon static LOD1 exists",
-      "passed": true,
-      "detail": ""
-    },
-    {
-      "name": "guard_cannon static LOD1 SHA256",
-      "passed": true,
-      "detail": ""
-    },
-    {
-      "name": "guard_cannon static LOD2 exists",
-      "passed": true,
-      "detail": ""
-    },
-    {
-      "name": "guard_cannon static LOD2 SHA256",
-      "passed": true,
-      "detail": ""
-    },
-    {
       "name": "BaseColor texture source",
       "passed": true,
       "detail": ""
@@ -5977,29 +6005,44 @@
       "passed": true,
       "detail": {
         "sourceMeters": [
-          1.3939998149871826,
-          0.6705851554870605,
-          2.1924731731414795
+          1.3285150527954102,
+          0.6670000553131104,
+          2.1555709838867188
         ],
         "importMeters": [
-          1.3939998149871826,
-          0.6705849170684814,
-          2.1924726963043213
+          1.3285150527954102,
+          0.6669998168945312,
+          2.1555705070495605
         ],
         "fbxUnitScaleFactor": 100
       }
+    },
+    {
+      "name": "assetManifest unchanged through validation",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "sourceBlend unchanged through validation",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "validatorScript unchanged through validation",
+      "passed": true,
+      "detail": ""
     }
   ],
   "characters": {
     "ironclad": {
-      "vertices": 10248,
-      "triangles": 19972,
+      "vertices": 12322,
+      "triangles": 24240,
       "boneCount": 25,
       "materialSlots": 2,
       "boundsMeters": [
-        1.3939998149871826,
-        0.6705851554870605,
-        2.1924731731414795
+        1.3285150527954102,
+        0.6670000553131104,
+        2.1555709838867188
       ],
       "actions": [
         {
@@ -6058,20 +6101,20 @@
         }
       ],
       "lodTriangles": [
-        9986,
-        4990,
-        2390
+        12120,
+        6060,
+        2896
       ]
     },
     "ember_archer": {
-      "vertices": 8054,
-      "triangles": 15732,
+      "vertices": 12688,
+      "triangles": 24988,
       "boneCount": 25,
-      "materialSlots": 2,
+      "materialSlots": 1,
       "boundsMeters": [
-        1.049999713897705,
-        1.1230882406234741,
-        1.8914785385131836
+        1.038766622543335,
+        0.6501976251602173,
+        1.8976101875305176
       ],
       "actions": [
         {
@@ -6136,20 +6179,20 @@
         }
       ],
       "lodTriangles": [
-        7866,
-        3930,
-        1880
+        12494,
+        6246,
+        2998
       ]
     },
     "twin_blades": {
-      "vertices": 5814,
-      "triangles": 11332,
+      "vertices": 14553,
+      "triangles": 28734,
       "boneCount": 25,
       "materialSlots": 2,
       "boundsMeters": [
-        1.1400001049041748,
-        0.5415657162666321,
-        1.8011819124221802
+        1.0735392570495605,
+        0.5861743688583374,
+        1.8132785558700562
       ],
       "actions": [
         {
@@ -6214,20 +6257,20 @@
         }
       ],
       "lodTriangles": [
-        5666,
-        2830,
-        1356
+        14366,
+        7182,
+        3448
       ]
     },
     "arc_mage": {
-      "vertices": 8998,
-      "triangles": 17424,
+      "vertices": 14357,
+      "triangles": 28302,
       "boneCount": 25,
       "materialSlots": 2,
       "boundsMeters": [
-        1.2630000114440918,
-        0.7260000705718994,
-        2.3225269317626953
+        1.1741681098937988,
+        0.6206409931182861,
+        2.276381254196167
       ],
       "actions": [
         {
@@ -6292,20 +6335,20 @@
         }
       ],
       "lodTriangles": [
-        8712,
-        4355,
-        2088
+        14150,
+        7074,
+        3396
       ]
     },
     "tower_archer": {
-      "vertices": 8054,
-      "triangles": 15732,
+      "vertices": 12688,
+      "triangles": 24988,
       "boneCount": 25,
-      "materialSlots": 2,
+      "materialSlots": 1,
       "boundsMeters": [
-        1.049999713897705,
-        1.1230882406234741,
-        1.8914785385131836
+        1.038766622543335,
+        0.6501976251602173,
+        1.8976101875305176
       ],
       "actions": [
         {
@@ -6370,20 +6413,20 @@
         }
       ],
       "lodTriangles": [
-        7866,
-        3930,
-        1880
+        12494,
+        6246,
+        2998
       ]
     },
     "boulderback": {
-      "vertices": 19907,
-      "triangles": 39662,
+      "vertices": 20822,
+      "triangles": 41516,
       "boneCount": 27,
       "materialSlots": 2,
       "boundsMeters": [
-        1.3349417448043823,
+        1.239999771118164,
         2.2259891033172607,
-        2.3461179733276367
+        2.1162524223327637
       ],
       "actions": [
         {
@@ -6448,20 +6491,20 @@
         }
       ],
       "lodTriangles": [
-        19830,
-        9914,
-        4758
+        20758,
+        10378,
+        4980
       ]
     },
     "rambeast": {
-      "vertices": 23422,
-      "triangles": 46580,
+      "vertices": 22267,
+      "triangles": 44386,
       "boneCount": 27,
       "materialSlots": 2,
       "boundsMeters": [
-        1.3683075904846191,
-        2.5663092136383057,
-        1.6128190755844116
+        1.2982109785079956,
+        2.5863091945648193,
+        1.7150214910507202
       ],
       "actions": [
         {
@@ -6526,20 +6569,20 @@
         }
       ],
       "lodTriangles": [
-        23290,
-        11644,
-        5586
+        22192,
+        11096,
+        5324
       ]
     },
     "frost_fang": {
-      "vertices": 23004,
-      "triangles": 45484,
+      "vertices": 20692,
+      "triangles": 41158,
       "boneCount": 27,
       "materialSlots": 2,
       "boundsMeters": [
         1.2199997901916504,
         2.546309232711792,
-        1.9604722261428833
+        1.717002034187317
       ],
       "actions": [
         {
@@ -6610,20 +6653,20 @@
         }
       ],
       "lodTriangles": [
-        22742,
-        11370,
-        5458
+        20578,
+        10288,
+        4938
       ]
     },
     "sky_manta": {
-      "vertices": 3998,
-      "triangles": 7876,
+      "vertices": 9858,
+      "triangles": 19600,
       "boneCount": 20,
       "materialSlots": 2,
       "boundsMeters": [
         3.126688003540039,
-        2.1502785682678223,
-        0.37999993562698364
+        2.1787590980529785,
+        0.344443678855896
       ],
       "actions": [
         {
@@ -6688,20 +6731,20 @@
         }
       ],
       "lodTriangles": [
-        3938,
-        1968,
-        944
+        9800,
+        4900,
+        2352
       ]
     },
     "vampire_bats": {
-      "vertices": 3348,
-      "triangles": 6532,
+      "vertices": 7372,
+      "triangles": 14598,
       "boneCount": 20,
       "materialSlots": 2,
       "boundsMeters": [
-        2.2638726234436035,
-        1.2117503881454468,
-        0.7885020971298218
+        2.2638723850250244,
+        1.2457504272460938,
+        0.8178354501724243
       ],
       "actions": [
         {
@@ -6766,19 +6809,19 @@
         }
       ],
       "lodTriangles": [
-        3266,
-        1632,
-        782
+        7298,
+        3648,
+        1750
       ]
     },
     "storm_raven": {
-      "vertices": 6982,
-      "triangles": 12744,
+      "vertices": 12186,
+      "triangles": 23344,
       "boneCount": 20,
       "materialSlots": 2,
       "boundsMeters": [
         3.332244396209717,
-        1.8476276397705078,
+        1.8566105365753174,
         0.7926256656646729
       ],
       "actions": [
@@ -6862,9 +6905,9 @@
         }
       ],
       "lodTriangles": [
-        6352,
-        3186,
-        1528
+        11672,
+        5820,
+        2800
       ]
     }
   },
@@ -6878,6 +6921,15 @@
         2.6500000953674316
       ]
     },
+    "guard_cannon": {
+      "triangles": 2956,
+      "materialSlots": 2,
+      "boundsMeters": [
+        1.4470000267028809,
+        0.8399996161460876,
+        0.5299999713897705
+      ]
+    },
     "tower_core": {
       "triangles": 24240,
       "materialSlots": 2,
@@ -6888,21 +6940,21 @@
       ]
     },
     "archer_tower": {
-      "triangles": 17044,
+      "triangles": 18752,
       "materialSlots": 2,
       "boundsMeters": [
-        2.1619999408721924,
-        2.161850690841675,
-        2.2800002098083496
+        2.131898880004883,
+        2.131999969482422,
+        2.2664999961853027
       ]
     },
     "nova_flask": {
-      "triangles": 4588,
+      "triangles": 4934,
       "materialSlots": 3,
       "boundsMeters": [
-        0.6485106348991394,
-        0.6200001239776611,
-        0.9699999690055847
+        0.6779645681381226,
+        0.7039647102355957,
+        0.9810000658035278
       ]
     },
     "bridge": {
@@ -7014,21 +7066,21 @@
       ]
     },
     "meteor_shard": {
-      "triangles": 84,
+      "triangles": 184,
       "materialSlots": 2,
       "boundsMeters": [
-        0.38475123047828674,
-        0.3667214512825012,
-        0.841834306716919
+        0.3780798614025116,
+        0.36719125509262085,
+        0.8401453495025635
       ]
     },
     "bullet_round": {
-      "triangles": 616,
+      "triangles": 1696,
       "materialSlots": 1,
       "boundsMeters": [
-        0.06997592747211456,
-        0.07000000029802322,
-        0.23499999940395355
+        0.06678362190723419,
+        0.06679999828338623,
+        0.24639999866485596
       ]
     },
     "tower_rubble": {
@@ -7084,15 +7136,6 @@
         1.0,
         0.03999999910593033
       ]
-    },
-    "guard_cannon": {
-      "triangles": 2956,
-      "materialSlots": 2,
-      "boundsMeters": [
-        1.4470000267028809,
-        0.8399996161460876,
-        0.5299999713897705
-      ]
     }
   },
   "errors": [],
@@ -7100,5 +7143,5 @@
   "unrealImportUnitConversion": true,
   "visualReview": "Actual rendered contact sheets reviewed separately; numerical checks do not establish production art quality.",
   "passed": true,
-  "checkCount": 1171
+  "checkCount": 1176
 }

@@ -9,3 +9,6 @@
 *.glb binary
 *.png binary
 *.wav binary
+*.ttf binary
+Assets/Fonts/BarlowSemiCondensed/OFL.txt -text
+Unreal/RiftCrownArena/Content/Rift/Fonts/Barlow-OFL.txt -text

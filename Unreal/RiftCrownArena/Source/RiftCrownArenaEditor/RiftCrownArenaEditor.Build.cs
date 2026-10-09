@@ -7,7 +7,7 @@ public class RiftCrownArenaEditor : ModuleRules
         PrivateDependencyModuleNames.AddRange(new string[] {
             "Core", "CoreUObject", "Engine", "UnrealEd", "AssetTools",
             "AssetRegistry", "RiftCrownArena", "Niagara", "NiagaraEditor",
-            "Json", "JsonUtilities", "Slate", "SlateCore"
+            "Json", "JsonUtilities", "Slate", "SlateCore", "SlateNullRenderer"
         });
     }
 }

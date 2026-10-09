@@ -21,11 +21,19 @@ public:
     void SetupInputComponent()override;
     UPROPERTY(BlueprintReadOnly) TObjectPtr<URiftUIWidget> Interface;
     bool CursorTile(FVector2D& Out)const;
+    bool ScreenPointToTile(FVector2D ScreenPoint,FVector2D& Out)const;
     static bool GroundPointToTile(FVector GroundPoint,FVector2D& Out);
     void BeginCardDrag();
+    void BeginCardDragAtScreen(FVector2D ScreenPoint);
+    void UpdateCardDragAtScreen(FVector2D ScreenPoint);
+    void FinishCardDragAtScreen(FVector2D ScreenPoint);
     void FinishCardDrag(bool DeployIfOutside);
     bool IsDraggingCard()const;
+    bool HasPendingCardDrag()const{return bCardDragStarted;}
+    FVector2D CardDragScreenPosition()const{return CardDragCursor;}
+    void CancelCardDrag();
     void ReleaseCardAtCursor();
+    void RunCardDragSmoke(const FString& ReportPath);
     FString CameraFramingDiagnosticsJSON()const;
     FBox2D BattleSafeScreenBounds()const;
 private:
@@ -34,8 +42,13 @@ private:
     UPROPERTY() TObjectPtr<ARiftArenaPresentation> Arena;
     FVector2D ConfirmTile;
     FVector2D CardDragOrigin=FVector2D::ZeroVector;
-    FString ConfirmCard;
-    bool bConfirmed=false,bPressed=false,bCardDragStarted=false,bCardDragOriginValid=false;
+    FVector2D CardDragCursor=FVector2D::ZeroVector;
+    FString ConfirmCard,CardDragId;
+    int32 CardDragHand=INDEX_NONE;
+    bool bConfirmed=false,bPressed=false,bCardDragStarted=false,bCardDragActive=false;
+    bool CardDragSelectionIsCurrent()const;
+    bool CanDeployTile(FVector2D Tile)const;
+    void ResetCardDrag();
     float CameraZoom=1;
     float PendingCaptureZoom=-1;
     float MinCameraZoom=.85f,MaxCameraZoom=1.2f;

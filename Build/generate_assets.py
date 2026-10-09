@@ -7,17 +7,31 @@ The importer must use convert_scene_unit=True and import_uniform_scale=1, never 
 from pathlib import Path
 from types import SimpleNamespace
 import bpy, math, json, hashlib, random, argparse, sys, tempfile, os, time
-from mathutils import Vector, Quaternion
+from mathutils import Vector, Quaternion, Matrix
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT/'Build'))
 from split_guard_cannon import split_guard_mesh, guard_socket_metadata
+from upgrade_card_models import (PALETTE_ADDITIONS, humanoid_costume, clean_creature_details,
+                                 nova_flask, meteor_shard, bullet_round, archer_tower,
+                                 model_design_metadata, fitted_attack_socket)
 EXPORT_WORK = Path(tempfile.mkdtemp(prefix='RiftCrown-FBX-'))
-SRC, OUT, RENDER = ROOT/'Assets/Source', ROOT/'Assets/Export', ROOT/'Assets/Renders'
-for d in (SRC, OUT, RENDER, SRC/'Textures'): d.mkdir(parents=True, exist_ok=True)
 ARGS=argparse.ArgumentParser()
 ARGS.add_argument('--no-renders',action='store_true')
+ARGS.add_argument('--preview-models', help='Comma-separated model IDs; renders only, with isolated output')
+ARGS.add_argument('--preview-output', type=Path, default=ROOT/'Artifacts/QA/model-upgrade-preview')
+ARGS.add_argument('--preview-action', help='Optional existing animation name for isolated pose review')
+ARGS.add_argument('--preview-frame', type=int, default=16)
 opts=ARGS.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
+PREVIEW = set(opts.preview_models.split(',')) if opts.preview_models else None
+if opts.preview_action and not PREVIEW: ARGS.error('--preview-action requires --preview-models')
+if PREVIEW:
+    preview_root=opts.preview_output.resolve()
+    if not preview_root.is_relative_to(ROOT.resolve()):raise ValueError('Preview output escaped the repository')
+    SRC, OUT, RENDER = preview_root/'Source', preview_root/'Export', preview_root/'Renders'
+else:
+    SRC, OUT, RENDER = ROOT/'Assets/Source', ROOT/'Assets/Export', ROOT/'Assets/Renders'
+for d in (SRC, OUT, RENDER, SRC/'Textures'): d.mkdir(parents=True, exist_ok=True)
 random.seed(15082026)
 bpy.ops.object.select_all(action='SELECT'); bpy.ops.object.delete(use_global=False)
 for c in list(bpy.data.collections):
@@ -51,6 +65,8 @@ PALETTE={
  'grass':(.11,.25,.08,.0,.94), 'grass_light':(.23,.36,.105,.0,.90),
  'water':(.025,.21,.30,.15,.16), 'glass':(.235,.025,.43,.1,.14),
 }
+PALETTE.update(PALETTE_ADDITIONS)
+assert len(PALETTE) <= 64, 'The shared atlas has 64 material tiles'
 COLOR_INDEX={k:i for i,k in enumerate(PALETTE)}
 ATLAS=1024; CELLS=8; CELL=ATLAS//CELLS
 
@@ -70,8 +86,14 @@ def textures():
                     cloth=math.sin(u*190)*math.sin(v*190)
                     stone=math.sin(u*21+math.sin(v*14))*math.cos(v*26-u*12)
                     texture=grain if key in ('wood','horn') else cloth if key.startswith('cloth') else stone
-                    edge=min(u,v,1-u,1-v)
-                    value=.89+.12*noise+.055*texture+(.09 if edge<.028 else 0)
+                    # Material-specific finish: metal and skin retain clean large
+                    # forms, while cloth, wood and stone carry restrained grain.
+                    if base[3]>.4:value=.99+.018*(noise-.5)+.012*texture
+                    elif key.startswith('skin'):value=1+.012*(noise-.5)+.006*texture
+                    elif key.startswith('cloth'):value=.99+.024*(noise-.5)+.020*cloth
+                    elif key in ('wood','horn'):value=.98+.022*(noise-.5)+.050*(grain-.5)
+                    elif 'stone' in key or key=='limestone' or key.startswith('meteor'):value=.97+.065*(noise-.5)+.025*stone
+                    else:value=.99+.022*(noise-.5)+.010*texture
                     if channel=='BaseColor': col=[min(1,max(0,b*value)) for b in base[:3]]
                     elif channel=='ORM': col=[.88+.1*noise,min(1,max(.05,base[4]+.06*(noise-.5))),base[3]]
                     elif channel=='Normal': col=[.5+.025*math.sin(u*55+v*11),.5+.025*math.cos(v*59-u*8),.998]
@@ -103,7 +125,7 @@ def make_material(name,glow=False,glass=False):
         p.inputs['Roughness'].default_value=.16
     return m
 SURFACE=make_material('M_RiftSurface'); GLOW=make_material('M_RiftGlow',glow=True); GLASS=make_material('M_RiftGlass',glass=True)
-manifest={'schema':1,'build':'UE-1.2.0','source':'original procedural sculpt and rig authored for Rift Crown Arena',
+manifest={'schema':1,'build':'UE-1.3.0','source':'original procedural sculpt and rig authored for Rift Crown Arena',
  'units':{'blender':'meter','fbx':'meter','fbxCentimetersPerUnit':100,'unrealImportUniformScale':1,'convertSceneUnit':True,
           'exportAxisForward':'-Y','exportAxisUp':'Z','unrealForceFrontXAxis':True,'designForward':'-Y in Blender; +X in Unreal'},
  'materials':[{'name':m.name,'baseColor':Path(TEX['BaseColor'].filepath_raw).relative_to(ROOT).as_posix(),
@@ -186,7 +208,7 @@ class Forge:
         for sign in (-1,1):
             self.tube('rift_rune',[(x-sign*size*.48,y,z-size*.64),(x+sign*size*.48,y,z+size*.64)],[.012,.012],key,bone,6,True)
     def finish(self,skinned=False):
-        if skinned: polish_character(self)
+        if skinned and self.family!='humanoid': clean_creature_details(self)
         bpy.ops.object.select_all(action='DESELECT')
         for o in self.parts:o.select_set(True)
         bpy.context.view_layer.objects.active=self.parts[0]; bpy.ops.object.join()
@@ -228,192 +250,12 @@ def humanoid_rig(f,height=1.95):
     f.socket('attack_origin',(.49*k,-.30,1.1*k),'hand_r'); f.socket('impact_origin',(0,-.18,1.05*k),'chest')
     return k
 
-def body_humanoid(f,cloth='cloth_blue',armor=False,height=1.95,masked=False):
-    k=humanoid_rig(f,height)
-    f.ellipsoid('anatomy_torso',(0,.02,1.16*k),(.29*k,.20*k,.40*k),cloth,'chest')
-    f.ellipsoid('pelvic_wrap',(0,0,.83*k),(.27*k,.19*k,.17*k),'leather','pelvis')
-    f.tube('neck',[(0,0,1.46*k),(0,0,1.63*k)],[.075*k,.095*k],'skin','neck',16)
-    f.ellipsoid('sculpt_head',(0,-.014,1.72*k),(.155*k,.14*k,.22*k),'skin','head',32)
-    # Sculpted face with forward nose, cheeks, muzzle line and brows (front is -Y).
-    f.ellipsoid('nose',(0,-.143,1.70*k),(.027*k,.044*k,.061*k),'skin','head',20)
-    for s in (-1,1):
-        f.ellipsoid('cheek_plane',(s*.092*k,-.095,1.685*k),(.043*k,.033*k,.054*k),'skin','head',20)
-        f.ellipsoid('eye_socket',(s*.065*k,-.131,1.762*k),(.032*k,.014*k,.018*k),'black','head',20)
-        f.ellipsoid('eye',(s*.066*k,-.145,1.765*k),(.012*k,.007*k,.009*k),'cyan' if cloth=='cloth_indigo' else 'ivory','head',16,cloth=='cloth_indigo')
-        f.tube('brow',[(s*.039*k,-.14,1.797*k),(s*.097*k,-.126,1.800*k)],[.012*k,.016*k],'leather','head',8)
-    f.tube('mouth',[(-.051*k,-.147,1.618*k),(0,-.16,1.611*k),(.051*k,-.147,1.618*k)],.008,'leather','head',8)
-    for s,side in ((-1,'l'),(1,'r')):
-        f.tube('upper_arm',[(s*.26*k,0,1.42*k),(s*.37*k,-.015,1.3*k),(s*.43*k,-.01,1.16*k)],[.13*k,.115*k,.075*k],cloth,'upperarm_'+side,16)
-        f.tube('fore_arm',[(s*.43*k,-.01,1.16*k),(s*.47*k,-.06,1.04*k),(s*.48*k,-.09,.93*k)],[.08*k,.092*k,.067*k],'leather','forearm_'+side,16)
-        f.ellipsoid('gloved_hand',(s*.49*k,-.105,.89*k),(.075*k,.07*k,.105*k),'leather','hand_'+side,20)
-        for digit in range(3):
-            f.tube('glove_finger',[(s*(.45+digit*.024)*k,-.16,.91*k),(s*(.46+digit*.025)*k,-.17,.84*k)],[.017*k,.014*k],'leather','hand_'+side,8)
-        f.tube('thigh',[(s*.15*k,0,.84*k),(s*.16*k,-.015,.58*k),(s*.16*k,-.015,.49*k)],[.125*k,.107*k,.075*k],cloth,'thigh_'+side,16)
-        f.tube('shin',[(s*.16*k,-.015,.49*k),(s*.17*k,0,.28*k),(s*.17*k,0,.12*k)],[.076*k,.09*k,.07*k],'leather','shin_'+side,16)
-        f.ellipsoid('boot',(s*.17*k,-.085,.105*k),(.097*k,.18*k,.095*k),'iron','foot_'+side,20)
-        f.panel('boot_sole',(s*.17*k,-.08,.038*k),(.20*k,.32*k,.048),'black','foot_'+side,bevel=.015)
-        if armor:
-            f.ellipsoid('layered_pauldron',(s*.28*k,0,1.44*k),(.18*k,.22*k,.15*k),'steel','upperarm_'+side)
-            f.panel('bracer_plate',(s*.46*k,-.087,1.05*k),(.14*k,.09,.21*k),'steel','forearm_'+side,bevel=.025)
-            f.ellipsoid('knee',(s*.16*k,-.068,.50*k),(.10*k,.069,.087*k),'steel','shin_'+side)
-            f.panel('shin_plate',(s*.17*k,-.074,.29*k),(.14*k,.056,.24*k),'steel','shin_'+side,bevel=.03)
-    f.tube('belt',[(-.26*k,-.15,.85*k),(0,-.205,.85*k),(.26*k,-.15,.85*k)],.035,'leather','pelvis',10)
-    f.panel('belt_buckle',(0,-.215,.85*k),(.09,.035,.085),'brass','pelvis',bevel=.011)
-    # Curved cloth cape, retaining broad authored folds rather than a flat rectangle.
-    vs=[]; faces=[]
-    for row in range(9):
-        t=row/8; z=(1.39-.75*t)*k; width=(.23+.07*t)*k
-        for col in range(11):
-            u=col/10*2-1; vs.append((width*u,.18+.085*t+.028*math.cos(u*math.pi*4)*t,z+.025*(1-u*u)*t))
-    for row in range(8):
-        for col in range(10):
-            i=row*11+col;faces.append((i,i+1,i+12,i+11))
-    cape=f.mesh_data('sculpted_cape',vs,faces,cloth,'cape')
-    sol=cape.modifiers.new('Cloth thickness','SOLIDIFY');sol.thickness=.009
-    bpy.context.view_layer.objects.active=cape;bpy.ops.object.modifier_apply(modifier=sol.name)
-    if masked:f.panel('lower_face_mask',(0,-.135,1.66*k),(.24*k,.08,.13*k),'black','head',bevel=.035)
-    return k
-
-def hood(f,k,key,pointed=False):
-    # Curved crown and neck cowl with open face; gives a deliberate hood silhouette.
-    vs=[]; faces=[]
-    levels=[(1.50,.175,.095),(1.65,.20,.135),(1.83,.185,.15),(1.96,.12,.10),(2.06,.03,.025)]
-    if pointed:levels.extend([(2.20,.14,.045),(2.39,.018,.007)])
-    for z,rx,ry in levels:
-        for j in range(25):
-            a=-.10+j/24*(math.pi*1.80);vs.append((rx*math.sin(a)*k,.032+ry*math.cos(a),z*k))
-    for row in range(len(levels)-1):
-        for j in range(24):i=row*25+j;faces.append((i,i+1,i+26,i+25))
-    ob=f.mesh_data('tailored_hood',vs,faces,key,'head')
-    sol=ob.modifiers.new('Hood seam thickness','SOLIDIFY');sol.thickness=.014
-    bpy.context.view_layer.objects.active=ob;bpy.ops.object.modifier_apply(modifier=sol.name)
-
-def blade(f,loc,length=.72,bone='hand_r',key='silver',curve=0):
-    x,y,z=loc
-    # Diamond cross-section forged blade with fuller, taper, guard, grip and pommel.
-    vs=[]; faces=[]
-    for i in range(7):
-        t=i/6; width=.052*(1-t*.45) if i<6 else .002; xx=x+curve*t*t
-        vs.extend([(xx-width,y,z+t*length),(xx,y-.017,z+t*length),(xx+width,y,z+t*length),(xx,y+.017,z+t*length)])
-    for i in range(6):
-        for j in range(4):faces.append((i*4+j,i*4+(j+1)%4,(i+1)*4+(j+1)%4,(i+1)*4+j))
-    faces.extend([(3,2,1,0),(24,25,26,27)]);f.mesh_data('forged_blade',vs,faces,key,bone,smooth=False)
-    f.tube('blade_fuller',[(x,y-.019,z+.07),(x+curve*.7,y-.013,z+length*.83)],[.008,.004],'cyan' if f.name=='ironclad' else 'violet',bone,6,True)
-    f.tube('sword_grip',[(x,y,z-.19),(x,y,z-.015)],[.035,.033],'leather',bone,12)
-    f.panel('crossguard',(x,y,z),(.26,.065,.048),'brass',bone,bevel=.019)
-    f.ellipsoid('pommel',(x,y,z-.20),(.045,.04,.045),'brass',bone,16)
-
-def bow(f,loc,bone='hand_l',scale=1):
-    x,y,z=loc; pts=[]
-    for i in range(17):
-        t=i/16;pts.append((x+math.sin(t*math.pi)*.19*scale,y,z+(t-.5)*1.0*scale))
-    f.tube('carved_recurve_bow',pts,[.025+math.sin(i/16*math.pi)*.009 for i in range(17)],'wood',bone,12)
-    f.tube('bow_string',[(x,y-.008,z-.50*scale),(x-.025,y-.04,z),(x,y-.008,z+.50*scale)],.004,'ivory',bone,6)
-    f.tube('wrapped_bow_grip',[(x+.18*scale,y,z-.09),(x+.18*scale,y,z+.09)],.045,'leather',bone,12)
-    for dz in (-.12,.12):f.ring('bow_grip_brass',(x+.18*scale,y,z+dz),.044,.009,'brass',bone)
-    f.tube('arrow_shaft',[(x+.04,y+.25,z),(x+.04,y-.55,z)],.007,'wood',bone,8)
-    f.tube('arrow_point',[(x+.04,y-.55,z),(x+.04,y-.68,z)],[.026,.001],'silver',bone,10)
-    f.ellipsoid('arrow_ember',(x+.04,y-.65,z),(.015,.04,.015),'ember',bone,16,True)
-
 def humanoid(name):
-    f=Forge(name); armor=name=='ironclad'; cloth={'ironclad':'cloth_blue','ember_archer':'cloth_ember','twin_blades':'cloth_purple','arc_mage':'cloth_indigo','tower_archer':'cloth_ember'}[name]
-    k=body_humanoid(f,cloth,armor,1.95 if armor else 1.85 if name=='arc_mage' else 1.72 if name=='twin_blades' else 1.8, name=='twin_blades')
-    if name=='ironclad':
-        # Replace visible face and round helmet with a fully enclosed, forged angular helm.
-        for o in list(f.parts):
-            if any(part in o.name for part in ('sculpt_head','nose','cheek','eye_socket','_eye','brow','mouth')):
-                f.parts.remove(o);bpy.data.objects.remove(o,do_unlink=True)
-        profile=[(1.54,.12,.13),(1.61,.17,.165),(1.76,.195,.19),(1.90,.175,.18),(2.00,.105,.15),(2.06,.012,.10)]
-        vs=[];faces=[]
-        for z,rx,ry in profile:
-            for j in range(12):
-                a=j*math.pi/6;vs.append((math.sin(a)*rx,math.cos(a)*ry,z))
-        for row in range(len(profile)-1):
-            for j in range(12):q=row*12+j;faces.append((q,row*12+(j+1)%12,(row+1)*12+(j+1)%12,q+12))
-        faces.extend([tuple(reversed(range(12))),tuple(60+j for j in range(12))])
-        f.mesh_data('forged_enclosed_helmet',vs,faces,'steel','head',False)
-        f.panel('angular_visor',(0,-.182,1.80),(.30,.028,.061),'black','head',bevel=.009)
-        f.panel('visor_lower_lip',(0,-.192,1.762),(.325,.025,.022),'silver','head',bevel=.007)
-        f.tube('visor_glint',[(-.115,-.20,1.81),(.115,-.20,1.81)],.005,'cyan','head',8,True)
-        f.tube('helm_nasal_ridge',[(0,-.194,1.78),(0,-.191,1.64),(0,-.162,1.57)],[.023,.018,.012],'brass','head',6)
-        for s in (-1,1):
-            for j in range(3):f.panel('helmet_breathing_slit',(s*(.05+.026*j),-.176,1.679),(.009,.008,.048),'black','head',bevel=.003)
-            f.rivet((s*.133,-.126,1.885),'head')
-        f.tube('helm_plume_mount',[(0,.01,2.015),(0,.065,2.15)],[.045,.024],'brass','head',10)
-        for j in range(7):f.tube('blue_plume',[(0,.065,2.14),((j-3)*.018,.15,2.13-j*.005),((j-3)*.025,.31,2.0-j*.018)],[.017,.019,.003],'cloth_blue','head',8)
-        # Cuirass has sculpted ridge/chamfered facets and a waist taper, not a torso sphere.
-        profile=[(.96,.20,.14),(1.08,.24,.17),(1.25,.29,.225),(1.40,.31,.20),(1.48,.24,.14)]
-        vs=[];faces=[]
-        for z,rx,ry in profile:
-            for j in range(16):
-                a=j*math.pi/8;x=math.sin(a)*rx;y=math.cos(a)*ry
-                if y<0:y-=.025*(1-abs(x)/max(rx,.001))
-                vs.append((x,y,z))
-        for row in range(4):
-            for j in range(16):q=row*16+j;faces.append((q,row*16+(j+1)%16,(row+1)*16+(j+1)%16,q+16))
-        faces.extend([tuple(reversed(range(16))),tuple(64+j for j in range(16))])
-        f.mesh_data('ridge_forged_cuirass',vs,faces,'steel','chest',False)
-        f.panel('cuirass_center',(0,-.236,1.26*k),(.20,.020,.25),'iron','chest',bevel=.036)
-        f.tube('breastplate_trim',[(-.24,-.20,1.41*k),(0,-.27,1.45*k),(.24,-.20,1.41*k)],.018,'brass','chest',10)
-        f.rune((0,-.261,1.26*k),.15,bone='chest')
-        for s,side in ((-1,'l'),(1,'r')):
-            # Overlapping armor lames follow upper arm/shoulder articulation.
-            for layer in range(3):
-                x=s*(.27+.045*layer);z=1.475-.055*layer
-                f.panel('pauldron_lame',(x,-.055,z),(.24,.33,.076),'steel','upperarm_'+side,rotation=(0,s*.28,0),bevel=.035)
-                f.tube('pauldron_brass_edge',[(x-s*.10,-.225,z-.005),(x+s*.10,-.225,z-.036)],.010,'brass','upperarm_'+side,8)
-            f.panel('upper_arm_plate',(s*.37,-.057,1.29),(.13,.14,.20),'steel','upperarm_'+side,rotation=(0,s*.12,0),bevel=.035)
-            f.panel('thigh_cuisse',(s*.16,-.088,.665),(.20,.115,.31),'steel','thigh_'+side,bevel=.043)
-            for layer in range(3):f.panel('fauld_lame',(s*.14,-.175,.95-layer*.067),(.24,.051,.075),'steel','pelvis',rotation=(0,s*.12,0),bevel=.018)
-            f.panel('elbow_couter',(s*.43,-.048,1.15),(.15,.12,.12),'silver','forearm_'+side,bevel=.034)
-            f.panel('hand_plate',(s*.49,-.153,.94),(.135,.063,.12),'steel','hand_'+side,bevel=.027)
-            for finger in range(3):
-                f.tube('gauntlet_finger',[(s*(.453+finger*.025),-.175,.925),(s*(.466+finger*.025),-.183,.86)],[.018,.014],'steel','hand_'+side,8)
-            for layer in range(3):f.panel('sabatons',(s*.17,-.055-layer*.06,.16-layer*.012),(.18,.070,.065),'steel','foot_'+side,bevel=.022)
-            for z in (.35,.69,1.05):f.rivet((s*.18,-.135,z),'shin_'+side if z<.5 else 'thigh_'+side if z<.8 else 'forearm_'+side,size=.018)
-        # Shield kite cross-section: no cuboid slab, shaped shoulders and pointed heel.
-        vs=[(-.75,-.14,1.45),(-.46,-.23,1.52),(-.22,-.14,1.40),(-.23,-.20,.94),(-.48,-.27,.72),(-.73,-.20,.95)]
-        vs+= [(x,y+.055,z) for x,y,z in vs]; faces=[(0,1,2,3,4,5),(11,10,9,8,7,6)]+[(i,(i+1)%6,(i+1)%6+6,i+6) for i in range(6)]
-        f.mesh_data('kite_shield',vs,faces,'steel','hand_l',False)
-        f.tube('shield_rim',vs[:6]+[vs[0]],.021,'silver','hand_l',10)
-        f.rune((-.48,-.275,1.17),.17,bone='hand_l')
-        for i in (0,1,2,3,4,5):f.rivet(Vector(vs[i])+Vector((0,-.023,0)),'hand_l')
-        blade(f,(.49,-.11,1.00),.78)
-    elif name in ('ember_archer','tower_archer'):
-        hood(f,k,'cloth_ember')
-        f.panel('leather_chest',(0,-.185,1.22*k),(.36,.075,.33),'leather','chest',bevel=.06)
-        f.tube('quiver',[(-.24,.14,.90),(-.31,.19,1.47)],[.085,.105],'leather','chest',16)
-        for i in range(5):
-            x=-.34+i*.028; f.tube('quiver_arrow',[(x,.18,1.22),(x,.20,1.67+i*.014)],.006,'wood','chest',8)
-            f.panel('fletching',(x,.20,1.65+i*.014),(.035,.008,.08),'ivory','chest',bevel=.004)
-        bow(f,(-.49,-.14,1.15),scale=.93)
-        f.ellipsoid('ember_charm',(.16,-.20,1.12),(.038,.02,.045),'ember','chest',16,True)
-        for s in (-1,1):f.panel('belt_pouch',(s*.21,-.07,.82),(.12,.10,.14),'leather','pelvis',bevel=.03)
-    elif name=='twin_blades':
-        hood(f,k,'cloth_purple'); f.rune((0,-.205,1.12*k),.095,'violet','chest')
-        blade(f,(-.44,-.11,.93*k),.63,'hand_l',curve=-.065)
-        blade(f,(.44,-.11,.93*k),.63,'hand_r',curve=.065)
-        for s in (-1,1):f.tube('shoulder_strap',[(s*.24,-.14,1.34*k),(0,-.225,1.08*k)],[.025,.025],'leather','chest',8)
-    elif name=='arc_mage':
-        hood(f,k,'cloth_indigo',True)
-        # Sculpted flowing bell robe with seam strips.
-        levels=[(.16,.33),(.35,.34),(.6,.29),(.88,.23),(1.05,.25)]
-        vs=[];faces=[]
-        for z,r in levels:
-            for i in range(33):
-                a=i*2*math.pi/32; fold=.013*math.cos(a*9);vs.append(((r+fold)*math.cos(a),(r*.65+fold)*math.sin(a),z*k))
-        for j in range(len(levels)-1):
-            for i in range(32):q=j*33+i;faces.append((q,q+1,q+34,q+33))
-        f.mesh_data('flowing_robe',vs,faces,'cloth_indigo','pelvis')
-        f.tube('staff',[(.49,-.10,.23),(.49,-.10,1.93)],[.025,.031],'wood','hand_r',16)
-        f.ring('staff_astrolabe',(.49,-.10,1.94),.175,.019,'brass','hand_r','Y')
-        f.ring('staff_orbit',(.49,-.10,1.94),.145,.010,'silver','hand_r','X')
-        f.ellipsoid('staff_crystal',(.49,-.10,1.94),(.098,.08,.12),'cyan','hand_r',24,True)
-        f.panel('spellbook',(-.47,-.02,1.04),(.20,.11,.29),'cloth_purple','hand_l',bevel=.02)
-        f.panel('book_pages',(-.47,-.08,1.04),(.17,.024,.25),'ivory','hand_l',bevel=.007)
-        f.panel('book_clasp',(-.47,-.10,1.04),(.035,.02,.085),'brass','hand_l',bevel=.007)
-        f.rune((0,-.20,1.26*k),.12,bone='chest')
-    refine_humanoid(f,k)
+    f=Forge(name)
+    height=1.95 if name=='ironclad' else 1.85 if name=='arc_mage' else 1.72 if name=='twin_blades' else 1.8
+    k=humanoid_rig(f,height)
+    humanoid_costume(f,k)
+    fitted_attack_socket(f,k)
     return f.finish(True)
 
 def quadruped_rig(f):
@@ -434,11 +276,11 @@ def quadruped_rig(f):
 def quadruped(name):
     f=Forge(name);quadruped_rig(f)
     stone=name=='boulderback'; frost=name=='frost_fang'; key='stone' if stone else 'ice_fur' if frost else 'fur'
-    f.ellipsoid('sculpted_body',(0,.1,.98),(.61,.78,.48),key,'spine',40)
-    f.ellipsoid('chest',(0,-.39,1.00),(.52,.48,.47),key,'spine',32)
-    f.ellipsoid('haunches',(0,.48,.88),(.53,.37,.38),key,'pelvis',32)
-    f.ellipsoid('neck_muscle',(0,-.59,1.14),(.34,.36,.35),key,'neck',32)
-    f.ellipsoid('sculpted_head',(0,-.86,1.19),(.34 if frost else .40,.32,.31),key,'head',32)
+    f.ellipsoid('sculpted_body',(0,.1,.98),(.47,.74,.365) if frost else (.61,.78,.48),key,'spine',40)
+    f.ellipsoid('chest',(0,-.39,1.00),(.455,.425,.405) if frost else (.52,.48,.47),key,'spine',32)
+    f.ellipsoid('haunches',(0,.48,.88),(.44,.37,.35) if frost else (.53,.37,.38),key,'pelvis',32)
+    f.ellipsoid('neck_muscle',(0,-.59,1.14),(.295,.315,.29) if frost else (.34,.36,.35),key,'neck',32)
+    f.ellipsoid('sculpted_head',(0,-.86,1.19),(.30,.28,.27) if frost else (.34,.30,.29) if name=='rambeast' else (.40,.32,.31),key,'head',32)
     f.ellipsoid('muzzle',(0,-1.10,1.10),(.26,.24,.18),key,'jaw',28)
     f.ellipsoid('nose',(0,-1.29,1.13),(.10,.060,.057),'stone_dark' if stone else 'black','jaw',24)
     for s in (-1,1):
@@ -690,10 +532,12 @@ def actions(f):
                 set_world_rotation(bone,desired)
             if attack and f.family=='humanoid':
                 if f.name in ('ember_archer','tower_archer'):
-                    aim_arm(f,'l',Vector((-.28,-.46,1.38)),wind)
-                    aim_arm(f,'r',Vector((.12,-.30,1.54)),wind)
+                    k=f.bones['head']['head'][2]/1.6
+                    aim_arm(f,'l',Vector((-.12*k,-.43,1.46*k)),wind)
+                    aim_arm(f,'r',Vector((-.12*k,-.242+.075*strike,1.46*k)),wind)
                     # Keep bow and attached arrow vertical/forward while the shoulder draws.
-                    hand=f.rig.pose.bones['hand_l'];set_world_rotation(hand,hand.bone.matrix_local.to_quaternion())
+                    for side in ('l','r'):
+                        hand=f.rig.pose.bones['hand_'+side];set_world_rotation(hand,hand.bone.matrix_local.to_quaternion())
                 elif f.name in ('ironclad','twin_blades'):
                     side='r';raised=Vector((.32,-.18,1.61));contact=Vector((.30,-.47,1.20))
                     target=raised.lerp(contact,strike);aim_arm(f,side,target,wind)
@@ -746,6 +590,7 @@ def export_character(f):
     rec={'id':f.name,'rigFamily':f.family,'mesh':file_info(meshpath),'bones':list(f.bones),'boneCount':len(f.bones),
          'sockets':f.sockets,'triangles':triangles(f.mesh),'materials':[m.name for m in f.mesh.data.materials],
          'boundsMeters':list(f.mesh.dimensions),'lods':[],'animations':[],
+         'modelDesign':model_design_metadata(f),
          'physics':{'type':'capsule','simulationCollisionAuthoritative':False,'autoCreatePhysicsAsset':True}}
     for level,ratio in ((1,.50),(2,.25),(3,.12)):
         lod=f.mesh.copy();lod.data=f.mesh.data.copy();f.collection.objects.link(lod);lod.name='SK_'+f.name+'_LOD'+str(level)
@@ -808,13 +653,8 @@ def tower(name):
     return f.finish()
 
 def nova():
-    f=Forge('nova_flask');f.ellipsoid('glass_bulb',(0,0,.55),(.31,.31,.38),'glass',detail=40)
-    f.tube('flask_neck',[(0,0,.79),(0,0,1.05)],[.115,.105],'glass',sides=32)
-    f.tube('cork',[(0,0,1.02),(0,0,1.14)],[.098,.11],'wood',sides=20)
-    f.ellipsoid('trapped_nova',(0,0,.51),(.17,.17,.21),'violet',detail=32,glow=True)
-    for z,r in ((.27,.21),(.78,.23),(1.045,.125)):f.ring('cage_band',(0,0,z),r,.022,'brass')
-    for j in range(6):
-        a=j*math.pi/3;f.tube('glass_cage',[(math.cos(a)*.21,math.sin(a)*.21,.26),(math.cos(a)*.31,math.sin(a)*.31,.52),(math.cos(a)*.23,math.sin(a)*.23,.78)],.015,'brass',sides=10)
+    f=Forge('nova_flask')
+    nova_flask(f)
     return f.finish()
 
 def environment(name):
@@ -879,11 +719,9 @@ def environment(name):
         f.tube('eroded_island',[(0,0,-2),(0,0,-1.45),(.08,0,-.72),(0,0,0)],[.08,.85,1.6,2.05],'stone',sides=15)
         f.ellipsoid('island_green_cap',(0,0,.02),(2.02,1.7,.22),'grass',detail=28)
     elif name=='meteor_shard':
-        f.tube('fractured_meteor',[(0,0,-.3),(.04,0,0),(-.05,.03,.34),(0,0,.54)],[.01,.19,.11,.002],'stone_dark',sides=7)
-        f.tube('molten_fissure',[(-.12,-.08,-.04),(.035,-.145,.1),(.07,-.08,.29)],.009,'ember',sides=6,glow=True)
+        meteor_shard(f)
     elif name=='bullet_round':
-        f.tube('brass_round',[(0,0,-.10),(0,0,.02),(0,0,.13)],[.027,.027,.001],'brass',sides=16)
-        f.ring('round_rim',(0,0,-.10),.03,.005,'silver')
+        bullet_round(f)
     elif name=='tower_rubble':
         for i in range(12):
             a=i*2.399;r=.23*math.sqrt(i);f.panel('fallen_masonry',(math.cos(a)*r,math.sin(a)*r,.08+(i%3)*.04),(.28,.35,.17),'limestone',rotation=(.07*i,.12*i,a),bevel=.03)
@@ -951,75 +789,7 @@ def remove_parts(f,names):
         if any('_'+name in ob.name for name in names):
             f.parts.remove(ob);bpy.data.objects.remove(ob,do_unlink=True)
 
-def refine_humanoid(f,k):
-    if f.name!='ironclad':
-        remove_parts(f,('sculpt_head','nose','cheek','eye','brow','mouth','tailored_hood','lower_face_mask'))
-        masked=f.name=='twin_blades'
-        # A carved human face with jaw/chin/temple planes instead of sphere-mounted cheeks.
-        levels=[(1.53,.062,.081),(1.60,.105,.105),(1.68,.139,.137),(1.76,.148,.136),(1.85,.132,.124),(1.91,.070,.084),(1.94,.006,.028)]
-        vs=[];faces=[];segments=32
-        for z,rx,ry in levels:
-            for j in range(segments):
-                a=j*math.pi*2/segments;x=math.sin(a)*rx*k;y=math.cos(a)*ry
-                # Flatten forehead, jaw sides and front face deliberately.
-                if y<0:y=max(y,-ry*.86)-.01*(1-abs(x)/(rx*k+.0001))
-                vs.append((x,y,z*k))
-        for row in range(len(levels)-1):
-            for j in range(segments):q=row*segments+j;faces.append((q,row*segments+(j+1)%segments,(row+1)*segments+(j+1)%segments,q+segments))
-        faces.extend([tuple(reversed(range(segments))),tuple((len(levels)-1)*segments+j for j in range(segments))])
-        f.mesh_data('carved_face',vs,faces,'black' if masked else 'skin','head')
-        for s in (-1,1):
-            f.panel('inset_eye_socket',(s*.059*k,-.128,1.769*k),(.056*k,.009,.022*k),'black','head',rotation=(0,s*.035,s*.07),bevel=.008)
-            f.panel('inset_eye',(s*.059*k,-.135,1.769*k),(.027*k,.006,.010*k),'violet' if masked else 'cyan' if f.name=='arc_mage' else 'ivory','head',bevel=.004)
-        if not masked:
-            nose=[(-.022*k,-.115,1.795*k),(.022*k,-.115,1.795*k),(-.027*k,-.124,1.696*k),(.027*k,-.124,1.696*k),(0,-.169,1.71*k),(0,-.141,1.794*k)]
-            f.mesh_data('carved_nose_bridge',nose,[(0,2,4,5),(1,5,4,3),(0,5,1),(2,3,4),(0,1,3,2)],'skin','head')
-            f.tube('subtle_lip',[(-.040*k,-.127,1.646*k),(0,-.135,1.642*k),(.040*k,-.127,1.646*k)],[.004,.006,.004],'leather','head',8)
-        else:
-            f.tube('mask_seam',[(-.12,-.099,1.68*k),(0,-.139,1.675*k),(.12,-.099,1.68*k)],.008,'cloth_purple','head',8)
-        cloth='cloth_purple' if masked else 'cloth_indigo' if f.name=='arc_mage' else 'cloth_ember'
-        # Explicit open hood with rolled seam; face never protrudes through cloth.
-        levels=[(1.48,.18,.13),(1.62,.21,.18),(1.82,.205,.19),(1.94,.15,.15),(2.01,.013,.055)]
-        vs=[];faces=[]
-        for row,(z,rx,ry) in enumerate(levels):
-            for j in range(33):
-                a=-2.28+j/32*4.56;fold=.010*math.cos(a*8)*(1-row/5)
-                vs.append(((rx+fold)*math.sin(a)*k,.018+(ry+fold)*math.cos(a),z*k+.01*math.sin(a*3)))
-        for row in range(4):
-            for j in range(32):q=row*33+j;faces.append((q,q+1,q+34,q+33))
-        hood_ob=f.mesh_data('open_hood_folds',vs,faces,cloth,'head')
-        sol=hood_ob.modifiers.new('Sewn hood thickness','SOLIDIFY');sol.thickness=.013
-        bpy.context.view_layer.objects.active=hood_ob;bpy.ops.object.modifier_apply(modifier=sol.name)
-        for side in (0,32):f.tube('hood_rolled_seam',[vs[row*33+side] for row in range(5)],.014,cloth,'head',10)
-        # Shoulder scarf with layered angled strips and front folds.
-        for j in range(5):
-            z=(1.49-.045*j)*k
-            f.tube('folded_cowl',[(-.25,-.075,z),(0,-.205,z-.033),(.23,-.095,z-.045)],[.027,.028,.021],cloth,'chest',10)
-        f.ellipsoid('cloak_clasp',(-.12,-.216,1.34*k),(.042,.012,.042),'brass','chest',20)
-        for s in (-1,1):
-            f.tube('costume_seam',[(s*.18,-.17,.95*k),(s*.24,-.16,1.26*k)],[.006,.006],'brass','chest',6)
-            for j in range(4):f.rivet((s*.47,-.12,1.02*k+j*.032),'forearm_'+('l' if s<0 else 'r'),size=.012)
-        if f.name=='arc_mage':
-            # A full pointed hat above the hood and a carefully curved brim.
-            vs=[];faces=[]
-            for row in range(3):
-                r=(.21,.31,.33)[row]
-                for j in range(49):a=j*math.pi/24;vs.append((math.cos(a)*r,math.sin(a)*r,1.91*k+.028*math.sin(a)*row))
-            for row in range(2):
-                for j in range(48):q=row*49+j;faces.append((q,q+1,q+50,q+49))
-            f.mesh_data('curved_hat_brim',vs,faces,'cloth_purple','head')
-            f.tube('crooked_hat_peak',[(0,0,1.94*k),(.02,.015,2.16*k),(.085,.045,2.33*k),(.12,.06,2.39*k)],[.19,.115,.045,.003],'cloth_purple','head',24)
-            f.ring('hat_leather_band',(0,0,1.94*k),.201,.015,'leather','head')
-            for j in range(9):
-                a=j*2*math.pi/9
-                f.tube('robe_sculpted_fold',[(math.cos(a)*.29,math.sin(a)*.19,.83*k),(math.cos(a)*.34,math.sin(a)*.22,.42*k),(math.cos(a)*.35,math.sin(a)*.225,.16*k)],[.014,.022,.009],'cloth_indigo','pelvis',10)
-            for s in (-1,1):
-                f.tube('robe_front_trim',[(s*.15,-.18,.93*k),(s*.18,-.22,.49*k),(s*.23,-.24,.17*k)],[.008,.010,.008],'brass','pelvis',8)
-                f.tube('astrolabe_spindle',[(.49+s*.16,-.10,1.86),(.49+s*.16,-.10,2.03)],[.012,.012],'brass','hand_r',8)
-            f.ring('secondary_staff_gear',(.49,-.10,1.94),.145,.012,'silver','hand_r','Z')
-            for j in range(4):a=j*math.pi/2;f.ellipsoid('astrolabe_rune',(.49+.18*math.cos(a),-.10,1.94+.18*math.sin(a)),(.023,.02,.023),'cyan','hand_r',12,True)
-    # Every unit has a small explicit team-mask region in the shared atlas.
-    f.tube('team_shoulder_wrap',[(-.24,.04,1.41*k),(-.24,-.15,1.35*k)],[.03,.03],'team','upperarm_l',10)
+
 
 def refine_quadruped(f,key):
     if f.name=='frost_fang':
@@ -1080,7 +850,20 @@ def refine_quadruped(f,key):
             for n,b in eligible.items():
                 a=Vector(b['head']);c=Vector(b['tail']);line=c-a;t=max(0,min(1,(p-a).dot(line)/max(.00001,line.length_squared)))
                 dist=(p-(a+line*t)).length;distances.append((dist,n))
-            candidates=sorted(distances)[:3];weights=[1/(.018+d)**4 for d,n in candidates];total=sum(weights)
+            if f.name=='rambeast':
+                # A hard nearest-three cutoff tears the wide shoulder into
+                # small folds when equally close front-leg bones exchange
+                # rank. Fade the least influential of eight nearby bones to
+                # zero so the torso has a continuous skin-weight field.
+                candidates=sorted(distances)[:8]
+                cutoff=candidates[-1][0]+.0001
+                weights=[]
+                for d,n in candidates:
+                    fade=max(0,min(1,(cutoff-d)/.25));fade=fade*fade*(3-2*fade)
+                    weights.append(fade/(.018+d)**4)
+            else:
+                candidates=sorted(distances)[:3];weights=[1/(.018+d)**4 for d,n in candidates]
+            total=sum(weights)
             for (_,n),w in zip(candidates,weights):an.vertex_groups[n].add([vertex.index],w/total,'REPLACE')
         for uv in list(an.data.uv_layers):an.data.uv_layers.remove(uv)
         an.name='continuous_anatomy';f.add(an,key)
@@ -1121,10 +904,16 @@ def set_world_rotation(pb,desired):
 
 def aim_arm(f,side,target,strength):
     up=f.rig.pose.bones['upperarm_'+side]; fore=f.rig.pose.bones['forearm_'+side]
-    shoulder=up.bone.head_local;restWrist=fore.bone.tail_local
+    bpy.context.view_layer.update()
+    shoulder=up.matrix.translation
+    parentTransform=up.parent.matrix@up.parent.bone.matrix_local.inverted() if up.parent else Matrix.Identity(4)
+    restWrist=parentTransform@fore.bone.tail_local
     target=restWrist.lerp(target,max(0,min(1,strength)))
-    direction=target-shoulder;distance=min(direction.length,up.bone.length+fore.bone.length-.001)
-    direction.normalize();l1=up.bone.length;l2=fore.bone.length
+    direction=target-shoulder
+    if direction.length<.0001:return
+    l1=up.bone.length;l2=fore.bone.length
+    distance=max(abs(l1-l2)+.001,min(direction.length,l1+l2-.001))
+    direction.normalize();target=shoulder+direction*distance
     along=(l1*l1-l2*l2+distance*distance)/(2*max(.001,distance))
     pole=Vector((-1 if side=='l' else 1,0,-.25));perp=pole-direction*pole.dot(direction)
     if perp.length<.01:perp=Vector((0,0,1)).cross(direction)
@@ -1135,96 +924,51 @@ def aim_arm(f,side,target,strength):
         set_world_rotation(pb,desired)
 
 def round_archer_tower(f):
-    for row in range(5):
-        for j in range(14):
-            a=j*2*math.pi/14+(row%2)*math.pi/14;r=.77
-            f.panel('cylindrical_masonry',(math.cos(a)*r,math.sin(a)*r,.40+row*.29),(.36,.22,.27),'limestone',rotation=(0,0,a+math.pi/2),bevel=.026)
-    f.tube('round_foundation',[(0,0,.08),(0,0,.22),(0,0,.30)],[1.01,1.02,.91],'stone_dark',sides=40)
-    for z in (.32,1.81):f.ring('round_stone_course',(0,0,z),.85,.055,'stone')
-    f.tube('timber_platform',[(0,0,1.80),(0,0,1.92)],[1.04,1.05],'wood',sides=40)
-    f.ring('platform_brass_trim',(0,0,1.94),1.05,.031,'brass')
-    for j in range(8):
-        a=j*math.pi/4;f.panel('round_parapet_merlon',(math.cos(a)*.91,math.sin(a)*.91,2.16),(.30,.22,.40),'stone_dark',rotation=(0,0,a+math.pi/2),bevel=.028)
-    f.panel('crest_plaque',(0,-.895,1.07),(.35,.05,.40),'iron',bevel=.045);f.rune((0,-.927,1.07),.13)
-    f.panel('tower_team_banner',(0,.91,1.16),(.30,.028,.70),'team',bevel=.024)
+    archer_tower(f)
     return f.finish()
 
-def polish_character(f):
-    """Readable, rigged silhouette accents, rather than unskinned attachments."""
-    if f.family=='humanoid':
-        k=f.bones['head']['head'][2]/1.6
-        # Enlarge heads/hats and shoulder equipment about their own pivots.
-        for ob in f.parts:
-            if ob.vertex_groups.get('head'):
-                center=Vector((0,0,1.72 if f.name=='ironclad' else 1.64))
-                local=ob.matrix_world.inverted()@center
-                for v in ob.data.vertices:v.co=local+(v.co-local)*1.10
-        for sign,side in ((-1,'l'),(1,'r')):
-            # Cover rigid-segment knee joins through the entire gait cycle.
-            f.ellipsoid('articulated_knee',(sign*.16*k,-.01,.49*k),(.091*k,.086*k,.078*k),'steel' if f.name=='ironclad' else 'leather','shin_'+side,20)
-            if f.name not in ('ironclad','twin_blades'):
-                pivot=Vector((0,0,1.64))
-                def face_point(x,y,z):return pivot+(Vector((x,y,z))-pivot)*1.10
-                eye=face_point(sign*.061*k,-.144,1.769*k)
-                f.ellipsoid('clear_eye_white',eye,(.023*k,.009,.015*k),'ivory','head',20)
-                f.ellipsoid('clear_eye_iris',eye+Vector((0,-.008,0)),(.008*k,.005,.010*k),'cyan' if f.name=='arc_mage' else 'leather','head',16)
-                f.tube('expressive_brow',[face_point(sign*.032*k,-.141,1.804*k),face_point(sign*.089*k,-.128,1.819*k)],[.009,.012],'leather','head',10)
-        cloth='cloth_blue' if f.name=='ironclad' else 'cloth_purple' if f.name in ('arc_mage','twin_blades') else 'cloth_ember'
-        for side,sign in (('l',-1),('r',1)):
-            f.panel('readable_shoulder_trim',(sign*.28,-.08,1.42),(.22,.20,.062),'brass','upperarm_'+side,bevel=.025)
-            f.panel('team_cuff',(sign*.45,-.08,1.06),(.15,.15,.065),'team','forearm_'+side,bevel=.018)
-        if f.name=='ironclad':
-            for sign in (-1,1):
-                f.tube('helm_crown_edge',[(sign*.08,-.13,2.02),(sign*.16,-.03,2.00),(sign*.15,.12,1.90)],[.018,.016,.010],'silver','head',10)
-            f.panel('shield_center_crest',(-.48,-.297,1.15),(.19,.027,.25),'brass','hand_l',bevel=.04)
-            f.rune((-.48,-.315,1.15),.10,bone='hand_l')
-        elif f.name in ('ember_archer','tower_archer'):
-            for j in range(3):
-                x=.13+j*.048
-                f.tube('quiver_arrow',[(x,.23,1.12),(x,.24,1.69)],[.009,.007],'wood','chest',8)
-                f.panel('quiver_feather',(x,.24,1.62),(.020,.060,.13),cloth,'chest',bevel=.005)
-        elif f.name=='arc_mage':
-            for j in range(5):
-                a=j*2*math.pi/5
-                f.ellipsoid('staff_focus_spark',(.49+math.cos(a)*.12,-.13+math.sin(a)*.12,1.96),(.017,.017,.028),'violet','hand_r',12,True)
-        elif f.name=='twin_blades':
-            for sign,side in ((-1,'l'),(1,'r')):
-                f.tube('blade_energy_edge',[(sign*.49,-.16,.97),(sign*.51,-.15,1.31),(sign*.55,-.14,1.50)],[.010,.008,.003],'violet','hand_'+side,8,True)
-    elif f.family=='quadruped':
-        if f.name=='boulderback':
-            for j in range(5):
-                y=-.30+j*.21
-                f.tube('crystal_back_ridge',[(0,y,1.52),(0,y,1.72),(0,y-.018,1.85)],[.09,.055,.001],'cyan','spine',sides=5,glow=True)
-        elif f.name=='frost_fang':
-            for sign in (-1,1):
-                f.tube('ice_shoulder_fin',[(sign*.38,-.43,1.07),(sign*.47,-.37,1.40),(sign*.49,-.32,1.55)],[.06,.04,.001],'ice','front_'+('l' if sign<0 else 'r')+'_upper',sides=5,glow=True)
-        else:
-            f.panel('charge_harness_crest',(0,-.68,1.30),(.30,.065,.24),'brass','neck',bevel=.05)
-            f.rune((0,-.72,1.30),.10,'ember','neck')
-    elif f.family=='flyer':
-        for sign,side in ((-1,'l'),(1,'r')):
-            key='cyan' if f.name!='vampire_bats' else 'violet'
-            f.tube('wing_identity_edge',[(sign*.30,-.04,1.09),(sign*.68,-.08,1.14),(sign*1.10,-.05,1.11)],[.013,.010,.004],key,'wing_'+side+'_outer',sides=8,glow=True)
-
 forges=[]
+knownModels={'ironclad','ember_archer','twin_blades','arc_mage','tower_archer','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven',
+             'tower_guard','tower_core','archer_tower','nova_flask','bridge','floor_tile','lane_paver','bank_segment','boundary_stone','grass_tuft','shrub','tree','crystal_plinth','banner','ruin','distant_island','meteor_shard','bullet_round','tower_rubble','arrow_projectile','arc_projectile','manta_projectile','storm_projectile','projectile_trail'}
+if PREVIEW and PREVIEW-knownModels:raise ValueError('Unknown preview models: '+', '.join(sorted(PREVIEW-knownModels)))
 for name in ('ironclad','ember_archer','twin_blades','arc_mage','tower_archer','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven'):
+    if PREVIEW and name not in PREVIEW:continue
     print('RIFT_ASSET_BEGIN',name,flush=True)
     f=humanoid(name) if name in ('ironclad','ember_archer','twin_blades','arc_mage','tower_archer') else quadruped(name) if name in ('boulderback','rambeast','frost_fang') else flyer(name)
-    export_character(f);forges.append(f);print('RIFT_ASSET_COMPLETE',name,flush=True)
+    if PREVIEW:
+        if opts.preview_action:
+            clips=actions(f)
+            clip=next((c for c in clips if c['name']==opts.preview_action),None)
+            if not clip:raise ValueError('Animation not available for '+name+': '+opts.preview_action)
+            f.rig.animation_data.action=clip['object'];scene.frame_set(max(1,min(opts.preview_frame,clip['frames'])))
+            bpy.context.view_layer.update()
+    else:export_character(f)
+    forges.append(f);print('RIFT_ASSET_COMPLETE',name,flush=True)
 for name in ('tower_guard','tower_core','archer_tower','nova_flask','bridge','floor_tile','lane_paver','bank_segment','boundary_stone','grass_tuft','shrub','tree','crystal_plinth','banner','ruin','distant_island','meteor_shard','bullet_round','tower_rubble','arrow_projectile','arc_projectile','manta_projectile','storm_projectile','projectile_trail'):
+    if PREVIEW and name not in PREVIEW:continue
     print('RIFT_ASSET_BEGIN',name,flush=True)
     f=tower(name) if name in ('tower_guard','tower_core','archer_tower') else nova() if name=='nova_flask' else environment(name)
     cannon=None
     if name=='tower_guard':
         mesh=split_guard_mesh(f.mesh)
         cannon=SimpleNamespace(name='guard_cannon',mesh=mesh,collection=mesh.users_collection[0])
-    export_static(f);forges.append(f);print('RIFT_ASSET_COMPLETE',name,flush=True)
+    if not PREVIEW:export_static(f)
+    forges.append(f);print('RIFT_ASSET_COMPLETE',name,flush=True)
     if cannon:
-        export_static(cannon);forges.append(cannon);print('RIFT_ASSET_COMPLETE','guard_cannon',flush=True)
+        if not PREVIEW:export_static(cannon)
+        forges.append(cannon);print('RIFT_ASSET_COMPLETE','guard_cannon',flush=True)
 if not opts.no_renders:
     stage,camera=render_rig()
     for f in forges:render_asset(f,stage,camera)
     stage.hide_render=True
+if PREVIEW:
+    previewReport={'schema':1,'build':manifest['build'],'models':[
+        {'id':f.name,'triangles':triangles(f.mesh),'boundsMeters':list(f.mesh.dimensions)} for f in forges],
+        'action':opts.preview_action,'frame':opts.preview_frame if opts.preview_action else None,
+        'renders':manifest['renders']}
+    (opts.preview_output/'preview-manifest.json').write_text(json.dumps(previewReport,indent=2),encoding='utf-8')
+    print('RIFT_MODEL_PREVIEW_FINISHED',len(forges),flush=True)
+    sys.exit(0)
 for col in bpy.data.collections:col.hide_render=False
 scene.frame_start=1;scene.frame_end=60;scene.frame_set(1)
 blend=SRC/'RiftCrown_ProductionAssets.blend';bpy.ops.wm.save_as_mainfile(filepath=str(blend))

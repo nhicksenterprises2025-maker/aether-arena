@@ -4,7 +4,14 @@ import bpy, json, math, hashlib
 from io_scene_fbx import parse_fbx
 ROOT=Path(__file__).resolve().parents[1]
 M=json.loads((ROOT/'Assets/asset_manifest.json').read_text())
-report={'schema':1,'checks':[],'characters':{},'statics':{},'errors':[],
+def source_pin(path):
+    raw=path.read_bytes()
+    return {'file':path.relative_to(ROOT).as_posix(),'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}
+report={'schema':1,'version':M.get('build','').removeprefix('UE-'),
+        'provenance':{'assetManifest':source_pin(ROOT/'Assets/asset_manifest.json'),
+                      'sourceBlend':source_pin(ROOT/M['source']['file']),
+                      'validatorScript':source_pin(Path(__file__).resolve())},
+        'checks':[],'characters':{},'statics':{},'errors':[],
         'unrealImportScale':1,'unrealImportUnitConversion':True,'visualReview':'Actual rendered contact sheets reviewed separately; numerical checks do not establish production art quality.'}
 def check(name,ok,detail=''):
     report['checks'].append({'name':name,'passed':bool(ok),'detail':detail})
@@ -21,6 +28,7 @@ def verified_file(entry,label):
     path=ROOT/entry['file'];check(label+' exists',path.exists())
     if path.exists():check(label+' SHA256',hashlib.sha256(path.read_bytes()).hexdigest()==entry['sha256'])
 
+verified_file(M['source'],'Production scene')
 bpy.ops.wm.open_mainfile(filepath=str(ROOT/M['source']['file']))
 required={'Idle','Locomotion','Attack','Hit','Death','Deploy','Status','Turn','Acquire'}
 for name,record in M['characters'].items():
@@ -87,6 +95,8 @@ bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=Fals
 bpy.ops.import_scene.fbx(filepath=str(ROOT/M['characters']['ironclad']['mesh']['file']),use_anim=False)
 mesh=next(o for o in bpy.context.scene.objects if o.type=='MESH');actual=list(mesh.dimensions)
 check('Ironclad FBX unit roundtrip',max(abs(a-b) for a,b in zip(expected,actual))<.002,{'sourceMeters':expected,'importMeters':actual,'fbxUnitScaleFactor':100})
+for name,pin in report['provenance'].items():
+    check(name+' unchanged through validation',source_pin(ROOT/pin['file'])==pin)
 report['passed']=not report['errors'];report['checkCount']=len(report['checks'])
 (ROOT/'Assets/asset_qa_report.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
 print('RIFT_ASSET_QA',report['checkCount'],'checks;',len(report['errors']),'errors')

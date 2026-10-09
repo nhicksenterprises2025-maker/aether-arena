@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "family": "Barlow Semi Condensed",
+  "author": "The Barlow Project Authors / Jeremy Tribby",
+  "license": "SIL Open Font License 1.1",
+  "copyright": "Copyright 2017 The Barlow Project Authors (https://github.com/jpt/barlow)",
+  "upstream": "https://github.com/jpt/barlow",
+  "commit": "dc2940e2e04ef4ec96c07e23e0f02aefbddd343b",
+  "retrievedUtc": "2026-10-09T17:36:45.8465829Z",
+  "modifications": "None. Static TrueType font files are redistributed byte-for-byte.",
+  "files": [
+    {
+      "name": "BarlowSemiCondensed-Bold.ttf",
+      "bytes": 170604,
+      "sha256": "0fb7401b4bb43e284bebf66c69fb42b5462380cbfd352a69fa0fb3f0a774c31a",
+      "url": "https://raw.githubusercontent.com/jpt/barlow/dc2940e2e04ef4ec96c07e23e0f02aefbddd343b/fonts/ttf/BarlowSemiCondensed-Bold.ttf"
+    },
+    {
+      "name": "BarlowSemiCondensed-Medium.ttf",
+      "bytes": 163992,
+      "sha256": "b5961bc7009f4e08ffce90931ddca85545357b8f260f2ed1b37c3241ce71c2db",
+      "url": "https://raw.githubusercontent.com/jpt/barlow/dc2940e2e04ef4ec96c07e23e0f02aefbddd343b/fonts/ttf/BarlowSemiCondensed-Medium.ttf"
+    },
+    {
+      "name": "BarlowSemiCondensed-Regular.ttf",
+      "bytes": 164164,
+      "sha256": "d8f081920de05d27990f42299e84d358d2e2fcadd41b94461b2dd42a519d6ff8",
+      "url": "https://raw.githubusercontent.com/jpt/barlow/dc2940e2e04ef4ec96c07e23e0f02aefbddd343b/fonts/ttf/BarlowSemiCondensed-Regular.ttf"
+    },
+    {
+      "name": "BarlowSemiCondensed-SemiBold.ttf",
+      "bytes": 168500,
+      "sha256": "76b0db666060f767d7f9707d1fe8f668eeb114c0a2eab90fd657e454ab6b171c",
+      "url": "https://raw.githubusercontent.com/jpt/barlow/dc2940e2e04ef4ec96c07e23e0f02aefbddd343b/fonts/ttf/BarlowSemiCondensed-SemiBold.ttf"
+    },
+    {
+      "name": "OFL.txt",
+      "bytes": 4377,
+      "sha256": "186d750eb496a4c17a76385f82be6aea2ac1cf2de074a811d63786cf374ea73f",
+      "url": "https://raw.githubusercontent.com/jpt/barlow/dc2940e2e04ef4ec96c07e23e0f02aefbddd343b/OFL.txt"
+    }
+  ]
+}

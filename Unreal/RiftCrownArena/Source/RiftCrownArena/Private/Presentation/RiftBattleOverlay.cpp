@@ -14,6 +14,7 @@
 #include "Fonts/FontMeasure.h"
 #include "Framework/Application/SlateApplication.h"
 #include "Styling/CoreStyle.h"
+#include "RiftTypography.h"
 #include "Misc/CommandLine.h"
 #include "Misc/Parse.h"
 
@@ -37,8 +38,8 @@ int32 URiftBattleOverlay::NativePaint(const FPaintArgs& Args,const FGeometry& Ge
     // These are world annotations, so zoom/field pitch sets their bar width.
     // Keep text readable in screen space instead of magnifying labels while a
     // larger HUD forces the battlefield itself to occupy fewer pixels.
-    const FSlateFontInfo Small=FCoreStyle::GetDefaultFontStyle(TEXT("Regular"),FMath::Max(1,FMath::CeilToInt(12.f*Pixel)));
-    const FSlateFontInfo TowerFont=FCoreStyle::GetDefaultFontStyle(TEXT("Bold"),FMath::Max(1,FMath::CeilToInt(14.f*Pixel)));
+    const FSlateFontInfo Small=RiftTypography::Font(TEXT("Regular"),FMath::Max(1,FMath::CeilToInt(12.f*Pixel)));
+    const FSlateFontInfo TowerFont=RiftTypography::Font(TEXT("Bold"),FMath::Max(1,FMath::CeilToInt(14.f*Pixel)));
     const auto FontMeasure=FSlateApplication::Get().GetRenderer()->GetFontMeasureService();
     auto Project=[&](FVector World,FVector2D& Local)
     {

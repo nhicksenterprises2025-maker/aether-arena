@@ -1,7 +1,9 @@
 #include "RiftUIWidget.h"
+#include "RiftTypography.h"
 #include "RiftUIPrimitives.h"
 #include "RiftMatchSubsystem.h"
 #include "RiftGameMode.h"
+#include "RiftHandButton.h"
 #include "RiftProfileSubsystem.h"
 #include "RiftReplaySubsystem.h"
 #include "RiftMetaSimulationSubsystem.h"
@@ -70,7 +72,7 @@ namespace
 }
 URiftComboBox::URiftComboBox(const FObjectInitializer& ObjectInitializer):Super(ObjectInitializer)
 {
-    InitFont(FCoreStyle::GetDefaultFontStyle("Regular",14));InitForegroundColor(Ivory);
+    InitFont(RiftTypography::Font("Regular",14));InitForegroundColor(Ivory);
 }
 void URiftActionButton::Bind(TFunction<void()> Callback,bool OnPress){Action=MoveTemp(Callback);OnReleased.AddDynamic(this,&URiftActionButton::InvokeRelease);if(OnPress)OnPressed.AddDynamic(this,&URiftActionButton::Invoke);else OnClicked.AddDynamic(this,&URiftActionButton::Invoke);}
 void URiftActionButton::Invoke(){
@@ -84,19 +86,19 @@ int32 URiftChartWidget::NativePaint(const FPaintArgs& Args,const FGeometry& G,co
 {
     Layer=Super::NativePaint(Args,G,Clip,Elements,Layer,Style,Enabled);const FVector2D Size=G.GetLocalSize();const FVector2D Origin(48,12),Area(FMath::Max(1.0,Size.X-62),FMath::Max(1.0,Size.Y-40));
     double MinX=0,MaxX=1,MinY=0,MaxY=1;for(const auto& Series:{SeriesA,SeriesB})for(auto P:Series){MinX=FMath::Min(MinX,P.X);MaxX=FMath::Max(MaxX,P.X);MinY=FMath::Min(MinY,P.Y);MaxY=FMath::Max(MaxY,P.Y);}
-    for(int32 I=0;I<5;++I){float Y=Origin.Y+Area.Y*I/4;TArray<FVector2D> Line={FVector2D(Origin.X,Y),FVector2D(Origin.X+Area.X,Y)};FSlateDrawElement::MakeLines(Elements,Layer+1,G.ToPaintGeometry(),Line,ESlateDrawEffect::None,FLinearColor(.18f,.26f,.29f,.7f),true,1);FSlateDrawElement::MakeText(Elements,Layer+2,G.ToPaintGeometry(FVector2D(45,18),FSlateLayoutTransform(FVector2D(0,Y-6))),FString::Printf(TEXT("%.0f"),MaxY-(MaxY-MinY)*I/4),FCoreStyle::GetDefaultFontStyle("Regular",10),ESlateDrawEffect::None,Muted);}
+    for(int32 I=0;I<5;++I){float Y=Origin.Y+Area.Y*I/4;TArray<FVector2D> Line={FVector2D(Origin.X,Y),FVector2D(Origin.X+Area.X,Y)};FSlateDrawElement::MakeLines(Elements,Layer+1,G.ToPaintGeometry(),Line,ESlateDrawEffect::None,FLinearColor(.18f,.26f,.29f,.7f),true,1);FSlateDrawElement::MakeText(Elements,Layer+2,G.ToPaintGeometry(FVector2D(45,18),FSlateLayoutTransform(FVector2D(0,Y-6))),FString::Printf(TEXT("%.0f"),MaxY-(MaxY-MinY)*I/4),RiftTypography::Font("Regular",10),ESlateDrawEffect::None,Muted);}
     auto Draw=[&](const TArray<FVector2D>& Values,FLinearColor Color){TArray<FVector2D> Points;for(auto V:Values)Points.Add(Origin+FVector2D((V.X-MinX)/FMath::Max(1.0,MaxX-MinX)*Area.X,Area.Y-(V.Y-MinY)/FMath::Max(1.0,MaxY-MinY)*Area.Y));if(Points.Num()>1)FSlateDrawElement::MakeLines(Elements,Layer+3,G.ToPaintGeometry(),Points,ESlateDrawEffect::None,Color,true,2);};Draw(SeriesA,Cyan);Draw(SeriesB,Brass);
-    FSlateDrawElement::MakeText(Elements,Layer+4,G.ToPaintGeometry(FVector2D(Size.X,18),FSlateLayoutTransform(FVector2D(48,Size.Y-20))),Caption,FCoreStyle::GetDefaultFontStyle("Regular",11),ESlateDrawEffect::None,Muted);return Layer+4;
+    FSlateDrawElement::MakeText(Elements,Layer+4,G.ToPaintGeometry(FVector2D(Size.X,18),FSlateLayoutTransform(FVector2D(48,Size.Y-20))),Caption,RiftTypography::Font("Regular",11),ESlateDrawEffect::None,Muted);return Layer+4;
 }
 
-UTextBlock* URiftUIWidget::Text(const FString& Value,int32 Size,FLinearColor Color){auto* W=WidgetTree->ConstructWidget<UTextBlock>();W->SetText(FText::FromString(Value));W->SetFont(FCoreStyle::GetDefaultFontStyle(Size>=17?"Bold":"Regular",FMath::Max(9,Size)));W->SetColorAndOpacity(Color);W->SetShadowOffset(FVector2D(0,1));W->SetShadowColorAndOpacity(FLinearColor(0,0,0,.42f));W->SetAutoWrapText(true);return W;}
+UTextBlock* URiftUIWidget::Text(const FString& Value,int32 Size,FLinearColor Color){auto* W=WidgetTree->ConstructWidget<UTextBlock>();W->SetText(FText::FromString(Value));W->SetFont(RiftTypography::Font(Size>=17?"Bold":"Regular",FMath::Max(9,Size)));W->SetColorAndOpacity(Color);W->SetShadowOffset(FVector2D(0,1));W->SetShadowColorAndOpacity(FLinearColor(0,0,0,.42f));W->SetAutoWrapText(true);return W;}
 UBorder* URiftUIWidget::Panel(UWidget* Content,FMargin Insets,FLinearColor Color){auto* W=WidgetTree->ConstructWidget<UBorder>();W->SetBrush(FSlateRoundedBoxBrush(Color,10.f,FLinearColor(.18f,.28f,.40f,1),1.f));W->SetBrushColor(FLinearColor::White);W->SetPadding(Insets);W->SetContent(Content);return W;}
 UWidget* URiftUIWidget::Badge(const FString& Value,FLinearColor Color,int32 Size){auto* W=Panel(Text(Value,Size,Ivory),FMargin(8,4),Color);W->SetHorizontalAlignment(HAlign_Center);W->SetVerticalAlignment(VAlign_Center);return W;}
-URiftActionButton* URiftUIWidget::Button(const FString& Label,TFunction<void()> Action,bool Accent)
+URiftActionButton* URiftUIWidget::Button(const FString& Label,TFunction<void()> Action,bool Accent,bool HandCard)
 {
-    auto* W=WidgetTree->ConstructWidget<URiftActionButton>();
+    auto* W=WidgetTree->ConstructWidget<URiftActionButton>(HandCard?URiftHandButton::StaticClass():URiftActionButton::StaticClass());
     FButtonStyle ControlStyle;ControlStyle.SetNormal(FSlateRoundedBoxBrush(FLinearColor::White,7.f,FLinearColor(.58f,.70f,.84f,.55f),1.f));ControlStyle.SetHovered(FSlateRoundedBoxBrush(FLinearColor(1.12f,1.12f,1.12f,1),7.f,FLinearColor(.88f,.95f,1,1),1.5f));ControlStyle.SetPressed(FSlateRoundedBoxBrush(FLinearColor(.72f,.75f,.80f,1),7.f,FLinearColor(.88f,.95f,1,1),1.f));ControlStyle.SetDisabled(FSlateRoundedBoxBrush(FLinearColor(.42f,.46f,.53f,1),7.f));ControlStyle.SetNormalPadding(FMargin(14,10));ControlStyle.SetPressedPadding(FMargin(14,12,14,8));W->SetStyle(ControlStyle);
-    auto* LabelText=Text(Label,14,Accent?FLinearColor(.09f,.05f,.015f,1):Ivory);LabelText->SetFont(FCoreStyle::GetDefaultFontStyle("Bold",14));LabelText->SetJustification(ETextJustify::Center);W->SetContent(LabelText);W->SetBackgroundColor(Accent?Brass:FLinearColor(.055f,.115f,.205f,1));W->Bind(MoveTemp(Action));return W;
+    auto* LabelText=Text(Label,14,Accent?FLinearColor(.09f,.05f,.015f,1):Ivory);LabelText->SetFont(RiftTypography::Font("Bold",14));LabelText->SetJustification(ETextJustify::Center);W->SetContent(LabelText);W->SetBackgroundColor(Accent?Brass:FLinearColor(.055f,.115f,.205f,1));W->Bind(MoveTemp(Action));return W;
 }
 UWidget* URiftUIWidget::Illustration(const FString& CardId,float Width,UImage** ImageOut)
 {
@@ -123,7 +125,7 @@ UHorizontalBox* URiftUIWidget::Row(UVerticalBox* Target){auto* W=WidgetTree->Con
 UEditableTextBox* URiftUIWidget::Edit(const FString& Value,const FString& Hint)
 {
     auto* W=WidgetTree->ConstructWidget<UEditableTextBox>();W->SetText(FText::FromString(Value));W->SetHintText(FText::FromString(Hint));auto EditStyle=W->GetWidgetStyle();
-    EditStyle.SetFont(FCoreStyle::GetDefaultFontStyle("Regular",14));EditStyle.TextStyle.SetColorAndOpacity(Ivory);EditStyle.SetForegroundColor(Ivory);EditStyle.SetFocusedForegroundColor(Ivory);EditStyle.SetReadOnlyForegroundColor(Muted);EditStyle.SetBackgroundColor(FLinearColor::White);EditStyle.SetPadding(FMargin(10,8));
+    EditStyle.SetFont(RiftTypography::Font("Regular",14));EditStyle.TextStyle.SetColorAndOpacity(Ivory);EditStyle.SetForegroundColor(Ivory);EditStyle.SetFocusedForegroundColor(Ivory);EditStyle.SetReadOnlyForegroundColor(Muted);EditStyle.SetBackgroundColor(FLinearColor::White);EditStyle.SetPadding(FMargin(10,8));
     EditStyle.SetBackgroundImageNormal(FSlateColorBrush(FLinearColor(.018f,.035f,.065f,1)));EditStyle.SetBackgroundImageHovered(FSlateColorBrush(FLinearColor(.06f,.11f,.125f,1)));EditStyle.SetBackgroundImageFocused(FSlateColorBrush(FLinearColor(.085f,.16f,.18f,1)));EditStyle.SetBackgroundImageReadOnly(FSlateColorBrush(FLinearColor(.045f,.07f,.08f,1)));W->SetWidgetStyle(EditStyle);return W;
 }
 UComboBoxString* URiftUIWidget::Combo(const TArray<FString>& Values,const FString& Selected)
@@ -144,6 +146,7 @@ TSharedRef<SWidget> URiftUIWidget::RebuildWidget()
 void URiftUIWidget::NativeConstruct(){Super::NativeConstruct();Navigate(TEXT("Home"));}
 void URiftUIWidget::Navigate(const FString& Destination)
 {
+    if(auto* PC=Cast<ARiftPlayerController>(GetOwningPlayer()))PC->CancelCardDrag();
     if(Destination==TEXT("Battle")&&bMenuPausedMatch){GetWorld()->GetSubsystem<URiftMatchSubsystem>()->SetSpeed(MenuResumeSpeed);bMenuPausedMatch=false;}
     if(Destination==TEXT("Home")){auto* R=GetGameInstance()->GetSubsystem<URiftReplaySubsystem>();if(R->IsPlaying())R->CloseReplay();auto* M=GetWorld()->GetSubsystem<URiftMatchSubsystem>();if(M->IsActive())M->LeaveMatch();HandIndex=-1;bSpawnArmed=false;}
     if(Destination==TEXT("Home"))bMenuPausedMatch=false;
@@ -364,6 +367,9 @@ void URiftUIWidget::ExportMeta()
 }
 void URiftUIWidget::PatchNotes()
 {
+    Add(Body,Text(TEXT("MODELS, CARD ART & CONTROLS · 1.3.0"),25,Brass));
+    Add(Body,Text(TEXT("Revised characters have fitted equipment, cleaner weapon grips and clearer silhouettes. All fourteen portraits are rendered from the upgraded in-game models, with closer framing for faces and held equipment."),16));
+    Add(Body,Text(TEXT("The interface uses the bundled Barlow Semi Condensed font. Drag a card to a legal arena position and release to deploy. Return it to the hand, release on an invalid position or UI panel, or cancel to keep the card and Aether."),16));
     Add(Body,Text(TEXT("SPELL TIMING UPDATE · 1.2.1"),25,Brass));
     Add(Body,Text(TEXT("Meteor Shards falls for 0.75 seconds before the initial hit and damage zone begin. Bullet Burst travels for 0.30 seconds before its hit. Lead moving enemies: both spells strike the chosen area using enemy positions at impact."),16));
     Add(Body,Text(TEXT("Aether is spent and the hand cycles when you cast. Pause, battle speed and replay seeking preserve the impact deadline. Nova Flask stays instant; damage, cost, radius and Meteor's five damage ticks are retained."),16));

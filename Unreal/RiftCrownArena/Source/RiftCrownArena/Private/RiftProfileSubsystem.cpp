@@ -487,7 +487,8 @@ void URiftProfileSubsystem::ApplySettings() {
     FString QAOutput;
     if (FParse::Value(FCommandLine::Get(), TEXT("RiftCapture="), QAOutput) ||
         FParse::Value(FCommandLine::Get(), TEXT("RiftPerfReport="), QAOutput) ||
-        FParse::Value(FCommandLine::Get(), TEXT("RiftAudioSmoke="), QAOutput)) {
+        FParse::Value(FCommandLine::Get(), TEXT("RiftAudioSmoke="), QAOutput) ||
+        FParse::Value(FCommandLine::Get(), TEXT("RiftDragSmoke="), QAOutput)) {
         FParse::Value(FCommandLine::Get(), TEXT("ResX="), DisplayWidth);
         FParse::Value(FCommandLine::Get(), TEXT("ResY="), DisplayHeight);
         DisplayWidth = FMath::Clamp(DisplayWidth, 800, 7680);
