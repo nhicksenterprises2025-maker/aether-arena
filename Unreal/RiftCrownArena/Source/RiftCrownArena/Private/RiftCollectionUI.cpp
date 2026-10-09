@@ -143,12 +143,14 @@ void URiftUIWidget::CardDetail()
     else
     {
         Stat(TEXT("INITIAL TROOP HIT"),FString::Printf(TEXT("%.0f HP"),Card->damage));Stat(TEXT("STRUCTURE DAMAGE"),FString::Printf(TEXT("%.0f HP"),Card->towerDamage));Stat(TEXT("SPELL RADIUS"),FString::Printf(TEXT("%.2f tiles"),Card->spellRadius));
+        if(Card->castDelay>0)Stat(TEXT("TIME TO IMPACT"),FString::Printf(TEXT("%.2f s"),Card->castDelay));
         if(Card->rounds>0)Stat(TEXT("VISUAL ROUNDS"),FString::FromInt(Card->rounds));if(Card->dotDamage>0){Stat(TEXT("DAMAGE / TICK"),FString::Printf(TEXT("%.0f HP"),Card->dotDamage));Stat(TEXT("ZONE DURATION"),FString::Printf(TEXT("%.1f s"),Card->dotDuration));}
     }
 
     auto* Special=WidgetTree->ConstructWidget<UVerticalBox>();bool HasSpecial=false;
     auto Ability=[&](const FString& Title,const FString& Copy){HasSpecial=true;Add(Special,Text(Title,17,Gold),3);Add(Special,Text(Copy,15,Paper),3);};
     if(Card->building)Ability(TEXT("DEFENSIVE BUILDING"),FString::Printf(TEXT("Remains for %.1f seconds. Its %.2f-tile footprint must fit the legal deployment area."),Card->lifetime,Card->footprint));
+    if(Card->castDelay>0)Ability(TEXT("LEAD YOUR CAST"),FString::Printf(TEXT("Hits %.2f seconds after casting. Aim where enemies will be when the animation finishes. The marked area stays fixed; enemies can enter or leave it before impact."),Card->castDelay));
     if(Card->chargeDamage)Ability(TEXT("CHARGED IMPACT"),FString::Printf(TEXT("Builds charge by moving for more than 1.65 seconds. A charged impact deals %.0f damage."),Card->chargeDamage));
     if(Card->slowPct)Ability(TEXT("MOVEMENT SLOW"),FString::Printf(TEXT("Each melee hit slows movement by %.0f%% for %.1f seconds. Repeat hits refresh the effect; slows do not stack."),Card->slowPct*100,Card->slowDuration));
     if(Card->auraDamage)Ability(TEXT("ELECTRIC AURA"),FString::Printf(TEXT("Deals %.0f damage to nearby ground and air troops every %.1f seconds within %.1f tiles. Each pulse stuns for %.1f seconds. Direct attacks remain structure-only."),Card->auraDamage,Card->auraInterval,Card->auraRadius,Card->stunDuration));

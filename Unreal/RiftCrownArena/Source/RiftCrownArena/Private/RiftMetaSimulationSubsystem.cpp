@@ -8,6 +8,7 @@
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "Misc/SecureHash.h"
+#include "Misc/ConfigCacheIni.h"
 #include "HAL/PlatformProcess.h"
 #include "Engine/GameInstance.h"
 #include "Serialization/JsonSerializer.h"
@@ -69,7 +70,8 @@ namespace
     {
         auto O=MakeShared<FJsonObject>();
         O->SetNumberField(TEXT("schemaVersion"),1);O->SetStringField(TEXT("id"),FGuid::NewGuid().ToString(EGuidFormats::Digits));O->SetStringField(TEXT("createdAt"),FDateTime::UtcNow().ToIso8601());
-        O->SetStringField(TEXT("version"),TEXT("1.0.0"));O->SetStringField(TEXT("model"),TEXT("rift-native-1"));O->SetStringField(TEXT("deckPolicy"),TEXT("native-observed-2"));O->SetStringField(TEXT("fingerprint"),URiftMetaSimulationSubsystem::Fingerprint());
+        FString Version=TEXT("unknown");if(GConfig)GConfig->GetString(TEXT("/Script/EngineSettings.GeneralProjectSettings"),TEXT("ProjectVersion"),Version,GGameIni);
+        O->SetStringField(TEXT("version"),Version);O->SetStringField(TEXT("model"),TEXT("rift-native-1"));O->SetStringField(TEXT("deckPolicy"),TEXT("native-observed-2"));O->SetStringField(TEXT("fingerprint"),URiftMetaSimulationSubsystem::Fingerprint());
         O->SetNumberField(TEXT("games"),0);O->SetNumberField(TEXT("invalid"),0);O->SetNumberField(TEXT("seed"),151515);O->SetNumberField(TEXT("simulationWallSeconds"),0);O->SetNumberField(TEXT("economyChecks"),0);O->SetNumberField(TEXT("economyInvalid"),0);O->SetNumberField(TEXT("maximumEconomyResidual"),0);O->SetNumberField(TEXT("telemetryRevision"),3);
         O->SetObjectField(TEXT("buckets"),MakeShared<FJsonObject>());O->SetArrayField(TEXT("checkpoints"),{});
         TArray<TSharedPtr<FJsonValue>> CardSnapshot;
@@ -77,12 +79,12 @@ namespace
         {
             auto Definition=MakeShared<FJsonObject>();Definition->SetStringField(TEXT("id"),FS(Card.id));Definition->SetStringField(TEXT("name"),FS(Card.name));Definition->SetStringField(TEXT("category"),Card.spell?TEXT("Spell"):Card.building?TEXT("Building"):TEXT("Troop"));
 #define SNAPSHOT_FIELD(Key) Definition->SetNumberField(TEXT(#Key),double(Card.Key))
-            SNAPSHOT_FIELD(cost);SNAPSHOT_FIELD(count);SNAPSHOT_FIELD(hp);SNAPSHOT_FIELD(damage);SNAPSHOT_FIELD(attackInterval);SNAPSHOT_FIELD(moveSpeed);SNAPSHOT_FIELD(range);SNAPSHOT_FIELD(scale);SNAPSHOT_FIELD(projectileSpeed);SNAPSHOT_FIELD(splash);SNAPSHOT_FIELD(lifetime);SNAPSHOT_FIELD(footprint);SNAPSHOT_FIELD(towerDamage);SNAPSHOT_FIELD(spellRadius);SNAPSHOT_FIELD(chargeDamage);SNAPSHOT_FIELD(slowPct);SNAPSHOT_FIELD(slowDuration);SNAPSHOT_FIELD(auraDamage);SNAPSHOT_FIELD(auraInterval);SNAPSHOT_FIELD(auraRadius);SNAPSHOT_FIELD(stunDuration);SNAPSHOT_FIELD(dotDamage);SNAPSHOT_FIELD(dotDuration);SNAPSHOT_FIELD(dotInterval);SNAPSHOT_FIELD(rounds);
+            SNAPSHOT_FIELD(cost);SNAPSHOT_FIELD(count);SNAPSHOT_FIELD(hp);SNAPSHOT_FIELD(damage);SNAPSHOT_FIELD(attackInterval);SNAPSHOT_FIELD(moveSpeed);SNAPSHOT_FIELD(range);SNAPSHOT_FIELD(scale);SNAPSHOT_FIELD(projectileSpeed);SNAPSHOT_FIELD(splash);SNAPSHOT_FIELD(lifetime);SNAPSHOT_FIELD(footprint);SNAPSHOT_FIELD(towerDamage);SNAPSHOT_FIELD(spellRadius);SNAPSHOT_FIELD(castDelay);SNAPSHOT_FIELD(chargeDamage);SNAPSHOT_FIELD(slowPct);SNAPSHOT_FIELD(slowDuration);SNAPSHOT_FIELD(auraDamage);SNAPSHOT_FIELD(auraInterval);SNAPSHOT_FIELD(auraRadius);SNAPSHOT_FIELD(stunDuration);SNAPSHOT_FIELD(dotDamage);SNAPSHOT_FIELD(dotDuration);SNAPSHOT_FIELD(dotInterval);SNAPSHOT_FIELD(rounds);
 #undef SNAPSHOT_FIELD
             Definition->SetBoolField(TEXT("flying"),Card.flying);Definition->SetBoolField(TEXT("canHitAir"),Card.canHitAir);Definition->SetBoolField(TEXT("structuresOnly"),Card.structuresOnly);Definition->SetBoolField(TEXT("spell"),Card.spell);Definition->SetBoolField(TEXT("building"),Card.building);CardSnapshot.Add(MakeShared<FJsonValueObject>(Definition));
         }
         O->SetArrayField(TEXT("cardSnapshot"),CardSnapshot);auto Rules=MakeShared<FJsonObject>();
-        Rules->SetNumberField(TEXT("arenaWidth"),28);Rules->SetNumberField(TEXT("arenaHeight"),42);Rules->SetNumberField(TEXT("riverHalfWidth"),1.65);Rules->SetNumberField(TEXT("bridgeCenterX"),7.2);Rules->SetNumberField(TEXT("bridgeWidth"),4.2);Rules->SetNumberField(TEXT("frontSight"),8);Rules->SetNumberField(TEXT("rearSight"),5);Rules->SetNumberField(TEXT("regulationSeconds"),180);Rules->SetNumberField(TEXT("overtimeSeconds"),120);Rules->SetNumberField(TEXT("aetherInterval"),2.8);Rules->SetNumberField(TEXT("doubleAetherAt"),120);Rules->SetNumberField(TEXT("tripleAetherAt"),240);Rules->SetNumberField(TEXT("tiebreakerDrainPerSecond"),180);Rules->SetNumberField(TEXT("openingAether"),5);Rules->SetNumberField(TEXT("maximumAether"),10);Rules->SetStringField(TEXT("coreActivation"),TEXT("friendly Guard Tower destroyed"));Rules->SetStringField(TEXT("targetHardLock"),TEXT("at Crown Tower attack range"));Rules->SetStringField(TEXT("navigation"),TEXT("card-aware ground grid A-star with bridges; flying ignores obstacles"));O->SetObjectField(TEXT("rulesSnapshot"),Rules);
+        Rules->SetNumberField(TEXT("arenaWidth"),28);Rules->SetNumberField(TEXT("arenaHeight"),42);Rules->SetNumberField(TEXT("riverHalfWidth"),1.65);Rules->SetNumberField(TEXT("bridgeCenterX"),7.2);Rules->SetNumberField(TEXT("bridgeWidth"),4.2);Rules->SetNumberField(TEXT("frontSight"),8);Rules->SetNumberField(TEXT("rearSight"),5);Rules->SetNumberField(TEXT("regulationSeconds"),180);Rules->SetNumberField(TEXT("overtimeSeconds"),120);Rules->SetNumberField(TEXT("aetherInterval"),2.8);Rules->SetNumberField(TEXT("doubleAetherAt"),120);Rules->SetNumberField(TEXT("tripleAetherAt"),240);Rules->SetNumberField(TEXT("tiebreakerDrainPerSecond"),180);Rules->SetNumberField(TEXT("openingAether"),5);Rules->SetNumberField(TEXT("maximumAether"),10);Rules->SetStringField(TEXT("coreActivation"),TEXT("friendly Guard Tower destroyed"));Rules->SetStringField(TEXT("targetHardLock"),TEXT("at Crown Tower attack range"));Rules->SetStringField(TEXT("navigation"),TEXT("card-aware ground grid A-star with bridges; flying ignores obstacles"));Rules->SetStringField(TEXT("spellImpact"),TEXT("fixed target area; current enemy positions at impact; Meteor Shards 0.75s, Bullet Burst 0.30s; Nova Flask instant"));O->SetObjectField(TEXT("rulesSnapshot"),Rules);
         TArray<TSharedPtr<FJsonValue>> Styles;for(const TCHAR* Style:{TEXT("beatdown"),TEXT("aggro"),TEXT("control"),TEXT("cycle"),TEXT("split"),TEXT("spell_cycle"),TEXT("counter")})Styles.Add(MakeShared<FJsonValueString>(Style));O->SetArrayField(TEXT("aiStyles"),Styles);
         return O;
     }
@@ -170,12 +172,12 @@ namespace
 
 FString URiftMetaSimulationSubsystem::Fingerprint()
 {
-    FString Canonical=TEXT("rift-native-1|native-observed-2|ai-v15-port-2|nav-grid-a-star-1|telemetry-3|arena28x42|river1.65|bridges7.2,4.2|sight8,5|phase180,120|aether2.8,120,240|drain180|coreGuardOnly|hardlockAtRange|pocket2,13.2,2.25,9.25");
+    FString Canonical=TEXT("rift-native-1|native-observed-2|ai-v15-port-2|nav-grid-a-star-1|telemetry-3|arena28x42|river1.65|bridges7.2,4.2|sight8,5|phase180,120|aether2.8,120,240|drain180|coreGuardOnly|hardlockAtRange|pocket2,13.2,2.25,9.25|spell-impact-fixed-point-1");
     for(const auto& C:rift::Cards())
     {
         Canonical+=FS(C.id);
 #define RF(K) Canonical+=FString::Printf(TEXT("|" #K "=%.9g"),double(C.K))
-        RF(cost);RF(count);RF(hp);RF(damage);RF(attackInterval);RF(moveSpeed);RF(range);RF(scale);RF(projectileSpeed);RF(splash);RF(lifetime);RF(footprint);RF(towerDamage);RF(spellRadius);RF(chargeDamage);RF(slowPct);RF(slowDuration);RF(auraDamage);RF(auraInterval);RF(auraRadius);RF(stunDuration);RF(dotDamage);RF(dotDuration);RF(dotInterval);RF(rounds);RF(flying);RF(canHitAir);RF(structuresOnly);RF(spell);RF(building);
+        RF(cost);RF(count);RF(hp);RF(damage);RF(attackInterval);RF(moveSpeed);RF(range);RF(scale);RF(projectileSpeed);RF(splash);RF(lifetime);RF(footprint);RF(towerDamage);RF(spellRadius);RF(castDelay);RF(chargeDamage);RF(slowPct);RF(slowDuration);RF(auraDamage);RF(auraInterval);RF(auraRadius);RF(stunDuration);RF(dotDamage);RF(dotDuration);RF(dotInterval);RF(rounds);RF(flying);RF(canHitAir);RF(structuresOnly);RF(spell);RF(building);
 #undef RF
     }return FMD5::HashAnsiString(*Canonical);
 }
@@ -316,6 +318,9 @@ bool FRiftMetaAggregationTest::RunTest(const FString& Parameters)
     auto Summary=SummaryFor(Bucket,TEXT("all"),2,false);TestEqual(TEXT("Aggregate duration uses actual complete matches"),Number(Summary,TEXT("averageDuration")),State.elapsed);TestEqual(TEXT("Aggregate crowns use actual side observations"),Number(Summary,TEXT("averageCrowns")),double(State.crowns[0]+State.crowns[1])/2);
     auto Empty=MakeShared<FJsonObject>();auto EmptyRows=RowsFor(Empty);TestEqual(TEXT("Reading absent statistics does not mutate archived data"),Empty->Values.Num(),0);TestTrue(TEXT("Unsampled raw rate stays unavailable"),EmptyRows[0]->TryGetField(TEXT("rawWinRate"))->Type==EJson::Null);TestTrue(TEXT("No invented damage efficiency without paid spend"),EmptyRows[0]->TryGetField(TEXT("damagePerAether"))->Type==EJson::Null);
     const auto& Captured=Dataset->GetArrayField(TEXT("cardSnapshot"));TestEqual(TEXT("All fourteen immutable card definitions captured"),Captured.Num(),14);TestTrue(TEXT("Rule snapshot preserved"),Dataset->HasField(TEXT("rulesSnapshot")));TestEqual(TEXT("Counter personality receives its own observation"),Number(ReadObject(ReadObject(Dataset,TEXT("buckets")),TEXT("counter|all")),TEXT("n")),1.0);
+    for(const auto& Value:Captured){const auto Definition=Value->AsObject();const auto* Card=rift::FindCard(TCHAR_TO_UTF8(*String(Definition,TEXT("id"))));TestTrue(TEXT("Every immutable card snapshot captures its authoritative impact delay"),Card&&Definition->HasField(TEXT("castDelay"))&&FMath::IsNearlyEqual(Number(Definition,TEXT("castDelay")),Card->castDelay,1e-7));}
+    TestTrue(TEXT("Immutable rule snapshot describes target selection at impact"),ReadObject(Dataset,TEXT("rulesSnapshot"))->HasField(TEXT("spellImpact")));
+    BadDataset=Parse(Text(Dataset));BadDataset->SetStringField(TEXT("fingerprint"),TEXT("archived-instant-spell-rules"));TestFalse(TEXT("Historical instant-spell observations cannot be appended to current delayed-spell rules"),DatasetCanResume(BadDataset));
     auto Broken=State;Broken.spent[0]+=1;Residual=0;TestFalse(TEXT("Extra unaccounted spend fails validation"),EconomyValid(Broken,Residual));Broken=State;Broken.aether[0]=11;Residual=0;TestFalse(TEXT("Over-cap banks fail validation"),EconomyValid(Broken,Residual));
     return !HasAnyErrors();
 }

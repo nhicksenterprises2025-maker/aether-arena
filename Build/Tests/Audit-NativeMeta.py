@@ -78,14 +78,25 @@ canonical = ("rift-native-1|native-observed-2|ai-v15-port-2|nav-grid-a-star-1|te
              "arena28x42|river1.65|bridges7.2,4.2|sight8,5|phase180,120|aether2.8,120,240|"
              "drain180|coreGuardOnly|hardlockAtRange|pocket2,13.2,2.25,9.25")
 canonical = canonical.replace("telemetry-2", f"telemetry-{revision}")
+timed_spells = any("castDelay" in card for card in data["cardSnapshot"])
+if timed_spells:
+    check(all("castDelay" in card for card in data["cardSnapshot"]),
+          "Incomplete immutable spell timing snapshot")
+    canonical += "|spell-impact-fixed-point-1"
 fingerprint_fields = ("cost count hp damage attackInterval moveSpeed range scale projectileSpeed splash lifetime "
                       "footprint towerDamage spellRadius chargeDamage slowPct slowDuration auraDamage "
                       "auraInterval auraRadius stunDuration dotDamage dotDuration dotInterval rounds "
                       "flying canHitAir structuresOnly spell building").split()
+if timed_spells:
+    fingerprint_fields.insert(fingerprint_fields.index("spellRadius") + 1, "castDelay")
+    for card in data["cardSnapshot"]:
+        near(card.get("castDelay", -1), {"meteor_shards": .75, "bullet_burst": .30}.get(card["id"], 0),
+             f"Captured cast delay: {card['id']}")
 for card in data["cardSnapshot"]:
     canonical += card["id"]
     for key in fingerprint_fields:
-        canonical += f"|{key}={float(card[key]):.9g}"
+        check(key in card, f"Missing immutable card field: {card['id']}.{key}")
+        canonical += f"|{key}={float(card.get(key, 0)):.9g}"
 fingerprint = hashlib.md5(canonical.encode("ascii")).hexdigest()
 check(fingerprint == data["fingerprint"], "Immutable card/rule fingerprint mismatch")
 expected_rules = {"arenaWidth": 28, "arenaHeight": 42, "riverHalfWidth": 1.65,
@@ -98,6 +109,10 @@ expected_rules = {"arenaWidth": 28, "arenaHeight": 42, "riverHalfWidth": 1.65,
                   "navigation": "card-aware ground grid A-star with bridges; flying ignores obstacles"}
 for key, value in expected_rules.items():
     check(data["rulesSnapshot"].get(key) == value, f"Captured rule mismatch: {key}")
+if timed_spells:
+    check(data["rulesSnapshot"].get("spellImpact") ==
+          "fixed target area; current enemy positions at impact; Meteor Shards 0.75s, Bullet Burst 0.30s; Nova Flask instant",
+          "Captured spell impact rule mismatch")
 games, attempts = data["games"], data["economyChecks"]
 check(games == int(games) and games >= 0, "Invalid games counter")
 check(attempts == games + data["invalid"], "Attempt/valid/invalid counters disagree")

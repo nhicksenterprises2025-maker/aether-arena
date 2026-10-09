@@ -113,6 +113,7 @@ const std::vector<Card> &Cards() {
         c.stunDuration = .4;
         v.push_back(c);
         c = Spell("meteor_shards", "Meteor Shards", 5, 262, 0, 4.5);
+        c.castDelay = .75;
         c.dotDamage = 40;
         c.dotDuration = 5;
         c.dotInterval = 1;
@@ -125,6 +126,7 @@ const std::vector<Card> &Cards() {
         c.footprint = 1.65;
         v.push_back(c);
         c = Spell("bullet_burst", "Bullet Burst", 2, 175, 55, 2.2);
+        c.castDelay = .30;
         c.rounds = 7;
         v.push_back(c);
         c = Spell("nova_flask", "Nova Flask", 4, 375, 185, 3.25);
@@ -385,6 +387,28 @@ void Match::FixedStep(double dt) {
             }
         }
     }
+    // Resolve fixed-area casts against positions after this tick's movement.
+    // Remove the pending cast first: lethal damage may finish the match and
+    // clear every remaining cast while ApplySpell is still on the stack.
+    for (std::size_t i = 0; i < state_.spellCasts.size();) {
+        if (state_.spellCasts[i].impactAt > state_.elapsed + Epsilon) {
+            ++i;
+            continue;
+        }
+        const SpellCast cast = state_.spellCasts[i];
+        state_.spellCasts.erase(state_.spellCasts.begin() + i);
+        const Card *card = FindCard(cast.cardId);
+        if (!card)
+            continue;
+        auto &event = Emit("spell_impact", cast.team);
+        event.playId = cast.playId;
+        event.cardId = cast.cardId;
+        event.position = cast.position;
+        event.until = cast.impactAt;
+        ApplySpell(cast.team, *card, cast.position, cast.playId);
+        if (!Running(state_.phase))
+            return;
+    }
     for (std::size_t i = 0; i < state_.hazards.size();) {
         auto &h = state_.hazards[i];
         const Card *c = FindCard(h.cardId);
@@ -398,8 +422,8 @@ void Match::FixedStep(double dt) {
                 Distance(e.position, h.position) <= h.radius + e.radius * .2)
                 ++occupants;
         auto &tele = state_.telemetry[Index(h.team)][h.cardId];
-        // AI may cast at this tick's endpoint; exposure begins at the cast,
-        // rather than crediting occupants for time before the hazard existed.
+        // A delayed spell may land at this tick's endpoint; exposure begins at
+        // impact, rather than crediting occupants before the hazard existed.
         const double activeDt = std::max(0., std::min(state_.elapsed, h.expires) - std::max(old, h.born));
         tele.zoneOccupancy += occupants * activeDt;
         tele.zoneSeconds += activeDt;
@@ -441,6 +465,7 @@ void Match::Finish(int winner, const std::string &reason) {
     state_.resultReason = reason;
     state_.timeRemaining = 0;
     state_.projectiles.clear();
+    state_.spellCasts.clear();
     for (auto &team : state_.telemetry)
         for (auto &[id, t] : team)
             t.surviving = 0;
@@ -461,6 +486,7 @@ void Match::BeginTiebreaker() {
     state_.timeRemaining = 0;
     state_.projectiles.clear();
     state_.hazards.clear();
+    state_.spellCasts.clear();
     tieMin_.fill(std::numeric_limits<double>::max());
     tieTotal_.fill(0);
     for (const auto &e : state_.entities)
@@ -589,6 +615,7 @@ bool Match::Play(Team team, int index, Vec2 p, const std::string &reason) {
     e.firstPlay = first;
     e.openingHand = opening;
     e.overtime = state_.phase == Phase::Overtime;
+    e.until = c->castDelay > 0 ? state_.elapsed + c->castDelay : 0;
     auto &observer = state_.ai[1 - t];
     observer.estimatedOpponentAether = std::max(0., observer.estimatedOpponentAether - c->cost);
     observer.observedCycle.push_back(c->id);
@@ -610,12 +637,30 @@ bool Match::Spawn(Team team, const std::string &id, Vec2 p) {
     e.sandbox = true;
     e.reason = "developer_spawn";
     e.aetherBefore = e.aetherAfter = state_.aether[Index(team)];
+    e.until = c->castDelay > 0 ? state_.elapsed + c->castDelay : 0;
     Deploy(team, *c, p, play, true);
     return true;
 }
 void Match::Deploy(Team team, const Card &c, Vec2 p, PlayId play, bool sandbox) {
     if (c.spell) {
-        ApplySpell(team, c, p, play);
+        if (c.castDelay > 0) {
+            SpellCast cast;
+            cast.playId = play;
+            cast.team = team;
+            cast.cardId = c.id;
+            cast.position = p;
+            cast.born = state_.elapsed;
+            cast.impactAt = state_.elapsed + c.castDelay;
+            state_.spellCasts.push_back(cast);
+            auto &event = Emit("spell_cast", team);
+            event.playId = play;
+            event.cardId = c.id;
+            event.position = p;
+            event.until = cast.impactAt;
+            event.sandbox = sandbox;
+        } else {
+            ApplySpell(team, c, p, play);
+        }
         return;
     }
     const std::vector<Vec2> offsets =
@@ -849,6 +894,7 @@ void Match::ClearField() {
                           state_.entities.end());
     state_.projectiles.clear();
     state_.hazards.clear();
+    state_.spellCasts.clear();
     for (auto &ai : state_.ai) {
         ai.anchor = 0;
         ai.supports = 0;

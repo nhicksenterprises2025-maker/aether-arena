@@ -22,6 +22,7 @@
 #include "RiftProfileSubsystem.h"
 #include "RiftReplaySubsystem.h"
 #include "RiftUIWidget.h"
+#include "Presentation/RiftArenaPresentation.h"
 #include "Serialization/JsonSerializer.h"
 #include <cmath>
 #include <limits>
@@ -185,6 +186,25 @@ bool FRiftConnectedUIIntegrationTest::RunTest(const FString &Parameters) {
     Replay->FlushPendingWrites();
     TestEqual(TEXT("Repeated Home navigation cannot duplicate a recording"), Profile->ReplayFiles.Num(),
               OriginalReplays + 1);
+    for (const auto &Id : {FString(TEXT("meteor_shards")), FString(TEXT("bullet_burst")),
+                           FString(TEXT("nova_flask"))}) {
+        UI->InspectCard(Id);
+        bool HasDelayLabel = false, HasLeadAdvice = false, HasDelayValue = false;
+        const auto *Definition = rift::FindCard(TCHAR_TO_UTF8(*Id));
+        for (auto *Text : ActiveWidgets<UTextBlock>(Canvas)) {
+            const FString Value = Text->GetText().ToString();
+            HasDelayLabel |= Value == TEXT("TIME TO IMPACT");
+            HasLeadAdvice |= Value == TEXT("LEAD YOUR CAST");
+            HasDelayValue |= Value == FString::Printf(TEXT("%.2f s"), Definition->castDelay);
+        }
+        TestEqual(Id + TEXT(" impact timing is shown only for delayed spells"), HasDelayLabel,
+                  Definition->castDelay > 0);
+        TestEqual(Id + TEXT(" lead advice matches the actual mechanic"), HasLeadAdvice,
+                  Definition->castDelay > 0);
+        if (Definition->castDelay > 0)
+            TestTrue(Id + TEXT(" exact authoritative delay shown"), HasDelayValue);
+    }
+    UI->Navigate(TEXT("Home"));
     if (!Click(TEXT("Loadout")) || !Click(*Profile->Presets[1].Name))
         return false;
     const auto PreviousDeck = Profile->Presets[1].Cards;
@@ -532,6 +552,14 @@ bool FRiftSnapshotRoundtripTest::RunTest(const FString &Parameters) {
     P.remaining = .3;
     P.origin = {1, 2};
     State.projectiles.push_back(P);
+    rift::SpellCast Cast;
+    Cast.playId = 88;
+    Cast.team = rift::Team::Enemy;
+    Cast.cardId = "meteor_shards";
+    Cast.position = {2, -4};
+    Cast.born = .2;
+    Cast.impactAt = .95;
+    State.spellCasts.push_back(Cast);
     rift::Hazard H;
     H.playId = 9;
     H.cardId = "meteor_shards";
@@ -547,6 +575,11 @@ bool FRiftSnapshotRoundtripTest::RunTest(const FString &Parameters) {
     TestTrue(TEXT("Full snapshot parses"), URiftReplaySubsystem::SnapshotFromJSON(Original, Parsed));
     TestEqual(TEXT("All snapshot fields roundtrip"), Serialize(URiftReplaySubsystem::SnapshotJSON(Parsed)),
               Serialize(Original));
+    auto Legacy = Clone(Original);
+    Legacy->RemoveField(TEXT("spellCasts"));
+    TestTrue(TEXT("Older snapshots without pending spell fields remain readable"),
+             URiftReplaySubsystem::SnapshotFromJSON(Legacy, Parsed));
+    TestTrue(TEXT("Older snapshots retain an empty pending spell queue"), Parsed.spellCasts.empty());
     TArray<TSharedRef<FJsonObject>> Invalid;
     auto Bad = Clone(Original);
     Bad->SetArrayField(TEXT("teams"), {MakeShared<FJsonValueNumber>(1), MakeShared<FJsonValueNumber>(2)});
@@ -565,6 +598,28 @@ bool FRiftSnapshotRoundtripTest::RunTest(const FString &Parameters) {
     Invalid.Add(Bad);
     Bad = Clone(Original);
     Bad->SetArrayField(TEXT("projectiles"), {MakeShared<FJsonValueNumber>(42)});
+    Invalid.Add(Bad);
+    Bad = Clone(Original);
+    Bad->SetArrayField(TEXT("spellCasts"), {MakeShared<FJsonValueBoolean>(false)});
+    Invalid.Add(Bad);
+    Bad = Clone(Original);
+    Bad->GetArrayField(TEXT("spellCasts"))[0]->AsObject()->SetStringField(TEXT("cardId"), TEXT("nova_flask"));
+    Invalid.Add(Bad);
+    Bad = Clone(Original);
+    Bad->GetArrayField(TEXT("spellCasts"))[0]->AsObject()->SetNumberField(TEXT("impactAt"), .1);
+    Invalid.Add(Bad);
+    Bad = Clone(Original);
+    Bad->GetArrayField(TEXT("spellCasts"))[0]->AsObject()->SetNumberField(TEXT("born"), .8);
+    Invalid.Add(Bad);
+    Bad = Clone(Original);
+    Bad->GetArrayField(TEXT("spellCasts"))[0]->AsObject()->SetNumberField(TEXT("impactAt"),
+                                                                     std::numeric_limits<double>::infinity());
+    Invalid.Add(Bad);
+    Bad = Clone(Original);
+    auto DuplicateCasts = Bad->GetArrayField(TEXT("spellCasts"));
+    const auto DuplicateCast = DuplicateCasts[0];
+    DuplicateCasts.Add(DuplicateCast);
+    Bad->SetArrayField(TEXT("spellCasts"), DuplicateCasts);
     Invalid.Add(Bad);
     Bad = Clone(Original);
     Bad->GetArrayField(TEXT("entities"))[0]->AsObject()->SetNumberField(TEXT("hp"), -1);
@@ -605,7 +660,7 @@ bool FRiftReplayIntegrationTest::RunTest(const FString &Parameters) {
         R->RecordEvent(E);
     M.Step(.1);
     M.Spawn(rift::Team::Enemy, "vampire_bats", {1, 3});
-    M.Spawn(rift::Team::Player, "meteor_shards", {1, 3});
+    M.Spawn(rift::Team::Player, "nova_flask", {1, 3});
     M.SetAether(rift::Team::Player, 10);
     const auto Tower = M.State().entities[1].id;
     M.SetTowerHP(Tower, 1234);
@@ -634,7 +689,7 @@ bool FRiftReplayIntegrationTest::RunTest(const FString &Parameters) {
     }
     TestEqual(TEXT("All five immediate spell deaths reconstructed"), DeadBats, 5);
     TestEqual(TEXT("Tower edit reconstructed"), TowerHP, 1234.0);
-    TestEqual(TEXT("Meteor zone reconstructed"), int32(R->View.hazards.size()), 1);
+    TestEqual(TEXT("Nova retains its instant hit without a lingering zone"), int32(R->View.hazards.size()), 0);
     R->Seek(0);
     TestEqual(TEXT("Backward seek restores initial state"), int32(R->View.entities.size()), 6);
     R->Advance(.11f);
@@ -835,6 +890,234 @@ bool FRiftReplayIntegrationTest::RunTest(const FString &Parameters) {
     R->CloseReplay();
     return true;
 }
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRiftSpellCastReplayIntegrationTest, "Rift.Integration.SpellCastReplay", Flags)
+bool FRiftSpellCastReplayIntegrationTest::RunTest(const FString &Parameters) {
+    if (!Sandbox()) {
+        AddError(TEXT("Use an isolated -RiftSaveRoot and -RiftAutomationSandbox."));
+        return false;
+    }
+    auto *GI = NewObject<UGameInstance>(GEngine);
+    GI->InitializeStandalone(FName(*FGuid::NewGuid().ToString(EGuidFormats::Digits)));
+    auto *World = GI->GetWorld();
+    auto *Replay = GI->GetSubsystem<URiftReplaySubsystem>();
+    auto *Arena = World->SpawnActor<ARiftArenaPresentation>();
+    if (!TestNotNull(TEXT("Actual spell presentation actor"), Arena))
+        return false;
+    Arena->DispatchBeginPlay();
+    ON_SCOPE_EXIT {
+        Replay->CloseReplay();
+        Replay->FlushPendingWrites();
+        World->DestroyWorld(false);
+        GI->Shutdown();
+        GEngine->DestroyWorldContext(World);
+    };
+    rift::MatchOptions Options;
+    Options.aiEnabled = {false, false};
+    rift::Match Match(Options);
+    Replay->BeginRecording(Options, true);
+    auto RecordEvents = [&]() {
+        for (const auto &Event : Match.DrainEvents())
+            Replay->RecordEvent(Event);
+    };
+    RecordEvents();
+    Replay->Sample(Match.State());
+    Match.Step(.1);
+    Match.Spawn(rift::Team::Enemy, "ironclad", {8, -8});
+    const uint64 Troop = Match.State().entities.back().id;
+    uint64 Core = 0;
+    rift::Vec2 CorePosition;
+    double CoreHP = 0;
+    for (const auto &Entity : Match.State().entities)
+        if (Entity.kind == rift::EntityKind::Core && Entity.team == rift::Team::Enemy) {
+            Core = Entity.id;
+            CorePosition = Entity.position;
+            CoreHP = Entity.hp;
+        }
+    Match.Spawn(rift::Team::Player, "meteor_shards", {8, -8});
+    Match.Spawn(rift::Team::Player, "bullet_burst", CorePosition);
+    RecordEvents();
+    Match.Step(.15);
+    RecordEvents();
+    // This sample contains both pending casts; earlier seeks reconstruct them from events.
+    Replay->Sample(Match.State());
+    Match.Step(1.35);
+    RecordEvents();
+    Replay->EndRecording(Match.State(), true);
+    if (!TestTrue(TEXT("Delayed spell recording saves"), Replay->FlushPendingWrites()) ||
+        !TestTrue(TEXT("Delayed spell recording opens"), Replay->OpenReplay(Replay->LatestFilename)))
+        return false;
+    auto HP = [&](uint64 Id) {
+        for (const auto &Entity : Replay->View.entities)
+            if (Entity.id == Id)
+                return Entity.hp;
+        return -1.;
+    };
+    Replay->Seek(.15f);
+    TestEqual(TEXT("Events reconstruct both spell windups before the first pending snapshot"),
+              int32(Replay->View.spellCasts.size()), 2);
+    TestEqual(TEXT("Meteor has no zone during the fall"), int32(Replay->View.hazards.size()), 0);
+    TestEqual(TEXT("Meteor target remains healthy before impact"), HP(Troop),
+              rift::FindCard("ironclad")->hp);
+    TestEqual(TEXT("Bullet target remains healthy before impact"), HP(Core), CoreHP);
+    if (Replay->View.spellCasts.size() == 2) {
+        const auto CastPosition = rift::SnapToTile({8, -8});
+        TestTrue(TEXT("Meteor replay preserves its fixed target and deadline"),
+                 Replay->View.spellCasts[0].position.x == CastPosition.x &&
+                 Replay->View.spellCasts[0].position.z == CastPosition.z &&
+                 FMath::IsNearlyEqual(Replay->View.spellCasts[0].impactAt -
+                                          Replay->View.spellCasts[0].born,
+                                      .75, 1e-7));
+        TestTrue(TEXT("Bullet replay preserves its authoritative deadline"),
+                 FMath::IsNearlyEqual(Replay->View.spellCasts[1].impactAt -
+                                          Replay->View.spellCasts[1].born,
+                                      .30, 1e-7));
+    }
+    Replay->Seek(.35f);
+    TestEqual(TEXT("Pending snapshot reconstructs both casts without duplicate events"),
+              int32(Replay->View.spellCasts.size()), 2);
+    Replay->SetSpeed(0);
+    const double PausedTime = Replay->TimelinePosition();
+    Replay->Advance(1.f);
+    TestEqual(TEXT("Paused replay cannot advance either spell animation"),
+              Replay->TimelinePosition(), PausedTime);
+    TestEqual(TEXT("Paused replay cannot apply early damage"), HP(Core), CoreHP);
+    Replay->Seek(.5f);
+    TestTrue(TEXT("Bullet impact removes only its own pending cast"),
+             Replay->View.spellCasts.size() == 1 &&
+                 Replay->View.spellCasts[0].cardId == "meteor_shards");
+    TestEqual(TEXT("Bullet damage occurs once at its delayed impact"), HP(Core),
+              CoreHP - rift::FindCard("bullet_burst")->towerDamage);
+    Replay->Seek(.9f);
+    TestTrue(TEXT("Meteor impact removes its windup"), Replay->View.spellCasts.empty());
+    TestEqual(TEXT("Meteor initial damage occurs at its delayed impact"), HP(Troop),
+              rift::FindCard("ironclad")->hp - rift::FindCard("meteor_shards")->damage);
+    TestEqual(TEXT("Meteor zone starts after the fall finishes"), int32(Replay->View.hazards.size()), 1);
+    if (!Replay->View.hazards.empty()) {
+        const auto &Hazard = Replay->View.hazards[0];
+        TestTrue(TEXT("Meteor's complete five-second zone and first tick are relative to impact"),
+                 FMath::IsNearlyEqual(Hazard.born, .85, 1e-6) &&
+                     FMath::IsNearlyEqual(Hazard.nextTick, Hazard.born + 1, 1e-6) &&
+                     FMath::IsNearlyEqual(Hazard.expires, Hazard.born + 5, 1e-6));
+    }
+    Replay->Seek(.15f);
+    TestEqual(TEXT("Backward seek restores both winding casts"),
+              int32(Replay->View.spellCasts.size()), 2);
+    TestEqual(TEXT("Backward seek removes future Meteor zone"), int32(Replay->View.hazards.size()), 0);
+    TestEqual(TEXT("Backward seek restores health before Bullet impact"), HP(Core), CoreHP);
+    auto CheckImpactRewind = [&](float Before, int32 Rings, int32 Meshes, const TCHAR *Card) {
+        Replay->Seek(Before);
+        Arena->Tick(0);
+        Replay->SetSpeed(1);
+        Replay->Advance(.01f);
+        Arena->Tick(0);
+        auto After = Json(Arena->NiagaraDiagnosticsJSON());
+        TestTrue(FString(Card) + TEXT(" actual forward playback emits impact debris"),
+                 After.IsValid() && After->GetNumberField(TEXT("spellDebrisBodies")) > 0 &&
+                     After->GetNumberField(TEXT("spellImpactEvents")) == 1 &&
+                     After->GetArrayField(TEXT("recentSpellImpacts")).Num() == 1);
+        const double AfterTime = Replay->TimelinePosition();
+        // Eight milliseconds backwards crosses impact, below the old ten-millisecond reset threshold.
+        Replay->Seek(Before + .002f);
+        Arena->Tick(0);
+        const double Rewind = AfterTime - Replay->TimelinePosition();
+        TestTrue(FString(Card) + TEXT(" regression exercises a backward jump under ten milliseconds"),
+                 Rewind > 0 && Rewind < .01);
+        TestEqual(FString(Card) + TEXT(" backward impact seek restores actual targeting rings"),
+                  Arena->SpellCastVisualCount(), Rings);
+        TestEqual(FString(Card) + TEXT(" backward impact seek restores actual airborne meshes"),
+                  Arena->SpellCastMeshCount(), Meshes);
+        auto Rewound = Json(Arena->NiagaraDiagnosticsJSON());
+        TestTrue(FString(Card) + TEXT(" backward impact seek removes all future debris and impact cues"),
+                 Rewound.IsValid() && Rewound->GetNumberField(TEXT("spellDebrisBodies")) == 0 &&
+                     Rewound->GetNumberField(TEXT("spellImpactEvents")) == 0 &&
+                     Rewound->GetArrayField(TEXT("recentSpellImpacts")).IsEmpty());
+    };
+    CheckImpactRewind(.395f, 2, 12, TEXT("Bullet Burst"));
+    CheckImpactRewind(.845f, 1, 5, TEXT("Meteor Shards"));
+    Replay->CloseReplay();
+
+    rift::Match Cleared(Options);
+    Replay->BeginRecording(Options, true);
+    for (const auto &Event : Cleared.DrainEvents())
+        Replay->RecordEvent(Event);
+    Replay->Sample(Cleared.State());
+    Cleared.Step(.1);
+    Cleared.Spawn(rift::Team::Player, "meteor_shards", {0, 0});
+    Cleared.Step(.15);
+    Cleared.ClearField();
+    Cleared.Step(.25);
+    for (const auto &Event : Cleared.DrainEvents())
+        Replay->RecordEvent(Event);
+    Replay->EndRecording(Cleared.State(), true);
+    if (!TestTrue(TEXT("Cancelled spell recording saves"), Replay->FlushPendingWrites()) ||
+        !TestTrue(TEXT("Cancelled spell recording opens"), Replay->OpenReplay(Replay->LatestFilename)))
+        return false;
+    Replay->Seek(.15f);
+    TestEqual(TEXT("Cancelled replay still shows the cast before Clear Field"),
+              int32(Replay->View.spellCasts.size()), 1);
+    Replay->Seek(.3f);
+    TestTrue(TEXT("Clear Field removes the pending animation before its deadline"),
+             Replay->View.spellCasts.empty() && Replay->View.hazards.empty());
+    Replay->CloseReplay();
+
+    // An older archive has no pending-cast field or deadline. Its Meteor zone remains instant.
+    rift::Match LegacyMatch(Options);
+    LegacyMatch.Spawn(rift::Team::Enemy, "ironclad", {8, -8});
+    const auto Initial = URiftReplaySubsystem::SnapshotJSON(LegacyMatch.State());
+    Initial->RemoveField(TEXT("spellCasts"));
+    Initial->SetNumberField(TEXT("eventSequence"), 0);
+    auto LegacyEnd = Clone(Initial);
+    LegacyEnd->SetNumberField(TEXT("time"), 1);
+    LegacyEnd->SetNumberField(TEXT("eventSequence"), 1);
+    auto Legacy = MakeShared<FJsonObject>();
+    Legacy->SetNumberField(TEXT("formatVersion"), 1);
+    Legacy->SetStringField(TEXT("model"), TEXT("rift-native-1"));
+    Legacy->SetNumberField(TEXT("duration"), 1);
+    Legacy->SetArrayField(TEXT("states"),
+                         {MakeShared<FJsonValueObject>(Initial), MakeShared<FJsonValueObject>(LegacyEnd)});
+    auto OldCast = MakeShared<FJsonObject>();
+    OldCast->SetStringField(TEXT("type"), TEXT("card_play"));
+    OldCast->SetStringField(TEXT("cardId"), TEXT("meteor_shards"));
+    OldCast->SetNumberField(TEXT("sequence"), 1);
+    OldCast->SetNumberField(TEXT("time"), .1);
+    OldCast->SetNumberField(TEXT("team"), 0);
+    OldCast->SetNumberField(TEXT("playId"), 55);
+    OldCast->SetBoolField(TEXT("sandbox"), true);
+    const auto OldVictim = LegacyMatch.State().entities.back();
+    const uint64 OldVictimId = OldVictim.id;
+    const double OldVictimHP = OldVictim.hp;
+    auto OldDamage = MakeShared<FJsonObject>();
+    OldDamage->SetStringField(TEXT("type"), TEXT("damage"));
+    OldDamage->SetStringField(TEXT("cardId"), TEXT("meteor_shards"));
+    OldDamage->SetStringField(TEXT("damageKind"), TEXT("initial"));
+    OldDamage->SetNumberField(TEXT("sequence"), 2);
+    OldDamage->SetNumberField(TEXT("time"), .1);
+    OldDamage->SetNumberField(TEXT("team"), 0);
+    OldDamage->SetNumberField(TEXT("targetTeam"), 1);
+    OldDamage->SetNumberField(TEXT("target"), double(OldVictimId));
+    OldDamage->SetNumberField(TEXT("targetKind"), double(OldVictim.kind));
+    OldDamage->SetNumberField(TEXT("hp"), OldVictimHP - 262);
+    OldDamage->SetNumberField(TEXT("amount"), 262);
+    LegacyEnd->SetNumberField(TEXT("eventSequence"), 2);
+    Legacy->SetArrayField(TEXT("events"),
+                         {MakeShared<FJsonValueObject>(OldCast), MakeShared<FJsonValueObject>(OldDamage)});
+    FString Error;
+    const FString LegacyName = FGuid::NewGuid().ToString(EGuidFormats::Digits) + TEXT("-legacy-spell.json");
+    if (!TestTrue(TEXT("Legacy spell fixture saves"), URiftProfileSubsystem::AtomicWrite(
+                      FPaths::Combine(URiftProfileSubsystem::SaveRoot(), TEXT("Replays"), LegacyName),
+                      Serialize(Legacy), Error)) ||
+        !TestTrue(TEXT("Legacy archive still opens without spellCasts"), Replay->OpenReplay(LegacyName)))
+        return false;
+    Replay->Seek(.2f);
+    TestTrue(TEXT("Old Meteor has no retroactively added windup"), Replay->View.spellCasts.empty());
+    TestTrue(TEXT("Old Meteor retains its recorded instant zone timing"),
+             Replay->View.hazards.size() == 1 && Replay->View.hazards[0].born == .1 &&
+                 Replay->View.hazards[0].nextTick == 1.1);
+    TestEqual(TEXT("Old spell damage is reconstructed at its recorded time"),
+              HP(OldVictimId), OldVictimHP - 262);
+    Replay->CloseReplay();
+    return true;
+}
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRiftFullReplayIntegrationTest, "Rift.Integration.FullLengthReplay", Flags)
 bool FRiftFullReplayIntegrationTest::RunTest(const FString &Parameters) {
     if (!FParse::Param(FCommandLine::Get(), TEXT("RiftAutomationSandbox"))) {
@@ -927,7 +1210,7 @@ bool FRiftFullReplayIntegrationTest::RunTest(const FString &Parameters) {
     Replay->CloseReplay();
     auto RecordAIMatch = [&](bool Congestion) {
         rift::MatchOptions AIOptions;
-        AIOptions.seed = 32;
+        AIOptions.seed = Congestion ? 32 : 40;
         AIOptions.aiEnabled = {true, true};
         AIOptions.aiStyles = {"control", "counter"};
         const std::vector<std::string> SwarmDeck{"ironclad",    "twin_blades",  "archer_tower",
@@ -1177,6 +1460,7 @@ bool FRiftCardDataIntegrationTest::RunTest(const FString &Parameters) {
         METRIC(Lifetime, lifetime)
         METRIC(Footprint, footprint)
         METRIC(TowerDamage, towerDamage) METRIC(SpellRadius, spellRadius) METRIC(ChargeDamage, chargeDamage)
+            METRIC(CastDelay, castDelay)
             METRIC(SlowPct, slowPct) METRIC(SlowDuration, slowDuration) METRIC(AuraDamage, auraDamage)
                 METRIC(AuraInterval, auraInterval) METRIC(AuraRadius, auraRadius)
                     METRIC(StunDuration, stunDuration) METRIC(DotDamage, dotDamage)

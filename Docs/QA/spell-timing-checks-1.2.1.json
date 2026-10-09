@@ -1,0 +1,986 @@
+{
+  "schema": 1,
+  "version": "1.2.1",
+  "passed": true,
+  "utc": "2026-10-09T17:23:56.0147858Z",
+  "scope": "Two-spell authoritative timing, replay, travel presentation, native regression and Windows delivery",
+  "nativeExecutableSha256": "30b7989948b690296a44c53f1f12d82162c7397016b7e58338e7d59545c59ae9",
+  "delays": {
+    "meteor_shards": 0.75,
+    "bullet_burst": 0.3,
+    "nova_flask": 0
+  },
+  "historicalBalanceCohortIsCurrent": false,
+  "captureNames": [
+    "spell121-flight015",
+    "spell121-impact030",
+    "spell121-flight055",
+    "spell121-impact075",
+    "spell121-after090",
+    "spell121-roster720-largeui",
+    "spell121-card-meteor",
+    "spell121-card-bullet",
+    "spell121-patch-notes"
+  ],
+  "integrationTests": 14,
+  "performance": {
+    "schema": 1,
+    "build": "Shipping",
+    "cpu": "AMD Ryzen 7 5700                               ",
+    "gpu": "NVIDIA GeForce RTX 5060",
+    "stress": false,
+    "metaRequested": true,
+    "warmupSeconds": 8,
+    "measuredSeconds": 90,
+    "frame": {
+      "samples": 5401,
+      "meanMs": 16.66694854632216,
+      "p95Ms": 16.736697405576706,
+      "p99Ms": 16.828998923301697,
+      "maxMs": 17.317697405815125
+    },
+    "gameThread": {
+      "samples": 5401,
+      "meanMs": 1.3458479913687886,
+      "p95Ms": 1.75600004196167,
+      "p99Ms": 2.067199945449829,
+      "maxMs": 4.588900089263916
+    },
+    "renderThread": {
+      "samples": 5401,
+      "meanMs": 2.292829437667276,
+      "p95Ms": 2.6960999965667725,
+      "p99Ms": 2.971299886703491,
+      "maxMs": 5.2434000968933105
+    },
+    "gpuFrame": {
+      "samples": 5401,
+      "meanMs": 4.003550933480506,
+      "p95Ms": 4.28249979019165,
+      "p99Ms": 4.423600196838379,
+      "maxMs": 5.4191999435424805
+    },
+    "hitchesOver50Ms": [],
+    "peakEntities": 13,
+    "peakProjectiles": 4,
+    "peakHazards": 0,
+    "metaGamesDuringBattle": 0,
+    "metaStatus": "Paused during battle · 0 matches · 0 invalid · 0.0s active simulation time · b3968027",
+    "processPeakPhysicalBytes": 1165185024,
+    "width": 1920,
+    "height": 1080
+  },
+  "inputs": [
+    {
+      "path": "Artifacts/QA/app-local-runtime.json",
+      "sha256": "1f379f2f3723c97b79bf53e46350987bf869447ffb17571f4f1fc5500d6488f0",
+      "bytes": 9052
+    },
+    {
+      "path": "Artifacts/QA/Audio/spell121-shipping-audio/audio-smoke.json",
+      "sha256": "35c9f1df92c13b4c31779518e12f9abda89595b43a88e9136902d2c8e6e3a86e",
+      "bytes": 5589
+    },
+    {
+      "path": "Artifacts/QA/Audio/spell121-shipping-audio/run.json",
+      "sha256": "4572598ca37670985ded09d719bb6bcfed0cf05b9760350bc65a6a585fb01815",
+      "bytes": 1015
+    },
+    {
+      "path": "Artifacts/QA/installer-build.json",
+      "sha256": "8d875371f114302ce226bc31dded8f3ae632f2c9535a155780bbbe05c49baebd",
+      "bytes": 933
+    },
+    {
+      "path": "Artifacts/QA/installer-tests.json",
+      "sha256": "220508a8726e0ba32457ed0cb0c740075ede1c5ea954697c9d1f9e72228057bb",
+      "bytes": 5368
+    },
+    {
+      "path": "Artifacts/QA/launcher-play-smoke.json",
+      "sha256": "b00904e8cbf24fc19c98a8ccb198c1f438324f1e75e1dc0eb115c9c9e3e83094",
+      "bytes": 2104
+    },
+    {
+      "path": "Artifacts/QA/Performance/spell121-final-normal-meta/performance.json",
+      "sha256": "d1d393bee6e665de1b00b1cc79afa70dcea398a4cded495832e4592091758b88",
+      "bytes": 1219
+    },
+    {
+      "path": "Artifacts/QA/Performance/spell121-final-normal-meta/run.json",
+      "sha256": "e22cc2807e62fb47a2ea5f6b59ff24a48db9be36f58804e206a53a4f89f455a7",
+      "bytes": 775
+    },
+    {
+      "path": "Artifacts/QA/spell121-final-visual-review.json",
+      "sha256": "e4f7f7962c279028fcd375295ad163a229c7f21af5f3e83bf9a3eab7b3894e32",
+      "bytes": 4510
+    },
+    {
+      "path": "Artifacts/QA/spell121-first-native-integration.json",
+      "sha256": "f6bbe92d5b82a40ec9b15919f87b02f44e90b8773df92b811e26e66b105b10bd",
+      "bytes": 33460
+    },
+    {
+      "path": "Artifacts/QA/spell121-meta100/context.json",
+      "sha256": "55e58cde60e12e61170d8499affcd82c83d350ed83d9f6396a67f611acc34ab8",
+      "bytes": 1671
+    },
+    {
+      "path": "Artifacts/QA/spell121-meta100/engine.log",
+      "sha256": "c7cd33e4010f6f59b92ef3332ad0f2fb21ba4dcdc61c77d5528b2ff4e2fdd25b",
+      "bytes": 185778
+    },
+    {
+      "path": "Artifacts/QA/spell121-meta100/run.json",
+      "sha256": "5e40fa4a886ffa6d2a8bf12d1e222ac71905f0c913758cbe72fc19e5f2ac7d64",
+      "bytes": 668
+    },
+    {
+      "path": "Artifacts/QA/spell121-meta100/UserData/meta-validation.json",
+      "sha256": "12a9ba99dd9e0b60ff53cee01c742fac28d978480ff1edec416c206f6fe4dc34",
+      "bytes": 24266
+    },
+    {
+      "path": "Artifacts/QA/spell121-meta100/UserData/Meta/CD301F9A4E942F25F9FB66A344F32D3F.json",
+      "sha256": "47fe5a435a5e4d95f8d77ca45217b75def8f28139fc939a8880e2d36f57105aa",
+      "bytes": 1848201
+    },
+    {
+      "path": "Artifacts/QA/spell121-portable-tests.log",
+      "sha256": "32641b7eed54d7c5b1810bb7d851408b700a1e37b39a20ad2819c136351ad1af",
+      "bytes": 2504
+    },
+    {
+      "path": "Artifacts/QA/spell121-shipping-vfx-verification.json",
+      "sha256": "769032ab4e9d9f2134910f78cb34e1640a2ac98ff33d22fcde9c4ece321df184",
+      "bytes": 8967
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-after090.json",
+      "sha256": "2aa8e4f57bc5fe9412accda98f892e651cff3540b5e88f02d740904a6f319a40",
+      "bytes": 12676
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-after090.png",
+      "sha256": "965e8e7ddb84d6fdbef786471058df3fcd1b73b72aed5f22a0b748c5e456da41",
+      "bytes": 2572267
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-after090.state.json",
+      "sha256": "82c38089127678e45823cdf156c61c8d4453546a476ca93405255c7358686627",
+      "bytes": 29886
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-card-bullet.json",
+      "sha256": "59f57f0aa2acaea977461863cad1321f433e124c12834459d97c0dd61a8e0c33",
+      "bytes": 7159
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-card-bullet.png",
+      "sha256": "c2f9d25f914f5324ccaef4819634cff11c2b63fccf74c86d67c9eef39a03b8f2",
+      "bytes": 352662
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-card-bullet.state.json",
+      "sha256": "73bb6b168148ce9c04995d84429de8f374df154854b0c5e615c596d4c82f962a",
+      "bytes": 5569
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-card-meteor.json",
+      "sha256": "772557427bddadf3d3597b5db6268fe0778f90418fa1a98224054f7126e050fd",
+      "bytes": 7159
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-card-meteor.png",
+      "sha256": "16de031bfb82f3ea78d5b9d7d286d3f6cfba951a6438ba3f45623dbe6fa55762",
+      "bytes": 354837
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-card-meteor.state.json",
+      "sha256": "73bb6b168148ce9c04995d84429de8f374df154854b0c5e615c596d4c82f962a",
+      "bytes": 5569
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-flight015.json",
+      "sha256": "8097164649666bc23f2cc5b36e17dff3660ec712648c312ebe494b71f0bd503c",
+      "bytes": 17024
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-flight015.png",
+      "sha256": "5456e01c435474d6bf04b8e8c13c14fbd6737a165e615bc185ff4a815e75e9e3",
+      "bytes": 2579277
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-flight015.state.json",
+      "sha256": "6d33ff0d3466f1685c5506a9b471653c12568569b371bdb2e48cd8337948f282",
+      "bytes": 43956
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-flight055.json",
+      "sha256": "005d69972746ffaa901dff34d66cda68723e926fb770ca88a83e02e6e3a27625",
+      "bytes": 15109
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-flight055.png",
+      "sha256": "6a0bd5c9f3668a40a7d4a1dd3394ff84f3e64ea6b7091885b8233807b2bf7013",
+      "bytes": 2575220
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-flight055.state.json",
+      "sha256": "fc20499530defd98bea8f3a3a7afda0cd7f010d7b5d1c540be3717d1f0aab4b9",
+      "bytes": 34367
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-impact030.json",
+      "sha256": "9951e171469133ca12d602c23bbde22e36c0341d293e50b30faa55de327d79db",
+      "bytes": 15111
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-impact030.png",
+      "sha256": "d5364580146aec72302aea4483937cb336e44ff0b927ac965e755b003736d184",
+      "bytes": 2577108
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-impact030.state.json",
+      "sha256": "6ab31d1db963f2ed24f09e8939a8ba6028072965511aa443b41ac0ad6f715f0e",
+      "bytes": 35214
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-impact075.json",
+      "sha256": "f74e5ebc8bec816bfcd6042cc207df967c690dbc7975766ba0ef3c5c04064c8b",
+      "bytes": 12680
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-impact075.png",
+      "sha256": "9e72b1baae262e69362050dd8365edb496b39764c09ea45a3c42c98ac9b4bd43",
+      "bytes": 2572485
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-impact075.state.json",
+      "sha256": "5965925b4deda0724f7478f5ee00096589ad16cede5453af94b181102b56209b",
+      "bytes": 29796
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-patch-notes.json",
+      "sha256": "3990e7d5f4683879fe1a29e52a8f296e3fec6e31bd195f677c68d922dada079a",
+      "bytes": 7147
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-patch-notes.png",
+      "sha256": "aa9b0ab08753b4ca61c0e33570b897d23221cced1f7eb4761d57d2596f169706",
+      "bytes": 398571
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-patch-notes.state.json",
+      "sha256": "73bb6b168148ce9c04995d84429de8f374df154854b0c5e615c596d4c82f962a",
+      "bytes": 5569
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-roster720-largeui.json",
+      "sha256": "69f38d49cba0635875e0ce740c4f4044acc837118b576a67dcbbd27189a69358",
+      "bytes": 25772
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-roster720-largeui.png",
+      "sha256": "d570db784962480201296667329fc0f5d23e44ec518c128560f10e5fc469fcd6",
+      "bytes": 1060759
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-roster720-largeui.state.json",
+      "sha256": "412f489028438fee380ca659fd6576211579c5e1efc708540f1160f703447dbb",
+      "bytes": 34960
+    },
+    {
+      "path": "Artifacts/Release/update-manifest.json",
+      "sha256": "a4385772b79d5c1f01850e27a0de992b35931638abbceef7d631a4084b42d439",
+      "bytes": 10474
+    },
+    {
+      "path": "Artifacts/Release/windows-release-verification.json",
+      "sha256": "80f830494ec1cdac175e5575f28f3a164b7183408b1d28f704fe66a30a3cc5aa",
+      "bytes": 1082
+    },
+    {
+      "path": "Assets/Source/Audio/aether_three.wav",
+      "sha256": "080062afc13b579ece470e524e456f14f2c4bcc9f64b7a6e3da9aa1c88202251",
+      "bytes": 335204
+    },
+    {
+      "path": "Assets/Source/Audio/aether_two.wav",
+      "sha256": "f35fae823b57c3e43503511f84b09df4a41e3bd90998f638dd8476f63b62a688",
+      "bytes": 291104
+    },
+    {
+      "path": "Assets/Source/Audio/arc_cast.wav",
+      "sha256": "ee7e7f433cb1228e21e444f76e8937ff8caf070d9079b472df8fa63aceb0bf39",
+      "bytes": 84716
+    },
+    {
+      "path": "Assets/Source/Audio/arc_impact.wav",
+      "sha256": "b53b3d5064c5a0d5a434ca22ae3df60c0c5f97a3bd15da29bc2ba223cfde854b",
+      "bytes": 98828
+    },
+    {
+      "path": "Assets/Source/Audio/arrow_flight.wav",
+      "sha256": "935a12cdbfa633a7a8455bdba99333eb17c5f6fd580c390c68e7de7c24d2b4ad",
+      "bytes": 26504
+    },
+    {
+      "path": "Assets/Source/Audio/arrow_hit_v2.wav",
+      "sha256": "2d4cc5d8825bec4dc94e303d551d809128cffb2a68b62b3bd1fabfab30cac715",
+      "bytes": 30032
+    },
+    {
+      "path": "Assets/Source/Audio/arrow_hit_v3.wav",
+      "sha256": "5d8dd9f512281a44daba0cc4f0d5999f4385d4578a0cf76b37afb3cf65e78dcd",
+      "bytes": 30032
+    },
+    {
+      "path": "Assets/Source/Audio/arrow_hit.wav",
+      "sha256": "cde5932b8bd4a1f324e98a1ac2ecba9ce2f05fcd6baea6d6871fd62b374c0ce3",
+      "bytes": 30032
+    },
+    {
+      "path": "Assets/Source/Audio/audio_manifest.json",
+      "sha256": "ef9955a5129b05465e313f263edbcfb20646c59a7d4ebc8d3d393a869bacd87c",
+      "bytes": 31966
+    },
+    {
+      "path": "Assets/Source/Audio/bat_bite_v2.wav",
+      "sha256": "de22f0acc57c50c12b34a3726d1acdd59002d436617e7d3dd3a00d7c94bb0afd",
+      "bytes": 20330
+    },
+    {
+      "path": "Assets/Source/Audio/bat_bite_v3.wav",
+      "sha256": "4076733907c885d44d8823ce799381f721feadd27970aa10608400083be734a5",
+      "bytes": 20330
+    },
+    {
+      "path": "Assets/Source/Audio/bat_bite.wav",
+      "sha256": "c0b3813ef7bed22b5146a6c252dc6aab944b7660a0a123cd1995f1383011522d",
+      "bytes": 20330
+    },
+    {
+      "path": "Assets/Source/Audio/bow_release_v2.wav",
+      "sha256": "d3c250c8fb97e2597c5cde3a86c82630820d2989a79130b9ba46fa61aa36e7be",
+      "bytes": 31796
+    },
+    {
+      "path": "Assets/Source/Audio/bow_release_v3.wav",
+      "sha256": "e30951c03ad7fcef8d59d1aee0d5eb2bbd1e60ec2fd81b0afa83e1780b32cbe0",
+      "bytes": 31796
+    },
+    {
+      "path": "Assets/Source/Audio/bow_release.wav",
+      "sha256": "ad0c16024926d4282048df69b417d19d00136a134647a585ada0478c68956108",
+      "bytes": 31796
+    },
+    {
+      "path": "Assets/Source/Audio/building_hit_v2.wav",
+      "sha256": "48a95537eb13ade5afd03242940d91384a04c47b9dd4e849369bd92311f92fd9",
+      "bytes": 44144
+    },
+    {
+      "path": "Assets/Source/Audio/building_hit_v3.wav",
+      "sha256": "e3df4f9ebeff344a9e7c0c755481fdaaa02340c76afb07b3f8b2a01a82745086",
+      "bytes": 44144
+    },
+    {
+      "path": "Assets/Source/Audio/building_hit.wav",
+      "sha256": "54e26e90326358566468a33d0255960e1a0d857530cad19bdae0cafa2489592c",
+      "bytes": 44144
+    },
+    {
+      "path": "Assets/Source/Audio/bullet_burst.wav",
+      "sha256": "42555ce27bf83669b6f10ff3761a29238c0e5dc8824078d9d1dd13f6faba353d",
+      "bytes": 56492
+    },
+    {
+      "path": "Assets/Source/Audio/charge.wav",
+      "sha256": "8a49e8784170eb0550087b460c53f9c60ffec58d8ff1376bfbd3beea604f73a9",
+      "bytes": 57374
+    },
+    {
+      "path": "Assets/Source/Audio/core_awaken.wav",
+      "sha256": "a2991d1e5780332315f69fa14dff9d12efa5945473cf104be34895093f6f7d4b",
+      "bytes": 441044
+    },
+    {
+      "path": "Assets/Source/Audio/defeat.wav",
+      "sha256": "7e117cabc92228e0d409fced53e63dc7794fe1167480efadc7a54b991697a846",
+      "bytes": 423404
+    },
+    {
+      "path": "Assets/Source/Audio/deploy.wav",
+      "sha256": "5b83f01159a1f265e532f87e0d7fa4ff89c76963c5909b06c58e9fb657ca8387",
+      "bytes": 77660
+    },
+    {
+      "path": "Assets/Source/Audio/dual_attack_v2.wav",
+      "sha256": "3234b2003c8094a0ab887097d5c62345b709683753257fa22f5a93cc4455d0a8",
+      "bytes": 36206
+    },
+    {
+      "path": "Assets/Source/Audio/dual_attack_v3.wav",
+      "sha256": "d2b8b33374b87e861195e5df81cca162b2084a88e42e0a31faebd20c41a88284",
+      "bytes": 36206
+    },
+    {
+      "path": "Assets/Source/Audio/dual_attack.wav",
+      "sha256": "ce5b4e44c64d6610ae180146a7f9699237ddfd7163b67a72d518b0b6a4290b5f",
+      "bytes": 36206
+    },
+    {
+      "path": "Assets/Source/Audio/frost_attack.wav",
+      "sha256": "8dfe488388754fd4ad189a1d09817c80bac620ca430e28513b7b731349819d23",
+      "bytes": 102356
+    },
+    {
+      "path": "Assets/Source/Audio/frost_slow.wav",
+      "sha256": "be7079aefa9340473d3aaa231fc62bb8872f337ffffeb1fbae5490e35e4a17d0",
+      "bytes": 56492
+    },
+    {
+      "path": "Assets/Source/Audio/heavy_slam_v2.wav",
+      "sha256": "2d14279b7e4e1e46c6c62b19b572abbb6a394768c94487f61399a30a9aecbd33",
+      "bytes": 75896
+    },
+    {
+      "path": "Assets/Source/Audio/heavy_slam_v3.wav",
+      "sha256": "d63face91ab79bd63fd350c56ed363b793814a85541b67864876c613f52d30c6",
+      "bytes": 75896
+    },
+    {
+      "path": "Assets/Source/Audio/heavy_slam.wav",
+      "sha256": "8af5d95b97602b526f9b4463ccd45e4d511cc51cd051ea5fd27711756bc1575d",
+      "bytes": 75896
+    },
+    {
+      "path": "Assets/Source/Audio/manta_cast.wav",
+      "sha256": "8220243deb1c9e886001fa8aafdfc7aedfde3ff70779497079c5fe8838ad88c7",
+      "bytes": 105884
+    },
+    {
+      "path": "Assets/Source/Audio/manta_impact.wav",
+      "sha256": "827f884cc6714e6881cc4cb0078928d86f769505f0868f291dd1ef829a4d40f3",
+      "bytes": 119996
+    },
+    {
+      "path": "Assets/Source/Audio/meteor_impact.wav",
+      "sha256": "a9f74f0311e88881da3c24412cdd044c4d8721cca72bc099e2f12e3bdc03d5d9",
+      "bytes": 308744
+    },
+    {
+      "path": "Assets/Source/Audio/meteor_tick.wav",
+      "sha256": "f547c915369f78365f1396330125ac73e31b999cb487a88fbe6b18796249f645",
+      "bytes": 84716
+    },
+    {
+      "path": "Assets/Source/Audio/music_rift.wav",
+      "sha256": "972b3a720f78452e143e81e675e12da8d799b78fb2ebf6dc9aea174ece96e891",
+      "bytes": 6272044
+    },
+    {
+      "path": "Assets/Source/Audio/nova_impact.wav",
+      "sha256": "604b556c44a933c237cba80da87bd67da5e5ce504a7b7fb7c55c8225d264c085",
+      "bytes": 194084
+    },
+    {
+      "path": "Assets/Source/Audio/overtime.wav",
+      "sha256": "e827a69366871045cf295693c1cd36b7d403ddb473eb702193ee2af3a5877366",
+      "bytes": 405764
+    },
+    {
+      "path": "Assets/Source/Audio/Palette/sources.json",
+      "sha256": "6be6acdef54bd147ff89d36bd346cea54c3baa530e7427ef196ab7689407b682",
+      "bytes": 21284
+    },
+    {
+      "path": "Assets/Source/Audio/river_ambience.wav",
+      "sha256": "5a19fae69fe50ca052db0fd2ceda207fa81d6338b74a06a107aaf9a51104d028",
+      "bytes": 2116844
+    },
+    {
+      "path": "Assets/Source/Audio/shield_hit_v2.wav",
+      "sha256": "250ed830d01a38dbbe6660e4172bde26ac8efb64daeaea222c9cac705142c5fa",
+      "bytes": 45908
+    },
+    {
+      "path": "Assets/Source/Audio/shield_hit_v3.wav",
+      "sha256": "e2afc027f074b2b2b983758bd6435e5934d1c9f2d7a62214e8518ebaac6804f6",
+      "bytes": 45908
+    },
+    {
+      "path": "Assets/Source/Audio/shield_hit.wav",
+      "sha256": "deed0e6abbd020d189607825a65abd6c9e0f9ece66f3567b80ab95a7841ed315",
+      "bytes": 45908
+    },
+    {
+      "path": "Assets/Source/Audio/storm_bolt.wav",
+      "sha256": "368e1342399c3a231bb2bab547bb7a9e102b9dd565913a4ac33d65c93ae75c35",
+      "bytes": 91772
+    },
+    {
+      "path": "Assets/Source/Audio/storm_pulse.wav",
+      "sha256": "336c2d30bfa6115610811fafec283aa2c347c72f3506add9e94dbf9c492fa80f",
+      "bytes": 149984
+    },
+    {
+      "path": "Assets/Source/Audio/stun.wav",
+      "sha256": "8571e723906b257243924deb31e7bd35707214d7afb509443b2a1e269420fcaf",
+      "bytes": 49436
+    },
+    {
+      "path": "Assets/Source/Audio/sword_attack_v2.wav",
+      "sha256": "8a939b658cefd4dae46c873511824ab38ee00062b55eb86a5ce0fa213a42e142",
+      "bytes": 27386
+    },
+    {
+      "path": "Assets/Source/Audio/sword_attack_v3.wav",
+      "sha256": "af62f384598d0de87f578576bd135e421b01742e16e357e4fa0fd502b204357f",
+      "bytes": 27386
+    },
+    {
+      "path": "Assets/Source/Audio/sword_attack.wav",
+      "sha256": "191055bad1e9597533a6cde1938d0e2f99ce5afd117f8434ca4525191dd9cdd3",
+      "bytes": 27386
+    },
+    {
+      "path": "Assets/Source/Audio/sword_hit_v2.wav",
+      "sha256": "dfb25e25c35859d77d837c17cede4547c6cb2515600cb4d8af1263110fcb89f1",
+      "bytes": 40616
+    },
+    {
+      "path": "Assets/Source/Audio/sword_hit_v3.wav",
+      "sha256": "af3385ae75bf5248b42da6fc9b9fcbdf6c746b4560cf3e2a66c124c838038f29",
+      "bytes": 40616
+    },
+    {
+      "path": "Assets/Source/Audio/sword_hit.wav",
+      "sha256": "2316a030683163813cae493b0df89bc7a6f915f0d67754aac0e50282b62ddc49",
+      "bytes": 40616
+    },
+    {
+      "path": "Assets/Source/Audio/tiebreaker.wav",
+      "sha256": "c5cac3f54b153a4963fcb399267dbbd5211de96f3be379939ddcc6096b3d0f00",
+      "bytes": 405764
+    },
+    {
+      "path": "Assets/Source/Audio/tower_destroy.wav",
+      "sha256": "3587d924dc5e791c299c0c2501d6ec5293832b1d9ec651bad196dd2ed092bf0d",
+      "bytes": 361664
+    },
+    {
+      "path": "Assets/Source/Audio/tower_hit_v2.wav",
+      "sha256": "7e51e5a63a2bef2616acde0fa89f0e7c22dddab6223103e0abcd6f468f38b3b7",
+      "bytes": 57374
+    },
+    {
+      "path": "Assets/Source/Audio/tower_hit_v3.wav",
+      "sha256": "827e1588cba9bf1063110fd483a7bd57d458ac083cd5865abda81e6640ebbc25",
+      "bytes": 57374
+    },
+    {
+      "path": "Assets/Source/Audio/tower_hit.wav",
+      "sha256": "21668eb3d7ad42c1ccf4a83d2e039bfde5433bd8a7b982921075d985c329a6bd",
+      "bytes": 57374
+    },
+    {
+      "path": "Assets/Source/Audio/ui_click.wav",
+      "sha256": "81f2e738bc40a6a6be271b6ce2ebdf1e46bb7225cdee1e9aedc661ffe51c1f87",
+      "bytes": 26504
+    },
+    {
+      "path": "Assets/Source/Audio/ui_error.wav",
+      "sha256": "d1f203f31fc5ee10366f0f1eeb2b704effb6e01f91b68f36a3f666541b1604ba",
+      "bytes": 44144
+    },
+    {
+      "path": "Assets/Source/Audio/ui_hover.wav",
+      "sha256": "121635860ae54e4e9003ad2035b8a554b2c0109fdd53b83a00ba3b6dce156357",
+      "bytes": 19448
+    },
+    {
+      "path": "Assets/Source/Audio/ui_save.wav",
+      "sha256": "5b7f5e807c9f1033892dec2268377dd5c2f4f7cfa1953b91adfca62212af84b9",
+      "bytes": 109412
+    },
+    {
+      "path": "Assets/Source/Audio/victory.wav",
+      "sha256": "54f1f98712552c7ecd12b5b6ab8dbf090037d894385fb5bcce8a9496ab3ab316",
+      "bytes": 441044
+    },
+    {
+      "path": "Assets/Source/Audio/wing_air.wav",
+      "sha256": "73d849e2dd33a4cb17cff165446c43db8cd180be224a79e2b5babcd093e0ca64",
+      "bytes": 57374
+    },
+    {
+      "path": "Build/generate_audio.py",
+      "sha256": "4c63fb8247ad348081ec1e8faf9a6de394eecfc58747ecc4e58d84322ec2bdb0",
+      "bytes": 18790
+    },
+    {
+      "path": "Build/Package-SpellQAEvidence.ps1",
+      "sha256": "aebaedf8d272871d33d2e229a2927c5ba52d06bd26c67efe8a3c43800eda7cf4",
+      "bytes": 15643
+    },
+    {
+      "path": "Build/Test-SpellPresentation.ps1",
+      "sha256": "b9f79f05c27ed0f54776fa7c3aa9330b594be995b007210590c645f4b85ac162",
+      "bytes": 6501
+    },
+    {
+      "path": "Build/Test-Unreal.ps1",
+      "sha256": "435ba4c25486b49f0ac164f8cb49f857f1a8cf2c3985a5081a23afab4da57ec6",
+      "bytes": 5277
+    },
+    {
+      "path": "Build/Tests/Audit-NativeMeta.py",
+      "sha256": "d6a63be3821fa8e1ba347f0b55fb72e2a5ed8c85eea12deccf8e5df160faba48",
+      "bytes": 27161
+    },
+    {
+      "path": "Build/Tests/RiftSimulationTests.cpp",
+      "sha256": "6004be4069efa9100202b3be831eedf787df606192782da85cc6c7d4b9fa2dd2",
+      "bytes": 49753
+    },
+    {
+      "path": "Build/update_spell_timing_assets.py",
+      "sha256": "2d28c083a20c3b0f0594919a9051e4a20376f5bba832593c268deed3756ab9bd",
+      "bytes": 1208
+    },
+    {
+      "path": "Docs/PATCH_NOTES_1.2.1.md",
+      "sha256": "40b6421cf88a9b011727d0855ef9d65759d186de384f0d0063ba1bc83de547dc",
+      "bytes": 1232
+    },
+    {
+      "path": "Docs/QA/native-integration.json",
+      "sha256": "30a48e20cf0232f788f216968f091d41b8e88d497db14579487a53447fea6c07",
+      "bytes": 33460
+    },
+    {
+      "path": "Docs/QA/spell-timing-meta-100.json",
+      "sha256": "97235bac33ff5dbcaeb9adb77c5fc695333f6439fefc5ff13de4525450f84967",
+      "bytes": 10264
+    },
+    {
+      "path": "Docs/QA/spell-timing-visual-1.2.1.json",
+      "sha256": "e52aab0d0e63240c09a0aefb0dc5960177981f7600b18bc13f75373ef18ca695",
+      "bytes": 7114
+    },
+    {
+      "path": "Docs/SPELL_TIMING_1.2.1.md",
+      "sha256": "d38c77d8fb2ec15d3037985d8fc0d322a8679b10ba242853d8fb4bdb93510099",
+      "bytes": 2293
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Config/DefaultEngine.ini",
+      "sha256": "d203dc05bd1a8d857f7773eb44529ce45637647a5d5638f52b4e9ee21ffec885",
+      "bytes": 1379
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Config/DefaultGame.ini",
+      "sha256": "986310e09413a36ec59261b91fc4809b268030b3b859f0ca0edfae8ad4796ed4",
+      "bytes": 808
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Config/DefaultInput.ini",
+      "sha256": "40f9320c2416a85aa30c765ce1d9c62b45c6a9ad52ef998d102f05b8819679fd",
+      "bytes": 9535
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_bullet_burst.uasset",
+      "sha256": "d284430e18574274b1e276c8bb1dd3de189132a8dc7690efa5c3b28e95c8b5a1",
+      "bytes": 6167
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_meteor_shards.uasset",
+      "sha256": "9e0e9e01d1c15734d228af8e260c03d3bf9ac52460f54d09e1a6c80dc8664533",
+      "bytes": 6232
+    },
+    {
+      "path": "Unreal/RiftCrownArena/RiftCrownArena.uproject",
+      "sha256": "39fc040329e6d46e5087c74c0765c626ac16940daee8e662f67b7b2033acda4b",
+      "bytes": 745
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena.Target.cs",
+      "sha256": "283ee32c736fcdae9c0bf3f9c5fe8f26f5261a827db4db5a12a740a8138d5e17",
+      "bytes": 493
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftArenaPresentation.cpp",
+      "sha256": "3324311b48e533f80e314a71f854b7b3deabb2389cfe25cbd2d931c9cc634279",
+      "bytes": 76823
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftBattleAudioSubsystem.cpp",
+      "sha256": "7c2617b69b5f455699cff1ad85e9873a79147574dc81ce380ec2e66b79da51cd",
+      "bytes": 29957
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftBattleOverlay.cpp",
+      "sha256": "20c90a4aa978826f11d66ff91687b139d7adde3d3be1808bb37a218a0d8d2426",
+      "bytes": 15664
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftTrainingOverlay.cpp",
+      "sha256": "19c239275d4df53bda7bf891a58b44110c531ac31228445c196935c5f959799e",
+      "bytes": 5962
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftUnitVisual.cpp",
+      "sha256": "7066f3c77e4c43b74574f201c6417919db54ead28be92a74308788315156daa4",
+      "bytes": 24111
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftAssetLibrary.cpp",
+      "sha256": "d9e2f4bdad16de3302a16b330fb25356f738ea100a224a76041cee2b8f8b9160",
+      "bytes": 3046
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftBattleHUD.cpp",
+      "sha256": "e7dc4cfb122baf54903913ad4ed83d87a2cd3e354db80c138d8b2d2fc0f7f781",
+      "bytes": 22869
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftCollectionUI.cpp",
+      "sha256": "5ae7dc27b009a84032a7cfd9812b1295bee4303b17946d2b7e3f3b8764bf5c34",
+      "bytes": 18113
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftCrownArena.cpp",
+      "sha256": "b3cecae7f7bcb962f9e9729951b2c79b56aad833b7fde79dba1a6e209188e90e",
+      "bytes": 124
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftDiagnostics.cpp",
+      "sha256": "bdfd03a5c9b8f31098ebf73f62a81f12bffcbd6a05ccfd559461585d85b851d4",
+      "bytes": 4750
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftFieldManual.cpp",
+      "sha256": "1cbe10cabedf5825118d9d0f7dffdb07ebdf62eb9bc0d4606f9246fc7b7c2bde",
+      "bytes": 8689
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftGameMode.cpp",
+      "sha256": "52971da9e96983277c0153ec30cf8bb5f60f30b0f7a2a7e38e5258891f6babba",
+      "bytes": 58013
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftMatchSubsystem.cpp",
+      "sha256": "c0b89ba7cf16641b546078d86a6fb9ec90ac478ad7ce23898ce29282a182bc44",
+      "bytes": 9768
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftMetaSimulationSubsystem.cpp",
+      "sha256": "d5dc9628cb32c7b7ee1836fd06747c589f3d02ba87f043989c36293b82bd99a4",
+      "bytes": 45745
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftPerformanceCapture.cpp",
+      "sha256": "9e287a28260f6ae5a7cbca3995a2e28e12181b0fd4747c1707038e5628b19e33",
+      "bytes": 7292
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftProfileSubsystem.cpp",
+      "sha256": "cbbb70b98bbf44089e18b2be619ae532a654a4982766950e0143ff01189b61ba",
+      "bytes": 22095
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftReplaySubsystem.cpp",
+      "sha256": "5a0af0575622942c43e876f5e974de3130784803f04e91e7f4388f459f8a957d",
+      "bytes": 60365
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftReplayUI.cpp",
+      "sha256": "77199b01e7db0e8108f94347d4a7b39a7b257cec9c7dc719b59f20e0616812d6",
+      "bytes": 30477
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftTrainingPanel.cpp",
+      "sha256": "f24527c664a3108d500fed5cf4722845f37e0cd1bbdb31009f6aa2bf9d88d49c",
+      "bytes": 9350
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftUIPrimitives.cpp",
+      "sha256": "cb653a1e9de5ede6bedf1ce4834f65d29df84e328afb11ba9d35aa8750e32179",
+      "bytes": 3237
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftUIWidget.cpp",
+      "sha256": "396fcc8436a513809506a3edcd76e883c78d4f8c7dc56c70352c21e241031eda",
+      "bytes": 62736
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftAI.cpp",
+      "sha256": "6c49f975df3c4256c0871bfef5ccb147255f5c0404ff1f56680cadc41937a538",
+      "bytes": 23188
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftCombat.cpp",
+      "sha256": "3ce60d57341267ac5fc0afba01be33fa027262f66659fae7a13678505160ddaf",
+      "bytes": 13777
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftDeckAnalysis.cpp",
+      "sha256": "07d7063f15a66338892ccc65e603caa859cccd2b3d22fcd4257719bd059e21b2",
+      "bytes": 28525
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftPathfinding.cpp",
+      "sha256": "17dc4b4cccaf425f48134d907a22bff586b72332fa780832186be4555e3a6e17",
+      "bytes": 15558
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftSimulation.cpp",
+      "sha256": "60b60bbe25c2cb59a01658b0c7aafd39f9c88720b6362ec32a64a23e09875884",
+      "bytes": 36852
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftBattleInputTests.cpp",
+      "sha256": "4fbe27a4a7f8ef9659c5d78a4d1e16e41af3a6c7858e6f5646331b6126db96dd",
+      "bytes": 17467
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftIntegrationTests.cpp",
+      "sha256": "a6b2d218e641c7c8afbec22cb9e333258af8c0e0ac87112f640bcc271561a517",
+      "bytes": 81494
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftPresentationTests.cpp",
+      "sha256": "d027b77d9a0bf3269930a15b101fba78703221d65eb23ca730e5391994507913",
+      "bytes": 10525
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftProjectilePresentationTests.cpp",
+      "sha256": "4768c7e3a0cd25cc7d13a8781c15fc0f5c72cde625d0d25c871601f5564c0018",
+      "bytes": 3482
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftUnitMotionTests.cpp",
+      "sha256": "0d7a64b34e82ef082eedd1074473f59293c0db4e8f6838847e2a8f7fda764d24",
+      "bytes": 23139
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftArenaPresentation.h",
+      "sha256": "a9c31fe9d1c7747c64c34cab6d39d0ff6ae92437f3b0b024a53ef46bdacba448",
+      "bytes": 6633
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleAudioSubsystem.h",
+      "sha256": "c1fb344a9334157e34a439931bc8594d40d02720b5f27d14cb1c3b086269e1c6",
+      "bytes": 2156
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleLayout.h",
+      "sha256": "0d953944dccba5ffdd20cea601240a157769de54c929ba804fcef12f0ec4dd27",
+      "bytes": 799
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleOverlay.h",
+      "sha256": "ecc4bbd6d9a9a9e2729e51eaaa4fb64f5ea1ab712d6c44a389686876bb57187d",
+      "bytes": 1025
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftUnitVisual.h",
+      "sha256": "c8099aa871bdeb1f5ee9768360759f53031654d3070b0cccfda2acd62ec3a4ff",
+      "bytes": 4020
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftAssetLibrary.h",
+      "sha256": "8cfcb77f51d477773e87d37cff482542072825be38c95ea6ab43118dfc50e80b",
+      "bytes": 735
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftCardData.h",
+      "sha256": "b8956971c1192e714541db8ef11aac3501ba563df7d1752660414c7a9b86958e",
+      "bytes": 3451
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftDiagnostics.h",
+      "sha256": "93d91726c726127c03b310972a8482906dc45ec9936cc48adab01599f7750b42",
+      "bytes": 522
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftGameMode.h",
+      "sha256": "ed5cfba939cd023b0cfde50b2167e17f353109566ec77f416742fae7af2c5704",
+      "bytes": 2343
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftMatchSubsystem.h",
+      "sha256": "bd67f6f1dba4ab9199407a938258cd611748b8c97db898f2429d13fb93ac0c44",
+      "bytes": 3623
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftMetaSimulationSubsystem.h",
+      "sha256": "1b9a568b334ce2c0f57c891129a1f1d13cd3e00db5f7437efec6749e3295df3f",
+      "bytes": 2616
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftPerformanceCapture.h",
+      "sha256": "7962fa18d55571a6ac0b94c07eb17ff4b225472af687a898dd93ebe28879ec3c",
+      "bytes": 943
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftProfileSubsystem.h",
+      "sha256": "9a94ff3fb118194b4c296187b47e0f42bc1fae2d8d4187c58e1fb38ee9f22af6",
+      "bytes": 4074
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftReplaySubsystem.h",
+      "sha256": "35c7fa47599a4b132d58b4cdc619af1bdf818a86e1ec81806c866cb2c816e7ff",
+      "bytes": 3628
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftUIPrimitives.h",
+      "sha256": "93e9c0253a03efd8b64ccbf3bb8003c19cfb94e83edc660e56a844c6dcb101e4",
+      "bytes": 1198
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftUIWidget.h",
+      "sha256": "098bc7e869a82943578bb2b4dd38fab3fea486d4a33fbd67425af191f4d08cc6",
+      "bytes": 8891
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Simulation/RiftSimulation.h",
+      "sha256": "c453c1e2022f2821b05b7bdfa5f2cde0fa474040f9a85edcf2cff30e67c13817",
+      "bytes": 10006
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/RiftCrownArena.Build.cs",
+      "sha256": "aef728c45201f19d11acbd129bed5ce8539dbad525419fd76c9a6c91f53d83c1",
+      "bytes": 597
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor.Target.cs",
+      "sha256": "d8cad02a8fb12c7d19cb31a6da6ef8b7aa872415bf9860e7146541238b277e95",
+      "bytes": 417
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Private/RiftCrownArenaEditor.cpp",
+      "sha256": "487f1f731292b9b76e5e77d85ba045cac11b2045579faa5c421f57f682125e28",
+      "bytes": 95
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Private/RiftEditorAssetLibrary.cpp",
+      "sha256": "10b371ffa846a7faa7b02afcd30e371fff44b6fa7d3281867288c96d4a93ff9a",
+      "bytes": 12348
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Public/RiftEditorAssetLibrary.h",
+      "sha256": "af3ccebdb119515c0beb71b2dd8c00e6cf12e99b7d63ef3df9248d27b6839229",
+      "bytes": 504
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/RiftCrownArenaEditor.Build.cs",
+      "sha256": "0a13a4e225aa977da59d4dd51d9f296e4708d91aa6e39d9e181ba797d87171b0",
+      "bytes": 496
+    }
+  ],
+  "publicDelivery": "Pending publication; postpublication reports are separate evidence."
+}

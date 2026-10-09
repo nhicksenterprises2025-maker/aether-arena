@@ -323,6 +323,15 @@ bool ReadEvent(const TSharedPtr<FJsonObject> &O, rift::Event &E) {
                     E.handAfter[I] = TCHAR_TO_UTF8(*Id);
             }
     }
+    const auto *Card = rift::FindCard(E.cardId);
+    if (E.type == "spell_cast" || E.type == "spell_impact") {
+        if (!Card || !Card->spell || Card->castDelay <= 0 || E.playId == 0)
+            R.Valid = false;
+        if (E.type == "spell_cast" &&
+            (!Card || E.until <= E.time || E.until > MaxTime + 1 ||
+             FMath::Abs(E.until - E.time - Card->castDelay) > 1e-6))
+            R.Valid = false;
+    }
     return R.Valid && !E.type.empty() && E.sequence > 0 && E.time >= 0 && E.time <= MaxTime &&
            (E.cardId.empty() || E.type == "ai_decision" || rift::FindCard(E.cardId));
 }
@@ -480,6 +489,18 @@ TSharedRef<FJsonObject> URiftReplaySubsystem::SnapshotJSON(const rift::Snapshot 
         Projectiles.Add(MakeShared<FJsonValueObject>(R));
     }
     O->SetArrayField(TEXT("projectiles"), Projectiles);
+    TArray<TSharedPtr<FJsonValue>> SpellCasts;
+    for (const auto &C : State.spellCasts) {
+        auto R = MakeShared<FJsonObject>();
+        R->SetNumberField(TEXT("playId"), double(C.playId));
+        R->SetNumberField(TEXT("team"), double(C.team));
+        R->SetStringField(TEXT("cardId"), FS(C.cardId));
+        Point(R, TEXT("position"), C.position);
+        R->SetNumberField(TEXT("born"), C.born);
+        R->SetNumberField(TEXT("impactAt"), C.impactAt);
+        SpellCasts.Add(MakeShared<FJsonValueObject>(R));
+    }
+    O->SetArrayField(TEXT("spellCasts"), SpellCasts);
     TArray<TSharedPtr<FJsonValue>> Hazards;
     for (const auto &H : State.hazards) {
         auto R = MakeShared<FJsonObject>();
@@ -628,6 +649,29 @@ bool URiftReplaySubsystem::SnapshotFromJSON(const TSharedPtr<FJsonObject> &O, ri
             R.Valid &= T.Valid;
             Parsed.projectiles.push_back(P);
         }
+    // Optional for recordings made before delayed spell impacts were introduced.
+    TSet<uint64> CastIds;
+    if (R.List(TEXT("spellCasts"), A, 5000))
+        for (const auto &V : *A) {
+            rift::SpellCast C;
+            Reader T(Obj(V));
+            T.Number(TEXT("playId"), C.playId, 1, 1e12, true);
+            T.Number(TEXT("team"), C.team, 0, 1, true);
+            T.Text(TEXT("cardId"), C.cardId, true);
+            T.Vec(TEXT("position"), C.position, true);
+            T.Number(TEXT("born"), C.born, 0, MaxTime, true);
+            T.Number(TEXT("impactAt"), C.impactAt, 0, MaxTime + 1, true);
+            const auto *Card = rift::FindCard(C.cardId);
+            if (!Card || !Card->spell || Card->castDelay <= 0 || CastIds.Contains(C.playId) ||
+                C.born > Parsed.elapsed + 1e-7 || C.impactAt < Parsed.elapsed - 1e-7 ||
+                C.impactAt <= C.born ||
+                (Card && FMath::Abs(C.impactAt - C.born - Card->castDelay) > 1e-6) ||
+                Parsed.phase == rift::Phase::Tiebreaker || Parsed.phase == rift::Phase::Finished)
+                T.Valid = false;
+            CastIds.Add(C.playId);
+            R.Valid &= T.Valid;
+            Parsed.spellCasts.push_back(C);
+        }
     if (R.List(TEXT("hazards"), A, 5000))
         for (const auto &V : *A) {
             rift::Hazard H;
@@ -772,6 +816,22 @@ void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E) {
     auto *Target = EntityById(State, E.target);
     auto *Source = EntityById(State, E.source);
     const auto *Card = rift::FindCard(E.cardId);
+    auto AddSpellHazard = [&]() {
+        if (!Card || Card->dotDamage <= 0 ||
+            std::any_of(State.hazards.begin(), State.hazards.end(),
+                        [&](const auto &H) { return H.playId == E.playId; }))
+            return;
+        rift::Hazard H;
+        H.playId = E.playId;
+        H.team = E.team;
+        H.cardId = E.cardId;
+        H.position = E.position;
+        H.radius = Card->spellRadius;
+        H.born = E.time;
+        H.nextTick = E.time + Card->dotInterval;
+        H.expires = E.time + Card->dotDuration;
+        State.hazards.push_back(H);
+    };
     if (E.type == "card_play") {
         if (!E.sandbox && Card) {
             State.aether[Team] = E.aetherAfter;
@@ -793,18 +853,25 @@ void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E) {
             if (E.overtime)
                 ++T.overtimePlays;
         }
-        if (Card && Card->dotDamage > 0) {
-            rift::Hazard H;
-            H.playId = E.playId;
-            H.team = E.team;
-            H.cardId = E.cardId;
-            H.position = E.position;
-            H.radius = Card->spellRadius;
-            H.born = E.time;
-            H.nextTick = E.time + Card->dotInterval;
-            H.expires = E.time + Card->dotDuration;
-            State.hazards.push_back(H);
-        }
+        // Legacy Meteor recordings created their zone at the instant card play.
+        if (E.until <= E.time)
+            AddSpellHazard();
+    } else if (E.type == "spell_cast" && Card &&
+               std::none_of(State.spellCasts.begin(), State.spellCasts.end(),
+                            [&](const auto &C) { return C.playId == E.playId; })) {
+        rift::SpellCast C;
+        C.playId = E.playId;
+        C.team = E.team;
+        C.cardId = E.cardId;
+        C.position = E.position;
+        C.born = E.time;
+        C.impactAt = E.until;
+        State.spellCasts.push_back(C);
+    } else if (E.type == "spell_impact") {
+        State.spellCasts.erase(std::remove_if(State.spellCasts.begin(), State.spellCasts.end(),
+                                            [&](const auto &C) { return C.playId == E.playId; }),
+                              State.spellCasts.end());
+        AddSpellHazard();
     } else if (E.type == "entity_spawn" && Card && !Source) {
         rift::Entity R;
         R.id = E.source;
@@ -863,6 +930,7 @@ void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E) {
                                             [](const auto &R) { return R.kind < rift::EntityKind::Guard; }),
                              State.entities.end());
         State.projectiles.clear();
+        State.spellCasts.clear();
         State.hazards.clear();
     } else if (E.type == "slow" && Target) {
         Target->slowPct = E.amount;
@@ -911,9 +979,11 @@ void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E) {
         State.timeRemaining = State.phase == rift::Phase::Overtime ? 120 : 0;
         if (State.phase == rift::Phase::Tiebreaker) {
             State.projectiles.clear();
+            State.spellCasts.clear();
             State.hazards.clear();
         }
     } else if (E.type == "match_end") {
+        State.spellCasts.clear();
         State.phase = rift::Phase::Finished;
         State.winner = int(E.amount);
         State.resultReason = E.reason;

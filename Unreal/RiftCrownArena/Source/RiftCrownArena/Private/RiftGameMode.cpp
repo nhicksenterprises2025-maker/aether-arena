@@ -246,12 +246,32 @@ void ARiftGameMode::BeginPlay()
                     RIFT_LOG(LogRift,Log,TEXT("Actual projectile capture fixture reached all seven source roles: %d live shots, %d fixed steps, elapsed=%.6f"),
                         int32(Sim->State().projectiles.size()),Steps+1,Sim->State().elapsed);
                 }
+                else if(Scenario==TEXT("spells"))
+                {
+                    // Real opposing deployments stay well apart, so their
+                    // first visible damage is owned by the two spell impacts.
+                    Match->SetSpeed(0);Sim->ClearField();
+                    for(auto Team:{rift::Team::Player,rift::Team::Enemy})
+                    {
+                        const double Side=Team==rift::Team::Player?1.:-1.;
+                        Sim->Spawn(Team,"boulderback",{Side*6.5,Side*4.5});
+                        Sim->Spawn(Team,"ember_archer",{Side*8.5,Side*5.5});
+                        Sim->Spawn(Team,"vampire_bats",{Side*4.5,Side*5.5});
+                    }
+                    Sim->Step(.35);Match->FlushEvents();
+                }
                 else if(Scenario==TEXT("placement")||Scenario==TEXT("effects17"))Match->SetSpeed(0);
-                if(Scenario!=TEXT("roster")&&Scenario!=TEXT("placement")&&Scenario!=TEXT("effects17")&&Scenario!=TEXT("projectiles"))
+                if(Scenario!=TEXT("roster")&&Scenario!=TEXT("placement")&&Scenario!=TEXT("effects17")&&Scenario!=TEXT("projectiles")&&Scenario!=TEXT("spells"))
                 {float CaptureSpeed=1;FParse::Value(FCommandLine::Get(),TEXT("RiftCaptureSpeed="),CaptureSpeed);Match->SetSpeed(FMath::Clamp(CaptureSpeed,.25f,4.f));}
                 Match->FlushEvents();
             }
-            if(Page==TEXT("CardDetail"))PC->Interface->InspectCard(TEXT("ironclad"));else PC->Interface->Navigate(Page);
+            if(Page==TEXT("CardDetail"))
+            {
+                FString InspectCard=TEXT("ironclad");FParse::Value(FCommandLine::Get(),TEXT("RiftInspectCard="),InspectCard);
+                if(!rift::FindCard(TCHAR_TO_UTF8(*InspectCard)))InspectCard=TEXT("ironclad");
+                PC->Interface->InspectCard(InspectCard);
+            }
+            else PC->Interface->Navigate(Page);
             if(Page==TEXT("Battle"))
             {
                 // Capture-only fixtures use reachable simulation commands.
@@ -297,6 +317,31 @@ void ARiftGameMode::BeginPlay()
             }
         },.5f,false);
         float Delay=6;FParse::Value(FCommandLine::Get(),TEXT("RiftCaptureDelay="),Delay);bool Quit=FParse::Param(FCommandLine::Get(),TEXT("RiftQuitAfterCapture"));
+        if(Scenario==TEXT("spells"))
+        {
+            FTimerHandle SpellSampleTimer;
+            GetWorld()->GetTimerManager().SetTimer(SpellSampleTimer,FTimerDelegate::CreateWeakLambda(this,[this]()
+            {
+                auto* Match=GetWorld()->GetSubsystem<URiftMatchSubsystem>();auto* Sim=Match->Simulation();if(!Sim)return;
+                float Age=.15f;FParse::Value(FCommandLine::Get(),TEXT("RiftEffectAge="),Age);
+                Age=FMath::IsFinite(Age)?FMath::Clamp(Age,.05f,2.f):.15f;
+                const bool Deployed=Sim->Spawn(rift::Team::Player,"meteor_shards",{-6.5,-4.5})&&
+                    Sim->Spawn(rift::Team::Enemy,"bullet_burst",{6.5,4.5});
+                Match->FlushEvents();
+                const int32 Steps=FMath::RoundToInt(double(Age)*60.);
+                for(int32 Step=0;Step<Steps;++Step)
+                {
+                    Sim->Step(1./60.);Match->FlushEvents();
+                    for(TActorIterator<ARiftArenaPresentation> It(GetWorld());It;++It)It->Tick(0.f);
+                }
+                Match->SetSpeed(0);
+                for(TActorIterator<ARiftArenaPresentation> It(GetWorld());It;++It)
+                {It->Tick(0.f);It->SampleSpellImpactEffectsForQA();}
+                if(!Deployed){RIFT_LOG(LogRift,Error,TEXT("Spell timing fixture could not deploy its casts"));FPlatformMisc::RequestExitWithStatus(false,2);return;}
+                RIFT_LOG(LogRift,Log,TEXT("Spell timing fixture sampled %.6fs after cast: %d pending, %d hazards, elapsed %.6f"),
+                    Steps/60.,int32(Sim->State().spellCasts.size()),int32(Sim->State().hazards.size()),Sim->State().elapsed);
+            }),FMath::Max(1.5f,Delay)-.5f,false);
+        }
         if(Scenario==TEXT("roster")&&FParse::Param(FCommandLine::Get(),TEXT("RiftBreathSmoke")))
         {
             // QA only. Use ordinary deployments and a short real simulation
@@ -362,6 +407,7 @@ void ARiftGameMode::BeginPlay()
                 Snapshot->SetNumberField(TEXT("elapsed"),State->elapsed);Snapshot->SetNumberField(TEXT("aliveEntities"),Alive);
                 Snapshot->SetNumberField(TEXT("slowedEntities"),Slowed);Snapshot->SetNumberField(TEXT("stunnedEntities"),Stunned);
                 Snapshot->SetNumberField(TEXT("projectiles"),State->projectiles.size());Snapshot->SetNumberField(TEXT("hazards"),State->hazards.size());
+                Snapshot->SetNumberField(TEXT("spellCasts"),State->spellCasts.size());
                 Snapshot->SetStringField(TEXT("phase"),UTF8_TO_TCHAR(rift::PhaseName(State->phase).c_str()));
                 if(State->phase==rift::Phase::Finished){Snapshot->SetNumberField(TEXT("winner"),State->winner);Snapshot->SetStringField(TEXT("resultReason"),UTF8_TO_TCHAR(State->resultReason.c_str()));}
                 Snapshot->SetNumberField(TEXT("timeRemaining"),State->timeRemaining);Snapshot->SetNumberField(TEXT("playerCrowns"),State->crowns[0]);Snapshot->SetNumberField(TEXT("enemyCrowns"),State->crowns[1]);

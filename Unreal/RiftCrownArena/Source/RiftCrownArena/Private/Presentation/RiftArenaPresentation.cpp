@@ -40,6 +40,8 @@ namespace
 {
 FName FlightFor(const std::string& Card)
 {
+    if (Card=="meteor_shards") return TEXT("Meteor");
+    if (Card=="bullet_burst") return TEXT("BulletBurst");
     if (Card=="ember_archer" || Card=="archer_tower") return TEXT("ArrowFlight");
     if (Card=="arc_mage") return TEXT("ArcFlight");
     if (Card=="sky_manta") return TEXT("MantaFlight");
@@ -70,9 +72,9 @@ float ParticleSpriteScale(FName System)
 FQuat ProjectileMeshOrientation(const std::string& Card, const FVector& Direction, double Age)
 {
     FQuat Facing=FRotationMatrix::MakeFromX(Direction.GetSafeNormal(UE_SMALL_NUMBER,FVector::ForwardVector)).ToQuat();
-    // New missiles are authored along +X; the existing brass crown round's
-    // nose is along +Z. Apply this correction locally, after aiming the flight.
-    if (MissileFor(Card)==TEXT("bullet_round"))
+    // New missiles are authored along +X; brass rounds and meteor shards have
+    // their tip along +Z. Apply the local correction after aiming the flight.
+    if (MissileFor(Card)==TEXT("bullet_round") || MissileFor(Card)==TEXT("meteor_shard"))
         Facing=Facing*FQuat::FindBetweenNormals(FVector::UpVector,FVector::ForwardVector);
     else if (Card=="arc_mage" || Card=="sky_manta" || Card=="storm_raven")
         Facing=Facing*FQuat(FVector::ForwardVector,float(Age*(Card=="arc_mage"?9.:Card=="sky_manta"?5.:12.)));
@@ -127,6 +129,24 @@ FVector ARiftArenaPresentation::ProjectilePathPoint(const std::string& Card,FVec
     }
     else Position.Z+=Envelope*FMath::Clamp(Distance*.05,12.,42.);
     return Position;
+}
+FVector ARiftArenaPresentation::SpellCastPathPoint(const std::string& Card,FVector Target,rift::Team Team,int32 Index,int32 Count,double Progress)
+{
+    const double T=FMath::Clamp(Progress,0.,1.);
+    const bool Meteor=Card=="meteor_shards";
+    const double Angle=UE_TWO_PI*double(Index)/FMath::Max(1,Count)+.35;
+    const double Spread=Meteor?(Index?320.:0.):(Index?155.:0.);
+    const FVector Landing=Target+FVector(FMath::Cos(Angle)*Spread,FMath::Sin(Angle)*Spread,12.);
+    const double Side=Team==rift::Team::Player?1.:-1.;
+    FVector Start=Landing+FVector(Meteor?-130.:65.,Side*(Meteor?220.:300.),Meteor?505.-Index*14.:350.+Index*8.);
+    // Edge casts keep their incoming models inside the camera's arena margin.
+    Start.X=FMath::Clamp(Start.X,-1600.,1600.);Start.Y=FMath::Clamp(Start.Y,-2300.,2300.);
+    // Every visible round reaches the selected ground point at the same
+    // authoritative deadline. Staggered bullet releases do not imply staggered
+    // damage or follow a target after the player has committed the cast.
+    const double Release=Meteor?0.:double(Index)/FMath::Max(1,Count-1)*.4;
+    const double Flight=FMath::Clamp((T-Release)/(1.-Release),0.,1.);
+    return FMath::Lerp(Start,Landing,Meteor?Flight*Flight:Flight);
 }
 ARiftArenaPresentation::ARiftArenaPresentation()
 {
@@ -298,6 +318,10 @@ void ARiftArenaPresentation::ClearVisuals()
     for (auto& Entry:ProjectileBodies) if (Entry.Value) Entry.Value->DestroyComponent();ProjectileBodies.Reset();
     for (auto& Entry:ProjectileTrails) if (Entry.Value) Entry.Value->DestroyComponent();ProjectileTrails.Reset();
     for (auto& Body:SpellDebrisBodies) if (Body) Body->DestroyComponent();SpellDebrisBodies.Reset();SpellDebris.Reset();
+    for (auto& Body:SpellCastBodies) if (Body) Body->DestroyComponent();SpellCastBodies.Reset();SpellCastPieces.Reset();
+    for (auto& Glow:SpellCastGlows) if (Glow) Glow->DestroyComponent();SpellCastGlows.Reset();
+    for (auto& Ring:SpellCastRings) if (Ring.Value) Ring.Value->DestroyComponent();SpellCastRings.Reset();SpellCastMaterials.Reset();
+    SpellImpactEffects.Reset();RecentSpellImpacts.Reset();SpellImpactEvents=0;
     ProjectileBodiesCreated=0;ProjectileBodiesReleased=0;
     for (auto& Entry:Hazards) if (Entry.Value) Entry.Value->DestroyComponent();Hazards.Reset();
     for (auto& Entry:SlowEffects) if (Entry.Value) Entry.Value->DestroyComponent();SlowEffects.Reset();
@@ -309,14 +333,14 @@ void ARiftArenaPresentation::ClearVisuals()
 void ARiftArenaPresentation::OnMatchChanged()
 {
     const auto* State=ViewState();
-    if (!State || (LastSeed && State->seed!=LastSeed) || (State && State->elapsed+.01<LastTime)) ClearVisuals();
+    if (!State || (LastSeed && State->seed!=LastSeed) || (State && State->elapsed+1e-7<LastTime)) ClearVisuals();
     Synchronize(0.f);
 }
 void ARiftArenaPresentation::Synchronize(float DeltaSeconds)
 {
     const auto* State=ViewState();
     if (!State) {if (Units.Num()) ClearVisuals();return;}
-    if ((LastSeed && State->seed!=LastSeed) || State->elapsed+.01<LastTime) ClearVisuals();
+    if ((LastSeed && State->seed!=LastSeed) || State->elapsed+1e-7<LastTime) ClearVisuals();
     LastSeed=State->seed;LastTime=State->elapsed;
     ResultDeathClock=State->phase==rift::Phase::Finished?FMath::Min(1.1f,ResultDeathClock+DeltaSeconds):0.f;
     auto* Catalog=GetGameInstance()->GetSubsystem<URiftAssetCatalogSubsystem>();
@@ -357,8 +381,9 @@ void ARiftArenaPresentation::Synchronize(float DeltaSeconds)
         }
     }
     for (uint64 Id:Removed) {Units[Id]->Destroy();Units.Remove(Id);NextFrostBreath.Remove(Id);}
-    SynchronizeProjectiles(*State);SynchronizeSpellDebris(*State);SynchronizeHazards(*State);SynchronizeStatuses(*State);
+    SynchronizeProjectiles(*State);SynchronizeSpellCasts(*State);SynchronizeSpellDebris(*State);SynchronizeHazards(*State);SynchronizeStatuses(*State);
     TransientEffects.RemoveAllSwap([](const auto& Effect){return !Effect.IsValid();});
+    SpellImpactEffects.RemoveAllSwap([](const auto& Effect){return !Effect.Component.IsValid();});
     const int32 Stage=State->phase==rift::Phase::Regulation?(State->elapsed>=120?2:1):State->phaseElapsed>=60?3:2;
     if (Stage>AetherStage && State->phase!=rift::Phase::Finished)
     {PlayEventSound(Stage==3?TEXT("aether_three"):TEXT("aether_two"),FVector::ZeroVector,.5f);AetherStage=Stage;}
@@ -427,6 +452,11 @@ FString ARiftArenaPresentation::NiagaraDiagnosticsJSON()
         Entry->SetStringField(TEXT("animationAsset"),Unit->AnimationAssetPath());Entry->SetNumberField(TEXT("positionSeconds"),Unit->AnimationPosition());
         Entry->SetBoolField(TEXT("hasTakenDamage"),Unit->HasBeenDamaged());
         Entry->SetBoolField(TEXT("healthBarVisible"),!Unit->IsDead()&&Unit->HasBeenDamaged());
+        if (const auto* State=ViewState()) if (const auto* Entity=FindEntity(*State,Pair.Key))
+        {
+            Entry->SetNumberField(TEXT("hp"),Entity->hp);Entry->SetNumberField(TEXT("maxHp"),Entity->maxHp);
+            Entry->SetStringField(TEXT("team"),UTF8_TO_TCHAR(rift::TeamName(Entity->team).c_str()));
+        }
         Animations.Add(MakeShared<FJsonValueObject>(Entry));
     }
     Report->SetArrayField(TEXT("unitAnimations"),Animations);
@@ -478,10 +508,53 @@ FString ARiftArenaPresentation::NiagaraDiagnosticsJSON()
     Report->SetNumberField(TEXT("projectileBodiesCreated"),double(ProjectileBodiesCreated));
     Report->SetNumberField(TEXT("projectileBodiesReleased"),double(ProjectileBodiesReleased));
     Report->SetNumberField(TEXT("spellDebrisBodies"),SpellDebrisBodies.Num());
+    TArray<TSharedPtr<FJsonValue>> Casts,Impacts;
+    if (const auto* State=ViewState()) for (const auto& Cast:State->spellCasts)
+    {
+        auto Entry=MakeShared<FJsonObject>();Entry->SetNumberField(TEXT("playId"),double(Cast.playId));
+        Entry->SetStringField(TEXT("cardId"),UTF8_TO_TCHAR(Cast.cardId.c_str()));
+        Entry->SetStringField(TEXT("team"),UTF8_TO_TCHAR(rift::TeamName(Cast.team).c_str()));
+        Entry->SetNumberField(TEXT("born"),Cast.born);Entry->SetNumberField(TEXT("impactAt"),Cast.impactAt);
+        Entry->SetNumberField(TEXT("remaining"),FMath::Max(0.,Cast.impactAt-State->elapsed));
+        Entry->SetNumberField(TEXT("progress"),FMath::Clamp((State->elapsed-Cast.born)/FMath::Max(.001,Cast.impactAt-Cast.born),0.,1.));
+        Entry->SetStringField(TEXT("target"),URiftMatchSubsystem::WorldPoint(Cast.position).ToString());
+        auto* Ring=SpellCastRings.FindRef(Cast.playId).Get();Entry->SetBoolField(TEXT("decalVisible"),Ring&&Ring->IsVisible()&&Ring->GetDecalMaterial());
+        Entry->SetNumberField(TEXT("radiusTiles"),rift::FindCard(Cast.cardId)?rift::FindCard(Cast.cardId)->spellRadius:0.);
+        TArray<TSharedPtr<FJsonValue>> Bodies;
+        for (int32 Index=0;Index<SpellCastPieces.Num();++Index) if (SpellCastPieces[Index].PlayId==Cast.playId)
+        {
+            auto Piece=MakeShared<FJsonObject>();auto* Body=SpellCastBodies[Index].Get();
+            Piece->SetNumberField(TEXT("index"),SpellCastPieces[Index].Index);Piece->SetBoolField(TEXT("visible"),Body&&Body->IsVisible());
+            Piece->SetBoolField(TEXT("collisionDisabled"),Body&&Body->GetCollisionEnabled()==ECollisionEnabled::NoCollision);
+            auto* Glow=SpellCastGlows[Index].Get();Piece->SetBoolField(TEXT("glowPresent"),Glow&&Glow->GetAsset());
+            Piece->SetBoolField(TEXT("glowPaused"),Glow&&Glow->IsPaused());
+            if (Body)
+            {
+                Piece->SetStringField(TEXT("mesh"),Body->GetStaticMesh()?Body->GetStaticMesh()->GetPathName():TEXT("missing"));
+                Piece->SetStringField(TEXT("location"),Body->GetComponentLocation().ToString());
+                Piece->SetStringField(TEXT("rotation"),Body->GetComponentRotation().ToString());
+                Piece->SetStringField(TEXT("scale"),Body->GetComponentScale().ToString());
+            }
+            Bodies.Add(MakeShared<FJsonValueObject>(Piece));
+        }
+        Entry->SetArrayField(TEXT("bodies"),Bodies);Casts.Add(MakeShared<FJsonValueObject>(Entry));
+    }
+    for (const auto& Impact:RecentSpellImpacts)
+    {
+        auto Entry=MakeShared<FJsonObject>();Entry->SetNumberField(TEXT("playId"),double(Impact.playId));
+        Entry->SetStringField(TEXT("cardId"),UTF8_TO_TCHAR(Impact.cardId.c_str()));Entry->SetNumberField(TEXT("time"),Impact.time);
+        Entry->SetStringField(TEXT("target"),URiftMatchSubsystem::WorldPoint(Impact.position).ToString());
+        Impacts.Add(MakeShared<FJsonValueObject>(Entry));
+    }
+    Report->SetArrayField(TEXT("spellCastVisuals"),Casts);Report->SetArrayField(TEXT("recentSpellImpacts"),Impacts);
+    Report->SetNumberField(TEXT("liveSpellCastBodies"),SpellCastBodies.Num());Report->SetNumberField(TEXT("liveSpellCastRings"),SpellCastRings.Num());
+    Report->SetNumberField(TEXT("liveSpellCastGlows"),SpellCastGlows.Num());
+    Report->SetNumberField(TEXT("spellImpactEvents"),double(SpellImpactEvents));
     Report->SetBoolField(TEXT("breathSmoke"),FParse::Param(FCommandLine::Get(),TEXT("RiftBreathSmoke")));
     Report->SetNumberField(TEXT("frostBreathPuffs"),FrostBreathPuffs);
     TSet<UNiagaraComponent*> Components;
     for(const auto& Pair:Projectiles)if(Pair.Value)Components.Add(Pair.Value.Get());
+    for(const auto& Glow:SpellCastGlows)if(Glow)Components.Add(Glow.Get());
     for(const auto& Pair:Hazards)if(Pair.Value)Components.Add(Pair.Value.Get());
     for(const auto& Pair:SlowEffects)if(Pair.Value)Components.Add(Pair.Value.Get());
     for(const auto& Pair:StunEffects)if(Pair.Value)Components.Add(Pair.Value.Get());
@@ -730,14 +803,22 @@ UInstancedStaticMeshComponent* ARiftArenaPresentation::ProjectileTrail(const std
     Component->SetMobility(EComponentMobility::Movable);Component->SetStaticMesh(Mesh);Component->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     Component->SetGenerateOverlapEvents(false);Component->SetCastShadow(false);Component->bReceivesDecals=false;
     Component->RegisterComponent();AddInstanceComponent(Component);ProjectileTrails.Add(Key,Component);
+    const bool Spell=Card=="meteor_shards"||Card=="bullet_burst";
     for (int32 Index=0;Index<Component->GetNumMaterials();++Index)
+    {
+        // The authored glow atlas emits its baked blue RGB. Cast trails use
+        // the existing surface shader's actual team-mask emissive input so
+        // their warm color and luminance are real, rather than unused knobs.
+        if (Spell) if (auto* Surface=LoadObject<UMaterialInterface>(nullptr,TEXT("/Game/Rift/Materials/M_RiftSurface.M_RiftSurface")))
+            Component->SetMaterial(Index,Surface);
         if (auto* Material=Component->CreateDynamicMaterialInstance(Index))
         {
             const FLinearColor Color=EffectColor(Flight,Team);
             Material->SetVectorParameterValue(TEXT("Color"),Color);
             Material->SetVectorParameterValue(TEXT("TeamColor"),Color);
-            Material->SetScalarParameterValue(TEXT("RiftTeamEmissive"),.7f);
+            Material->SetScalarParameterValue(TEXT("RiftTeamEmissive"),Spell?2.8f:.7f);
         }
+    }
     return Component;
 }
 void ARiftArenaPresentation::RemoveProjectile(uint64 Id)
@@ -746,14 +827,120 @@ void ARiftArenaPresentation::RemoveProjectile(uint64 Id)
     if (auto* Body=ProjectileBodies.FindRef(Id).Get()) {Body->DestroyComponent();++ProjectileBodiesReleased;}
     Projectiles.Remove(Id);ProjectileBodies.Remove(Id);ProjectileOrigins.Remove(Id);
 }
+void ARiftArenaPresentation::RemoveSpellCast(uint64 Id)
+{
+    if (auto* Ring=SpellCastRings.FindRef(Id).Get()) Ring->DestroyComponent();
+    SpellCastRings.Remove(Id);SpellCastMaterials.Remove(Id);
+    for (int32 Index=SpellCastPieces.Num()-1;Index>=0;--Index) if (SpellCastPieces[Index].PlayId==Id)
+    {
+        if (SpellCastBodies[Index]) SpellCastBodies[Index]->DestroyComponent();
+        if (SpellCastGlows[Index]) SpellCastGlows[Index]->DestroyComponent();
+        SpellCastBodies.RemoveAtSwap(Index);SpellCastPieces.RemoveAtSwap(Index);SpellCastGlows.RemoveAtSwap(Index);
+    }
+}
+void ARiftArenaPresentation::SynchronizeSpellCasts(const rift::Snapshot& State)
+{
+    TSet<uint64> Present;
+    TMap<UInstancedStaticMeshComponent*,TArray<FTransform>> TrailTransforms;
+    auto* Replay=GetGameInstance()->GetSubsystem<URiftReplaySubsystem>();
+    const float CastSpeed=Replay&&Replay->IsPlaying()?Replay->Speed():Match->GetSpeed();
+    for (const auto& Cast:State.spellCasts)
+    {
+        const auto* Card=rift::FindCard(Cast.cardId);
+        if (!Card || (Cast.cardId!="meteor_shards"&&Cast.cardId!="bullet_burst") || State.phase==rift::Phase::Finished) continue;
+        Present.Add(Cast.playId);
+        const int32 Count=Cast.cardId=="meteor_shards"?5:Card->rounds;
+        const double Duration=FMath::Max(.001,Cast.impactAt-Cast.born);
+        const double Progress=FMath::Clamp((State.elapsed-Cast.born)/Duration,0.,1.);
+        const FVector Center=URiftMatchSubsystem::WorldPoint(Cast.position);
+        if (!SpellCastRings.Contains(Cast.playId))
+        {
+            auto* Ring=NewObject<UDecalComponent>(this);Ring->SetupAttachment(Scene);Ring->SetMobility(EComponentMobility::Movable);
+            Ring->SetWorldLocation(Center+FVector(0,0,14));Ring->SetWorldRotation(FRotator(-90,0,0));
+            Ring->DecalSize=FVector(36,Card->spellRadius*100,Card->spellRadius*100);Ring->SortOrder=3;
+            if (auto* Base=LoadObject<UMaterialInterface>(nullptr,TEXT("/Game/Rift/Materials/M_RiftPlacement.M_RiftPlacement")))
+            {
+                auto* Material=UMaterialInstanceDynamic::Create(Base,this);Material->SetScalarParameterValue(TEXT("Footprint"),0.f);
+                Material->SetVectorParameterValue(TEXT("RingColor"),ARiftUnitVisual::TeamColor(Cast.team));
+                Ring->SetDecalMaterial(Material);SpellCastMaterials.Add(Cast.playId,Material);
+            }
+            Ring->RegisterComponent();AddInstanceComponent(Ring);SpellCastRings.Add(Cast.playId,Ring);
+            for (int32 Piece=0;Piece<Count;++Piece) if (auto* Body=MakeProjectileBody(Cast.cardId,Cast.team))
+            {
+                for (int32 Slot=0;Slot<Body->GetNumMaterials();++Slot) if (auto* Material=Body->CreateDynamicMaterialInstance(Slot))
+                {
+                    Material->SetScalarParameterValue(TEXT("GlowStrength"),Cast.cardId=="meteor_shards"?5.f:1.4f);
+                    Material->SetScalarParameterValue(TEXT("RiftBaseColorGain"),1.25f);
+                }
+                const FVector Position=SpellCastPathPoint(Cast.cardId,Center,Cast.team,Piece,Count,Progress);
+                auto* Glow=SpawnEffect(TEXT("TowerFlight"),Position,Cast.team,18.f,true);
+                SpellCastBodies.Add(Body);SpellCastPieces.Add({Cast.playId,Piece});SpellCastGlows.Add(Glow);
+            }
+        }
+        if (auto* Material=SpellCastMaterials.FindRef(Cast.playId).Get())
+        {
+            // A restrained brightening announces the deadline without washing
+            // out the fighters or moving the committed target radius.
+            FLinearColor Color=ARiftUnitVisual::TeamColor(Cast.team)*(1.f+.3f*float(Progress));Color.A=1.f;
+            Material->SetVectorParameterValue(TEXT("RingColor"),Color);
+        }
+        auto* Trail=ProjectileTrail(Cast.cardId,Cast.team);
+        for (int32 Piece=0;Piece<SpellCastPieces.Num();++Piece)
+        {
+            if (SpellCastPieces[Piece].PlayId!=Cast.playId) continue;
+            auto* Body=SpellCastBodies[Piece].Get();if (!Body) continue;
+            const int32 Index=SpellCastPieces[Piece].Index;
+            const double Release=Cast.cardId=="meteor_shards"?0.:double(Index)/FMath::Max(1,Count-1)*.4;
+            const bool Visible=Progress>=Release;Body->SetVisibility(Visible);
+            auto* Glow=SpellCastGlows[Piece].Get();if (Glow) Glow->SetVisibility(Visible);
+            if (!Visible) {if (Glow) Glow->SetPaused(true);continue;}
+            const FVector Position=SpellCastPathPoint(Cast.cardId,Center,Cast.team,Index,Count,Progress);
+            const FVector Direction=SpellCastPathPoint(Cast.cardId,Center,Cast.team,Index,Count,FMath::Min(1.,Progress+.004))-
+                SpellCastPathPoint(Cast.cardId,Center,Cast.team,Index,Count,FMath::Max(Release,Progress-.004));
+            FQuat Rotation=ProjectileMeshOrientation(Cast.cardId,Direction,0.);
+            if (Cast.cardId=="meteor_shards") Rotation=Rotation*FQuat(FVector::ForwardVector,float((State.elapsed-Cast.born)*(Index%2?-3.:3.)));
+            Body->SetWorldTransform(FTransform(Rotation,Position,FVector(Cast.cardId=="meteor_shards"?1.6f:4.4f)));
+            if (Glow)
+            {
+                Glow->SetWorldLocation(Position);
+                const FLinearColor Color=Cast.cardId=="meteor_shards"?FLinearColor(1.f,.25f,.045f,1.f):FLinearColor(1.f,.74f,.25f,1.f);
+                SetEffectParameters(Glow,Cast.team,18.f,Position,Position,Color);
+                if (auto Controller=Glow->GetSystemInstanceController();Controller&&Controller->IsValid()&&Controller->GetAge()==0.f&&
+                    Glow->GetAsset()&&Glow->GetAsset()->IsReadyToRun())
+                {
+                    Glow->SetPaused(false);Glow->SetCustomTimeDilation(1.f);Glow->AdvanceSimulation(1,1.f/60.f);
+                    if (auto Initialized=Glow->GetSystemInstanceController()) Initialized->WaitForConcurrentTickAndFinalize();
+                }
+                Glow->SetCustomTimeDilation(CastSpeed);Glow->SetPaused(CastSpeed<=0.f);
+            }
+            if (!Trail) continue;
+            auto& Instances=TrailTransforms.FindOrAdd(Trail);
+            const double Tail=Cast.cardId=="meteor_shards"?.11:.18;
+            for (int32 Segment=0;Segment<4;++Segment)
+            {
+                const double FrontTime=FMath::Max(Release,Progress-Tail*double(Segment)/4.);
+                const double RearTime=FMath::Max(Release,Progress-Tail*double(Segment+1)/4.);
+                const FVector Front=SpellCastPathPoint(Cast.cardId,Center,Cast.team,Index,Count,FrontTime);
+                const FVector Rear=SpellCastPathPoint(Cast.cardId,Center,Cast.team,Index,Count,RearTime);
+                const FVector Vector=Front-Rear;const double Length=Vector.Length();if (Length<.5) continue;
+                const FVector MeshSize=Trail->GetStaticMesh()->GetBounds().BoxExtent*2.;
+                const float Width=(Cast.cardId=="meteor_shards"?4.f:2.5f)*(1.f-float(Segment)/4.);
+                Instances.Add(FTransform(FRotationMatrix::MakeFromX(Vector).ToQuat(),(Front+Rear)*.5,
+                    FVector(Length/FMath::Max(1.,MeshSize.X),Width,Width)));
+            }
+        }
+    }
+    for (auto& Entry:TrailTransforms) Entry.Key->AddInstances(Entry.Value,false,true,false);
+    TArray<uint64> Removed;for (const auto& Pair:SpellCastRings) if (!Present.Contains(Pair.Key)) Removed.Add(Pair.Key);
+    for (uint64 Id:Removed) RemoveSpellCast(Id);
+}
 void ARiftArenaPresentation::SpawnSpellDebris(const rift::Event& Event)
 {
     const bool Meteor=Event.cardId=="meteor_shards";
     if (!Meteor && Event.cardId!="bullet_burst") return;
     const auto* Card=rift::FindCard(Event.cardId);if (!Card) return;
-    // These two spells resolve immediately in the game rules. The rounds and
-    // shattered hot stone radiate from that actual impact; no delayed damage,
-    // fictitious pre-impact travel, or projectile gameplay is introduced.
+    // Rounds and shattered stone radiate only from the recorded impact. The
+    // separate pending-cast meshes disappear on that authoritative deadline.
     const int32 Count=Meteor?5:Card->rounds;
     for (int32 Index=0;Index<Count;++Index)
     {
@@ -928,18 +1115,45 @@ void ARiftArenaPresentation::OnSimulationEvent(const rift::Event& Event)
         for (const auto& Hazard:State->hazards) if (Hazard.playId==Event.playId)
         {const FVector Center=URiftMatchSubsystem::WorldPoint(Hazard.position,8);SpawnEffect(TEXT("MeteorTick"),Center,Hazard.team,Hazard.radius*100);PlayEventSound(TEXT("meteor_tick"),Center,.35f);break;}
     }
-    else if (Event.type=="card_play")
+    else if (Event.type=="spell_cast")
+    {
+        if (State) Synchronize(0.f);
+    }
+    else if (Event.type=="spell_impact" || (Event.type=="card_play" && Event.until<=Event.time))
     {
         const auto* Card=rift::FindCard(Event.cardId);if (Card && Card->spell)
         {
             const FName FX=Event.cardId=="bullet_burst"?TEXT("BulletBurst"):Event.cardId=="nova_flask"?TEXT("Nova"):TEXT("Meteor");
             const FName Sound=Event.cardId=="bullet_burst"?TEXT("bullet_burst"):Event.cardId=="nova_flask"?TEXT("nova_impact"):TEXT("meteor_impact");
-            SpawnEffect(FX,URiftMatchSubsystem::WorldPoint(Event.position,12),Event.team,Card->spellRadius*100);PlayEventSound(Sound,Position,.75f);
+            auto* EffectComponent=SpawnEffect(FX,URiftMatchSubsystem::WorldPoint(Event.position,12),Event.team,Card->spellRadius*100);
+            if (Event.type=="spell_impact")
+            {
+                RemoveSpellCast(Event.playId);++SpellImpactEvents;RecentSpellImpacts.Add(Event);
+                if (RecentSpellImpacts.Num()>16) RecentSpellImpacts.RemoveAt(0);
+                if (EffectComponent) SpellImpactEffects.Add({EffectComponent,Event.time});
+            }
+            PlayEventSound(Sound,Position,.75f);
             SpawnSpellDebris(Event);
         }
     }
     else if (Event.type=="phase") PlayEventSound(Event.reason=="tiebreaker"?TEXT("tiebreaker"):TEXT("overtime"),FVector::ZeroVector,.65f);
     else if (Event.type=="match_end" && State) PlayEventSound(State->winner==0?TEXT("victory"):TEXT("defeat"),FVector::ZeroVector,.75f);
+}
+void ARiftArenaPresentation::SampleSpellImpactEffectsForQA()
+{
+    // Explicit capture fixture only: sample real impact graphs at the same
+    // battle time as the paused models, before render/PSO warmup frames pass.
+    const auto* State=ViewState();if (!State) return;
+    for (const auto& Timed:SpellImpactEffects) if (auto* Component=Timed.Component.Get())
+    {
+        const float Age=float(FMath::Max(1./60.,State->elapsed-Timed.Born));
+        Component->SetAutoDestroy(false);Component->SetForceSolo(true);Component->ReinitializeSystem();
+        Component->SetAgeUpdateMode(ENiagaraAgeUpdateMode::DesiredAge);Component->SetDesiredAge(Age);
+        Component->SetComponentTickEnabled(false);const int32 Steps=FMath::Max(1,FMath::CeilToInt(Age*100.f));
+        Component->AdvanceSimulation(Steps,Age/Steps);
+        if (auto Controller=Component->GetSystemInstanceController()) Controller->WaitForConcurrentTickAndFinalize();
+        Component->SetComponentTickEnabled(false);
+    }
 }
 void ARiftArenaPresentation::SetPlacementPreview(FVector2D Tile,bool Valid,float RadiusTiles,bool Spell,float BuildingFootprintTiles)
 {

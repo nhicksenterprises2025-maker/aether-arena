@@ -1,0 +1,224 @@
+{
+  "schema": 1,
+  "version": "1.2.1",
+  "passed": true,
+  "utc": "2026-10-09T17:14:56.5901711Z",
+  "nativeExecutableSha256": "30b7989948b690296a44c53f1f12d82162c7397016b7e58338e7d59545c59ae9",
+  "checks": [
+    {
+      "name": "spell121-flight015 exact Shipping binary/clean exit/framing",
+      "passed": true
+    },
+    {
+      "name": "spell121-impact030 exact Shipping binary/clean exit/framing",
+      "passed": true
+    },
+    {
+      "name": "spell121-flight055 exact Shipping binary/clean exit/framing",
+      "passed": true
+    },
+    {
+      "name": "spell121-impact075 exact Shipping binary/clean exit/framing",
+      "passed": true
+    },
+    {
+      "name": "spell121-after090 exact Shipping binary/clean exit/framing",
+      "passed": true
+    },
+    {
+      "name": "Both casts have their fixed target circles before damage",
+      "passed": true
+    },
+    {
+      "name": "All seven bullets and five shards are visibly airborne",
+      "passed": true
+    },
+    {
+      "name": "Flight glows stay attached and frozen with the paused cast",
+      "passed": true
+    },
+    {
+      "name": "meteor_shards authoritative clock/deadline/visible ring",
+      "passed": true
+    },
+    {
+      "name": "meteor_shards mesh 0 is authored/noncolliding",
+      "passed": true
+    },
+    {
+      "name": "meteor_shards mesh 1 is authored/noncolliding",
+      "passed": true
+    },
+    {
+      "name": "meteor_shards mesh 2 is authored/noncolliding",
+      "passed": true
+    },
+    {
+      "name": "meteor_shards mesh 3 is authored/noncolliding",
+      "passed": true
+    },
+    {
+      "name": "meteor_shards mesh 4 is authored/noncolliding",
+      "passed": true
+    },
+    {
+      "name": "bullet_burst authoritative clock/deadline/visible ring",
+      "passed": true
+    },
+    {
+      "name": "bullet_burst mesh 0 is authored/noncolliding",
+      "passed": true
+    },
+    {
+      "name": "bullet_burst mesh 1 is authored/noncolliding",
+      "passed": true
+    },
+    {
+      "name": "bullet_burst mesh 2 is authored/noncolliding",
+      "passed": true
+    },
+    {
+      "name": "bullet_burst mesh 3 is authored/noncolliding",
+      "passed": true
+    },
+    {
+      "name": "bullet_burst mesh 4 is authored/noncolliding",
+      "passed": true
+    },
+    {
+      "name": "bullet_burst mesh 5 is authored/noncolliding",
+      "passed": true
+    },
+    {
+      "name": "bullet_burst mesh 6 is authored/noncolliding",
+      "passed": true
+    },
+    {
+      "name": "Bullet deadline clears its travel and creates exactly one impact",
+      "passed": true
+    },
+    {
+      "name": "Meteor remains airborne with no premature zone",
+      "passed": true
+    },
+    {
+      "name": "Meteor deadline clears all travel and creates its zone/impact once",
+      "passed": true
+    },
+    {
+      "name": "No repeated impact or lingering airborne cast after landing",
+      "passed": true
+    },
+    {
+      "name": "All incoming flight glows are released at impact",
+      "passed": true
+    },
+    {
+      "name": "Both targets healthy and their HP bars hidden during initial travel",
+      "passed": true
+    },
+    {
+      "name": "Bullet applies its existing175 troop damage at .30 seconds and reveals HP",
+      "passed": true
+    },
+    {
+      "name": "Meteor target still healthy at .55 seconds",
+      "passed": true
+    },
+    {
+      "name": "Meteor applies its existing262 troop damage at .75 seconds and reveals HP",
+      "passed": true
+    },
+    {
+      "name": "First Meteor DOT is later than .90-second sample",
+      "passed": true
+    },
+    {
+      "name": "spell121-roster720-largeui exact Shipping binary/clean exit/framing",
+      "passed": true
+    },
+    {
+      "name": "720p large UI retains enlarged arena with no model overlap",
+      "passed": true
+    },
+    {
+      "name": "Healthy roster HP bars remain hidden",
+      "passed": true
+    }
+  ],
+  "inputs": [
+    {
+      "path": "Artifacts/QA/Visual/spell121-flight015.json",
+      "sha256": "8097164649666bc23f2cc5b36e17dff3660ec712648c312ebe494b71f0bd503c"
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-flight015.state.json",
+      "sha256": "6d33ff0d3466f1685c5506a9b471653c12568569b371bdb2e48cd8337948f282"
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-flight015.png",
+      "sha256": "5456e01c435474d6bf04b8e8c13c14fbd6737a165e615bc185ff4a815e75e9e3"
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-impact030.json",
+      "sha256": "9951e171469133ca12d602c23bbde22e36c0341d293e50b30faa55de327d79db"
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-impact030.state.json",
+      "sha256": "6ab31d1db963f2ed24f09e8939a8ba6028072965511aa443b41ac0ad6f715f0e"
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-impact030.png",
+      "sha256": "d5364580146aec72302aea4483937cb336e44ff0b927ac965e755b003736d184"
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-flight055.json",
+      "sha256": "005d69972746ffaa901dff34d66cda68723e926fb770ca88a83e02e6e3a27625"
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-flight055.state.json",
+      "sha256": "fc20499530defd98bea8f3a3a7afda0cd7f010d7b5d1c540be3717d1f0aab4b9"
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-flight055.png",
+      "sha256": "6a0bd5c9f3668a40a7d4a1dd3394ff84f3e64ea6b7091885b8233807b2bf7013"
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-impact075.json",
+      "sha256": "f74e5ebc8bec816bfcd6042cc207df967c690dbc7975766ba0ef3c5c04064c8b"
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-impact075.state.json",
+      "sha256": "5965925b4deda0724f7478f5ee00096589ad16cede5453af94b181102b56209b"
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-impact075.png",
+      "sha256": "9e72b1baae262e69362050dd8365edb496b39764c09ea45a3c42c98ac9b4bd43"
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-after090.json",
+      "sha256": "2aa8e4f57bc5fe9412accda98f892e651cff3540b5e88f02d740904a6f319a40"
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-after090.state.json",
+      "sha256": "82c38089127678e45823cdf156c61c8d4453546a476ca93405255c7358686627"
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-after090.png",
+      "sha256": "965e8e7ddb84d6fdbef786471058df3fcd1b73b72aed5f22a0b748c5e456da41"
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-roster720-largeui.json",
+      "sha256": "69f38d49cba0635875e0ce740c4f4044acc837118b576a67dcbbd27189a69358"
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-roster720-largeui.state.json",
+      "sha256": "412f489028438fee380ca659fd6576211579c5e1efc708540f1160f703447dbb"
+    },
+    {
+      "path": "Artifacts/QA/Visual/spell121-roster720-largeui.png",
+      "sha256": "d570db784962480201296667329fc0f5d23e44ec518c128560f10e5fc469fcd6"
+    }
+  ],
+  "scope": "Actual paused Shipping casts sampled from ordinary simulation steps; image inspection is separate."
+}

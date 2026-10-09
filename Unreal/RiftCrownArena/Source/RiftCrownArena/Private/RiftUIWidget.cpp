@@ -364,7 +364,10 @@ void URiftUIWidget::ExportMeta()
 }
 void URiftUIWidget::PatchNotes()
 {
-    Add(Body,Text(TEXT("MODEL & MOTION UPDATE · 1.2.0"),25,Brass));
+    Add(Body,Text(TEXT("SPELL TIMING UPDATE · 1.2.1"),25,Brass));
+    Add(Body,Text(TEXT("Meteor Shards falls for 0.75 seconds before the initial hit and damage zone begin. Bullet Burst travels for 0.30 seconds before its hit. Lead moving enemies: both spells strike the chosen area using enemy positions at impact."),16));
+    Add(Body,Text(TEXT("Aether is spent and the hand cycles when you cast. Pause, battle speed and replay seeking preserve the impact deadline. Nova Flask stays instant; damage, cost, radius and Meteor's five damage ticks are retained."),16));
+    Add(Body,Text(TEXT("MODEL & MOTION UPDATE · 1.2.0"),22,Brass),12);
     Add(Body,Text(TEXT("Every collection and hand card now shows its actual arena model. Units have larger silhouettes, clearer faces and equipment, smoother movement and turns, stronger attack anticipation and recovery, and animated flight and defeat."),16));
     Add(Body,Text(TEXT("Archers, mages, flying attackers and Crown Towers fire visible projectiles with trails and impact effects. Tower weapons aim while their foundations stay planted. The battlefield camera and compact health bars keep the larger models clear of the battle interface."),16));
     Add(Body,Text(TEXT("The four hand cards, next card and Aether meter sit together behind your Core Tower. Health bars remain hidden until a unit or tower first takes damage, then stay visible if it heals. Recorded replays preserve the same behavior."),16));

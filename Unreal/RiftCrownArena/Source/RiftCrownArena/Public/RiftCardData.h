@@ -34,6 +34,7 @@ public:
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float Footprint=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float TowerDamage=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float SpellRadius=0;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) float CastDelay=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float ChargeDamage=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float SlowPct=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float SlowDuration=0;

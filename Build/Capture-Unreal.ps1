@@ -2,7 +2,7 @@ param(
     [string]$EngineRoot = 'C:\Program Files\Epic Games\UE_5.8',
     [string]$Executable = '',
     [string]$Page = 'Battle',
-    [ValidateSet('','roster','congestion','effects','effects17','placement','projectiles')][string]$Scenario = '',
+    [ValidateSet('','roster','congestion','effects','effects17','placement','projectiles','spells')][string]$Scenario = '',
     [ValidateRange(0.05,2)][float]$EffectAge = 0.12,
     [ValidateRange(0.25,4)][float]$Speed = 1,
     [switch]$BreathSmoke,
@@ -18,6 +18,7 @@ param(
     [string]$PreviewCard = '',
     [float]$PreviewX = 0,
     [float]$PreviewY = 7,
+    [string]$InspectCard = '',
     [int]$Width = 1920,
     [int]$Height = 1080,
     [float]$Delay = 6,
@@ -68,13 +69,17 @@ if ($Phase) { $arguments += "-RiftCapturePhase=$Phase" }
 if ($Overlay) { $arguments += "-RiftCaptureOverlay=$Overlay" }
 $arguments += '-RiftCaptureUIScale=' + $UIScale.ToString([System.Globalization.CultureInfo]::InvariantCulture)
 if ($Zoom -ne -1) { $arguments += '-RiftCaptureZoom=' + $Zoom.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
-if ($Scenario -eq 'effects17') { $arguments += '-RiftEffectAge=' + $EffectAge.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
+if ($Scenario -in @('effects17','spells')) { $arguments += '-RiftEffectAge=' + $EffectAge.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
 if ($Scenario -in @('effects','congestion')) { $arguments += '-RiftCaptureSpeed=' + $Speed.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
 if ($PreviewCard) {
     if ($PreviewCard -notmatch '^[a-z_]+$') { throw 'Preview card must be an original card ID.' }
     $arguments += "-RiftPreviewCard=$PreviewCard"
     $arguments += '-RiftPreviewX=' + $PreviewX.ToString([System.Globalization.CultureInfo]::InvariantCulture)
     $arguments += '-RiftPreviewY=' + $PreviewY.ToString([System.Globalization.CultureInfo]::InvariantCulture)
+}
+if ($InspectCard) {
+    if ($InspectCard -notmatch '^[a-z_]+$') { throw 'Inspected card must be an original card ID.' }
+    $arguments += "-RiftInspectCard=$InspectCard"
 }
 $process = Start-Process -FilePath $Executable -ArgumentList $arguments -WorkingDirectory $workingDirectory -WindowStyle Hidden -PassThru -RedirectStandardOutput $stdoutPath -RedirectStandardError $stderrPath
 $timedOut = $false
@@ -135,7 +140,7 @@ if (Test-Path -LiteralPath $logPath) {
     $errors = @(Select-String -LiteralPath $logPath -Pattern 'LogRift: Error:|LogUIActionRouter: Error:|Fatal error[:!]?|Unhandled Exception:|Assertion failed:|Failed to load.*(/Game/Rift|Rift/)|Authored .* missing|LogMaterial: (Error:|Warning:.*(Failed to compile|Default Material|missing usage flag))|LogShaderCompilers: Error:' | ForEach-Object { $_.Line })
 }
 $report = [ordered]@{
-    schema = 1; name = $Name; page = $Page; scenario = $Scenario; speed = $Speed; breathSmoke = [bool]$BreathSmoke; uiScale=$UIScale; zoom=$Zoom;
+    schema = 1; name = $Name; page = $Page; scenario = $Scenario; inspectCard = $InspectCard; speed = $Speed; breathSmoke = [bool]$BreathSmoke; uiScale=$UIScale; zoom=$Zoom;
     state = $statePath; stateCaptured = $stateCaptured; phaseFixture = $Phase; phaseFixturePassed = $riftPhaseFixturePassed; allowExternalInput = [bool]$AllowExternalInput;
     cameraFramingRequired = $riftCameraFramingRequired; cameraFramingPassed = $riftCameraFramingPassed; cameraFraming = $riftCameraFraming;
     modelEnvelopeAvailable = $riftModelEnvelopeAvailable; modelEnvelopePassed = $riftModelEnvelopePassed;
