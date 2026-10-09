@@ -1,0 +1,2947 @@
+{
+  "schema": 1,
+  "version": "1.2.0",
+  "generatedUTC": "2026-10-09T15:59:02.329142+00:00",
+  "scope": "Executed final-source native integration, on-disk asset audit, live audio, real Niagara lifecycles, packaged CRT imports, published-launcher Play and installer compilation. The final 26-frame Shipping renderer review is accepted separately; installed MSI lifecycle and Windows finalization also passed; all three final isolated performance runs completed with measured stress-hitch limits; only public delivery remains pending.",
+  "nativeExecutable": {
+    "path": "Artifacts/Game-1.2.0/Windows/RiftCrownArena/Binaries/Win64/RiftCrownArena-Win64-Shipping.exe",
+    "bytes": 167687168,
+    "sha256": "5a209be2b0d17cf7f2aebfc41c9eff9e52e791b1da8b8c1cb1c93d8d9b1a322e"
+  },
+  "sources": [
+    {
+      "path": "Docs/QA/native-integration.json",
+      "bytes": 33409,
+      "sha256": "083601a508ca88f2e212e1035fcb969bb3c69277e67d7306b8deee737ae8779f"
+    },
+    {
+      "path": "Artifacts/QA/unreal_asset_audit.json",
+      "bytes": 68784,
+      "sha256": "b7b8cab286494eb5bace515c2ee182fce8e31fc616235ed30a53a783442c1bed"
+    },
+    {
+      "path": "Artifacts/QA/Audio/model12-editor-audio-final9/audio-smoke.json",
+      "bytes": 5588,
+      "sha256": "5815410f1380ba68293f57c1965d940fe60b72c003ab6347f54f6c264ebe31e4"
+    },
+    {
+      "path": "Artifacts/QA/Audio/model12-editor-audio-final9/run.json",
+      "bytes": 886,
+      "sha256": "97aced0ca6e1c0217750bfd57c2c6416d382904c1724b0f29e2e3c76ad40d0a0"
+    },
+    {
+      "path": "Artifacts/QA/model12-editor-vfx-final9-verification.json",
+      "bytes": 8531,
+      "sha256": "a54568bdd0f1f93ef3b156b0f108d002cd87571a16c3003495b4776b963d8801"
+    },
+    {
+      "path": "Artifacts/QA/Audio/model12-shipping-audio-final9/audio-smoke.json",
+      "bytes": 5588,
+      "sha256": "1e83d02c4344045f1bffab9796c3fd494be2bd260243d6454cfa4b0b7430035c"
+    },
+    {
+      "path": "Artifacts/QA/Audio/model12-shipping-audio-final9/run.json",
+      "bytes": 1033,
+      "sha256": "57d75c7e228a12d79e160c6e601a0538f872516a46e837179cb8d5d82929a5b1"
+    },
+    {
+      "path": "Artifacts/QA/model12-shipping-vfx-final9-verification.json",
+      "bytes": 8973,
+      "sha256": "5629700e88512fd9c499c379f6c47c513438642e6123da65d1b6c859d2952a71"
+    },
+    {
+      "path": "Artifacts/QA/app-local-runtime.json",
+      "bytes": 9052,
+      "sha256": "c97993b0014e329f7997dd02d09b0a0b8f970e14e3316e3057367e299c8a3ba6"
+    },
+    {
+      "path": "Artifacts/QA/launcher-play-smoke.json",
+      "bytes": 2102,
+      "sha256": "dc88b6b51f1c87f1211e090059c4673f88630e1bff61890b2905863c9af13092"
+    },
+    {
+      "path": "Artifacts/QA/installer-build.json",
+      "bytes": 933,
+      "sha256": "7c2f0dba7c77e07f60ab52a79d4b194b3c73e4c6017792b853ebab761e9a8f8a"
+    },
+    {
+      "path": "Artifacts/QA/installer-tests.json",
+      "bytes": 5334,
+      "sha256": "6b08adfd3b94221daf2ef6090ff95a45357f76b6547e7f39ddfc9dd8a332f4dd"
+    },
+    {
+      "path": "Artifacts/Release/windows-release-verification.json",
+      "bytes": 1082,
+      "sha256": "86db4abee18467e439879eb5fc9f230afd966dd8b315bc0520182ec58e48534b"
+    },
+    {
+      "path": "Artifacts/QA/Performance/model12-final9-normal/performance.json",
+      "bytes": 1221,
+      "sha256": "deccd6082ff017d91c65000f34154405c790cd4e709a562332f7389c1c90a527"
+    },
+    {
+      "path": "Artifacts/QA/Performance/model12-final9-normal/run.json",
+      "bytes": 766,
+      "sha256": "662db21b5e88607c0bc027fcfc6a9a5520a84ab387315e23ea5124ecb955bd98"
+    },
+    {
+      "path": "Artifacts/QA/Performance/model12-final9-normal/UserData/Logs/RiftGame-2026-10-09-17700-16-09-17-0.log",
+      "bytes": 1500,
+      "sha256": "d26a75107f17774bcd50c19ab3d60b3652c0f40e013d441ac293c3bf790dfa13"
+    },
+    {
+      "path": "Artifacts/QA/Performance/model12-final9-stress/performance.json",
+      "bytes": 2991,
+      "sha256": "643a503a3c144e15263df3e487f9c6e6be264864bdd83fe520cc38af6c43abdd"
+    },
+    {
+      "path": "Artifacts/QA/Performance/model12-final9-stress/run.json",
+      "bytes": 766,
+      "sha256": "fb4366226b0e39fe7c27b3696250c4860095aac210dbc5dc3173c30a6925e35e"
+    },
+    {
+      "path": "Artifacts/QA/Performance/model12-final9-stress/UserData/Logs/RiftGame-2026-10-09-27440-16-10-59-0.log",
+      "bytes": 1778,
+      "sha256": "6479e82a820533a3b48f223a495292fe780becdfea1c97a0638244432eebd252"
+    },
+    {
+      "path": "Artifacts/QA/Performance/model12-final9-stress-meta/performance.json",
+      "bytes": 3521,
+      "sha256": "0a297b6784ce5a0ed6d25159824878ff1ef870af12dec02b28775dddcd33b0a7"
+    },
+    {
+      "path": "Artifacts/QA/Performance/model12-final9-stress-meta/run.json",
+      "bytes": 776,
+      "sha256": "05431f9275202a0670b94e084506a8b50ff86a1154c54d430d9972ce3d4892a0"
+    },
+    {
+      "path": "Artifacts/QA/Performance/model12-final9-stress-meta/UserData/Logs/RiftGame-2026-10-09-3968-16-12-43-0.log",
+      "bytes": 2285,
+      "sha256": "40325efc5073f2c082c439437a0c4959beecfd8cf6a08e80bcc5a70060c8e52b"
+    }
+  ],
+  "nativeIntegration": {
+    "succeeded": 11,
+    "succeededWithWarnings": 2,
+    "failed": 0,
+    "notRun": 0,
+    "totalDuration": 75.49966430664062,
+    "sourceHashCount": 124,
+    "warningMessages": [
+      "LogHttp: HTTP request timed out after 3.00 seconds URL=https://www.google.com/generate_204",
+      "LogRift: Recovered native save backup"
+    ],
+    "sourceHashes": [
+      {
+        "path": "Assets/Source/Audio/aether_three.wav",
+        "sha256": "080062afc13b579ece470e524e456f14f2c4bcc9f64b7a6e3da9aa1c88202251"
+      },
+      {
+        "path": "Assets/Source/Audio/aether_two.wav",
+        "sha256": "f35fae823b57c3e43503511f84b09df4a41e3bd90998f638dd8476f63b62a688"
+      },
+      {
+        "path": "Assets/Source/Audio/arc_cast.wav",
+        "sha256": "ee7e7f433cb1228e21e444f76e8937ff8caf070d9079b472df8fa63aceb0bf39"
+      },
+      {
+        "path": "Assets/Source/Audio/arc_impact.wav",
+        "sha256": "b53b3d5064c5a0d5a434ca22ae3df60c0c5f97a3bd15da29bc2ba223cfde854b"
+      },
+      {
+        "path": "Assets/Source/Audio/arrow_flight.wav",
+        "sha256": "935a12cdbfa633a7a8455bdba99333eb17c5f6fd580c390c68e7de7c24d2b4ad"
+      },
+      {
+        "path": "Assets/Source/Audio/arrow_hit_v2.wav",
+        "sha256": "2d4cc5d8825bec4dc94e303d551d809128cffb2a68b62b3bd1fabfab30cac715"
+      },
+      {
+        "path": "Assets/Source/Audio/arrow_hit_v3.wav",
+        "sha256": "5d8dd9f512281a44daba0cc4f0d5999f4385d4578a0cf76b37afb3cf65e78dcd"
+      },
+      {
+        "path": "Assets/Source/Audio/arrow_hit.wav",
+        "sha256": "cde5932b8bd4a1f324e98a1ac2ecba9ce2f05fcd6baea6d6871fd62b374c0ce3"
+      },
+      {
+        "path": "Assets/Source/Audio/audio_manifest.json",
+        "sha256": "ef9955a5129b05465e313f263edbcfb20646c59a7d4ebc8d3d393a869bacd87c"
+      },
+      {
+        "path": "Assets/Source/Audio/bat_bite_v2.wav",
+        "sha256": "de22f0acc57c50c12b34a3726d1acdd59002d436617e7d3dd3a00d7c94bb0afd"
+      },
+      {
+        "path": "Assets/Source/Audio/bat_bite_v3.wav",
+        "sha256": "4076733907c885d44d8823ce799381f721feadd27970aa10608400083be734a5"
+      },
+      {
+        "path": "Assets/Source/Audio/bat_bite.wav",
+        "sha256": "c0b3813ef7bed22b5146a6c252dc6aab944b7660a0a123cd1995f1383011522d"
+      },
+      {
+        "path": "Assets/Source/Audio/bow_release_v2.wav",
+        "sha256": "d3c250c8fb97e2597c5cde3a86c82630820d2989a79130b9ba46fa61aa36e7be"
+      },
+      {
+        "path": "Assets/Source/Audio/bow_release_v3.wav",
+        "sha256": "e30951c03ad7fcef8d59d1aee0d5eb2bbd1e60ec2fd81b0afa83e1780b32cbe0"
+      },
+      {
+        "path": "Assets/Source/Audio/bow_release.wav",
+        "sha256": "ad0c16024926d4282048df69b417d19d00136a134647a585ada0478c68956108"
+      },
+      {
+        "path": "Assets/Source/Audio/building_hit_v2.wav",
+        "sha256": "48a95537eb13ade5afd03242940d91384a04c47b9dd4e849369bd92311f92fd9"
+      },
+      {
+        "path": "Assets/Source/Audio/building_hit_v3.wav",
+        "sha256": "e3df4f9ebeff344a9e7c0c755481fdaaa02340c76afb07b3f8b2a01a82745086"
+      },
+      {
+        "path": "Assets/Source/Audio/building_hit.wav",
+        "sha256": "54e26e90326358566468a33d0255960e1a0d857530cad19bdae0cafa2489592c"
+      },
+      {
+        "path": "Assets/Source/Audio/bullet_burst.wav",
+        "sha256": "42555ce27bf83669b6f10ff3761a29238c0e5dc8824078d9d1dd13f6faba353d"
+      },
+      {
+        "path": "Assets/Source/Audio/charge.wav",
+        "sha256": "8a49e8784170eb0550087b460c53f9c60ffec58d8ff1376bfbd3beea604f73a9"
+      },
+      {
+        "path": "Assets/Source/Audio/core_awaken.wav",
+        "sha256": "a2991d1e5780332315f69fa14dff9d12efa5945473cf104be34895093f6f7d4b"
+      },
+      {
+        "path": "Assets/Source/Audio/defeat.wav",
+        "sha256": "7e117cabc92228e0d409fced53e63dc7794fe1167480efadc7a54b991697a846"
+      },
+      {
+        "path": "Assets/Source/Audio/deploy.wav",
+        "sha256": "5b83f01159a1f265e532f87e0d7fa4ff89c76963c5909b06c58e9fb657ca8387"
+      },
+      {
+        "path": "Assets/Source/Audio/dual_attack_v2.wav",
+        "sha256": "3234b2003c8094a0ab887097d5c62345b709683753257fa22f5a93cc4455d0a8"
+      },
+      {
+        "path": "Assets/Source/Audio/dual_attack_v3.wav",
+        "sha256": "d2b8b33374b87e861195e5df81cca162b2084a88e42e0a31faebd20c41a88284"
+      },
+      {
+        "path": "Assets/Source/Audio/dual_attack.wav",
+        "sha256": "ce5b4e44c64d6610ae180146a7f9699237ddfd7163b67a72d518b0b6a4290b5f"
+      },
+      {
+        "path": "Assets/Source/Audio/frost_attack.wav",
+        "sha256": "8dfe488388754fd4ad189a1d09817c80bac620ca430e28513b7b731349819d23"
+      },
+      {
+        "path": "Assets/Source/Audio/frost_slow.wav",
+        "sha256": "be7079aefa9340473d3aaa231fc62bb8872f337ffffeb1fbae5490e35e4a17d0"
+      },
+      {
+        "path": "Assets/Source/Audio/heavy_slam_v2.wav",
+        "sha256": "2d14279b7e4e1e46c6c62b19b572abbb6a394768c94487f61399a30a9aecbd33"
+      },
+      {
+        "path": "Assets/Source/Audio/heavy_slam_v3.wav",
+        "sha256": "d63face91ab79bd63fd350c56ed363b793814a85541b67864876c613f52d30c6"
+      },
+      {
+        "path": "Assets/Source/Audio/heavy_slam.wav",
+        "sha256": "8af5d95b97602b526f9b4463ccd45e4d511cc51cd051ea5fd27711756bc1575d"
+      },
+      {
+        "path": "Assets/Source/Audio/manta_cast.wav",
+        "sha256": "8220243deb1c9e886001fa8aafdfc7aedfde3ff70779497079c5fe8838ad88c7"
+      },
+      {
+        "path": "Assets/Source/Audio/manta_impact.wav",
+        "sha256": "827f884cc6714e6881cc4cb0078928d86f769505f0868f291dd1ef829a4d40f3"
+      },
+      {
+        "path": "Assets/Source/Audio/meteor_impact.wav",
+        "sha256": "a9f74f0311e88881da3c24412cdd044c4d8721cca72bc099e2f12e3bdc03d5d9"
+      },
+      {
+        "path": "Assets/Source/Audio/meteor_tick.wav",
+        "sha256": "f547c915369f78365f1396330125ac73e31b999cb487a88fbe6b18796249f645"
+      },
+      {
+        "path": "Assets/Source/Audio/music_rift.wav",
+        "sha256": "972b3a720f78452e143e81e675e12da8d799b78fb2ebf6dc9aea174ece96e891"
+      },
+      {
+        "path": "Assets/Source/Audio/nova_impact.wav",
+        "sha256": "604b556c44a933c237cba80da87bd67da5e5ce504a7b7fb7c55c8225d264c085"
+      },
+      {
+        "path": "Assets/Source/Audio/overtime.wav",
+        "sha256": "e827a69366871045cf295693c1cd36b7d403ddb473eb702193ee2af3a5877366"
+      },
+      {
+        "path": "Assets/Source/Audio/Palette/sources.json",
+        "sha256": "6be6acdef54bd147ff89d36bd346cea54c3baa530e7427ef196ab7689407b682"
+      },
+      {
+        "path": "Assets/Source/Audio/river_ambience.wav",
+        "sha256": "5a19fae69fe50ca052db0fd2ceda207fa81d6338b74a06a107aaf9a51104d028"
+      },
+      {
+        "path": "Assets/Source/Audio/shield_hit_v2.wav",
+        "sha256": "250ed830d01a38dbbe6660e4172bde26ac8efb64daeaea222c9cac705142c5fa"
+      },
+      {
+        "path": "Assets/Source/Audio/shield_hit_v3.wav",
+        "sha256": "e2afc027f074b2b2b983758bd6435e5934d1c9f2d7a62214e8518ebaac6804f6"
+      },
+      {
+        "path": "Assets/Source/Audio/shield_hit.wav",
+        "sha256": "deed0e6abbd020d189607825a65abd6c9e0f9ece66f3567b80ab95a7841ed315"
+      },
+      {
+        "path": "Assets/Source/Audio/storm_bolt.wav",
+        "sha256": "368e1342399c3a231bb2bab547bb7a9e102b9dd565913a4ac33d65c93ae75c35"
+      },
+      {
+        "path": "Assets/Source/Audio/storm_pulse.wav",
+        "sha256": "336c2d30bfa6115610811fafec283aa2c347c72f3506add9e94dbf9c492fa80f"
+      },
+      {
+        "path": "Assets/Source/Audio/stun.wav",
+        "sha256": "8571e723906b257243924deb31e7bd35707214d7afb509443b2a1e269420fcaf"
+      },
+      {
+        "path": "Assets/Source/Audio/sword_attack_v2.wav",
+        "sha256": "8a939b658cefd4dae46c873511824ab38ee00062b55eb86a5ce0fa213a42e142"
+      },
+      {
+        "path": "Assets/Source/Audio/sword_attack_v3.wav",
+        "sha256": "af62f384598d0de87f578576bd135e421b01742e16e357e4fa0fd502b204357f"
+      },
+      {
+        "path": "Assets/Source/Audio/sword_attack.wav",
+        "sha256": "191055bad1e9597533a6cde1938d0e2f99ce5afd117f8434ca4525191dd9cdd3"
+      },
+      {
+        "path": "Assets/Source/Audio/sword_hit_v2.wav",
+        "sha256": "dfb25e25c35859d77d837c17cede4547c6cb2515600cb4d8af1263110fcb89f1"
+      },
+      {
+        "path": "Assets/Source/Audio/sword_hit_v3.wav",
+        "sha256": "af3385ae75bf5248b42da6fc9b9fcbdf6c746b4560cf3e2a66c124c838038f29"
+      },
+      {
+        "path": "Assets/Source/Audio/sword_hit.wav",
+        "sha256": "2316a030683163813cae493b0df89bc7a6f915f0d67754aac0e50282b62ddc49"
+      },
+      {
+        "path": "Assets/Source/Audio/tiebreaker.wav",
+        "sha256": "c5cac3f54b153a4963fcb399267dbbd5211de96f3be379939ddcc6096b3d0f00"
+      },
+      {
+        "path": "Assets/Source/Audio/tower_destroy.wav",
+        "sha256": "3587d924dc5e791c299c0c2501d6ec5293832b1d9ec651bad196dd2ed092bf0d"
+      },
+      {
+        "path": "Assets/Source/Audio/tower_hit_v2.wav",
+        "sha256": "7e51e5a63a2bef2616acde0fa89f0e7c22dddab6223103e0abcd6f468f38b3b7"
+      },
+      {
+        "path": "Assets/Source/Audio/tower_hit_v3.wav",
+        "sha256": "827e1588cba9bf1063110fd483a7bd57d458ac083cd5865abda81e6640ebbc25"
+      },
+      {
+        "path": "Assets/Source/Audio/tower_hit.wav",
+        "sha256": "21668eb3d7ad42c1ccf4a83d2e039bfde5433bd8a7b982921075d985c329a6bd"
+      },
+      {
+        "path": "Assets/Source/Audio/ui_click.wav",
+        "sha256": "81f2e738bc40a6a6be271b6ce2ebdf1e46bb7225cdee1e9aedc661ffe51c1f87"
+      },
+      {
+        "path": "Assets/Source/Audio/ui_error.wav",
+        "sha256": "d1f203f31fc5ee10366f0f1eeb2b704effb6e01f91b68f36a3f666541b1604ba"
+      },
+      {
+        "path": "Assets/Source/Audio/ui_hover.wav",
+        "sha256": "121635860ae54e4e9003ad2035b8a554b2c0109fdd53b83a00ba3b6dce156357"
+      },
+      {
+        "path": "Assets/Source/Audio/ui_save.wav",
+        "sha256": "5b7f5e807c9f1033892dec2268377dd5c2f4f7cfa1953b91adfca62212af84b9"
+      },
+      {
+        "path": "Assets/Source/Audio/victory.wav",
+        "sha256": "54f1f98712552c7ecd12b5b6ab8dbf090037d894385fb5bcce8a9496ab3ab316"
+      },
+      {
+        "path": "Assets/Source/Audio/wing_air.wav",
+        "sha256": "73d849e2dd33a4cb17cff165446c43db8cd180be224a79e2b5babcd093e0ca64"
+      },
+      {
+        "path": "Build/generate_audio.py",
+        "sha256": "4c63fb8247ad348081ec1e8faf9a6de394eecfc58747ecc4e58d84322ec2bdb0"
+      },
+      {
+        "path": "Build/Test-Unreal.ps1",
+        "sha256": "435ba4c25486b49f0ac164f8cb49f857f1a8cf2c3985a5081a23afab4da57ec6"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Config/DefaultEngine.ini",
+        "sha256": "d203dc05bd1a8d857f7773eb44529ce45637647a5d5638f52b4e9ee21ffec885"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Config/DefaultGame.ini",
+        "sha256": "61e4016525a52c79c885d3bd81e5c7cb5502bfa848a9088d36015b320a54ae2a"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Config/DefaultInput.ini",
+        "sha256": "40f9320c2416a85aa30c765ce1d9c62b45c6a9ad52ef998d102f05b8819679fd"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/RiftCrownArena.uproject",
+        "sha256": "39fc040329e6d46e5087c74c0765c626ac16940daee8e662f67b7b2033acda4b"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena.Target.cs",
+        "sha256": "283ee32c736fcdae9c0bf3f9c5fe8f26f5261a827db4db5a12a740a8138d5e17"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftArenaPresentation.cpp",
+        "sha256": "afa4be86b1f947a58b3457a8b7371deb36f027808bdc5e06ae3309f6cc6d7bc8"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftBattleAudioSubsystem.cpp",
+        "sha256": "7c2617b69b5f455699cff1ad85e9873a79147574dc81ce380ec2e66b79da51cd"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftBattleOverlay.cpp",
+        "sha256": "20c90a4aa978826f11d66ff91687b139d7adde3d3be1808bb37a218a0d8d2426"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftTrainingOverlay.cpp",
+        "sha256": "19c239275d4df53bda7bf891a58b44110c531ac31228445c196935c5f959799e"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftUnitVisual.cpp",
+        "sha256": "7066f3c77e4c43b74574f201c6417919db54ead28be92a74308788315156daa4"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftAssetLibrary.cpp",
+        "sha256": "5f10e656575ad3e0c363feaa4a20ffd92336339a997aad967b1fe79a7bf7a0cc"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftBattleHUD.cpp",
+        "sha256": "45aaf8a1db392556857a552b8ea8ddfdf71b90fb2601fabe0030437f16fcc0b5"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftCollectionUI.cpp",
+        "sha256": "b942c633bf0b37a828de55bc61d3b7d4a586dd9ab58270ffb29715117415ced3"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftCrownArena.cpp",
+        "sha256": "b3cecae7f7bcb962f9e9729951b2c79b56aad833b7fde79dba1a6e209188e90e"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftDiagnostics.cpp",
+        "sha256": "bdfd03a5c9b8f31098ebf73f62a81f12bffcbd6a05ccfd559461585d85b851d4"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftFieldManual.cpp",
+        "sha256": "1cbe10cabedf5825118d9d0f7dffdb07ebdf62eb9bc0d4606f9246fc7b7c2bde"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftGameMode.cpp",
+        "sha256": "5eae2c0f88906bfe7544a757a0bf1c40d8dd7ef12f3c8fd719d80a7739f8f915"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftMatchSubsystem.cpp",
+        "sha256": "c0b89ba7cf16641b546078d86a6fb9ec90ac478ad7ce23898ce29282a182bc44"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftMetaSimulationSubsystem.cpp",
+        "sha256": "91e73b9df8157b8130f9d5c8c9538605c1e66ad780efc60c3846eef09226ab67"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftPerformanceCapture.cpp",
+        "sha256": "9e287a28260f6ae5a7cbca3995a2e28e12181b0fd4747c1707038e5628b19e33"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftProfileSubsystem.cpp",
+        "sha256": "cbbb70b98bbf44089e18b2be619ae532a654a4982766950e0143ff01189b61ba"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftReplaySubsystem.cpp",
+        "sha256": "10a62bf9ebd75ca6e18b5edbe31d0f51f5b9a179d70c6f899d9f9eb600c0d343"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftReplayUI.cpp",
+        "sha256": "77199b01e7db0e8108f94347d4a7b39a7b257cec9c7dc719b59f20e0616812d6"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftTrainingPanel.cpp",
+        "sha256": "f24527c664a3108d500fed5cf4722845f37e0cd1bbdb31009f6aa2bf9d88d49c"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftUIPrimitives.cpp",
+        "sha256": "cb653a1e9de5ede6bedf1ce4834f65d29df84e328afb11ba9d35aa8750e32179"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftUIWidget.cpp",
+        "sha256": "0744b137844af8fdbb003620ba8f34fa3108f08e7656522da95c86203b711fac"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftAI.cpp",
+        "sha256": "6c49f975df3c4256c0871bfef5ccb147255f5c0404ff1f56680cadc41937a538"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftCombat.cpp",
+        "sha256": "3ce60d57341267ac5fc0afba01be33fa027262f66659fae7a13678505160ddaf"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftDeckAnalysis.cpp",
+        "sha256": "07d7063f15a66338892ccc65e603caa859cccd2b3d22fcd4257719bd059e21b2"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftPathfinding.cpp",
+        "sha256": "17dc4b4cccaf425f48134d907a22bff586b72332fa780832186be4555e3a6e17"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftSimulation.cpp",
+        "sha256": "7e059b7f90cb43a2be43f2ea553f6064daedbbce010b7d7e04ac6a51440644aa"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftBattleInputTests.cpp",
+        "sha256": "4fbe27a4a7f8ef9659c5d78a4d1e16e41af3a6c7858e6f5646331b6126db96dd"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftIntegrationTests.cpp",
+        "sha256": "28eb67f316d43db0c79a0cbaf494d028e0e95b544eb9d63d67db39059ca5dc3a"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftPresentationTests.cpp",
+        "sha256": "d027b77d9a0bf3269930a15b101fba78703221d65eb23ca730e5391994507913"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftProjectilePresentationTests.cpp",
+        "sha256": "4768c7e3a0cd25cc7d13a8781c15fc0f5c72cde625d0d25c871601f5564c0018"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftUnitMotionTests.cpp",
+        "sha256": "0d7a64b34e82ef082eedd1074473f59293c0db4e8f6838847e2a8f7fda764d24"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftArenaPresentation.h",
+        "sha256": "21062e5affc5c4b7090255b7e37edf96623a0324675255b63e1560df589d3277"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleAudioSubsystem.h",
+        "sha256": "c1fb344a9334157e34a439931bc8594d40d02720b5f27d14cb1c3b086269e1c6"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleLayout.h",
+        "sha256": "0d953944dccba5ffdd20cea601240a157769de54c929ba804fcef12f0ec4dd27"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleOverlay.h",
+        "sha256": "ecc4bbd6d9a9a9e2729e51eaaa4fb64f5ea1ab712d6c44a389686876bb57187d"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftUnitVisual.h",
+        "sha256": "c8099aa871bdeb1f5ee9768360759f53031654d3070b0cccfda2acd62ec3a4ff"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftAssetLibrary.h",
+        "sha256": "8cfcb77f51d477773e87d37cff482542072825be38c95ea6ab43118dfc50e80b"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftCardData.h",
+        "sha256": "ff607f37052b740fbd3276d5fd08cad3e99920c40299aa81f024baa26c4e0102"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftDiagnostics.h",
+        "sha256": "93d91726c726127c03b310972a8482906dc45ec9936cc48adab01599f7750b42"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftGameMode.h",
+        "sha256": "ed5cfba939cd023b0cfde50b2167e17f353109566ec77f416742fae7af2c5704"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftMatchSubsystem.h",
+        "sha256": "bd67f6f1dba4ab9199407a938258cd611748b8c97db898f2429d13fb93ac0c44"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftMetaSimulationSubsystem.h",
+        "sha256": "1b9a568b334ce2c0f57c891129a1f1d13cd3e00db5f7437efec6749e3295df3f"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftPerformanceCapture.h",
+        "sha256": "7962fa18d55571a6ac0b94c07eb17ff4b225472af687a898dd93ebe28879ec3c"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftProfileSubsystem.h",
+        "sha256": "9a94ff3fb118194b4c296187b47e0f42bc1fae2d8d4187c58e1fb38ee9f22af6"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftReplaySubsystem.h",
+        "sha256": "f06ad40bdc661c4d31776edd30ec3aff246198f9033fa9e820b1afe25c73f9aa"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftUIPrimitives.h",
+        "sha256": "93e9c0253a03efd8b64ccbf3bb8003c19cfb94e83edc660e56a844c6dcb101e4"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftUIWidget.h",
+        "sha256": "098bc7e869a82943578bb2b4dd38fab3fea486d4a33fbd67425af191f4d08cc6"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Simulation/RiftSimulation.h",
+        "sha256": "8f8fdda7fbc6197e0721813710d3481c60d1d22dc33aab556914cfbf0588611b"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/RiftCrownArena.Build.cs",
+        "sha256": "aef728c45201f19d11acbd129bed5ce8539dbad525419fd76c9a6c91f53d83c1"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor.Target.cs",
+        "sha256": "d8cad02a8fb12c7d19cb31a6da6ef8b7aa872415bf9860e7146541238b277e95"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Private/RiftCrownArenaEditor.cpp",
+        "sha256": "487f1f731292b9b76e5e77d85ba045cac11b2045579faa5c421f57f682125e28"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Private/RiftEditorAssetLibrary.cpp",
+        "sha256": "10b371ffa846a7faa7b02afcd30e371fff44b6fa7d3281867288c96d4a93ff9a"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Public/RiftEditorAssetLibrary.h",
+        "sha256": "af3ccebdb119515c0beb71b2dd8c00e6cf12e99b7d63ef3df9248d27b6839229"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/RiftCrownArenaEditor.Build.cs",
+        "sha256": "0a13a4e225aa977da59d4dd51d9f296e4708d91aa6e39d9e181ba797d87171b0"
+      }
+    ],
+    "runtimeModules": [
+      {
+        "path": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArena.dll",
+        "sha256": "76ce27d9b98afd7249f1b0f813faa2a836968ded149fdd5a0c0285d13ed26e16"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArenaEditor.dll",
+        "sha256": "fb932320a9e0e59511eb29c10adfa126e045ad473de29a49f808f7a9ce7568e0"
+      }
+    ]
+  },
+  "assetRegistry": {
+    "generatedUTC": "2026-10-09T15:49:29.563209+00:00",
+    "method": "Read actual on-disk AssetRegistry records and load existing objects; no import/save",
+    "assetCount": 289,
+    "classCounts": {
+      "AnimSequence": 113,
+      "Material": 7,
+      "NiagaraSystem": 17,
+      "PhysicsAsset": 11,
+      "RiftCardData": 14,
+      "SkeletalMesh": 11,
+      "Skeleton": 11,
+      "SoundWave": 61,
+      "StaticMesh": 25,
+      "Texture2D": 18,
+      "World": 1
+    },
+    "errors": [],
+    "nativeValidation": {
+      "cards": [
+        {
+          "id": "ironclad",
+          "illustration": true,
+          "animations": 9,
+          "effects": 17,
+          "sounds": 3,
+          "widthCm": 139.39999389648438,
+          "lengthCm": 67.05852127075195,
+          "heightCm": 219.24731540679932,
+          "bones": 26,
+          "lods": 4,
+          "physics": true,
+          "physicsBodies": 4,
+          "physicsConstraints": 3,
+          "physicsObjectFlags": 2621443,
+          "physicsPackageFlags": 0,
+          "physicsIsAsset": true,
+          "physicsRegisteredOnDisk": true
+        },
+        {
+          "id": "ember_archer",
+          "illustration": true,
+          "animations": 10,
+          "effects": 17,
+          "sounds": 3,
+          "widthCm": 104.99999618530273,
+          "lengthCm": 112.3088207244873,
+          "heightCm": 189.14784955978394,
+          "bones": 26,
+          "lods": 4,
+          "physics": true,
+          "physicsBodies": 3,
+          "physicsConstraints": 2,
+          "physicsObjectFlags": 2621443,
+          "physicsPackageFlags": 0,
+          "physicsIsAsset": true,
+          "physicsRegisteredOnDisk": true
+        },
+        {
+          "id": "twin_blades",
+          "illustration": true,
+          "animations": 10,
+          "effects": 17,
+          "sounds": 3,
+          "widthCm": 114,
+          "lengthCm": 54.156572341918945,
+          "heightCm": 180.11819076538086,
+          "bones": 26,
+          "lods": 4,
+          "physics": true,
+          "physicsBodies": 2,
+          "physicsConstraints": 1,
+          "physicsObjectFlags": 2621443,
+          "physicsPackageFlags": 0,
+          "physicsIsAsset": true,
+          "physicsRegisteredOnDisk": true
+        },
+        {
+          "id": "boulderback",
+          "illustration": true,
+          "animations": 10,
+          "effects": 17,
+          "sounds": 3,
+          "widthCm": 133.49417877197266,
+          "lengthCm": 222.59891510009766,
+          "heightCm": 234.6117992401123,
+          "bones": 28,
+          "lods": 4,
+          "physics": true,
+          "physicsBodies": 7,
+          "physicsConstraints": 6,
+          "physicsObjectFlags": 2621443,
+          "physicsPackageFlags": 0,
+          "physicsIsAsset": true,
+          "physicsRegisteredOnDisk": true
+        },
+        {
+          "id": "arc_mage",
+          "illustration": true,
+          "animations": 10,
+          "effects": 17,
+          "sounds": 3,
+          "widthCm": 126.30000305175781,
+          "lengthCm": 72.60000610351562,
+          "heightCm": 232.25270080566406,
+          "bones": 26,
+          "lods": 4,
+          "physics": true,
+          "physicsBodies": 3,
+          "physicsConstraints": 2,
+          "physicsObjectFlags": 2621443,
+          "physicsPackageFlags": 0,
+          "physicsIsAsset": true,
+          "physicsRegisteredOnDisk": true
+        },
+        {
+          "id": "rambeast",
+          "illustration": true,
+          "animations": 10,
+          "effects": 17,
+          "sounds": 3,
+          "widthCm": 136.8307647705078,
+          "lengthCm": 256.6309280395508,
+          "heightCm": 161.28191947937012,
+          "bones": 28,
+          "lods": 4,
+          "physics": true,
+          "physicsBodies": 7,
+          "physicsConstraints": 6,
+          "physicsObjectFlags": 2621443,
+          "physicsPackageFlags": 0,
+          "physicsIsAsset": true,
+          "physicsRegisteredOnDisk": true
+        },
+        {
+          "id": "sky_manta",
+          "illustration": true,
+          "animations": 10,
+          "effects": 17,
+          "sounds": 3,
+          "widthCm": 312.6688690185547,
+          "lengthCm": 215.0278549194336,
+          "heightCm": 37.99999237060547,
+          "bones": 21,
+          "lods": 4,
+          "physics": true,
+          "physicsBodies": 3,
+          "physicsConstraints": 2,
+          "physicsObjectFlags": 2621443,
+          "physicsPackageFlags": 0,
+          "physicsIsAsset": true,
+          "physicsRegisteredOnDisk": true
+        },
+        {
+          "id": "vampire_bats",
+          "illustration": true,
+          "animations": 10,
+          "effects": 17,
+          "sounds": 3,
+          "widthCm": 226.38723754882812,
+          "lengthCm": 121.1750373840332,
+          "heightCm": 78.85020446777344,
+          "bones": 21,
+          "lods": 4,
+          "physics": true,
+          "physicsBodies": 1,
+          "physicsConstraints": 0,
+          "physicsObjectFlags": 2621443,
+          "physicsPackageFlags": 0,
+          "physicsIsAsset": true,
+          "physicsRegisteredOnDisk": true
+        },
+        {
+          "id": "frost_fang",
+          "illustration": true,
+          "animations": 11,
+          "effects": 17,
+          "sounds": 3,
+          "widthCm": 121.99999237060547,
+          "lengthCm": 254.63094329833984,
+          "heightCm": 196.04722571372986,
+          "bones": 28,
+          "lods": 4,
+          "physics": true,
+          "physicsBodies": 7,
+          "physicsConstraints": 6,
+          "physicsObjectFlags": 2621443,
+          "physicsPackageFlags": 0,
+          "physicsIsAsset": true,
+          "physicsRegisteredOnDisk": true
+        },
+        {
+          "id": "storm_raven",
+          "illustration": true,
+          "animations": 13,
+          "effects": 17,
+          "sounds": 3,
+          "widthCm": 333.2245178222656,
+          "lengthCm": 184.76276397705078,
+          "heightCm": 79.26255798339844,
+          "bones": 21,
+          "lods": 4,
+          "physics": true,
+          "physicsBodies": 3,
+          "physicsConstraints": 2,
+          "physicsObjectFlags": 2621443,
+          "physicsPackageFlags": 0,
+          "physicsIsAsset": true,
+          "physicsRegisteredOnDisk": true
+        },
+        {
+          "id": "meteor_shards",
+          "illustration": true,
+          "animations": 0,
+          "effects": 17,
+          "sounds": 3
+        },
+        {
+          "id": "archer_tower",
+          "illustration": true,
+          "animations": 0,
+          "effects": 17,
+          "sounds": 3
+        },
+        {
+          "id": "bullet_burst",
+          "illustration": true,
+          "animations": 0,
+          "effects": 17,
+          "sounds": 3
+        },
+        {
+          "id": "nova_flask",
+          "illustration": true,
+          "animations": 0,
+          "effects": 17,
+          "sounds": 3
+        }
+      ],
+      "errors": []
+    }
+  },
+  "audio": {
+    "editor": {
+      "passed": true,
+      "checks": [
+        {
+          "name": "liveAudioDevice",
+          "passed": true
+        },
+        {
+          "name": "profileAvailable",
+          "passed": true
+        },
+        {
+          "name": "settingsInterfaceAvailable",
+          "passed": true
+        },
+        {
+          "name": "physicalBudgetIncludes32OneShotsAnd2Loops",
+          "passed": true
+        },
+        {
+          "name": "allVoicesHaveLimiterRoute",
+          "passed": true
+        },
+        {
+          "name": "masterMixRegisteredWithLiveDevice",
+          "passed": true
+        },
+        {
+          "name": "stereoPeakLimiterBelowFullScale",
+          "passed": true
+        },
+        {
+          "name": "limiterDetectsIsolatedPeaksWithoutAttackSmoothing",
+          "passed": true
+        },
+        {
+          "name": "actualSettingsAudioSliders",
+          "passed": true
+        },
+        {
+          "name": "all41ImportedSoundsLoad",
+          "passed": true
+        },
+        {
+          "name": "all20CombatVariationsLoad",
+          "passed": true
+        },
+        {
+          "name": "masterCallback",
+          "actual": 0.6000000238418579,
+          "expected": 0.6000000238418579,
+          "passed": true
+        },
+        {
+          "name": "musicCallback",
+          "actual": 0.3499999940395355,
+          "expected": 0.3499999940395355,
+          "passed": true
+        },
+        {
+          "name": "sfxCallback",
+          "actual": 0.4000000059604645,
+          "expected": 0.4000000059604645,
+          "passed": true
+        },
+        {
+          "name": "uiCallback",
+          "actual": 0.800000011920929,
+          "expected": 0.800000011920929,
+          "passed": true
+        },
+        {
+          "name": "musicPlaying",
+          "passed": true
+        },
+        {
+          "name": "ambiencePlaying",
+          "passed": true
+        },
+        {
+          "name": "musicMasterProduct",
+          "actual": 0.21000000834465027,
+          "expected": 0.20999999344348907,
+          "passed": true
+        },
+        {
+          "name": "musicLoopConfigured",
+          "passed": true
+        },
+        {
+          "name": "musicStreamed",
+          "passed": true
+        },
+        {
+          "name": "ambienceMasterProduct",
+          "actual": 0.06240000203251839,
+          "expected": 0.06239999830722809,
+          "passed": true
+        },
+        {
+          "name": "effectPlaying",
+          "passed": true
+        },
+        {
+          "name": "uiPlaying",
+          "passed": true
+        },
+        {
+          "name": "effectMasterProduct",
+          "actual": 0.12000000476837158,
+          "expected": 0.11999999731779099,
+          "passed": true
+        },
+        {
+          "name": "uiMasterProduct",
+          "actual": 0.48000001907348633,
+          "expected": 0.47999998927116394,
+          "passed": true
+        },
+        {
+          "name": "musicIndependentMute",
+          "actual": 0,
+          "expected": 0,
+          "passed": true
+        },
+        {
+          "name": "musicMuteKeepsUI",
+          "actual": 0.48000001907348633,
+          "expected": 0.47999998927116394,
+          "passed": true
+        },
+        {
+          "name": "sfxIndependentMute",
+          "actual": 0,
+          "expected": 0,
+          "passed": true
+        },
+        {
+          "name": "sfxMuteKeepsUI",
+          "actual": 0.48000001907348633,
+          "expected": 0.47999998927116394,
+          "passed": true
+        },
+        {
+          "name": "uiIndependentMute",
+          "actual": 0,
+          "expected": 0,
+          "passed": true
+        },
+        {
+          "name": "uiMuteKeepsSFX",
+          "actual": 0.12000000476837158,
+          "expected": 0.11999999731779099,
+          "passed": true
+        },
+        {
+          "name": "masterMutesMusic",
+          "actual": 0,
+          "expected": 0,
+          "passed": true
+        },
+        {
+          "name": "masterMutesSFX",
+          "actual": 0,
+          "expected": 0,
+          "passed": true
+        },
+        {
+          "name": "masterMutesUI",
+          "actual": 0,
+          "expected": 0,
+          "passed": true
+        },
+        {
+          "name": "mutedPlayCreatesNoVoice",
+          "passed": true
+        },
+        {
+          "name": "combinedUIAndSFXVoiceLimit",
+          "passed": true
+        },
+        {
+          "name": "sixUIVoicesReservedUnderCombatLoad",
+          "passed": true
+        },
+        {
+          "name": "sameTickSwarmCueAggregated",
+          "passed": true
+        },
+        {
+          "name": "importantEventReplacesLowerPriorityVoice",
+          "passed": true
+        },
+        {
+          "name": "crowdedEffectMixHasHeadroom",
+          "passed": true
+        },
+        {
+          "name": "settingsRestored",
+          "passed": true
+        },
+        {
+          "name": "postMixDeferredAcrossGameTicks",
+          "passed": true
+        },
+        {
+          "name": "musicSurvivesBoundedBurst",
+          "passed": true
+        },
+        {
+          "name": "musicRetainsPhysicalVoice",
+          "passed": true
+        },
+        {
+          "name": "ambienceSurvivesBoundedBurst",
+          "passed": true
+        },
+        {
+          "name": "ambienceRetainsPhysicalVoice",
+          "passed": true
+        },
+        {
+          "name": "actualMixedPCMHasHeadroom",
+          "passed": true
+        },
+        {
+          "name": "limiterOverloadPCMDoesNotClip",
+          "passed": true
+        },
+        {
+          "name": "postMixSettingsRestored",
+          "passed": true
+        }
+      ],
+      "loadedSounds": 41,
+      "loadedCombatVariations": 20,
+      "normalMixedOutput": {
+        "samples": 57344,
+        "channels": 2,
+        "sampleRate": 48000,
+        "peak": 0.21439655125141144,
+        "rms": 0.048123382168726234,
+        "clippedFloatSamples": 0,
+        "seconds": 0.5973333120346069,
+        "captureStage": "Live MasterMix output after the submix effect chain; before PCM encoding",
+        "wavSaved": true,
+        "wavFile": "mixed-output.wav"
+      },
+      "limiterOverloadOutput": {
+        "samples": 116736,
+        "channels": 2,
+        "sampleRate": 48000,
+        "peak": 0.8002368211746216,
+        "rms": 0.1718193709123607,
+        "clippedFloatSamples": 0,
+        "seconds": 1.215999960899353,
+        "captureStage": "Live MasterMix output after the submix effect chain; before PCM encoding",
+        "wavSaved": true,
+        "wavFile": "limiter-overload.wav"
+      },
+      "audibleLoopQuality": "Not assessed by automated component smoke; requires listening.",
+      "wrapperSeconds": 26.93,
+      "exitCode": 0,
+      "executableSha256": "ae92f55952a3c9a7def90983fcf5aedce52d8ee8e4565fbd923985e9d9d3e05e"
+    },
+    "shipping": {
+      "passed": true,
+      "checks": [
+        {
+          "name": "liveAudioDevice",
+          "passed": true
+        },
+        {
+          "name": "profileAvailable",
+          "passed": true
+        },
+        {
+          "name": "settingsInterfaceAvailable",
+          "passed": true
+        },
+        {
+          "name": "physicalBudgetIncludes32OneShotsAnd2Loops",
+          "passed": true
+        },
+        {
+          "name": "allVoicesHaveLimiterRoute",
+          "passed": true
+        },
+        {
+          "name": "masterMixRegisteredWithLiveDevice",
+          "passed": true
+        },
+        {
+          "name": "stereoPeakLimiterBelowFullScale",
+          "passed": true
+        },
+        {
+          "name": "limiterDetectsIsolatedPeaksWithoutAttackSmoothing",
+          "passed": true
+        },
+        {
+          "name": "actualSettingsAudioSliders",
+          "passed": true
+        },
+        {
+          "name": "all41ImportedSoundsLoad",
+          "passed": true
+        },
+        {
+          "name": "all20CombatVariationsLoad",
+          "passed": true
+        },
+        {
+          "name": "masterCallback",
+          "actual": 0.6000000238418579,
+          "expected": 0.6000000238418579,
+          "passed": true
+        },
+        {
+          "name": "musicCallback",
+          "actual": 0.3499999940395355,
+          "expected": 0.3499999940395355,
+          "passed": true
+        },
+        {
+          "name": "sfxCallback",
+          "actual": 0.4000000059604645,
+          "expected": 0.4000000059604645,
+          "passed": true
+        },
+        {
+          "name": "uiCallback",
+          "actual": 0.800000011920929,
+          "expected": 0.800000011920929,
+          "passed": true
+        },
+        {
+          "name": "musicPlaying",
+          "passed": true
+        },
+        {
+          "name": "ambiencePlaying",
+          "passed": true
+        },
+        {
+          "name": "musicMasterProduct",
+          "actual": 0.21000000834465027,
+          "expected": 0.20999999344348907,
+          "passed": true
+        },
+        {
+          "name": "musicLoopConfigured",
+          "passed": true
+        },
+        {
+          "name": "musicStreamed",
+          "passed": true
+        },
+        {
+          "name": "ambienceMasterProduct",
+          "actual": 0.06240000203251839,
+          "expected": 0.06239999830722809,
+          "passed": true
+        },
+        {
+          "name": "effectPlaying",
+          "passed": true
+        },
+        {
+          "name": "uiPlaying",
+          "passed": true
+        },
+        {
+          "name": "effectMasterProduct",
+          "actual": 0.12000000476837158,
+          "expected": 0.11999999731779099,
+          "passed": true
+        },
+        {
+          "name": "uiMasterProduct",
+          "actual": 0.48000001907348633,
+          "expected": 0.47999998927116394,
+          "passed": true
+        },
+        {
+          "name": "musicIndependentMute",
+          "actual": 0,
+          "expected": 0,
+          "passed": true
+        },
+        {
+          "name": "musicMuteKeepsUI",
+          "actual": 0.48000001907348633,
+          "expected": 0.47999998927116394,
+          "passed": true
+        },
+        {
+          "name": "sfxIndependentMute",
+          "actual": 0,
+          "expected": 0,
+          "passed": true
+        },
+        {
+          "name": "sfxMuteKeepsUI",
+          "actual": 0.48000001907348633,
+          "expected": 0.47999998927116394,
+          "passed": true
+        },
+        {
+          "name": "uiIndependentMute",
+          "actual": 0,
+          "expected": 0,
+          "passed": true
+        },
+        {
+          "name": "uiMuteKeepsSFX",
+          "actual": 0.12000000476837158,
+          "expected": 0.11999999731779099,
+          "passed": true
+        },
+        {
+          "name": "masterMutesMusic",
+          "actual": 0,
+          "expected": 0,
+          "passed": true
+        },
+        {
+          "name": "masterMutesSFX",
+          "actual": 0,
+          "expected": 0,
+          "passed": true
+        },
+        {
+          "name": "masterMutesUI",
+          "actual": 0,
+          "expected": 0,
+          "passed": true
+        },
+        {
+          "name": "mutedPlayCreatesNoVoice",
+          "passed": true
+        },
+        {
+          "name": "combinedUIAndSFXVoiceLimit",
+          "passed": true
+        },
+        {
+          "name": "sixUIVoicesReservedUnderCombatLoad",
+          "passed": true
+        },
+        {
+          "name": "sameTickSwarmCueAggregated",
+          "passed": true
+        },
+        {
+          "name": "importantEventReplacesLowerPriorityVoice",
+          "passed": true
+        },
+        {
+          "name": "crowdedEffectMixHasHeadroom",
+          "passed": true
+        },
+        {
+          "name": "settingsRestored",
+          "passed": true
+        },
+        {
+          "name": "postMixDeferredAcrossGameTicks",
+          "passed": true
+        },
+        {
+          "name": "musicSurvivesBoundedBurst",
+          "passed": true
+        },
+        {
+          "name": "musicRetainsPhysicalVoice",
+          "passed": true
+        },
+        {
+          "name": "ambienceSurvivesBoundedBurst",
+          "passed": true
+        },
+        {
+          "name": "ambienceRetainsPhysicalVoice",
+          "passed": true
+        },
+        {
+          "name": "actualMixedPCMHasHeadroom",
+          "passed": true
+        },
+        {
+          "name": "limiterOverloadPCMDoesNotClip",
+          "passed": true
+        },
+        {
+          "name": "postMixSettingsRestored",
+          "passed": true
+        }
+      ],
+      "loadedSounds": 41,
+      "loadedCombatVariations": 20,
+      "normalMixedOutput": {
+        "samples": 61440,
+        "channels": 2,
+        "sampleRate": 48000,
+        "peak": 0.19783684611320496,
+        "rms": 0.05062785546486447,
+        "clippedFloatSamples": 0,
+        "seconds": 0.6399999856948853,
+        "captureStage": "Live MasterMix output after the submix effect chain; before PCM encoding",
+        "wavSaved": true,
+        "wavFile": "mixed-output.wav"
+      },
+      "limiterOverloadOutput": {
+        "samples": 114688,
+        "channels": 2,
+        "sampleRate": 48000,
+        "peak": 0.8013649582862854,
+        "rms": 0.1732210577180266,
+        "clippedFloatSamples": 0,
+        "seconds": 1.1946666240692139,
+        "captureStage": "Live MasterMix output after the submix effect chain; before PCM encoding",
+        "wavSaved": true,
+        "wavFile": "limiter-overload.wav"
+      },
+      "audibleLoopQuality": "Not assessed by automated component smoke; requires listening.",
+      "wrapperSeconds": 12.23,
+      "exitCode": 0,
+      "executableSha256": "5a209be2b0d17cf7f2aebfc41c9eff9e52e791b1da8b8c1cb1c93d8d9b1a322e"
+    }
+  },
+  "vfx": {
+    "editor": {
+      "passed": true,
+      "utc": "2026-10-09T15:51:08.2269472Z",
+      "name": "model12-editor-vfx-final9",
+      "effectSystems": 17,
+      "immediateParticles": 156,
+      "persistentSystems": 7,
+      "checks": [
+        {
+          "name": "immediate rendered cleanly at requested dimensions",
+          "passed": true
+        },
+        {
+          "name": "lifecycle rendered cleanly at requested dimensions",
+          "passed": true
+        },
+        {
+          "name": "Deploy appears once",
+          "passed": true
+        },
+        {
+          "name": "Impact appears once",
+          "passed": true
+        },
+        {
+          "name": "ArrowFlight appears once",
+          "passed": true
+        },
+        {
+          "name": "ArcFlight appears once",
+          "passed": true
+        },
+        {
+          "name": "MantaFlight appears once",
+          "passed": true
+        },
+        {
+          "name": "StormFlight appears once",
+          "passed": true
+        },
+        {
+          "name": "TowerFlight appears once",
+          "passed": true
+        },
+        {
+          "name": "BulletBurst appears once",
+          "passed": true
+        },
+        {
+          "name": "Nova appears once",
+          "passed": true
+        },
+        {
+          "name": "Meteor appears once",
+          "passed": true
+        },
+        {
+          "name": "MeteorTick appears once",
+          "passed": true
+        },
+        {
+          "name": "Frost appears once",
+          "passed": true
+        },
+        {
+          "name": "Slow appears once",
+          "passed": true
+        },
+        {
+          "name": "Stun appears once",
+          "passed": true
+        },
+        {
+          "name": "Aura appears once",
+          "passed": true
+        },
+        {
+          "name": "TowerDestroy appears once",
+          "passed": true
+        },
+        {
+          "name": "CoreAwaken appears once",
+          "passed": true
+        },
+        {
+          "name": "All 17 original effect systems were exercised",
+          "passed": true
+        },
+        {
+          "name": "Deploy is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "Deploy spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "Deploy has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "Impact is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "Impact spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "Impact has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "ArrowFlight is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "ArrowFlight spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "ArrowFlight has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "ArcFlight is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "ArcFlight spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "ArcFlight has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "MantaFlight is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "MantaFlight spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "MantaFlight has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "StormFlight is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "StormFlight spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "StormFlight has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "TowerFlight is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "TowerFlight spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "TowerFlight has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "BulletBurst is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "BulletBurst spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "BulletBurst has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "Nova is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "Nova spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "Nova has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "Meteor is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "Meteor spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "Meteor has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "MeteorTick is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "MeteorTick spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "MeteorTick has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "Frost is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "Frost spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "Frost has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "Slow is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "Slow spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "Slow has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "Stun is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "Stun spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "Stun has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "Aura is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "Aura spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "Aura has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "TowerDestroy is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "TowerDestroy spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "TowerDestroy has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "CoreAwaken is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "CoreAwaken spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "CoreAwaken has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "ArrowFlight remains visible with exactly one live particle after one second",
+          "passed": true
+        },
+        {
+          "name": "ArcFlight remains visible with exactly one live particle after one second",
+          "passed": true
+        },
+        {
+          "name": "MantaFlight remains visible with exactly one live particle after one second",
+          "passed": true
+        },
+        {
+          "name": "StormFlight remains visible with exactly one live particle after one second",
+          "passed": true
+        },
+        {
+          "name": "TowerFlight remains visible with exactly one live particle after one second",
+          "passed": true
+        },
+        {
+          "name": "Slow remains visible with exactly one live particle after one second",
+          "passed": true
+        },
+        {
+          "name": "Stun remains visible with exactly one live particle after one second",
+          "passed": true
+        }
+      ],
+      "scope": "Actual rendered system graph execution, bounded spawn counts, sprite geometry and persistent particle lifecycle. Alpha initialization data and screenshots do not certify continuous animation or artistic quality."
+    },
+    "shipping": {
+      "passed": true,
+      "utc": "2026-10-09T15:54:33.4788818Z",
+      "name": "model12-shipping-vfx-final9",
+      "effectSystems": 17,
+      "immediateParticles": 156,
+      "persistentSystems": 7,
+      "checks": [
+        {
+          "name": "immediate rendered cleanly at requested dimensions",
+          "passed": true
+        },
+        {
+          "name": "immediate used the requested executable",
+          "passed": true
+        },
+        {
+          "name": "lifecycle rendered cleanly at requested dimensions",
+          "passed": true
+        },
+        {
+          "name": "lifecycle used the requested executable",
+          "passed": true
+        },
+        {
+          "name": "Deploy appears once",
+          "passed": true
+        },
+        {
+          "name": "Impact appears once",
+          "passed": true
+        },
+        {
+          "name": "ArrowFlight appears once",
+          "passed": true
+        },
+        {
+          "name": "ArcFlight appears once",
+          "passed": true
+        },
+        {
+          "name": "MantaFlight appears once",
+          "passed": true
+        },
+        {
+          "name": "StormFlight appears once",
+          "passed": true
+        },
+        {
+          "name": "TowerFlight appears once",
+          "passed": true
+        },
+        {
+          "name": "BulletBurst appears once",
+          "passed": true
+        },
+        {
+          "name": "Nova appears once",
+          "passed": true
+        },
+        {
+          "name": "Meteor appears once",
+          "passed": true
+        },
+        {
+          "name": "MeteorTick appears once",
+          "passed": true
+        },
+        {
+          "name": "Frost appears once",
+          "passed": true
+        },
+        {
+          "name": "Slow appears once",
+          "passed": true
+        },
+        {
+          "name": "Stun appears once",
+          "passed": true
+        },
+        {
+          "name": "Aura appears once",
+          "passed": true
+        },
+        {
+          "name": "TowerDestroy appears once",
+          "passed": true
+        },
+        {
+          "name": "CoreAwaken appears once",
+          "passed": true
+        },
+        {
+          "name": "All 17 original effect systems were exercised",
+          "passed": true
+        },
+        {
+          "name": "Deploy is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "Deploy spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "Deploy has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "Impact is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "Impact spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "Impact has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "ArrowFlight is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "ArrowFlight spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "ArrowFlight has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "ArcFlight is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "ArcFlight spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "ArcFlight has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "MantaFlight is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "MantaFlight spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "MantaFlight has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "StormFlight is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "StormFlight spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "StormFlight has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "TowerFlight is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "TowerFlight spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "TowerFlight has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "BulletBurst is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "BulletBurst spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "BulletBurst has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "Nova is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "Nova spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "Nova has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "Meteor is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "Meteor spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "Meteor has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "MeteorTick is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "MeteorTick spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "MeteorTick has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "Frost is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "Frost spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "Frost has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "Slow is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "Slow spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "Slow has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "Stun is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "Stun spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "Stun has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "Aura is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "Aura spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "Aura has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "TowerDestroy is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "TowerDestroy spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "TowerDestroy has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "CoreAwaken is a ready active visible system",
+          "passed": true
+        },
+        {
+          "name": "CoreAwaken spawned its bounded recipe through the real system graph",
+          "passed": true
+        },
+        {
+          "name": "CoreAwaken has finite nonzero bounded sprite dimensions",
+          "passed": true
+        },
+        {
+          "name": "ArrowFlight remains visible with exactly one live particle after one second",
+          "passed": true
+        },
+        {
+          "name": "ArcFlight remains visible with exactly one live particle after one second",
+          "passed": true
+        },
+        {
+          "name": "MantaFlight remains visible with exactly one live particle after one second",
+          "passed": true
+        },
+        {
+          "name": "StormFlight remains visible with exactly one live particle after one second",
+          "passed": true
+        },
+        {
+          "name": "TowerFlight remains visible with exactly one live particle after one second",
+          "passed": true
+        },
+        {
+          "name": "Slow remains visible with exactly one live particle after one second",
+          "passed": true
+        },
+        {
+          "name": "Stun remains visible with exactly one live particle after one second",
+          "passed": true
+        }
+      ],
+      "scope": "Actual rendered system graph execution, bounded spawn counts, sprite geometry and persistent particle lifecycle. Alpha initialization data and screenshots do not certify continuous animation or artistic quality.",
+      "executableSha256": "5a209be2b0d17cf7f2aebfc41c9eff9e52e791b1da8b8c1cb1c93d8d9b1a322e"
+    }
+  },
+  "appLocalRuntime": {
+    "passed": true,
+    "utc": "2026-10-09T15:53:13.8719883Z",
+    "architecture": "x64",
+    "toolsetVersion": "14.51.36231",
+    "peFilesInspected": 37,
+    "importedSymbolsVerified": 650,
+    "imports": [
+      {
+        "path": "concrt140.dll",
+        "providers": {
+          "vcruntime140.dll": 13,
+          "msvcp140.dll": 15,
+          "vcruntime140_1.dll": 1
+        }
+      },
+      {
+        "path": "msvcp140_1.dll",
+        "providers": {
+          "vcruntime140.dll": 6,
+          "msvcp140.dll": 1
+        }
+      },
+      {
+        "path": "msvcp140_2.dll",
+        "providers": {
+          "vcruntime140.dll": 10,
+          "msvcp140.dll": 36,
+          "vcruntime140_1.dll": 1
+        }
+      },
+      {
+        "path": "msvcp140_atomic_wait.dll",
+        "providers": {
+          "vcruntime140.dll": 8,
+          "msvcp140.dll": 5,
+          "vcruntime140_1.dll": 1
+        }
+      },
+      {
+        "path": "msvcp140_codecvt_ids.dll",
+        "providers": {
+          "vcruntime140.dll": 3
+        }
+      },
+      {
+        "path": "msvcp140.dll",
+        "providers": {
+          "vcruntime140.dll": 17,
+          "vcruntime140_1.dll": 1
+        }
+      },
+      {
+        "path": "vccorlib140.dll",
+        "providers": {
+          "vcruntime140.dll": 15,
+          "msvcp140.dll": 1,
+          "vcruntime140_1.dll": 1
+        }
+      },
+      {
+        "path": "vcruntime140_1.dll",
+        "providers": {
+          "vcruntime140.dll": 5
+        }
+      },
+      {
+        "path": "vcruntime140_threads.dll",
+        "providers": {
+          "vcruntime140.dll": 4
+        }
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/Ogg/Win64/VS2015/libogg_64.dll",
+        "providers": {
+          "vcruntime140.dll": 8
+        }
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/Vorbis/Win64/VS2015/libvorbis_64.dll",
+        "providers": {
+          "vcruntime140.dll": 7
+        }
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/Vorbis/Win64/VS2015/libvorbisfile_64.dll",
+        "providers": {
+          "vcruntime140.dll": 6
+        }
+      },
+      {
+        "path": "Engine/Plugins/NNE/NNERuntimeORT/Binaries/ThirdParty/Onnxruntime/Win64/onnxruntime.dll",
+        "providers": {
+          "vcruntime140.dll": 19,
+          "msvcp140.dll": 167,
+          "vcruntime140_1.dll": 1,
+          "msvcp140_1.dll": 1
+        }
+      },
+      {
+        "path": "RiftCrownArena/Binaries/Win64/concrt140.dll",
+        "providers": {
+          "vcruntime140.dll": 13,
+          "msvcp140.dll": 15,
+          "vcruntime140_1.dll": 1
+        }
+      },
+      {
+        "path": "RiftCrownArena/Binaries/Win64/msvcp140_1.dll",
+        "providers": {
+          "vcruntime140.dll": 6,
+          "msvcp140.dll": 1
+        }
+      },
+      {
+        "path": "RiftCrownArena/Binaries/Win64/msvcp140_2.dll",
+        "providers": {
+          "vcruntime140.dll": 10,
+          "msvcp140.dll": 36,
+          "vcruntime140_1.dll": 1
+        }
+      },
+      {
+        "path": "RiftCrownArena/Binaries/Win64/msvcp140_atomic_wait.dll",
+        "providers": {
+          "vcruntime140.dll": 8,
+          "msvcp140.dll": 5,
+          "vcruntime140_1.dll": 1
+        }
+      },
+      {
+        "path": "RiftCrownArena/Binaries/Win64/msvcp140_codecvt_ids.dll",
+        "providers": {
+          "vcruntime140.dll": 3
+        }
+      },
+      {
+        "path": "RiftCrownArena/Binaries/Win64/msvcp140.dll",
+        "providers": {
+          "vcruntime140.dll": 17,
+          "vcruntime140_1.dll": 1
+        }
+      },
+      {
+        "path": "RiftCrownArena/Binaries/Win64/RiftCrownArena-Win64-Shipping.exe",
+        "providers": {
+          "vcruntime140.dll": 27,
+          "msvcp140.dll": 92,
+          "vcruntime140_1.dll": 1
+        }
+      },
+      {
+        "path": "RiftCrownArena/Binaries/Win64/tbb12.dll",
+        "providers": {
+          "vcruntime140.dll": 13,
+          "msvcp140.dll": 14,
+          "vcruntime140_1.dll": 1
+        }
+      },
+      {
+        "path": "RiftCrownArena/Binaries/Win64/tbbmalloc.dll",
+        "providers": {
+          "vcruntime140.dll": 4,
+          "vcruntime140_1.dll": 1
+        }
+      },
+      {
+        "path": "RiftCrownArena/Binaries/Win64/vccorlib140.dll",
+        "providers": {
+          "vcruntime140.dll": 15,
+          "msvcp140.dll": 1,
+          "vcruntime140_1.dll": 1
+        }
+      },
+      {
+        "path": "RiftCrownArena/Binaries/Win64/vcruntime140_1.dll",
+        "providers": {
+          "vcruntime140.dll": 5
+        }
+      },
+      {
+        "path": "RiftCrownArena/Binaries/Win64/vcruntime140_threads.dll",
+        "providers": {
+          "vcruntime140.dll": 4
+        }
+      }
+    ],
+    "files": [
+      {
+        "path": "concrt140.dll",
+        "version": "14.51.36247.0",
+        "sha256": "54716f0738af891f283d213b5c8d11b25896bb8ee3097d301eae718560cf974e",
+        "size": 374200
+      },
+      {
+        "path": "msvcp140_1.dll",
+        "version": "14.51.36247.0",
+        "sha256": "206c931bf90fdad8816de3b5e2ef80b2bcaa9406c89ecc05fe6fddffe251e982",
+        "size": 35768
+      },
+      {
+        "path": "msvcp140_2.dll",
+        "version": "14.51.36247.0",
+        "sha256": "d50d7883f20d1dc6191768d3746f52dd9cac89c346ffaed5be1f110c2f34a838",
+        "size": 274872
+      },
+      {
+        "path": "msvcp140_atomic_wait.dll",
+        "version": "14.51.36247.0",
+        "sha256": "3d0cbfaa1bf3eecf5a3f4491d2960ee803cb994f30292c6adc4a07c498f60e2b",
+        "size": 57792
+      },
+      {
+        "path": "msvcp140_codecvt_ids.dll",
+        "version": "14.51.36247.0",
+        "sha256": "8a65c7596ef2e6938731f5a1058e7e40145b6d97967cc649231a076b9a608d78",
+        "size": 31160
+      },
+      {
+        "path": "msvcp140.dll",
+        "version": "14.51.36247.0",
+        "sha256": "7c26614e1d733892c2deac7e245ce115504b1d80592dd0a01b08e3e5a55f89ca",
+        "size": 643512
+      },
+      {
+        "path": "vccorlib140.dll",
+        "version": "14.51.36247.0",
+        "sha256": "09f93d5ff96ae09767f3e1af3cdd43a5a58f2598654fc63089429bb6f9f4737f",
+        "size": 350648
+      },
+      {
+        "path": "vcruntime140_1.dll",
+        "version": "14.51.36247.0",
+        "sha256": "a7146c08f89fe5b04541ab507cdb59ff7b44534d4ba3c668a426c6450a03434e",
+        "size": 50112
+      },
+      {
+        "path": "vcruntime140_threads.dll",
+        "version": "14.51.36247.0",
+        "sha256": "40f39e8cee5f5a531b4010e18b807e8fe265b908dc58f959ecb7ebc6ea6cb11a",
+        "size": 38840
+      },
+      {
+        "path": "vcruntime140.dll",
+        "version": "14.51.36247.0",
+        "sha256": "d1f4225df2cd877dbf130d5668a021dce3f94118455ff5ec952061c30afc9ce7",
+        "size": 178616
+      },
+      {
+        "path": "RiftCrownArena/Binaries/Win64/concrt140.dll",
+        "version": "14.51.36247.0",
+        "sha256": "54716f0738af891f283d213b5c8d11b25896bb8ee3097d301eae718560cf974e",
+        "size": 374200
+      },
+      {
+        "path": "RiftCrownArena/Binaries/Win64/msvcp140_1.dll",
+        "version": "14.51.36247.0",
+        "sha256": "206c931bf90fdad8816de3b5e2ef80b2bcaa9406c89ecc05fe6fddffe251e982",
+        "size": 35768
+      },
+      {
+        "path": "RiftCrownArena/Binaries/Win64/msvcp140_2.dll",
+        "version": "14.51.36247.0",
+        "sha256": "d50d7883f20d1dc6191768d3746f52dd9cac89c346ffaed5be1f110c2f34a838",
+        "size": 274872
+      },
+      {
+        "path": "RiftCrownArena/Binaries/Win64/msvcp140_atomic_wait.dll",
+        "version": "14.51.36247.0",
+        "sha256": "3d0cbfaa1bf3eecf5a3f4491d2960ee803cb994f30292c6adc4a07c498f60e2b",
+        "size": 57792
+      },
+      {
+        "path": "RiftCrownArena/Binaries/Win64/msvcp140_codecvt_ids.dll",
+        "version": "14.51.36247.0",
+        "sha256": "8a65c7596ef2e6938731f5a1058e7e40145b6d97967cc649231a076b9a608d78",
+        "size": 31160
+      },
+      {
+        "path": "RiftCrownArena/Binaries/Win64/msvcp140.dll",
+        "version": "14.51.36247.0",
+        "sha256": "7c26614e1d733892c2deac7e245ce115504b1d80592dd0a01b08e3e5a55f89ca",
+        "size": 643512
+      },
+      {
+        "path": "RiftCrownArena/Binaries/Win64/vccorlib140.dll",
+        "version": "14.51.36247.0",
+        "sha256": "09f93d5ff96ae09767f3e1af3cdd43a5a58f2598654fc63089429bb6f9f4737f",
+        "size": 350648
+      },
+      {
+        "path": "RiftCrownArena/Binaries/Win64/vcruntime140_1.dll",
+        "version": "14.51.36247.0",
+        "sha256": "a7146c08f89fe5b04541ab507cdb59ff7b44534d4ba3c668a426c6450a03434e",
+        "size": 50112
+      },
+      {
+        "path": "RiftCrownArena/Binaries/Win64/vcruntime140_threads.dll",
+        "version": "14.51.36247.0",
+        "sha256": "40f39e8cee5f5a531b4010e18b807e8fe265b908dc58f959ecb7ebc6ea6cb11a",
+        "size": 38840
+      },
+      {
+        "path": "RiftCrownArena/Binaries/Win64/vcruntime140.dll",
+        "version": "14.51.36247.0",
+        "sha256": "d1f4225df2cd877dbf130d5668a021dce3f94118455ff5ec952061c30afc9ce7",
+        "size": 178616
+      }
+    ]
+  },
+  "launcherPlay": {
+    "passed": true,
+    "utc": "2026-10-09T15:53:36.2682035Z",
+    "version": "1.0.0",
+    "installed": "1.2.0",
+    "launcherSha256": "ca533a10c0c125a8ef3f172aa54ea5afdaec0bd9f03fd8d4ce581306e6624215",
+    "routedCommand": "PlayButton.Click",
+    "verifiedGameFiles": 48,
+    "bootstrapExitCode": 0,
+    "nativeExitCode": 0,
+    "nativeSha256": "5a209be2b0d17cf7f2aebfc41c9eff9e52e791b1da8b8c1cb1c93d8d9b1a322e",
+    "saveRootSource": "RIFT_SAVE_ROOT environment",
+    "width": 1280,
+    "height": 720,
+    "legacySavePreserved": true
+  },
+  "installerBuild": {
+    "passed": true,
+    "utc": "2026-10-09T15:56:40.0803666Z",
+    "version": "1.2.0",
+    "sha256": "77efc44db0ca00ce9ad874437baabb833fdfeb4be815c707d60f7b2099f8e768",
+    "size": 382181376,
+    "compileSeconds": 168.9652957,
+    "gameArchiveSha256": "63d02e6f3de1a535e9563691724c1e0ccf0dfacc6eaf86472b569c2326431e0b",
+    "gameFiles": 48,
+    "launcherSha256": "ca533a10c0c125a8ef3f172aa54ea5afdaec0bd9f03fd8d4ce581306e6624215",
+    "pointerSha256": "81f1d6d5a0bb0427a1d45e17af0b0123c0e36bd2e744e15e5888263490806236",
+    "databaseValidation": "Standard ICE validation passed with warnings treated as errors",
+    "documentedExceptions": [
+      "ICE61: intentional same-version major upgrades",
+      "ICE91: fixed per-user installation scope",
+      "WiX1101: neutral language metadata for private LastResort.ttf"
+    ]
+  },
+  "completedChecksPassed": true,
+  "pending": [
+    "public download and updater delivery"
+  ],
+  "localPayloadFiles": [
+    {
+      "path": "Artifacts/Release/RiftCrownArena-Windows-x64-1.2.0.zip",
+      "bytes": 396373442,
+      "sha256": "63d02e6f3de1a535e9563691724c1e0ccf0dfacc6eaf86472b569c2326431e0b"
+    },
+    {
+      "path": "Artifacts/Installer/RiftCrownArena-Setup.msi",
+      "bytes": 382181376,
+      "sha256": "77efc44db0ca00ce9ad874437baabb833fdfeb4be815c707d60f7b2099f8e768"
+    }
+  ],
+  "rendererReview": {
+    "version": "1.2.0",
+    "captureCount": 26,
+    "pinnedFiles": 78,
+    "sourceReport": {
+      "path": "Docs/QA/presentation-review.json",
+      "bytes": 335213,
+      "sha256": "daaae9771cbcf0c42f55fdff981e79b2823454e0abd02443ce2664ebe1a363cf"
+    },
+    "sourceReview": {
+      "path": "Docs/MODEL_PRESENTATION_1.2.0.md",
+      "sha256": "b8a05070c7a400c512f55271fdc544fddc79a7758fd4fccf50ebd395ba5d53d4",
+      "bytes": 12179
+    },
+    "scope": "All 26 real final Shipping PNGs were physically reviewed by the presentation reviewer; all 78 image/run/state file pins independently verified. Twelve public pages, three battle aspect ratios, enlarged UI, projectile/effects, placement, replay, breath and actual phase/result captures. Still frames do not establish animation timing.",
+    "minimumViewport": {
+      "width": 1280,
+      "height": 720,
+      "uiScale": 1.4,
+      "arenaGroundWidthPixels": 507.0625,
+      "tilePitchPixels": 13.34375,
+      "troops": 30,
+      "troopMinHeightPixels": 33.721,
+      "troopMeanHeightPixels": 56.733,
+      "troopMaxHeightPixels": 97.221,
+      "safeModelAndAnchorBounds": 38
+    },
+    "health": "No healthy HP visibility violations in the 26 captured states; healthy roster HP bars hidden, status/lifetime preserved, damaged live/replay HP visible.",
+    "projectiles": {
+      "realBodies": 9,
+      "realLaunches": 9,
+      "particles": 9,
+      "rangedRoles": 7,
+      "meshTrailInstances": 45,
+      "visualObservation": "Restrained gold/cyan projectile heads visible; no claim that nine broad glow quads or continuous timing were established by a still."
+    },
+    "breath": {
+      "frostSystems": 2,
+      "frostParticles": 16,
+      "novaParticles": 48,
+      "worldParticles": 64
+    }
+  },
+  "installerLifecycle": {
+    "passed": true,
+    "utc": "2026-10-09T16:08:16.9290692Z",
+    "version": "1.1.0",
+    "msiSha256": "ed7244eb6909f8a9529eb1d5da0cb1fc1fe2a37f7175fe9cf74e5446cf663491",
+    "productCode": "{ED085778-93A8-4407-A207-15939DEBB37D}",
+    "upgradeMsiSha256": "77efc44db0ca00ce9ad874437baabb833fdfeb4be815c707d60f7b2099f8e768",
+    "upgradeProductCode": "{03E2E8E9-AA86-4DDE-9B83-514B3E2E76CB}",
+    "installedVersion": "1.2.0",
+    "installedArchiveSha256": "63d02e6f3de1a535e9563691724c1e0ccf0dfacc6eaf86472b569c2326431e0b",
+    "installedGameFiles": 48,
+    "installedLauncherSha256": "ca533a10c0c125a8ef3f172aa54ea5afdaec0bd9f03fd8d4ce581306e6624215",
+    "checks": [
+      "Per-user unattended installation completed without a reboot request.",
+      "Installed bundled-game pointer exists.",
+      "Bundled pointer schema and installed version agree with the MSI.",
+      "Bundled release resolves within the isolated installation.",
+      "All 51 actual game files match their published lengths and SHA-256 hashes.",
+      "Actual native game executable is installed.",
+      "Self-contained launcher is installed.",
+      "Installed launcher completed its actual WPF smoke check.",
+      "Installed launcher discovers the bundled game and all ten connected command controls.",
+      "Installer creates the Start menu launch shortcut.",
+      "Installer creates the selected optional desktop shortcut.",
+      "Installation and launcher smoke preserve the isolated legacy save byte for byte.",
+      "Actual major upgrade replaces the prior MSI registration without requesting a reboot.",
+      "Upgrade installs the new bundled release pointer.",
+      "Upgraded release remains inside the isolated managed game tree.",
+      "Every upgraded game file matches the installed manifest.",
+      "Actual MSI major upgrade preserves the separate isolated profile byte for byte.",
+      "Installer remembers the exact isolated directory for later maintenance.",
+      "Installer remembered cache cleanup remains inside the isolated Game subtree.",
+      "Actual installed WPF Play command completes its real bundled-game launch and waits for clean exit.",
+      "Installed Play invokes the exact installed launcher routed command and verifies every manifest file before starting the native Shipping process.",
+      "Installed Play launches the exact native executable identified by the installed manifest and its SHA-256 hash.",
+      "Installed Play produces a real 1280×720 Home capture inside its isolated save directory.",
+      "Installed Play forwards its environment save root through the bootstrap and isolates native profile and engine configuration writes.",
+      "Actual installed WPF Play preserves the isolated legacy save byte for byte.",
+      "Installed manifest contains the actual Win64 native game executable.",
+      "Actual installed native game renders its Home menu offscreen and exits cleanly.",
+      "Actual Shipping process exposes all three required Visual C++ runtime modules.",
+      "Shipping loads MSVCP140.dll from its packaged application directory, independently of the host Visual C++ installation.",
+      "Loaded MSVCP140.dll matches the actual release manifest hash.",
+      "Shipping loads VCRUNTIME140.dll from its packaged application directory, independently of the host Visual C++ installation.",
+      "Loaded VCRUNTIME140.dll matches the actual release manifest hash.",
+      "Shipping loads VCRUNTIME140_1.dll from its packaged application directory, independently of the host Visual C++ installation.",
+      "Loaded VCRUNTIME140_1.dll matches the actual release manifest hash.",
+      "Installed game capture is an actual 1280×720 PNG.",
+      "Actual Shipping runtime produces its independent structured game diagnostics.",
+      "Native diagnostics confirm a real Shipping build using the isolated save root.",
+      "Installed Shipping startup diagnostics contain no game Error or Fatal records.",
+      "Actual installed native startup preserves the isolated legacy profile byte for byte.",
+      "Windows Installer logs its actual maintenance target directory.",
+      "Windows Installer maintenance remains inside the original isolated install directory.",
+      "Windows Installer repair restores an actually missing native executable with its exact packaged hash.",
+      "Windows Installer repair preserves the separate isolated profile.",
+      "Windows Installer logs its actual maintenance target directory.",
+      "Windows Installer maintenance remains inside the original isolated install directory.",
+      "Unattended uninstall completed without a reboot request.",
+      "Uninstall removes game files, obsolete releases, interrupted staging and managed update metadata.",
+      "Uninstall removes the launcher executable.",
+      "Uninstall removes the installed Start menu shortcut folder.",
+      "Uninstall removes the selected optional desktop shortcut.",
+      "Uninstall preserves the separate isolated profile byte for byte."
+    ],
+    "checkCount": 51,
+    "failure": null
+  },
+  "windowsFinalization": {
+    "passed": true,
+    "utc": "2026-10-09T16:08:22.6977174Z",
+    "version": "1.2.0",
+    "tag": "v1.2.0",
+    "archive": "RiftCrownArena-Windows-x64-1.2.0.zip",
+    "archiveSha256": "63d02e6f3de1a535e9563691724c1e0ccf0dfacc6eaf86472b569c2326431e0b",
+    "installer": "RiftCrownArena-Setup.msi",
+    "installerSha256": "77efc44db0ca00ce9ad874437baabb833fdfeb4be815c707d60f7b2099f8e768",
+    "manifestSha256": "8a41cb77687d5d16ceba668e1166e12d05f33cb35711a23dc952685720600693",
+    "launcher": "RiftCrownLauncher.exe",
+    "launcherSha256": "ca533a10c0c125a8ef3f172aa54ea5afdaec0bd9f03fd8d4ce581306e6624215",
+    "gameFiles": 48,
+    "launcherCoreChecks": 31,
+    "wpfControls": 10,
+    "installerChecks": 51,
+    "defaultManifestUrl": "https://github.com/nhicksenterprises2025-maker/aether-arena/releases/latest/download/update-manifest.json",
+    "gameDownloadUrl": "https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.2.0/RiftCrownArena-Windows-x64-1.2.0.zip",
+    "scope": "Measured Windows packaging, published/installed WPF Play and MSI lifecycle verification"
+  },
+  "performance": {
+    "normal": {
+      "measurement": {
+        "schema": 1,
+        "build": "Shipping",
+        "cpu": "AMD Ryzen 7 5700                               ",
+        "gpu": "NVIDIA GeForce RTX 5060",
+        "stress": false,
+        "metaRequested": false,
+        "warmupSeconds": 8,
+        "measuredSeconds": 90,
+        "frame": {
+          "samples": 5401,
+          "meanMs": 16.666965894683866,
+          "p95Ms": 16.73620194196701,
+          "p99Ms": 16.848400235176086,
+          "maxMs": 17.195798456668854
+        },
+        "gameThread": {
+          "samples": 5401,
+          "meanMs": 1.260904443372159,
+          "p95Ms": 1.7136000394821167,
+          "p99Ms": 2.050299882888794,
+          "maxMs": 4.956600189208984
+        },
+        "renderThread": {
+          "samples": 5401,
+          "meanMs": 2.254659766842758,
+          "p95Ms": 2.7246999740600586,
+          "p99Ms": 3.0596001148223877,
+          "maxMs": 5.632800102233887
+        },
+        "gpuFrame": {
+          "samples": 5401,
+          "meanMs": 3.9526703762933075,
+          "p95Ms": 4.258200168609619,
+          "p99Ms": 4.399400234222412,
+          "maxMs": 4.8892998695373535
+        },
+        "hitchesOver50Ms": [],
+        "peakEntities": 15,
+        "peakProjectiles": 3,
+        "peakHazards": 0,
+        "metaGamesDuringBattle": 0,
+        "metaStatus": "Paused during battle · 0 matches · 0 invalid · 0.0s active simulation time · 695685f9",
+        "processPeakPhysicalBytes": 1145556992,
+        "width": 1920,
+        "height": 1080
+      },
+      "launch": {
+        "passed": true,
+        "utc": "2026-10-09T16:10:57.9941013Z",
+        "executableSha256": "5a209be2b0d17cf7f2aebfc41c9eff9e52e791b1da8b8c1cb1c93d8d9b1a322e",
+        "editor": false,
+        "exitCode": 0,
+        "reportSha256": "deccd6082ff017d91c65000f34154405c790cd4e709a562332f7389c1c90a527",
+        "seconds": 102.32
+      },
+      "nativeDiagnostics": {
+        "path": "Artifacts/QA/Performance/model12-final9-normal/UserData/Logs/RiftGame-2026-10-09-17700-16-09-17-0.log",
+        "records": 5,
+        "errorFatalRecords": 0,
+        "context": {
+          "gameVersion": "1.2.0",
+          "engineVersion": "5.8.2-56702186+++UE5+Release-5.8",
+          "platform": "Windows x64",
+          "build": "Shipping",
+          "renderer": "D3D12",
+          "cardRulesFingerprint": "695685f9ebb53185d4f45b257e866354"
+        },
+        "metaScope": "No Meta games advanced during the active-battle measurement."
+      }
+    },
+    "stress": {
+      "measurement": {
+        "schema": 1,
+        "build": "Shipping",
+        "cpu": "AMD Ryzen 7 5700                               ",
+        "gpu": "NVIDIA GeForce RTX 5060",
+        "stress": true,
+        "metaRequested": false,
+        "warmupSeconds": 8,
+        "measuredSeconds": 90,
+        "frame": {
+          "samples": 5363,
+          "meanMs": 16.784648442755167,
+          "p95Ms": 16.91810041666031,
+          "p99Ms": 17.18129962682724,
+          "maxMs": 85.92920005321503
+        },
+        "gameThread": {
+          "samples": 5363,
+          "meanMs": 3.9419470818745608,
+          "p95Ms": 5.35860013961792,
+          "p99Ms": 7.062699794769287,
+          "maxMs": 84.09729766845703
+        },
+        "renderThread": {
+          "samples": 5363,
+          "meanMs": 2.7179572071887743,
+          "p95Ms": 3.2460999488830566,
+          "p99Ms": 3.730299949645996,
+          "maxMs": 8.925000190734863
+        },
+        "gpuFrame": {
+          "samples": 5363,
+          "meanMs": 4.215834345676195,
+          "p95Ms": 4.55019998550415,
+          "p99Ms": 4.731200218200684,
+          "maxMs": 5.075399875640869
+        },
+        "hitchesOver50Ms": [
+          {
+            "wallSeconds": 25.103188700973988,
+            "frameMs": 51.85389891266823,
+            "simulationSeconds": 25.066666666666524,
+            "phase": "regulation",
+            "entities": 119
+          },
+          {
+            "wallSeconds": 30.10821110010147,
+            "frameMs": 55.1442988216877,
+            "simulationSeconds": 30.06666666666624,
+            "phase": "regulation",
+            "entities": 121
+          },
+          {
+            "wallSeconds": 35.11819250136614,
+            "frameMs": 59.703100472688675,
+            "simulationSeconds": 35.083333333332625,
+            "phase": "regulation",
+            "entities": 120
+          },
+          {
+            "wallSeconds": 40.13130620121956,
+            "frameMs": 63.309699296951294,
+            "simulationSeconds": 40.08333333333234,
+            "phase": "regulation",
+            "entities": 132
+          },
+          {
+            "wallSeconds": 45.167104601860046,
+            "frameMs": 85.92920005321503,
+            "simulationSeconds": 45.09999999999872,
+            "phase": "regulation",
+            "entities": 134
+          },
+          {
+            "wallSeconds": 74.94019190222025,
+            "frameMs": 52.09499970078468,
+            "simulationSeconds": 25.066666666666524,
+            "phase": "regulation",
+            "entities": 120
+          },
+          {
+            "wallSeconds": 79.9442974999547,
+            "frameMs": 54.378800094127655,
+            "simulationSeconds": 30.06666666666624,
+            "phase": "regulation",
+            "entities": 120
+          },
+          {
+            "wallSeconds": 84.9493480026722,
+            "frameMs": 55.160000920295715,
+            "simulationSeconds": 35.06666666666596,
+            "phase": "regulation",
+            "entities": 121
+          },
+          {
+            "wallSeconds": 89.95859080180526,
+            "frameMs": 59.66769903898239,
+            "simulationSeconds": 40.066666666665675,
+            "phase": "regulation",
+            "entities": 131
+          },
+          {
+            "wallSeconds": 94.96391740068793,
+            "frameMs": 55.64339831471443,
+            "simulationSeconds": 45.08333333333206,
+            "phase": "regulation",
+            "entities": 132
+          }
+        ],
+        "peakEntities": 134,
+        "peakProjectiles": 14,
+        "peakHazards": 0,
+        "metaGamesDuringBattle": 0,
+        "metaStatus": "Paused during battle · 0 matches · 0 invalid · 0.0s active simulation time · 695685f9",
+        "processPeakPhysicalBytes": 1553883136,
+        "width": 1920,
+        "height": 1080
+      },
+      "launch": {
+        "passed": true,
+        "utc": "2026-10-09T16:12:41.6767127Z",
+        "executableSha256": "5a209be2b0d17cf7f2aebfc41c9eff9e52e791b1da8b8c1cb1c93d8d9b1a322e",
+        "editor": false,
+        "exitCode": 0,
+        "reportSha256": "643a503a3c144e15263df3e487f9c6e6be264864bdd83fe520cc38af6c43abdd",
+        "seconds": 103.42
+      },
+      "nativeDiagnostics": {
+        "path": "Artifacts/QA/Performance/model12-final9-stress/UserData/Logs/RiftGame-2026-10-09-27440-16-10-59-0.log",
+        "records": 6,
+        "errorFatalRecords": 0,
+        "context": {
+          "gameVersion": "1.2.0",
+          "engineVersion": "5.8.2-56702186+++UE5+Release-5.8",
+          "platform": "Windows x64",
+          "build": "Shipping",
+          "renderer": "D3D12",
+          "cardRulesFingerprint": "695685f9ebb53185d4f45b257e866354"
+        },
+        "metaScope": "No Meta games advanced during the active-battle measurement."
+      }
+    },
+    "stress-meta": {
+      "measurement": {
+        "schema": 1,
+        "build": "Shipping",
+        "cpu": "AMD Ryzen 7 5700                               ",
+        "gpu": "NVIDIA GeForce RTX 5060",
+        "stress": true,
+        "metaRequested": true,
+        "warmupSeconds": 8,
+        "measuredSeconds": 90,
+        "frame": {
+          "samples": 5355,
+          "meanMs": 16.809518039783065,
+          "p95Ms": 16.933098435401917,
+          "p99Ms": 17.207197844982147,
+          "maxMs": 140.81450179219246
+        },
+        "gameThread": {
+          "samples": 5355,
+          "meanMs": 3.925686723444642,
+          "p95Ms": 5.244699954986572,
+          "p99Ms": 6.810500144958496,
+          "maxMs": 142.6304931640625
+        },
+        "renderThread": {
+          "samples": 5355,
+          "meanMs": 2.759976265009712,
+          "p95Ms": 3.3017001152038574,
+          "p99Ms": 3.819999933242798,
+          "maxMs": 4.923799991607666
+        },
+        "gpuFrame": {
+          "samples": 5355,
+          "meanMs": 4.2456361727442955,
+          "p95Ms": 4.615300178527832,
+          "p99Ms": 4.75540018081665,
+          "maxMs": 4.951200008392334
+        },
+        "hitchesOver50Ms": [
+          {
+            "wallSeconds": 15.077837999910116,
+            "frameMs": 53.124599158763885,
+            "simulationSeconds": 15.03333333333366,
+            "phase": "regulation",
+            "entities": 112
+          },
+          {
+            "wallSeconds": 25.09149770066142,
+            "frameMs": 51.802899688482285,
+            "simulationSeconds": 25.04999999999986,
+            "phase": "regulation",
+            "entities": 114
+          },
+          {
+            "wallSeconds": 30.094202399253845,
+            "frameMs": 52.82260105013847,
+            "simulationSeconds": 30.049999999999574,
+            "phase": "regulation",
+            "entities": 114
+          },
+          {
+            "wallSeconds": 35.10216899961233,
+            "frameMs": 58.299001306295395,
+            "simulationSeconds": 35.049999999999294,
+            "phase": "regulation",
+            "entities": 116
+          },
+          {
+            "wallSeconds": 40.10789389908314,
+            "frameMs": 55.85299804806709,
+            "simulationSeconds": 40.066666666665675,
+            "phase": "regulation",
+            "entities": 124
+          },
+          {
+            "wallSeconds": 45.11019070073962,
+            "frameMs": 53.195200860500336,
+            "simulationSeconds": 45.06666666666539,
+            "phase": "regulation",
+            "entities": 126
+          },
+          {
+            "wallSeconds": 50.12261340022087,
+            "frameMs": 62.79730051755905,
+            "simulationSeconds": 50.06666666666511,
+            "phase": "regulation",
+            "entities": 136
+          },
+          {
+            "wallSeconds": 55.14290399849415,
+            "frameMs": 71.05149701237679,
+            "simulationSeconds": 55.08333333333149,
+            "phase": "regulation",
+            "entities": 146
+          },
+          {
+            "wallSeconds": 60.14153449982405,
+            "frameMs": 65.675999969244,
+            "simulationSeconds": 60.083333333331204,
+            "phase": "regulation",
+            "entities": 154
+          },
+          {
+            "wallSeconds": 60.59979720041156,
+            "frameMs": 140.81450179219246,
+            "simulationSeconds": 0.016666666666666666,
+            "phase": "regulation",
+            "entities": 50
+          },
+          {
+            "wallSeconds": 80.54326359927654,
+            "frameMs": 50.621699541807175,
+            "simulationSeconds": 20.050000000000143,
+            "phase": "regulation",
+            "entities": 117
+          },
+          {
+            "wallSeconds": 85.5440702997148,
+            "frameMs": 50.87009817361832,
+            "simulationSeconds": 25.04999999999986,
+            "phase": "regulation",
+            "entities": 115
+          },
+          {
+            "wallSeconds": 95.56224700063467,
+            "frameMs": 52.998900413513184,
+            "simulationSeconds": 35.06666666666596,
+            "phase": "regulation",
+            "entities": 114
+          }
+        ],
+        "peakEntities": 154,
+        "peakProjectiles": 18,
+        "peakHazards": 0,
+        "metaGamesDuringBattle": 0,
+        "metaStatus": "Paused during battle · 0 matches · 0 invalid · 0.0s active simulation time · 695685f9",
+        "processPeakPhysicalBytes": 1595445248,
+        "width": 1920,
+        "height": 1080
+      },
+      "launch": {
+        "passed": true,
+        "utc": "2026-10-09T16:14:24.2027949Z",
+        "executableSha256": "5a209be2b0d17cf7f2aebfc41c9eff9e52e791b1da8b8c1cb1c93d8d9b1a322e",
+        "editor": false,
+        "exitCode": 0,
+        "reportSha256": "0a297b6784ce5a0ed6d25159824878ff1ef870af12dec02b28775dddcd33b0a7",
+        "seconds": 102.29
+      },
+      "nativeDiagnostics": {
+        "path": "Artifacts/QA/Performance/model12-final9-stress-meta/UserData/Logs/RiftGame-2026-10-09-3968-16-12-43-0.log",
+        "records": 9,
+        "errorFatalRecords": 0,
+        "context": {
+          "gameVersion": "1.2.0",
+          "engineVersion": "5.8.2-56702186+++UE5+Release-5.8",
+          "platform": "Windows x64",
+          "build": "Shipping",
+          "renderer": "D3D12",
+          "cardRulesFingerprint": "695685f9ebb53185d4f45b257e866354"
+        },
+        "metaScope": "Recorded metaGamesDuringBattle is zero with the worker paused during battle. In the requested-Meta run, the worker resumed after the battle measurement and completed four valid matches before shutdown; this is separate from active-battle work."
+      }
+    }
+  },
+  "performanceScope": "Three serial isolated 1920×1080 D3D12 Shipping runs on Ryzen 7 5700/RTX 5060, each with eight seconds of warmup and 90 measured seconds at the default 60 FPS limit. Normal had no frames over 50 ms. Artificial repeated mass-spawn/restart stress retains ten and thirteen hitches, worst 85.9292 ms and 140.8145 ms. These are measured limits, not a guarantee of smooth performance during every stress burst."
+}

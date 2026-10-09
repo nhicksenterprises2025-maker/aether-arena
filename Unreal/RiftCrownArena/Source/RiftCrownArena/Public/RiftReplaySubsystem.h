@@ -58,6 +58,8 @@ class RIFTCROWNARENA_API URiftReplaySubsystem : public UGameInstanceSubsystem, p
     FString LatestFilename;
     TSharedPtr<FJsonObject> CurrentAnalysis() const;
     TArray<TSharedPtr<FJsonObject>> EventsNear(double Time, double Window = 5) const;
+    // Immutable recorded first-hit cache permits exact backward/forward seeks.
+    bool HasTakenDamageBy(uint64 EntityId, double Time) const;
     TArray<TSharedPtr<FJsonObject>> RecordedStates() const;
     static TSharedRef<FJsonObject> SnapshotJSON(const rift::Snapshot &Snapshot);
     static bool SnapshotFromJSON(const TSharedPtr<FJsonObject> &Object, rift::Snapshot &Snapshot);
@@ -75,6 +77,7 @@ class RIFTCROWNARENA_API URiftReplaySubsystem : public UGameInstanceSubsystem, p
     int32 EventCursor = 0;
     uint64 RecordedSequence = 0;
     TArray<rift::Event> PlaybackEvents;
+    TMap<uint64,double> FirstDamageTimes;
     TArray<TSharedPtr<FRiftReplayWriteJob, ESPMode::ThreadSafe>> PendingWrites;
     FString LatestQueuedFilename;
     void CompleteWrites(bool Wait, bool Publish = true);

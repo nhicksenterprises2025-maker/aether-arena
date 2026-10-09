@@ -3,11 +3,17 @@
 Original Windows card battler: fourteen cards, two lanes, deterministic combat,
 seven AI personalities, deck workshop, Meta Lab, replays and developer training.
 
-Version 1.1.0 adds a rebuilt battle hand, illustrated next-card preview, segmented
-Aether meter, crown scoreboard, pause menu and Field Manual. Training overlays
-work in the packaged game. Recorded combat sounds and a new original orchestral
-score replace the earlier audio palette. The arena graphics and numerical game
-rules are preserved. See [the update notes](Docs/PATCH_NOTES_1.1.0.md).
+The 1.2.0 presentation update replaces all fourteen card illustrations with
+portraits rendered from the game's production models. Larger battlefield units,
+clearer model details, smoother movement and attack poses, and visible mesh
+projectiles make battles easier to follow. The camera fits the battlefield and
+model height around the centered bottom hand and open HUD panels. HP bars appear
+after the first damage and stay visible after healing. Numerical combat rules remain unchanged. See
+[the update notes](Docs/PATCH_NOTES_1.2.0.md) and
+[the model and portrait pipeline](Docs/MODEL_PRESENTATION_1.2.0.md).
+
+The interface, Training tools, replay controls, recorded combat sounds and
+original orchestral score from [1.1.0](Docs/PATCH_NOTES_1.1.0.md) remain available.
 
 `Reference/BrowserV15` preserves the tested browser game and its gameplay
 specification. Run its `start_game.bat` or follow its README.

@@ -29,6 +29,7 @@ $riftRequiredTests = @('Rift.Integration.CardData','Rift.Integration.ConnectedUI
     'Rift.Integration.PausedResultAndReplayEvents','Rift.Integration.ProfilePersistence','Rift.Integration.ReplayTimeline',
     'Rift.Integration.SnapshotRoundtrip','Rift.Meta.AggregationEconomy','Rift.Meta.WorkerPauseAndRecovery')
 if ([version]$Version -ge [version]'1.1.0') { $riftRequiredTests += @('Rift.Integration.BattleInputRouting','Rift.Integration.Presentation') }
+if ([version]$Version -ge [version]'1.2.0') { $riftRequiredTests += @('Rift.Integration.UnitMotion','Rift.Integration.ProjectilePresentation') }
 $riftTests = @($riftReport.tests)
 $riftNames = @($riftTests.fullTestPath)
 if ($riftReport.failed -ne 0 -or $riftReport.notRun -ne 0 -or $riftReport.inProcess -ne 0 -or

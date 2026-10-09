@@ -1,8 +1,59 @@
 # Native Windows release verification
 
-Verification date: 2026-10-08. The development host is Windows 11 with a Ryzen 7 5700, 32 GB RAM and an NVIDIA GeForce RTX 5060. Engine: Unreal 5.8.2. Results below identify executed checks and their measured limits.
+Verification date: 2026-10-09. The development host is Windows 11 with a Ryzen 7 5700, 32 GB RAM and an NVIDIA GeForce RTX 5060. Engine: Unreal 5.8.2. Results below identify executed checks and their measured limits.
 
-## Version 1.1.0 verification
+## Version 1.2.0 verification
+
+The final revision changes production models, card portraits, animation presentation, mesh projectiles, guard weapon aim/recoil, particle readability, battlefield/HUD framing and first-damage health visibility. The fourteen-card numerical rules and six authoritative simulation sources remain unchanged. A compact centered bottom hand and a 35° orthographic battle angle protect enlarged models from the controls. Source/import responsibilities are in [MODEL_PRESENTATION_1.2.0.md](MODEL_PRESENTATION_1.2.0.md).
+
+| Area | Executed final-source 1.2.0 result |
+| --- | --- |
+| Editor build | Build9 succeeded in 14.84 seconds; log `Artifacts/model12-editor-build9.log` |
+| Native integration | All 13 scenarios passed in 75.499664 seconds: 11 clean successes and two successes with warnings, zero failures/unrun tests and commandlet/wrapper exit 0 |
+| Launch provenance | Schema-2 context pins all 124 source hashes and both Editor DLLs unchanged through completion; curated evidence identifies 1.2.0 |
+| Native asset registry | 289 on-disk assets: 113 animation clips, 25 StaticMeshes, 61 SoundWaves, 14 RiftCardData assets, 17 Niagara systems and 11 PhysicsAssets; zero registry/native-load errors |
+| Portrait provenance | Fourteen production-model portraits pass 352 independent source/export/PNG/pose checks, pinning raw source, model, report and script bytes |
+| Health and replay | UnitMotion passes first-damage, full-heal persistence, zero/negative/nonfinite hit rejection, building lifetime baseline, actor reuse and actual archived first-hit/backward/forward-seek assertions |
+| Windows Shipping build | Final UE 5.8 build/cook/stage/archive succeeded in 127.64 seconds; native executable is 167,687,168 bytes / SHA-256 `5a209be2b0d17cf7f2aebfc41c9eff9e52e791b1da8b8c1cb1c93d8d9b1a322e` |
+| Local package and matching CRT | 48 game files; 650 imported CRT symbols verified across 37 PE files, with 20 runtime files staged. ZIP is 396,373,442 bytes / SHA-256 `63d02e6f3de1a535e9563691724c1e0ccf0dfacc6eaf86472b569c2326431e0b` |
+| Actual Editor audio | All 49 assertions passed with the complete 61-wave bank; normal/12× overload float peaks 0.214397/0.800237, zero clipped floats, exit 0; wrapper duration 26.93 seconds |
+| Actual Shipping audio | All 49 assertions passed on the final executable; normal/12× overload float peaks 0.197837/0.801365, zero clipped floats, complete 61-wave bank and exit 0; wrapper duration 12.23 seconds |
+| Actual Niagara lifecycle | Editor passed 78 assertions and final Shipping passed 80 across all 17 graphs, with 156 immediate particles and seven persistent lifecycles |
+| Final Shipping renderer | All 26 real PNGs physically reviewed, with 78 image/run/state pins and the exact final native/model-document hashes; twelve public pages, three battle aspect ratios, enlarged UI, projectiles/effects, placement, replay and phase/result fixtures covered |
+| Published launcher Play | Actual `PlayButton.Click` verified all 48 game files and launched the final native executable; bootstrap/native exited 0, real 1280×720 Home capture and environment save-root forwarding passed, legacy save preserved |
+| MSI compilation | Actual 1.2.0 MSI compiled in 168.965 seconds with standard ICE validation; 382,181,376 bytes / SHA-256 `77efc44db0ca00ce9ad874437baabb833fdfeb4be815c707d60f7b2099f8e768` |
+
+The complete native suite is `Build/Automation/20261009-114843/Report/index.json`, with its frozen launch context beside it. [QA/native-integration.json](QA/native-integration.json) records the accepted final source and modules. The two warnings are the intentional corrupt-profile backup recovery and an engine HTTP connectivity probe timing out; both tests completed successfully, and neither warning was hidden. UnitMotion and ProjectilePresentation use the actual imported production assets.
+
+The accepted [final Shipping renderer review](QA/presentation-review.json) measures the arena ground at 507.0625 pixels wide at 1280×720/UI scale 1.4, with 13.34375-pixel tile pitch. Thirty troop bounds measure 33.721/56.733/97.221 pixels in minimum/mean/maximum height; all 38 model and annotation-anchor bounds fit safely. Ground widths are 934.426 pixels at 1920×1080, 672.573 at 1280×800 (16:10) and 934.428 at 2560×1080 (21:9). The 640 × 156 centered bottom dock retains 64 × 80 portraits, keys, costs, names, Next and Aether and clears the player Core.
+
+Healthy HP bars remain hidden, while damage in actual live and replay frames shows HP; all 26 captured states have zero healthy-HP visibility violations. Status labels and the building lifetime indicator remain independent. The paused ranged fixture contains nine actual bodies/launches, nine particles, seven ranged roles and 45 trail instances. Gold/cyan projectile heads are visible and restrained; a still does not establish continuous animation timing or nine broad glow quads. The breath fixture contains 16 Frost particles in two actual puff systems plus 48 Nova particles, for 64 total world particles. Real double/triple-Aether and overtime banners were inspected at delay 1.2 seconds, together with persistent tiebreaker and victory panels.
+
+[QA/presentation-checks-1.2.0.json](QA/presentation-checks-1.2.0.json) preserves sanitized executed audio, Niagara, registry, CRT, launcher Play and MSI-compilation facts with exact hashes of their source reports. Actual sound-enabled playback reports are `Artifacts/QA/Audio/model12-{editor,shipping}-audio-final9/{audio-smoke,run}.json`; actual graph/lifecycle reports are `Artifacts/QA/model12-{editor,shipping}-vfx-final9-verification.json`. Shipping reports identify the executable above. Mixer measurements precede PCM16 encoding and do not establish subjective listening acceptance.
+
+All 51 real installed MSI lifecycle checks passed from published 1.1.0 to game 1.2.0, covering install, upgrade, installed WPF Play, loaded CRT identity, repair, uninstall and byte-preserved saves. `Artifacts/QA/installer-tests.json` identifies the exact final MSI/ZIP and 48 installed game files. `Artifacts/Release/windows-release-verification.json` passed finalization with 31 launcher update checks, ten WPF controls and the matched lifecycle; it pins the final MSI, ZIP, launcher and manifest. All three final performance runs completed on the exact native executable with clean exits and independent native JSONL diagnostics; measured limits follow below. Public download/update delivery remains pending until actual publication and network verification. Earlier Build5/left-tray and first-Shipping results are provisional development history and do not identify the final executable. The 1.1.0 and 1.0.0 sections below retain their executed historical measurements.
+
+## Version 1.2.0 Shipping performance
+
+Three serial isolated runs used the final D3D12 Shipping executable at 1920×1080, eight seconds of warmup and 90 measured seconds each, on the host above with the default 60 FPS limit. Actual reports are `Artifacts/QA/Performance/model12-final9-{normal,stress,stress-meta}/{performance,run}.json`. Launch wrappers pin native SHA-256 `5a209be2b0d17cf7f2aebfc41c9eff9e52e791b1da8b8c1cb1c93d8d9b1a322e` and each measured report's exact hash. Wrapper durations, including startup/shutdown, were 102.32, 103.42 and 102.29 seconds, separately from the measured intervals.
+
+| Scenario | Measured frames | Mean ms | p95 ms | p99 ms | Maximum ms | Frames over 50 ms | Peak entities |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Normal AI battle | 5,401 | 16.667 | 16.736 | 16.848 | 17.196 | 0 | 15 |
+| Repeated heavy bridge waves | 5,363 | 16.785 | 16.918 | 17.181 | 85.929 | 10 | 134 |
+| Heavy waves with Meta requested | 5,355 | 16.810 | 16.933 | 17.207 | 140.815 | 13 | 154 |
+
+| Scenario | Mean game thread ms | Mean render thread ms | Mean GPU ms | Peak process memory GiB |
+| --- | --- | --- | --- | --- |
+| Normal AI battle | 1.261 | 2.255 | 3.953 | 1.067 |
+| Repeated heavy bridge waves | 3.942 | 2.718 | 4.216 | 1.447 |
+| Heavy waves with Meta requested | 3.926 | 2.760 | 4.246 | 1.486 |
+
+The stress fixture deliberately spawns heavy waves through production Developer commands every five seconds and restarts completed matches. Those artificial mass-spawn boundaries recorded ten and thirteen frames over 50 ms. Ordinary stress's worst frame was 85.929 ms at wall time 45.167 s / simulation time 45.100 s with 134 entities. Requested-Meta stress's worst was 140.815 ms at wall time 60.600 s, during the match restart at simulation time 0.016667 s with 50 entities; peak population elsewhere was 154. Wall time spans fixture restarts while simulation time resets. These hitches remain an explicit limit; the measurements do not promise smooth performance during every stress burst. Normal AI play recorded no frame over 50 ms.
+
+Meta advanced by zero games during each active-battle measurement and reported its paused state. The requested-Meta worker resumed after that measurement and completed four valid matches before shutdown; those are separate from active-battle work. All three native processes exited 0. Each isolated `UserData/Logs/RiftGame*.log` contains one valid 1.2.0 Shipping/D3D12 context, complete JSONL records and zero Error/Fatal entries. [QA/presentation-checks-1.2.0.json](QA/presentation-checks-1.2.0.json) pins the exact performance/run/native-diagnostic reports and preserves all hitch records, statistics and native source/module hashes.
+
+## Historical version 1.1.0 verification
 
 This revision changes native UI, battle input, camera framing and audio. The six authoritative simulation sources remain byte-identical to the completed final-core 10,000-match cohort. Existing arena geometry, card illustrations, all 14 cards, five deck presets, detailed collection/deck intelligence, replay controls, recorded metrics and Meta Lab exports remain available.
 
@@ -26,17 +77,17 @@ Replay timing preserves recorded doubles and maps the float slider maximum to th
 | Local release payload | Finalization verified all 51 game files, actual launcher execution and the tested MSI against ZIP SHA-256 `fc32c6add036ee0c4baaf2656bfb599642fed05028231e17da197db92555c5f2`; ZIP 448,655,642 bytes and MSI 429,428,840 bytes |
 | Final Shipping renderer | All 29 fresh PNGs were physically reviewed and the complete aggregate accepted against the final executable: all 12 public pages, three battle aspect ratios, enlarged UI, training/placement/combat/frost and actual phase/result fixtures |
 | Final Shipping performance | Three serial 90-second runs completed on the exact final executable, with clean exits and independent native diagnostics. Normal battle had no frame over 50 ms; stress runs had eight and nine, with worst frame 59.212 ms |
-| Published release | [Version 1.1.0](https://github.com/nhicksenterprises2025-maker/aether-arena/releases/tag/v1.1.0) is the latest stable release, published 2026-10-09 at 03:50:51 UTC with draft disabled; initial seven uploaded asset digests matched local bytes |
+| Published release | [Version 1.1.0](https://github.com/nhicksenterprises2025-maker/aether-arena/releases/tag/v1.1.0) was selected as the latest stable release when published 2026-10-09 at 03:50:51 UTC with draft disabled; initial seven uploaded asset digests matched local bytes |
 | Public downloads | Fresh complete anonymous HTTPS downloads of ZIP 448,655,642 bytes / SHA-256 `fc32c6add036ee0c4baaf2656bfb599642fed05028231e17da197db92555c5f2` and MSI 429,428,840 bytes / SHA-256 `ed7244eb6909f8a9529eb1d5da0cb1fc1fe2a37f7175fe9cf74e5446cf663491` matched the tested payloads |
 | Published launcher update | Actual released WPF `CheckButton.Click` fetched latest HTTPS manifest 1.1.0 with all 51 files and exact archive identity; patch notes displayed, Install enabled and existing game/save fixtures preserved. This check fetched the manifest without downloading or installing the game |
 
 The final native suite is `Build/Automation/20261008-232104/Report/index.json`, with completed launch context beside it. It includes the exact fractional replay endpoint, a real 240-second triple-Aether transition while overtime stays visible, and win/loss results that survive replay-saving/HUD rebuilding without restarting or recording twice. Final actual playback evidence is `Artifacts/QA/Audio/polish15-{editor,shipping}-audio-final/{audio-smoke,run}.json`. Both runs captured live post-effect normal and overload PCM; waveform/headroom assertions do not establish subjective listening quality. Current source behavior is reviewed in [UI_POLISH_1.1.0.md](UI_POLISH_1.1.0.md), with audio authoring/routing documented in [AUDIO_DESIGN.md](AUDIO_DESIGN.md). Renderer inspection, installer lifecycle and public delivery have their own completed execution evidence below.
 
-The complete final renderer review is `Docs/QA/presentation-review.json`: 29 actual inspected PNGs with each image, guarded successful launch metadata and captured state pinned to its reviewed bytes. It covers all 12 public game pages, battle at 16:9, 16:10 and 21:9, and enlarged UI scale. Battle/replay captures independently report all four legal-field corners within their HUD-safe bounds; requested phase fixtures passed. The QA evidence packager requires the exact final native Shipping executable hashes for selected renderer, audio, VFX and performance reports, then binds the tested installer to the verified release payload.
+The historical complete renderer review is [QA/historical-presentation-review-1.1.0.json](QA/historical-presentation-review-1.1.0.json): 29 actual inspected PNGs with each image, guarded successful launch metadata and captured state pinned to its reviewed bytes. It covers all 12 public game pages, battle at 16:9, 16:10 and 21:9, and enlarged UI scale. Battle/replay captures independently report all four legal-field corners within their HUD-safe bounds; requested phase fixtures passed. The QA evidence packager requires the exact final native Shipping executable hashes for selected renderer, audio, VFX and performance reports, then binds the tested installer to the verified release payload.
 
 Final local executable and installer acceptance is recorded in `Artifacts/QA/launcher-play-smoke.json`, `Artifacts/QA/installer-tests.json` and `Artifacts/Release/windows-release-verification.json`, all bound to the exact final Build15 payload. The installer report starts from public 1.0.0 to execute a real upgrade to `installedVersion` 1.1.0; the launcher retains its independent 1.0.0 assembly version. Final Shipping particle evidence is `Artifacts/QA/polish15-shipping-vfx-final-verification.json`. Separate completed public delivery evidence is linked below.
 
-## Version 1.1.0 Shipping performance
+## Historical version 1.1.0 Shipping performance
 
 Three sequential runs used the actual final D3D12 Shipping executable at 1920×1080, eight seconds of warmup and 90 measured seconds each, on the host above at the default 60 FPS limit. Launch reports pin native SHA-256 `0f35c7e9f52bb6009876c5e2eef23be8d4033712d844a91f04a8c28c68aa176b` and each completed report's exact hash. Wrapper durations, including startup and shutdown, were 102.31, 103.37 and 102.25 seconds; these are distinct from the measured intervals.
 
@@ -56,13 +107,13 @@ The stress fixture creates large waves every five seconds through production spa
 
 Raw reports and launch-time executable/report hashes are under `Artifacts/QA/Performance/polish15-{ai-match,stress,stress-meta}-1920x1080/{performance,run}.json`. They are current 1.1.0 measurements; the separate 1.0.0 table below remains historical. Headless 10,000-match cohort throughput is separate from rendered frame timing.
 
-## Version 1.1.0 public release delivery
+## Historical version 1.1.0 public release delivery
 
 [Version 1.1.0](https://github.com/nhicksenterprises2025-maker/aether-arena/releases/tag/v1.1.0), release ID 407483225, was published as the latest stable release at 2026-10-09T03:50:51Z with draft disabled. GitHub's server SHA-256 digests matched the six initial release payloads and their checksum asset. Fresh anonymous HTTPS downloads retrieved the entire 448,655,642-byte game ZIP and 429,428,840-byte MSI; both matched the exact locally tested sizes and hashes.
 
 The actual released standalone WPF launcher raised `CheckButton.Click` against the unchanged default HTTPS latest-manifest endpoint. Its returned 1.1.0 manifest matched all 51 game files and the version-pinned archive hash/size. Patch notes displayed, Install was enabled, and existing game/save fixtures remained unchanged. The compatible launcher retains version 1.0.0; this check fetched the manifest and did not download or install the game.
 
-Sanitized observations are [public-download-verification.json](QA/public-download-verification.json) and [published-update-check.json](QA/published-update-check.json). These post-publication checks are separate from the pre-publication QA ZIP. The preserved 1.0.0 public reports use the historical filenames linked below.
+Sanitized observations are preserved byte-for-byte in [historical-public-download-verification-1.1.0.json](QA/historical-public-download-verification-1.1.0.json) and [historical-published-update-check-1.1.0.json](QA/historical-published-update-check-1.1.0.json). These post-publication checks are separate from the pre-publication QA ZIP. The preserved 1.0.0 public reports use the historical filenames linked below.
 
 ## Historical version 1.0.0 acceptance
 

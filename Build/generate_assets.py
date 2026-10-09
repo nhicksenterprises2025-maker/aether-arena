@@ -5,10 +5,14 @@ Exports declare meters in FBX (UnitScaleFactor=100 cm per FBX unit).
 The importer must use convert_scene_unit=True and import_uniform_scale=1, never 100.
 """
 from pathlib import Path
-import bpy, math, json, hashlib, random, argparse, sys
+from types import SimpleNamespace
+import bpy, math, json, hashlib, random, argparse, sys, tempfile, os, time
 from mathutils import Vector, Quaternion
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT/'Build'))
+from split_guard_cannon import split_guard_mesh, guard_socket_metadata
+EXPORT_WORK = Path(tempfile.mkdtemp(prefix='RiftCrown-FBX-'))
 SRC, OUT, RENDER = ROOT/'Assets/Source', ROOT/'Assets/Export', ROOT/'Assets/Renders'
 for d in (SRC, OUT, RENDER, SRC/'Textures'): d.mkdir(parents=True, exist_ok=True)
 ARGS=argparse.ArgumentParser()
@@ -99,7 +103,7 @@ def make_material(name,glow=False,glass=False):
         p.inputs['Roughness'].default_value=.16
     return m
 SURFACE=make_material('M_RiftSurface'); GLOW=make_material('M_RiftGlow',glow=True); GLASS=make_material('M_RiftGlass',glass=True)
-manifest={'schema':1,'build':'UE-1.0.0','source':'original procedural sculpt and rig authored for Rift Crown Arena',
+manifest={'schema':1,'build':'UE-1.2.0','source':'original procedural sculpt and rig authored for Rift Crown Arena',
  'units':{'blender':'meter','fbx':'meter','fbxCentimetersPerUnit':100,'unrealImportUniformScale':1,'convertSceneUnit':True,
           'exportAxisForward':'-Y','exportAxisUp':'Z','unrealForceFrontXAxis':True,'designForward':'-Y in Blender; +X in Unreal'},
  'materials':[{'name':m.name,'baseColor':Path(TEX['BaseColor'].filepath_raw).relative_to(ROOT).as_posix(),
@@ -182,6 +186,7 @@ class Forge:
         for sign in (-1,1):
             self.tube('rift_rune',[(x-sign*size*.48,y,z-size*.64),(x+sign*size*.48,y,z+size*.64)],[.012,.012],key,bone,6,True)
     def finish(self,skinned=False):
+        if skinned: polish_character(self)
         bpy.ops.object.select_all(action='DESELECT')
         for o in self.parts:o.select_set(True)
         bpy.context.view_layer.objects.active=self.parts[0]; bpy.ops.object.join()
@@ -614,15 +619,21 @@ def actions(f):
                 if b in f.rig.pose.bones:
                     f.rig.pose.bones[b].location=f.rig.pose.bones[b].bone.matrix_local.to_3x3().inverted()@Vector((x,y,z))
             attack=name in ('Attack','FrostAttack','HeavyImpact','Cast','DrawRelease','AlternateStrike')
-            wind=math.sin(min(1,t/.40)*math.pi*.5) if t<.4 else max(0,1-(t-.4)/.6)
-            strike=max(0,1-abs(t-.48)/.12)
+            # A held anticipation and fast contact followed by eased recovery.
+            # Release remains .48, matching the authoritative visual event.
+            def smooth(v):
+                v=max(0,min(1,v));return v*v*(3-2*v)
+            wind=smooth(t/.37) if t<.37 else 1-smooth((t-.48)/.40)
+            strike=smooth((t-.38)/.10) if t<.48 else 1-smooth((t-.48)/.25)
             if f.family=='humanoid':
                 rot('spine',.018*math.sin(cycle));rot('head',0,0,.024*math.sin(cycle+.7));rot('cape',.04*math.sin(cycle+.4))
                 if name=='Locomotion':
                     for s,side in ((1,'l'),(-1,'r')):
                         rot('thigh_'+side,.42*math.sin(cycle)*s);rot('shin_'+side,max(0,-math.sin(cycle)*s)*.48)
                         rot('foot_'+side,-.14*math.sin(cycle)*s);rot('upperarm_'+side,-.24*math.sin(cycle)*s)
-                    move('pelvis',z=.025*abs(math.sin(cycle)));rot('cape',.10+.08*math.sin(cycle))
+                    move('pelvis',z=.019*abs(math.sin(cycle)));rot('cape',.10+.065*math.sin(cycle-.35))
+                    rot('chest',0,.025*math.sin(cycle),-.045*math.sin(cycle))
+                    rot('head',0,0,.025*math.sin(cycle))
                 if attack:
                     if f.name in ('ember_archer','tower_archer'):
                         rot('upperarm_l',-1.20*wind,0,-.30*wind);rot('forearm_l',-.22*wind)
@@ -635,7 +646,7 @@ def actions(f):
                         rot('upperarm_r',-.95*wind+.95*strike,0,-.30*wind)
                         rot('forearm_r',-.72*wind+.85*strike);rot('chest',-.12*strike,0,.18*wind-.26*strike)
                         if f.name=='twin_blades':
-                            alternate=max(0,1-abs(t-.78)/.13);rot('upperarm_l',-.72*wind+.95*alternate);rot('forearm_l',-.48*wind+.65*alternate)
+                            alternate=smooth((t-.62)/.13) if t<.75 else 1-smooth((t-.75)/.22);rot('upperarm_l',-.72*wind+.95*alternate);rot('forearm_l',-.48*wind+.65*alternate)
             elif f.family=='quadruped':
                 rot('neck',.035*math.sin(cycle));rot('tail',0,.10*math.sin(cycle))
                 if name in ('Locomotion','Charge'):
@@ -689,7 +700,7 @@ def actions(f):
                     hand=f.rig.pose.bones['hand_r'];turn=Vector((0,0,1)).rotation_difference(Vector((0,-1,-.20)).normalized())
                     q=hand.bone.matrix_local.to_quaternion();set_world_rotation(hand,q.slerp(turn@q,strike))
                     if f.name=='twin_blades':
-                        alternate=max(0,1-abs(t-.78)/.13);aim_arm(f,'l',Vector((-.30,-.45,1.18)),alternate)
+                        alternate=smooth((t-.62)/.13) if t<.75 else 1-smooth((t-.75)/.22);aim_arm(f,'l',Vector((-.30,-.45,1.18)),alternate)
                         hand=f.rig.pose.bones['hand_l'];q=hand.bone.matrix_local.to_quaternion();set_world_rotation(hand,q.slerp(turn@q,alternate))
             for pb in f.rig.pose.bones:
                 pb.keyframe_insert('rotation_euler',frame=frame,group=pb.name)
@@ -704,16 +715,26 @@ def actions(f):
     return made
 
 def export_selected(path,objects,animation=False,start=1,end=1):
+    # A cloud-sync filter may briefly lock an existing FBX while Blender opens
+    # it for overwrite. Author locally, then atomically replace the owned file.
+    path=Path(path).resolve()
+    if not path.is_relative_to(ROOT.resolve()):raise ValueError('Export escaped the repository')
+    staged=EXPORT_WORK/path.name
     bpy.ops.object.select_all(action='DESELECT')
     for o in objects:o.select_set(True)
     bpy.context.view_layer.objects.active=objects[-1]
     scene.frame_start=start;scene.frame_end=end
-    bpy.ops.export_scene.fbx(filepath=str(path),use_selection=True,object_types={'ARMATURE','MESH'},
+    bpy.ops.export_scene.fbx(filepath=str(staged),use_selection=True,object_types={'ARMATURE','MESH'},
         global_scale=1,apply_unit_scale=True,apply_scale_options='FBX_SCALE_UNITS',axis_forward='-Y',axis_up='Z',
         use_mesh_modifiers=True,add_leaf_bones=False,primary_bone_axis='Y',secondary_bone_axis='X',
         use_armature_deform_only=False,bake_anim=animation,bake_anim_use_all_bones=True,
         bake_anim_use_nla_strips=False,bake_anim_use_all_actions=False,bake_anim_force_startend_keying=True,
         bake_anim_step=1,bake_anim_simplify_factor=0,path_mode='ABSOLUTE',mesh_smooth_type='FACE')
+    for attempt in range(12):
+        try:os.replace(staged,path);break
+        except OSError:
+            if attempt==11:raise
+            time.sleep(.25)
 
 def triangles(mesh): return sum(len(p.vertices)-2 for p in mesh.data.polygons)
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -866,6 +887,25 @@ def environment(name):
     elif name=='tower_rubble':
         for i in range(12):
             a=i*2.399;r=.23*math.sqrt(i);f.panel('fallen_masonry',(math.cos(a)*r,math.sin(a)*r,.08+(i%3)*.04),(.28,.35,.17),'limestone',rotation=(.07*i,.12*i,a),bevel=.03)
+    elif name=='arrow_projectile':
+        f.tube('arrow_shaft',[(0,.25,0),(0,-.20,0)],.011,'wood',sides=12)
+        f.tube('broadhead',[(0,-.19,0),(0,-.25,0),(0,-.33,0)],[.014,.042,.001],'silver',sides=4)
+        f.ring('arrow_collar',(0,-.19,0),.016,.005,'brass',axis='Y')
+        for angle in (0,2*math.pi/3,4*math.pi/3):
+            dx,dz=math.cos(angle),math.sin(angle)
+            f.mesh_data('fletching',[(0,.14,0),(dx*.055,.19,dz*.055),(dx*.055,.29,dz*.055),(0,.25,0)],[(0,1,2,3)],'cloth_ember',smooth=False)
+        f.ellipsoid('ember_arrow_tip',(0,-.29,0),(.017,.031,.017),'ember',detail=16,glow=True)
+    elif name in ('arc_projectile','manta_projectile','storm_projectile'):
+        key='violet' if name=='arc_projectile' else 'cyan'
+        f.tube('rift_bolt_core',[(0,.13,0),(0,.035,0),(0,-.105,0),(0,-.18,0)],[.003,.075,.060,.002],key,sides=8,glow=True)
+        for angle in (0,2*math.pi/3,4*math.pi/3):
+            dx,dz=math.cos(angle),math.sin(angle)
+            f.tube('orbiting_shard',[(dx*.10,.04,dz*.10),(dx*.105,-.035,dz*.105),(dx*.055,-.125,dz*.055)],[.012,.025,.001],'brass' if name=='arc_projectile' else 'ice',sides=5,glow=name!='arc_projectile')
+        if name=='storm_projectile':
+            for sign in (-1,1):f.tube('lightning_branch',[(0,-.01,0),(sign*.085,-.06,.04),(sign*.035,-.12,.015),(sign*.07,-.18,0)],[.017,.014,.012,.001],'cyan',sides=5,glow=True)
+    elif name=='projectile_trail':
+        # Local -Y exports as +X forward in Unreal. One meter, centered.
+        f.tube('tapered_trail',[(0,.5,0),(0,.15,0),(0,-.5,0)],[.002,.012,.020],'team',sides=8,glow=True)
     return f.finish()
 
 def export_static(f):
@@ -901,7 +941,7 @@ def render_asset(f,stage,camera):
         if col!=stage: col.hide_render=col!=f.collection
     for o in f.collection.objects:o.hide_render=False
     height=max(1.2,f.mesh.dimensions.z);width=max(f.mesh.dimensions.x,f.mesh.dimensions.y)
-    target=Vector((0,0,height*.48));camera.location=target+Vector((4.5,-7.0,4.0))
+    target=Vector((0,0,sum(corner[2] for corner in f.mesh.bound_box)/8 if f.name=='guard_cannon' else height*.48));camera.location=target+Vector((4.5,-7.0,4.0))
     camera.rotation_euler=(target-camera.location).to_track_quat('-Z','Y').to_euler();camera.data.ortho_scale=max(height*1.5,width*1.38)
     path=RENDER/(f.name+'.png');scene.render.filepath=str(path);bpy.ops.render.render(write_still=True)
     manifest['renders'].append(file_info(path));return path
@@ -1109,15 +1149,78 @@ def round_archer_tower(f):
     f.panel('tower_team_banner',(0,.91,1.16),(.30,.028,.70),'team',bevel=.024)
     return f.finish()
 
+def polish_character(f):
+    """Readable, rigged silhouette accents, rather than unskinned attachments."""
+    if f.family=='humanoid':
+        k=f.bones['head']['head'][2]/1.6
+        # Enlarge heads/hats and shoulder equipment about their own pivots.
+        for ob in f.parts:
+            if ob.vertex_groups.get('head'):
+                center=Vector((0,0,1.72 if f.name=='ironclad' else 1.64))
+                local=ob.matrix_world.inverted()@center
+                for v in ob.data.vertices:v.co=local+(v.co-local)*1.10
+        for sign,side in ((-1,'l'),(1,'r')):
+            # Cover rigid-segment knee joins through the entire gait cycle.
+            f.ellipsoid('articulated_knee',(sign*.16*k,-.01,.49*k),(.091*k,.086*k,.078*k),'steel' if f.name=='ironclad' else 'leather','shin_'+side,20)
+            if f.name not in ('ironclad','twin_blades'):
+                pivot=Vector((0,0,1.64))
+                def face_point(x,y,z):return pivot+(Vector((x,y,z))-pivot)*1.10
+                eye=face_point(sign*.061*k,-.144,1.769*k)
+                f.ellipsoid('clear_eye_white',eye,(.023*k,.009,.015*k),'ivory','head',20)
+                f.ellipsoid('clear_eye_iris',eye+Vector((0,-.008,0)),(.008*k,.005,.010*k),'cyan' if f.name=='arc_mage' else 'leather','head',16)
+                f.tube('expressive_brow',[face_point(sign*.032*k,-.141,1.804*k),face_point(sign*.089*k,-.128,1.819*k)],[.009,.012],'leather','head',10)
+        cloth='cloth_blue' if f.name=='ironclad' else 'cloth_purple' if f.name in ('arc_mage','twin_blades') else 'cloth_ember'
+        for side,sign in (('l',-1),('r',1)):
+            f.panel('readable_shoulder_trim',(sign*.28,-.08,1.42),(.22,.20,.062),'brass','upperarm_'+side,bevel=.025)
+            f.panel('team_cuff',(sign*.45,-.08,1.06),(.15,.15,.065),'team','forearm_'+side,bevel=.018)
+        if f.name=='ironclad':
+            for sign in (-1,1):
+                f.tube('helm_crown_edge',[(sign*.08,-.13,2.02),(sign*.16,-.03,2.00),(sign*.15,.12,1.90)],[.018,.016,.010],'silver','head',10)
+            f.panel('shield_center_crest',(-.48,-.297,1.15),(.19,.027,.25),'brass','hand_l',bevel=.04)
+            f.rune((-.48,-.315,1.15),.10,bone='hand_l')
+        elif f.name in ('ember_archer','tower_archer'):
+            for j in range(3):
+                x=.13+j*.048
+                f.tube('quiver_arrow',[(x,.23,1.12),(x,.24,1.69)],[.009,.007],'wood','chest',8)
+                f.panel('quiver_feather',(x,.24,1.62),(.020,.060,.13),cloth,'chest',bevel=.005)
+        elif f.name=='arc_mage':
+            for j in range(5):
+                a=j*2*math.pi/5
+                f.ellipsoid('staff_focus_spark',(.49+math.cos(a)*.12,-.13+math.sin(a)*.12,1.96),(.017,.017,.028),'violet','hand_r',12,True)
+        elif f.name=='twin_blades':
+            for sign,side in ((-1,'l'),(1,'r')):
+                f.tube('blade_energy_edge',[(sign*.49,-.16,.97),(sign*.51,-.15,1.31),(sign*.55,-.14,1.50)],[.010,.008,.003],'violet','hand_'+side,8,True)
+    elif f.family=='quadruped':
+        if f.name=='boulderback':
+            for j in range(5):
+                y=-.30+j*.21
+                f.tube('crystal_back_ridge',[(0,y,1.52),(0,y,1.72),(0,y-.018,1.85)],[.09,.055,.001],'cyan','spine',sides=5,glow=True)
+        elif f.name=='frost_fang':
+            for sign in (-1,1):
+                f.tube('ice_shoulder_fin',[(sign*.38,-.43,1.07),(sign*.47,-.37,1.40),(sign*.49,-.32,1.55)],[.06,.04,.001],'ice','front_'+('l' if sign<0 else 'r')+'_upper',sides=5,glow=True)
+        else:
+            f.panel('charge_harness_crest',(0,-.68,1.30),(.30,.065,.24),'brass','neck',bevel=.05)
+            f.rune((0,-.72,1.30),.10,'ember','neck')
+    elif f.family=='flyer':
+        for sign,side in ((-1,'l'),(1,'r')):
+            key='cyan' if f.name!='vampire_bats' else 'violet'
+            f.tube('wing_identity_edge',[(sign*.30,-.04,1.09),(sign*.68,-.08,1.14),(sign*1.10,-.05,1.11)],[.013,.010,.004],key,'wing_'+side+'_outer',sides=8,glow=True)
+
 forges=[]
 for name in ('ironclad','ember_archer','twin_blades','arc_mage','tower_archer','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven'):
     print('RIFT_ASSET_BEGIN',name,flush=True)
     f=humanoid(name) if name in ('ironclad','ember_archer','twin_blades','arc_mage','tower_archer') else quadruped(name) if name in ('boulderback','rambeast','frost_fang') else flyer(name)
     export_character(f);forges.append(f);print('RIFT_ASSET_COMPLETE',name,flush=True)
-for name in ('tower_guard','tower_core','archer_tower','nova_flask','bridge','floor_tile','lane_paver','bank_segment','boundary_stone','grass_tuft','shrub','tree','crystal_plinth','banner','ruin','distant_island','meteor_shard','bullet_round','tower_rubble'):
+for name in ('tower_guard','tower_core','archer_tower','nova_flask','bridge','floor_tile','lane_paver','bank_segment','boundary_stone','grass_tuft','shrub','tree','crystal_plinth','banner','ruin','distant_island','meteor_shard','bullet_round','tower_rubble','arrow_projectile','arc_projectile','manta_projectile','storm_projectile','projectile_trail'):
     print('RIFT_ASSET_BEGIN',name,flush=True)
     f=tower(name) if name in ('tower_guard','tower_core','archer_tower') else nova() if name=='nova_flask' else environment(name)
+    cannon=None
+    if name=='tower_guard':
+        mesh=split_guard_mesh(f.mesh)
+        cannon=SimpleNamespace(name='guard_cannon',mesh=mesh,collection=mesh.users_collection[0])
     export_static(f);forges.append(f);print('RIFT_ASSET_COMPLETE',name,flush=True)
+    if cannon:
+        export_static(cannon);forges.append(cannon);print('RIFT_ASSET_COMPLETE','guard_cannon',flush=True)
 if not opts.no_renders:
     stage,camera=render_rig()
     for f in forges:render_asset(f,stage,camera)
@@ -1140,7 +1243,7 @@ manifest['cards']=card_bindings
 for card in card_bindings:
     illustration=SRC/'CardArt'/(card+'.png')
     if illustration.exists():manifest['illustrations'][card]=file_info(illustration)
-manifest['statics'].get('tower_guard',{}).update({'sockets':{'muzzle':{'positionMeters':[0,-.99,2.63]},'hp_anchor':{'positionMeters':[0,0,3.05]}}})
+guard_socket_metadata(manifest['statics'])
 manifest['statics'].get('tower_core',{}).update({'sockets':{'muzzle':{'positionMeters':[0,0,3.88]},'hp_anchor':{'positionMeters':[0,0,4.55]}}})
 manifest['statics'].get('archer_tower',{}).update({'sockets':{'archer_base':{'positionMeters':[0,0,1.94]},'hp_anchor':{'positionMeters':[0,0,2.9]}}})
 manifestPath=ROOT/'Assets/asset_manifest.json'

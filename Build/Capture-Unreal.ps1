@@ -2,7 +2,7 @@ param(
     [string]$EngineRoot = 'C:\Program Files\Epic Games\UE_5.8',
     [string]$Executable = '',
     [string]$Page = 'Battle',
-    [ValidateSet('','roster','congestion','effects','effects17','placement')][string]$Scenario = '',
+    [ValidateSet('','roster','congestion','effects','effects17','placement','projectiles')][string]$Scenario = '',
     [ValidateRange(0.05,2)][float]$EffectAge = 0.12,
     [ValidateRange(0.25,4)][float]$Speed = 1,
     [switch]$BreathSmoke,
@@ -14,7 +14,7 @@ param(
     [ValidateSet('','double','triple','overtime','tiebreaker','victory')][string]$Phase='',
     [ValidateSet('','tiles','ranges','sight','paths','targets','locks','all')][string]$Overlay='',
     [ValidateRange(0.7,1.4)][float]$UIScale=1,
-    [ValidateRange(0.85,2)][float]$Zoom=1,
+    [ValidateScript({ $_ -eq -1 -or ($_ -ge 0.1 -and $_ -le 2) })][float]$Zoom=-1,
     [string]$PreviewCard = '',
     [float]$PreviewX = 0,
     [float]$PreviewY = 7,
@@ -67,7 +67,7 @@ if ($AllowExternalInput) { $arguments += '-RiftCaptureAllowInput' }
 if ($Phase) { $arguments += "-RiftCapturePhase=$Phase" }
 if ($Overlay) { $arguments += "-RiftCaptureOverlay=$Overlay" }
 $arguments += '-RiftCaptureUIScale=' + $UIScale.ToString([System.Globalization.CultureInfo]::InvariantCulture)
-$arguments += '-RiftCaptureZoom=' + $Zoom.ToString([System.Globalization.CultureInfo]::InvariantCulture)
+if ($Zoom -ne -1) { $arguments += '-RiftCaptureZoom=' + $Zoom.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
 if ($Scenario -eq 'effects17') { $arguments += '-RiftEffectAge=' + $EffectAge.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
 if ($Scenario -in @('effects','congestion')) { $arguments += '-RiftCaptureSpeed=' + $Speed.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
 if ($PreviewCard) {
@@ -102,6 +102,21 @@ $resolutionMatches = $actualWidth -eq $Width -and $actualHeight -eq $Height
 $statePath = [System.IO.Path]::ChangeExtension($capturePath,'state.json')
 $stateCaptured = (Test-Path -LiteralPath $statePath) -and ((Get-Item -LiteralPath $statePath).LastWriteTime -ge $started.AddSeconds(-1))
 $riftCaptureState = if ($stateCaptured) { Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json } else { $null }
+$riftCameraFraming = if ($stateCaptured) { $riftCaptureState.cameraFraming } else { $null }
+$riftCameraFramingRequired = $Page -in @('Battle','ReplayView')
+$riftCameraFramingPassed = !$riftCameraFramingRequired -or (
+    $null -ne $riftCameraFraming -and $riftCameraFraming.activeBattleView -eq $true -and
+    $riftCameraFraming.passed -eq $true -and @($riftCameraFraming.legalFieldCorners).Count -eq 4 -and
+    @($riftCameraFraming.legalFieldCorners | Where-Object { $_.projected -ne $true -or $_.insideSafeArea -ne $true }).Count -eq 0
+)
+# Older public builds report legal ground corners only. When the native build
+# also reports model-height safety, require every projected silhouette corner.
+$riftModelEnvelopeAvailable = $null -ne $riftCameraFraming -and $null -ne $riftCameraFraming.PSObject.Properties['modelEnvelopePassed']
+$riftModelEnvelopePassed = if ($riftModelEnvelopeAvailable) {
+    $riftCameraFraming.modelEnvelopePassed -eq $true -and @($riftCameraFraming.modelEnvelope).Count -gt 0 -and
+    @($riftCameraFraming.modelEnvelope | Where-Object { $_.projected -ne $true -or $_.insideSafeArea -ne $true }).Count -eq 0
+} else { $null }
+$riftModelEnvelopeCheckPassed = !$riftCameraFramingRequired -or !$riftModelEnvelopeAvailable -or $riftModelEnvelopePassed -eq $true
 $riftPhaseFixturePassed = $true
 if ($Phase) {
     $riftExpectedPhase = switch ($Phase) { 'double' { 'regulation' }; 'triple' { 'overtime' }; 'overtime' { 'overtime' }; 'tiebreaker' { 'tiebreaker' }; 'victory' { 'finished' } }
@@ -122,6 +137,8 @@ if (Test-Path -LiteralPath $logPath) {
 $report = [ordered]@{
     schema = 1; name = $Name; page = $Page; scenario = $Scenario; speed = $Speed; breathSmoke = [bool]$BreathSmoke; uiScale=$UIScale; zoom=$Zoom;
     state = $statePath; stateCaptured = $stateCaptured; phaseFixture = $Phase; phaseFixturePassed = $riftPhaseFixturePassed; allowExternalInput = [bool]$AllowExternalInput;
+    cameraFramingRequired = $riftCameraFramingRequired; cameraFramingPassed = $riftCameraFramingPassed; cameraFraming = $riftCameraFraming;
+    modelEnvelopeAvailable = $riftModelEnvelopeAvailable; modelEnvelopePassed = $riftModelEnvelopePassed;
     width = $Width; height = $Height; actualWidth = $actualWidth; actualHeight = $actualHeight;
     resolutionMatches = $resolutionMatches; delay = $Delay;
     screenshot = $capturePath; engineLog = $logPath; executable = $Executable; executableSha256 = $riftCaptureExecutableHash;
@@ -132,4 +149,4 @@ $report = [ordered]@{
 }
 [System.IO.File]::WriteAllText($reportPath,($report | ConvertTo-Json -Depth 20),[System.Text.UTF8Encoding]::new($false))
 Write-Output ($report | ConvertTo-Json -Depth 20)
-if ($timedOut -or !$freshCapture -or !$stateCaptured -or !$resolutionMatches -or !$riftPhaseFixturePassed -or $process.ExitCode -ne 0 -or $errors.Count -gt 0) { throw "Unreal capture failed; inspect $reportPath" }
+if ($timedOut -or !$freshCapture -or !$stateCaptured -or !$resolutionMatches -or !$riftPhaseFixturePassed -or !$riftCameraFramingPassed -or !$riftModelEnvelopeCheckPassed -or $process.ExitCode -ne 0 -or $errors.Count -gt 0) { throw "Unreal capture failed; inspect $reportPath" }

@@ -5,6 +5,7 @@ param(
     [string]$ShippingAudioRoot = '',
     [string]$ShippingVFXReport = '',
     [string]$EditorAudioRoot = 'Artifacts/QA/Audio/native-audio-postmix64',
+    [string]$EditorVFXReport = '',
     [string]$PresentationReview = 'Docs/QA/presentation-review.json',
     [string[]]$ShippingCaptureNames = @(),
     [string[]]$PerformanceReports = @(),
@@ -16,6 +17,8 @@ $ErrorActionPreference = 'Stop'
 if ($PSVersionTable.PSVersion.Major -lt 7) { throw 'Run this evidence packager with PowerShell 7.' }
 if ($Version -notmatch '^\d+\.\d+\.\d+(\.\d+)?$') { throw 'Use a numeric release version.' }
 $qaPolishRelease = [version]$Version -ge [version]'1.1.0'
+$qaModelRelease = [version]$Version -ge [version]'1.2.0'
+if (!$EditorVFXReport) { $EditorVFXReport = if ($qaModelRelease) { 'Artifacts/QA/model12-editor-vfx-verification.json' } else { 'Artifacts/QA/niagara-all17-final-verification.json' } }
 $qaRepo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 function Assert-QANoLinks([string]$Path) {
     $qaLinkPath = [IO.Path]::GetFullPath($Path)
@@ -69,8 +72,10 @@ function Read-QAJson([string]$Path) {
 function Assert-QAFrostProof([object]$State) {
     $qaFrostClips = @($State.niagara.unitAnimations | Where-Object assetId -eq 'frost_fang')
     $qaFrostPuffs = @($State.niagara.components | Where-Object system -eq '/Game/Rift/VFX/NS_RiftFrost.NS_RiftFrost')
+    $qaObservedParticles = ($State.niagara.components | ForEach-Object { $_.emitters } | Measure-Object particles -Sum).Sum
     if (!$State.niagara.breathSmoke -or $State.niagara.frostBreathPuffs -ne 2 -or
-        $State.niagara.totalParticles -ne 16 -or $qaFrostClips.Count -ne 2 -or $qaFrostPuffs.Count -ne 2) {
+        $State.niagara.totalParticles -ne $qaObservedParticles -or $qaObservedParticles -lt 16 -or
+        $qaFrostClips.Count -ne 2 -or $qaFrostPuffs.Count -ne 2) {
         throw 'The actual Frost Breath binding/particle proof is incomplete.'
     }
     foreach ($qaFrostClip in $qaFrostClips) {
@@ -163,6 +168,7 @@ $qaRequiredTests = @('Rift.Integration.CardData','Rift.Integration.ConnectedUI',
     'Rift.Integration.PausedResultAndReplayEvents','Rift.Integration.ProfilePersistence','Rift.Integration.ReplayTimeline',
     'Rift.Integration.SnapshotRoundtrip','Rift.Meta.AggregationEconomy','Rift.Meta.WorkerPauseAndRecovery')
 if ($qaPolishRelease) { $qaRequiredTests += @('Rift.Integration.BattleInputRouting','Rift.Integration.Presentation') }
+if ($qaModelRelease) { $qaRequiredTests += @('Rift.Integration.UnitMotion','Rift.Integration.ProjectilePresentation') }
 $qaActualTests = @($qaFinalReport.tests)
 if ($qaFinalReport.failed -ne 0 -or $qaFinalReport.notRun -ne 0 -or $qaFinalReport.inProcess -ne 0 -or
     $qaActualTests.Count -lt $qaRequiredTests.Count -or ($qaFinalReport.succeeded + $qaFinalReport.succeededWithWarnings) -ne $qaActualTests.Count -or
@@ -338,7 +344,7 @@ if ($qaPolishRelease) {
 foreach ($qaSoundEntry in $qaSoundEntries) {
     if ($qaSoundEntry.Value.sha256 -ne (Get-FileHash -LiteralPath (Resolve-QASource $qaSoundEntry.Value.file) -Algorithm SHA256).Hash.ToLowerInvariant()) { throw 'An audio master changed after its manifest was generated.' }
 }
-$qaExpectedAssetCount = 263 - 41 + $qaSoundEntries.Count
+$qaExpectedAssetCount = 263 - 41 + $qaSoundEntries.Count + $(if ($qaModelRelease) { 6 } else { 0 })
 if ($qaRegistry.assetCount -ne $qaExpectedAssetCount -or $qaRegistry.classCounts.SoundWave -ne $qaSoundEntries.Count -or $qaRegistry.classCounts.RiftCardData -ne 14 -or
     $qaRegistry.classCounts.NiagaraSystem -ne 17 -or $qaRegistry.classCounts.PhysicsAsset -ne 11 -or
     @($qaRegistry.errors).Count -ne 0 -or @($qaRegistry.nativeValidation.errors).Count -ne 0 -or
@@ -346,12 +352,55 @@ if ($qaRegistry.assetCount -ne $qaExpectedAssetCount -or $qaRegistry.classCounts
     throw 'The final native asset registry audit is incomplete.'
 }
 Select-QAEvidence 'Artifacts/QA/unreal_asset_audit.json' 'Visual/asset-registry.json' 'json'
-$qaEditorVFX = Read-QAJson 'Artifacts/QA/niagara-all17-final-verification.json'
+if ($qaModelRelease) {
+    $qaPortraitProof = Read-QAJson 'Artifacts/QA/model-card-portraits.json'
+    if (!$qaPortraitProof.passed -or @($qaPortraitProof.cards.PSObject.Properties).Count -ne 14 -or
+        @($qaPortraitProof.checks | Where-Object { !$_.passed }).Count -ne 0) { throw 'Production-model portrait provenance did not pass.' }
+    $qaPortraitFiles = @($qaPortraitProof.provenance.PSObject.Properties | ForEach-Object Value)
+    foreach ($qaPortraitCard in $qaPortraitProof.cards.PSObject.Properties.Value) {
+        $qaPortraitFiles += $qaPortraitCard.image
+        $qaPortraitFiles += @($qaPortraitCard.sources | ForEach-Object model)
+    }
+    foreach ($qaPortraitFile in $qaPortraitFiles) {
+        $qaPortraitPath = Resolve-QASource $qaPortraitFile.file
+        if ((Get-Item -LiteralPath $qaPortraitPath).Length -ne $qaPortraitFile.bytes -or
+            (Get-FileHash -LiteralPath $qaPortraitPath -Algorithm SHA256).Hash.ToLowerInvariant() -ne $qaPortraitFile.sha256) {
+            throw 'A portrait source, renderer, validator, model or image changed after provenance verification.'
+        }
+    }
+    foreach ($qaMissile in @('arrow_projectile','arc_projectile','manta_projectile','storm_projectile','projectile_trail','guard_cannon')) {
+        if ('/Game/Rift/Environment/SM_'+$qaMissile+'.SM_'+$qaMissile -notin $qaRegistry.assets.path) { throw 'An authored projectile mesh is absent from the final registry.' }
+    }
+    Select-QAEvidence 'Artifacts/QA/model-card-portraits.json' 'Visual/model-card-portraits.json' 'json'
+    Select-QAEvidence 'Docs/QA/presentation-checks-1.2.0.json' 'Native/presentation-checks-1.2.0.json' 'json'
+    Select-QAEvidence 'Assets/Source/CardArt/model_portraits.json' 'Visual/model-card-source-manifest.json' 'json'
+    Select-QAEvidence 'Assets/guard_cannon_split_report.json' 'Visual/guard-cannon-source-split.json' 'json'
+    Select-QAEvidence 'Assets/asset_qa_report.json' 'Visual/model-export-validation.json' 'json'
+    Select-QAEvidence 'Assets/Renders/model_cards_contact.png' 'Visual/model-card-contact.png' 'binary'
+    Select-QAEvidence 'Docs/MODEL_PRESENTATION_1.2.0.md' 'Documentation/MODEL_PRESENTATION_1.2.0.md'
+    foreach ($qaModelSource in @('Build/generate_assets.py','Build/split_guard_cannon.py','Build/render_card_portraits.py','Build/validate_card_portraits.py',
+        'Build/import_unreal_assets.py','Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftUnitMotionTests.cpp',
+        'Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftProjectilePresentationTests.cpp',
+        'Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftUnitVisual.cpp',
+        'Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftUnitVisual.h',
+        'Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleLayout.h',
+        'Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftReplaySubsystem.cpp',
+        'Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftReplaySubsystem.h')) { Select-QAEvidence $qaModelSource ('Source/' + $qaModelSource) }
+    $qaParticleMaterial = Read-QAJson 'Artifacts/QA/unreal_asset_particle_material.json'
+    if (@($qaParticleMaterial.errors).Count -ne 0 -or $qaParticleMaterial.materials.Count -ne 1 -or
+        $qaParticleMaterial.materials[0] -ne '/Game/Rift/Materials/M_RiftParticle.M_RiftParticle' -or
+        $qaParticleMaterial.particleSpriteScaling.parameter -ne 'RiftSpriteScale' -or
+        $qaParticleMaterial.particleSpriteScaling.default -ne 1 -or $qaParticleMaterial.particleSpriteScaling.simulationGraphsChanged) {
+        throw 'The actual sprite-only material import did not preserve its graph and parameter contract.'
+    }
+    Select-QAEvidence 'Artifacts/QA/unreal_asset_particle_material.json' 'Visual/particle-material-import.json' 'json'
+}
+$qaEditorVFX = Read-QAJson $EditorVFXReport
 if (!$qaEditorVFX.passed -or $qaEditorVFX.effectSystems -ne 17 -or $qaEditorVFX.persistentSystems -ne 7 -or
     $qaEditorVFX.immediateParticles -le 0 -or $qaEditorVFX.checks.Count -lt 78 -or @($qaEditorVFX.checks | Where-Object { !$_.passed }).Count -ne 0) {
     throw 'The corrected final 17-system particle verification did not pass.'
 }
-Select-QAEvidence 'Artifacts/QA/niagara-all17-final-verification.json' 'Visual/editor-particle-verification.json' 'json'
+Select-QAEvidence $EditorVFXReport 'Visual/editor-particle-verification.json' 'json'
 $qaPresentationReview = Read-QAJson $PresentationReview
 $qaRequiredPresentationPages = @('Home','Battle','Loadout','Cards','CardDetail','Settings','Help','Replays','ReplayView','Analysis','Meta','PatchNotes')
 if ($qaPresentationReview.sourceReview.sha256 -ne (Get-FileHash -LiteralPath (Resolve-QASource $qaPresentationReview.sourceReview.path) -Algorithm SHA256).Hash.ToLowerInvariant() -or
@@ -525,6 +574,8 @@ if ($Finalize) {
     $qaCurrentReviewedShippingPages = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
     $qaCurrentReviewedBattleRatios = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
     $qaCurrentFrostProof = $false
+    $qaCurrentProjectileProof = $false
+    $qaCurrentLargeFieldProof = $false
     foreach ($qaCaptureName in @(($qaShippingVFX.name + '-immediate'),($qaShippingVFX.name + '-lifecycle')) + $ShippingCaptureNames) {
         if (!$qaShippingCaptureSet.Add($qaCaptureName)) { continue }
         if ($qaCaptureName -notmatch '^[a-z0-9][a-z0-9_-]*$') { throw 'Invalid Shipping capture name.' }
@@ -561,6 +612,65 @@ if ($Finalize) {
             ($qaShippingState.elapsed -lt 3 -or $qaShippingState.events.aura -lt 1 -or $qaShippingState.events.stun -lt 1 -or
                 $qaShippingState.events.slow -lt 1 -or $qaShippingState.events.attack -lt 1 -or $qaShippingState.hazards -lt 1 -or
                 $qaShippingState.niagara.totalParticles -le 0)) { throw 'The Shipping combat showcase did not reach its actual special mechanics.' }
+        if ($qaModelRelease -and $qaCapture.page -eq 'Battle' -and $qaShippingState.cameraFraming.activeBattleView -and
+            !$qaShippingState.cameraFraming.projectedModelBoundsPassed) {
+            throw 'An actual enlarged battle model or its health anchor extends beyond the safe play area.'
+        }
+        if ($qaModelRelease -and $qaCapture.scenario -eq 'projectiles') {
+            $qaShots = @($qaShippingState.niagara.projectileVisuals)
+            $qaRoles = @($qaShots.displayRole | Sort-Object -Unique)
+            $qaExpectedRoles = @('Core Tower','Guard Tower','Archer Tower','Ember Archer','Arc Mage','Storm Raven','Sky Manta')
+            $qaExpectedMeshes = @{ crown_core='bullet_round'; crown_guard='bullet_round'; ember_archer='arrow_projectile';
+                archer_tower='arrow_projectile'; arc_mage='arc_projectile'; storm_raven='storm_projectile'; sky_manta='manta_projectile' }
+            $qaExpectedFlightCounts = @{ Tower=4; Arrow=2; Arc=1; Storm=1; Manta=1 }
+            $qaExpectedSpriteScales = @{ Tower=6.0; Arrow=5.6; Arc=6.4; Storm=6.8; Manta=6.0 }
+            $qaFlights = @($qaShippingState.niagara.components | Where-Object { $_.system -match 'NS_Rift(?:Tower|Arrow|Arc|Storm|Manta)Flight\.' })
+            if ($qaShippingState.speed -ne 0 -or $qaShots.Count -ne 9 -or $qaFlights.Count -ne 9 -or
+                $qaShippingState.niagara.liveProjectileBodies -ne 9 -or ($qaShippingState.niagara.projectileTrails | Measure-Object instances -Sum).Sum -ne 45 -or
+                @($qaExpectedRoles | Where-Object { $_ -notin $qaRoles }).Count -ne 0 -or $qaRoles.Count -ne 7 -or
+                @($qaShots | Where-Object { !$_.meshPresent -or !$_.meshVisible -or !$_.collisionDisabled -or !$_.glowPaused -or $_.progress -lt .12 -or $_.progress -gt .45 }).Count -ne 0 -or
+                @($qaFlights | Where-Object { !$_.active -or !$_.visible -or !$_.ready -or !$_.valid -or $_.complete -or
+                    [math]::Abs($_.age - (1.0/60.0)) -gt .00001 -or
+                    ($_.emitters | Measure-Object particles -Sum).Sum -ne 1 -or
+                    ($_.emitters | Measure-Object totalSpawned -Sum).Sum -ne 1 }).Count -ne 0) {
+                throw 'The paused Shipping fixture lacks all seven real ranged roles, nine genuine initialized flights, or their bounded mesh trails.'
+            }
+            foreach ($qaShot in $qaShots) {
+                $qaExpectedMesh = $qaExpectedMeshes[$qaShot.sourceRole]
+                if (!$qaExpectedMesh -or $qaShot.mesh -ne ('/Game/Rift/Environment/SM_' + $qaExpectedMesh + '.SM_' + $qaExpectedMesh)) {
+                    throw 'A ranged role did not use its actual authored projectile mesh.'
+                }
+            }
+            foreach ($qaFlightKind in $qaExpectedFlightCounts.Keys) {
+                $qaExpectedFlightPath = '/Game/Rift/VFX/NS_Rift' + $qaFlightKind + 'Flight.NS_Rift' + $qaFlightKind + 'Flight'
+                if (@($qaFlights | Where-Object system -eq $qaExpectedFlightPath).Count -ne $qaExpectedFlightCounts[$qaFlightKind]) {
+                    throw 'A ranged role did not initialize its bound flight system.'
+                }
+                foreach ($qaFlight in @($qaFlights | Where-Object system -eq $qaExpectedFlightPath)) {
+                    if (!$qaFlight.materialSpriteScaleAvailable -or
+                        [math]::Abs($qaFlight.materialSpriteScale - $qaExpectedSpriteScales[$qaFlightKind]) -gt .00001 -or
+                        @($qaFlight.emitters | Where-Object { $_.materialScaledSpriteWidthMin -lt 55 -or $_.materialScaledSpriteWidthMax -gt 70 }).Count -ne 0) {
+                        throw 'A real flight renderer lacks the enlarged sprite material scale.'
+                    }
+                }
+            }
+            if (!$qaReviewedCaptures.ContainsKey($qaCaptureName)) { throw 'The current real projectile fixture has not been visually reviewed.' }
+            $qaCurrentProjectileProof = $true
+        }
+        if ($qaModelRelease -and $qaCapture.scenario -eq 'roster' -and $qaCapture.actualWidth -eq 1280 -and
+            $qaCapture.actualHeight -eq 720 -and [math]::Abs($qaCapture.uiScale - 1.4) -lt .001) {
+            if (!$qaShippingState.cameraFraming.projectedModelBoundsPassed -or $qaShippingState.cameraFraming.troopModelCount -lt 30 -or
+                $qaShippingState.cameraFraming.arenaGroundWidthPixels -lt 500 -or
+                $qaShippingState.cameraFraming.minimumTroopHeightPixels -lt 33 -or
+                !$qaReviewedCaptures.ContainsKey($qaCaptureName)) { throw 'The current maximum-UI 720p roster lacks the reviewed larger battlefield and safe deployed models.' }
+            $qaHealthyRoster = @($qaShippingState.niagara.unitAnimations)
+            if ($qaHealthyRoster.Count -lt 38 -or
+                @($qaHealthyRoster | Where-Object { $_.hasTakenDamage -isnot [bool] -or $_.healthBarVisible -isnot [bool] -or
+                    $_.hasTakenDamage -or $_.healthBarVisible }).Count -ne 0) {
+                throw 'The undamaged Shipping roster did not hide health bars for every troop, building and crown tower.'
+            }
+            $qaCurrentLargeFieldProof = $true
+        }
         Select-QAEvidence ($qaCapturePath + '.json') ('Visual/Shipping/' + $qaCaptureName + '.json') 'json'
         Select-QAEvidence ($qaCapturePath + '.state.json') ('Visual/Shipping/' + $qaCaptureName + '.state.json') 'json'
         Select-QAEvidence ($qaCapturePath + '.png') ('Visual/Shipping/' + $qaCaptureName + '.png')
@@ -569,6 +679,7 @@ if ($Finalize) {
         foreach ($qaRequiredPage in $qaRequiredPresentationPages) { if (!$qaCurrentReviewedShippingPages.Contains($qaRequiredPage)) { throw "The current native Shipping executable lacks a selected and reviewed game page: $qaRequiredPage" } }
         foreach ($qaRequiredRatio in @('16:9','16:10','21:9')) { if (!$qaCurrentReviewedBattleRatios.Contains($qaRequiredRatio)) { throw "The current native Shipping battle HUD lacks reviewed aspect-ratio coverage: $qaRequiredRatio" } }
         if (!$qaCurrentFrostProof) { throw 'The current Shipping executable lacks its selected actual Frost Breath animation/particle proof.' }
+        if ($qaModelRelease -and (!$qaCurrentProjectileProof -or !$qaCurrentLargeFieldProof)) { throw 'The current model release lacks its real projectile or larger 720p battlefield proof.' }
     }
 }
 

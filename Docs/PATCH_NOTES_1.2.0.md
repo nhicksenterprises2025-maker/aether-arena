@@ -1,0 +1,16 @@
+# Rift Crown Arena 1.2.0
+
+This update makes the cards match the models on the battlefield, enlarges the action, and improves movement, attacks and projectile flight.
+
+- All fourteen cards now use portraits rendered directly from the production models and rigs imported into the game. Twin Blades and Vampire Bats show their groups; spell cards show their actual projectile or prop models.
+- Character models have larger heads, clearer equipment and identity details, and covered knee joins. Troop visuals use 1.55–1.90 times their original scale so movement and contact are easier to see. Guard and core towers use 1.18 times their original visual scale; Archer Tower gains 22% in height, a wider visible base and a larger archer. Placement footprints and navigation radii retain their gameplay values.
+- Walk and run cycles follow distance travelled, with smoother transitions between poses. Attack clips use eased anticipation and recovery around the existing contact pose; an attack immediately after spawning takes priority over the deployment pose. Flying units bank into turns, death poses have clearer follow-through, and pausing holds presentation motion at the simulation time.
+- Guard towers keep their foundations and crests fixed while their separate cannon aims and recoils. The cannon retains its seven original model parts, and its motion follows simulation time.
+- Ranged attacks show actual mesh projectiles: arrows for Ember Archer and Archer Tower, distinct missiles for Arc Mage, Sky Manta and Storm Raven, and visible rounds for guard and core towers. Flight paths, trails, release positions and contact effects follow the authoritative shot. Bullet Burst and Meteor Shards add mesh debris at their actual impact; Nova Flask retains its native burst effect.
+- Newly created projectile glows initialize their real particle graph before a paused frame or replay seek can hide the first particle. Once initialized, they follow the simulation's playback speed and pause state.
+- The four hand cards sit in a compact centered bottom dock with their existing portrait size. An orthographic camera at a 35° battle angle enlarges the field while protecting the models from the hand, clock and open side panels. Health bars clear the model tops and adapt to the projected battlefield size, with readable text and bar heights sized in screen pixels independently of the interface scale.
+- Troops, defensive buildings, guard towers and cores show their HP bar and number only after their first damage, and keep them visible after healing. Passive building lifetime loss does not count as a hit. Charge, stun, slow, dormant-core labels and the Archer Tower lifetime indicator remain available. Replay seeking reconstructs the actual first-hit history.
+
+The fourteen-card roster, costs, damage, health, attack intervals, targeting, projectile travel times, tower rules, placement and paid card cycling are unchanged. Training controls, replay tools, recorded audio, original music and the existing arena remain available. Profiles, deck presets, settings, replays and Meta datasets retain their existing formats.
+
+The source and import process are documented in [MODEL_PRESENTATION_1.2.0.md](MODEL_PRESENTATION_1.2.0.md). Executed release checks and the exact packaged build are recorded separately in [RELEASE_QA.md](RELEASE_QA.md).

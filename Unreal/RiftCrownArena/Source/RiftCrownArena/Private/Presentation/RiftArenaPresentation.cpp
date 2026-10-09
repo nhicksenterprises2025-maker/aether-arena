@@ -6,10 +6,13 @@
 #include "RiftAssetLibrary.h"
 #include "RiftMatchSubsystem.h"
 #include "RiftProfileSubsystem.h"
+#include "RiftReplaySubsystem.h"
 #include "Components/DecalComponent.h"
 #include "Components/DirectionalLightComponent.h"
 #include "Components/ExponentialHeightFogComponent.h"
 #include "Components/HierarchicalInstancedStaticMeshComponent.h"
+#include "Components/InstancedStaticMeshComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Components/PostProcessComponent.h"
 #include "Components/SkyAtmosphereComponent.h"
 #include "Components/SkyLightComponent.h"
@@ -43,11 +46,44 @@ FName FlightFor(const std::string& Card)
     if (Card=="storm_raven") return TEXT("StormFlight");
     return TEXT("TowerFlight");
 }
+FName MissileFor(const std::string& Card)
+{
+    if (Card=="ember_archer" || Card=="archer_tower") return TEXT("arrow_projectile");
+    if (Card=="arc_mage") return TEXT("arc_projectile");
+    if (Card=="sky_manta") return TEXT("manta_projectile");
+    if (Card=="storm_raven") return TEXT("storm_projectile");
+    if (Card=="meteor_shards") return TEXT("meteor_shard");
+    return TEXT("bullet_round");
+}
+float ParticleSpriteScale(FName System)
+{
+    // Niagara's camera-facing quad size does not inherit component scale.
+    // The particle material expands its real vertices about their own center.
+    if (System==TEXT("NS_RiftArrowFlight")) return 5.6f;
+    if (System==TEXT("NS_RiftArcFlight")) return 6.4f;
+    if (System==TEXT("NS_RiftMantaFlight")) return 6.f;
+    if (System==TEXT("NS_RiftStormFlight")) return 6.8f;
+    if (System==TEXT("NS_RiftTowerFlight")) return 6.f;
+    if (System==TEXT("NS_RiftNova") || System==TEXT("NS_RiftImpact")) return 3.f;
+    return 1.f;
+}
+FQuat ProjectileMeshOrientation(const std::string& Card, const FVector& Direction, double Age)
+{
+    FQuat Facing=FRotationMatrix::MakeFromX(Direction.GetSafeNormal(UE_SMALL_NUMBER,FVector::ForwardVector)).ToQuat();
+    // New missiles are authored along +X; the existing brass crown round's
+    // nose is along +Z. Apply this correction locally, after aiming the flight.
+    if (MissileFor(Card)==TEXT("bullet_round"))
+        Facing=Facing*FQuat::FindBetweenNormals(FVector::UpVector,FVector::ForwardVector);
+    else if (Card=="arc_mage" || Card=="sky_manta" || Card=="storm_raven")
+        Facing=Facing*FQuat(FVector::ForwardVector,float(Age*(Card=="arc_mage"?9.:Card=="sky_manta"?5.:12.)));
+    return Facing;
+}
 const rift::Entity* FindEntity(const rift::Snapshot& State,uint64 Id)
 {
     for (const auto& Entity:State.entities) if (Entity.id==Id) return &Entity;
     return nullptr;
 }
+
 FLinearColor EffectColor(FName Name,rift::Team Team)
 {
     if (Name==TEXT("Frost") || Name==TEXT("Slow")) return FLinearColor(.35f,.82f,1.f,1.f);
@@ -61,6 +97,37 @@ FLinearColor EffectColor(FName Name,rift::Team Team)
 }
 }
 
+FVector ARiftArenaPresentation::ProjectilePathPoint(const std::string& Card,FVector Source,FVector Target,double Progress)
+{
+    const double T=FMath::Clamp(Progress,0.,1.);
+    // Exact endpoints matter for short shots and replay endpoints. A bounded
+    // visual arc does not change the authoritative travel time or hit target.
+    if (T<=0.) return Source;
+    if (T>=1.) return Target;
+    FVector Position=FMath::Lerp(Source,Target,T);
+    const double Distance=FVector::Dist2D(Source,Target);
+    const double Envelope=FMath::Sin(T*UE_PI);
+    const FVector Side=FVector::CrossProduct((Target-Source).GetSafeNormal(),FVector::UpVector).GetSafeNormal();
+    if (Card=="ember_archer" || Card=="archer_tower")
+        Position.Z+=Envelope*FMath::Clamp(Distance*.12,24.,90.);
+    else if (Card=="arc_mage")
+    {
+        Position.Z+=Envelope*FMath::Clamp(Distance*.08,18.,64.);
+        Position+=Side*(Envelope*FMath::Sin(T*UE_PI*4.)*9.);
+    }
+    else if (Card=="sky_manta")
+    {
+        Position.Z+=Envelope*38.;
+        Position+=Side*(Envelope*FMath::Sin(T*UE_PI*2.)*14.);
+    }
+    else if (Card=="storm_raven")
+    {
+        Position.Z+=Envelope*22.;
+        Position+=Side*(Envelope*FMath::Sin(T*UE_PI*6.)*12.);
+    }
+    else Position.Z+=Envelope*FMath::Clamp(Distance*.05,12.,42.);
+    return Position;
+}
 ARiftArenaPresentation::ARiftArenaPresentation()
 {
     PrimaryActorTick.bCanEverTick=true;PrimaryActorTick.TickGroup=TG_PostUpdateWork;
@@ -228,6 +295,10 @@ void ARiftArenaPresentation::ClearVisuals()
 {
     for (auto& Entry:Units) if (Entry.Value) Entry.Value->Destroy();Units.Reset();
     for (auto& Entry:Projectiles) if (Entry.Value) Entry.Value->DestroyComponent();Projectiles.Reset();ProjectileOrigins.Reset();
+    for (auto& Entry:ProjectileBodies) if (Entry.Value) Entry.Value->DestroyComponent();ProjectileBodies.Reset();
+    for (auto& Entry:ProjectileTrails) if (Entry.Value) Entry.Value->DestroyComponent();ProjectileTrails.Reset();
+    for (auto& Body:SpellDebrisBodies) if (Body) Body->DestroyComponent();SpellDebrisBodies.Reset();SpellDebris.Reset();
+    ProjectileBodiesCreated=0;ProjectileBodiesReleased=0;
     for (auto& Entry:Hazards) if (Entry.Value) Entry.Value->DestroyComponent();Hazards.Reset();
     for (auto& Entry:SlowEffects) if (Entry.Value) Entry.Value->DestroyComponent();SlowEffects.Reset();
     for (auto& Entry:StunEffects) if (Entry.Value) Entry.Value->DestroyComponent();StunEffects.Reset();
@@ -286,7 +357,7 @@ void ARiftArenaPresentation::Synchronize(float DeltaSeconds)
         }
     }
     for (uint64 Id:Removed) {Units[Id]->Destroy();Units.Remove(Id);NextFrostBreath.Remove(Id);}
-    SynchronizeProjectiles(*State);SynchronizeHazards(*State);SynchronizeStatuses(*State);
+    SynchronizeProjectiles(*State);SynchronizeSpellDebris(*State);SynchronizeHazards(*State);SynchronizeStatuses(*State);
     TransientEffects.RemoveAllSwap([](const auto& Effect){return !Effect.IsValid();});
     const int32 Stage=State->phase==rift::Phase::Regulation?(State->elapsed>=120?2:1):State->phaseElapsed>=60?3:2;
     if (Stage>AetherStage && State->phase!=rift::Phase::Finished)
@@ -354,9 +425,59 @@ FString ARiftArenaPresentation::NiagaraDiagnosticsJSON()
         auto Entry=MakeShared<FJsonObject>();Entry->SetNumberField(TEXT("entityId"),double(Pair.Key));
         Entry->SetStringField(TEXT("assetId"),Unit->PresentationAssetId());Entry->SetStringField(TEXT("clip"),Unit->CurrentAnimation().ToString());
         Entry->SetStringField(TEXT("animationAsset"),Unit->AnimationAssetPath());Entry->SetNumberField(TEXT("positionSeconds"),Unit->AnimationPosition());
+        Entry->SetBoolField(TEXT("hasTakenDamage"),Unit->HasBeenDamaged());
+        Entry->SetBoolField(TEXT("healthBarVisible"),!Unit->IsDead()&&Unit->HasBeenDamaged());
         Animations.Add(MakeShared<FJsonValueObject>(Entry));
     }
     Report->SetArrayField(TEXT("unitAnimations"),Animations);
+    TArray<TSharedPtr<FJsonValue>> Missiles,Trails;
+    if (const auto* State=ViewState()) for (const auto& Projectile:State->projectiles)
+    {
+        auto Entry=MakeShared<FJsonObject>();Entry->SetNumberField(TEXT("id"),double(Projectile.id));
+        Entry->SetStringField(TEXT("cardId"),UTF8_TO_TCHAR(Projectile.cardId.c_str()));
+        Entry->SetNumberField(TEXT("sourceEntityId"),double(Projectile.source));Entry->SetNumberField(TEXT("targetEntityId"),double(Projectile.target));
+        Entry->SetStringField(TEXT("sourceTeam"),UTF8_TO_TCHAR(rift::TeamName(Projectile.team).c_str()));
+        if (const auto* SourceEntity=FindEntity(*State,Projectile.source))
+        {
+            const TCHAR* Kind=SourceEntity->kind==rift::EntityKind::Core?TEXT("core"):SourceEntity->kind==rift::EntityKind::Guard?TEXT("guard"):
+                SourceEntity->kind==rift::EntityKind::Building?TEXT("building"):TEXT("troop");
+            Entry->SetStringField(TEXT("sourceKind"),Kind);
+            const auto* Card=rift::FindCard(Projectile.cardId);
+            Entry->SetStringField(TEXT("displayRole"),Card?UTF8_TO_TCHAR(Card->name.c_str()):SourceEntity->kind==rift::EntityKind::Core?TEXT("Core Tower"):
+                SourceEntity->kind==rift::EntityKind::Guard?TEXT("Guard Tower"):TEXT("Unknown source"));
+            Entry->SetStringField(TEXT("sourceRole"),Projectile.cardId.empty()?SourceEntity->kind==rift::EntityKind::Core?TEXT("crown_core"):TEXT("crown_guard"):
+                UTF8_TO_TCHAR(Projectile.cardId.c_str()));
+        }
+        Entry->SetNumberField(TEXT("duration"),Projectile.duration);Entry->SetNumberField(TEXT("remaining"),Projectile.remaining);
+        Entry->SetNumberField(TEXT("progress"),FMath::Clamp(1.-Projectile.remaining/FMath::Max(.001,Projectile.duration),0.,1.));
+        auto* Body=ProjectileBodies.FindRef(Projectile.id).Get();
+        Entry->SetBoolField(TEXT("meshPresent"),Body&&Body->GetStaticMesh());
+        Entry->SetBoolField(TEXT("meshVisible"),Body&&Body->IsVisible());
+        if (Body)
+        {
+            Entry->SetStringField(TEXT("mesh"),Body->GetStaticMesh()?Body->GetStaticMesh()->GetPathName():TEXT("missing"));
+            Entry->SetStringField(TEXT("location"),Body->GetComponentLocation().ToString());
+            Entry->SetStringField(TEXT("rotation"),Body->GetComponentRotation().ToString());
+            Entry->SetStringField(TEXT("scale"),Body->GetComponentScale().ToString());
+            Entry->SetBoolField(TEXT("collisionDisabled"),Body->GetCollisionEnabled()==ECollisionEnabled::NoCollision);
+        }
+        if (const auto* Origin=ProjectileOrigins.Find(Projectile.id)) Entry->SetStringField(TEXT("launchOrigin"),Origin->ToString());
+        if (auto* Target=Visual(Projectile.target)) Entry->SetStringField(TEXT("impactAnchor"),Target->ImpactLocation().ToString());
+        if (auto* Glow=Projectiles.FindRef(Projectile.id).Get()) Entry->SetBoolField(TEXT("glowPaused"),Glow->IsPaused());
+        Missiles.Add(MakeShared<FJsonValueObject>(Entry));
+    }
+    for (const auto& Pair:ProjectileTrails) if (auto* Trail=Pair.Value.Get())
+    {
+        auto Entry=MakeShared<FJsonObject>();Entry->SetStringField(TEXT("name"),Pair.Key.ToString());
+        Entry->SetStringField(TEXT("mesh"),Trail->GetStaticMesh()?Trail->GetStaticMesh()->GetPathName():TEXT("missing"));
+        Entry->SetNumberField(TEXT("instances"),Trail->GetInstanceCount());
+        Trails.Add(MakeShared<FJsonValueObject>(Entry));
+    }
+    Report->SetArrayField(TEXT("projectileVisuals"),Missiles);Report->SetArrayField(TEXT("projectileTrails"),Trails);
+    Report->SetNumberField(TEXT("liveProjectileBodies"),ProjectileBodies.Num());
+    Report->SetNumberField(TEXT("projectileBodiesCreated"),double(ProjectileBodiesCreated));
+    Report->SetNumberField(TEXT("projectileBodiesReleased"),double(ProjectileBodiesReleased));
+    Report->SetNumberField(TEXT("spellDebrisBodies"),SpellDebrisBodies.Num());
     Report->SetBoolField(TEXT("breathSmoke"),FParse::Param(FCommandLine::Get(),TEXT("RiftBreathSmoke")));
     Report->SetNumberField(TEXT("frostBreathPuffs"),FrostBreathPuffs);
     TSet<UNiagaraComponent*> Components;
@@ -379,6 +500,11 @@ FString ARiftArenaPresentation::NiagaraDiagnosticsJSON()
         TArray<UMaterialInterface*> UsedMaterials;Component->GetUsedMaterials(UsedMaterials);
         TArray<TSharedPtr<FJsonValue>> Materials;for(auto* Material:UsedMaterials)if(Material)Materials.Add(MakeShared<FJsonValueString>(Material->GetPathName()));
         Entry->SetArrayField(TEXT("materials"),Materials);
+        float EffectSpriteScale=1.f;bool HasSpriteScale=false;
+        for(auto* Material:UsedMaterials)if(Material&&Material->GetScalarParameterValue(FMaterialParameterInfo(TEXT("RiftSpriteScale")),EffectSpriteScale))
+        {HasSpriteScale=true;break;}
+        Entry->SetBoolField(TEXT("materialSpriteScaleAvailable"),HasSpriteScale);
+        if(HasSpriteScale)Entry->SetNumberField(TEXT("materialSpriteScale"),EffectSpriteScale);
         TArray<TSharedPtr<FJsonValue>> Emitters;
         if(auto Controller=Component->GetSystemInstanceController();Controller&&Controller->IsValid())
         {
@@ -416,6 +542,15 @@ FString ARiftArenaPresentation::NiagaraDiagnosticsJSON()
                         FVector2f Minimum,Maximum;Sizes.GetMinMax(Minimum,Maximum);E->SetStringField(TEXT("spriteSize"),Sizes.Get(0).ToString());
                         E->SetNumberField(TEXT("spriteWidthMin"),Minimum.X);E->SetNumberField(TEXT("spriteHeightMin"),Minimum.Y);
                         E->SetNumberField(TEXT("spriteWidthMax"),Maximum.X);E->SetNumberField(TEXT("spriteHeightMax"),Maximum.Y);
+                        if(HasSpriteScale)
+                        {
+                            // These are material-derived dimensions. Keep the
+                            // actual authored CPU SpriteSize fields unchanged.
+                            E->SetNumberField(TEXT("materialScaledSpriteWidthMin"),Minimum.X*EffectSpriteScale);
+                            E->SetNumberField(TEXT("materialScaledSpriteHeightMin"),Minimum.Y*EffectSpriteScale);
+                            E->SetNumberField(TEXT("materialScaledSpriteWidthMax"),Maximum.X*EffectSpriteScale);
+                            E->SetNumberField(TEXT("materialScaledSpriteHeightMax"),Maximum.Y*EffectSpriteScale);
+                        }
                     }
                 }
                 Emitters.Add(MakeShared<FJsonValueObject>(E));
@@ -429,19 +564,21 @@ FString ARiftArenaPresentation::NiagaraDiagnosticsJSON()
 void ARiftArenaPresentation::SetEffectParameters(UNiagaraComponent* Component,rift::Team Team,float Radius,FVector Source,FVector Target,FLinearColor Color)
 {
     if (!Component) return;if (Color.A<=0.f) Color=ARiftUnitVisual::TeamColor(Team);
-    const uint32 ColorKey=Color.ToFColor(false).ToPackedRGBA();
-    if (!ParticleMaterials.Contains(ColorKey))
+    const float EffectSpriteScale=ParticleSpriteScale(Component->GetAsset()?Component->GetAsset()->GetFName():NAME_None);
+    const uint64 MaterialKey=uint64(Color.ToFColor(false).ToPackedRGBA())|(uint64(FMath::RoundToInt(EffectSpriteScale*1000.f))<<32);
+    if (!ParticleMaterials.Contains(MaterialKey))
     {
         if (auto* Base=LoadObject<UMaterialInterface>(nullptr,TEXT("/Game/Rift/Materials/M_RiftParticle.M_RiftParticle")))
         {
             auto* Material=UMaterialInstanceDynamic::Create(Base,this);Material->SetVectorParameterValue(TEXT("Color"),Color);
-            ParticleMaterials.Add(ColorKey,Material);
+            Material->SetScalarParameterValue(TEXT("RiftSpriteScale"),EffectSpriteScale);
+            ParticleMaterials.Add(MaterialKey,Material);
         }
     }
     Component->SetVariableLinearColor(TEXT("User.Color"),Color);
     Component->SetVariableFloat(TEXT("User.Radius"),Radius);Component->SetVariableFloat(TEXT("User.Strength"),1.f);
     Component->SetVariablePosition(TEXT("User.Source"),Source);Component->SetVariablePosition(TEXT("User.Target"),Target);
-    if (auto* Material=ParticleMaterials.Find(ColorKey)) Component->SetVariableMaterial(TEXT("User.RiftMaterial"),Material->Get());
+    if (auto* Material=ParticleMaterials.Find(MaterialKey)) Component->SetVariableMaterial(TEXT("User.RiftMaterial"),Material->Get());
 }
 UNiagaraComponent* ARiftArenaPresentation::SpawnEffect(FName Name,FVector Position,rift::Team Team,float Radius,bool Persistent)
 {
@@ -454,6 +591,7 @@ UNiagaraComponent* ARiftArenaPresentation::SpawnEffect(FName Name,FVector Positi
         const bool Radial=Name==TEXT("Nova") || Name==TEXT("Meteor") || Name==TEXT("MeteorTick") ||
             Name==TEXT("Aura") || Name==TEXT("TowerDestroy") || Name==TEXT("CoreAwaken") || Name==TEXT("BulletBurst");
         if (Radial) Component->SetWorldScale3D(FVector(FMath::Max(.1f,Radius/100.f)));
+        else if (Name==TEXT("Impact")) Component->SetWorldScale3D(FVector(FMath::Clamp(Radius/25.f,.75f,4.f)));
         Component->Activate(true);
         if (!Persistent)
         {
@@ -469,29 +607,192 @@ UNiagaraComponent* ARiftArenaPresentation::SpawnEffect(FName Name,FVector Positi
 }
 void ARiftArenaPresentation::SynchronizeProjectiles(const rift::Snapshot& State)
 {
+    for (auto& Entry:ProjectileTrails) if (Entry.Value) Entry.Value->ClearInstances();
+    auto* Replay=GetGameInstance()->GetSubsystem<URiftReplaySubsystem>();
+    const float FlightSpeed=State.phase==rift::Phase::Finished?0.f:Replay&&Replay->IsPlaying()?Replay->Speed():Match->GetSpeed();
+    TMap<UInstancedStaticMeshComponent*,TArray<FTransform>> TrailTransforms;
     TSet<uint64> Present;
     for (const auto& Projectile:State.projectiles)
     {
-        Present.Add(Projectile.id);
         UNiagaraComponent* Component=Projectiles.FindRef(Projectile.id);
         auto* Source=Visual(Projectile.source);auto* Target=Visual(Projectile.target);
-        if (!Target) continue;
+        // A cancelled shot never invents a final impact. Damage events alone
+        // own contact effects, including target death and terminal results.
+        if (!Target || Target->IsDead()) continue;
+        Present.Add(Projectile.id);
         if (!Component)
         {
-            const FVector Start=Source?Source->AttackLocation():URiftMatchSubsystem::WorldPoint(Projectile.origin,135);
+            FVector Start=URiftMatchSubsystem::WorldPoint(Projectile.origin,135);
+            if (const auto* Recorded=ProjectileOrigins.Find(Projectile.id)) Start=*Recorded;
+            else if (Source)
+            {
+                // A replay may first expose a projectile after its caster has
+                // moved. Translate the real socket offset onto its recorded
+                // launch position rather than moving the shot's origin.
+                const FVector SourceXY(Source->GetActorLocation().X,Source->GetActorLocation().Y,0.);
+                Start=URiftMatchSubsystem::WorldPoint(Projectile.origin)+Source->AttackLocation()-SourceXY;
+            }
             Component=SpawnEffect(FlightFor(Projectile.cardId),Start,Projectile.team,18.f,true);
             if (!Component) continue;
             Projectiles.Add(Projectile.id,Component);ProjectileOrigins.Add(Projectile.id,Start);
+            if (auto* Body=MakeProjectileBody(Projectile.cardId,Projectile.team))
+            {ProjectileBodies.Add(Projectile.id,Body);++ProjectileBodiesCreated;}
         }
         const FVector Start=ProjectileOrigins.FindRef(Projectile.id), End=Target->ImpactLocation();
-        const float Progress=FMath::Clamp(1.-Projectile.remaining/FMath::Max(.001,Projectile.duration),0.,1.);
-        FVector Position=FMath::Lerp(Start,End,Progress);
-        if (Projectile.cardId=="ember_archer" || Projectile.cardId=="archer_tower") Position.Z+=FMath::Sin(Progress*UE_PI)*30.f;
-        Component->SetWorldLocation(Position);Component->SetWorldRotation((End-Position).Rotation());
+        const double Duration=FMath::Max(.001,Projectile.duration);
+        const double Progress=FMath::Clamp(1.-Projectile.remaining/Duration,0.,1.);
+        const double Age=Progress*Duration;
+        const FVector Position=ProjectilePathPoint(Projectile.cardId,Start,End,Progress);
+        const FVector Tangent=ProjectilePathPoint(Projectile.cardId,Start,End,FMath::Min(1.,Progress+.003))-
+            ProjectilePathPoint(Projectile.cardId,Start,End,FMath::Max(0.,Progress-.003));
+        Component->SetWorldLocation(Position);Component->SetWorldRotation(Tangent.Rotation());
+        Component->SetWorldScale3D(FVector::OneVector);
         SetEffectParameters(Component,Projectile.team,18,Start,End,EffectColor(FlightFor(Projectile.cardId),Projectile.team));
+        // A launch or paused replay seek can expose a new system before its
+        // first world tick. Seed its real authored graph once, after assigning
+        // the complete flight transform/parameters, so pausing cannot hide its
+        // first particle. Age also guards delayed asset activation: initialized
+        // systems never receive another warm step while paused or running.
+        if (auto Controller=Component->GetSystemInstanceController();Controller&&Controller->IsValid()&&Controller->GetAge()==0.f&&
+            Component->GetAsset()&&Component->GetAsset()->IsReadyToRun())
+        {
+            Component->SetPaused(false);Component->SetCustomTimeDilation(1.f);
+            Component->AdvanceSimulation(1,1.f/60.f);
+            if (auto Initialized=Component->GetSystemInstanceController())Initialized->WaitForConcurrentTickAndFinalize();
+        }
+        Component->SetCustomTimeDilation(FlightSpeed);Component->SetPaused(FlightSpeed<=0.f);
+        if (auto* Body=ProjectileBodies.FindRef(Projectile.id).Get())
+        {
+            const float Scale=MissileFor(Projectile.cardId)==TEXT("bullet_round")?3.f:1.25f;
+            Body->SetWorldTransform(FTransform(ProjectileMeshOrientation(Projectile.cardId,Tangent,Age),Position,FVector(Scale)));
+        }
+        if (auto* Trail=ProjectileTrail(Projectile.cardId,Projectile.team))
+        {
+            auto& Instances=TrailTransforms.FindOrAdd(Trail);
+            const double TrailAge=FMath::Min(Age,Projectile.cardId=="storm_raven"?.10:.065);
+            constexpr int32 Segments=5;
+            for (int32 Segment=0;Segment<Segments;++Segment)
+            {
+                const double A=Progress-TrailAge/Duration*double(Segment)/Segments;
+                const double B=Progress-TrailAge/Duration*double(Segment+1)/Segments;
+                const FVector Front=ProjectilePathPoint(Projectile.cardId,Start,End,A);
+                const FVector Rear=ProjectilePathPoint(Projectile.cardId,Start,End,B);
+                const FVector SegmentVector=Front-Rear;
+                const double Length=SegmentVector.Length();if (Length<1.) continue;
+                const float Width=1.8f*(1.f-float(Segment)/Segments)*(Projectile.cardId=="arc_mage"?1.6f:Projectile.cardId=="storm_raven"?1.4f:.9f);
+                const FVector MeshSize=Trail->GetStaticMesh()->GetBounds().BoxExtent*2.;
+                const FVector Scale(Length/FMath::Max(1.,MeshSize.X),Width,Width);
+                Instances.Add(FTransform(FRotationMatrix::MakeFromX(SegmentVector).ToQuat(),(Front+Rear)*.5,Scale));
+            }
+        }
     }
+    for (auto& Entry:TrailTransforms) Entry.Key->AddInstances(Entry.Value,false,true,false);
     TArray<uint64> Removed;for (const auto& Entry:Projectiles) if (!Present.Contains(Entry.Key)) Removed.Add(Entry.Key);
-    for (uint64 Id:Removed) {if (Projectiles[Id]) Projectiles[Id]->DestroyComponent();Projectiles.Remove(Id);ProjectileOrigins.Remove(Id);}
+    for (uint64 Id:Removed) RemoveProjectile(Id);
+    Removed.Reset();for (const auto& Entry:ProjectileOrigins) if (!Present.Contains(Entry.Key)) Removed.Add(Entry.Key);
+    for (uint64 Id:Removed) ProjectileOrigins.Remove(Id);
+}
+UStaticMeshComponent* ARiftArenaPresentation::MakeProjectileBody(const std::string& Card,rift::Team Team)
+{
+    const FName MeshId=MissileFor(Card);
+    UStaticMesh* Mesh=ProjectileAssets.FindRef(MeshId);
+    if (!ProjectileAssets.Contains(MeshId))
+    {
+        Mesh=LoadObject<UStaticMesh>(nullptr,*FString::Printf(TEXT("/Game/Rift/Environment/SM_%s.SM_%s"),*MeshId.ToString(),*MeshId.ToString()));
+        ProjectileAssets.Add(MeshId,Mesh);
+        if (!Mesh) RIFT_LOG(LogRift,Error,TEXT("Authored projectile mesh missing: %s"),*MeshId.ToString());
+    }
+    if (!Mesh) return nullptr;
+    auto* Body=NewObject<UStaticMeshComponent>(this);Body->SetupAttachment(Scene);Body->SetMobility(EComponentMobility::Movable);
+    Body->SetStaticMesh(Mesh);Body->SetCollisionEnabled(ECollisionEnabled::NoCollision);Body->SetGenerateOverlapEvents(false);
+    Body->SetCastShadow(false);Body->bReceivesDecals=false;Body->RegisterComponent();AddInstanceComponent(Body);
+    for (int32 Index=0;Index<Body->GetNumMaterials();++Index)
+        if (auto* Material=Body->CreateDynamicMaterialInstance(Index))
+        {
+            Material->SetVectorParameterValue(TEXT("TeamColor"),ARiftUnitVisual::TeamColor(Team));
+            Material->SetScalarParameterValue(TEXT("RiftTeamEmissive"),.2f);
+        }
+    return Body;
+}
+UInstancedStaticMeshComponent* ARiftArenaPresentation::ProjectileTrail(const std::string& Card,rift::Team Team)
+{
+    const FName Flight=FlightFor(Card),Key(*FString::Printf(TEXT("ProjectileTrail_%s_%d"),*Flight.ToString(),int32(Team)));
+    if (auto* Existing=ProjectileTrails.Find(Key)) return Existing->Get();
+    const FName MeshId(TEXT("projectile_trail"));UStaticMesh* Mesh=ProjectileAssets.FindRef(MeshId);
+    if (!ProjectileAssets.Contains(MeshId))
+    {
+        Mesh=LoadObject<UStaticMesh>(nullptr,TEXT("/Game/Rift/Environment/SM_projectile_trail.SM_projectile_trail"));
+        ProjectileAssets.Add(MeshId,Mesh);
+        if (!Mesh) RIFT_LOG(LogRift,Error,TEXT("Authored projectile trail mesh missing"));
+    }
+    if (!Mesh) return nullptr;
+    auto* Component=NewObject<UInstancedStaticMeshComponent>(this,Key);Component->SetupAttachment(Scene);
+    Component->SetMobility(EComponentMobility::Movable);Component->SetStaticMesh(Mesh);Component->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    Component->SetGenerateOverlapEvents(false);Component->SetCastShadow(false);Component->bReceivesDecals=false;
+    Component->RegisterComponent();AddInstanceComponent(Component);ProjectileTrails.Add(Key,Component);
+    for (int32 Index=0;Index<Component->GetNumMaterials();++Index)
+        if (auto* Material=Component->CreateDynamicMaterialInstance(Index))
+        {
+            const FLinearColor Color=EffectColor(Flight,Team);
+            Material->SetVectorParameterValue(TEXT("Color"),Color);
+            Material->SetVectorParameterValue(TEXT("TeamColor"),Color);
+            Material->SetScalarParameterValue(TEXT("RiftTeamEmissive"),.7f);
+        }
+    return Component;
+}
+void ARiftArenaPresentation::RemoveProjectile(uint64 Id)
+{
+    if (auto* Component=Projectiles.FindRef(Id).Get()) Component->DestroyComponent();
+    if (auto* Body=ProjectileBodies.FindRef(Id).Get()) {Body->DestroyComponent();++ProjectileBodiesReleased;}
+    Projectiles.Remove(Id);ProjectileBodies.Remove(Id);ProjectileOrigins.Remove(Id);
+}
+void ARiftArenaPresentation::SpawnSpellDebris(const rift::Event& Event)
+{
+    const bool Meteor=Event.cardId=="meteor_shards";
+    if (!Meteor && Event.cardId!="bullet_burst") return;
+    const auto* Card=rift::FindCard(Event.cardId);if (!Card) return;
+    // These two spells resolve immediately in the game rules. The rounds and
+    // shattered hot stone radiate from that actual impact; no delayed damage,
+    // fictitious pre-impact travel, or projectile gameplay is introduced.
+    const int32 Count=Meteor?5:Card->rounds;
+    for (int32 Index=0;Index<Count;++Index)
+    {
+        // Bound seek/event bursts without changing the authoritative event
+        // stream. Even extreme replay stepping keeps at most 96 mesh pieces.
+        if (SpellDebrisBodies.Num()>=96)
+        {
+            if (SpellDebrisBodies[0]) SpellDebrisBodies[0]->DestroyComponent();
+            SpellDebrisBodies.RemoveAt(0);SpellDebris.RemoveAt(0);
+        }
+        auto* Body=MakeProjectileBody(Event.cardId,Event.team);if (!Body) continue;
+        FSpellDebris Piece;Piece.Meteor=Meteor;Piece.Born=Event.time;Piece.Duration=Meteor?.44:.22;
+        Piece.Scale=Meteor?.65f:2.1f;Piece.Gravity=Meteor?1500.f:120.f;
+        Piece.Spin=Meteor?float((Index%2?1:-1)*(6.+Index)):0.f;
+        const double Angle=UE_TWO_PI*(double(Index)/Count+double(Event.sequence%17)/83.);
+        const double Speed=Meteor?150.:Card->spellRadius*100./Piece.Duration*.82;
+        Piece.Origin=URiftMatchSubsystem::WorldPoint(Event.position,Meteor?34.:24.);
+        Piece.Velocity=FVector(FMath::Cos(Angle)*Speed,FMath::Sin(Angle)*Speed,Meteor?180.+Index*18.:18.+(Index%3)*10.);
+        Body->SetWorldTransform(FTransform(ProjectileMeshOrientation("bullet_burst",Piece.Velocity,0.),Piece.Origin,FVector(Piece.Scale)));
+        SpellDebrisBodies.Add(Body);SpellDebris.Add(Piece);
+    }
+}
+void ARiftArenaPresentation::SynchronizeSpellDebris(const rift::Snapshot& State)
+{
+    for (int32 Index=SpellDebris.Num()-1;Index>=0;--Index)
+    {
+        const auto& Piece=SpellDebris[Index];auto* Body=SpellDebrisBodies[Index].Get();
+        const double Age=FMath::Max(0.,State.elapsed-Piece.Born);
+        if (!Body || Age>=Piece.Duration || State.phase==rift::Phase::Finished)
+        {
+            if (Body) Body->DestroyComponent();SpellDebrisBodies.RemoveAtSwap(Index);SpellDebris.RemoveAtSwap(Index);continue;
+        }
+        FVector Position=Piece.Origin+Piece.Velocity*Age;Position.Z=FMath::Max(8.,Position.Z-Piece.Gravity*Age*Age*.5);
+        FVector Direction=Piece.Velocity;Direction.Z-=Piece.Gravity*Age;
+        FQuat Rotation=ProjectileMeshOrientation("bullet_burst",Direction,0.);
+        if (Piece.Meteor) Rotation=Rotation*FQuat(FVector::ForwardVector,float(Age*Piece.Spin));
+        const float Fade=FMath::Clamp(float((Piece.Duration-Age)/.065),0.f,1.f);
+        Body->SetWorldTransform(FTransform(Rotation,Position,FVector(Piece.Scale*Fade)));
+    }
 }
 void ARiftArenaPresentation::SynchronizeHazards(const rift::Snapshot& State)
 {
@@ -545,6 +846,7 @@ void ARiftArenaPresentation::OnSimulationEvent(const rift::Event& Event)
         {
             if (State) if (const auto* Entity=FindEntity(*State,Event.source))
                 Source->SetActorRotation(FRotator(0,FMath::RadiansToDegrees(FMath::Atan2(Entity->facing.z,Entity->facing.x)),0));
+            if (Target) Source->AimAt(Target->ImpactLocation());
             Source->AttackAt(Event.time,Event.amount);
         }
         const FVector Origin=Source?Source->AttackLocation():Position;
@@ -557,12 +859,38 @@ void ARiftArenaPresentation::OnSimulationEvent(const rift::Event& Event)
         if (Event.cardId=="frost_fang")
         {auto* FX=SpawnEffect(TEXT("Frost"),Origin,Event.team,70);SetEffectParameters(FX,Event.team,70,Origin,Position);}
     }
+    else if (Event.type=="projectile_launch")
+    {
+        const FVector SourceXY=Source?FVector(Source->GetActorLocation().X,Source->GetActorLocation().Y,0.):FVector::ZeroVector;
+        const FVector Origin=Source?URiftMatchSubsystem::WorldPoint(Event.position)+Source->AttackLocation()-SourceXY:
+            URiftMatchSubsystem::WorldPoint(Event.position,135);
+        // Events intentionally do not carry projectile IDs. A fast simulation
+        // frame can drain several fixed steps, so an already-resolved launch
+        // must not overwrite a newer shot's muzzle. Match the recorded deadline
+        // within the one-step creation/update interval, also valid for replay.
+        if (State)
+        {
+            uint64 Shot=0;double BestDeadlineError=.035;
+            for (const auto& Projectile:State->projectiles)
+                if (Projectile.source==Event.source && Projectile.target==Event.target && Projectile.cardId==Event.cardId)
+                {
+                    const double Error=FMath::Abs(State->elapsed+Projectile.remaining-Event.until);
+                    if (Error<BestDeadlineError) {Shot=Projectile.id;BestDeadlineError=Error;}
+                }
+            if (Shot) ProjectileOrigins.Add(Shot,Origin);
+        }
+        auto* Flash=SpawnEffect(TEXT("Impact"),Origin,Event.team,28);
+        if (Flash) Flash->SetWorldRotation((Position-Origin).Rotation());
+        SetEffectParameters(Flash,Event.team,28,Origin,Position,EffectColor(FlightFor(Event.cardId),Event.team));
+    }
     else if (Event.type=="damage")
     {
-        if (Target) Target->HitAt(Event.time);
-        const FName FX=Event.damageKind=="dot"?TEXT("MeteorTick"):Event.cardId=="frost_fang"?TEXT("Frost"):TEXT("Impact");
-        auto* Impact=SpawnEffect(FX,Position,Event.team,Event.damageKind=="splash"?120:45);
-        SetEffectParameters(Impact,Event.team,Event.damageKind=="splash"?120:45,Position,Position,EffectColor(FlightFor(Event.cardId),Event.team));
+        if (Target && Event.amount>0) Target->HitAt(Event.time,Event.amount);
+        const bool ArcPrimary=Event.cardId=="arc_mage" && Event.damageKind=="attack";
+        const FName FX=Event.damageKind=="dot"?TEXT("MeteorTick"):Event.cardId=="frost_fang"?TEXT("Frost"):ArcPrimary?TEXT("Nova"):TEXT("Impact");
+        const float Radius=ArcPrimary?155.f:Event.damageKind=="splash"?85.f:Event.cardId=="storm_raven"?80.f:Event.cardId=="sky_manta"?62.f:55.f;
+        auto* Impact=SpawnEffect(FX,Position,Event.team,Radius);
+        SetEffectParameters(Impact,Event.team,Radius,Position,Position,EffectColor(FlightFor(Event.cardId),Event.team));
         if (Event.damageKind!="initial" && Event.damageKind!="aura" && Event.damageKind!="dot")
         {
             // Contact has a material identity. Structures keep their stone/wood
@@ -607,6 +935,7 @@ void ARiftArenaPresentation::OnSimulationEvent(const rift::Event& Event)
             const FName FX=Event.cardId=="bullet_burst"?TEXT("BulletBurst"):Event.cardId=="nova_flask"?TEXT("Nova"):TEXT("Meteor");
             const FName Sound=Event.cardId=="bullet_burst"?TEXT("bullet_burst"):Event.cardId=="nova_flask"?TEXT("nova_impact"):TEXT("meteor_impact");
             SpawnEffect(FX,URiftMatchSubsystem::WorldPoint(Event.position,12),Event.team,Card->spellRadius*100);PlayEventSound(Sound,Position,.75f);
+            SpawnSpellDebris(Event);
         }
     }
     else if (Event.type=="phase") PlayEventSound(Event.reason=="tiebreaker"?TEXT("tiebreaker"):TEXT("overtime"),FVector::ZeroVector,.65f);

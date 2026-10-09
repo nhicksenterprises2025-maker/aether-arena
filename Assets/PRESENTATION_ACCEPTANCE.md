@@ -2,7 +2,32 @@
 
 The runtime implementation is in `Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation` and `Private/Presentation`. `ARiftArenaPresentation` consumes `URiftMatchSubsystem::ViewState()` and `OnEvent`. `ARiftUnitVisual` has no gameplay collision and never applies damage. Existing simulation, card costs, health, damage, targeting, pathing, lifetimes and status durations remain authoritative.
 
-## 1.1.0 presentation evidence
+## 1.2.0 source and executed presentation checks
+
+The fourteen portraits are renders of the production Blender meshes/rigs exported and imported into the native game. Enlarged models, pose blending and distance-driven gait, separate guard-cannon aim/recoil, mesh projectiles, particle vertex scaling, the centered bottom hand and 35° battle view are documented in `Docs/MODEL_PRESENTATION_1.2.0.md`. Numerical combat and the authoritative entity schema remain unchanged.
+
+Final Editor Build9 succeeded in 14.84 seconds. The frozen suite at `Build/Automation/20261009-114843/Report/index.json` passed all thirteen scenarios in 75.499664 seconds: eleven clean successes and two successes with warnings, zero failures/unrun tests, clean commandlet/wrapper exits and all 124 source hashes/two Editor DLLs unchanged. The warnings were expected corrupt-profile backup recovery and an engine HTTP connectivity probe timeout. UnitMotion proves first-damage health visibility, full-heal persistence, zero/negative/nonfinite hit rejection, passive building-aging exclusion, visual reuse and actual archived replay seeking.
+
+The fresh registry contains 289 assets: 113 animation clips, 25 StaticMeshes, 61 SoundWaves, fourteen card DataAssets, seventeen Niagara systems and eleven PhysicsAssets, with zero registry/native-load errors. The independent portrait verifier passes 352 source/export/PNG/pose checks across all fourteen cards.
+
+Final Shipping build/cook/archive completed in 127.64 seconds. Native executable: 167,687,168 bytes / SHA-256 `5a209be2b0d17cf7f2aebfc41c9eff9e52e791b1da8b8c1cb1c93d8d9b1a322e`. Actual graph execution passed 78 Editor and 80 Shipping assertions across all seventeen systems, with 156 immediate particles and seven persistent lifecycles. Reports are `Artifacts/QA/model12-{editor,shipping}-vfx-final9-verification.json`.
+
+Final sound-enabled Editor and Shipping playback each passed 49 assertions with all 61 waves loaded, clean exits and zero clipped floats:
+
+| Run under `Artifacts/QA/Audio` | Normal peak / RMS | Overload peak / RMS | Clipped floats |
+| --- | --- | --- | --- |
+| `model12-editor-audio-final9` | 0.214396551 / 0.048123382 | 0.800236821 / 0.171819371 | 0 in both captures |
+| `model12-shipping-audio-final9` | 0.197836846 / 0.050627855 | 0.801364958 / 0.173221058 | 0 in both captures |
+
+Both captures are stereo 48 kHz, measured after the live effect chain before PCM16 encoding. Shipping audio/VFX identify the exact native executable above; mixer measurements are separate from subjective listening. `Docs/QA/presentation-checks-1.2.0.json` retains sanitized executed results with source-report provenance.
+
+Actual launcher Play verified all 48 final game files, launched the native executable through its real routed command, produced a 1280×720 Home capture, preserved the legacy save and passed environment save-root forwarding with clean exits. MSI 1.2.0 compiled with standard ICE validation. All 51 real lifecycle checks passed during the public 1.1.0 → 1.2.0 upgrade, including installed Play, loaded CRT identity, repair, uninstall and separate-save preservation; Windows payload finalization passed against the exact final MSI/ZIP/launcher. All three final serial 90-second isolated performance runs completed with clean exits and native diagnostics free of Error/Fatal records. Normal AI battle had no frame over 50 ms; artificial repeated mass-spawn/restart stress retained ten and thirteen hitches, with maxima 85.929 and 140.815 ms. Meta work stayed paused with zero games during the active-battle measurement. Complete frame/thread/GPU/memory tables and hitch details belong to `Docs/RELEASE_QA.md`. Public delivery remains pending. Earlier Build5, left-tray and first Shipping observations are provisional development history; completed 1.1.0/1.0.0 measurements below remain explicitly historical.
+
+The final packaged renderer review at `Docs/QA/presentation-review.json` accepts 26 actual inspected Shipping PNGs with 78 exact image/run/state pins, twelve public pages, three battle aspect ratios, enlarged UI, replay, placement, effects/projectiles and real phase/result fixtures. At 1280×720/UI scale 1.4, the ground is 507.0625 pixels wide and thirty troop bounds measure minimum/mean/maximum height 33.721/56.733/97.221 pixels. All 38 model/anchor bounds remain safe; the compact 640 × 156 centered bottom hand retains its 64 × 80 portraits, complete card controls, Next and Aether below the player Core. Ground widths are 934.426 pixels at 1920×1080, 672.573 at 1280×800 (16:10) and 934.428 at 2560×1080 (21:9).
+
+All 26 captured states show zero healthy-HP visibility violations; actual damaged live/replay frames show HP while status and lifetime remain independent. Nine real paused projectiles/launches cover seven ranged roles with nine particles and 45 mesh trail instances. Gold/cyan heads remain visibly restrained; the still proves neither continuous motion nor nine broad glow quads. The breath frame contains two Frost puff systems with eight particles each (16 Frost particles), plus 48 Nova particles for 64 world particles. Real double/triple-Aether and overtime banners at delay 1.2 seconds and persistent tiebreaker/victory panels were inspected.
+
+## Historical 1.1.0 presentation evidence
 
 The 1.1.0 presentation update preserves the existing arena, character and tower
 meshes, materials, card illustrations, animations, scenery and Niagara assets.
@@ -18,8 +43,8 @@ art, phase announcements, a drag preview and an Escape pause menu. Training
 shows current speed, Aether, friendly/enemy AI and tower health. Its projected
 paths, front/rear sight, ranges, targets, hard locks and tile coordinates use
 Slate painting so they also work in Shipping; these remain default-off tools.
-Current renderer observations and their limits belong to
-`Docs/QA/presentation-review.json`, rather than the historical captures below.
+Historical 1.1.0 renderer observations and their limits belong to
+`Docs/QA/historical-presentation-review-1.1.0.json`; current 1.2.0 review is recorded above.
 
 The final Shipping Niagara run at
 `Artifacts/QA/polish15-shipping-vfx-final-verification.json` passed all 80
@@ -75,7 +100,7 @@ binary's test.
 All sections below retain the original release's implementation notes, failed
 captures, fixes and measured review. Their 41-sound/263-asset counts, old UI
 screenshots, runtime hashes and acceptance status refer to 1.0.0 and are not
-the current 1.1.0 inventory or release certification.
+the current 1.2.0 inventory or release certification.
 
 ### Connected systems
 

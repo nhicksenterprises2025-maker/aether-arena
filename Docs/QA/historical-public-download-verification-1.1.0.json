@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "version": "1.1.0",
+  "passed": true,
+  "utc": "2026-10-09T03:51:23.0221252Z",
+  "files": [
+    {
+      "file": "RiftCrownArena-Windows-x64-1.1.0.zip",
+      "url": "https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.1.0/RiftCrownArena-Windows-x64-1.1.0.zip",
+      "bytes": 448655642,
+      "sha256": "fc32c6add036ee0c4baaf2656bfb599642fed05028231e17da197db92555c5f2",
+      "matchesTestedPayload": true,
+      "anonymousHttpsDownload": true
+    },
+    {
+      "file": "RiftCrownArena-Setup.msi",
+      "url": "https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.1.0/RiftCrownArena-Setup.msi",
+      "bytes": 429428840,
+      "sha256": "ed7244eb6909f8a9529eb1d5da0cb1fc1fe2a37f7175fe9cf74e5446cf663491",
+      "matchesTestedPayload": true,
+      "anonymousHttpsDownload": true
+    }
+  ],
+  "scope": "Fresh anonymous downloads of the complete public game ZIP and MSI, compared byte-for-byte by size and SHA-256 to the exact locally tested release."
+}

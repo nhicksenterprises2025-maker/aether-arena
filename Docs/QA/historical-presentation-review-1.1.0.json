@@ -1,0 +1,2463 @@
+{
+  "schema": 1,
+  "version": "1.1.0",
+  "reviewedUTC": "2026-10-09T03:34:20.2439628+00:00",
+  "createdUTC": "2026-10-09T03:35:28.0130658+00:00",
+  "method": "Visual inspection of 29 actual final native Shipping PNGs by the UI and battle reviewers. Each freshly generated image, successful launch metadata and captured state is pinned to its inspected bytes and UTC review time; native executable SHA-256 0f35c7e9f52bb6009876c5e2eef23be8d4033712d844a91f04a8c28c68aa176b. No older or unseen frames reused.",
+  "captureCount": 29,
+  "captures": [
+    {
+      "stem": "polish15-shipping-home",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-home.png",
+          "sha256": "5235e46134cde67e9c830e72305ef89ed2f1115e32df27c71aee9cc3ebf9dbe0",
+          "bytes": 837836
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-home.json",
+          "sha256": "b2d70dfd67c41658b27da1bf449e8cf8ff3caca5c39e55057370fdbbae482291",
+          "bytes": 1495
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-home.state.json",
+          "sha256": "b1810665381737e681f7a2bc59fbdca4ca933e2050dadd0d4eb51a5ddab5e525",
+          "bytes": 1510
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:26:41.0000000+00:00",
+      "observation": "Actual 1920×1080 Shipping lobby: primary battle action, two-line Training/Developer Lab, eight illustrated active cards, deck readout and Field Manual shortcut are legible and inside their panels; all navigation buttons fit. No overlap between hero art, actions or deck summary.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": null,
+      "speed": 1,
+      "events": {},
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": false,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 1,
+        "minimumZoom": 0.8500000238418579,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 9511.111328125,
+        "safeTop": 0,
+        "safeBottom": 1,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.3528037707010905,
+            "screenY": 0.07853115223072193,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.3528037389119466,
+            "screenY": 0.759365392614294,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.07853117342348452,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.759365392614294,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-loadout",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-loadout.png",
+          "sha256": "9cd6c968dd83ad400f936e079c84adf89b67ab415e0e51bc70eb082d6893ef06",
+          "bytes": 643108
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-loadout.json",
+          "sha256": "b7bd2271f66817ab8983f9bce388e1a7dc4f4bd7b55e809ab775929cef1344c9",
+          "bytes": 1510
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-loadout.state.json",
+          "sha256": "b1810665381737e681f7a2bc59fbdca4ca933e2050dadd0d4eb51a5ddab5e525",
+          "bytes": 1510
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:26:41.0000000+00:00",
+      "observation": "Actual 1920×1080 Shipping loadout: all five presets and eight numbered illustrated cards are visible; slots 1–4 say OPENING and 5–8 QUEUED. Cost/type and IN DECK chips, single deck-name edit, readiness message and SAVE & SELECT / TEST DECK / RESET DRAFT fit. Role summary and expandable analysis are readable. Available collection continues below the fold in the scroll area.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": null,
+      "speed": 1,
+      "events": {},
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": false,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 1,
+        "minimumZoom": 0.8500000238418579,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 9511.111328125,
+        "safeTop": 0,
+        "safeBottom": 1,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.3528037707010905,
+            "screenY": 0.07853115223072193,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.3528037389119466,
+            "screenY": 0.759365392614294,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.07853117342348452,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.759365392614294,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-cards",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-cards.png",
+          "sha256": "0d411703d265e7b96017d00318e1288975479aa641b6d9520e39b31b0c208e4b",
+          "bytes": 1433002
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-cards.json",
+          "sha256": "bcc42c36f3bb4325eae434c79a8621ed742ea59d874c3249a2386f1b08a3caa3",
+          "bytes": 1500
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-cards.state.json",
+          "sha256": "b1810665381737e681f7a2bc59fbdca4ca933e2050dadd0d4eb51a5ddab5e525",
+          "bytes": 1510
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:26:41.0000000+00:00",
+      "observation": "Actual 1920×1080 Shipping collection: all fourteen original illustrations appear in two clear rows with distinct costs, full card names and type bands. Count, category chips and BUILD A BATTLE DECK action fit with no clipped names or artwork.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": null,
+      "speed": 1,
+      "events": {},
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": false,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 1,
+        "minimumZoom": 0.8500000238418579,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 9511.111328125,
+        "safeTop": 0,
+        "safeBottom": 1,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.3528037707010905,
+            "screenY": 0.07853115223072193,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.3528037389119466,
+            "screenY": 0.759365392614294,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.07853117342348452,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.759365392614294,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-carddetail",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-carddetail.png",
+          "sha256": "9b2764144e1b57a5d05f7c05048add350b7701083bdafc468246871664cbb948",
+          "bytes": 531838
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-carddetail.json",
+          "sha256": "f83e3eda9dc7320e061be4ff53dfd0068c7862045e50dfa58684bb7d3b44ae55",
+          "bytes": 1525
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-carddetail.state.json",
+          "sha256": "b1810665381737e681f7a2bc59fbdca4ca933e2050dadd0d4eb51a5ddab5e525",
+          "bytes": 1510
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:27:10.0000000+00:00",
+      "observation": "Actual 1920×1080 Shipping Ironclad detail: preserved illustration, full name, one-member/ground/3-Aether chips and six grouped stats are legible (HP 840, damage 96, hit interval 1.00 s, range 1.35, movement 2.25 and sight 8/5). Targets and advice fit; strong/weak/partner relations have readable original-art thumbnails and wrapped explanations. Additional rows remain below the fold in the scroll area.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": null,
+      "speed": 1,
+      "events": {},
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": false,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 1,
+        "minimumZoom": 0.8500000238418579,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 9511.111328125,
+        "safeTop": 0,
+        "safeBottom": 1,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.3528037707010905,
+            "screenY": 0.07853115223072193,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.3528037389119466,
+            "screenY": 0.759365392614294,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.07853117342348452,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.759365392614294,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-settings",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-settings.png",
+          "sha256": "f598d67a806eedb9fb13df3211114333141820e107b8c0ff5739a59ccfc8db1d",
+          "bytes": 205821
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-settings.json",
+          "sha256": "79e99d87a0c091a9ac9a1a3dff490e826349ef81b08cf6f83014f6e2eda28799",
+          "bytes": 1515
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-settings.state.json",
+          "sha256": "b1810665381737e681f7a2bc59fbdca4ca933e2050dadd0d4eb51a5ddab5e525",
+          "bytes": 1510
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:27:10.0000000+00:00",
+      "observation": "Actual 1920×1080 Shipping settings: window mode/resolution/VSync/FPS, four quality presets, all six quality controls, four audio sliders, UI/camera sliders, input and deployment choices and APPLY & SAVE SETTINGS are visible inside the page. Closed dropdown state was inspected; opened option lists were not shown.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": null,
+      "speed": 1,
+      "events": {},
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": false,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 1,
+        "minimumZoom": 0.8500000238418579,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 9511.111328125,
+        "safeTop": 0,
+        "safeBottom": 1,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.3528037707010905,
+            "screenY": 0.07853115223072193,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.3528037389119466,
+            "screenY": 0.759365392614294,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.07853117342348452,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.759365392614294,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-help",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-help.png",
+          "sha256": "d27d15554b511ef426cf943a122b4592739d42d929dad90a8b0eef2d404d94da",
+          "bytes": 397535
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-help.json",
+          "sha256": "c41b62b3327b003f7adc676329b377bc81cac5dd7424b093fdae697758e2bc13",
+          "bytes": 1495
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-help.state.json",
+          "sha256": "b1810665381737e681f7a2bc59fbdca4ca933e2050dadd0d4eb51a5ddab5e525",
+          "bytes": 1510
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:27:10.0000000+00:00",
+      "observation": "Actual 1920×1080 Shipping Field Manual: three numbered columns clearly explain hand commands, arena restrictions and actual Aether/cycle timing. Key caps, wrapped right-click label and body copy fit within panels. The next three chapters begin below the visible fold in the bounded scroll area; the first-row commands include 1–4, click, drag, right click, Escape, wheel and F9.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": null,
+      "speed": 1,
+      "events": {},
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": false,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 1,
+        "minimumZoom": 0.8500000238418579,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 9511.111328125,
+        "safeTop": 0,
+        "safeBottom": 1,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.3528037707010905,
+            "screenY": 0.07853115223072193,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.3528037389119466,
+            "screenY": 0.759365392614294,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.07853117342348452,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.759365392614294,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-replays",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-replays.png",
+          "sha256": "11c4d83c86f9edff9e9d13eb08928094c81198ed52e004701e5d0c0810374b9f",
+          "bytes": 236945
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-replays.json",
+          "sha256": "5e8d9642e337b918f8cd749d6a4db33e7556f27e45d5e834b5afa824c3e7eec9",
+          "bytes": 1510
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-replays.state.json",
+          "sha256": "7ffffa60612860393eea18609360980a968c40f4400b697f02eec1249f6640e3",
+          "bytes": 1960
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:27:41.0000000+00:00",
+      "observation": "Actual 1920×1080 Shipping library: readable RECORDED BATTLE rows show correct formatted Saved Oct 09, 2026 dates (latest 03:25), sizes and smaller archive identifiers. WATCH / ANALYSIS / EXPORT / REMOVE actions and JSON path / IMPORT JSON fit without overlap. Library result/deck statistics are intentionally read only after opening the recording.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": null,
+      "speed": 4,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 113,
+        "card_play": 52,
+        "entity_spawn": 63,
+        "building_pull": 4,
+        "attack": 342,
+        "projectile_launch": 227,
+        "damage": 362,
+        "death": 54,
+        "slow": 14,
+        "target_pull": 20,
+        "aura": 13,
+        "tower_destroy": 1,
+        "core_activate": 1,
+        "stun": 1,
+        "match_end": 1
+      },
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": false,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 1,
+        "minimumZoom": 0.8500000238418579,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 9511.111328125,
+        "safeTop": 0,
+        "safeBottom": 1,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.3528037707010905,
+            "screenY": 0.07853115223072193,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.3528037389119466,
+            "screenY": 0.759365392614294,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.07853117342348452,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.759365392614294,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-replayview",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-replayview.png",
+          "sha256": "d61ab8ecec039d1ca0169ba4ac23c16888047487081dc1609cff5a7b492ce6e1",
+          "bytes": 2325026
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-replayview.json",
+          "sha256": "e80665d993c249edd4c0015fd10ed18988661e036f004015a1c829b3dd4475d4",
+          "bytes": 1525
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-replayview.state.json",
+          "sha256": "02415468c545df00bb36c99a48713bc9c935df85a1d0a34ce64ee5d87dd2fd9b",
+          "bytes": 3193
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:27:41.0000000+00:00",
+      "observation": "Actual 1920×1080 Shipping replay: whole legal field is visible and camera state verifies all four legal corners inside its safe area. Header/navigation, six speeds, ±5-second controls, scrubber and five available bookmarks including TOWER FALL and END fit completely inside the bottom dock. Readout shows paused 1:39 / 3:00, banks 3.4–6.4 and crowns 0–0. The ledger correctly displays no events in the current five-second window, inside its bounded panel. This image is an intermediate paused frame, not an endpoint render.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 99,
+      "speed": 4,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 91,
+        "card_play": 55,
+        "entity_spawn": 57,
+        "attack": 341,
+        "projectile_launch": 279,
+        "damage": 346,
+        "building_pull": 6,
+        "target_pull": 13,
+        "death": 50,
+        "tower_destroy": 1,
+        "core_activate": 1,
+        "aether_leak": 25,
+        "match_end": 1
+      },
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": true,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 1,
+        "minimumZoom": 0.9033181071281433,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 9511.111328125,
+        "safeTop": 0.08888889104127884,
+        "safeBottom": 0.8425925970077515,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.3528037707010905,
+            "screenY": 0.12532358522768375,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.3528037389119466,
+            "screenY": 0.8061578256112558,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.12532361348470053,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6471962610880534,
+            "screenY": 0.8061578256112558,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-analysis",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-analysis.png",
+          "sha256": "1b35b9f07fe2c0fbb68e2e496659b9c603e25c237aae83079783d52e07c7fa61",
+          "bytes": 300832
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-analysis.json",
+          "sha256": "9a41ed4a4e63bde8c822c822cf1de84b031b0f8a515d3a772215d98a2b80cb84",
+          "bytes": 1515
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-analysis.state.json",
+          "sha256": "3d4c8420c05e14df3952a22605b52cb1d1d94cfe1f84562f065b4ccb745dc73a",
+          "bytes": 3407
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:27:41.0000000+00:00",
+      "observation": "Actual 1920×1080 Shipping analysis: DEFEAT 1–2 CROWNS, 3:00 and Regulation summary are clear. PLAYER singular 1 CROWN is correct, eight illustrated deck cards fit, and full eight-row per-card table has separated headers and aligned real plays/damage/kills/deaths/spend/efficiency. Player bank/spend/hand/push chips and metric qualification are readable. Opponent summary begins below; later chart/raw details remain in the scroll area and were not shown in this frame.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 99,
+      "speed": 4,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 131,
+        "card_play": 51,
+        "entity_spawn": 49,
+        "building_pull": 7,
+        "attack": 379,
+        "projectile_launch": 280,
+        "damage": 387,
+        "death": 48,
+        "aura": 15,
+        "stun": 3,
+        "target_pull": 5,
+        "tower_destroy": 3,
+        "core_activate": 3,
+        "match_end": 1
+      },
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": false,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 1,
+        "minimumZoom": 0.8500000238418579,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 9511.111328125,
+        "safeTop": 0,
+        "safeBottom": 1,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.3528037707010905,
+            "screenY": 0.07853115223072193,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.3528037389119466,
+            "screenY": 0.759365392614294,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.07853117342348452,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.759365392614294,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-meta",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-meta.png",
+          "sha256": "877f953478a764a2571b57e86ce809824ff8269daf255bd0c410d70b2dcf7ab0",
+          "bytes": 278251
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-meta.json",
+          "sha256": "60df5aed6512c0b1abb24c59bdf23c75746db755fe9a6df739e6dc5952714ff1",
+          "bytes": 1495
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-meta.state.json",
+          "sha256": "b1810665381737e681f7a2bc59fbdca4ca933e2050dadd0d4eb51a5ddab5e525",
+          "bytes": 1510
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:28:13.0000000+00:00",
+      "observation": "Actual 1920×1080 Shipping Meta Lab: loaded 10,000-match dataset, nine tabs, simulation controls, filters, version selector and export controls fit. The card table aligns pick/adjusted/raw values, both confidence bounds, clean counts and damage/tower efficiency; names remain readable. Other eight tab contents are not shown in this frame; remaining card rows continue in the bounded scroll area.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": null,
+      "speed": 1,
+      "events": {},
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": false,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 1,
+        "minimumZoom": 0.8500000238418579,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 9511.111328125,
+        "safeTop": 0,
+        "safeBottom": 1,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.3528037707010905,
+            "screenY": 0.07853115223072193,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.3528037389119466,
+            "screenY": 0.759365392614294,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.07853117342348452,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.759365392614294,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-patchnotes",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-patchnotes.png",
+          "sha256": "2244d5da2bc41f3fe1a084cadf1ccfc9a03a1698c97998a8b35c3bbde9eb2cd5",
+          "bytes": 303041
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-patchnotes.json",
+          "sha256": "77ec6e232a5633f0d0cdb694e85c1dd4a5e0ccf4b44940efd3e301dfbc3c3515",
+          "bytes": 1525
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-patchnotes.state.json",
+          "sha256": "b1810665381737e681f7a2bc59fbdca4ca933e2050dadd0d4eb51a5ddab5e525",
+          "bytes": 1510
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:28:13.0000000+00:00",
+      "observation": "Actual 1920×1080 Shipping patch notes: presentation update 1.1.0 appears before clearly labeled previous 1.0.0 release. Full paragraphs wrap within content width, navigation is unobstructed, and no text overlaps or vertical clipping occur in the shown frame.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": null,
+      "speed": 1,
+      "events": {},
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": false,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 1,
+        "minimumZoom": 0.8500000238418579,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 9511.111328125,
+        "safeTop": 0,
+        "safeBottom": 1,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.3528037707010905,
+            "screenY": 0.07853115223072193,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.3528037389119466,
+            "screenY": 0.759365392614294,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.07853117342348452,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.759365392614294,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-home-scale14",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-home-scale14.png",
+          "sha256": "450309baa83655b9f91cf12cd85489d2a08f3b91a3888e8721d0c0d7202bf3ff",
+          "bytes": 490849
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-home-scale14.json",
+          "sha256": "1710b789ad27260b01fb05f2601a3ff8da747ebb3af119addb7af5c5b774bf99",
+          "bytes": 1525
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-home-scale14.state.json",
+          "sha256": "166b4f3936344b0264701c8a1cc78133740ebb6854e2efba053926a5bed56de6",
+          "bytes": 1516
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:28:13.0000000+00:00",
+      "observation": "Actual 1280×800 Shipping lobby at requested UI scale 1.4: every sidebar item and top currency/profile label fits. Hero title wraps cleanly; ENTER BATTLE and two-line TRAINING / DEVELOPER LAB stack fully inside the hero panel while illustrations stay clear. Active deck begins below in the scroll area, with EDIT visible. No title/action/art collision.",
+      "actualDimensions": [
+        1280,
+        800
+      ],
+      "elapsed": null,
+      "speed": 1,
+      "events": {},
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": false,
+        "width": 1280,
+        "height": 800,
+        "uiScale": 1.1277778148651123,
+        "zoom": 1,
+        "minimumZoom": 0.8500000238418579,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 8560,
+        "safeTop": 0,
+        "safeBottom": 1,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.3364486455917358,
+            "screenY": 0.07853115558624267,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.33644862174987794,
+            "screenY": 0.7593653869628906,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6635514259338379,
+            "screenY": 0.078531174659729,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6635513782501221,
+            "screenY": 0.7593653869628906,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-replay-scale14",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-replay-scale14.png",
+          "sha256": "39f5d721857a67e5d099bc4a3b226d8ebf6b072335a7d30a06111ff4dc5bda32",
+          "bytes": 1059054
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-replay-scale14.json",
+          "sha256": "51f1c91acf3b7efa53c48bb0a11f31b8ea6e50a439f4de7a1902d2e2f6bb6621",
+          "bytes": 1540
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-replay-scale14.state.json",
+          "sha256": "bea5e3fec9f48faaaae3c658d1664be884391dcbf861481b1f7719929949ca38",
+          "bytes": 3645
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:28:45.0000000+00:00",
+      "observation": "Actual 1280×800 Shipping replay at requested UI scale 1.4: full legal field remains between top and bottom panels, with all four legal corners verified safe. Header/navigation, six speeds, ±5-second controls, scrubber and five available bookmarks including TOWER FALL and END fit on one row. Human-readable dense ledger entries are contained by the bounded scrolling panel, without flowing offscreen. Readout shows paused 1:39 / 3:00, banks 3.4–2.4 and crowns 2–2. This is an intermediate paused recording frame, not an endpoint render.",
+      "actualDimensions": [
+        1280,
+        800
+      ],
+      "elapsed": 99,
+      "speed": 4,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 106,
+        "card_play": 48,
+        "entity_spawn": 42,
+        "aura": 24,
+        "attack": 372,
+        "projectile_launch": 294,
+        "damage": 395,
+        "stun": 8,
+        "death": 43,
+        "tower_destroy": 4,
+        "core_activate": 4,
+        "building_pull": 9,
+        "target_pull": 10,
+        "match_end": 1
+      },
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": true,
+        "width": 1280,
+        "height": 800,
+        "uiScale": 1.1277778148651123,
+        "zoom": 1.0893105268478394,
+        "minimumZoom": 1.0893105268478394,
+        "maximumZoom": 1.3071726560592651,
+        "orthoWidth": 9324.498046875,
+        "safeTop": 0.1353333443403244,
+        "safeBottom": 0.7603471875190735,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.34985790252685545,
+            "screenY": 0.13533327102661133,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.34985785484313964,
+            "screenY": 0.7603472137451172,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6501421451568603,
+            "screenY": 0.1353332805633545,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6501421451568603,
+            "screenY": 0.7603472137451172,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-battle",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-battle.png",
+          "sha256": "42633cf546b54552776bf4287e0c5ea8acf8a2a8baab209513f1ec82a87a4cab",
+          "bytes": 2608434
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-battle.json",
+          "sha256": "3fc0e1bd761ce00c1a5ada56787e277c5ba6b215f14453d048b419118e601d05",
+          "bytes": 1510
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-battle.state.json",
+          "sha256": "c398f1b3bf1772aec51226a4c2353c440499c58f789a3afa1b7d2114c3a5b55d",
+          "bytes": 9889
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:29:02.9200124+00:00",
+      "observation": "Physically inspected fresh Shipping PNG at 1920×1080. Selected Ironclad name, live rule-derived statistics and right-click aid fit their panel; illustrated hand/NEXT, cost badges, bank meter, separate crowns/clock/paused regulation and battle controls are legible. Both legal rear edges remain outside the HUD. Actual state reports regulation, paused speed 0, guarded input and four safe projected field corners.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "card_play": 22,
+        "entity_spawn": 32
+      },
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": true,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 1,
+        "minimumZoom": 0.9500012993812561,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 9511.111328125,
+        "safeTop": 0.08518518507480621,
+        "safeBottom": 0.8018518686294556,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.3528037707010905,
+            "screenY": 0.10310135594120733,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.3528037389119466,
+            "screenY": 0.7839356033890336,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.10310138419822411,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.7839356033890336,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-battle-1610-scale14",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-battle-1610-scale14.png",
+          "sha256": "af80f71f3b3c87c4b6f99fff2a358b30b55e6051307f7d8c9e4df302235a4c63",
+          "bytes": 1198967
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-battle-1610-scale14.json",
+          "sha256": "12db7ec9ab8834edf071986155d11771db2ba3cd15a81a0cf95856a6d766b47d",
+          "bytes": 1562
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-battle-1610-scale14.state.json",
+          "sha256": "f1ebe4b91efc75a17aebacf7fb267a9201e27e25dddf007e674a096d5295470f",
+          "bytes": 9922
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:29:02.9200124+00:00",
+      "observation": "Physically inspected fresh 1280×800 PNG at UI scale 1.4/requested zoom 0.85. Unselected YOUR HAND instructions and cancellation stay inside the expanded panel; hand/NEXT, bank and top controls fit without clipping. Full legal field remains visible between the enlarged header and dock; actual four-corner camera check passes with input isolated.",
+      "actualDimensions": [
+        1280,
+        800
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "card_play": 22,
+        "entity_spawn": 32
+      },
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": true,
+        "width": 1280,
+        "height": 800,
+        "uiScale": 1.1277778148651123,
+        "zoom": 1.1973342895507812,
+        "minimumZoom": 1.1973342895507812,
+        "maximumZoom": 1.4368011951446533,
+        "orthoWidth": 10249.181640625,
+        "safeTop": 0.12969444692134857,
+        "safeBottom": 0.6983193755149841,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.36340377330780027,
+            "screenY": 0.12969438552856447,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.3634037494659424,
+            "screenY": 0.6983193969726562,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6365962982177734,
+            "screenY": 0.12969440460205078,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6365962505340577,
+            "screenY": 0.6983193969726562,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-battle-219-scale14",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-battle-219-scale14.png",
+          "sha256": "8fbfd6def217e940dec30eace26be23a147f818485a499f7dae64702d59a4d96",
+          "bytes": 3061462
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-battle-219-scale14.json",
+          "sha256": "57ea38b63a6e321731e3c5e3158e794954816c7bc7e0209656d24a560a863be4",
+          "bytes": 1560
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-battle-219-scale14.state.json",
+          "sha256": "c5caa5f79d74a79e5da7e132dc20b8593154d402f2ce2a2ee36e9ca6c752719c",
+          "bytes": 9924
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:29:02.9200124+00:00",
+      "observation": "Physically inspected fresh 2560×1080 PNG at UI scale 1.4/requested zoom 0.85. Arena remains centered with clear lane/HP readouts; illustrated hand/NEXT, clock/crowns, controls and instructional panel fit the ultrawide frame. Legal rear cells remain clear of the top/dock HUD; all four projected corners pass and external input is consumed.",
+      "actualDimensions": [
+        2560,
+        1080
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "card_play": 22,
+        "entity_spawn": 32
+      },
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": true,
+        "width": 2560,
+        "height": 1080,
+        "uiScale": 1.399999976158142,
+        "zoom": 1.128454566001892,
+        "minimumZoom": 1.128454566001892,
+        "maximumZoom": 1.3541455268859863,
+        "orthoWidth": 14310.4755859375,
+        "safeTop": 0.11925926059484482,
+        "safeBottom": 0.7225925922393799,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.40216960906982424,
+            "screenY": 0.11925923382794415,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.40216960906982424,
+            "screenY": 0.7225925586841725,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.5978304862976074,
+            "screenY": 0.11925924795645254,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.5978303909301758,
+            "screenY": 0.7225925586841725,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-battle-169-scale14",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-battle-169-scale14.png",
+          "sha256": "3f22d600fcb497c793c016704eb52d502a30960f2bc5dd5baa1f995d618a6091",
+          "bytes": 2389830
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-battle-169-scale14.json",
+          "sha256": "fbe99a028ff7d281c334c65822049839c99b5809ab0c8d7fa03d1fb1e43f1616",
+          "bytes": 1560
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-battle-169-scale14.state.json",
+          "sha256": "96f706b3b8a2bf6d88add7a111517cecc523e01296b7bdeb6131d72b4bf77e16",
+          "bytes": 9923
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:29:02.9200124+00:00",
+      "observation": "Physically inspected fresh 1920×1080 PNG at UI scale 1.4/requested zoom 0.85. Enlarged instructional/cancellation panel, controls, clock/crowns and card/bank dock remain contained and readable. Both legal rear edges fit above the dock/below the header, with four safe actual projections and guarded input.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "card_play": 22,
+        "entity_spawn": 32
+      },
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": true,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1.399999976158142,
+        "zoom": 1.128454566001892,
+        "minimumZoom": 1.128454566001892,
+        "maximumZoom": 1.3541455268859863,
+        "orthoWidth": 10732.857421875,
+        "safeTop": 0.11925926059484482,
+        "safeBottom": 0.7225925922393799,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.36955947875976564,
+            "screenY": 0.11925926208496093,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.36955944697062176,
+            "screenY": 0.7225925586841725,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6304405848185222,
+            "screenY": 0.11925929034197771,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6304405848185222,
+            "screenY": 0.7225925586841725,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-battle-720",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-battle-720.png",
+          "sha256": "73998220e3dc53c4a47194e9e81161c7ccbc92413b6874c86d8fb1dd497e36fe",
+          "bytes": 1162780
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-battle-720.json",
+          "sha256": "6c9b59ab2748024de7172853d8c447c41df375b7e6f60e75f61fbc52543335bc",
+          "bytes": 1525
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-battle-720.state.json",
+          "sha256": "cb759da9212fb77f384fe4ce2670c4cd06663227597706e013089ea129282da7",
+          "bytes": 9894
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:30:14.8235650+00:00",
+      "observation": "Physically inspected fresh 1280×720 Shipping PNG. Full roster field remains visible between the header and illustrated hand/NEXT dock; HP, clock/crowns, bank, instructions and battle controls remain contained. Actual legal-field corner projections pass and the capture consumes external input.",
+      "actualDimensions": [
+        1280,
+        720
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "card_play": 22,
+        "entity_spawn": 32
+      },
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": true,
+        "width": 1280,
+        "height": 720,
+        "uiScale": 0.75,
+        "zoom": 1,
+        "minimumZoom": 0.9993897080421448,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 9511.111328125,
+        "safeTop": 0.09583333134651184,
+        "safeBottom": 0.7770833373069763,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.35280375480651854,
+            "screenY": 0.09604118135240343,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.35280373096466067,
+            "screenY": 0.7768753899468316,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6471962928771973,
+            "screenY": 0.09604120254516602,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6471962928771973,
+            "screenY": 0.776875474717882,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-training-overlays",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-training-overlays.png",
+          "sha256": "90d36bc117df171a80cdd6356975734541f65a771e9e40b66ecee0e1e8921b69",
+          "bytes": 2625707
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-training-overlays.json",
+          "sha256": "c88d630b28f4b0d058ea464443f174f9943e6b5a9505d2db4fbad6c41a999523",
+          "bytes": 1555
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-training-overlays.state.json",
+          "sha256": "fe5fca147ba189b02f8af06b4d6ec41734a5adb2955ef1a76e65f313947f3a4f",
+          "bytes": 9893
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:30:14.8235650+00:00",
+      "observation": "Physically inspected fresh Shipping Training Lab PNG. Six speed choices, both Aether reserve controls, team/card selection and ARM SPAWN fit the scrollable right panel with clear headings. Actual Shipping Slate overlays render across the arena (3456 lines/70 labels); the dense combined view is intentional for the explicit all-overlays fixture, and HUD/card dock stay above it. Snapshot and camera checks pass with input isolated.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "card_play": 22,
+        "entity_spawn": 32
+      },
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": true,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 1,
+        "minimumZoom": 0.9500012993812561,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 9511.111328125,
+        "safeTop": 0.08518518507480621,
+        "safeBottom": 0.8018518686294556,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.3528037707010905,
+            "screenY": 0.10310135594120733,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.3528037389119466,
+            "screenY": 0.7839356033890336,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.10310138419822411,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.7839356033890336,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 3456,
+      "trainingOverlayLabels": 70
+    },
+    {
+      "stem": "polish15-shipping-pause-menu",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-pause-menu.png",
+          "sha256": "abaa3864b8cc300196a4ef98d0788e6cd435a13f4edb0dbbbfa41b8417a4b4d1",
+          "bytes": 930566
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-pause-menu.json",
+          "sha256": "d9473cf8cfc89b770ed8526ee7eee77f8282b1145f30b1f549064fb71f490c40",
+          "bytes": 1527
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-pause-menu.state.json",
+          "sha256": "c398f1b3bf1772aec51226a4c2353c440499c58f789a3afa1b7d2114c3a5b55d",
+          "bytes": 9889
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:30:14.8235650+00:00",
+      "observation": "Physically inspected fresh Shipping pause PNG. Centered BATTLE PAUSED panel and all six actions (Resume, Settings, Loadout, Field Manual, Restart, Exit) remain legible and contained over the dimmed arena. Actual state is paused at speed 0; underlying field projection remains safe and automated input is consumed.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "card_play": 22,
+        "entity_spawn": 32
+      },
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": true,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 1,
+        "minimumZoom": 0.9500012993812561,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 9511.111328125,
+        "safeTop": 0.08518518507480621,
+        "safeBottom": 0.8018518686294556,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.3528037707010905,
+            "screenY": 0.10310135594120733,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.3528037389119466,
+            "screenY": 0.7839356033890336,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.10310138419822411,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.7839356033890336,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-placement",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-placement.png",
+          "sha256": "5ed45ed146e228e5272c4a56b2dd06326c17bb9ac2f28958c34bce463dda4fb5",
+          "bytes": 2578771
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-placement.json",
+          "sha256": "5c2cd000e0f6c816ba8082f54ae89cc772edadf79315af7155ee1d0b9e796311",
+          "bytes": 1526
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-placement.state.json",
+          "sha256": "7d1ebbc3a733154561c44c77800fe147ecd89096192fd0781268aa82cac81d1a",
+          "bytes": 2729
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:30:14.8235650+00:00",
+      "observation": "Physically inspected fresh Shipping placement PNG. Selected Archer Tower's cost, HP/damage/interval, range/targets, lifetime/footprint and right-click cancellation all fit the inspector. The highlighted third hand card matches the visible cyan legal building footprint. Actual state identifies archer_tower, previewValid true, footprint 1.65 tiles; full-field projection and input isolation pass.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2
+      },
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": true,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 1,
+        "minimumZoom": 0.9500012993812561,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 9511.111328125,
+        "safeTop": 0.08518518507480621,
+        "safeBottom": 0.8018518686294556,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.3528037707010905,
+            "screenY": 0.10310135594120733,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.3528037389119466,
+            "screenY": 0.7839356033890336,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.10310138419822411,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.7839356033890336,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-combat",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-combat.png",
+          "sha256": "505720d7472b732c3de95c737e1ce54da70234345a1b8921bd94770a4ea7a087",
+          "bytes": 2593372
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-combat.json",
+          "sha256": "b7469e8ac5b2cfa35a4b8a0bbb34f0ce0896a1ddeef8feae89a7283426c11cb4",
+          "bytes": 1512
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-combat.state.json",
+          "sha256": "efa42aeca4758a1e1a8972ed00655f5fa6dd95b744fd52bb08feda11fd7d0ed9",
+          "bytes": 13777
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:33:30.7212961+00:00",
+      "observation": "Physically inspected the fresh 1920×1080 Shipping combat frame. Battle clock, crowns, Aether bank, hand/NEXT artwork and unselected-card instructions remain legible and contained while units, the charge effect and orange timed hazard ring are visible on the field. The actual state is regulation at 5.483 seconds with 37 attacks, 26 projectile launches, 40 damage events, slow/aura/stun events and 49 live Niagara particles. All four projected legal-field corners pass the measured safe area. This still frame establishes appearance and placement, not continuous animation.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 5.483333333333319,
+      "speed": 1,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "card_play": 16,
+        "entity_spawn": 10,
+        "attack": 37,
+        "projectile_launch": 26,
+        "damage": 40,
+        "slow": 5,
+        "aura": 1,
+        "stun": 1,
+        "death": 2,
+        "hazard_tick": 2
+      },
+      "totalParticles": 49,
+      "cameraFraming": {
+        "activeBattleView": true,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 1,
+        "minimumZoom": 0.9500012993812561,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 9511.111328125,
+        "safeTop": 0.08518518507480621,
+        "safeBottom": 0.8018518686294556,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.3528037707010905,
+            "screenY": 0.10310135594120733,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.3528037389119466,
+            "screenY": 0.7839356033890336,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.10310138419822411,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.7839356033890336,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-frost-breath",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-frost-breath.png",
+          "sha256": "a9318da6dbc4e704d95d2c962912098f9a9e053c4e610679d4001fbff4f020a2",
+          "bytes": 2607020
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-frost-breath.json",
+          "sha256": "b672e8e5c2d190c76fe564b9d53e9ae577d4dc1e2a699e0f3a56180ad96bf0ad",
+          "bytes": 1535
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-frost-breath.state.json",
+          "sha256": "f64e041960365e81d138a9735c6e08b14224de7e7773e0988c1c7e33dcf55b65",
+          "bytes": 35426
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:33:30.7212961+00:00",
+      "observation": "Physically inspected the fresh 1920×1080 Shipping Frost roster frame. Models, tower bars and paused battle HUD are contained with no UI overlap. The paired Frost breath puffs are subtle at this arena framing; the actual captured state separately verifies two AN_frost_fang_Breath clips at 1.674/1.790 seconds and two visible active NS_RiftFrost components, each with eight live particles at age 0.217 seconds (16 total). No particle counts or clip data were synthesized. All four legal-field corners pass the measured safe area.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 1.3000000000000003,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "card_play": 22,
+        "entity_spawn": 32,
+        "attack": 4,
+        "projectile_launch": 4,
+        "damage": 4
+      },
+      "totalParticles": 16,
+      "cameraFraming": {
+        "activeBattleView": true,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 1,
+        "minimumZoom": 0.9500012993812561,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 9511.111328125,
+        "safeTop": 0.08518518507480621,
+        "safeBottom": 0.8018518686294556,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.3528037707010905,
+            "screenY": 0.10310135594120733,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.3528037389119466,
+            "screenY": 0.7839356033890336,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.10310138419822411,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.7839356033890336,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-phase-double",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-phase-double.png",
+          "sha256": "9db8514248eb624432e4d51c24808f97694d961727235487ea1b3fd73ba23502",
+          "bytes": 2468658
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-phase-double.json",
+          "sha256": "53162d2b22830a1247dc3959fddda08684b9116fee143df399d8e2a18e5e9001",
+          "bytes": 1535
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-phase-double.state.json",
+          "sha256": "0a77d6913d1eaf749c27943e61589921faca9bc5a53cc0ec0486c1ee8270d603",
+          "bytes": 2638
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:33:30.7212961+00:00",
+      "observation": "Physically inspected the fresh 1920×1080 Shipping double-Aether frame. The centered widened announcement contains the complete 2× AETHER label, the top clock reads paused REGULATION 0:59, and the bank retains its persistent 2× indicator. The actual real-step fixture is regulation at 121 seconds, speed zero and exactly one match start; the producer phase gate passes. Hand, NEXT, card instructions and all legal-field corners remain clear.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 120.99999999999442,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "clear_field": 1,
+        "aether_leak": 12840
+      },
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": true,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 1,
+        "minimumZoom": 0.9500012993812561,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 9511.111328125,
+        "safeTop": 0.08518518507480621,
+        "safeBottom": 0.8018518686294556,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.3528037707010905,
+            "screenY": 0.10310135594120733,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.3528037389119466,
+            "screenY": 0.7839356033890336,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.10310138419822411,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.7839356033890336,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-phase-triple",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-phase-triple.png",
+          "sha256": "b610a8d9fcf37971ae9c4d0fc68691e37b7889d521a9a7f51ef6b167d94c5f36",
+          "bytes": 2456049
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-phase-triple.json",
+          "sha256": "7d0a797c6ed764ef2d89a5c1f2f546ef2b0b501f17db2352368d02c21cc824e3",
+          "bytes": 1535
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-phase-triple.state.json",
+          "sha256": "7ee0671b56319a50b9c7822452f49649230af041d588f7eac443a1f80853cfc0",
+          "bytes": 2651
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:33:30.7212961+00:00",
+      "observation": "Physically inspected the fresh 1920×1080 Shipping triple-Aether frame. The centered widened announcement contains the complete 3× AETHER label, the top clock reads paused OVERTIME 0:59, and the bank retains its persistent 3× indicator. The actual real-step fixture is overtime at 241 seconds, speed zero and exactly one match start; the producer phase gate passes. Hand, NEXT, card instructions and all legal-field corners remain clear.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 241.00000000008393,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "clear_field": 1,
+        "aether_leak": 27240,
+        "phase": 1
+      },
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": true,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 1,
+        "minimumZoom": 0.9500012993812561,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 9511.111328125,
+        "safeTop": 0.08518518507480621,
+        "safeBottom": 0.8018518686294556,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.3528037707010905,
+            "screenY": 0.10310135594120733,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.3528037389119466,
+            "screenY": 0.7839356033890336,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.10310138419822411,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.7839356033890336,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-phase-overtime",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-phase-overtime.png",
+          "sha256": "ce018f53cf9ecbd7c8627673f1a104918d3af2a126f95782ff63ab09fa130e72",
+          "bytes": 2467014
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-phase-overtime.json",
+          "sha256": "bbbaa7715e71b68b6c8beec5de86207c0daa7b29d75b0a760fc2bad7dc24da3e",
+          "bytes": 1545
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-phase-overtime.state.json",
+          "sha256": "9a2d97386deb4a4256a6f54f849e981de98c5558fc64f7b6acd1440a4f5a0e81",
+          "bytes": 2636
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:34:20.2439628+00:00",
+      "observation": "Physically inspected the fresh 1920×1080 Shipping overtime frame. The corrected 520-pixel centered panel contains the complete OVERTIME – SUDDEN DEATH announcement with roughly 40 pixels of side padding and no overlap with the left inspector. The top clock clearly reads paused OVERTIME 1:59; the hand/NEXT/bank remain contained. Actual fixture state is overtime at 181 seconds, speed zero and one match start, with the phase gate and all four measured legal-field corners passing.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 181.00000000003618,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "clear_field": 1,
+        "aether_leak": 20040,
+        "phase": 1
+      },
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": true,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 1,
+        "minimumZoom": 0.9500012993812561,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 9511.111328125,
+        "safeTop": 0.08518518507480621,
+        "safeBottom": 0.8018518686294556,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.3528037707010905,
+            "screenY": 0.10310135594120733,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.3528037389119466,
+            "screenY": 0.7839356033890336,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.10310138419822411,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.7839356033890336,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-phase-tiebreaker",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-phase-tiebreaker.png",
+          "sha256": "d82d0543e9f2f1eada463e88e786870d24db8c0ad4053770e934576f4533864d",
+          "bytes": 2434807
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-phase-tiebreaker.json",
+          "sha256": "54a07f6f3bde4b5365eea9c7e35cefa60f5d186d3d72848c7789b42d3507e58a",
+          "bytes": 1555
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-phase-tiebreaker.state.json",
+          "sha256": "e92e0020b59c820ee1409582bbcc274d8035b4546a88637fc2ed9064b5089ddd",
+          "bytes": 2636
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:34:20.2439628+00:00",
+      "observation": "Physically inspected the fresh 1920×1080 Shipping tiebreaker frame. The persistent centered TIEBREAKER announcement and paused TIEBREAKER 0:00 header are fully contained. Hand cards are visibly disabled with no selected-card footprint, while NEXT and the 3× bank remain readable. Actual state is tiebreaker at 301 seconds with both phase events, speed zero and one match start; the phase gate and all four measured legal-field corners pass.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 301.0000000000549,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "clear_field": 1,
+        "aether_leak": 34318,
+        "phase": 2
+      },
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": true,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 1,
+        "minimumZoom": 0.9500012993812561,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 9511.111328125,
+        "safeTop": 0.08518518507480621,
+        "safeBottom": 0.8018518686294556,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.3528037707010905,
+            "screenY": 0.10310135594120733,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.3528037389119466,
+            "screenY": 0.7839356033890336,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.10310138419822411,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.7839356033890336,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-phase-victory",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-phase-victory.png",
+          "sha256": "961c26764aedfe2e7e3b801dfe168ba8626d3419037ae88acd4a46a8b930c6a8",
+          "bytes": 2248135
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-phase-victory.json",
+          "sha256": "f75204d079c6c36cb0b6c4ce33a8fe9f8a5d6321ae381641f67efc8536a6ac52",
+          "bytes": 1540
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-phase-victory.state.json",
+          "sha256": "f03e520522007262eb5f24ba6d5174c59f4fbfb34dee69c114c7cbf4f78c3df7",
+          "bytes": 2705
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:34:20.2439628+00:00",
+      "observation": "Physically inspected the fresh 1920×1080 Shipping victory frame. The result panel clearly shows VICTORY, 3 – 0 CROWNS and the readable reason Core destroyed; PLAY AGAIN, MATCH ANALYSIS, WATCH REPLAY and HOME are enabled, evenly spaced and contained. The top header says FINISHED, placement instructions are hidden and hand cards are disabled. Actual state is finished, winner zero, speed zero, crowns 3–0, core_destroyed, exactly one match start and one match end; the strict phase gate passes. The actual captured result remains terminal and all four measured legal-field corners pass.",
+      "actualDimensions": [
+        1920,
+        1080
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2,
+        "clear_field": 1,
+        "tower_edit": 1,
+        "death": 1,
+        "tower_destroy": 1,
+        "match_end": 1
+      },
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": true,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 1,
+        "minimumZoom": 0.9500012993812561,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 9511.111328125,
+        "safeTop": 0.08518518507480621,
+        "safeBottom": 0.8018518686294556,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.3528037707010905,
+            "screenY": 0.10310135594120733,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.3528037389119466,
+            "screenY": 0.7839356033890336,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.10310138419822411,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6471963246663411,
+            "screenY": 0.7839356033890336,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    },
+    {
+      "stem": "polish15-shipping-placement-scale14",
+      "files": [
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-placement-scale14.png",
+          "sha256": "624d8d2a4a7d2f96583e621141ba81bd2748761b6844b8bf6022c43b04ab026d",
+          "bytes": 1196856
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-placement-scale14.json",
+          "sha256": "6c2d311dbd2f0e4e680a5d0dab786b3d610bddfe2e7e0e0ebee56c13165a87bf",
+          "bytes": 1557
+        },
+        {
+          "path": "Artifacts/QA/Visual/polish15-shipping-placement-scale14.state.json",
+          "sha256": "a2f4d6fdc78469e3d3e961e56950cb6c2ab31c8ddcf9b59fdabfdf7a8689387f",
+          "bytes": 2762
+        }
+      ],
+      "reviewedUTC": "2026-10-09T03:34:20.2439628+00:00",
+      "observation": "Physically inspected the fresh 1280×800 Shipping Archer Tower placement frame with UI scale 1.4 and requested zoom 0.85. All six wrapped stat lines plus Right click: cancel stay within the inspector, with clear separation from the control hints. The enlarged hand, selected third card, illustrated NEXT and bank fit on screen. The cyan legal footprint matches actual previewCard archer_tower, previewValid true and footprint 1.65 tiles. Actual effective DPI is 1.128 and zoom is safely clamped to 1.197; all four legal-field corners pass between the header and dock.",
+      "actualDimensions": [
+        1280,
+        800
+      ],
+      "elapsed": 0,
+      "speed": 0,
+      "events": {
+        "match_start": 1,
+        "ai_decision": 2
+      },
+      "totalParticles": 0,
+      "cameraFraming": {
+        "activeBattleView": true,
+        "width": 1280,
+        "height": 800,
+        "uiScale": 1.1277778148651123,
+        "zoom": 1.1973342895507812,
+        "minimumZoom": 1.1973342895507812,
+        "maximumZoom": 1.4368011951446533,
+        "orthoWidth": 10249.181640625,
+        "safeTop": 0.12969444692134857,
+        "safeBottom": 0.6983193755149841,
+        "legalFieldCorners": [
+          {
+            "tileX": -14,
+            "tileY": -21,
+            "screenX": 0.36340377330780027,
+            "screenY": 0.12969438552856447,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -14,
+            "tileY": 21,
+            "screenX": 0.3634037494659424,
+            "screenY": 0.6983193969726562,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": -21,
+            "screenX": 0.6365962982177734,
+            "screenY": 0.12969440460205078,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 14,
+            "tileY": 21,
+            "screenX": 0.6365962505340577,
+            "screenY": 0.6983193969726562,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "passed": true
+      },
+      "trainingOverlayLines": 0,
+      "trainingOverlayLabels": 0
+    }
+  ],
+  "sourceReview": {
+    "path": "Docs/UI_POLISH_1.1.0.md",
+    "sha256": "76dae25ceba93edecb43d360a3f2c9089ac9777455bf1b2859118cc2009f5514",
+    "bytes": 6478
+  }
+}

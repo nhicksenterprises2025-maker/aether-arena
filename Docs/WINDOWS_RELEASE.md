@@ -48,16 +48,16 @@ Run these scripts from PowerShell 7 with the repository as the working directory
 ```powershell
 ./Build/Build-Launcher.ps1
 # Run the repository's Unreal Shipping build/cook/stage procedure first.
-./Build/Package-WindowsRelease.ps1 -Version 1.1.0 -GamePackage ./Artifacts/Game/Windows
+./Build/Package-WindowsRelease.ps1 -Version 1.2.0 -GamePackage ./Artifacts/Game-1.2.0/Windows -BuildLog ./Artifacts/model12-shipping-final9-build.log -PatchNotesFile ./Docs/PATCH_NOTES_1.2.0.md
 ./Build/Test-LauncherPlay.ps1
-./Installer/Build-Installer.ps1 -Version 1.1.0
+./Installer/Build-Installer.ps1 -Version 1.2.0
 ./Installer/Test-Installer.ps1 -Msi $PreviousSameFamilyMsi -UpgradeMsi ./Artifacts/Installer/RiftCrownArena-Setup.msi
-./Build/Finalize-WindowsRelease.ps1 -Version 1.1.0
+./Build/Finalize-WindowsRelease.ps1 -Version 1.2.0
 ```
 
 `Build-Launcher.ps1` publishes the real self-contained launcher, runs the isolated update integration suite and launches the published executable's noninteractive WPF smoke check. The smoke check requires explicit isolated install and save paths and renders an actual WPF preview.
 
-For the release lifecycle check, set `$PreviousSameFamilyMsi` to a retained actual previously compiled MSI with the same UpgradeCode and a distinct ProductCode. The current release's measured baseline is `Artifacts/QA/ReleaseCandidates/Verified-20261008-211709/RiftCrownArena-Setup.msi`. A fresh-install-only test can omit these arguments, but the finalizer requires the complete upgrade-inclusive lifecycle evidence.
+For the release lifecycle check, set `$PreviousSameFamilyMsi` to a retained actual previously compiled MSI with the same UpgradeCode and a distinct ProductCode. The published 1.1.0 baseline is retained at `Artifacts/QA/PublicDownloads/1.1.0/RiftCrownArena-Setup.msi`; the actual 1.1.0 → 1.2.0 lifecycle passed all 51 checks in `Artifacts/QA/installer-tests.json`, including installed Play, loaded CRT validation, repair, uninstall and separate-save preservation. The report identifies `installedVersion` 1.2.0, the final MSI SHA-256 `77efc44db0ca00ce9ad874437baabb833fdfeb4be815c707d60f7b2099f8e768`, the final archive SHA-256 `63d02e6f3de1a535e9563691724c1e0ccf0dfacc6eaf86472b569c2326431e0b` and 48 upgraded game files. `Artifacts/Release/windows-release-verification.json` passed local finalization with the exact MSI/ZIP/launcher/manifest identities. Public-delivery checks remain separate. A fresh-install-only test can omit these arguments, but the finalizer requires the complete upgrade-inclusive lifecycle evidence.
 
 `Package-WindowsRelease.ps1` refuses to manufacture a release without a real staged `RiftCrownArena.exe`. It preserves any `.pdb` debug symbols separately under `Artifacts/Symbols/<version>/<batch>/`, verifies their unchanged hashes, and keeps all game executables, DLLs and runtime assets in the player package. It then invokes app-local runtime staging before recording every file's size and SHA-256, verifies the actual ZIP entries and copied installation tree against those records, and constructs a fresh `Artifacts/Distribution` with the initial installation pointer. A prior distribution is retained beside it, preventing stale release files from accumulating in the next installer. Packaging does not contact GitHub. Supply `-BuildLog` when the current Shipping log is at another path, or `-ToolchainRoot` when the build's compiler path is known explicitly.
 

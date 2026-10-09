@@ -941,6 +941,7 @@ void URiftReplaySubsystem::Deinitialize() {
     RecordedEvents.Reset();
     RecordedSamples.Reset();
     PlaybackEvents.Reset();
+    FirstDamageTimes.Reset();
     PlaybackTime = PlaybackDuration = 0;
     EventCursor = 0;
     Super::Deinitialize();
@@ -1100,6 +1101,27 @@ bool URiftReplaySubsystem::OpenReplay(const FString &Filename) {
         M->LeaveMatch();
     Loaded = O;
     PlaybackEvents = MoveTemp(ParsedEvents);
+    FirstDamageTimes.Reset();
+    // Crown structures exist in the initial snapshot, including their native
+    // maximum HP. DEV HP edits must reveal the same bar in live play and replay.
+    TMap<uint64,double> CrownMaxHP;
+    const TArray<TSharedPtr<FJsonValue>>* States=nullptr;
+    rift::Snapshot Initial;
+    if(O->TryGetArrayField(TEXT("states"),States) && !States->IsEmpty() && SnapshotFromJSON(Obj((*States)[0]),Initial))
+        for(const auto& Entity:Initial.entities)
+            if(Entity.kind==rift::EntityKind::Guard || Entity.kind==rift::EntityKind::Core)
+                CrownMaxHP.Add(Entity.id,Entity.maxHp);
+    for(const auto& Event:PlaybackEvents)
+    {
+        const auto* Maximum=CrownMaxHP.Find(Event.target);
+        const bool PositiveHit=Event.type=="damage" && FMath::IsFinite(Event.amount) && Event.amount>0.;
+        const bool LoweredTower=Event.type=="tower_edit" && Maximum && FMath::IsFinite(Event.hp) && Event.hp<*Maximum;
+        if(Event.target && (PositiveHit || LoweredTower))
+        {
+            if(auto* First=FirstDamageTimes.Find(Event.target))*First=FMath::Min(*First,Event.time);
+            else FirstDamageTimes.Add(Event.target,Event.time);
+        }
+    }
     PlaybackTime = 0;
     PlaybackDuration = N(O, TEXT("duration"));
     PlaybackSpeed = 1;
@@ -1117,6 +1139,7 @@ void URiftReplaySubsystem::CloseReplay() {
         M->SetReplayView(nullptr);
     Loaded.Reset();
     PlaybackEvents.Reset();
+    FirstDamageTimes.Reset();
     EventCursor = 0;
     PlaybackTime = PlaybackDuration = 0;
     PlaybackSpeed = 0;
@@ -1125,6 +1148,10 @@ void URiftReplaySubsystem::ResetEventCursor() {
     EventCursor = 0;
     while (EventCursor < PlaybackEvents.Num() && PlaybackEvents[EventCursor].time <= PlaybackTime + 1e-7)
         ++EventCursor;
+}
+bool URiftReplaySubsystem::HasTakenDamageBy(uint64 EntityId,double Time) const {
+    const auto* First=FirstDamageTimes.Find(EntityId);
+    return First && FMath::IsFinite(Time) && *First<=Time;
 }
 void URiftReplaySubsystem::Seek(float Seconds) {
     if (!FMath::IsFinite(Seconds) || !Loaded)

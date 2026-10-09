@@ -79,7 +79,17 @@ for these captures and restore it afterward; this does not bypass player volume
 settings. These recordings are implementation evidence, not ordinary gameplay
 captures or subjective sound-quality approval.
 
-The final-source Editor run under
+## Final-source 1.2.0 playback measurements
+
+The actual final Editor run under `Artifacts/QA/Audio/model12-editor-audio-final9` passed all 49 checks with 41 base cues and twenty combat variations loaded, and exited 0 after a 26.93-second wrapper run. Its stereo 48 kHz normal recording contains 57,344 float samples, peak 0.214396551 and RMS 0.048123382. The overloaded recording contains 116,736 float samples, peak 0.800236821 and RMS 0.171819371. Both have zero clipped floats.
+
+The actual final Shipping run under `Artifacts/QA/Audio/model12-shipping-audio-final9` also passed all 49 checks and exited 0 after a 12.23-second wrapper run. Its stereo 48 kHz normal recording contains 61,440 float samples, peak 0.197836846 and RMS 0.050627855. The overload contains 114,688 float samples, peak 0.801364958 and RMS 0.173221058. Both have zero clipped floats. The run pins native executable SHA-256 `5a209be2b0d17cf7f2aebfc41c9eff9e52e791b1da8b8c1cb1c93d8d9b1a322e`.
+
+`Docs/QA/presentation-checks-1.2.0.json` preserves the complete executed assertions and mixer measurements with exact source-report hashes. Wrapper durations include startup/shutdown and differ from recorded audio intervals. Raw mixer measurements precede PCM16 encoding; WAV byte verification and subjective listening are separate. Earlier 1.2.0 audio runs identify their earlier executables and are provisional development history.
+
+## Historical 1.1.0 playback measurements
+
+The final-source 1.1.0 Editor run under
 `Artifacts/QA/Audio/polish15-editor-audio-final` passed all 49 checks and exited 0
 in 22.60 seconds. Its stereo 48 kHz normal capture contains 59,392 float samples,
 with peak 0.206878617 and RMS 0.047645573. The 12× overload contains 116,736
