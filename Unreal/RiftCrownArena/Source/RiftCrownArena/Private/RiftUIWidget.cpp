@@ -150,7 +150,7 @@ void URiftUIWidget::Navigate(const FString& Destination)
     if(Destination==TEXT("Battle")&&bMenuPausedMatch){GetWorld()->GetSubsystem<URiftMatchSubsystem>()->SetSpeed(MenuResumeSpeed);bMenuPausedMatch=false;}
     if(Destination==TEXT("Home")){auto* R=GetGameInstance()->GetSubsystem<URiftReplaySubsystem>();if(R->IsPlaying())R->CloseReplay();auto* M=GetWorld()->GetSubsystem<URiftMatchSubsystem>();if(M->IsActive())M->LeaveMatch();HandIndex=-1;bSpawnArmed=false;}
     if(Destination==TEXT("Home"))bMenuPausedMatch=false;
-    Page=Destination;if(!Root){Root=WidgetTree->ConstructWidget<UCanvasPanel>();Root->SetVisibility(ESlateVisibility::SelfHitTestInvisible);WidgetTree->RootWidget=Root;}Root->ClearChildren();
+    Page=Destination;if(Page==TEXT("MetaGuide")){Page=TEXT("Meta");Tab=TEXT("Stats Guide");MetaDetail.Reset();}if(!Root){Root=WidgetTree->ConstructWidget<UCanvasPanel>();Root->SetVisibility(ESlateVisibility::SelfHitTestInvisible);WidgetTree->RootWidget=Root;}Root->ClearChildren();
     TimerText=nullptr;ScoreText=nullptr;AetherText=nullptr;NextText=nullptr;AetherBar=nullptr;DevReadout=nullptr;ReplayPosition=nullptr;ReplaySeek=nullptr;MetaStatus=nullptr;Rows=nullptr;NoticeText=nullptr;HandText.Reset();HandCost.Reset();HandButtons.Reset();HandImages.Reset();HandArtIds.Reset();
     TrainingStatus=nullptr;SpawnArmButton=nullptr;EnemyAIButton=nullptr;FriendlyAIButton=nullptr;TrainingSpeedButtons.Reset();ReplaySpeedButtons.Reset();LastReplayLedgerPosition=-1;LastTrainingTower.Empty();PhaseText=nullptr;EnemyScore=nullptr;SurgeText=nullptr;SelectedName=nullptr;SelectedStats=nullptr;NextImage=nullptr;AetherMeter=nullptr;BattleMenu=nullptr;AnnouncementPanel=nullptr;AnnouncementText=nullptr;NextArtId.Empty();DragImage=nullptr;DragFrame=nullptr;DragArtId.Empty();
     SetRenderTransform(FWidgetTransform(FVector2D::ZeroVector,FVector2D(1,1), FVector2D::ZeroVector,0));
@@ -278,7 +278,9 @@ TArray<TSharedPtr<FJsonObject>> URiftUIWidget::FilterRows(TArray<TSharedPtr<FJso
 void URiftUIWidget::Meta()
 {
     auto* M=GetGameInstance()->GetSubsystem<URiftMetaSimulationSubsystem>();MetaStatus=Text(M->Status(),16,Cyan);Add(Body,MetaStatus);auto* Control=Row();for(int32 Rate:{100,250,500,0})Add(Control,Button(Rate?FString::Printf(TEXT("%d / MIN"),Rate):TEXT("MAX SAFE"),[this,M,Rate](){M->SetRate(Rate);M->Start();bMetaPaused=false;Say(TEXT("Background simulation pauses automatically during live battles."));}));Add(Control,Button(TEXT("PAUSE / RESUME"),[this,M](){bMetaPaused=!bMetaPaused;M->Pause(bMetaPaused);}));Add(Control,Button(TEXT("ARCHIVE & RESET"),[this,M](){M->Reset();DatasetName.Empty();MetaDetail.Reset();Navigate(TEXT("Meta"));}));
+    Add(Control,Button(TEXT("STATS GUIDE"),[this](){Navigate(TEXT("MetaGuide"));},Tab==TEXT("Stats Guide")));
     auto* Tabs=Row();for(FString Name:{TEXT("Cards"),TEXT("Matchups"),TEXT("Synergy"),TEXT("Archetypes"),TEXT("AI Styles"),TEXT("Alerts"),TEXT("Trends"),TEXT("Patches"),TEXT("Validation")})Add(Tabs,Button(Name.ToUpper(),[this,Name](){CaptureFilters();Tab=Name;MetaDetail.Reset();Navigate(TEXT("Meta"));},Tab==Name),true);
+    if(Tab==TEXT("Stats Guide")){Rows=WidgetTree->ConstructWidget<UVerticalBox>();Add(Body,Rows,2);MetaRows();return;}
     auto* Filters=Row();MetaSearch=Edit(Search,TEXT("Card search"));Add(Filters,MetaSearch,true);MetaType=Combo({TEXT("all"),TEXT("Troop"),TEXT("Building"),TEXT("Spell")},TypeFilter);Add(Filters,MetaType);MetaCost=Combo({TEXT("all"),TEXT("2"),TEXT("3"),TEXT("4"),TEXT("5"),TEXT("6")},CostFilter);Add(Filters,MetaCost);MetaTrait=Combo({TEXT("all"),TEXT("Air"),TEXT("Ground"),TEXT("Anti-air"),TEXT("Win condition"),TEXT("Swarm"),TEXT("Splash")},TraitFilter);Add(Filters,MetaTrait);MetaMin=Edit(FString::FromInt(MinSample),TEXT("Minimum N"));auto* NS=WidgetTree->ConstructWidget<USizeBox>();NS->SetWidthOverride(90);NS->SetContent(MetaMin);Add(Filters,NS);
     auto* Slice=Row();MetaStyle=Combo(Styles,StyleFilter);Add(Slice,Text(TEXT("AI style"),13));Add(Slice,MetaStyle,true);MetaArchetype=Combo(Archetypes,ArchetypeFilter);Add(Slice,Text(TEXT("Archetype"),13));Add(Slice,MetaArchetype,true);auto Names=M->DatasetNames();if(Names.IsEmpty())Names.Add(TEXT("Current"));if(!Names.Contains(DatasetName))DatasetName=Names.Contains(M->SelectedDatasetName())?M->SelectedDatasetName():Names.Last();MetaVersion=Combo(Names,DatasetName);Add(Slice,MetaVersion,true);Add(Slice,Button(TEXT("APPLY FILTERS / VERSION"),[this,M](){CaptureFilters();FString Chosen=MetaVersion->GetSelectedOption();if(Chosen!=DatasetName){if(M->SelectDataset(Chosen)){DatasetName=Chosen;bMetaPaused=true;}else Say(M->LastError.IsEmpty()?TEXT("Cannot open that dataset."):M->LastError);}MetaDetail.Reset();MetaRows();}));
     auto* Exports=Row();MetaSubject=Combo({TEXT("cards"),TEXT("matchups"),TEXT("synergy"),TEXT("archetypes"),TEXT("styles"),TEXT("patch")},TEXT("cards"));Add(Exports,MetaSubject);MetaFormat=Combo({TEXT("CSV"),TEXT("JSON")},TEXT("CSV"));Add(Exports,MetaFormat);FileInput=Edit(TEXT("Meta/export.csv"),TEXT("Export path"));Add(Exports,FileInput,true);Add(Exports,Button(TEXT("EXPORT FILTERED DATA"),[this](){ExportMeta();}));
@@ -289,6 +291,21 @@ void URiftUIWidget::Meta()
 void URiftUIWidget::MetaRows()
 {
     if(!Rows)return;Rows->ClearChildren();auto* M=GetGameInstance()->GetSubsystem<URiftMetaSimulationSubsystem>();CaptureFilters();if(MetaDetail){Add(Rows,Button(TEXT("BACK TO TABLE"),[this](){MetaDetail.Reset();MetaRows();}));ShowJSON(MetaDetail,Rows);return;}
+    if(Tab==TEXT("Stats Guide"))
+    {
+        Add(Rows,Text(TEXT("READING THE META LAB"),21,Brass));
+        Add(Rows,Text(TEXT("Results come from completed matches in the same gameplay engine as your battles. They describe the sampled AI decks and styles. A card's deck win rate measures association with winning, rather than its individual contribution."),15,Muted),6);
+        auto Explain=[this](const TCHAR* Label,const TCHAR* Meaning){Add(Rows,Text(Label,16,Cyan),6);Add(Rows,Text(Meaning,14,Ivory),2);};
+        Explain(TEXT("MATCHES, DECK APPEARANCES & CLEAN N"),TEXT("Each match supplies two deck observations. A card appearance means it was in a deck, even if never played. Card Clean N excludes matches where both decks contain that card. Pair Clean N excludes matches where both decks contain the entire pair. Styles and archetypes count deck observations; a deck can belong to several archetypes."));
+        Explain(TEXT("PICK %, RAW % & ADJUSTED %"),TEXT("Pick % is appearances divided by deck observations in the selected slice. Raw % is (wins + half of draws) / Clean N. Adjusted % adds 24 prior observations at 50%: 100 × (win score + 12) / (N + 24). Small samples are therefore pulled toward 50%. An unsampled adjusted value of 50% is a prior, not measured performance."));
+        Explain(TEXT("95% CI & UNAVAILABLE VALUES"),TEXT("The Wilson interval describes uncertainty around the raw win score. Wider intervals mean less precision. Deck observations share matches and cards, so this is a descriptive interval, not proof that a card causes wins. Unavailable means the necessary denominator is zero or the historical data is missing. Minimum N hides rows below your sample threshold."));
+        Explain(TEXT("DAMAGE / AETHER & TOWER DAMAGE / AETHER"),TEXT("Damage / Aether divides actual troop, building and tower damage by Aether paid for that card. Tower Damage / Aether counts tower damage only. Damage is actual HP lost; overkill is reported separately. Neither ratio divides by the card's printed cost without accounting for casts."));
+        Explain(TEXT("CARD DETAIL METRICS"),TEXT("Per-game values divide totals by deck appearances, including appearances with no play. Per-cast values divide by paid plays. Lifetime averages divide by spawned members; survival counts members alive at the end. Opening-hand play rate uses opening-hand opportunities, connection rate uses paid plays, and average placement uses recorded tile coordinates. Slow/stun uptime uses affected exposure; zone occupancy is average affected units per active zone second."));
+        Explain(TEXT("MATCHUPS & SYNERGY"),TEXT("Matchup cells show rule-based mechanical coverage edges, not simulated duel win rates. Synergy cells show an observed pair win-rate delta against the mean adjusted rates of its two cards. A 48-observation prior shrinks that delta toward zero. Positive values are associations, not guaranteed combos; select a cell to see its sample size, interval and mechanical synergy."));
+        Explain(TEXT("STYLES, ARCHETYPES, TRENDS & PATCHES"),TEXT("AI style and archetype filters select the observed deck slice; card/type/cost filters select visible rows. Archetypes overlap, so their pick percentages can sum above 100%. Trends are cumulative checkpoints every 25 matches, not rolling-window rates. Patch comparisons need a real stored baseline; missing baselines remain unavailable. Alerts require at least 100 clean samples and a confidence interval outside 50%."));
+        Explain(TEXT("CURRENT RULES & HISTORY"),TEXT("The dataset fingerprint identifies its arena, routing, card and spell rules. Older datasets remain readable as history and are never appended to a different ruleset. Background simulation pauses during live battles. Validation reports completed matches and real economy checks; exports use the same table calculations and selected filters."));
+        return;
+    }
     if(Tab==TEXT("Validation"))
     {
         Add(Rows,Text(TEXT("ACTUAL NATIVE SIMULATION VALIDATION"),19,Brass));
@@ -367,6 +384,9 @@ void URiftUIWidget::ExportMeta()
 }
 void URiftUIWidget::PatchNotes()
 {
+    Add(Body,Text(TEXT("ARENA & LANE ROUTING · 1.3.4"),25,Brass));
+    Add(Body,Text(TEXT("The arena gains one tile on every edge. All six Crown Towers move one tile toward their own rear. Ground troops choose the bridge on their current side and advance toward the Core when that lane's Guard Tower falls, while still responding to nearby troops and buildings."),16));
+    Add(Body,Text(TEXT("Meta Lab now includes a Stats Guide explaining samples, win rates, confidence ranges, damage efficiency, synergy and mechanical matchups. New simulations use the expanded arena and routing fingerprint; older datasets remain readable as history."),16));
     Add(Body,Text(TEXT("TOWER PATHING FIX · 1.3.3"),25,Brass));
     Add(Body,Text(TEXT("Ground troops placed near towers now start in clear space and route safely around tower edges. Units keep moving toward battle instead of getting stuck behind a Core or Guard Tower."),16));
     Add(Body,Text(TEXT("AUDIO FIX · 1.3.2"),25,Brass));
@@ -400,5 +420,5 @@ void URiftUIWidget::NativeTick(const FGeometry& Geometry,float Delta)
         const FString TypedPath=FileInput?FileInput->GetText().ToString():FString();Navigate(TEXT("Replays"));if(FileInput&&!TypedPath.IsEmpty())FileInput->SetText(FText::FromString(TypedPath));
     }
     if(Page==TEXT("ReplayView")&&R->IsPlaying())UpdateReplayHUD();
-    if(Page==TEXT("Meta")){auto* MetaEngine=GetGameInstance()->GetSubsystem<URiftMetaSimulationSubsystem>();if(MetaStatus)MetaStatus->SetText(FText::FromString(MetaEngine->Status()));if(MetaClock>=3){MetaClock=0;if(!MetaDetail)MetaRows();}}
+    if(Page==TEXT("Meta")){auto* MetaEngine=GetGameInstance()->GetSubsystem<URiftMetaSimulationSubsystem>();if(MetaStatus)MetaStatus->SetText(FText::FromString(MetaEngine->Status()));if(MetaClock>=3){MetaClock=0;if(!MetaDetail&&Tab!=TEXT("Stats Guide"))MetaRows();}}
 }

@@ -84,7 +84,7 @@ namespace
             Definition->SetBoolField(TEXT("flying"),Card.flying);Definition->SetBoolField(TEXT("canHitAir"),Card.canHitAir);Definition->SetBoolField(TEXT("structuresOnly"),Card.structuresOnly);Definition->SetBoolField(TEXT("spell"),Card.spell);Definition->SetBoolField(TEXT("building"),Card.building);CardSnapshot.Add(MakeShared<FJsonValueObject>(Definition));
         }
         O->SetArrayField(TEXT("cardSnapshot"),CardSnapshot);auto Rules=MakeShared<FJsonObject>();
-        Rules->SetNumberField(TEXT("arenaWidth"),28);Rules->SetNumberField(TEXT("arenaHeight"),42);Rules->SetNumberField(TEXT("riverHalfWidth"),1.65);Rules->SetNumberField(TEXT("bridgeCenterX"),7.2);Rules->SetNumberField(TEXT("bridgeWidth"),4.2);Rules->SetNumberField(TEXT("frontSight"),8);Rules->SetNumberField(TEXT("rearSight"),5);Rules->SetNumberField(TEXT("regulationSeconds"),180);Rules->SetNumberField(TEXT("overtimeSeconds"),120);Rules->SetNumberField(TEXT("aetherInterval"),2.8);Rules->SetNumberField(TEXT("doubleAetherAt"),120);Rules->SetNumberField(TEXT("tripleAetherAt"),240);Rules->SetNumberField(TEXT("tiebreakerDrainPerSecond"),180);Rules->SetNumberField(TEXT("openingAether"),5);Rules->SetNumberField(TEXT("maximumAether"),10);Rules->SetStringField(TEXT("coreActivation"),TEXT("friendly Guard Tower destroyed"));Rules->SetStringField(TEXT("targetHardLock"),TEXT("at Crown Tower attack range"));Rules->SetNumberField(TEXT("navigationRevision"),2);Rules->SetStringField(TEXT("navigation"),TEXT("card-aware ground grid A-star with bridges; flying ignores obstacles; clear ground spawns and continuous segment clearance"));Rules->SetStringField(TEXT("spellImpact"),TEXT("fixed target area; current enemy positions at impact; Meteor Shards 0.75s, Bullet Burst 0.30s; Nova Flask instant"));O->SetObjectField(TEXT("rulesSnapshot"),Rules);
+        Rules->SetNumberField(TEXT("arenaWidth"),rift::arena::Width);Rules->SetNumberField(TEXT("arenaHeight"),rift::arena::Height);Rules->SetNumberField(TEXT("coreDepth"),rift::arena::CoreDepth);Rules->SetNumberField(TEXT("guardDepth"),rift::arena::GuardDepth);Rules->SetNumberField(TEXT("guardX"),rift::arena::GuardX);Rules->SetNumberField(TEXT("pocketOuterX"),rift::arena::PocketOuterX);Rules->SetNumberField(TEXT("pocketMaxDepth"),rift::arena::PocketMaxDepth);Rules->SetNumberField(TEXT("riverHalfWidth"),1.65);Rules->SetNumberField(TEXT("bridgeCenterX"),7.2);Rules->SetNumberField(TEXT("bridgeWidth"),4.2);Rules->SetNumberField(TEXT("frontSight"),8);Rules->SetNumberField(TEXT("rearSight"),5);Rules->SetNumberField(TEXT("regulationSeconds"),180);Rules->SetNumberField(TEXT("overtimeSeconds"),120);Rules->SetNumberField(TEXT("aetherInterval"),2.8);Rules->SetNumberField(TEXT("doubleAetherAt"),120);Rules->SetNumberField(TEXT("tripleAetherAt"),240);Rules->SetNumberField(TEXT("tiebreakerDrainPerSecond"),180);Rules->SetNumberField(TEXT("openingAether"),5);Rules->SetNumberField(TEXT("maximumAether"),10);Rules->SetStringField(TEXT("coreActivation"),TEXT("friendly Guard Tower destroyed"));Rules->SetStringField(TEXT("targetHardLock"),TEXT("at Crown Tower attack range"));Rules->SetNumberField(TEXT("navigationRevision"),3);Rules->SetStringField(TEXT("navigation"),TEXT("card-aware ground grid A-star with bridges; flying ignores obstacles; clear ground spawns and continuous segment clearance; source-side bridge commitment; same-lane Guard else Core"));Rules->SetStringField(TEXT("spellImpact"),TEXT("fixed target area; current enemy positions at impact; Meteor Shards 0.75s, Bullet Burst 0.30s; Nova Flask instant"));O->SetObjectField(TEXT("rulesSnapshot"),Rules);
         TArray<TSharedPtr<FJsonValue>> Styles;for(const TCHAR* Style:{TEXT("beatdown"),TEXT("aggro"),TEXT("control"),TEXT("cycle"),TEXT("split"),TEXT("spell_cycle"),TEXT("counter")})Styles.Add(MakeShared<FJsonValueString>(Style));O->SetArrayField(TEXT("aiStyles"),Styles);
         return O;
     }
@@ -172,7 +172,7 @@ namespace
 
 FString URiftMetaSimulationSubsystem::Fingerprint()
 {
-    FString Canonical=TEXT("rift-native-1|native-observed-2|ai-v15-port-2|nav-grid-a-star-2|telemetry-3|arena28x42|river1.65|bridges7.2,4.2|sight8,5|phase180,120|aether2.8,120,240|drain180|coreGuardOnly|hardlockAtRange|pocket2,13.2,2.25,9.25|spell-impact-fixed-point-1");
+    FString Canonical=TEXT("rift-native-1|native-observed-2|ai-v15-port-2|nav-grid-a-star-3|telemetry-3|arena30x44|river1.65|bridges7.2,4.2|sight8,5|phase180,120|aether2.8,120,240|drain180|coreGuardOnly|hardlockAtRange|pocket2,14.2,2.25,10.25|towers8.2,13.4,17.3|source-side-bridge-1|same-lane-guard-else-core-1|spell-impact-fixed-point-1");
     for(const auto& C:rift::Cards())
     {
         Canonical+=FS(C.id);
@@ -320,9 +320,37 @@ bool FRiftMetaAggregationTest::RunTest(const FString& Parameters)
     const auto& Captured=Dataset->GetArrayField(TEXT("cardSnapshot"));TestEqual(TEXT("All fourteen immutable card definitions captured"),Captured.Num(),14);TestTrue(TEXT("Rule snapshot preserved"),Dataset->HasField(TEXT("rulesSnapshot")));TestEqual(TEXT("Counter personality receives its own observation"),Number(ReadObject(ReadObject(Dataset,TEXT("buckets")),TEXT("counter|all")),TEXT("n")),1.0);
     for(const auto& Value:Captured){const auto Definition=Value->AsObject();const auto* Card=rift::FindCard(TCHAR_TO_UTF8(*String(Definition,TEXT("id"))));TestTrue(TEXT("Every immutable card snapshot captures its authoritative impact delay"),Card&&Definition->HasField(TEXT("castDelay"))&&FMath::IsNearlyEqual(Number(Definition,TEXT("castDelay")),Card->castDelay,1e-7));}
     TestTrue(TEXT("Immutable rule snapshot describes target selection at impact"),ReadObject(Dataset,TEXT("rulesSnapshot"))->HasField(TEXT("spellImpact")));
-    TestEqual(TEXT("Tower clearance navigation has its own immutable rule revision"),Number(ReadObject(Dataset,TEXT("rulesSnapshot")),TEXT("navigationRevision")),2.0);
+    TestEqual(TEXT("Expanded arena and lane routing have their own immutable rule revision"),Number(ReadObject(Dataset,TEXT("rulesSnapshot")),TEXT("navigationRevision")),3.0);
     BadDataset=Parse(Text(Dataset));BadDataset->SetStringField(TEXT("fingerprint"),TEXT("b3968027993fd0ece72577b77c48d76e"));TestFalse(TEXT("Historical tower-blocking navigation observations cannot be appended to current pathing rules"),DatasetCanResume(BadDataset));
     BadDataset=Parse(Text(Dataset));BadDataset->SetStringField(TEXT("fingerprint"),TEXT("archived-instant-spell-rules"));TestFalse(TEXT("Historical instant-spell observations cannot be appended to current delayed-spell rules"),DatasetCanResume(BadDataset));
+    BadDataset=Parse(Text(Dataset));BadDataset->SetStringField(TEXT("fingerprint"),TEXT("6e74a0ba433dc47d8e8a2de834a3cad1"));TestFalse(TEXT("Historical 28x42 observations cannot be appended to expanded arena rules"),DatasetCanResume(BadDataset));
+    auto TableRows=RowsFor(Bucket);
+    for(const auto& Row:TableRows)
+    {
+        auto S=ReadObject(Stats,String(Row,TEXT("id")));const double N=Number(S,TEXT("cleanN")),Score=Number(S,TEXT("score")),Ap=Number(S,TEXT("appearances")),Spent=Number(S,TEXT("spent"));
+        TestTrue(TEXT("Table pick rate uses actual deck-side observations"),FMath::IsNearlyEqual(Number(Row,TEXT("pickRate")),100*Ap/2,1e-7));
+        TestTrue(TEXT("Table adjusted rate uses 24 observations of 50-percent prior"),FMath::IsNearlyEqual(Number(Row,TEXT("adjustedWinRate")),100*(Score+12)/(N+24),1e-7));
+        if(N>0)TestTrue(TEXT("Table raw rate uses clean match scores including half draws"),FMath::IsNearlyEqual(Number(Row,TEXT("rawWinRate")),100*Score/N,1e-7));
+        if(Spent>0)TestTrue(TEXT("Damage efficiency uses actual paid spend and applied HP damage"),FMath::IsNearlyEqual(Number(Row,TEXT("damagePerAether")),(Number(S,TEXT("troopDamage"))+Number(S,TEXT("towerDamage"))+Number(S,TEXT("buildingDamage")))/Spent,1e-7));
+    }
+    // Unregistered fixture exercises production tables without profile writes or a worker.
+    auto* TableEngine=NewObject<URiftMetaSimulationSubsystem>(NewObject<UGameInstance>());TableEngine->Data=Dataset;
+    double StyleN=0;for(const auto& Row:TableEngine->StyleRows()){StyleN+=Number(Row,TEXT("cleanN"));if(Number(Row,TEXT("cleanN"))>0)TestTrue(TEXT("Style duration comes from complete observed matches"),FMath::IsNearlyEqual(Number(Row,TEXT("averageDuration")),State.elapsed,1e-7));}
+    TestEqual(TEXT("Style tables partition both actual deck observations"),StyleN,2.0);
+    for(const auto& Row:TableEngine->ArchetypeRows())
+    {
+        auto S=ReadObject(ReadObject(Dataset,TEXT("buckets")),TEXT("all|")+String(Row,TEXT("name")));
+        TestTrue(TEXT("Overlapping archetype pick rates use observed deck counts"),FMath::IsNearlyEqual(Number(Row,TEXT("pickRate")),50*Number(S,TEXT("n")),1e-7));
+    }
+    const auto Pairs=ReadObject(Bucket,TEXT("pairs"));const auto PairRows=TableEngine->SynergyRows();TestEqual(TEXT("All unordered pairs appear in synergy table"),PairRows.Num(),91);
+    for(const auto& Row:PairRows)
+    {
+        auto S=ReadObject(Pairs,String(Row,TEXT("id")));const double N=Number(S,TEXT("n")),Score=Number(S,TEXT("score")),Base=Number(Row,TEXT("baseline"));
+        TestEqual(TEXT("Pair table excludes full-pair mirrors"),Number(Row,TEXT("cleanN")),N);
+        TestTrue(TEXT("Synergy delta uses real observed score and 48-observation shrinkage"),FMath::IsNearlyEqual(Number(Row,TEXT("delta")),N?(100*Score/N-Base)*N/(N+48):0,1e-7));
+    }
+    const auto Matchups=TableEngine->MatchupRows();TestEqual(TEXT("Mechanical matchup table has all fourteen-by-fourteen cells"),Matchups.Num(),196);
+    for(const auto& Row:Matchups){FString A,B;String(Row,TEXT("id")).Split(TEXT("/"),&A,&B);const auto* CA=rift::FindCard(TCHAR_TO_UTF8(*A));const auto* CB=rift::FindCard(TCHAR_TO_UTF8(*B));TestTrue(TEXT("Matchup edge uses authoritative mechanical rules"),CA&&CB&&FMath::IsNearlyEqual(Number(Row,TEXT("edge")),rift::CounterScore(*CA,*CB)-rift::CounterScore(*CB,*CA),1e-7));}
     auto Broken=State;Broken.spent[0]+=1;Residual=0;TestFalse(TEXT("Extra unaccounted spend fails validation"),EconomyValid(Broken,Residual));Broken=State;Broken.aether[0]=11;Residual=0;TestFalse(TEXT("Over-cap banks fail validation"),EconomyValid(Broken,Residual));
     return !HasAnyErrors();
 }

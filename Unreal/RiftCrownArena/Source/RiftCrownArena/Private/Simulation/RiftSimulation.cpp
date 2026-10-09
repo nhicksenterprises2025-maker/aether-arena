@@ -164,7 +164,10 @@ std::string PhaseName(Phase p) {
 Vec2 SnapToTile(Vec2 p) {
     if (!std::isfinite(p.x) || !std::isfinite(p.z))
         return {0, 0};
-    return {Clamp(std::floor(p.x + 14) - 13.5, -13.5, 13.5), Clamp(std::floor(p.z + 21) - 20.5, -20.5, 20.5)};
+    return {Clamp(std::floor(p.x + arena::HalfWidth) - arena::LastTileX,
+                  -arena::LastTileX, arena::LastTileX),
+            Clamp(std::floor(p.z + arena::HalfHeight) - arena::LastTileZ,
+                  -arena::LastTileZ, arena::LastTileZ)};
 }
 bool ValidateDeck(const std::vector<std::string> &d) {
     if (d.size() != 8)
@@ -201,7 +204,8 @@ Match::Match(const MatchOptions &o) {
             e.team = team;
             e.kind = lane == 0 ? EntityKind::Core : EntityKind::Guard;
             e.lane = lane;
-            e.position = {lane == 0 ? 0 : lane * 8.2, Sign(team) * (lane == 0 ? 16.3 : 12.4)};
+            e.position = {lane == 0 ? 0 : lane * arena::GuardX,
+                          Sign(team) * (lane == 0 ? arena::CoreDepth : arena::GuardDepth)};
             e.facing = {0, -Sign(team)};
             e.maxHp = e.hp = lane == 0 ? 3600 : 2250;
             e.radius = lane == 0 ? 1.35 : 1.15;
@@ -532,17 +536,19 @@ void Match::UpdateTiebreaker(double dt) {
     Finish(winner, "tiebreaker");
 }
 bool Match::CanPlace(Team team, const Card &c, Vec2 p, bool sandbox) const {
-    if (!std::isfinite(p.x) || !std::isfinite(p.z) || std::abs(p.x) > 14 || std::abs(p.z) > 21)
+    if (!std::isfinite(p.x) || !std::isfinite(p.z) || std::abs(p.x) > arena::HalfWidth ||
+        std::abs(p.z) > arena::HalfHeight)
         return false;
     if (sandbox || c.spell)
         return true;
     auto legal = [&](Vec2 q) {
-        if (std::abs(q.x) > 14 || std::abs(q.z) > 21)
+        if (std::abs(q.x) > arena::HalfWidth || std::abs(q.z) > arena::HalfHeight)
             return false;
         if (q.z * Sign(team) >= 2.15)
             return true;
         const double depth = -q.z * Sign(team);
-        if (depth < 2.25 || depth > 9.25 || std::abs(q.x) < 2 || std::abs(q.x) > 13.2)
+        if (depth < 2.25 || depth > arena::PocketMaxDepth || std::abs(q.x) < 2 ||
+            std::abs(q.x) > arena::PocketOuterX)
             return false;
         const int lane = q.x < 0 ? -1 : 1;
         for (const auto &e : state_.entities)
@@ -567,7 +573,7 @@ bool Match::CanPlace(Team team, const Card &c, Vec2 p, bool sandbox) const {
 }
 bool Match::Play(Team team, int index, Vec2 p, const std::string &reason) {
     if (!Running(state_.phase) || index < 0 || index >= 4 || !std::isfinite(p.x) || !std::isfinite(p.z) ||
-        std::abs(p.x) > 14 || std::abs(p.z) > 21)
+        std::abs(p.x) > arena::HalfWidth || std::abs(p.z) > arena::HalfHeight)
         return false;
     const int t = Index(team);
     const Card *c = FindCard(state_.hands[t][index]);
@@ -675,7 +681,8 @@ void Match::Deploy(Team team, const Card &c, Vec2 p, PlayId play, bool sandbox) 
         e.kind = c.building ? EntityKind::Building : EntityKind::Troop;
         e.cardId = c.id;
         e.playId = play;
-        e.position = {Clamp(p.x + offsets[i].x, -12.2, 12.2), p.z + offsets[i].z};
+        e.position = {Clamp(p.x + offsets[i].x, -arena::DeploymentMaxX, arena::DeploymentMaxX),
+                      p.z + offsets[i].z};
         e.facing = {0, -Sign(team)};
         e.hp = e.maxHp = c.hp;
         e.radius = c.building ? c.footprint * .52 : .44 * c.scale;
@@ -961,10 +968,10 @@ double Match::CombatDistance(const Entity &s, const Entity &t) const {
                                          : 0;
     if (!a || !b || a == b)
         return direct;
-    double best = std::numeric_limits<double>::infinity();
-    for (int lane : {-1, 1})
-        best = std::min(best, Distance(s.position, {lane * 7.2, a * 1.65}) + 3.3 +
-                                  Distance(t.position, {lane * 7.2, b * 1.65}));
-    return best;
+    const int lane = s.bridge ? s.bridge : s.position.x < 0 ? -1 : s.position.x > 0 ? 1
+                                                                                 : s.lane < 0 ? -1 : 1;
+    return Distance(s.position, {lane * arena::BridgeCenterX, a * arena::RiverHalfWidth}) +
+           arena::RiverHalfWidth * 2 +
+           Distance(t.position, {lane * arena::BridgeCenterX, b * arena::RiverHalfWidth});
 }
 } // namespace rift

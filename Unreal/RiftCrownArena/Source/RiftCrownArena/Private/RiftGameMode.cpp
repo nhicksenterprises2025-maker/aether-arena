@@ -10,6 +10,7 @@
 #include "Serialization/JsonWriter.h"
 #include "RiftMetaSimulationSubsystem.h"
 #include "Presentation/RiftArenaPresentation.h"
+#include "Presentation/RiftArenaGeometry.h"
 #include "Presentation/RiftBattleLayout.h"
 #include "Presentation/RiftUnitVisual.h"
 #include "EngineUtils.h"
@@ -45,11 +46,125 @@ double CaptureTowerSegmentClearance(const rift::Snapshot& State,const rift::Enti
     }
     return Minimum;
 }
+bool BuildTowerRouteCapture(URiftMatchSubsystem* Match,const TSharedRef<FJsonObject>& Report,const FString& Case,float Age)
+{
+    auto* Sim=Match->Simulation();FString TeamName=TEXT("player");FParse::Value(FCommandLine::Get(),TEXT("RiftRouteTeam="),TeamName);
+    const auto Team=TeamName==TEXT("enemy")?rift::Team::Enemy:rift::Team::Player;
+    const int32 TeamIndex=int32(Team),Lane=Case==TEXT("left_pocket")?-1:1;const double Side=TeamIndex==0?1.:-1.;
+    uint64 GuardId=0,CoreId=0,OppositeId=0;
+    TArray<TSharedPtr<FJsonValue>> Towers,Rows,Plays;
+    for(const auto& Tower:Sim->State().entities)if(Tower.team!=Team)
+    {if(Tower.kind==rift::EntityKind::Core)CoreId=Tower.id;else if(Tower.lane==Lane)GuardId=Tower.id;else OppositeId=Tower.id;}
+    Match->SampleBeforeMutation();const bool Destroyed=Sim->SetTowerHP(GuardId,0);Match->FlushEvents();
+    for(const auto& Tower:Sim->State().entities)if(Tower.kind>=rift::EntityKind::Guard)
+    {
+        auto Row=MakeShared<FJsonObject>();Row->SetNumberField(TEXT("id"),Tower.id);Row->SetStringField(TEXT("team"),UTF8_TO_TCHAR(rift::TeamName(Tower.team).c_str()));
+        Row->SetStringField(TEXT("kind"),Tower.kind==rift::EntityKind::Core?TEXT("core"):TEXT("guard"));Row->SetNumberField(TEXT("lane"),Tower.lane);
+        Row->SetNumberField(TEXT("x"),Tower.position.x);Row->SetNumberField(TEXT("z"),Tower.position.z);Row->SetNumberField(TEXT("radius"),Tower.radius);Row->SetBoolField(TEXT("dead"),Tower.dead);
+        Towers.Add(MakeShared<FJsonValueObject>(Row));
+    }
+    bool Paid=true,SpawnClear=true,StepsClear=true,SegmentsClear=true,CoreSeen=true,BridgeCorrect=true,Progress=true;
+    TMap<uint64,rift::Vec2> Previous;TMap<uint64,bool> InBridge;TMap<uint64,int32> LastBridge;
+    int32 Expected=0;
+    for(const bool Pocket:{false,true})
+    {
+        int32 Slot=INDEX_NONE;const rift::Card* Selected=nullptr;
+        for(int32 I=0;I<4;++I)
+        {
+            const auto* Card=rift::FindCard(Sim->State().hands[TeamIndex][I]);if(!Card||Card->spell||Card->building||Card->flying)continue;
+            if(!Selected||(!Pocket&&Card->moveSpeed<Selected->moveSpeed)||(Pocket&&Card->hp>Selected->hp)){Selected=Card;Slot=I;}
+        }
+        if(!Selected){Paid=false;break;}
+        const FString Role=Pocket?TEXT("pocket"):TEXT("own_half");const std::string CardId=Selected->id;
+        const int32 Count=Selected->count;const auto OldHand=Sim->State().hands[TeamIndex];const auto Queue=Sim->State().queues[TeamIndex];
+        Match->SampleBeforeMutation();Sim->SetAether(Team,10);Match->FlushEvents();
+        const double Spent=Sim->State().spent[TeamIndex];const rift::Vec2 Drop{Lane*(Pocket?8.5:7.5),Side*(Pocket?-5.5:4.5)};
+        const size_t Before=Sim->State().entities.size();Match->SampleBeforeMutation();const bool Accepted=Sim->Play(Team,Slot,Drop,"capture_paid_route");Match->FlushEvents();
+        auto Play=MakeShared<FJsonObject>();Play->SetStringField(TEXT("role"),Role);Play->SetStringField(TEXT("cardId"),UTF8_TO_TCHAR(CardId.c_str()));
+        Play->SetNumberField(TEXT("handIndex"),Slot);Play->SetNumberField(TEXT("cost"),Selected->cost);Play->SetNumberField(TEXT("memberCount"),Count);
+        Play->SetNumberField(TEXT("aetherBefore"),10);Play->SetNumberField(TEXT("aetherAfter"),Sim->State().aether[TeamIndex]);
+        Play->SetNumberField(TEXT("spentDelta"),Sim->State().spent[TeamIndex]-Spent);Play->SetBoolField(TEXT("accepted"),Accepted);
+        const bool Cycled=Accepted&&Sim->State().hands[TeamIndex][Slot]==Queue.front()&&Sim->State().queues[TeamIndex].back()==CardId;
+        bool Others=true;for(int32 I=0;I<4;++I)if(I!=Slot)Others&=Sim->State().hands[TeamIndex][I]==OldHand[I];
+        Play->SetBoolField(TEXT("handCycledOnce"),Cycled&&Others);Plays.Add(MakeShared<FJsonValueObject>(Play));
+        Paid&=Accepted&&Cycled&&Others&&FMath::IsNearlyEqual(Sim->State().spent[TeamIndex]-Spent,double(Selected->cost),1.e-9)&&
+            FMath::IsNearlyEqual(Sim->State().aether[TeamIndex],double(10-Selected->cost),1.e-9);Expected+=Count;
+        for(size_t I=Before;I<Sim->State().entities.size();++I)
+        {
+            const auto& Unit=Sim->State().entities[I];const auto Tile=rift::SnapToTile(Drop);const double Clear=CaptureTowerSegmentClearance(Sim->State(),Unit,Unit.position);
+            auto Row=MakeShared<FJsonObject>();Row->SetNumberField(TEXT("id"),Unit.id);Row->SetStringField(TEXT("team"),UTF8_TO_TCHAR(rift::TeamName(Unit.team).c_str()));
+            Row->SetStringField(TEXT("cardId"),UTF8_TO_TCHAR(Unit.cardId.c_str()));Row->SetStringField(TEXT("role"),Role);
+            Row->SetNumberField(TEXT("requestedX"),Tile.x);Row->SetNumberField(TEXT("requestedZ"),Tile.z);Row->SetNumberField(TEXT("spawnX"),Unit.position.x);Row->SetNumberField(TEXT("spawnZ"),Unit.position.z);
+            Row->SetNumberField(TEXT("x"),Unit.position.x);Row->SetNumberField(TEXT("z"),Unit.position.z);Row->SetBoolField(TEXT("present"),true);Row->SetBoolField(TEXT("alive"),true);
+            Row->SetNumberField(TEXT("targetId"),0);Row->SetStringField(TEXT("targetKind"),TEXT("none"));
+            Row->SetNumberField(TEXT("radius"),Unit.radius);Row->SetNumberField(TEXT("intendedBridge"),Lane);Row->SetNumberField(TEXT("expectedCoreId"),CoreId);
+            Row->SetNumberField(TEXT("spawnTowerClearance"),Clear);Row->SetNumberField(TEXT("minimumStepTowerClearance"),Clear);Row->SetNumberField(TEXT("minimumSegmentTowerClearance"),Clear);
+            Row->SetBoolField(TEXT("sawCoreTarget"),false);Row->SetBoolField(TEXT("crossedRiver"),false);Row->SetBoolField(TEXT("bridgeHistoryPassed"),true);
+            Row->SetArrayField(TEXT("crossingHistory"),{});Row->SetArrayField(TEXT("bridgeHistory"),{});Rows.Add(MakeShared<FJsonValueObject>(Row));Previous.Add(Unit.id,Unit.position);
+            SpawnClear&=Clear>=-1.e-6;
+        }
+    }
+    const double Started=Sim->State().elapsed;const int32 Steps=FMath::RoundToInt(double(Age)*60.);
+    for(int32 Step=0;Step<Steps;++Step)
+    {
+        Sim->Step(1./60.);Match->FlushEvents();
+        for(const auto& Value:Rows)
+        {
+            const auto Row=Value->AsObject();const uint64 Id=uint64(Row->GetNumberField(TEXT("id")));
+            for(const auto& Unit:Sim->State().entities)if(Unit.id==Id)
+            {
+                Row->SetNumberField(TEXT("x"),Unit.position.x);Row->SetNumberField(TEXT("z"),Unit.position.z);Row->SetBoolField(TEXT("alive"),!Unit.dead);Row->SetBoolField(TEXT("present"),true);
+                const rift::Entity* Target=nullptr;for(const auto& Entity:Sim->State().entities)if(Entity.id==Unit.target){Target=&Entity;break;}
+                Row->SetNumberField(TEXT("targetId"),Unit.target);Row->SetStringField(TEXT("targetKind"),!Target?TEXT("none"):Target->kind==rift::EntityKind::Core?TEXT("core"):Target->kind==rift::EntityKind::Guard?TEXT("guard"):Target->kind==rift::EntityKind::Building?TEXT("building"):TEXT("troop"));
+                if(Unit.target==CoreId)Row->SetBoolField(TEXT("sawCoreTarget"),true);
+                if(Unit.dead)break;
+                const double Clear=CaptureTowerSegmentClearance(Sim->State(),Unit,Unit.position),Segment=CaptureTowerSegmentClearance(Sim->State(),Unit,Previous.FindChecked(Id));
+                Row->SetNumberField(TEXT("minimumStepTowerClearance"),FMath::Min(Clear,Row->GetNumberField(TEXT("minimumStepTowerClearance"))));
+                Row->SetNumberField(TEXT("minimumSegmentTowerClearance"),FMath::Min(Segment,Row->GetNumberField(TEXT("minimumSegmentTowerClearance"))));StepsClear&=Clear>=-1.e-6;SegmentsClear&=Segment>=-1.e-6;
+                const bool Banking=FMath::Abs(Unit.position.z)<rift::arena::RiverHalfWidth+.28;
+                const bool Correct=!Unit.bridge||Unit.bridge==Lane;bool RiverCorrect=true;
+                if(Banking)RiverCorrect=Unit.position.x*Lane>0&&FMath::Abs(Unit.position.x-Lane*rift::arena::BridgeCenterX)<=rift::arena::BridgeWidth*.5-.16-Unit.radius*.92+1.e-6;
+                Row->SetBoolField(TEXT("bridgeHistoryPassed"),Row->GetBoolField(TEXT("bridgeHistoryPassed"))&&Correct&&RiverCorrect);
+                auto HistoryItem=[&](const TCHAR* Event){auto Item=MakeShared<FJsonObject>();Item->SetStringField(TEXT("event"),Event);Item->SetNumberField(TEXT("time"),Sim->State().elapsed);Item->SetNumberField(TEXT("x"),Unit.position.x);Item->SetNumberField(TEXT("z"),Unit.position.z);Item->SetNumberField(TEXT("bridge"),Unit.bridge);return MakeShared<FJsonValueObject>(Item);};
+                if(!LastBridge.Contains(Id)||LastBridge.FindChecked(Id)!=Unit.bridge){auto History=Row->GetArrayField(TEXT("bridgeHistory"));History.Add(HistoryItem(TEXT("bridge_commit")));Row->SetArrayField(TEXT("bridgeHistory"),History);LastBridge.Add(Id,Unit.bridge);}
+                auto Crossing=Row->GetArrayField(TEXT("crossingHistory"));
+                if(Banking&&!InBridge.FindRef(Id))Crossing.Add(HistoryItem(TEXT("enter_bridge")));
+                if(Previous.FindChecked(Id).z*Side>0&&Unit.position.z*Side<=0){Row->SetBoolField(TEXT("crossedRiver"),true);Crossing.Add(HistoryItem(TEXT("river_center")));}
+                if(!Banking&&InBridge.FindRef(Id))Crossing.Add(HistoryItem(TEXT("leave_bridge")));
+                Row->SetArrayField(TEXT("crossingHistory"),Crossing);InBridge.Add(Id,Banking);Previous.FindChecked(Id)=Unit.position;
+                break;
+            }
+        }
+        for(TActorIterator<ARiftArenaPresentation> It(Match->GetWorld());It;++It)It->Tick(0.f);
+    }
+    int32 Found=0;const bool RequireCross=Steps>=300;
+    for(const auto& Value:Rows)
+    {
+        const auto Row=Value->AsObject();const double X=Row->GetNumberField(TEXT("x"))-Row->GetNumberField(TEXT("spawnX"));
+        const double Z=Row->GetNumberField(TEXT("z"))-Row->GetNumberField(TEXT("spawnZ"));const bool Moved=FMath::Sqrt(X*X+Z*Z)>.5&&-Z*Side>.25;
+        bool Present=false;for(const auto& Unit:Sim->State().entities)if(Unit.id==uint64(Row->GetNumberField(TEXT("id")))){Present=true;break;}Row->SetBoolField(TEXT("present"),Present);
+        Row->SetNumberField(TEXT("distanceFromSpawn"),FMath::Sqrt(X*X+Z*Z));Row->SetNumberField(TEXT("progressForward"),-Z*Side);Row->SetBoolField(TEXT("progressPassed"),Moved);
+        if(Row->GetBoolField(TEXT("present")))++Found;Progress&=Moved;CoreSeen&=Row->GetBoolField(TEXT("sawCoreTarget"));BridgeCorrect&=Row->GetBoolField(TEXT("bridgeHistoryPassed"));
+        if(RequireCross&&Row->GetStringField(TEXT("role"))==TEXT("own_half"))BridgeCorrect&=Row->GetBoolField(TEXT("crossedRiver"));
+    }
+    const bool Passed=Destroyed&&Paid&&Plays.Num()==2&&Found==Expected&&SpawnClear&&StepsClear&&SegmentsClear&&(Steps==0||CoreSeen)&&BridgeCorrect&&(Steps<120||Progress);
+    Report->SetNumberField(TEXT("schemaVersion"),2);Report->SetStringField(TEXT("routeCase"),Case);Report->SetStringField(TEXT("routeTeam"),TeamName);
+    Report->SetStringField(TEXT("route"),TEXT("SetTowerHP / paid Match Play / fixed steps / live arena presentation"));Report->SetBoolField(TEXT("ordinarySpawnOnly"),false);Report->SetBoolField(TEXT("paidPlayOnly"),true);
+    Report->SetNumberField(TEXT("destroyedGuardId"),GuardId);Report->SetNumberField(TEXT("oppositeGuardId"),OppositeId);Report->SetNumberField(TEXT("expectedCoreId"),CoreId);Report->SetNumberField(TEXT("intendedBridge"),Lane);
+    Report->SetBoolField(TEXT("sameSideGuardDestroyed"),Destroyed);Report->SetBoolField(TEXT("paidCostAndCyclePassed"),Paid);Report->SetBoolField(TEXT("coreTargetsRequired"),Steps>0);Report->SetBoolField(TEXT("allCoreTargetsObserved"),CoreSeen);Report->SetBoolField(TEXT("allBridgeHistoriesPassed"),BridgeCorrect);Report->SetBoolField(TEXT("crossingRequired"),RequireCross);
+    Report->SetNumberField(TEXT("requestedAge"),Age);Report->SetNumberField(TEXT("sampledAge"),Sim->State().elapsed-Started);Report->SetNumberField(TEXT("fixedSteps"),Steps);Report->SetNumberField(TEXT("deploymentCount"),Plays.Num());Report->SetNumberField(TEXT("expectedUnitCount"),Expected);Report->SetNumberField(TEXT("actualUnitCount"),Found);
+    Report->SetNumberField(TEXT("towerNavigationPadding"),.22);Report->SetBoolField(TEXT("spawnTowerClearancePassed"),SpawnClear);Report->SetBoolField(TEXT("allStepTowerClearancePassed"),StepsClear);Report->SetBoolField(TEXT("allContinuousSegmentTowerClearancePassed"),SegmentsClear);
+    Report->SetBoolField(TEXT("progressRequired"),Steps>=120);Report->SetBoolField(TEXT("progressPassed"),Progress);Report->SetArrayField(TEXT("units"),Rows);Report->SetArrayField(TEXT("towers"),Towers);Report->SetArrayField(TEXT("paidPlays"),Plays);Report->SetBoolField(TEXT("passed"),Passed);
+    RIFT_LOG(LogRift,Log,TEXT("Actual tower route capture: case=%s team=%s paid=%d members=%d steps=%d core=%d bridge=%d clearance=%d progress=%d passed=%d"),*Case,*TeamName,Plays.Num(),Found,Steps,CoreSeen,BridgeCorrect,SpawnClear&&StepsClear&&SegmentsClear,Progress,Passed);
+    return Passed;
+}
 bool BuildTowerPathingCapture(URiftMatchSubsystem* Match,const TSharedRef<FJsonObject>& Report)
 {
     auto* Sim=Match->Simulation();if(!Sim)return false;Match->SetSpeed(0);
     float Age=0;FParse::Value(FCommandLine::Get(),TEXT("RiftPathingAge="),Age);
     Age=FMath::IsFinite(Age)?FMath::Clamp(Age,0.f,6.f):0.f;
+    FString Case=TEXT("clearance");FParse::Value(FCommandLine::Get(),TEXT("RiftRouteCase="),Case);
+    if(Case==TEXT("left_pocket")||Case==TEXT("right_pocket"))return BuildTowerRouteCapture(Match,Report,Case,Age);
     TArray<rift::Entity> Towers;for(const auto& Entity:Sim->State().entities)
         if(Entity.kind>=rift::EntityKind::Guard)Towers.Add(Entity);
     TArray<TSharedPtr<FJsonValue>> Rows,TowerRows;
@@ -120,6 +235,7 @@ bool BuildTowerPathingCapture(URiftMatchSubsystem* Match,const TSharedRef<FJsonO
     }
     const bool RequireProgress=Steps>=120;
     Report->SetNumberField(TEXT("schemaVersion"),1);Report->SetStringField(TEXT("route"),TEXT("ordinary Match Spawn / fixed steps / live arena presentation"));
+    Report->SetStringField(TEXT("routeCase"),TEXT("clearance"));Report->SetStringField(TEXT("routeTeam"),TEXT("both"));
     Report->SetNumberField(TEXT("requestedAge"),Age);Report->SetNumberField(TEXT("sampledAge"),Sim->State().elapsed-Started);
     Report->SetNumberField(TEXT("fixedSteps"),Steps);Report->SetNumberField(TEXT("deploymentCount"),Deployments);
     Report->SetNumberField(TEXT("expectedUnitCount"),8);Report->SetNumberField(TEXT("actualUnitCount"),Found);
@@ -549,6 +665,8 @@ void ARiftGameMode::BeginPlay()
                 Snapshot->SetNumberField(TEXT("trainingOverlayLines"),It->TrainingOverlayLineCount());Snapshot->SetNumberField(TEXT("trainingOverlayLabels"),It->TrainingOverlayLabelCount());
                 TSharedPtr<FJsonObject> Niagara;
                 if(FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(It->NiagaraDiagnosticsJSON()),Niagara))Snapshot->SetObjectField(TEXT("niagara"),Niagara);
+                TSharedPtr<FJsonObject> Geometry;
+                if(FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(It->GeometryDiagnosticsJSON()),Geometry))Snapshot->SetObjectField(TEXT("arenaGeometry"),Geometry);
                 break;
             }
             FString SnapshotText;auto Writer=TJsonWriterFactory<>::Create(&SnapshotText);FJsonSerializer::Serialize(Snapshot,Writer);
@@ -660,7 +778,7 @@ bool ARiftPlayerController::GroundPointToTile(FVector GroundPoint,FVector2D& Out
     const auto Point=URiftMatchSubsystem::TilePoint(GroundPoint);
     // SnapToTile clamps to the nearest board cell. Reject decorative ground
     // first so an off-board click cannot become an unintended edge deployment.
-    if(!FMath::IsFinite(Point.x)||!FMath::IsFinite(Point.z)||FMath::Abs(Point.x)>14||FMath::Abs(Point.z)>21)return false;
+    if(!FMath::IsFinite(Point.x)||!FMath::IsFinite(Point.z)||FMath::Abs(Point.x)>rift::arena::HalfWidth||FMath::Abs(Point.z)>rift::arena::HalfHeight)return false;
     const auto Snapped=rift::SnapToTile(Point);Out=FVector2D(Snapped.x,Snapped.z);return true;
 }
 void ARiftPlayerController::PlayerTick(float DeltaTime)
@@ -791,13 +909,17 @@ void ARiftPlayerController::Hand3(){CancelCardDrag();if(Interface&&Interface->Ca
 
 namespace
 {
-    // The legal field is 28 x 42 tiles. Include wing/body reach and the tallest
+    // Include wing/body reach outside the shared legal field and the tallest
     // enlarged troop/health anchor at its edges. The full-model contract includes
     // Raven wing reach and the raised anchors on flyers and crown structures.
     void ForEachBattleEnvelopePoint(TFunctionRef<void(const FVector&)> Visit)
     {
-        for(float X:{-1750.f,1750.f})for(float Y:{-2450.f,2450.f})for(float Z:{0.f,620.f})Visit(FVector(X,Y,Z));
-        for(float X:{-350.f,350.f})for(float Y:{-2000.f,2000.f})for(float Z:{0.f,620.f})Visit(FVector(X,Y,Z));
+        for(float X:{-RiftArenaGeometry::ModelHalfWidth,RiftArenaGeometry::ModelHalfWidth})
+            for(float Y:{-RiftArenaGeometry::ModelHalfHeight,RiftArenaGeometry::ModelHalfHeight})
+                for(float Z:{0.f,RiftArenaGeometry::ModelHeight})Visit(FVector(X,Y,Z));
+        for(float X:{-RiftArenaGeometry::CoreHalfWidth,RiftArenaGeometry::CoreHalfWidth})
+            for(float Y:{-RiftArenaGeometry::CoreHalfDepth,RiftArenaGeometry::CoreHalfDepth})
+                for(float Z:{0.f,RiftArenaGeometry::ModelHeight})Visit(FVector(X,Y,Z));
     }
 }
 
@@ -887,6 +1009,8 @@ FString ARiftPlayerController::CameraFramingDiagnosticsJSON()const
     Report->SetNumberField(TEXT("safeRight"),Width>0?(Width-CameraSafeRight)/Width:0.f);
     Report->SetNumberField(TEXT("usableWidthPixels"),FMath::Max(0.f,Width-CameraSafeLeft-CameraSafeRight));
     Report->SetNumberField(TEXT("usableHeightPixels"),FMath::Max(0.f,Height-CameraSafeTop-CameraSafeBottom));
+    Report->SetNumberField(TEXT("legalFieldWidthTiles"),rift::arena::Width);Report->SetNumberField(TEXT("legalFieldHeightTiles"),rift::arena::Height);
+    Report->SetNumberField(TEXT("legalFieldHalfWidthTiles"),rift::arena::HalfWidth);Report->SetNumberField(TEXT("legalFieldHalfHeightTiles"),rift::arena::HalfHeight);
     const FBox2D Safe=BattleSafeScreenBounds();
     auto InsideSafe=[&](FVector2D Screen){return Screen.X>=Safe.Min.X-1&&Screen.X<=Safe.Max.X+1&&Screen.Y>=Safe.Min.Y-1&&Screen.Y<=Safe.Max.Y+1;};
     FVector2D OriginScreen,RightScreen,DepthScreen,HeightScreen;
@@ -900,11 +1024,13 @@ FString ARiftPlayerController::CameraFramingDiagnosticsJSON()const
         Report->SetNumberField(TEXT("tilePitchPixels"),(RightScreen-OriginScreen).Size());
         Report->SetNumberField(TEXT("tileDepthPixels"),(DepthScreen-OriginScreen).Size());
         Report->SetNumberField(TEXT("modelHeightPixelsPerMeter"),(HeightScreen-OriginScreen).Size());
-        Report->SetNumberField(TEXT("legalFieldWidthPixels"),(RightScreen-OriginScreen).Size()*28.);
-        Report->SetNumberField(TEXT("arenaGroundWidthPixels"),(RightScreen-OriginScreen).Size()*38.);
+        Report->SetNumberField(TEXT("legalFieldWidthPixels"),(RightScreen-OriginScreen).Size()*rift::arena::Width);
+        Report->SetNumberField(TEXT("legalFieldDepthPixels"),(DepthScreen-OriginScreen).Size()*rift::arena::Height);
+        Report->SetNumberField(TEXT("arenaGroundWidthPixels"),(RightScreen-OriginScreen).Size()*RiftArenaGeometry::GroundHalfWidth*2.);
     }
     bool Passed=ArenaCamera&&Width>0&&Height>0;TArray<TSharedPtr<FJsonValue>> Corners;
-    for(float X:{-14.f,14.f})for(float Y:{-21.f,21.f})
+    for(double X:{-double(rift::arena::HalfWidth),double(rift::arena::HalfWidth)})
+        for(double Y:{-double(rift::arena::HalfHeight),double(rift::arena::HalfHeight)})
     {
         FVector2D Screen=FVector2D::ZeroVector;
         const bool Projected=ProjectWorldLocationToScreen(URiftMatchSubsystem::WorldPoint({X,Y}),Screen,false);

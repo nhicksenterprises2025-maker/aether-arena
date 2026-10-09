@@ -39,6 +39,7 @@ public:
     bool PreviewIsSpell() const { return bPlacementSpell; }
     bool PreviewIsValid() const { return bPlacementValid; }
     // On-demand native QA; never runs during ordinary rendering.
+    FString GeometryDiagnosticsJSON() const;
     FString NiagaraDiagnosticsJSON();
     int32 TrainingOverlayLineCount()const;
     int32 TrainingOverlayLabelCount()const;

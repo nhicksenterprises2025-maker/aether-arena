@@ -38,7 +38,7 @@ double TowerSegmentClearance(const rift::Snapshot& State,const rift::Entity& Tro
 double TowerArenaClearance(const rift::Entity& Troop)
 {
     const double Edge=.40+Troop.radius*.72;
-    return FMath::Min(14.-Edge-FMath::Abs(Troop.position.x),21.-Edge-FMath::Abs(Troop.position.z));
+    return FMath::Min(rift::arena::HalfWidth-Edge-FMath::Abs(Troop.position.x),rift::arena::HalfHeight-Edge-FMath::Abs(Troop.position.z));
 }
 rift::MatchOptions TowerOptions(const std::string& First="ironclad")
 {
@@ -119,8 +119,9 @@ bool FRiftTowerPathingIntegrationTest::RunTest(const FString& Parameters)
     // Legal hand drops on the outer rows must also begin inside the movement
     // envelope. Continuous segment checks cannot rescue an invalid origin.
     int32 BoundaryCases=0,BoundaryMembers=0;
-    const rift::Vec2 BoundaryDrops[]={{.5,20.5},{-12.5,20.5},{12.5,20.5},
-        {-13.5,20.5},{13.5,20.5},{-12.5,8.5},{12.5,8.5}};
+    const double Side=rift::arena::HalfWidth-1.5;
+    const rift::Vec2 BoundaryDrops[]={{.5,rift::arena::LastTileZ},{-Side,rift::arena::LastTileZ},{Side,rift::arena::LastTileZ},
+        {-rift::arena::LastTileX,rift::arena::LastTileZ},{rift::arena::LastTileX,rift::arena::LastTileZ},{-Side,8.5},{Side,8.5}};
     for(const auto& Card:rift::Cards())if(!Card.spell&&!Card.building&&!Card.flying)
         for(const auto Team:{rift::Team::Player,rift::Team::Enemy})for(auto Drop:BoundaryDrops)
         {
@@ -163,6 +164,62 @@ bool FRiftTowerPathingIntegrationTest::RunTest(const FString& Parameters)
         }
     TestEqual(TEXT("Both teams' rear rows, side rows and extreme corners cover every ground card"),BoundaryCases,98);
     TestEqual(TEXT("Rear/side/corner paid deployments retain all single and twin members"),BoundaryMembers,112);
+
+    TestEqual(TEXT("The requested larger arena is thirty tiles wide"),rift::arena::Width,30);
+    TestEqual(TEXT("The requested larger arena is forty-four tiles deep"),rift::arena::Height,44);
+    TestEqual(TEXT("Core towers move one tile toward the rear"),rift::arena::CoreDepth,17.3);
+    TestEqual(TEXT("Guard towers move one tile toward the rear"),rift::arena::GuardDepth,13.4);
+    rift::Match Geometry(TowerOptions());
+    for(const auto& Tower:Geometry.State().entities)
+        TestTrue(TEXT("All six actual towers use the shifted symmetric depths"),
+            FMath::IsNearlyEqual(FMath::Abs(Tower.position.z),Tower.kind==rift::EntityKind::Core?17.3:13.4,1.e-9));
+
+    int32 RouteCases=0,RouteMembers=0;
+    for(const auto& Card:rift::Cards())if(!Card.spell&&!Card.building&&!Card.flying)
+        for(const auto Team:{rift::Team::Player,rift::Team::Enemy})for(const int32 Lane:{-1,1})for(const bool Pocket:{false,true})
+        {
+            rift::Match Match(TowerOptions(Card.id));const int32 T=int32(Team);const double Sign=Team==rift::Team::Player?1.:-1.;
+            uint64 Destroyed=0,Core=0,OtherGuard=0;
+            for(const auto& Tower:Match.State().entities)if(Tower.team!=Team)
+            {if(Tower.kind==rift::EntityKind::Core)Core=Tower.id;else if(Tower.lane==Lane)Destroyed=Tower.id;else OtherGuard=Tower.id;}
+            const FString Label=FString::Printf(TEXT("Lane %d team %d %s %s"),Lane,T,Pocket?TEXT("pocket"):TEXT("own half"),UTF8_TO_TCHAR(Card.id.c_str()));
+            TestTrue(Label+TEXT(" destroys only the opponent same-side Guard through the real mechanic"),Match.SetTowerHP(Destroyed,0));
+            TestTrue(Label+TEXT(" leaves the opposite Guard alive"),TowerEntity(Match.State(),OtherGuard)&&!TowerEntity(Match.State(),OtherGuard)->dead);
+            const rift::Vec2 Drop{Lane*(Pocket?8.5:7.5),Sign*(Pocket?-5.5:4.5)};
+            Match.SetAether(Team,10);const auto Hand=Match.State().hands[T];const auto Queue=Match.State().queues[T];
+            TestTrue(Label+TEXT(" exposes the legal same-side enemy pocket"),Match.CanPlace(Team,Card,Drop));
+            if(!TestTrue(Label+TEXT(" accepts the actual paid card"),Match.Play(Team,0,Drop)))continue;
+            ++RouteCases;TestEqual(Label+TEXT(" spends the canonical cost once"),Match.State().spent[T],double(Card.cost));
+            TestTrue(Label+TEXT(" preserves actual paid hand cycling"),Match.State().hands[T][0]==Queue[0]&&Match.State().hands[T][1]==Hand[1]&&Match.State().queues[T].back()==Card.id);
+            TArray<rift::Entity> Starts;for(const auto& Unit:Match.State().entities)if(Unit.kind==rift::EntityKind::Troop)Starts.Add(Unit);
+            RouteMembers+=Starts.Num();TestEqual(Label+TEXT(" retains every paid troop member"),Starts.Num(),Card.count);
+            TMap<uint64,bool> SawCore,Crossed;auto Previous=Starts;bool BridgeClear=true,SegmentsClear=true,TargetsCore=true;
+            const int32 Steps=Pocket?90:360;
+            for(int32 Step=0;Step<Steps;++Step)
+            {
+                Match.Step(1./60.);
+                for(auto& Last:Previous)if(const auto* Unit=TowerEntity(Match.State(),Last.id))
+                {
+                    if(Unit->dead)continue;
+                    if(Unit->target==Core)SawCore.Add(Unit->id,true);
+                    TargetsCore&=Unit->target==Core;
+                    if(Unit->bridge)BridgeClear&=Unit->bridge==Lane;
+                    if(FMath::Abs(Unit->position.z)<rift::arena::RiverHalfWidth+.28)
+                        BridgeClear&=Unit->position.x*Lane>0&&FMath::Abs(Unit->position.x-Lane*rift::arena::BridgeCenterX)<=rift::arena::BridgeWidth*.5-.16-Unit->radius*.92+1.e-6;
+                    if(Last.position.z*Sign>0&&Unit->position.z*Sign<=0)Crossed.Add(Unit->id,true);
+                    SegmentsClear&=TowerSegmentClearance(Match.State(),*Unit,Last.position)>=-1.e-6&&TowerArenaClearance(*Unit)>=-1.e-6;
+                    Last.position=Unit->position;
+                }
+            }
+            TestTrue(Label+TEXT(" consistently targets Core rather than the surviving opposite Guard"),TargetsCore&&SawCore.Num()==Starts.Num());
+            TestTrue(Label+TEXT(" commits only to the deployment-side bridge"),BridgeClear);
+            TestTrue(Label+TEXT(" continuous movement clears live towers and the larger arena"),SegmentsClear);
+            if(!Pocket)TestEqual(Label+TEXT(" every own-half member crosses the river on its own side"),Crossed.Num(),Starts.Num());
+            for(const auto& Start:Starts)if(const auto* Unit=TowerEntity(Match.State(),Start.id))
+                TestTrue(Label+TEXT(" actually advances toward the Core"),TowerDistance(Start.position,Unit->position)>.5);
+        }
+    TestEqual(TEXT("Every ground card covers both teams, both lanes, own-half and enemy pocket deployments"),RouteCases,56);
+    TestEqual(TEXT("Destroyed-Guard routing retains every single and twin member"),RouteMembers,64);
 
     auto* GI=NewObject<UGameInstance>(GEngine);GI->InitializeStandalone(FName(*FGuid::NewGuid().ToString(EGuidFormats::Digits)));
     auto* World=GI->GetWorld();auto* Replay=GI->GetSubsystem<URiftReplaySubsystem>();

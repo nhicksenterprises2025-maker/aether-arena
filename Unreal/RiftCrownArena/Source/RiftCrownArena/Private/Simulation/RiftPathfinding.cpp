@@ -8,6 +8,7 @@
 
 namespace rift {
 namespace {
+constexpr int HalfX = arena::HalfWidth, HalfZ = arena::HalfHeight;
 double D(Vec2 a, Vec2 b) {
     return std::hypot(a.x - b.x, a.z - b.z);
 }
@@ -26,8 +27,8 @@ double SegmentDistanceSquared(Vec2 from, Vec2 to, Vec2 point) {
 }
 bool ArenaSegmentValid(Vec2 from, Vec2 to, double radius, int bridge) {
     const double edge = .40 + radius * .72;
-    if (std::abs(from.x) > 14 - edge || std::abs(from.z) > 21 - edge ||
-        std::abs(to.x) > 14 - edge || std::abs(to.z) > 21 - edge)
+    if (std::abs(from.x) > HalfX - edge || std::abs(from.z) > HalfZ - edge ||
+        std::abs(to.x) > HalfX - edge || std::abs(to.z) > HalfZ - edge)
         return false;
     // A segment is legal through the river only if the whole part inside its
     // banks stays on one bridge, including off-grid entry and exit points.
@@ -72,7 +73,7 @@ double Heuristic(Cell a, Cell b) {
 } // namespace
 bool Match::NavValid(Vec2 p, const Entity &s, EntityId goal, int bridge) const {
     const double edge = .40 + s.radius * .72;
-    if (std::abs(p.x) > 14 - edge || std::abs(p.z) > 21 - edge)
+    if (std::abs(p.x) > HalfX - edge || std::abs(p.z) > HalfZ - edge)
         return false;
     if (std::abs(p.z) < 1.65 + .28) {
         const double half = std::max(.34, 2.1 - .16 - s.radius * .92);
@@ -128,7 +129,7 @@ Vec2 Match::ResolveGroundPlacement(Vec2 p, const Entity &s, bool sandbox, Entity
         }
     };
     const double edge = .40 + s.radius * .72 + .001;
-    consider({Clamp(p.x, -14 + edge, 14 - edge), Clamp(p.z, -21 + edge, 21 - edge)});
+    consider({Clamp(p.x, -HalfX + edge, HalfX - edge), Clamp(p.z, -HalfZ + edge, HalfZ - edge)});
     if (!insideStructure && std::isfinite(bestDistance))
         return best;
     const double forward = std::atan2(s.facing.z, s.facing.x);
@@ -149,14 +150,16 @@ Vec2 Match::ResolveGroundPlacement(Vec2 p, const Entity &s, bool sandbox, Entity
         }
     // Bounded fallback also handles edge/river DEV placements and intersecting
     // footprints. It runs only for a blocked member, never during ordinary walks.
-    for (int z = -20; z <= 20; ++z)
-        for (int x = -13; x <= 13; ++x)
+    for (int z = -HalfZ + 1; z < HalfZ; ++z)
+        for (int x = -HalfX + 1; x < HalfX; ++x)
             consider({static_cast<double>(x), static_cast<double>(z)});
     return best;
 }
 std::vector<Vec2> Match::FindPath(const Entity &s, const Entity &t, int bridge) const {
     if (s.flying)
         return {t.position};
+    if (!bridge && s.position.z * t.position.z < 0)
+        bridge = s.bridge ? s.bridge : s.position.x < 0 ? -1 : s.position.x > 0 ? 1 : s.lane < 0 ? -1 : 1;
     struct Entry {
         Cell c;
         double f = 0, g = 0;
@@ -169,9 +172,9 @@ std::vector<Vec2> Match::FindPath(const Entity &s, const Entity &t, int bridge) 
     };
     // The arena is bounded. Flat arrays avoid allocating tree nodes for every
     // visited tile in thousands of background matches; A* ordering is unchanged.
-    constexpr int Width = 29, Height = 43, Size = Width * Height;
-    auto index = [](Cell c) { return (c.z + 21) * Width + c.x + 14; };
-    auto cell = [](int n) { return Cell{n % Width - 14, n / Width - 21}; };
+    constexpr int Width = HalfX * 2 + 1, Height = HalfZ * 2 + 1, Size = Width * Height;
+    auto index = [](Cell c) { return (c.z + HalfZ) * Width + c.x + HalfX; };
+    auto cell = [](int n) { return Cell{n % Width - HalfX, n / Width - HalfZ}; };
     struct Obstacle {
         Vec2 position;
         double clearanceSquared;
@@ -184,10 +187,10 @@ std::vector<Vec2> Match::FindPath(const Entity &s, const Entity &t, int bridge) 
         }
     const double edge = .40 + s.radius * .72, half = std::max(.34, 2.1 - .16 - s.radius * .92);
     std::array<std::uint8_t, Size> walkable{}, closed{};
-    for (int z = -21; z <= 21; ++z)
-        for (int x = -14; x <= 14; ++x) {
+    for (int z = -HalfZ; z <= HalfZ; ++z)
+        for (int x = -HalfX; x <= HalfX; ++x) {
             Cell c{x, z};
-            bool valid = std::abs(x) <= 14 - edge && std::abs(z) <= 21 - edge;
+            bool valid = std::abs(x) <= HalfX - edge && std::abs(z) <= HalfZ - edge;
             if (valid && std::abs(z) < 1.65 + .28) {
                 valid = false;
                 for (int lane : {-1, 1})
@@ -205,7 +208,7 @@ std::vector<Vec2> Match::FindPath(const Entity &s, const Entity &t, int bridge) 
             walkable[index(c)] = valid ? 1 : 0;
         }
     auto valid = [&](Cell c) {
-        return c.x >= -14 && c.x <= 14 && c.z >= -21 && c.z <= 21 && walkable[index(c)] != 0;
+        return c.x >= -HalfX && c.x <= HalfX && c.z >= -HalfZ && c.z <= HalfZ && walkable[index(c)] != 0;
     };
     auto segmentValid = [&](Vec2 from, Vec2 to) {
         if (!ArenaSegmentValid(from, to, s.radius, bridge))
@@ -226,7 +229,7 @@ std::vector<Vec2> Match::FindPath(const Entity &s, const Entity &t, int bridge) 
         cost = std::min(1.35, cost);
     Cell start = Grid(s.position);
     Cell goal = Grid(t.position);
-    if (start.x < -14 || start.x > 14 || start.z < -21 || start.z > 21)
+    if (start.x < -HalfX || start.x > HalfX || start.z < -HalfZ || start.z > HalfZ)
         return {};
     // A legal continuous position can round into a blocked cell. Connect to an
     // actually visible legal node rather than routing out of a blocked start or
@@ -234,8 +237,8 @@ std::vector<Vec2> Match::FindPath(const Entity &s, const Entity &t, int bridge) 
     if (!valid(start) || !segmentValid(s.position, Point(start))) {
         double best = std::numeric_limits<double>::infinity();
         bool found = false;
-        for (int z = -21; z <= 21; ++z)
-            for (int x = -14; x <= 14; ++x) {
+        for (int z = -HalfZ; z <= HalfZ; ++z)
+            for (int x = -HalfX; x <= HalfX; ++x) {
                 Cell candidate{x, z};
                 const double distance = D(s.position, Point(candidate));
                 if (distance < best && valid(candidate) && segmentValid(s.position, Point(candidate))) {
@@ -278,7 +281,7 @@ std::vector<Vec2> Match::FindPath(const Entity &s, const Entity &t, int bridge) 
     cost[index(start)] = 0;
     open.push({start, Heuristic(start, goal), 0, sequence++});
     int examined = 0;
-    while (!open.empty() && examined < 1400) {
+    while (!open.empty() && examined < Size) {
         const auto e = open.top();
         open.pop();
         const int current = index(e.c);
@@ -361,21 +364,10 @@ void Match::Move(Entity &s, const Entity &t, double dt) {
         if (s.bridge && std::abs(s.position.z) > 1.65 + .92 + .12 && !crossing)
             s.bridge = 0;
         if (crossing && !s.bridge) {
-            if (t.kind == EntityKind::Guard)
-                s.bridge = t.lane;
-            else {
-                double left = D(s.position, {-7.2, 0}) + D(t.position, {-7.2, 0}),
-                       right = D(s.position, {7.2, 0}) + D(t.position, {7.2, 0});
-                for (const auto &o : state_.entities)
-                    if (!o.dead && !o.flying && o.kind == EntityKind::Troop && o.team == s.team &&
-                        std::abs(o.position.z) < 3.2) {
-                        if (o.position.x < 0)
-                            left += .20;
-                        else
-                            right += .20;
-                    }
-                s.bridge = left <= right ? -1 : 1;
-            }
+            // Choose the bridge on the troop's current side and hold it through
+            // the crossing, even when a defender or surviving crown is opposite.
+            s.bridge = s.position.x < 0 ? -1 : s.position.x > 0 ? 1 : s.lane < 0 ? -1 : 1;
+            s.lane = s.bridge;
             s.path.clear();
         }
         s.repathClock -= dt;
@@ -457,8 +449,8 @@ void Match::Move(Entity &s, const Entity &t, double dt) {
             const double half = std::max(.34, 2.1 - .16 - s.radius * .92);
             s.position.x = Clamp(s.position.x, lane * 7.2 - half, lane * 7.2 + half);
         }
-        s.position.x = Clamp(s.position.x, -13.5 + s.radius * .72, 13.5 - s.radius * .72);
-        s.position.z = Clamp(s.position.z, -20.5 + s.radius * .72, 20.5 - s.radius * .72);
+        s.position.x = Clamp(s.position.x, -arena::LastTileX + s.radius * .72, arena::LastTileX - s.radius * .72);
+        s.position.z = Clamp(s.position.z, -arena::LastTileZ + s.radius * .72, arena::LastTileZ - s.radius * .72);
         s.stuckClock += dt;
         if (s.stuckClock >= .28) {
             const double distance = D(s.position, t.position);

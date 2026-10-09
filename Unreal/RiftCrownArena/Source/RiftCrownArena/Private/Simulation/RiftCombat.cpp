@@ -23,6 +23,9 @@ bool Running(Phase p) {
 } // namespace
 void Match::Acquire(Entity &s) {
     const Card *c = FindCard(s.cardId);
+    if (s.kind == EntityKind::Troop && !s.flying && !s.bridge &&
+        s.position.z * (s.team == Team::Player ? 1 : -1) > arena::RiverHalfWidth + .28)
+        s.lane = s.position.x < 0 ? -1 : s.position.x > 0 ? 1 : s.lane < 0 ? -1 : 1;
     const Entity *locked = Get(s.hardLock);
     if (locked && !locked->dead && CanTarget(s, *locked)) {
         s.target = locked->id;
@@ -92,10 +95,27 @@ void Match::Acquire(Entity &s) {
             return;
         }
     }
+    const Entity *advanceCrown = nullptr;
+    if (!s.flying) {
+        const int lane = s.bridge ? s.bridge : s.lane ? s.lane : s.position.x < 0 ? -1 : 1;
+        for (const auto &t : state_.entities)
+            if (!t.dead && t.team != s.team && t.kind == EntityKind::Guard && t.lane == lane) {
+                advanceCrown = &t;
+                break;
+            }
+        if (!advanceCrown)
+            for (const auto &t : state_.entities)
+                if (!t.dead && t.team != s.team && t.kind == EntityKind::Core) {
+                    advanceCrown = &t;
+                    break;
+                }
+    }
     double best = std::numeric_limits<double>::max();
     EntityId nearest = 0;
     for (const auto &t : state_.entities)
         if (Structure(t) && CanTarget(s, t)) {
+            if (!s.flying && Crown(t) && (!advanceCrown || t.id != advanceCrown->id))
+                continue;
             if (!c->structuresOnly && t.kind != EntityKind::Building)
                 continue;
             if (!c->structuresOnly && !InSight(s, t))
@@ -108,6 +128,10 @@ void Match::Acquire(Entity &s) {
         }
     if (nearest) {
         s.target = nearest;
+        return;
+    }
+    if (advanceCrown) {
+        s.target = advanceCrown->id;
         return;
     }
     if (!c->structuresOnly)

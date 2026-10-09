@@ -39,6 +39,7 @@ public:
     FString LastError;
     static FString Fingerprint();
 private:
+    friend class FRiftMetaAggregationTest;
     friend class FRiftMetaWorkerPauseTest;
     TSharedPtr<FJsonObject> Data;
     TSharedPtr<FRiftMetaWorker,ESPMode::ThreadSafe> Worker;

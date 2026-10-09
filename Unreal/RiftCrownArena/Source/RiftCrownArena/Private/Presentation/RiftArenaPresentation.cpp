@@ -2,6 +2,7 @@
 #include "RiftDiagnostics.h"
 #include "Presentation/RiftBattleAudioSubsystem.h"
 #include "Presentation/RiftBattleOverlay.h"
+#include "Presentation/RiftArenaGeometry.h"
 #include "Presentation/RiftUnitVisual.h"
 #include "RiftAssetLibrary.h"
 #include "RiftMatchSubsystem.h"
@@ -140,7 +141,9 @@ FVector ARiftArenaPresentation::SpellCastPathPoint(const std::string& Card,FVect
     const double Side=Team==rift::Team::Player?1.:-1.;
     FVector Start=Landing+FVector(Meteor?-130.:65.,Side*(Meteor?220.:300.),Meteor?505.-Index*14.:350.+Index*8.);
     // Edge casts keep their incoming models inside the camera's arena margin.
-    Start.X=FMath::Clamp(Start.X,-1600.,1600.);Start.Y=FMath::Clamp(Start.Y,-2300.,2300.);
+    const double EntryHalfWidth=(rift::arena::HalfWidth+2.)*RiftArenaGeometry::UnitsPerTile;
+    const double EntryHalfHeight=(rift::arena::HalfHeight+2.)*RiftArenaGeometry::UnitsPerTile;
+    Start.X=FMath::Clamp(Start.X,-EntryHalfWidth,EntryHalfWidth);Start.Y=FMath::Clamp(Start.Y,-EntryHalfHeight,EntryHalfHeight);
     // Every visible round reaches the selected ground point at the same
     // authoritative deadline. Staggered bullet releases do not imply staggered
     // damage or follow a target after the player has committed the cast.
@@ -250,53 +253,62 @@ void ARiftArenaPresentation::Place(FName Mesh,FVector Position,FRotator Rotation
 void ARiftArenaPresentation::ConstructArena()
 {
     FRandomStream Random(150151);
+    constexpr float Tile=RiftArenaGeometry::UnitsPerTile;
+    constexpr float HalfWidth=rift::arena::HalfWidth*Tile,HalfHeight=rift::arena::HalfHeight*Tile;
+    constexpr float RiverHalfWidth=rift::arena::RiverHalfWidth*Tile,BridgeX=rift::arena::BridgeCenterX*Tile;
     // The playable extent, tile centers, river and bridge openings are identical
     // to the simulation. Decoration stays outside deployment and navigation.
-    for (int32 X=0;X<28;++X) for (int32 Y=0;Y<42;++Y)
+    for (int32 X=0;X<rift::arena::Width;++X) for (int32 Y=0;Y<rift::arena::Height;++Y)
     {
-        const float PX=(X-13.5f)*100, PY=(Y-20.5f)*100;
-        if (FMath::Abs(PY)<165.f) continue;
+        const float PX=(X-rift::arena::LastTileX)*Tile, PY=(Y-rift::arena::LastTileZ)*Tile;
+        if (FMath::Abs(PY)<RiverHalfWidth) continue;
         Place(TEXT("floor_tile"),FVector(PX,PY,0),FRotator(0,90*(X%4),0));
-        if ((FMath::Abs(PX-720)<130 || FMath::Abs(PX+720)<130) && FMath::Abs(PY)<1150 && Y%2==0)
+        if ((FMath::Abs(PX-BridgeX)<130 || FMath::Abs(PX+BridgeX)<130) && FMath::Abs(PY)<1150 && Y%2==0)
             Place(TEXT("lane_paver"),FVector(PX,PY,1),FRotator(0,Random.FRandRange(-8,8),0));
     }
-    for (int32 X=-19;X<19;++X) for (int32 Y=-24;Y<24;++Y)
+    for (int32 X=-RiftArenaGeometry::GroundHalfWidth;X<RiftArenaGeometry::GroundHalfWidth;++X)
+        for (int32 Y=-RiftArenaGeometry::GroundHalfHeight;Y<RiftArenaGeometry::GroundHalfHeight;++Y)
     {
-        const float PX=(X+.5f)*100,PY=(Y+.5f)*100;
-        if (FMath::Abs(PX)<1400 && FMath::Abs(PY)<2100) continue;
-        if (FMath::Abs(PY)<165.f) continue;
+        const float PX=(X+.5f)*Tile,PY=(Y+.5f)*Tile;
+        if (FMath::Abs(PX)<HalfWidth && FMath::Abs(PY)<HalfHeight) continue;
+        if (FMath::Abs(PY)<RiverHalfWidth) continue;
         Place(TEXT("floor_tile"),FVector(PX,PY,-18),FRotator(0,90*((X+24)%4),0));
     }
     // Authored stone/wood bridges use local +X forward after FBX conversion.
-    for (float X:{-720.f,720.f}) Place(TEXT("bridge"),FVector(X,0,-16),FRotator(0,90,0));
+    for (float X:{-BridgeX,BridgeX}) Place(TEXT("bridge"),FVector(X,0,-16),FRotator(0,90,0));
+    const int32 BankCount=FMath::CeilToInt(rift::arena::Width/2.f);
+    const int32 SideStoneCount=FMath::CeilToInt(rift::arena::Height*Tile/140.f);
+    const int32 EndStoneCount=FMath::CeilToInt(rift::arena::Width*Tile/150.f);
+    const int32 ShrubCount=FMath::CeilToInt(rift::arena::Height*Tile/175.f);
     for (int32 Side:{-1,1})
     {
-        for (int32 Index=0;Index<14;++Index)
+        for (int32 Index=0;Index<BankCount;++Index)
         {
-            const float X=(Index-6.5f)*200;
-            if (FMath::Abs(X-720)<250 || FMath::Abs(X+720)<250) continue;
-            Place(TEXT("bank_segment"),FVector(X,Side*175.f,-40),FRotator(0,90,0));
+            const float X=(Index-(BankCount-1)*.5f)*200;
+            const float BridgeOpening=rift::arena::BridgeWidth*Tile*.5f+40.f;
+            if (FMath::Abs(X-BridgeX)<BridgeOpening || FMath::Abs(X+BridgeX)<BridgeOpening) continue;
+            Place(TEXT("bank_segment"),FVector(X,Side*(RiverHalfWidth+10.f),-40),FRotator(0,90,0));
         }
-        for (int32 Index=0;Index<30;++Index)
-            Place(TEXT("boundary_stone"),FVector(Side*1460.f,(Index-14.5f)*140,-15),FRotator(0,0,0),FVector(1.1));
-        for (int32 Index=0;Index<19;++Index)
-            Place(TEXT("boundary_stone"),FVector((Index-9.f)*150,Side*2160.f,-15),FRotator(0,90,0),FVector(1.1));
-        for (int32 Index=0;Index<24;++Index)
+        for (int32 Index=0;Index<SideStoneCount;++Index)
+            Place(TEXT("boundary_stone"),FVector(Side*(HalfWidth+60.f),(Index-(SideStoneCount-1)*.5f)*140,-15),FRotator(0,0,0),FVector(1.1));
+        for (int32 Index=0;Index<EndStoneCount;++Index)
+            Place(TEXT("boundary_stone"),FVector((Index-(EndStoneCount-1)*.5f)*150,Side*(HalfHeight+60.f),-15),FRotator(0,90,0),FVector(1.1));
+        for (int32 Index=0;Index<ShrubCount;++Index)
         {
-            const float Y=(Index-11.5f)*175;
-            Place(TEXT("shrub"),FVector(Side*1540.f+Random.FRandRange(-35,35),Y,0),FRotator(0,Random.FRandRange(0,360),0),FVector(Random.FRandRange(.7,1.3)));
-            Place(TEXT("grass_tuft"),FVector(Side*1435.f,Y+45,5),FRotator(0,Random.FRandRange(0,360),0),FVector(1.4));
-            if (Index%4==1) Place(TEXT("tree"),FVector(Side*1750.f,Y+70,-20),FRotator(0,Random.FRandRange(0,360),0),FVector(Random.FRandRange(.95,1.35)));
+            const float Y=(Index-(ShrubCount-1)*.5f)*175;
+            Place(TEXT("shrub"),FVector(Side*(HalfWidth+140.f)+Random.FRandRange(-35,35),Y,0),FRotator(0,Random.FRandRange(0,360),0),FVector(Random.FRandRange(.7,1.3)));
+            Place(TEXT("grass_tuft"),FVector(Side*(HalfWidth+35.f),Y+45,5),FRotator(0,Random.FRandRange(0,360),0),FVector(1.4));
+            if (Index%4==1) Place(TEXT("tree"),FVector(Side*(HalfWidth+350.f),Y+70,-20),FRotator(0,Random.FRandRange(0,360),0),FVector(Random.FRandRange(.95,1.35)));
         }
-        Place(TEXT("ruin"),FVector(Side*1840.f,Side*1420.f,-25),FRotator(0,Side*32,0),FVector(1.5));
-        for (float X:{-1220.f,1220.f})
+        Place(TEXT("ruin"),FVector(Side*(HalfWidth+440.f),Side*(rift::arena::GuardDepth*Tile+180.f),-25),FRotator(0,Side*32,0),FVector(1.5));
+        for (float X:{-(HalfWidth-180.f),HalfWidth-180.f})
         {
-            Place(TEXT("banner"),FVector(X,Side*1860.f,0),FRotator(0,Side*90,0),FVector(1.05),Side==1?0:1);
+            Place(TEXT("banner"),FVector(X,Side*(rift::arena::CoreDepth*Tile+230.f),0),FRotator(0,Side*90,0),FVector(1.05),Side==1?0:1);
             Place(TEXT("crystal_plinth"),FVector(X,Side*900.f,0),FRotator::ZeroRotator,FVector(.8),Side==1?0:1);
         }
     }
     // The authored eroded island supports the field rather than a stock cube.
-    Place(TEXT("distant_island"),FVector(0,0,-125),FRotator::ZeroRotator,FVector(10.5,14,3.8));
+    Place(TEXT("distant_island"),FVector(0,0,-125),FRotator::ZeroRotator,FVector(RiftArenaGeometry::GroundHalfWidth*10.5f/19.f,RiftArenaGeometry::GroundHalfHeight*14.f/24.f,3.8));
     for (int32 Index=0;Index<6;++Index)
     {
         const float Angle=Index*UE_TWO_PI/6;
@@ -308,8 +320,95 @@ void ARiftArenaPresentation::ConstructArena()
         Water->SetCastShadow(false);
         if (auto* Material=LoadObject<UMaterialInterface>(nullptr,TEXT("/Game/Rift/Materials/M_RiftWater.M_RiftWater")))
             Water->SetMaterial(0,Material);
-        Water->AddInstance(FTransform(FRotator::ZeroRotator,FVector(0,0,-22),FVector(28,3.3,.05)),false);
+        Water->AddInstance(FTransform(FRotator::ZeroRotator,FVector(0,0,-22),FVector(rift::arena::Width,rift::arena::RiverHalfWidth*2.,.05)),false);
     }
+}
+FString ARiftArenaPresentation::GeometryDiagnosticsJSON() const
+{
+    auto Report=MakeShared<FJsonObject>();
+    constexpr double Tile=RiftArenaGeometry::UnitsPerTile;
+    auto Component=[&](const TCHAR* Key)->const UHierarchicalInstancedStaticMeshComponent*
+    {const auto* Found=Environment.Find(FName(Key));return Found?Found->Get():nullptr;};
+    const auto* Floor=Component(TEXT("floor_tile_-1"));
+    const auto* Water=Component(TEXT("floor_tile_9"));
+    const auto* Bridges=Component(TEXT("bridge_-1"));
+    const auto* Border=Component(TEXT("boundary_stone_-1"));
+    bool FloorPassed=Floor&&Floor->GetCollisionEnabled()==ECollisionEnabled::NoCollision;
+    int32 PlayableCount=0,DecorativeCount=0,ExpectedCount=0;TSet<FIntPoint> Cells;
+    FBox2D PlayableCenters(ForceInit),GroundCenters(ForceInit);
+    for(int32 X=0;X<rift::arena::Width;++X)for(int32 Z=0;Z<rift::arena::Height;++Z)
+        if(FMath::Abs(Z-rift::arena::LastTileZ)>=rift::arena::RiverHalfWidth)++ExpectedCount;
+    if(Floor)for(int32 Index=0;Index<Floor->GetInstanceCount();++Index)
+    {
+        FTransform Transform;if(!Floor->GetInstanceTransform(Index,Transform,true)){FloorPassed=false;continue;}
+        const FVector Location=Transform.GetLocation();const FVector2D Center(Location.X/Tile,Location.Y/Tile);
+        GroundCenters+=Center;
+        if(FMath::IsNearlyEqual(Location.Z,-18.,.01))
+        {++DecorativeCount;FloorPassed=FloorPassed&&(FMath::Abs(Center.X)>=rift::arena::HalfWidth||FMath::Abs(Center.Y)>=rift::arena::HalfHeight);continue;}
+        ++PlayableCount;PlayableCenters+=Center;
+        const int32 X=FMath::RoundToInt(Center.X+rift::arena::LastTileX),Z=FMath::RoundToInt(Center.Y+rift::arena::LastTileZ);
+        const FIntPoint Cell(X,Z);
+        FloorPassed=FloorPassed&&FMath::IsNearlyZero(Location.Z,.01)&&X>=0&&X<rift::arena::Width&&Z>=0&&Z<rift::arena::Height
+            &&FMath::IsNearlyEqual(Center.X,X-rift::arena::LastTileX,.001)&&FMath::IsNearlyEqual(Center.Y,Z-rift::arena::LastTileZ,.001)
+            &&FMath::Abs(Center.Y)>=rift::arena::RiverHalfWidth&&!Cells.Contains(Cell);
+        Cells.Add(Cell);
+    }
+    const int32 RiverRows=rift::arena::Height-ExpectedCount/rift::arena::Width;
+    const int32 ExpectedDecorativeCount=RiftArenaGeometry::GroundHalfWidth*2*(RiftArenaGeometry::GroundHalfHeight*2-RiverRows)-ExpectedCount;
+    FloorPassed=FloorPassed&&PlayableCount==ExpectedCount&&Cells.Num()==ExpectedCount&&DecorativeCount==ExpectedDecorativeCount
+        &&PlayableCenters.bIsValid&&GroundCenters.bIsValid;
+    if(PlayableCenters.bIsValid)
+        FloorPassed=FloorPassed&&PlayableCenters.Min.Equals(FVector2D(-rift::arena::LastTileX,-rift::arena::LastTileZ),.001)
+            &&PlayableCenters.Max.Equals(FVector2D(rift::arena::LastTileX,rift::arena::LastTileZ),.001);
+    if(GroundCenters.bIsValid)
+        FloorPassed=FloorPassed&&GroundCenters.Min.Equals(FVector2D(-RiftArenaGeometry::GroundHalfWidth+.5,-RiftArenaGeometry::GroundHalfHeight+.5),.001)
+            &&GroundCenters.Max.Equals(FVector2D(RiftArenaGeometry::GroundHalfWidth-.5,RiftArenaGeometry::GroundHalfHeight-.5),.001);
+    Report->SetNumberField(TEXT("schemaVersion"),1);Report->SetStringField(TEXT("inspection"),TEXT("Actual production HISM instance transforms and collision modes"));
+    Report->SetNumberField(TEXT("widthTiles"),rift::arena::Width);Report->SetNumberField(TEXT("heightTiles"),rift::arena::Height);
+    Report->SetNumberField(TEXT("playableFloorTiles"),PlayableCount);Report->SetNumberField(TEXT("expectedPlayableFloorTiles"),ExpectedCount);
+    Report->SetNumberField(TEXT("decorativeFloorTiles"),DecorativeCount);Report->SetNumberField(TEXT("expectedDecorativeFloorTiles"),ExpectedDecorativeCount);
+    Report->SetBoolField(TEXT("floorPassed"),FloorPassed);
+    auto Bounds=[&](const TCHAR* Name,const FBox2D& Box)
+    {
+        auto Value=MakeShared<FJsonObject>();Value->SetBoolField(TEXT("valid"),Box.bIsValid);
+        if(Box.bIsValid){Value->SetNumberField(TEXT("minX"),Box.Min.X);Value->SetNumberField(TEXT("maxX"),Box.Max.X);
+            Value->SetNumberField(TEXT("minZ"),Box.Min.Y);Value->SetNumberField(TEXT("maxZ"),Box.Max.Y);}
+        Report->SetObjectField(Name,Value);
+    };
+    Bounds(TEXT("playableFloorCenters"),PlayableCenters);Bounds(TEXT("decorativeGroundCenters"),GroundCenters);
+    FTransform WaterTransform;
+    bool WaterPassed=Water&&Water->GetInstanceCount()==1&&Water->GetCollisionEnabled()==ECollisionEnabled::NoCollision
+        &&Water->GetInstanceTransform(0,WaterTransform,true);
+    if(WaterPassed)
+    {
+        const FVector Scale=WaterTransform.GetScale3D(),Location=WaterTransform.GetLocation();
+        Report->SetNumberField(TEXT("riverWidthTiles"),Scale.X);Report->SetNumberField(TEXT("riverDepthTiles"),Scale.Y);
+        WaterPassed=FMath::IsNearlyEqual(Scale.X,double(rift::arena::Width),.001)
+            &&FMath::IsNearlyEqual(Scale.Y,rift::arena::RiverHalfWidth*2.,.001)&&Location.Equals(FVector(0,0,-22),.01);
+    }
+    Report->SetBoolField(TEXT("riverPassed"),WaterPassed);
+    TArray<TSharedPtr<FJsonValue>> BridgeRows;TSet<int32> Sides;
+    bool BridgesPassed=Bridges&&Bridges->GetInstanceCount()==2&&Bridges->GetCollisionEnabled()==ECollisionEnabled::NoCollision;
+    if(Bridges)for(int32 Index=0;Index<Bridges->GetInstanceCount();++Index)
+    {
+        FTransform Transform;if(!Bridges->GetInstanceTransform(Index,Transform,true)){BridgesPassed=false;continue;}
+        const FVector Position=Transform.GetLocation();const int32 Side=Position.X<0?-1:1;auto Row=MakeShared<FJsonObject>();
+        Row->SetNumberField(TEXT("x"),Position.X/Tile);Row->SetNumberField(TEXT("z"),Position.Y/Tile);BridgeRows.Add(MakeShared<FJsonValueObject>(Row));
+        BridgesPassed=BridgesPassed&&!Sides.Contains(Side)&&FMath::IsNearlyEqual(Position.X,Side*rift::arena::BridgeCenterX*Tile,.01)
+            &&FMath::IsNearlyZero(Position.Y,.01);Sides.Add(Side);
+    }
+    Report->SetArrayField(TEXT("bridges"),BridgeRows);Report->SetBoolField(TEXT("bridgesPassed"),BridgesPassed);
+    const int32 ExpectedBorderCount=2*(FMath::CeilToInt(rift::arena::Height*Tile/140.)+FMath::CeilToInt(rift::arena::Width*Tile/150.));
+    bool BorderPassed=Border&&Border->GetInstanceCount()==ExpectedBorderCount&&Border->GetCollisionEnabled()==ECollisionEnabled::NoCollision;
+    if(Border)for(int32 Index=0;Index<Border->GetInstanceCount();++Index)
+    {
+        FTransform Transform;if(!Border->GetInstanceTransform(Index,Transform,true)){BorderPassed=false;continue;}
+        const FVector Position=Transform.GetLocation();
+        BorderPassed=BorderPassed&&(FMath::Abs(Position.X)>=rift::arena::HalfWidth*Tile||FMath::Abs(Position.Y)>=rift::arena::HalfHeight*Tile);
+    }
+    Report->SetNumberField(TEXT("borderStones"),Border?Border->GetInstanceCount():0);Report->SetBoolField(TEXT("borderPassed"),BorderPassed);
+    Report->SetBoolField(TEXT("passed"),FloorPassed&&WaterPassed&&BridgesPassed&&BorderPassed);
+    FString Text;FJsonSerializer::Serialize(Report,TJsonWriterFactory<>::Create(&Text));return Text;
 }
 void ARiftArenaPresentation::ClearVisuals()
 {

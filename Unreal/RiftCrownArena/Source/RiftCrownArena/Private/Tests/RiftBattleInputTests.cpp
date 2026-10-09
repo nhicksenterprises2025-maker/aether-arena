@@ -61,13 +61,13 @@ bool FRiftBattleInputRoutingTest::RunTest(const FString& Parameters)
     {auto* Button=BattleButton(UI,Label);if(!TestNotNull(FString(TEXT("Production battle control "))+Label,Button))return false;Button->OnClicked.Broadcast();return true;};
 
     FVector2D GroundTile=FVector2D::ZeroVector;
-    for(double X:{-14.,14.})for(double Y:{-21.,21.})
+    for(double X:{-double(rift::arena::HalfWidth),double(rift::arena::HalfWidth)})for(double Y:{-double(rift::arena::HalfHeight),double(rift::arena::HalfHeight)})
     {
         TestTrue(TEXT("Exact board boundary remains clickable"),Controller->GroundPointToTile(URiftMatchSubsystem::WorldPoint({X,Y}),GroundTile));
-        TestTrue(TEXT("Boundary clicks preserve the original half-cell centers"),GroundTile.Equals(FVector2D(X<0?-13.5:13.5,Y<0?-20.5:20.5),.001));
+        TestTrue(TEXT("Boundary clicks preserve the updated half-cell centers"),GroundTile.Equals(FVector2D(X<0?-rift::arena::LastTileX:rift::arena::LastTileX,Y<0?-rift::arena::LastTileZ:rift::arena::LastTileZ),.001));
     }
     const FVector2D LastValidTile=GroundTile;
-    for(const FVector& Point:{FVector(-1400.1,0,0),FVector(1400.1,0,0),FVector(0,-2100.1,0),FVector(0,2100.1,0)})
+    for(const FVector& Point:{FVector(-rift::arena::HalfWidth*100.-.1,0,0),FVector(rift::arena::HalfWidth*100.+.1,0,0),FVector(0,-rift::arena::HalfHeight*100.-.1,0),FVector(0,rift::arena::HalfHeight*100.+.1,0)})
     {
         TestFalse(TEXT("Decorative ground outside every board edge cannot snap into a deployment"),Controller->GroundPointToTile(Point,GroundTile));
         TestTrue(TEXT("Rejected ground cannot supply a replacement deployment tile"),GroundTile.Equals(LastValidTile,.001));
