@@ -680,6 +680,10 @@ void Match::Deploy(Team team, const Card &c, Vec2 p, PlayId play, bool sandbox) 
         e.hp = e.maxHp = c.hp;
         e.radius = c.building ? c.footprint * .52 : .44 * c.scale;
         e.flying = c.flying;
+        // Hand drops remain legal near towers; each ground member starts beside
+        // the solid footprint rather than inside an inescapable blocked cell.
+        if (e.kind == EntityKind::Troop && !e.flying)
+            e.position = ResolveGroundPlacement(e.position, e, sandbox);
         e.born = state_.elapsed;
         e.memberCount = c.count;
         e.cooldown = c.building ? .35 : 0;

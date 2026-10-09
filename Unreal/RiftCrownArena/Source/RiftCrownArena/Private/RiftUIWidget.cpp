@@ -367,6 +367,8 @@ void URiftUIWidget::ExportMeta()
 }
 void URiftUIWidget::PatchNotes()
 {
+    Add(Body,Text(TEXT("TOWER PATHING FIX · 1.3.3"),25,Brass));
+    Add(Body,Text(TEXT("Ground troops placed near towers now start in clear space and route safely around tower edges. Units keep moving toward battle instead of getting stuck behind a Core or Guard Tower."),16));
     Add(Body,Text(TEXT("AUDIO FIX · 1.3.2"),25,Brass));
     Add(Body,Text(TEXT("The continuous river sound no longer plays in menus or battles. Music, interface sounds and combat effects keep their existing volume controls."),16));
     Add(Body,Text(TEXT("CARD HOVER FIX · 1.3.1"),25,Brass));

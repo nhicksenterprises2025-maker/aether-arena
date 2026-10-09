@@ -223,6 +223,9 @@ class Match {
     void Attack(Entity &source, const Entity &target);
     void Move(Entity &source, const Entity &target, double dt);
     bool NavValid(Vec2 point, const Entity &source, EntityId goal, int bridge = 0) const;
+    bool NavSegmentValid(Vec2 from, Vec2 to, const Entity &source, EntityId goal, int bridge = 0) const;
+    Vec2 ResolveGroundPlacement(Vec2 point, const Entity &source, bool sandbox,
+                                EntityId goal = 0, int bridge = 0) const;
     void UpdateAI(Team team, double dt);
     void Decision(Team team, const std::string &label, const std::string &reason);
     bool AIPlay(Team team, int index, Vec2 point, const std::string &reason, double reserve = 0);

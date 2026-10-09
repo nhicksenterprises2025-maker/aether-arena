@@ -43,6 +43,37 @@ int Count(const Match &m, const std::string &id, Team team, bool living = true) 
         n += e.cardId == id && e.team == team && (!living || !e.dead);
     return n;
 }
+const Entity &ById(const Match &m, EntityId id) {
+    for (const auto &e : m.State().entities)
+        if (e.id == id)
+            return e;
+    throw std::runtime_error("entity missing " + std::to_string(id));
+}
+double SegmentDistance(Vec2 from, Vec2 to, Vec2 point) {
+    const double x = to.x - from.x, z = to.z - from.z, length = x * x + z * z;
+    const double along = length > 1e-12
+                             ? std::clamp(((point.x - from.x) * x + (point.z - from.z) * z) / length,
+                                          0., 1.)
+                             : 0.;
+    return std::hypot(from.x + x * along - point.x, from.z + z * along - point.z);
+}
+void ClearOwnStructures(const Match &m, const Entity &unit, Vec2 from) {
+    const double edge = .40 + unit.radius * .72;
+    Check(std::abs(unit.position.x) <= 14 - edge + 1e-8 &&
+              std::abs(unit.position.z) <= 21 - edge + 1e-8,
+          "ground member stays inside radius-aware arena bounds");
+    for (const auto &e : m.State().entities)
+        if (!e.dead && e.team == unit.team && e.kind != EntityKind::Troop)
+            Check(SegmentDistance(from, unit.position, e.position) + 1e-8 >=
+                      e.radius + unit.radius + .22,
+                  "ground movement clears entire own-structure segment");
+    if (std::abs(unit.position.z) < 1.65 + .28) {
+        const double half = std::max(.34, 2.1 - .16 - unit.radius * .92);
+        Check(std::abs(unit.position.x + 7.2) <= half + 1e-8 ||
+                  std::abs(unit.position.x - 7.2) <= half + 1e-8,
+              "ground unit stays on a radius-aware bridge");
+    }
+}
 void Test(const char *name, const std::function<void()> &fn) {
     fn();
     ++passed;
@@ -622,6 +653,223 @@ int main() {
                 if (!e.dead && e.kind == EntityKind::Troop)
                     crossed |= e.team == Team::Player ? e.position.z < 0 : e.position.z > 0;
             Check(crossed, "large units cross bridge");
+        });
+        Test("paid ground members clear both teams Core and Guards without changing costs or events", [] {
+            int fixtures = 0, members = 0;
+            for (const auto &card : Cards()) {
+                if (card.flying || card.spell || card.building)
+                    continue;
+                auto options = Quiet();
+                auto deck = DefaultDeck();
+                deck.erase(std::remove(deck.begin(), deck.end(), card.id), deck.end());
+                deck.insert(deck.begin(), card.id);
+                deck.resize(8);
+                options.decks = {deck, deck};
+                for (Team team : {Team::Player, Team::Enemy})
+                    for (int lane : {-1, 0, 1})
+                        for (double behind : {0., 1.2}) {
+                            Match m(options);
+                            const Entity tower = Tower(m, team, lane ? EntityKind::Guard : EntityKind::Core,
+                                                       lane);
+                            const double sign = team == Team::Player ? 1. : -1.;
+                            const Vec2 drop{tower.position.x, tower.position.z + sign * behind};
+                            m.SetAether(team, 10);
+                            Check(m.CanPlace(team, card, SnapToTile(drop)), "original hand drop remains legal");
+                            Check(m.Play(team, 0, drop), "paid tower-adjacent drop accepted");
+                            const int side = team == Team::Player ? 0 : 1;
+                            Near(m.State().aether[side], 10. - card.cost, 0, "one canonical cost paid");
+                            Near(m.State().spent[side], card.cost, 0, "one paid cast recorded");
+                            Check(m.State().hands[side][0] == deck[4], "hand cycles exactly once");
+                            Check(m.State().telemetry[side].at(card.id).spawns ==
+                                      static_cast<std::uint64_t>(card.count),
+                                  "all ground swarm members preserved");
+                            std::vector<Entity> spawned;
+                            for (const auto &e : m.State().entities)
+                                if (e.kind == EntityKind::Troop && e.cardId == card.id) {
+                                    spawned.push_back(e);
+                                    ClearOwnStructures(m, e, e.position);
+                                    Check(m.CanPlace(team, card, e.position), "resolved paid member stays in legal zone");
+                                    bool actualEvent = false;
+                                    for (const auto &event : m.Events())
+                                        if (event.type == "entity_spawn" && event.source == e.id) {
+                                            Near(event.position.x, e.position.x, 0, "spawn event records actual X");
+                                            Near(event.position.z, e.position.z, 0, "spawn event records actual Z");
+                                            Check(event.playId == e.playId && !event.sandbox,
+                                                  "spawn retains paid play identity");
+                                            actualEvent = true;
+                                        }
+                                    Check(actualEvent, "resolved member emits its normal spawn event");
+                                }
+                            Check(spawned.size() == static_cast<std::size_t>(card.count), "full member count");
+                            for (int n = 0; n < 240; ++n) {
+                                std::vector<Vec2> before;
+                                for (const auto &e : spawned)
+                                    before.push_back(ById(m, e.id).position);
+                                m.Step(1. / 60);
+                                for (std::size_t i = 0; i < spawned.size(); ++i)
+                                    ClearOwnStructures(m, ById(m, spawned[i].id), before[i]);
+                            }
+                            for (const auto &e : spawned) {
+                                const auto &after = ById(m, e.id);
+                                Check(std::hypot(after.position.x - e.position.x,
+                                                 after.position.z - e.position.z) > 1.,
+                                      "every tower-adjacent member makes real progress");
+                                ++members;
+                            }
+                            ++fixtures;
+                        }
+            }
+            Check(fixtures == 84 && members == 96, "all seven ground cards and Twin Blades matrix");
+        });
+        Test("continuous tower perimeter paths clear corners and blocked rounded start cells", [] {
+            int paths = 0;
+            for (Team team : {Team::Player, Team::Enemy})
+                for (const auto *id : {"ironclad", "boulderback"})
+                    for (int lane : {-1, 0, 1}) {
+                        Match m(Quiet());
+                        const auto tower = Tower(m, team, lane ? EntityKind::Guard : EntityKind::Core, lane);
+                        const Team other = team == Team::Player ? Team::Enemy : Team::Player;
+                        const auto target = Tower(m, other, EntityKind::Guard, lane ? lane : 1);
+                        for (int n = 0; n < 64; ++n) {
+                            Entity source;
+                            source.id = 9000;
+                            source.cardId = id;
+                            source.team = team;
+                            source.radius = .44 * FindCard(id)->scale;
+                            const double angle = n * 6.28318530717958647692 / 64.;
+                            const double clearance = tower.radius + source.radius + .221;
+                            source.position = {tower.position.x + std::cos(angle) * clearance,
+                                               tower.position.z + std::sin(angle) * clearance};
+                            const auto path = m.FindPath(source, target, target.lane);
+                            Check(!path.empty(), "legal continuous perimeter has a route");
+                            Vec2 prior = source.position;
+                            for (Vec2 point : path) {
+                                source.position = point;
+                                ClearOwnStructures(m, source, prior);
+                                prior = point;
+                            }
+                            ++paths;
+                        }
+                    }
+            Check(paths == 768, "both teams and both body sizes around all crown footprints");
+        });
+        Test("paid rear rows and corner drops resolve each ground member before its first tick", [] {
+            int fixtures = 0, members = 0;
+            const std::vector<Vec2> points{{.5, 20.5}, {-12.5, 20.5}, {12.5, 20.5},
+                                           {-13.5, 20.5}, {13.5, 20.5}, {-12.5, 8.5}, {12.5, 8.5}};
+            for (const auto &card : Cards()) {
+                if (card.flying || card.spell || card.building)
+                    continue;
+                auto options = Quiet();
+                auto deck = DefaultDeck();
+                deck.erase(std::remove(deck.begin(), deck.end(), card.id), deck.end());
+                deck.insert(deck.begin(), card.id);
+                deck.resize(8);
+                options.decks = {deck, deck};
+                for (Team team : {Team::Player, Team::Enemy})
+                    for (Vec2 point : points) {
+                        const double sign = team == Team::Player ? 1. : -1.;
+                        point.z *= sign;
+                        Match m(options);
+                        m.SetAether(team, 10);
+                        Check(m.CanPlace(team, card, point), "original paid rear/side/corner drop stays legal");
+                        Check(m.Play(team, 0, point), "paid edge drop succeeds");
+                        const int side = team == Team::Player ? 0 : 1;
+                        Near(m.State().aether[side], 10. - card.cost, 0, "edge drop pays once");
+                        Check(m.State().hands[side][0] == deck[4], "edge drop cycles once");
+                        std::vector<Entity> spawned;
+                        for (const auto &e : m.State().entities)
+                            if (e.kind == EntityKind::Troop) {
+                                ClearOwnStructures(m, e, e.position);
+                                Check(m.CanPlace(team, card, e.position), "edge member keeps its legal paid zone");
+                                spawned.push_back(e);
+                                bool actualEvent = false;
+                                for (const auto &event : m.Events())
+                                    if (event.type == "entity_spawn" && event.source == e.id) {
+                                        Near(event.position.x, e.position.x, 0, "edge spawn records actual X");
+                                        Near(event.position.z, e.position.z, 0, "edge spawn records actual Z");
+                                        actualEvent = true;
+                                    }
+                                Check(actualEvent, "edge correction is visible in the authoritative spawn event");
+                            }
+                        Check(spawned.size() == static_cast<std::size_t>(card.count), "edge preserves member count");
+                        for (int n = 0; n < 300; ++n) {
+                            std::vector<Vec2> prior;
+                            for (const auto &e : spawned)
+                                prior.push_back(ById(m, e.id).position);
+                            m.Step(1. / 60);
+                            for (std::size_t i = 0; i < spawned.size(); ++i)
+                                ClearOwnStructures(m, ById(m, spawned[i].id), prior[i]);
+                        }
+                        for (const auto &e : spawned) {
+                            const auto &after = ById(m, e.id);
+                            Check((e.position.z - after.position.z) * sign > 1.,
+                                  "every edge member makes inward progress without a first-tick recovery snap");
+                            ++members;
+                        }
+                        ++fixtures;
+                    }
+            }
+            Check(fixtures == 98 && members == 112, "all ground cards mirrored across rear/side/corner cases");
+        });
+        Test("legal ground drops air spells buildings and DEV river fixtures retain their positions", [] {
+            for (Team team : {Team::Player, Team::Enemy}) {
+                const double sign = team == Team::Player ? 1. : -1.;
+                Match m(Quiet());
+                Check(m.Spawn(team, "ironclad", {7.5, sign * 5.5}), "legal DEV ground drop");
+                Near(Unit(m, "ironclad", team).position.x, 7.5, 0, "legal ground X unchanged");
+                Near(Unit(m, "ironclad", team).position.z, sign * 5.5, 0, "legal ground Z unchanged");
+                Check(m.Spawn(team, "sky_manta", {.5, sign * 16.5}), "flying tower-center fixture");
+                Near(Unit(m, "sky_manta", team).position.x, .5, 0, "air X unchanged");
+                Near(Unit(m, "sky_manta", team).position.z, sign * 16.5, 0, "air can still fly over towers");
+                Check(m.Spawn(team, "archer_tower", {.5, sign * 16.5}), "existing DEV building fixture");
+                Near(Unit(m, "archer_tower", team).position.x, .5, 0, "building X unchanged");
+                Near(Unit(m, "archer_tower", team).position.z, sign * 16.5, 0, "building rules unchanged");
+                Check(m.Spawn(team, "meteor_shards", {.5, sign * 16.5}), "existing fixed spell fixture");
+                Near(m.State().spellCasts.back().position.x, .5, 0, "spell area X unchanged");
+                Near(m.State().spellCasts.back().position.z, sign * 16.5, 0, "spell area Z unchanged");
+                Match river(Quiet());
+                Check(river.Spawn(team, "ironclad", {.5, .5}), "DEV river fixture still accepted");
+                Near(Unit(river, "ironclad", team).position.x, .5, 0, "DEV river X unchanged at spawn");
+                Near(Unit(river, "ironclad", team).position.z, .5, 0, "DEV river Z unchanged at spawn");
+            }
+        });
+        Test("a building placed over an existing ground troop cannot leave it trapped", [] {
+            for (Team team : {Team::Player, Team::Enemy}) {
+                const double sign = team == Team::Player ? 1. : -1.;
+                Match m(Quiet());
+                Check(m.Spawn(team, "ironclad", {.5, sign * 8.5}), "ground recovery fixture");
+                const auto troop = Unit(m, "ironclad", team).id;
+                Check(m.Spawn(team, "archer_tower", {.5, sign * 8.5}), "new solid footprint over troop");
+                m.Step(1. / 60);
+                const Vec2 recovered = ById(m, troop).position;
+                ClearOwnStructures(m, ById(m, troop), recovered);
+                for (int n = 0; n < 120; ++n) {
+                    const Vec2 prior = ById(m, troop).position;
+                    m.Step(1. / 60);
+                    ClearOwnStructures(m, ById(m, troop), prior);
+                }
+                const auto &after = ById(m, troop);
+                Check(std::hypot(after.position.x - recovered.x, after.position.z - recovered.z) > 1.,
+                      "recovered troop resumes routed movement");
+            }
+        });
+        Test("tower-adjacent placement recovery remains fixed-step deterministic", [] {
+            auto options = Quiet();
+            options.seed = 20261010;
+            Match a(options), b(options);
+            for (Match *m : {&a, &b})
+                for (Team team : {Team::Player, Team::Enemy}) {
+                    const double sign = team == Team::Player ? 1. : -1.;
+                    m->SetAether(team, 10);
+                    Check(m->Play(team, 0, {.5, sign * 17.5}), "paid original Core repro");
+                    Check(m->Spawn(team, "twin_blades", {8.5, sign * 13.5}), "Guard swarm repro");
+                    Check(m->Spawn(team, "boulderback", {-.5, sign * 16.5}), "large Core repro");
+                }
+            a.Step(4);
+            for (int n = 0; n < 480; ++n)
+                b.Step(1. / 120);
+            Same(a, b);
         });
         Test("pause zero and frame independent fixed-step determinism", [] {
             auto o = Quiet();

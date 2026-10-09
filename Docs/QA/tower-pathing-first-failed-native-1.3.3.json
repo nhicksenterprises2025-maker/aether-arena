@@ -1,0 +1,369 @@
+{
+  "devices": [
+    {
+      "deviceName": "QA workstation",
+      "instance": "B85B31894E6C3FD323919AAD2C448F6A",
+      "instanceName": "QA workstation instance",
+      "platform": "WindowsEditor",
+      "oSVersion": "Windows 11 (25H2) [10.0.26200.9457] ",
+      "model": "Default",
+      "gPU": "NVIDIA GeForce RTX 5060",
+      "cPUModel": "AMD Ryzen 7 5700                               ",
+      "rAMInGB": 32,
+      "renderMode": "SM6",
+      "rHI": "",
+      "appInstanceLog": ""
+    }
+  ],
+  "reportCreatedOn": "2026.10.09-20.30.48",
+  "succeeded": 13,
+  "succeededWithWarnings": 2,
+  "failed": 1,
+  "notRun": 0,
+  "inProcess": 0,
+  "totalDuration": 54.538902282714844,
+  "comparisonExported": false,
+  "comparisonExportDirectory": "",
+  "tests": [
+    {
+      "testDisplayName": "BattleInputRouting",
+      "fullTestPath": "Rift.Integration.BattleInputRouting",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "B85B31894E6C3FD323919AAD2C448F6A"
+      ],
+      "duration": 4.308149814605713,
+      "dateTime": "2026.10.09-20.29.53",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "CardData",
+      "fullTestPath": "Rift.Integration.CardData",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "B85B31894E6C3FD323919AAD2C448F6A"
+      ],
+      "duration": 0.005760598927736282,
+      "dateTime": "2026.10.09-20.29.57",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "ConnectedUI",
+      "fullTestPath": "Rift.Integration.ConnectedUI",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "B85B31894E6C3FD323919AAD2C448F6A"
+      ],
+      "duration": 0.30609840154647827,
+      "dateTime": "2026.10.09-20.29.57",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "FullLengthReplay",
+      "fullTestPath": "Rift.Integration.FullLengthReplay",
+      "tags": [],
+      "state": "Fail",
+      "deviceInstance": [
+        "B85B31894E6C3FD323919AAD2C448F6A"
+      ],
+      "duration": 43.921077728271484,
+      "dateTime": "2026.10.09-20.29.58",
+      "entries": [
+        {
+          "event": {
+            "type": "Info",
+            "message": "Full native replay: 34324 events, 1256 samples, 662333 stored bytes, 43886862 decoded bytes, 313.350 seconds.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-20.30.07"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Long replay game-thread finalization queue time 1.644 ms.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-20.30.07"
+        },
+        {
+          "event": {
+            "type": "Error",
+            "message": "Expected 'Complete ordinary AI match includes a populated live field' to be true.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "Unreal\\RiftCrownArena\\Source\\RiftCrownArena\\Private\\Tests\\RiftIntegrationTests.cpp",
+          "lineNumber": 1262,
+          "timestamp": "2026.10.09-20.30.07"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Paid control/counter AI replay: 224.967s, peak 18, 1881 events, 902 samples, 717781 stored, 0 exported JSON, 1.358ms queue.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-20.30.10"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Congested Developer/paid AI replay: 313.350s, peak 80, 23865 events, 1256 samples, 8376584 stored, 86413018 exported JSON, 3.472ms queue.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-20.30.42"
+        }
+      ],
+      "warnings": 0,
+      "errors": 1,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "PausedResultAndReplayEvents",
+      "fullTestPath": "Rift.Integration.PausedResultAndReplayEvents",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "B85B31894E6C3FD323919AAD2C448F6A"
+      ],
+      "duration": 3.037548065185547,
+      "dateTime": "2026.10.09-20.30.42",
+      "entries": [
+        {
+          "event": {
+            "type": "Warning",
+            "message": "LogHttp: HTTP request timed out after 3.00 seconds URL=https://www.google.com/generate_204",
+            "context": "log",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-20.30.45"
+        }
+      ],
+      "warnings": 1,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "Presentation",
+      "fullTestPath": "Rift.Integration.Presentation",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "B85B31894E6C3FD323919AAD2C448F6A"
+      ],
+      "duration": 1.1383910179138184,
+      "dateTime": "2026.10.09-20.30.45",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "ProfilePersistence",
+      "fullTestPath": "Rift.Integration.ProfilePersistence",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "B85B31894E6C3FD323919AAD2C448F6A"
+      ],
+      "duration": 0.06004289910197258,
+      "dateTime": "2026.10.09-20.30.46",
+      "entries": [
+        {
+          "event": {
+            "type": "Warning",
+            "message": "LogRift: Recovered native save backup",
+            "context": "log",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-20.30.46"
+        }
+      ],
+      "warnings": 1,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "ProjectilePresentation",
+      "fullTestPath": "Rift.Integration.ProjectilePresentation",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "B85B31894E6C3FD323919AAD2C448F6A"
+      ],
+      "duration": 0.03508960083127022,
+      "dateTime": "2026.10.09-20.30.46",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "ReplayTimeline",
+      "fullTestPath": "Rift.Integration.ReplayTimeline",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "B85B31894E6C3FD323919AAD2C448F6A"
+      ],
+      "duration": 0.18388429284095764,
+      "dateTime": "2026.10.09-20.30.46",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "SnapshotRoundtrip",
+      "fullTestPath": "Rift.Integration.SnapshotRoundtrip",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "B85B31894E6C3FD323919AAD2C448F6A"
+      ],
+      "duration": 0.04509139806032181,
+      "dateTime": "2026.10.09-20.30.46",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "SpellCastReplay",
+      "fullTestPath": "Rift.Integration.SpellCastReplay",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "B85B31894E6C3FD323919AAD2C448F6A"
+      ],
+      "duration": 0.19652099907398224,
+      "dateTime": "2026.10.09-20.30.46",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "TowerPathing",
+      "fullTestPath": "Rift.Integration.TowerPathing",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "B85B31894E6C3FD323919AAD2C448F6A"
+      ],
+      "duration": 0.14370130002498627,
+      "dateTime": "2026.10.09-20.30.47",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "Typography",
+      "fullTestPath": "Rift.Integration.Typography",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "B85B31894E6C3FD323919AAD2C448F6A"
+      ],
+      "duration": 0.08916880190372467,
+      "dateTime": "2026.10.09-20.30.47",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "UnitMotion",
+      "fullTestPath": "Rift.Integration.UnitMotion",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "B85B31894E6C3FD323919AAD2C448F6A"
+      ],
+      "duration": 0.15858319401741028,
+      "dateTime": "2026.10.09-20.30.47",
+      "entries": [
+        {
+          "event": {
+            "type": "Info",
+            "message": "Flying death altitude before 89.683446072746 cm; at start 89.683446072746 cm; displacement 0.000000000000 cm.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-20.30.47"
+        }
+      ],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "AggregationEconomy",
+      "fullTestPath": "Rift.Meta.AggregationEconomy",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "B85B31894E6C3FD323919AAD2C448F6A"
+      ],
+      "duration": 0.18445609509944916,
+      "dateTime": "2026.10.09-20.30.47",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "WorkerPauseAndRecovery",
+      "fullTestPath": "Rift.Meta.WorkerPauseAndRecovery",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "B85B31894E6C3FD323919AAD2C448F6A"
+      ],
+      "duration": 0.7253379225730896,
+      "dateTime": "2026.10.09-20.30.47",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    }
+  ],
+  "developmentHistory": {
+    "version": "1.3.3",
+    "acceptedForRelease": false,
+    "sourceReport": "Build/Automation/20261009-162934/Report/index.json",
+    "sourceReportSha256": "c71a6d10dfd101603352ccb1a134d4be23b65a9798d6f62cabca5cce026aa65f",
+    "context": "Build/Automation/20261009-162934/context.json",
+    "cause": "FullLengthReplay ordinary seeded AI peak was 18 entities, below its existing >=20 fixture-load assertion. TowerPathing and all other integration cases passed. Ordinary fixture seed changed from 40 to 64 to retain the same >=20 threshold, zero-crown overtime, paid economy and lossless replay assertions. The congestion seed32 and gameplay code stayed unchanged."
+  }
+}

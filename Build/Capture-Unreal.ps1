@@ -2,7 +2,8 @@ param(
     [string]$EngineRoot = 'C:\Program Files\Epic Games\UE_5.8',
     [string]$Executable = '',
     [string]$Page = 'Battle',
-    [ValidateSet('','roster','congestion','effects','effects17','placement','projectiles','spells')][string]$Scenario = '',
+    [ValidateSet('','roster','congestion','effects','effects17','placement','projectiles','spells','tower_pathing')][string]$Scenario = '',
+    [ValidateRange(0,6)][float]$PathingAge = 0,
     [ValidateRange(0.05,2)][float]$EffectAge = 0.12,
     [ValidateRange(0.25,4)][float]$Speed = 1,
     [switch]$BreathSmoke,
@@ -37,6 +38,13 @@ if (!(Test-Path -LiteralPath $Executable)) { throw "Capture executable not found
 $Executable = (Resolve-Path -LiteralPath $Executable).Path
 $riftCaptureExecutableHash = (Get-FileHash -LiteralPath $Executable -Algorithm SHA256).Hash.ToLowerInvariant()
 $isEditor = [System.IO.Path]::GetFileNameWithoutExtension($Executable) -in @('UnrealEditor','UnrealEditor-Cmd')
+if($Scenario -eq 'tower_pathing' -and ($Page -ne 'Battle' -or $Phase -or $RecordedMatch -or $BreathSmoke)) { throw 'Tower pathing requires its live Battle fixture without another phase, recorded-match or breath fixture.' }
+$riftTowerSourcePins=@()
+if($Scenario -eq 'tower_pathing') {
+    $riftTowerSources=@(Get-ChildItem -LiteralPath (Join-Path $repoRoot 'Unreal/RiftCrownArena/Source'),(Join-Path $repoRoot 'Unreal/RiftCrownArena/Config') -File -Recurse | Where-Object Extension -in @('.cpp','.h','.cs','.ini') | ForEach-Object FullName)+@($projectPath,$PSCommandPath)
+    if($isEditor) { $riftTowerSources+=@('Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArena.dll','Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArenaEditor.dll') | ForEach-Object { Join-Path $repoRoot $_ } }
+    $riftTowerSourcePins=@($riftTowerSources | Sort-Object -Unique | ForEach-Object { [ordered]@{path=[IO.Path]::GetRelativePath($repoRoot,$_).Replace('\','/');sha256=(Get-FileHash -LiteralPath $_ -Algorithm SHA256).Hash.ToLowerInvariant();bytes=(Get-Item -LiteralPath $_).Length} })
+}
 $workingDirectory = if ($isEditor) { $repoRoot } else { Split-Path -Parent $Executable }
 if (!$Name) { $Name = ($Page.ToLowerInvariant() -replace '[^a-z0-9]+','-') + $(if ($Scenario) { '-' + $Scenario } else { '' }) + "-${Width}x${Height}" }
 if ($Name -notmatch '^[a-z0-9][a-z0-9_-]*$') { throw 'Capture name must contain lowercase letters, digits, underscores or hyphens.' }
@@ -63,6 +71,7 @@ $arguments = @(
 )
 if ($isEditor) { $arguments = @(('"' + $projectPath + '"')) + $arguments }
 if ($Scenario) { $arguments += "-RiftVisualScenario=$Scenario" }
+if ($Scenario -eq 'tower_pathing') { $arguments += '-RiftPathingAge=' + $PathingAge.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
 if ($BreathSmoke) { $arguments += '-RiftBreathSmoke' }
 if ($Hand -ge 0) { $arguments += "-RiftCaptureHand=$Hand" }
 if ($Developer) { $arguments += '-RiftCaptureDeveloper' }
@@ -140,6 +149,20 @@ if ($Phase) {
             $riftCaptureState.resultReason -eq 'core_destroyed' -and $riftCaptureState.events.match_end -eq 1
     }
 }
+$riftTowerPathingPassed=$true
+$riftTowerSourcesUnchanged=$true
+if($Scenario -eq 'tower_pathing') {
+    $pathing=$riftCaptureState.towerPathing
+    $riftTowerPathingPassed=$stateCaptured -and $null -ne $pathing -and $pathing.passed -eq $true -and $pathing.ordinarySpawnOnly -eq $true -and
+        $pathing.deploymentCount -eq 6 -and $pathing.expectedUnitCount -eq 8 -and $pathing.actualUnitCount -eq 8 -and @($pathing.units).Count -eq 8 -and
+        @($pathing.units.id | Sort-Object -Unique).Count -eq 8 -and @($pathing.towers).Count -eq 6 -and $pathing.spawnTowerClearancePassed -eq $true -and
+        $pathing.allStepTowerClearancePassed -eq $true -and $pathing.allContinuousSegmentTowerClearancePassed -eq $true -and [math]::Abs($pathing.requestedAge-$PathingAge) -lt .00001 -and
+        [math]::Abs($pathing.sampledAge-([math]::Round($PathingAge*60)/60)) -lt .00001 -and $riftCaptureState.speed -eq 0 -and
+        @($pathing.units | Where-Object { $_.present -ne $true -or $_.spawnTowerClearance -lt -.000001 -or $_.minimumStepTowerClearance -lt -.000001 -or $_.minimumSegmentTowerClearance -lt -.000001 }).Count -eq 0
+    if($PathingAge -ge 2) { $riftTowerPathingPassed=$riftTowerPathingPassed -and $pathing.progressRequired -eq $true -and $pathing.progressPassed -eq $true -and @($pathing.units | Where-Object progressPassed -ne $true).Count -eq 0 }
+    foreach($pin in $riftTowerSourcePins) { $file=Join-Path $repoRoot $pin.path;if((Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $pin.sha256 -or (Get-Item -LiteralPath $file).Length -ne $pin.bytes) { $riftTowerSourcesUnchanged=$false } }
+}
+$riftCaptureExecutableUnchanged=(Get-FileHash -LiteralPath $Executable -Algorithm SHA256).Hash.ToLowerInvariant() -eq $riftCaptureExecutableHash
 $errors = @()
 $errorPattern='LogRift: Error:|LogUIActionRouter: Error:|Fatal error[:!]?|Unhandled Exception:|Assertion failed:|Failed to load.*(/Game/Rift|Rift/)|Authored .* missing|LogMaterial: (Error:|Warning:.*(Failed to compile|Default Material|missing usage flag))|LogShaderCompilers: Error:'
 $diagnosticSource='editor-engine-log'; $nativeDiagnosticLogs=@(); $diagnosticVerification=$null
@@ -151,10 +174,12 @@ if ($isEditor) {
     $diagnostics=Get-RiftShippingDiagnostics -RepoRoot $repoRoot -DestinationRoot $runRoot -SaveRoot $saveRoot -EngineUserRoot $engineUserRoot -ProcessId $process.Id -ExpectedVersion $ExpectedVersion -StartedUTC $started -FinishedUTC $finished -ErrorPattern $errorPattern
     $errors=@($diagnostics.errors); $diagnosticSource=$diagnostics.diagnosticSource; $nativeDiagnosticLogs=@($diagnostics.nativeDiagnosticLogs); $diagnosticVerification=$diagnostics.diagnosticVerification; $logPath=$diagnostics.engineLog
 }
-$riftCapturePassed=!$timedOut -and $freshCapture -and $stateCaptured -and $resolutionMatches -and $riftPhaseFixturePassed -and $riftCameraFramingPassed -and $riftModelEnvelopeCheckPassed -and $process.ExitCode -eq 0 -and $errors.Count -eq 0
+$riftCapturePassed=!$timedOut -and $freshCapture -and $stateCaptured -and $resolutionMatches -and $riftPhaseFixturePassed -and $riftCameraFramingPassed -and $riftModelEnvelopeCheckPassed -and $riftTowerPathingPassed -and $riftTowerSourcesUnchanged -and $riftCaptureExecutableUnchanged -and $process.ExitCode -eq 0 -and $errors.Count -eq 0
 $report = [ordered]@{
     schema = 1; version=$ExpectedVersion; passed=[bool]$riftCapturePassed; name = $Name; page = $Page; scenario = $Scenario; inspectCard = $InspectCard; speed = $Speed; breathSmoke = [bool]$BreathSmoke; uiScale=$UIScale; zoom=$Zoom;
     state = $statePath; stateCaptured = $stateCaptured; phaseFixture = $Phase; phaseFixturePassed = $riftPhaseFixturePassed; allowExternalInput = [bool]$AllowExternalInput;
+    pathingAge = $(if($Scenario -eq 'tower_pathing'){$PathingAge}else{$null}); towerPathingPassed = $riftTowerPathingPassed;
+    sourcePins=$riftTowerSourcePins; sourcePinsUnchanged=$riftTowerSourcesUnchanged; executableUnchanged=$riftCaptureExecutableUnchanged;
     cameraFramingRequired = $riftCameraFramingRequired; cameraFramingPassed = $riftCameraFramingPassed; cameraFraming = $riftCameraFraming;
     modelEnvelopeAvailable = $riftModelEnvelopeAvailable; modelEnvelopePassed = $riftModelEnvelopePassed;
     width = $Width; height = $Height; actualWidth = $actualWidth; actualHeight = $actualHeight;
@@ -162,6 +187,7 @@ $report = [ordered]@{
     screenshot = $capturePath; engineLog = $logPath; executable = $Executable; executableSha256 = $riftCaptureExecutableHash;
     diagnosticSource=$diagnosticSource; nativeDiagnosticLogs=$nativeDiagnosticLogs; diagnosticVerification=$diagnosticVerification;
     editor = $isEditor; workingDirectory = $workingDirectory; engineUserRoot = $engineUserRoot;
+    processId=$process.Id; startedUTC=$started.ToUniversalTime().ToString('o'); finishedUTC=$finished.ToString('o');
     captured = $freshCapture; timedOut = $timedOut; exitCode = $process.ExitCode;
     seconds = [math]::Round(((Get-Date)-$started).TotalSeconds,2);
     errors = $errors; visualInspection = 'pending'
