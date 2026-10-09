@@ -44,9 +44,13 @@ public:
     int32 TrainingOverlayLabelCount()const;
     void ShowcaseNiagara();
     void ShowcaseNiagaraAtAge(float Age);
+    void SampleSpellImpactEffectsForQA();
+    int32 SpellCastVisualCount() const { return SpellCastRings.Num(); }
+    int32 SpellCastMeshCount() const { return SpellCastBodies.Num(); }
     // Presentation paths use authoritative progress, including paused playback
     // and seeking. Neither trajectory nor roll feeds back into simulation.
     static FVector ProjectilePathPoint(const std::string& Card, FVector Source, FVector Target, double Progress);
+    static FVector SpellCastPathPoint(const std::string& Card, FVector Target, rift::Team Team, int32 Index, int32 Count, double Progress);
 private:
     void ConstructArena();
     UHierarchicalInstancedStaticMeshComponent* Instances(FName Mesh, int32 Team=-1);
@@ -57,6 +61,8 @@ private:
     UStaticMeshComponent* MakeProjectileBody(const std::string& Card, rift::Team Team);
     UInstancedStaticMeshComponent* ProjectileTrail(const std::string& Card, rift::Team Team);
     void RemoveProjectile(uint64 Id);
+    void SynchronizeSpellCasts(const rift::Snapshot& State);
+    void RemoveSpellCast(uint64 Id);
     void SpawnSpellDebris(const rift::Event& Event);
     void SynchronizeSpellDebris(const rift::Snapshot& State);
     void SynchronizeHazards(const rift::Snapshot& State);
@@ -84,6 +90,10 @@ private:
     UPROPERTY() TMap<FName,TObjectPtr<UInstancedStaticMeshComponent>> ProjectileTrails;
     UPROPERTY() TMap<FName,TObjectPtr<UStaticMesh>> ProjectileAssets;
     UPROPERTY() TArray<TObjectPtr<UStaticMeshComponent>> SpellDebrisBodies;
+    UPROPERTY() TMap<uint64,TObjectPtr<UDecalComponent>> SpellCastRings;
+    UPROPERTY() TMap<uint64,TObjectPtr<UMaterialInstanceDynamic>> SpellCastMaterials;
+    UPROPERTY() TArray<TObjectPtr<UStaticMeshComponent>> SpellCastBodies;
+    UPROPERTY() TArray<TObjectPtr<UNiagaraComponent>> SpellCastGlows;
     UPROPERTY() TMap<uint64,TObjectPtr<UNiagaraComponent>> Hazards;
     UPROPERTY() TMap<uint64,TObjectPtr<UNiagaraComponent>> SlowEffects;
     UPROPERTY() TMap<uint64,TObjectPtr<UNiagaraComponent>> StunEffects;
@@ -98,6 +108,12 @@ private:
         bool Meteor=false;
     };
     TArray<FSpellDebris> SpellDebris;
+    struct FSpellCastBody { uint64 PlayId=0; int32 Index=0; };
+    TArray<FSpellCastBody> SpellCastPieces;
+    struct FSpellImpactEffect { TWeakObjectPtr<UNiagaraComponent> Component; double Born=0.; };
+    TArray<FSpellImpactEffect> SpellImpactEffects;
+    TArray<rift::Event> RecentSpellImpacts;
+    uint64 SpellImpactEvents=0;
     TMap<uint64,double> NextFrostBreath;
     TArray<TWeakObjectPtr<UNiagaraComponent>> TransientEffects;
     TArray<TWeakObjectPtr<UNiagaraComponent>> ShowcaseEffects;

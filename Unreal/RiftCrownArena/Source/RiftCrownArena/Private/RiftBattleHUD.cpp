@@ -40,6 +40,7 @@ FString ResultLabel(const std::string& Reason){
 }
 FString CardSummary(const rift::Card& C){
     FString Result=C.spell?FString::Printf(TEXT("%d Aether · Spell\n%.0f damage · %.1f tile radius\n%.0f structure damage"),C.cost,C.damage,C.spellRadius,C.towerDamage):FString::Printf(TEXT("%d Aether · %s%s\n%.0f HP · %.0f damage / %.2fs\n%.1f range · %s"),C.cost,C.flying?TEXT("Air"):C.building?TEXT("Building"):TEXT("Ground"),C.count>1?*FString::Printf(TEXT(" ×%d"),C.count):TEXT(""),C.hp,C.damage,C.attackInterval,C.range,C.structuresOnly?TEXT("Structures"):C.canHitAir?TEXT("Ground + Air"):TEXT("Ground targets"));
+    if(C.castDelay>0)Result+=FString::Printf(TEXT("\n%.2fs to impact · lead moving targets"),C.castDelay);
     if(C.dotDamage)Result+=FString::Printf(TEXT("\n%.0f damage/s for %.1fs"),C.dotDamage,C.dotDuration);
     if(C.slowPct)Result+=FString::Printf(TEXT("\n%.0f%% slow for %.1fs"),C.slowPct*100,C.slowDuration);
     if(C.auraDamage)Result+=FString::Printf(TEXT("\n%.0f pulse / %.1fs · %.1fs stun"),C.auraDamage,C.auraInterval,C.stunDuration);

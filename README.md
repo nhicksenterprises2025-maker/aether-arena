@@ -3,6 +3,10 @@
 Original Windows card battler: fourteen cards, two lanes, deterministic combat,
 seven AI personalities, deck workshop, Meta Lab, replays and developer training.
 
+The 1.2.1 spell update gives Meteor Shards a 0.75-second fall and Bullet Burst
+a 0.30-second flight before damage. Both hit enemies at their impact-time
+positions in the chosen area. See [spell timing notes](Docs/PATCH_NOTES_1.2.1.md).
+
 The 1.2.0 presentation update replaces all fourteen card illustrations with
 portraits rendered from the game's production models. Larger battlefield units,
 clearer model details, smoother movement and attack poses, and visible mesh

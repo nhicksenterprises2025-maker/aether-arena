@@ -68,6 +68,7 @@ class RIFTCROWNARENA_API URiftReplaySubsystem : public UGameInstanceSubsystem, p
   private:
     friend class FRiftReplayIntegrationTest;
     friend class FRiftFullReplayIntegrationTest;
+    friend class FRiftSpellCastReplayIntegrationTest;
     TSharedPtr<FJsonObject> Recording, Loaded;
     TArray<TSharedPtr<FJsonValue>> RecordedEvents, RecordedSamples;
     rift::Snapshot View;

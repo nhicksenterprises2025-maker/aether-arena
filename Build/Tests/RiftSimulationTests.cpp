@@ -54,6 +54,17 @@ void Same(const Match &a, const Match &b) {
     Check(x.phase == y.phase && x.winner == y.winner && x.randomState == y.randomState,
           "deterministic phase/RNG");
     Near(x.elapsed, y.elapsed, 1e-9, "deterministic elapsed");
+    Check(x.spellCasts.size() == y.spellCasts.size(), "deterministic pending cast count");
+    for (std::size_t n = 0; n < x.spellCasts.size(); ++n) {
+        const auto &c = x.spellCasts[n];
+        const auto &d = y.spellCasts[n];
+        Check(c.playId == d.playId && c.team == d.team && c.cardId == d.cardId,
+              "deterministic pending cast identity");
+        Near(c.position.x, d.position.x, 0, "deterministic cast X");
+        Near(c.position.z, d.position.z, 0, "deterministic cast Z");
+        Near(c.born, d.born, 1e-9, "deterministic cast start");
+        Near(c.impactAt, d.impactAt, 1e-9, "deterministic cast deadline");
+    }
     Check(x.entities.size() == y.entities.size(), "deterministic entity count");
     for (std::size_t n = 0; n < x.entities.size(); ++n) {
         const auto &e = x.entities[n];
@@ -69,6 +80,16 @@ void Same(const Match &a, const Match &b) {
         Check(x.hands[i] == y.hands[i], "deterministic hand");
     }
     Check(a.Events().size() == b.Events().size(), "deterministic events");
+    for (std::size_t n = 0; n < a.Events().size(); ++n) {
+        const auto &e = a.Events()[n];
+        const auto &f = b.Events()[n];
+        Check(e.sequence == f.sequence && e.type == f.type && e.cardId == f.cardId &&
+                  e.playId == f.playId && e.target == f.target,
+              "deterministic event identity and order");
+        Near(e.time, f.time, 1e-9, "deterministic event time");
+        Near(e.until, f.until, 1e-9, "deterministic event deadline");
+        Near(e.amount, f.amount, 1e-8, "deterministic event amount");
+    }
 }
 } // namespace
 int main() {
@@ -86,6 +107,10 @@ int main() {
             Check(FindCard("twin_blades")->count == 2, "two Blades");
             Near(FindCard("archer_tower")->footprint, 1.65, 0, "building footprint");
             Near(FindCard("nova_flask")->towerDamage, 185, 0, "nova structures");
+            for (const auto &card : Cards())
+                Near(card.castDelay,
+                     card.id == "meteor_shards" ? .75 : card.id == "bullet_burst" ? .30 : 0,
+                     0, "only Meteor and Bullet have a cast delay");
         });
         Test("deck validation rejects duplicates and unknown", [] {
             Check(ValidateDeck(DefaultDeck()), "valid default");
@@ -165,6 +190,8 @@ int main() {
             Match m(Quiet());
             m.Spawn(Team::Enemy, "vampire_bats", {0, 0});
             m.Spawn(Team::Player, "bullet_burst", {0, 0});
+            Check(Count(m, "vampire_bats", Team::Enemy) == 5, "no hits while volley travels");
+            m.Step(.30);
             Check(Count(m, "vampire_bats", Team::Enemy) == 0, "kills all five Bats");
             const auto &t = m.State().telemetry[0].at("bullet_burst");
             Near(t.troopDamage, 870, 0, "actual HP removal only");
@@ -181,12 +208,19 @@ int main() {
             Near(Unit(m, "boulderback", Team::Enemy).hp, 1245, 0, "375 troop damage");
             Near(Unit(m, "boulderback", Team::Player).hp, 1620, 0, "friendly immune");
             m.Spawn(Team::Player, "bullet_burst", {0, -16.3});
+            Near(Tower(m, Team::Enemy, EntityKind::Core).hp, 3600, 0, "Bullet damage is delayed");
+            m.Step(.30);
             Near(Tower(m, Team::Enemy, EntityKind::Core).hp, 3545, 0, "55 structure damage");
+            Check(m.State().telemetry[0].at("bullet_burst").connected == 1,
+                  "delayed Crown connection credited once");
         });
         Test("Meteor initial and inclusive fifth DOT tick no structures", [] {
             Match m(Quiet());
             m.Spawn(Team::Enemy, "boulderback", {8.5, 10.5});
             m.Spawn(Team::Player, "meteor_shards", {8.5, 10.5});
+            Near(m.State().telemetry[0].at("meteor_shards").initialDamage, 0, 0, "no initial damage in flight");
+            Check(m.State().hazards.empty(), "no DOT zone in flight");
+            m.Step(.75);
             Near(m.State().telemetry[0].at("meteor_shards").initialDamage, 262, 0, "initial262");
             m.Step(5);
             const auto &t = m.State().telemetry[0].at("meteor_shards");
@@ -196,7 +230,7 @@ int main() {
             Near(t.zoneSeconds, 5, 1e-8, "exact five-second zone exposure");
             Check(m.State().hazards.empty(), "expired zone after final tick");
         });
-        Test("AI Meteor zone exposure begins at its cast endpoint", [] {
+        Test("AI Meteor zone exposure begins at its delayed impact endpoint", [] {
             auto options = Quiet();
             options.aiEnabled[0] = true;
             options.aiStyles[0] = "control";
@@ -208,14 +242,19 @@ int main() {
             m.SetAIEnabled(Team::Player, true);
             constexpr double tick = 1. / 60;
             m.Step(tick);
-            Check(m.State().hazards.size() == 1, "visible clustered threat causes an AI Meteor cast");
-            Near(m.State().hazards.front().born, m.State().elapsed, 1e-9,
-                 "hazard born at the fixed-tick endpoint");
+            Check(m.State().spellCasts.size() == 1, "visible clustered threat causes an AI Meteor cast");
+            Check(m.State().hazards.empty(), "AI Meteor creates no zone before impact");
             const auto &born = m.State().telemetry[0].at("meteor_shards");
             Check(born.plays == 1, "one paid AI cast");
             Near(born.zoneSeconds, 0, 0, "no exposure before the hazard was born");
             Near(born.zoneOccupancy, 0, 0, "no target occupancy before the hazard was born");
             m.SetAIEnabled(Team::Player, false);
+            m.Step(.75);
+            Check(m.State().spellCasts.empty() && m.State().hazards.size() == 1, "AI Meteor lands after .75s");
+            Near(m.State().hazards.front().born, m.State().elapsed, 1e-9,
+                 "hazard born at the impact endpoint");
+            Near(m.State().telemetry[0].at("meteor_shards").zoneSeconds, 0, 0,
+                 "windup and impact tick have no zone exposure");
             m.Step(tick);
             const auto &active = m.State().telemetry[0].at("meteor_shards");
             Near(active.zoneSeconds, tick, 1e-9, "one tick of actual zone exposure");
@@ -226,6 +265,186 @@ int main() {
             Near(finished.zoneSeconds, 5, 1e-8, "complete AI zone lasts exactly five seconds");
             Check(finished.dotTicks == 5 && m.State().hazards.empty(),
                   "inclusive five damage ticks and expiry are preserved");
+        });
+        Test("paid spell windups spend and cycle immediately but hit at exact deadlines", [] {
+            auto options = Quiet();
+            options.decks[0] = {"bullet_burst", "meteor_shards", "nova_flask", "ironclad",
+                                "arc_mage", "archer_tower", "sky_manta", "rambeast"};
+            Match m(options);
+            m.SetAether(Team::Player, 10);
+            Check(m.Spawn(Team::Enemy, "boulderback", {.5, 8.5}), "spell target");
+            Check(m.Play(Team::Player, 0, {.5, 8.5}), "paid Bullet cast");
+            Check(m.Play(Team::Player, 1, {.5, 8.5}), "paid Meteor cast");
+            Near(m.State().spent[0], 7, 0, "full spell costs paid at cast");
+            Near(m.State().aether[0], 3, 0, "both costs removed immediately");
+            Check(m.State().hands[0][0] == "arc_mage" && m.State().hands[0][1] == "archer_tower",
+                  "both hand slots cycle at cast");
+            Check(m.State().spellCasts.size() == 2, "both windups are represented in state");
+            Near(Unit(m, "boulderback", Team::Enemy).hp, 1620, 0, "no HP removed during initial windup");
+            constexpr double tick = 1. / 60;
+            m.Step(.30 - tick);
+            Near(m.State().telemetry[0].at("bullet_burst").initialDamage, 0, 0,
+                 "Bullet cannot hit before tick18");
+            m.Step(tick);
+            Near(m.State().telemetry[0].at("bullet_burst").initialDamage, 175, 0,
+                 "Bullet hits on tick18");
+            Check(m.State().spellCasts.size() == 1 && m.State().hazards.empty(),
+                  "Meteor continues flying after Bullet lands");
+            m.Step(.75 - .30 - tick);
+            Near(m.State().telemetry[0].at("meteor_shards").initialDamage, 0, 0,
+                 "Meteor cannot hit before tick45");
+            m.Step(tick);
+            Near(m.State().telemetry[0].at("meteor_shards").initialDamage, 262, 0,
+                 "Meteor hits on tick45");
+            Check(m.State().spellCasts.empty() && m.State().hazards.size() == 1,
+                  "Meteor creates its zone only at impact");
+            Near(m.State().hazards.front().born, .75, 1e-9, "zone born at impact");
+            Near(m.State().hazards.front().nextTick, 1.75, 1e-9, "first DOT tick one second after impact");
+            Near(m.State().hazards.front().expires, 5.75, 1e-9, "zone gets its full five seconds");
+            std::array<int, 2> plays{}, casts{}, impacts{};
+            std::array<PlayId, 2> ids{};
+            for (const auto &event : m.Events()) {
+                const int spell = event.cardId == "bullet_burst" ? 0 : event.cardId == "meteor_shards" ? 1 : -1;
+                if (spell < 0)
+                    continue;
+                const double delay = spell == 0 ? .30 : .75;
+                if (event.type == "card_play") {
+                    ++plays[spell];
+                    ids[spell] = event.playId;
+                    Near(event.time, 0, 0, "paid card event at cast");
+                    Near(event.until, delay, 0, "card event includes impact deadline");
+                } else if (event.type == "spell_cast") {
+                    ++casts[spell];
+                    Check(event.playId == ids[spell], "windup keeps paid play identity");
+                    Near(event.until, delay, 0, "windup event deadline");
+                } else if (event.type == "spell_impact") {
+                    ++impacts[spell];
+                    Check(event.playId == ids[spell], "impact keeps paid play identity");
+                    Near(event.time, delay, 1e-9, "impact event simulation time");
+                } else if (event.type == "damage") {
+                    Check(event.playId == ids[spell], "damage keeps paid play identity");
+                    Near(event.time, delay, 1e-9, "initial damage occurs at impact");
+                }
+            }
+            Check(plays == std::array<int, 2>{1, 1} && casts == plays && impacts == plays,
+                  "one play, windup and impact event per spell");
+            for (const auto *id : {"bullet_burst", "meteor_shards"}) {
+                const auto &telemetry = m.State().telemetry[0].at(id);
+                Check(telemetry.plays == 1 && telemetry.targets == 1 && telemetry.connected == 0 &&
+                          telemetry.spellValue > 0,
+                      "telemetry counts the paid cast and its delayed hit once");
+            }
+        });
+        Test("moving enemies can dodge or enter each fixed spell area during windup", [] {
+            for (const auto *id : {"bullet_burst", "meteor_shards"}) {
+                const auto *card = FindCard(id);
+                const auto *enteringId = card->id == "bullet_burst" ? "sky_manta" : "boulderback";
+                const Vec2 dodgePoint{7.5, card->id == "bullet_burst" ? 3.5 : 1.5};
+                const Vec2 enterPoint{7.5, card->id == "bullet_burst" ? 8.5 : 10.5};
+                Match dodge(Quiet()), enter(Quiet());
+                Check(dodge.Spawn(Team::Enemy, "boulderback", {7.5, 5.5}), "moving dodge target");
+                Check(enter.Spawn(Team::Enemy, enteringId, {7.5, 5.5}), "moving enter target");
+                const auto inside = [&](const Entity &entity, Vec2 point) {
+                    return std::hypot(entity.position.x - point.x, entity.position.z - point.z) <=
+                           card->spellRadius + entity.radius * .2;
+                };
+                Check(inside(Unit(dodge, "boulderback", Team::Enemy), dodgePoint), "dodger starts inside");
+                Check(!inside(Unit(enter, enteringId, Team::Enemy), enterPoint), "entrant starts outside");
+                Check(dodge.Spawn(Team::Player, id, dodgePoint) && enter.Spawn(Team::Player, id, enterPoint),
+                      "fixed-area casts accepted");
+                dodge.Step(card->castDelay);
+                enter.Step(card->castDelay);
+                Check(!inside(Unit(dodge, "boulderback", Team::Enemy), dodgePoint), "dodger leaves before impact");
+                Check(inside(Unit(enter, enteringId, Team::Enemy), enterPoint), "entrant reaches area at impact");
+                Near(dodge.State().telemetry[0].at(id).initialDamage, 0, 0, "spell misses departed target");
+                Near(enter.State().telemetry[0].at(id).initialDamage, card->damage, 0, "spell hits arriving target");
+                Check(dodge.State().telemetry[0].at(id).targets == 0 &&
+                          enter.State().telemetry[0].at(id).targets == 1,
+                      "targets are selected at impact rather than cast");
+                int missImpacts = 0;
+                for (const auto &event : dodge.Events())
+                    missImpacts += event.type == "spell_impact" && event.cardId == id;
+                Check(missImpacts == 1, "a missed spell still emits its impact animation event");
+            }
+        });
+        Test("a delayed cast can hit enemies deployed after casting and never damages allies", [] {
+            for (const auto *id : {"bullet_burst", "meteor_shards"}) {
+                Match m(Quiet());
+                const auto *card = FindCard(id);
+                Check(m.Spawn(Team::Player, id, {.5, 8.5}), "cast into empty area");
+                m.Step(card->castDelay / 2);
+                Check(m.Spawn(Team::Enemy, "boulderback", {.5, 8.5}), "new enemy deployed during windup");
+                Check(m.Spawn(Team::Player, "boulderback", {.5, 8.5}), "ally deployed during windup");
+                m.Step(card->castDelay / 2);
+                Near(m.State().telemetry[0].at(id).initialDamage, card->damage, 0,
+                     "new enemy is found at impact");
+                Near(Unit(m, "boulderback", Team::Player).hp, 1620, 0, "friendly spell immunity preserved");
+            }
+        });
+        Test("pending spells pause and remain deterministic across frame chunks", [] {
+            Match a(Quiet()), b(Quiet());
+            for (auto *match : {&a, &b}) {
+                match->Spawn(Team::Enemy, "boulderback", {.5, 8.5});
+                match->Spawn(Team::Player, "meteor_shards", {.5, 8.5});
+                match->Spawn(Team::Player, "bullet_burst", {.5, 8.5});
+            }
+            a.Step(.20);
+            for (int n = 0; n < 24; ++n)
+                b.Step(1. / 120);
+            Same(a, b);
+            const auto events = a.Events().size();
+            const double elapsed = a.State().elapsed;
+            for (int n = 0; n < 120; ++n)
+                a.Step(0);
+            Near(a.State().elapsed, elapsed, 0, "pause freezes cast clock");
+            Check(a.State().spellCasts.size() == 2 && a.Events().size() == events,
+                  "paused windups cannot resolve or emit hits");
+            a.Step(.55);
+            for (int n = 0; n < 66; ++n)
+                b.Step(1. / 120);
+            Same(a, b);
+            Check(a.State().spellCasts.empty() && a.State().hazards.size() == 1,
+                  "both clocks agree after exact impact");
+            a.Step(5);
+            for (int n = 0; n < 100; ++n)
+                b.Step(.05);
+            Same(a, b);
+        });
+        Test("field clear, result and tiebreaker cancel pending spells", [] {
+            Match clear(Quiet());
+            clear.Spawn(Team::Player, "meteor_shards", {.5, .5});
+            clear.Spawn(Team::Player, "bullet_burst", {.5, .5});
+            clear.ClearField();
+            Check(clear.State().spellCasts.empty(), "DEV clear cancels both windups");
+            clear.Step(1);
+            for (const auto &event : clear.Events())
+                Check(event.type != "spell_impact", "cleared casts cannot land later");
+            Match finished(Quiet());
+            finished.Spawn(Team::Player, "bullet_burst", {0, -16.3});
+            finished.SetTowerHP(Tower(finished, Team::Enemy, EntityKind::Core).id, 0);
+            Check(finished.State().phase == Phase::Finished && finished.State().spellCasts.empty(),
+                  "result cancels pending cast");
+            finished.Step(1);
+            for (const auto &event : finished.Events())
+                Check(event.type != "spell_impact", "no cast lands after a result");
+            Match tie(Quiet());
+            tie.Step(299.9);
+            tie.Spawn(Team::Player, "meteor_shards", {.5, .5});
+            tie.Step(.1);
+            Check(tie.State().phase == Phase::Tiebreaker && tie.State().spellCasts.empty(),
+                  "tiebreaker cancels unfinished windup");
+            tie.Step(1);
+            for (const auto &event : tie.Events())
+                Check(event.type != "spell_impact", "no cast lands during tiebreaker");
+            Match lethal(Quiet());
+            lethal.SetTowerHP(Tower(lethal, Team::Enemy, EntityKind::Core).id, 55);
+            lethal.Spawn(Team::Player, "bullet_burst", {0, -16.3});
+            lethal.Spawn(Team::Enemy, "bullet_burst", {0, 16.3});
+            lethal.Step(.30);
+            Check(lethal.State().phase == Phase::Finished && lethal.State().spellCasts.empty(),
+                  "lethal impact safely clears another due cast");
+            Near(Tower(lethal, Team::Player, EntityKind::Core).hp, 3600, 0,
+                 "another simultaneous cast cannot damage after result");
         });
         Test("front rear sight and legal targeting", [] {
             Match m(Quiet());

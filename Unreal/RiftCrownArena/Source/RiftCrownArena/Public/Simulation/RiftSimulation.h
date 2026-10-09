@@ -22,7 +22,7 @@ struct Card {
     int cost = 0, count = 1;
     double hp = 0, damage = 0, attackInterval = 0, moveSpeed = 0, range = 0, scale = 1;
     double projectileSpeed = 0, splash = 0, lifetime = 0, footprint = 0;
-    double towerDamage = 0, spellRadius = 0, chargeDamage = 0;
+    double towerDamage = 0, spellRadius = 0, chargeDamage = 0, castDelay = 0;
     double slowPct = 0, slowDuration = 0, auraDamage = 0, auraInterval = 0, auraRadius = 0, stunDuration = 0;
     double dotDamage = 0, dotDuration = 0, dotInterval = 0;
     int rounds = 0;
@@ -68,6 +68,13 @@ struct Hazard {
     Vec2 position;
     double radius = 0, born = 0, nextTick = 0, expires = 0;
     int ticks = 0;
+};
+struct SpellCast {
+    PlayId playId = 0;
+    Team team = Team::Player;
+    std::string cardId;
+    Vec2 position;
+    double born = 0, impactAt = 0;
 };
 struct Event {
     std::uint64_t sequence = 0;
@@ -116,6 +123,7 @@ struct Snapshot {
     std::vector<Entity> entities;
     std::vector<Projectile> projectiles;
     std::vector<Hazard> hazards;
+    std::vector<SpellCast> spellCasts;
     std::array<std::map<std::string, CardTelemetry>, 2> telemetry;
     int winner = -1; // -1 draw/unresolved, 0 Player, 1 Enemy; phase disambiguates.
     std::string resultReason;

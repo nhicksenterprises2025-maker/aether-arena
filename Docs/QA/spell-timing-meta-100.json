@@ -1,0 +1,334 @@
+{
+  "auditedAtUtc": "2026-10-09T12:57:07.577618-04:00",
+  "dataset": "Artifacts\\QA\\spell121-meta100\\UserData\\Meta\\CD301F9A4E942F25F9FB66A344F32D3F.json",
+  "fingerprint": "b3968027993fd0ece72577b77c48d76e",
+  "telemetryRevision": 3,
+  "initialSeed": 151515,
+  "observedGames": 100,
+  "target": 100,
+  "completeObserved": true,
+  "attempts": 100,
+  "invalid": 0,
+  "economyInvalid": 0,
+  "maximumEconomyResidual": 0.017857142797866432,
+  "checks": 165725,
+  "failedChecks": 0,
+  "errors": [],
+  "buckets": 79,
+  "checkpoints": 4,
+  "finalExportValidated": true,
+  "deckObservations": 200,
+  "simulatedSeconds": 19080.81666667076,
+  "activeSimulationWallSeconds": 18.65800978243351,
+  "meanSimulatedMatchSeconds": 190.8081666667076,
+  "meanActiveSimulationWallSeconds": 0.1865800978243351,
+  "drawMatches": 23.0,
+  "totalPaidAether": 19219,
+  "totalLeakedAether": 4.1607142861449,
+  "totalPaidCasts": 5949,
+  "totalSpawnedMembers": 5992,
+  "styleObservations": {
+    "beatdown": 23,
+    "aggro": 32,
+    "control": 41,
+    "cycle": 19,
+    "spell_cycle": 31,
+    "counter": 22,
+    "split": 32
+  },
+  "cards": [
+    {
+      "id": "arc_mage",
+      "deckAppearances": 147,
+      "cleanN": 37,
+      "mirrorExclusions": 110,
+      "pickRate": 73.5,
+      "adjustedWinRate": 59.01639344262295,
+      "ciLow": 48.75872951756956,
+      "ciHigh": 78.17459336889914,
+      "plays": 508
+    },
+    {
+      "id": "nova_flask",
+      "deckAppearances": 83,
+      "cleanN": 45,
+      "mirrorExclusions": 38,
+      "pickRate": 41.5,
+      "adjustedWinRate": 55.79710144927536,
+      "ciLow": 44.372728406738695,
+      "ciHigh": 72.00675138098325,
+      "plays": 176
+    },
+    {
+      "id": "storm_raven",
+      "deckAppearances": 91,
+      "cleanN": 57,
+      "mirrorExclusions": 34,
+      "pickRate": 45.5,
+      "adjustedWinRate": 53.08641975308642,
+      "ciLow": 41.590460831272246,
+      "ciHigh": 66.62760049518862,
+      "plays": 200
+    },
+    {
+      "id": "sky_manta",
+      "deckAppearances": 161,
+      "cleanN": 35,
+      "mirrorExclusions": 126,
+      "pickRate": 80.5,
+      "adjustedWinRate": 52.54237288135593,
+      "ciLow": 38.189451340137516,
+      "ciHigh": 69.53422636623914,
+      "plays": 824
+    },
+    {
+      "id": "ironclad",
+      "deckAppearances": 105,
+      "cleanN": 53,
+      "mirrorExclusions": 52,
+      "pickRate": 52.5,
+      "adjustedWinRate": 51.94805194805195,
+      "ciLow": 39.65985230075645,
+      "ciHigh": 65.61797239101857,
+      "plays": 483
+    },
+    {
+      "id": "vampire_bats",
+      "deckAppearances": 32,
+      "cleanN": 20,
+      "mirrorExclusions": 12,
+      "pickRate": 16.0,
+      "adjustedWinRate": 51.13636363636363,
+      "ciLow": 32.047722856190674,
+      "ciHigh": 72.14662651633466,
+      "plays": 68
+    },
+    {
+      "id": "boulderback",
+      "deckAppearances": 87,
+      "cleanN": 51,
+      "mirrorExclusions": 36,
+      "pickRate": 43.5,
+      "adjustedWinRate": 50.666666666666664,
+      "ciLow": 37.680695448409594,
+      "ciHigh": 64.1427378576938,
+      "plays": 156
+    },
+    {
+      "id": "rambeast",
+      "deckAppearances": 146,
+      "cleanN": 44,
+      "mirrorExclusions": 102,
+      "pickRate": 73.0,
+      "adjustedWinRate": 50.0,
+      "ciLow": 35.83152109593147,
+      "ciHigh": 64.16847890406852,
+      "plays": 551
+    },
+    {
+      "id": "twin_blades",
+      "deckAppearances": 145,
+      "cleanN": 43,
+      "mirrorExclusions": 102,
+      "pickRate": 72.5,
+      "adjustedWinRate": 48.507462686567166,
+      "ciLow": 33.56045219569118,
+      "ciHigh": 62.169838827672685,
+      "plays": 830
+    },
+    {
+      "id": "ember_archer",
+      "deckAppearances": 166,
+      "cleanN": 32,
+      "mirrorExclusions": 134,
+      "pickRate": 83.0,
+      "adjustedWinRate": 48.214285714285715,
+      "ciLow": 30.869129901682335,
+      "ciHigh": 63.55076206742619,
+      "plays": 826
+    },
+    {
+      "id": "meteor_shards",
+      "deckAppearances": 36,
+      "cleanN": 30,
+      "mirrorExclusions": 6,
+      "pickRate": 18.0,
+      "adjustedWinRate": 48.148148148148145,
+      "ciLow": 30.232127224128234,
+      "ciHigh": 63.857986718474955,
+      "plays": 52
+    },
+    {
+      "id": "archer_tower",
+      "deckAppearances": 109,
+      "cleanN": 55,
+      "mirrorExclusions": 54,
+      "pickRate": 54.5,
+      "adjustedWinRate": 44.936708860759495,
+      "ciLow": 30.553368817285598,
+      "ciHigh": 55.85080781965153,
+      "plays": 242
+    },
+    {
+      "id": "frost_fang",
+      "deckAppearances": 115,
+      "cleanN": 47,
+      "mirrorExclusions": 68,
+      "pickRate": 57.5,
+      "adjustedWinRate": 44.36619718309859,
+      "ciLow": 28.57362671377922,
+      "ciHigh": 55.69122726406569,
+      "plays": 202
+    },
+    {
+      "id": "bullet_burst",
+      "deckAppearances": 177,
+      "cleanN": 23,
+      "mirrorExclusions": 154,
+      "pickRate": 88.5,
+      "adjustedWinRate": 39.361702127659576,
+      "ciLow": 14.056148089151568,
+      "ciHigh": 48.68824866812073,
+      "plays": 831
+    }
+  ],
+  "specialTelemetry": {
+    "frost_fang": {
+      "slowTime": 761.5666666668592,
+      "slowTrackedSeconds": 1607.3666666672752,
+      "stunTime": 0,
+      "stunTrackedSeconds": 0,
+      "initialDamage": 0,
+      "dotDamage": 0,
+      "auraDamage": 0,
+      "zoneOccupancy": 0,
+      "zoneSeconds": 0,
+      "buildingLifetime": 0,
+      "buildingCapacity": 0,
+      "prevented": 0,
+      "plays": 202,
+      "spawns": 202,
+      "pulls": 0,
+      "dotTicks": 0
+    },
+    "storm_raven": {
+      "slowTime": 0,
+      "slowTrackedSeconds": 0,
+      "stunTime": 117.56666666666838,
+      "stunTrackedSeconds": 1513.3833333338694,
+      "initialDamage": 0,
+      "dotDamage": 0,
+      "auraDamage": 24871,
+      "zoneOccupancy": 0,
+      "zoneSeconds": 0,
+      "buildingLifetime": 0,
+      "buildingCapacity": 0,
+      "prevented": 0,
+      "plays": 200,
+      "spawns": 200,
+      "pulls": 0,
+      "dotTicks": 0
+    },
+    "meteor_shards": {
+      "slowTime": 0,
+      "slowTrackedSeconds": 0,
+      "stunTime": 0,
+      "stunTrackedSeconds": 0,
+      "initialDamage": 29909,
+      "dotDamage": 8611,
+      "auraDamage": 0,
+      "zoneOccupancy": 242.86666666670328,
+      "zoneSeconds": 245.19999999999837,
+      "buildingLifetime": 0,
+      "buildingCapacity": 0,
+      "prevented": 0,
+      "plays": 52,
+      "spawns": 0,
+      "pulls": 0,
+      "dotTicks": 244
+    },
+    "archer_tower": {
+      "slowTime": 0,
+      "slowTrackedSeconds": 0,
+      "stunTime": 0,
+      "stunTrackedSeconds": 0,
+      "initialDamage": 0,
+      "dotDamage": 0,
+      "auraDamage": 0,
+      "zoneOccupancy": 0,
+      "zoneSeconds": 0,
+      "buildingLifetime": 2295.6333333333014,
+      "buildingCapacity": 6050,
+      "prevented": 120150.83333333257,
+      "plays": 242,
+      "spawns": 242,
+      "pulls": 435,
+      "dotTicks": 0
+    }
+  },
+  "legacyExposureLimitations": [],
+  "gameplayAggregateComparison": null,
+  "limits": [
+    "Aggregate dataset retains no complete per-match snapshots/events; per-match economy checks are worker evidence.",
+    "Card/pair win rates are associations in generated decks, not isolated card strength or causal balance proof.",
+    "Mirror-excluded card observations still share matches/decks; Wilson intervals are descriptive, not independent experimental confidence.",
+    "Archetype labels overlap and their pick percentages need not sum to 100%.",
+    "Active simulation time sums core construction/Step/event-drain calls; excludes pause/throttle waits and aggregation/JSON/persistence overhead. It is not a frame-rate, UI-rate, or elapsed-runtime measurement."
+  ],
+  "evidence": {
+    "inputs": [
+      {
+        "path": "Artifacts/QA/spell121-meta100/UserData/Meta/CD301F9A4E942F25F9FB66A344F32D3F.json",
+        "sha256": "47fe5a435a5e4d95f8d77ca45217b75def8f28139fc939a8880e2d36f57105aa",
+        "bytes": 1848201
+      },
+      {
+        "path": "Artifacts/QA/spell121-meta100/UserData/meta-validation.json",
+        "sha256": "12a9ba99dd9e0b60ff53cee01c742fac28d978480ff1edec416c206f6fe4dc34",
+        "bytes": 24266
+      },
+      {
+        "path": "Artifacts/QA/spell121-meta100/context.json",
+        "sha256": "55e58cde60e12e61170d8499affcd82c83d350ed83d9f6396a67f611acc34ab8",
+        "bytes": 1671
+      },
+      {
+        "path": "Artifacts/QA/spell121-meta100/run.json",
+        "sha256": "5e40fa4a886ffa6d2a8bf12d1e222ac71905f0c913758cbe72fc19e5f2ac7d64",
+        "bytes": 668
+      },
+      {
+        "path": "Artifacts/QA/spell121-meta100/engine.log",
+        "sha256": "c7cd33e4010f6f59b92ef3332ad0f2fb21ba4dcdc61c77d5528b2ff4e2fdd25b",
+        "bytes": 185778
+      }
+    ],
+    "runtimeSha256": "4d39a5c798f65200daf1d9121e6c715a471b9d64437764658d9ec4f36697c768",
+    "simulationSources": [
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftAI.cpp",
+        "sha256": "6c49f975df3c4256c0871bfef5ccb147255f5c0404ff1f56680cadc41937a538"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftCombat.cpp",
+        "sha256": "3ce60d57341267ac5fc0afba01be33fa027262f66659fae7a13678505160ddaf"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftDeckAnalysis.cpp",
+        "sha256": "07d7063f15a66338892ccc65e603caa859cccd2b3d22fcd4257719bd059e21b2"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftPathfinding.cpp",
+        "sha256": "17dc4b4cccaf425f48134d907a22bff586b72332fa780832186be4555e3a6e17"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftSimulation.cpp",
+        "sha256": "60b60bbe25c2cb59a01658b0c7aafd39f9c88720b6362ec32a64a23e09875884"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Simulation/RiftSimulation.h",
+        "sha256": "c453c1e2022f2821b05b7bdfa5f2cde0fa474040f9a85edcf2cff30e67c13817"
+      }
+    ]
+  }
+}
