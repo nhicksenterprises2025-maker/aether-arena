@@ -132,11 +132,11 @@ bool Match::AIPlay(Team team, int index, Vec2 p, const std::string &reason, doub
     const auto *c = FindCard(state_.hands[i][index]);
     if (!c || c->cost > state_.aether[i] - reserve + 1e-9)
         return false;
-    p.x = Clamp(p.x, -12.2, 12.2);
-    p.z = Clamp(p.z, -19.8, 19.8);
+    p.x = Clamp(p.x, -arena::DeploymentMaxX, arena::DeploymentMaxX);
+    p.z = Clamp(p.z, -arena::HalfHeight + 1.2, arena::HalfHeight - 1.2);
     p = SnapToTile(p);
     if (!CanPlace(team, *c, p)) {
-        p.z = S(team) * Clamp(p.z * S(team), 2.2, 15.2);
+        p.z = S(team) * Clamp(p.z * S(team), 2.2, arena::CoreDepth - 1.1);
         p = SnapToTile(p);
     }
     return Play(team, index, p, reason);
@@ -221,7 +221,7 @@ void Match::UpdateAI(Team team, double dt) {
         for (const auto &e : state_.entities)
             if (e.team != team && e.kind == EntityKind::Guard && e.lane == lane && e.dead) {
                 point =
-                    SnapToTile({lane * (2 + (13.2 - 2) * (deep ? .62 : .42)), -sign * (deep ? 8.25 : 3.25)});
+                    SnapToTile({lane * (2 + (arena::PocketOuterX - 2) * (deep ? .62 : .42)), -sign * (deep ? 8.25 : 3.25)});
                 return CanPlace(team, c, point);
             }
         return false;

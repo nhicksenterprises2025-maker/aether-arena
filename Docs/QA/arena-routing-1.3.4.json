@@ -1,0 +1,5458 @@
+{
+  "schema": 1,
+  "version": "1.3.4",
+  "passed": true,
+  "utc": "2026-10-09T21:22:27.2775315Z",
+  "scope": "Expanded30x44 arena, shifted towers, same-source-side bridge commitment and destroyed-lane Core targeting, paid drops, continuous clearance, forward progress, saved replay, complete native regression, Stats Guide, fresh100-match cohort and Windows delivery",
+  "nativeExecutable": {
+    "path": "Artifacts/Game-1.3.4/Windows/RiftCrownArena/Binaries/Win64/RiftCrownArena-Win64-Shipping.exe",
+    "sha256": "f56a69e4416915ba86a1614b41927af5fde015f0ef782cc69015da2341a20e30",
+    "bytes": 167840768
+  },
+  "integrationTests": 16,
+  "portableScenarios": 51,
+  "portableExecutable": {
+    "path": "Build/NativeTests/RiftSimulationTests.exe",
+    "sha256": "f766cc635775a331180a68d0e64ea75daeec9210f5f87bee9bcd6adc326ee1fb",
+    "bytes": 681984
+  },
+  "portableProvenance": "Fresh current authoritative portable compilation and execution. All eight authored source/helper SHA-256 pins were captured before compilation and checked unchanged after the completed 51-scenario execution.",
+  "arena": {
+    "width": 30,
+    "height": 44,
+    "halfWidth": 15,
+    "halfHeight": 22,
+    "coreDepth": 17.3,
+    "guardDepth": 13.4,
+    "guardX": 8.2,
+    "pocketOuterX": 14.2,
+    "pocketMaxDepth": 10.25
+  },
+  "paidGroundFixtures": 266,
+  "paidGroundMembers": 304,
+  "laneRouteFixtures": 84,
+  "laneRouteMembers": 96,
+  "continuousPerimeterPaths": 768,
+  "oppositeTargetPaths": 28,
+  "nativePaidGroundFixtures": 238,
+  "nativePaidGroundMembers": 272,
+  "captures": [
+    {
+      "name": "arena134-initial",
+      "passed": true,
+      "png": {
+        "path": "Artifacts/QA/Visual/arena134-initial.png",
+        "sha256": "7656fa8df0ec2cf522446e175cc10f0822e0e73d0e44f81a148fe591ed1da93d",
+        "bytes": 2505240
+      },
+      "state": "Artifacts/QA/Visual/arena134-initial.state.json",
+      "report": "Artifacts/QA/Visual/arena134-initial.json",
+      "processId": 4828,
+      "arenaGeometry": {
+        "schemaVersion": 1,
+        "inspection": "Actual production HISM instance transforms and collision modes",
+        "widthTiles": 30,
+        "heightTiles": 44,
+        "playableFloorTiles": 1200,
+        "expectedPlayableFloorTiles": 1200,
+        "decorativeFloorTiles": 640,
+        "expectedDecorativeFloorTiles": 640,
+        "floorPassed": true,
+        "playableFloorCenters": {
+          "valid": true,
+          "minX": -14.5,
+          "maxX": 14.5,
+          "minZ": -21.5,
+          "maxZ": 21.5
+        },
+        "decorativeGroundCenters": {
+          "valid": true,
+          "minX": -19.5,
+          "maxX": 19.5,
+          "minZ": -24.5,
+          "maxZ": 24.5
+        },
+        "riverWidthTiles": 30,
+        "riverDepthTiles": 3.3,
+        "riverPassed": true,
+        "bridges": [
+          {
+            "x": -7.2,
+            "z": 0
+          },
+          {
+            "x": 7.2,
+            "z": 0
+          }
+        ],
+        "bridgesPassed": true,
+        "borderStones": 104,
+        "borderPassed": true,
+        "passed": true
+      },
+      "towerPathing": {
+        "schemaVersion": 1,
+        "route": "ordinary Match Spawn / fixed steps / live arena presentation",
+        "routeCase": "clearance",
+        "routeTeam": "both",
+        "requestedAge": 0,
+        "sampledAge": 0,
+        "fixedSteps": 0,
+        "deploymentCount": 6,
+        "expectedUnitCount": 8,
+        "actualUnitCount": 8,
+        "towerNavigationPadding": 0.22,
+        "ordinarySpawnOnly": true,
+        "spawnTowerClearancePassed": true,
+        "allStepTowerClearancePassed": true,
+        "allContinuousSegmentTowerClearancePassed": true,
+        "progressRequired": false,
+        "progressPassed": false,
+        "towers": [
+          {
+            "id": 1,
+            "team": "player",
+            "kind": "core",
+            "lane": 0,
+            "x": 0,
+            "z": 17.3,
+            "radius": 1.35
+          },
+          {
+            "id": 2,
+            "team": "player",
+            "kind": "guard",
+            "lane": -1,
+            "x": -8.2,
+            "z": 13.4,
+            "radius": 1.15
+          },
+          {
+            "id": 3,
+            "team": "player",
+            "kind": "guard",
+            "lane": 1,
+            "x": 8.2,
+            "z": 13.4,
+            "radius": 1.15
+          },
+          {
+            "id": 4,
+            "team": "enemy",
+            "kind": "core",
+            "lane": 0,
+            "x": 0,
+            "z": -17.3,
+            "radius": 1.35
+          },
+          {
+            "id": 5,
+            "team": "enemy",
+            "kind": "guard",
+            "lane": -1,
+            "x": -8.2,
+            "z": -13.4,
+            "radius": 1.15
+          },
+          {
+            "id": 6,
+            "team": "enemy",
+            "kind": "guard",
+            "lane": 1,
+            "x": 8.2,
+            "z": -13.4,
+            "radius": 1.15
+          }
+        ],
+        "units": [
+          {
+            "id": 7,
+            "team": "player",
+            "cardId": "ironclad",
+            "deploymentTowerId": 1,
+            "requestedX": 0.5,
+            "requestedZ": 18.5,
+            "spawnX": 0.7734615384615392,
+            "spawnZ": 19.156307692307692,
+            "radius": 0.44,
+            "spawnTowerClearance": 0.000999999999999196,
+            "minimumStepTowerClearance": 0.000999999999999196,
+            "minimumSegmentTowerClearance": 0.000999999999999196,
+            "x": 0.7734615384615392,
+            "z": 19.156307692307692,
+            "alive": true,
+            "distanceFromSpawn": 0,
+            "progressTowardRiver": 0,
+            "progressPassed": false,
+            "present": true
+          },
+          {
+            "id": 8,
+            "team": "player",
+            "cardId": "boulderback",
+            "deploymentTowerId": 2,
+            "requestedX": -8.5,
+            "requestedZ": 14.5,
+            "spawnX": -8.701975386770187,
+            "spawnZ": 15.240576418157346,
+            "radius": 0.5367999999999999,
+            "spawnTowerClearance": 0.0010000000000009723,
+            "minimumStepTowerClearance": 0.0010000000000009723,
+            "minimumSegmentTowerClearance": 0.0010000000000009723,
+            "x": -8.701975386770187,
+            "z": 15.240576418157346,
+            "alive": true,
+            "distanceFromSpawn": 0,
+            "progressTowardRiver": 0,
+            "progressPassed": false,
+            "present": true
+          },
+          {
+            "id": 9,
+            "team": "player",
+            "cardId": "twin_blades",
+            "deploymentTowerId": 3,
+            "requestedX": 8.5,
+            "requestedZ": 14.5,
+            "spawnX": 8.030477094148909,
+            "spawnZ": 15.123482876152764,
+            "radius": 0.36079999999999995,
+            "spawnTowerClearance": 0.0010000000000000842,
+            "minimumStepTowerClearance": 0.0010000000000000842,
+            "minimumSegmentTowerClearance": 0.0010000000000000842,
+            "x": 8.030477094148909,
+            "z": 15.123482876152764,
+            "alive": true,
+            "distanceFromSpawn": 0,
+            "progressTowardRiver": 0,
+            "progressPassed": false,
+            "present": true
+          },
+          {
+            "id": 10,
+            "team": "player",
+            "cardId": "twin_blades",
+            "deploymentTowerId": 3,
+            "requestedX": 8.5,
+            "requestedZ": 14.5,
+            "spawnX": 9.225357968333126,
+            "spawnZ": 14.795626123564533,
+            "radius": 0.36079999999999995,
+            "spawnTowerClearance": 0.0010000000000009723,
+            "minimumStepTowerClearance": 0.0010000000000009723,
+            "minimumSegmentTowerClearance": 0.0010000000000009723,
+            "x": 9.225357968333126,
+            "z": 14.795626123564533,
+            "alive": true,
+            "distanceFromSpawn": 0,
+            "progressTowardRiver": 0,
+            "progressPassed": false,
+            "present": true
+          },
+          {
+            "id": 11,
+            "team": "enemy",
+            "cardId": "ironclad",
+            "deploymentTowerId": 4,
+            "requestedX": 0.5,
+            "requestedZ": -18.5,
+            "spawnX": 0.7734615384615392,
+            "spawnZ": -19.156307692307692,
+            "radius": 0.44,
+            "spawnTowerClearance": 0.000999999999999196,
+            "minimumStepTowerClearance": 0.000999999999999196,
+            "minimumSegmentTowerClearance": 0.000999999999999196,
+            "x": 0.7734615384615392,
+            "z": -19.156307692307692,
+            "alive": true,
+            "distanceFromSpawn": 0,
+            "progressTowardRiver": 0,
+            "progressPassed": false,
+            "present": true
+          },
+          {
+            "id": 12,
+            "team": "enemy",
+            "cardId": "boulderback",
+            "deploymentTowerId": 5,
+            "requestedX": -8.5,
+            "requestedZ": -14.5,
+            "spawnX": -8.701975386770187,
+            "spawnZ": -15.240576418157346,
+            "radius": 0.5367999999999999,
+            "spawnTowerClearance": 0.0010000000000009723,
+            "minimumStepTowerClearance": 0.0010000000000009723,
+            "minimumSegmentTowerClearance": 0.0010000000000009723,
+            "x": -8.701975386770187,
+            "z": -15.240576418157346,
+            "alive": true,
+            "distanceFromSpawn": 0,
+            "progressTowardRiver": 0,
+            "progressPassed": false,
+            "present": true
+          },
+          {
+            "id": 13,
+            "team": "enemy",
+            "cardId": "twin_blades",
+            "deploymentTowerId": 6,
+            "requestedX": 8.5,
+            "requestedZ": -14.5,
+            "spawnX": 7.989514966374363,
+            "spawnZ": -15.118961107942706,
+            "radius": 0.36079999999999995,
+            "spawnTowerClearance": 0.0009999999999998621,
+            "minimumStepTowerClearance": 0.0009999999999998621,
+            "minimumSegmentTowerClearance": 0.0009999999999998621,
+            "x": 7.989514966374363,
+            "z": -15.118961107942706,
+            "alive": true,
+            "distanceFromSpawn": 0,
+            "progressTowardRiver": 0,
+            "progressPassed": false,
+            "present": true
+          },
+          {
+            "id": 14,
+            "team": "enemy",
+            "cardId": "twin_blades",
+            "deploymentTowerId": 6,
+            "requestedX": 8.5,
+            "requestedZ": -14.5,
+            "spawnX": 9.080193557708357,
+            "spawnZ": -14.891439083894713,
+            "radius": 0.36079999999999995,
+            "spawnTowerClearance": 0.000999999999999418,
+            "minimumStepTowerClearance": 0.000999999999999418,
+            "minimumSegmentTowerClearance": 0.000999999999999418,
+            "x": 9.080193557708357,
+            "z": -14.891439083894713,
+            "alive": true,
+            "distanceFromSpawn": 0,
+            "progressTowardRiver": 0,
+            "progressPassed": false,
+            "present": true
+          }
+        ],
+        "passed": true
+      },
+      "framing": {
+        "activeBattleView": true,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 0.849313497543335,
+        "minimumZoom": 0.849313497543335,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 8077.9150390625,
+        "cameraElevationDegrees": 34.99999733453399,
+        "safeTop": 0.07592592388391495,
+        "safeBottom": 0.8314814567565918,
+        "safeLeft": 0.14687499403953552,
+        "safeRight": 0.8531249761581421,
+        "usableWidthPixels": 1356,
+        "usableHeightPixels": 816,
+        "legalFieldWidthTiles": 30,
+        "legalFieldHeightTiles": 44,
+        "legalFieldHalfWidthTiles": 15,
+        "legalFieldHalfHeightTiles": 22,
+        "tilePitchProjected": true,
+        "tilePitchPixels": 23.7684326171875,
+        "tileDepthPixels": 13.633056640625,
+        "modelHeightPixelsPerMeter": 19.47003173828125,
+        "legalFieldWidthPixels": 713.052978515625,
+        "legalFieldDepthPixels": 599.8544921875,
+        "arenaGroundWidthPixels": 950.7373046875,
+        "legalFieldCorners": [
+          {
+            "tileX": -15,
+            "tileY": -22,
+            "screenX": 0.3143085797627767,
+            "screenY": 0.23187942504882814,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -15,
+            "tileY": 22,
+            "screenX": 0.31430854797363283,
+            "screenY": 0.7873002228913484,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 15,
+            "tileY": -22,
+            "screenX": 0.6856915156046549,
+            "screenY": 0.23187943917733653,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 15,
+            "tileY": 22,
+            "screenX": 0.6856915156046549,
+            "screenY": 0.7873002794053819,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "modelEnvelope": [
+          {
+            "worldX": -1850,
+            "worldY": -2550,
+            "worldZ": 0,
+            "screenX": 0.27098058064778646,
+            "screenY": 0.1876982088442202,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -1850,
+            "worldY": -2550,
+            "worldZ": 620,
+            "screenX": 0.27098058064778646,
+            "screenY": 0.07592585528338397,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -1850,
+            "worldY": 2550,
+            "worldZ": 0,
+            "screenX": 0.2709805488586426,
+            "screenY": 0.8314814814814815,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -1850,
+            "worldY": 2550,
+            "worldZ": 620,
+            "screenX": 0.2709805488586426,
+            "screenY": 0.7197090996636285,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": -2550,
+            "worldZ": 0,
+            "screenX": 0.7290195465087891,
+            "screenY": 0.18769825122974537,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": -2550,
+            "worldZ": 620,
+            "screenX": 0.7290195465087891,
+            "screenY": 0.07592588354040075,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": 2550,
+            "worldZ": 0,
+            "screenX": 0.7290195465087891,
+            "screenY": 0.8314814814814815,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": 2550,
+            "worldZ": 620,
+            "screenX": 0.7290195465087891,
+            "screenY": 0.7197090996636285,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": -2100,
+            "worldZ": 0,
+            "screenX": 0.4566720326741536,
+            "screenY": 0.24450262564199943,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": -2100,
+            "worldZ": 620,
+            "screenX": 0.4566720326741536,
+            "screenY": 0.1327302720811632,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": 2100,
+            "worldZ": 0,
+            "screenX": 0.45667200088500975,
+            "screenY": 0.774677022298177,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": 2100,
+            "worldZ": 620,
+            "screenX": 0.45667200088500975,
+            "screenY": 0.6629046969943576,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": -2100,
+            "worldZ": 0,
+            "screenX": 0.5433280309041341,
+            "screenY": 0.24450262564199943,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": -2100,
+            "worldZ": 620,
+            "screenX": 0.5433280309041341,
+            "screenY": 0.1327302720811632,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": 2100,
+            "worldZ": 0,
+            "screenX": 0.5433280309041341,
+            "screenY": 0.774677022298177,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": 2100,
+            "worldZ": 620,
+            "screenX": 0.5433280309041341,
+            "screenY": 0.6629046969943576,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "modelEnvelopePassed": true,
+        "projectedModelBounds": [
+          {
+            "entityId": "1",
+            "cardId": "",
+            "kind": "core",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 72.89935302734375,
+            "heightPixels": 140.6502685546875,
+            "minXPixels": 923.5504150390625,
+            "minYPixels": 666.46533203125,
+            "maxXPixels": 996.4497680664062,
+            "maxYPixels": 807.1156005859375,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "2",
+            "cardId": "",
+            "kind": "guard",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 63.94677734375,
+            "heightPixels": 102.15606689453125,
+            "minXPixels": 733.1248779296875,
+            "minYPixels": 649.2230834960938,
+            "maxXPixels": 797.0716552734375,
+            "maxYPixels": 751.379150390625,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "3",
+            "cardId": "",
+            "kind": "guard",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 63.9468994140625,
+            "heightPixels": 102.15606689453125,
+            "minXPixels": 1122.9283447265625,
+            "minYPixels": 649.2230834960938,
+            "maxXPixels": 1186.875244140625,
+            "maxYPixels": 751.379150390625,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "4",
+            "cardId": "",
+            "kind": "core",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 72.89935302734375,
+            "heightPixels": 140.65020751953125,
+            "minXPixels": 923.5504150390625,
+            "minYPixels": 194.76162719726562,
+            "maxXPixels": 996.4497680664062,
+            "maxYPixels": 335.4118347167969,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "5",
+            "cardId": "",
+            "kind": "guard",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 63.94677734375,
+            "heightPixels": 102.15609741210938,
+            "minXPixels": 733.1249389648438,
+            "minYPixels": 283.857177734375,
+            "maxXPixels": 797.0717163085938,
+            "maxYPixels": 386.0132751464844,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "6",
+            "cardId": "",
+            "kind": "guard",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 63.94677734375,
+            "heightPixels": 102.15609741210938,
+            "minXPixels": 1122.928466796875,
+            "minYPixels": 283.857177734375,
+            "maxXPixels": 1186.875244140625,
+            "maxYPixels": 386.0132751464844,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "7",
+            "cardId": "ironclad",
+            "kind": "troop",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 87.62164306640625,
+            "heightPixels": 119.81634521484375,
+            "minXPixels": 935.863525390625,
+            "minYPixels": 714.2679443359375,
+            "maxXPixels": 1023.4851684570312,
+            "maxYPixels": 834.0842895507812,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "8",
+            "cardId": "boulderback",
+            "kind": "troop",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 80.2354736328125,
+            "heightPixels": 173.174560546875,
+            "minXPixels": 712.981201171875,
+            "minYPixels": 617.3975219726562,
+            "maxXPixels": 793.2166748046875,
+            "maxYPixels": 790.5720825195312,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "9",
+            "cardId": "twin_blades",
+            "kind": "troop",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 38.813232421875,
+            "heightPixels": 86.8221435546875,
+            "minXPixels": 1131.8485107421875,
+            "minYPixels": 690.0364379882812,
+            "maxXPixels": 1170.6617431640625,
+            "maxYPixels": 776.8585815429688,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "10",
+            "cardId": "twin_blades",
+            "kind": "troop",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 38.813232421875,
+            "heightPixels": 86.8221435546875,
+            "minXPixels": 1160.2490234375,
+            "minYPixels": 685.5667724609375,
+            "maxXPixels": 1199.062255859375,
+            "maxYPixels": 772.388916015625,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "11",
+            "cardId": "ironclad",
+            "kind": "troop",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 87.62176513671875,
+            "heightPixels": 119.81629943847656,
+            "minXPixels": 933.2830200195312,
+            "minYPixels": 195.4325408935547,
+            "maxXPixels": 1020.90478515625,
+            "maxYPixels": 315.24884033203125,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "12",
+            "cardId": "boulderback",
+            "kind": "troop",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 80.23541259765625,
+            "heightPixels": 173.17454528808594,
+            "minXPixels": 713.1175537109375,
+            "minYPixels": 217.90467834472656,
+            "maxXPixels": 793.3529663085938,
+            "maxYPixels": 391.0792236328125,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "13",
+            "cardId": "twin_blades",
+            "kind": "troop",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 38.813232421875,
+            "heightPixels": 86.8221435546875,
+            "minXPixels": 1130.1097412109375,
+            "minYPixels": 276.44732666015625,
+            "maxXPixels": 1168.9229736328125,
+            "maxYPixels": 363.26947021484375,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "14",
+            "cardId": "twin_blades",
+            "kind": "troop",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 38.813232421875,
+            "heightPixels": 86.82217407226562,
+            "minXPixels": 1156.0335693359375,
+            "minYPixels": 279.54913330078125,
+            "maxXPixels": 1194.8468017578125,
+            "maxYPixels": 366.3713073730469,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          }
+        ],
+        "projectedModelBoundsPassed": true,
+        "troopModelCount": 8,
+        "averageTroopWidthPixels": 61.37090301513672,
+        "averageTroopHeightPixels": 116.65879440307617,
+        "minimumTroopHeightPixels": 86.8221435546875,
+        "maximumTroopHeightPixels": 173.174560546875,
+        "passed": true
+      }
+    },
+    {
+      "name": "arena134-after5",
+      "passed": true,
+      "png": {
+        "path": "Artifacts/QA/Visual/arena134-after5.png",
+        "sha256": "e916d576dcb73eea1b7b3dabd4528d4929681f98557c099275c9baf09c6862e8",
+        "bytes": 2519997
+      },
+      "state": "Artifacts/QA/Visual/arena134-after5.state.json",
+      "report": "Artifacts/QA/Visual/arena134-after5.json",
+      "processId": 25068,
+      "arenaGeometry": {
+        "schemaVersion": 1,
+        "inspection": "Actual production HISM instance transforms and collision modes",
+        "widthTiles": 30,
+        "heightTiles": 44,
+        "playableFloorTiles": 1200,
+        "expectedPlayableFloorTiles": 1200,
+        "decorativeFloorTiles": 640,
+        "expectedDecorativeFloorTiles": 640,
+        "floorPassed": true,
+        "playableFloorCenters": {
+          "valid": true,
+          "minX": -14.5,
+          "maxX": 14.5,
+          "minZ": -21.5,
+          "maxZ": 21.5
+        },
+        "decorativeGroundCenters": {
+          "valid": true,
+          "minX": -19.5,
+          "maxX": 19.5,
+          "minZ": -24.5,
+          "maxZ": 24.5
+        },
+        "riverWidthTiles": 30,
+        "riverDepthTiles": 3.3,
+        "riverPassed": true,
+        "bridges": [
+          {
+            "x": -7.2,
+            "z": 0
+          },
+          {
+            "x": 7.2,
+            "z": 0
+          }
+        ],
+        "bridgesPassed": true,
+        "borderStones": 104,
+        "borderPassed": true,
+        "passed": true
+      },
+      "towerPathing": {
+        "schemaVersion": 1,
+        "route": "ordinary Match Spawn / fixed steps / live arena presentation",
+        "routeCase": "clearance",
+        "routeTeam": "both",
+        "requestedAge": 5,
+        "sampledAge": 4.999999999999988,
+        "fixedSteps": 300,
+        "deploymentCount": 6,
+        "expectedUnitCount": 8,
+        "actualUnitCount": 8,
+        "towerNavigationPadding": 0.22,
+        "ordinarySpawnOnly": true,
+        "spawnTowerClearancePassed": true,
+        "allStepTowerClearancePassed": true,
+        "allContinuousSegmentTowerClearancePassed": true,
+        "progressRequired": true,
+        "progressPassed": true,
+        "towers": [
+          {
+            "id": 1,
+            "team": "player",
+            "kind": "core",
+            "lane": 0,
+            "x": 0,
+            "z": 17.3,
+            "radius": 1.35
+          },
+          {
+            "id": 2,
+            "team": "player",
+            "kind": "guard",
+            "lane": -1,
+            "x": -8.2,
+            "z": 13.4,
+            "radius": 1.15
+          },
+          {
+            "id": 3,
+            "team": "player",
+            "kind": "guard",
+            "lane": 1,
+            "x": 8.2,
+            "z": 13.4,
+            "radius": 1.15
+          },
+          {
+            "id": 4,
+            "team": "enemy",
+            "kind": "core",
+            "lane": 0,
+            "x": 0,
+            "z": -17.3,
+            "radius": 1.35
+          },
+          {
+            "id": 5,
+            "team": "enemy",
+            "kind": "guard",
+            "lane": -1,
+            "x": -8.2,
+            "z": -13.4,
+            "radius": 1.15
+          },
+          {
+            "id": 6,
+            "team": "enemy",
+            "kind": "guard",
+            "lane": 1,
+            "x": 8.2,
+            "z": -13.4,
+            "radius": 1.15
+          }
+        ],
+        "units": [
+          {
+            "id": 7,
+            "team": "player",
+            "cardId": "ironclad",
+            "deploymentTowerId": 1,
+            "requestedX": 0.5,
+            "requestedZ": 18.5,
+            "spawnX": 0.7734615384615392,
+            "spawnZ": 19.156307692307692,
+            "radius": 0.44,
+            "spawnTowerClearance": 0.000999999999999196,
+            "minimumStepTowerClearance": 0.000999999999999196,
+            "minimumSegmentTowerClearance": 0.000999999999999196,
+            "x": 2.9493841261987623,
+            "z": 10.04338107298546,
+            "alive": true,
+            "distanceFromSpawn": 9.369101914109846,
+            "progressTowardRiver": 9.112926619322232,
+            "progressPassed": true,
+            "present": true
+          },
+          {
+            "id": 8,
+            "team": "player",
+            "cardId": "boulderback",
+            "deploymentTowerId": 2,
+            "requestedX": -8.5,
+            "requestedZ": 14.5,
+            "spawnX": -8.701975386770187,
+            "spawnZ": 15.240576418157346,
+            "radius": 0.5367999999999999,
+            "spawnTowerClearance": 0.0010000000000009723,
+            "minimumStepTowerClearance": 0.0010000000000009723,
+            "minimumSegmentTowerClearance": 0.0010000000000009723,
+            "x": -10.980417341992043,
+            "z": 11.089565994785524,
+            "alive": true,
+            "distanceFromSpawn": 4.735206994235491,
+            "progressTowardRiver": 4.151010423371822,
+            "progressPassed": true,
+            "present": true
+          },
+          {
+            "id": 9,
+            "team": "player",
+            "cardId": "twin_blades",
+            "deploymentTowerId": 3,
+            "requestedX": 8.5,
+            "requestedZ": 14.5,
+            "spawnX": 8.030477094148909,
+            "spawnZ": 15.123482876152764,
+            "radius": 0.36079999999999995,
+            "spawnTowerClearance": 0.0010000000000000842,
+            "minimumStepTowerClearance": 0.0010000000000000842,
+            "minimumSegmentTowerClearance": 0.0010000000000000842,
+            "x": 6.880559045531626,
+            "z": 0.8774435703288679,
+            "alive": true,
+            "distanceFromSpawn": 14.29237375041722,
+            "progressTowardRiver": 14.246039305823896,
+            "progressPassed": true,
+            "present": true
+          },
+          {
+            "id": 10,
+            "team": "player",
+            "cardId": "twin_blades",
+            "deploymentTowerId": 3,
+            "requestedX": 8.5,
+            "requestedZ": 14.5,
+            "spawnX": 9.225357968333126,
+            "spawnZ": 14.795626123564533,
+            "radius": 0.36079999999999995,
+            "spawnTowerClearance": 0.0010000000000009723,
+            "minimumStepTowerClearance": 0.0010000000000009723,
+            "minimumSegmentTowerClearance": 0.0010000000000009723,
+            "x": 8.075996903695335,
+            "z": 0.7152010884497728,
+            "alive": true,
+            "distanceFromSpawn": 14.127257342683038,
+            "progressTowardRiver": 14.08042503511476,
+            "progressPassed": true,
+            "present": true
+          },
+          {
+            "id": 11,
+            "team": "enemy",
+            "cardId": "ironclad",
+            "deploymentTowerId": 4,
+            "requestedX": 0.5,
+            "requestedZ": -18.5,
+            "spawnX": 0.7734615384615392,
+            "spawnZ": -19.156307692307692,
+            "radius": 0.44,
+            "spawnTowerClearance": 0.000999999999999196,
+            "minimumStepTowerClearance": 0.000999999999999196,
+            "minimumSegmentTowerClearance": 0.000999999999999196,
+            "x": 2.9493841261987623,
+            "z": -10.04338107298546,
+            "alive": true,
+            "distanceFromSpawn": 9.369101914109846,
+            "progressTowardRiver": 9.112926619322232,
+            "progressPassed": true,
+            "present": true
+          },
+          {
+            "id": 12,
+            "team": "enemy",
+            "cardId": "boulderback",
+            "deploymentTowerId": 5,
+            "requestedX": -8.5,
+            "requestedZ": -14.5,
+            "spawnX": -8.701975386770187,
+            "spawnZ": -15.240576418157346,
+            "radius": 0.5367999999999999,
+            "spawnTowerClearance": 0.0010000000000009723,
+            "minimumStepTowerClearance": 0.0010000000000009723,
+            "minimumSegmentTowerClearance": 0.0010000000000009723,
+            "x": -10.980417341992043,
+            "z": -11.089565994785524,
+            "alive": true,
+            "distanceFromSpawn": 4.735206994235491,
+            "progressTowardRiver": 4.151010423371822,
+            "progressPassed": true,
+            "present": true
+          },
+          {
+            "id": 13,
+            "team": "enemy",
+            "cardId": "twin_blades",
+            "deploymentTowerId": 6,
+            "requestedX": 8.5,
+            "requestedZ": -14.5,
+            "spawnX": 7.989514966374363,
+            "spawnZ": -15.118961107942706,
+            "radius": 0.36079999999999995,
+            "spawnTowerClearance": 0.0009999999999998621,
+            "minimumStepTowerClearance": 0.0009999999999998621,
+            "minimumSegmentTowerClearance": 0.0009999999999998621,
+            "x": 6.886336694814328,
+            "z": -0.8271331194717786,
+            "alive": true,
+            "distanceFromSpawn": 14.334341615535857,
+            "progressTowardRiver": 14.291827988470928,
+            "progressPassed": true,
+            "present": true
+          },
+          {
+            "id": 14,
+            "team": "enemy",
+            "cardId": "twin_blades",
+            "deploymentTowerId": 6,
+            "requestedX": 8.5,
+            "requestedZ": -14.5,
+            "spawnX": 9.080193557708357,
+            "spawnZ": -14.891439083894713,
+            "radius": 0.36079999999999995,
+            "spawnTowerClearance": 0.000999999999999418,
+            "minimumStepTowerClearance": 0.000999999999999418,
+            "minimumSegmentTowerClearance": 0.000999999999999418,
+            "x": 8.07813353720474,
+            "z": -0.8310182801075108,
+            "alive": true,
+            "distanceFromSpawn": 14.096083053964447,
+            "progressTowardRiver": 14.060420803787203,
+            "progressPassed": true,
+            "present": true
+          }
+        ],
+        "passed": true
+      },
+      "framing": {
+        "activeBattleView": true,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 0.849313497543335,
+        "minimumZoom": 0.849313497543335,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 8077.9150390625,
+        "cameraElevationDegrees": 34.99999733453399,
+        "safeTop": 0.07592592388391495,
+        "safeBottom": 0.8314814567565918,
+        "safeLeft": 0.14687499403953552,
+        "safeRight": 0.8531249761581421,
+        "usableWidthPixels": 1356,
+        "usableHeightPixels": 816,
+        "legalFieldWidthTiles": 30,
+        "legalFieldHeightTiles": 44,
+        "legalFieldHalfWidthTiles": 15,
+        "legalFieldHalfHeightTiles": 22,
+        "tilePitchProjected": true,
+        "tilePitchPixels": 23.7684326171875,
+        "tileDepthPixels": 13.633056640625,
+        "modelHeightPixelsPerMeter": 19.47003173828125,
+        "legalFieldWidthPixels": 713.052978515625,
+        "legalFieldDepthPixels": 599.8544921875,
+        "arenaGroundWidthPixels": 950.7373046875,
+        "legalFieldCorners": [
+          {
+            "tileX": -15,
+            "tileY": -22,
+            "screenX": 0.3143085797627767,
+            "screenY": 0.23187942504882814,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -15,
+            "tileY": 22,
+            "screenX": 0.31430854797363283,
+            "screenY": 0.7873002228913484,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 15,
+            "tileY": -22,
+            "screenX": 0.6856915156046549,
+            "screenY": 0.23187943917733653,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 15,
+            "tileY": 22,
+            "screenX": 0.6856915156046549,
+            "screenY": 0.7873002794053819,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "modelEnvelope": [
+          {
+            "worldX": -1850,
+            "worldY": -2550,
+            "worldZ": 0,
+            "screenX": 0.27098058064778646,
+            "screenY": 0.1876982088442202,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -1850,
+            "worldY": -2550,
+            "worldZ": 620,
+            "screenX": 0.27098058064778646,
+            "screenY": 0.07592585528338397,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -1850,
+            "worldY": 2550,
+            "worldZ": 0,
+            "screenX": 0.2709805488586426,
+            "screenY": 0.8314814814814815,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -1850,
+            "worldY": 2550,
+            "worldZ": 620,
+            "screenX": 0.2709805488586426,
+            "screenY": 0.7197090996636285,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": -2550,
+            "worldZ": 0,
+            "screenX": 0.7290195465087891,
+            "screenY": 0.18769825122974537,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": -2550,
+            "worldZ": 620,
+            "screenX": 0.7290195465087891,
+            "screenY": 0.07592588354040075,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": 2550,
+            "worldZ": 0,
+            "screenX": 0.7290195465087891,
+            "screenY": 0.8314814814814815,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": 2550,
+            "worldZ": 620,
+            "screenX": 0.7290195465087891,
+            "screenY": 0.7197090996636285,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": -2100,
+            "worldZ": 0,
+            "screenX": 0.4566720326741536,
+            "screenY": 0.24450262564199943,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": -2100,
+            "worldZ": 620,
+            "screenX": 0.4566720326741536,
+            "screenY": 0.1327302720811632,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": 2100,
+            "worldZ": 0,
+            "screenX": 0.45667200088500975,
+            "screenY": 0.774677022298177,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": 2100,
+            "worldZ": 620,
+            "screenX": 0.45667200088500975,
+            "screenY": 0.6629046969943576,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": -2100,
+            "worldZ": 0,
+            "screenX": 0.5433280309041341,
+            "screenY": 0.24450262564199943,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": -2100,
+            "worldZ": 620,
+            "screenX": 0.5433280309041341,
+            "screenY": 0.1327302720811632,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": 2100,
+            "worldZ": 0,
+            "screenX": 0.5433280309041341,
+            "screenY": 0.774677022298177,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": 2100,
+            "worldZ": 620,
+            "screenX": 0.5433280309041341,
+            "screenY": 0.6629046969943576,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "modelEnvelopePassed": true,
+        "projectedModelBounds": [
+          {
+            "entityId": "1",
+            "cardId": "",
+            "kind": "core",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 72.89935302734375,
+            "heightPixels": 140.6502685546875,
+            "minXPixels": 923.5504150390625,
+            "minYPixels": 666.46533203125,
+            "maxXPixels": 996.4497680664062,
+            "maxYPixels": 807.1156005859375,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "2",
+            "cardId": "",
+            "kind": "guard",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 63.94677734375,
+            "heightPixels": 102.15606689453125,
+            "minXPixels": 733.1248779296875,
+            "minYPixels": 649.2230834960938,
+            "maxXPixels": 797.0716552734375,
+            "maxYPixels": 751.379150390625,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "3",
+            "cardId": "",
+            "kind": "guard",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 63.9468994140625,
+            "heightPixels": 102.15606689453125,
+            "minXPixels": 1122.9283447265625,
+            "minYPixels": 649.2230834960938,
+            "maxXPixels": 1186.875244140625,
+            "maxYPixels": 751.379150390625,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "4",
+            "cardId": "",
+            "kind": "core",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 72.89935302734375,
+            "heightPixels": 140.65020751953125,
+            "minXPixels": 923.5504150390625,
+            "minYPixels": 194.76162719726562,
+            "maxXPixels": 996.4497680664062,
+            "maxYPixels": 335.4118347167969,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "5",
+            "cardId": "",
+            "kind": "guard",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 63.94677734375,
+            "heightPixels": 102.15609741210938,
+            "minXPixels": 733.1249389648438,
+            "minYPixels": 283.857177734375,
+            "maxXPixels": 797.0717163085938,
+            "maxYPixels": 386.0132751464844,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "6",
+            "cardId": "",
+            "kind": "guard",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 63.94677734375,
+            "heightPixels": 102.15609741210938,
+            "minXPixels": 1122.928466796875,
+            "minYPixels": 283.857177734375,
+            "maxXPixels": 1186.875244140625,
+            "maxYPixels": 386.0132751464844,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "7",
+            "cardId": "ironclad",
+            "kind": "troop",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 87.3006591796875,
+            "heightPixels": 122.49835205078125,
+            "minXPixels": 985.6270751953125,
+            "minYPixels": 587.0787963867188,
+            "maxXPixels": 1072.927734375,
+            "maxYPixels": 709.5771484375,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "8",
+            "cardId": "boulderback",
+            "kind": "troop",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 82.79815673828125,
+            "heightPixels": 174.25054931640625,
+            "minXPixels": 657.1478271484375,
+            "minYPixels": 560.0128173828125,
+            "maxXPixels": 739.9459838867188,
+            "maxYPixels": 734.2633666992188,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "9",
+            "cardId": "twin_blades",
+            "kind": "troop",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 47.561767578125,
+            "heightPixels": 91.77825927734375,
+            "minXPixels": 1099.841064453125,
+            "minYPixels": 493.26397705078125,
+            "maxXPixels": 1147.40283203125,
+            "maxYPixels": 585.042236328125,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "10",
+            "cardId": "twin_blades",
+            "kind": "troop",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 38.8668212890625,
+            "heightPixels": 86.75543212890625,
+            "minXPixels": 1132.9022216796875,
+            "minYPixels": 493.58148193359375,
+            "maxXPixels": 1171.76904296875,
+            "maxYPixels": 580.3369140625,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "11",
+            "cardId": "ironclad",
+            "kind": "troop",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 88.265869140625,
+            "heightPixels": 120.05181884765625,
+            "minXPixels": 983.0477294921875,
+            "minYPixels": 319.0208435058594,
+            "maxXPixels": 1071.3135986328125,
+            "maxYPixels": 439.0726623535156,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "12",
+            "cardId": "boulderback",
+            "kind": "troop",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 82.9915771484375,
+            "heightPixels": 176.52783203125,
+            "minXPixels": 657.5989990234375,
+            "minYPixels": 270.4944763183594,
+            "maxXPixels": 740.590576171875,
+            "maxYPixels": 447.0223083496094,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "13",
+            "cardId": "twin_blades",
+            "kind": "troop",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 46.306884765625,
+            "heightPixels": 91.18267822265625,
+            "minXPixels": 1099.95703125,
+            "minYPixels": 468.74346923828125,
+            "maxXPixels": 1146.263916015625,
+            "maxYPixels": 559.9261474609375,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "14",
+            "cardId": "twin_blades",
+            "kind": "troop",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 38.8665771484375,
+            "heightPixels": 86.68600463867188,
+            "minXPixels": 1132.1907958984375,
+            "minYPixels": 471.3868713378906,
+            "maxXPixels": 1171.057373046875,
+            "maxYPixels": 558.0728759765625,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          }
+        ],
+        "projectedModelBoundsPassed": true,
+        "troopModelCount": 8,
+        "averageTroopWidthPixels": 64.11978912353516,
+        "averageTroopHeightPixels": 118.71636581420898,
+        "minimumTroopHeightPixels": 86.68600463867188,
+        "maximumTroopHeightPixels": 176.52783203125,
+        "passed": true
+      }
+    },
+    {
+      "name": "arena134-left-player",
+      "passed": true,
+      "png": {
+        "path": "Artifacts/QA/Visual/arena134-left-player.png",
+        "sha256": "fbf68375e2d21dad11209e8df3ae3a23cbfb19d6ea993567a31d8572e5138d0e",
+        "bytes": 2497554
+      },
+      "state": "Artifacts/QA/Visual/arena134-left-player.state.json",
+      "report": "Artifacts/QA/Visual/arena134-left-player.json",
+      "processId": 20768,
+      "arenaGeometry": {
+        "schemaVersion": 1,
+        "inspection": "Actual production HISM instance transforms and collision modes",
+        "widthTiles": 30,
+        "heightTiles": 44,
+        "playableFloorTiles": 1200,
+        "expectedPlayableFloorTiles": 1200,
+        "decorativeFloorTiles": 640,
+        "expectedDecorativeFloorTiles": 640,
+        "floorPassed": true,
+        "playableFloorCenters": {
+          "valid": true,
+          "minX": -14.5,
+          "maxX": 14.5,
+          "minZ": -21.5,
+          "maxZ": 21.5
+        },
+        "decorativeGroundCenters": {
+          "valid": true,
+          "minX": -19.5,
+          "maxX": 19.5,
+          "minZ": -24.5,
+          "maxZ": 24.5
+        },
+        "riverWidthTiles": 30,
+        "riverDepthTiles": 3.3,
+        "riverPassed": true,
+        "bridges": [
+          {
+            "x": -7.2,
+            "z": 0
+          },
+          {
+            "x": 7.2,
+            "z": 0
+          }
+        ],
+        "bridgesPassed": true,
+        "borderStones": 104,
+        "borderPassed": true,
+        "passed": true
+      },
+      "towerPathing": {
+        "schemaVersion": 2,
+        "routeCase": "left_pocket",
+        "routeTeam": "player",
+        "route": "SetTowerHP / paid Match Play / fixed steps / live arena presentation",
+        "ordinarySpawnOnly": false,
+        "paidPlayOnly": true,
+        "destroyedGuardId": 5,
+        "oppositeGuardId": 6,
+        "expectedCoreId": 4,
+        "intendedBridge": -1,
+        "sameSideGuardDestroyed": true,
+        "paidCostAndCyclePassed": true,
+        "coreTargetsRequired": true,
+        "allCoreTargetsObserved": true,
+        "allBridgeHistoriesPassed": true,
+        "crossingRequired": true,
+        "requestedAge": 5,
+        "sampledAge": 4.999999999999988,
+        "fixedSteps": 300,
+        "deploymentCount": 2,
+        "expectedUnitCount": 2,
+        "actualUnitCount": 2,
+        "towerNavigationPadding": 0.22,
+        "spawnTowerClearancePassed": true,
+        "allStepTowerClearancePassed": true,
+        "allContinuousSegmentTowerClearancePassed": true,
+        "progressRequired": true,
+        "progressPassed": true,
+        "units": [
+          {
+            "id": 7,
+            "team": "player",
+            "cardId": "boulderback",
+            "role": "own_half",
+            "requestedX": -7.5,
+            "requestedZ": 4.5,
+            "spawnX": -7.5,
+            "spawnZ": 4.5,
+            "x": -6.988263564802348,
+            "z": -1.9434343457960763,
+            "present": true,
+            "alive": true,
+            "targetId": 4,
+            "targetKind": "core",
+            "radius": 0.5367999999999999,
+            "intendedBridge": -1,
+            "expectedCoreId": 4,
+            "spawnTowerClearance": 7.020685648266258,
+            "minimumStepTowerClearance": 7.020685648266258,
+            "minimumSegmentTowerClearance": 7.020685648266258,
+            "sawCoreTarget": true,
+            "crossedRiver": true,
+            "bridgeHistoryPassed": true,
+            "crossingHistory": [
+              {
+                "event": "enter_bridge",
+                "time": 1.9833333333333312,
+                "x": -7.304031046067142,
+                "z": 1.9293048409211133,
+                "bridge": -1
+              },
+              {
+                "event": "river_center",
+                "time": 3.483333333333326,
+                "x": -7.10398552117032,
+                "z": -0.01032967072520772,
+                "bridge": -1
+              },
+              {
+                "event": "leave_bridge",
+                "time": 4.999999999999988,
+                "x": -6.988263564802348,
+                "z": -1.9434343457960763,
+                "bridge": -1
+              }
+            ],
+            "bridgeHistory": [
+              {
+                "event": "bridge_commit",
+                "time": 0.016666666666666666,
+                "x": -7.498038392169079,
+                "z": 4.478422313859866,
+                "bridge": -1
+              }
+            ],
+            "distanceFromSpawn": 6.463723412066245,
+            "progressForward": 6.443434345796076,
+            "progressPassed": true
+          },
+          {
+            "id": 8,
+            "team": "player",
+            "cardId": "ironclad",
+            "role": "pocket",
+            "requestedX": -8.5,
+            "requestedZ": -5.5,
+            "spawnX": -8.5,
+            "spawnZ": -5.5,
+            "x": -2.784408961980043,
+            "z": -14.025891464912354,
+            "present": true,
+            "alive": true,
+            "targetId": 4,
+            "targetKind": "core",
+            "radius": 0.44,
+            "intendedBridge": -1,
+            "expectedCoreId": 4,
+            "spawnTowerClearance": 12.532695761102891,
+            "minimumStepTowerClearance": 2.287990224173219,
+            "minimumSegmentTowerClearance": 2.287990224173219,
+            "sawCoreTarget": true,
+            "crossedRiver": false,
+            "bridgeHistoryPassed": true,
+            "crossingHistory": [],
+            "bridgeHistory": [
+              {
+                "event": "bridge_commit",
+                "time": 0.016666666666666666,
+                "x": -8.46784401528578,
+                "z": -5.519293590828532,
+                "bridge": 0
+              }
+            ],
+            "distanceFromSpawn": 10.264443783535441,
+            "progressForward": 8.525891464912354,
+            "progressPassed": true
+          }
+        ],
+        "towers": [
+          {
+            "id": 1,
+            "team": "player",
+            "kind": "core",
+            "lane": 0,
+            "x": 0,
+            "z": 17.3,
+            "radius": 1.35,
+            "dead": false
+          },
+          {
+            "id": 2,
+            "team": "player",
+            "kind": "guard",
+            "lane": -1,
+            "x": -8.2,
+            "z": 13.4,
+            "radius": 1.15,
+            "dead": false
+          },
+          {
+            "id": 3,
+            "team": "player",
+            "kind": "guard",
+            "lane": 1,
+            "x": 8.2,
+            "z": 13.4,
+            "radius": 1.15,
+            "dead": false
+          },
+          {
+            "id": 4,
+            "team": "enemy",
+            "kind": "core",
+            "lane": 0,
+            "x": 0,
+            "z": -17.3,
+            "radius": 1.35,
+            "dead": false
+          },
+          {
+            "id": 5,
+            "team": "enemy",
+            "kind": "guard",
+            "lane": -1,
+            "x": -8.2,
+            "z": -13.4,
+            "radius": 1.15,
+            "dead": true
+          },
+          {
+            "id": 6,
+            "team": "enemy",
+            "kind": "guard",
+            "lane": 1,
+            "x": 8.2,
+            "z": -13.4,
+            "radius": 1.15,
+            "dead": false
+          }
+        ],
+        "paidPlays": [
+          {
+            "role": "own_half",
+            "cardId": "boulderback",
+            "handIndex": 3,
+            "cost": 5,
+            "memberCount": 1,
+            "aetherBefore": 10,
+            "aetherAfter": 5,
+            "spentDelta": 5,
+            "accepted": true,
+            "handCycledOnce": true
+          },
+          {
+            "role": "pocket",
+            "cardId": "ironclad",
+            "handIndex": 0,
+            "cost": 3,
+            "memberCount": 1,
+            "aetherBefore": 10,
+            "aetherAfter": 7,
+            "spentDelta": 3,
+            "accepted": true,
+            "handCycledOnce": true
+          }
+        ],
+        "passed": true
+      },
+      "framing": {
+        "activeBattleView": true,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 0.849313497543335,
+        "minimumZoom": 0.849313497543335,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 8077.9150390625,
+        "cameraElevationDegrees": 34.99999733453399,
+        "safeTop": 0.07592592388391495,
+        "safeBottom": 0.8314814567565918,
+        "safeLeft": 0.14687499403953552,
+        "safeRight": 0.8531249761581421,
+        "usableWidthPixels": 1356,
+        "usableHeightPixels": 816,
+        "legalFieldWidthTiles": 30,
+        "legalFieldHeightTiles": 44,
+        "legalFieldHalfWidthTiles": 15,
+        "legalFieldHalfHeightTiles": 22,
+        "tilePitchProjected": true,
+        "tilePitchPixels": 23.7684326171875,
+        "tileDepthPixels": 13.633056640625,
+        "modelHeightPixelsPerMeter": 19.47003173828125,
+        "legalFieldWidthPixels": 713.052978515625,
+        "legalFieldDepthPixels": 599.8544921875,
+        "arenaGroundWidthPixels": 950.7373046875,
+        "legalFieldCorners": [
+          {
+            "tileX": -15,
+            "tileY": -22,
+            "screenX": 0.3143085797627767,
+            "screenY": 0.23187942504882814,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -15,
+            "tileY": 22,
+            "screenX": 0.31430854797363283,
+            "screenY": 0.7873002228913484,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 15,
+            "tileY": -22,
+            "screenX": 0.6856915156046549,
+            "screenY": 0.23187943917733653,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 15,
+            "tileY": 22,
+            "screenX": 0.6856915156046549,
+            "screenY": 0.7873002794053819,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "modelEnvelope": [
+          {
+            "worldX": -1850,
+            "worldY": -2550,
+            "worldZ": 0,
+            "screenX": 0.27098058064778646,
+            "screenY": 0.1876982088442202,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -1850,
+            "worldY": -2550,
+            "worldZ": 620,
+            "screenX": 0.27098058064778646,
+            "screenY": 0.07592585528338397,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -1850,
+            "worldY": 2550,
+            "worldZ": 0,
+            "screenX": 0.2709805488586426,
+            "screenY": 0.8314814814814815,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -1850,
+            "worldY": 2550,
+            "worldZ": 620,
+            "screenX": 0.2709805488586426,
+            "screenY": 0.7197090996636285,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": -2550,
+            "worldZ": 0,
+            "screenX": 0.7290195465087891,
+            "screenY": 0.18769825122974537,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": -2550,
+            "worldZ": 620,
+            "screenX": 0.7290195465087891,
+            "screenY": 0.07592588354040075,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": 2550,
+            "worldZ": 0,
+            "screenX": 0.7290195465087891,
+            "screenY": 0.8314814814814815,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": 2550,
+            "worldZ": 620,
+            "screenX": 0.7290195465087891,
+            "screenY": 0.7197090996636285,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": -2100,
+            "worldZ": 0,
+            "screenX": 0.4566720326741536,
+            "screenY": 0.24450262564199943,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": -2100,
+            "worldZ": 620,
+            "screenX": 0.4566720326741536,
+            "screenY": 0.1327302720811632,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": 2100,
+            "worldZ": 0,
+            "screenX": 0.45667200088500975,
+            "screenY": 0.774677022298177,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": 2100,
+            "worldZ": 620,
+            "screenX": 0.45667200088500975,
+            "screenY": 0.6629046969943576,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": -2100,
+            "worldZ": 0,
+            "screenX": 0.5433280309041341,
+            "screenY": 0.24450262564199943,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": -2100,
+            "worldZ": 620,
+            "screenX": 0.5433280309041341,
+            "screenY": 0.1327302720811632,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": 2100,
+            "worldZ": 0,
+            "screenX": 0.5433280309041341,
+            "screenY": 0.774677022298177,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": 2100,
+            "worldZ": 620,
+            "screenX": 0.5433280309041341,
+            "screenY": 0.6629046969943576,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "modelEnvelopePassed": true,
+        "projectedModelBounds": [
+          {
+            "entityId": "1",
+            "cardId": "",
+            "kind": "core",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 72.89935302734375,
+            "heightPixels": 140.6502685546875,
+            "minXPixels": 923.5504150390625,
+            "minYPixels": 666.46533203125,
+            "maxXPixels": 996.4497680664062,
+            "maxYPixels": 807.1156005859375,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "2",
+            "cardId": "",
+            "kind": "guard",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 63.94677734375,
+            "heightPixels": 102.15606689453125,
+            "minXPixels": 733.1248779296875,
+            "minYPixels": 649.2230834960938,
+            "maxXPixels": 797.0716552734375,
+            "maxYPixels": 751.379150390625,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "3",
+            "cardId": "",
+            "kind": "guard",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 63.9468994140625,
+            "heightPixels": 102.15606689453125,
+            "minXPixels": 1122.9283447265625,
+            "minYPixels": 649.2230834960938,
+            "maxXPixels": 1186.875244140625,
+            "maxYPixels": 751.379150390625,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "4",
+            "cardId": "",
+            "kind": "core",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 72.89935302734375,
+            "heightPixels": 140.65020751953125,
+            "minXPixels": 923.5504150390625,
+            "minYPixels": 194.76162719726562,
+            "maxXPixels": 996.4497680664062,
+            "maxYPixels": 335.4118347167969,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "6",
+            "cardId": "",
+            "kind": "guard",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 63.94677734375,
+            "heightPixels": 102.15609741210938,
+            "minXPixels": 1122.928466796875,
+            "minYPixels": 283.857177734375,
+            "maxXPixels": 1186.875244140625,
+            "maxYPixels": 386.0132751464844,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "7",
+            "cardId": "boulderback",
+            "kind": "troop",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 81.84844970703125,
+            "heightPixels": 173.84088134765625,
+            "minXPixels": 752.7337036132812,
+            "minYPixels": 382.8121337890625,
+            "maxXPixels": 834.5821533203125,
+            "maxYPixels": 556.6530151367188,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "8",
+            "cardId": "ironclad",
+            "kind": "troop",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 102.3006591796875,
+            "heightPixels": 146.52359008789062,
+            "minXPixels": 845.5639038085938,
+            "minYPixels": 248.24664306640625,
+            "maxXPixels": 947.8645629882812,
+            "maxYPixels": 394.7702331542969,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          }
+        ],
+        "projectedModelBoundsPassed": true,
+        "troopModelCount": 2,
+        "averageTroopWidthPixels": 92.07455444335938,
+        "averageTroopHeightPixels": 160.18223571777344,
+        "minimumTroopHeightPixels": 146.52359008789062,
+        "maximumTroopHeightPixels": 173.84088134765625,
+        "passed": true
+      }
+    },
+    {
+      "name": "arena134-right-player",
+      "passed": true,
+      "png": {
+        "path": "Artifacts/QA/Visual/arena134-right-player.png",
+        "sha256": "baf3b85f7f10921aee460765c57121560732d423c746dd58e63ced35219ccd82",
+        "bytes": 2496868
+      },
+      "state": "Artifacts/QA/Visual/arena134-right-player.state.json",
+      "report": "Artifacts/QA/Visual/arena134-right-player.json",
+      "processId": 27476,
+      "arenaGeometry": {
+        "schemaVersion": 1,
+        "inspection": "Actual production HISM instance transforms and collision modes",
+        "widthTiles": 30,
+        "heightTiles": 44,
+        "playableFloorTiles": 1200,
+        "expectedPlayableFloorTiles": 1200,
+        "decorativeFloorTiles": 640,
+        "expectedDecorativeFloorTiles": 640,
+        "floorPassed": true,
+        "playableFloorCenters": {
+          "valid": true,
+          "minX": -14.5,
+          "maxX": 14.5,
+          "minZ": -21.5,
+          "maxZ": 21.5
+        },
+        "decorativeGroundCenters": {
+          "valid": true,
+          "minX": -19.5,
+          "maxX": 19.5,
+          "minZ": -24.5,
+          "maxZ": 24.5
+        },
+        "riverWidthTiles": 30,
+        "riverDepthTiles": 3.3,
+        "riverPassed": true,
+        "bridges": [
+          {
+            "x": -7.2,
+            "z": 0
+          },
+          {
+            "x": 7.2,
+            "z": 0
+          }
+        ],
+        "bridgesPassed": true,
+        "borderStones": 104,
+        "borderPassed": true,
+        "passed": true
+      },
+      "towerPathing": {
+        "schemaVersion": 2,
+        "routeCase": "right_pocket",
+        "routeTeam": "player",
+        "route": "SetTowerHP / paid Match Play / fixed steps / live arena presentation",
+        "ordinarySpawnOnly": false,
+        "paidPlayOnly": true,
+        "destroyedGuardId": 6,
+        "oppositeGuardId": 5,
+        "expectedCoreId": 4,
+        "intendedBridge": 1,
+        "sameSideGuardDestroyed": true,
+        "paidCostAndCyclePassed": true,
+        "coreTargetsRequired": true,
+        "allCoreTargetsObserved": true,
+        "allBridgeHistoriesPassed": true,
+        "crossingRequired": true,
+        "requestedAge": 5,
+        "sampledAge": 4.999999999999988,
+        "fixedSteps": 300,
+        "deploymentCount": 2,
+        "expectedUnitCount": 2,
+        "actualUnitCount": 2,
+        "towerNavigationPadding": 0.22,
+        "spawnTowerClearancePassed": true,
+        "allStepTowerClearancePassed": true,
+        "allContinuousSegmentTowerClearancePassed": true,
+        "progressRequired": true,
+        "progressPassed": true,
+        "units": [
+          {
+            "id": 7,
+            "team": "player",
+            "cardId": "boulderback",
+            "role": "own_half",
+            "requestedX": 7.5,
+            "requestedZ": 4.5,
+            "spawnX": 7.5,
+            "spawnZ": 4.5,
+            "x": 6.046893877547971,
+            "z": -1.240995447999837,
+            "present": true,
+            "alive": true,
+            "targetId": 4,
+            "targetKind": "core",
+            "radius": 0.5367999999999999,
+            "intendedBridge": 1,
+            "expectedCoreId": 4,
+            "spawnTowerClearance": 7.020685648266258,
+            "minimumStepTowerClearance": 7.020685648266258,
+            "minimumSegmentTowerClearance": 7.020685648266258,
+            "sawCoreTarget": true,
+            "crossedRiver": true,
+            "bridgeHistoryPassed": true,
+            "crossingHistory": [
+              {
+                "event": "enter_bridge",
+                "time": 2.5666666666666624,
+                "x": 6.2419633944593205,
+                "z": 1.9163175965603232,
+                "bridge": 1
+              },
+              {
+                "event": "river_center",
+                "time": 4.049999999999991,
+                "x": 6.123051154698308,
+                "z": -0.008345834712651292,
+                "bridge": 1
+              }
+            ],
+            "bridgeHistory": [
+              {
+                "event": "bridge_commit",
+                "time": 0.016666666666666666,
+                "x": 7.515320646925709,
+                "z": 4.484679353074291,
+                "bridge": 1
+              }
+            ],
+            "distanceFromSpawn": 5.9220390185359655,
+            "progressForward": 5.740995447999837,
+            "progressPassed": true
+          },
+          {
+            "id": 8,
+            "team": "player",
+            "cardId": "ironclad",
+            "role": "pocket",
+            "requestedX": 8.5,
+            "requestedZ": -5.5,
+            "spawnX": 8.5,
+            "spawnZ": -5.5,
+            "x": 1.699873916985328,
+            "z": -13.66914080087417,
+            "present": true,
+            "alive": true,
+            "targetId": 4,
+            "targetKind": "core",
+            "radius": 0.44,
+            "intendedBridge": 1,
+            "expectedCoreId": 4,
+            "spawnTowerClearance": 12.532695761102891,
+            "minimumStepTowerClearance": 1.99907842995416,
+            "minimumSegmentTowerClearance": 1.99907842995416,
+            "sawCoreTarget": true,
+            "crossedRiver": false,
+            "bridgeHistoryPassed": true,
+            "crossingHistory": [],
+            "bridgeHistory": [
+              {
+                "event": "bridge_commit",
+                "time": 0.016666666666666666,
+                "x": 8.526516504294495,
+                "z": -5.526516504294496,
+                "bridge": 0
+              }
+            ],
+            "distanceFromSpawn": 10.629043991319422,
+            "progressForward": 8.16914080087417,
+            "progressPassed": true
+          }
+        ],
+        "towers": [
+          {
+            "id": 1,
+            "team": "player",
+            "kind": "core",
+            "lane": 0,
+            "x": 0,
+            "z": 17.3,
+            "radius": 1.35,
+            "dead": false
+          },
+          {
+            "id": 2,
+            "team": "player",
+            "kind": "guard",
+            "lane": -1,
+            "x": -8.2,
+            "z": 13.4,
+            "radius": 1.15,
+            "dead": false
+          },
+          {
+            "id": 3,
+            "team": "player",
+            "kind": "guard",
+            "lane": 1,
+            "x": 8.2,
+            "z": 13.4,
+            "radius": 1.15,
+            "dead": false
+          },
+          {
+            "id": 4,
+            "team": "enemy",
+            "kind": "core",
+            "lane": 0,
+            "x": 0,
+            "z": -17.3,
+            "radius": 1.35,
+            "dead": false
+          },
+          {
+            "id": 5,
+            "team": "enemy",
+            "kind": "guard",
+            "lane": -1,
+            "x": -8.2,
+            "z": -13.4,
+            "radius": 1.15,
+            "dead": false
+          },
+          {
+            "id": 6,
+            "team": "enemy",
+            "kind": "guard",
+            "lane": 1,
+            "x": 8.2,
+            "z": -13.4,
+            "radius": 1.15,
+            "dead": true
+          }
+        ],
+        "paidPlays": [
+          {
+            "role": "own_half",
+            "cardId": "boulderback",
+            "handIndex": 3,
+            "cost": 5,
+            "memberCount": 1,
+            "aetherBefore": 10,
+            "aetherAfter": 5,
+            "spentDelta": 5,
+            "accepted": true,
+            "handCycledOnce": true
+          },
+          {
+            "role": "pocket",
+            "cardId": "ironclad",
+            "handIndex": 0,
+            "cost": 3,
+            "memberCount": 1,
+            "aetherBefore": 10,
+            "aetherAfter": 7,
+            "spentDelta": 3,
+            "accepted": true,
+            "handCycledOnce": true
+          }
+        ],
+        "passed": true
+      },
+      "framing": {
+        "activeBattleView": true,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 0.849313497543335,
+        "minimumZoom": 0.849313497543335,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 8077.9150390625,
+        "cameraElevationDegrees": 34.99999733453399,
+        "safeTop": 0.07592592388391495,
+        "safeBottom": 0.8314814567565918,
+        "safeLeft": 0.14687499403953552,
+        "safeRight": 0.8531249761581421,
+        "usableWidthPixels": 1356,
+        "usableHeightPixels": 816,
+        "legalFieldWidthTiles": 30,
+        "legalFieldHeightTiles": 44,
+        "legalFieldHalfWidthTiles": 15,
+        "legalFieldHalfHeightTiles": 22,
+        "tilePitchProjected": true,
+        "tilePitchPixels": 23.7684326171875,
+        "tileDepthPixels": 13.633056640625,
+        "modelHeightPixelsPerMeter": 19.47003173828125,
+        "legalFieldWidthPixels": 713.052978515625,
+        "legalFieldDepthPixels": 599.8544921875,
+        "arenaGroundWidthPixels": 950.7373046875,
+        "legalFieldCorners": [
+          {
+            "tileX": -15,
+            "tileY": -22,
+            "screenX": 0.3143085797627767,
+            "screenY": 0.23187942504882814,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -15,
+            "tileY": 22,
+            "screenX": 0.31430854797363283,
+            "screenY": 0.7873002228913484,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 15,
+            "tileY": -22,
+            "screenX": 0.6856915156046549,
+            "screenY": 0.23187943917733653,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 15,
+            "tileY": 22,
+            "screenX": 0.6856915156046549,
+            "screenY": 0.7873002794053819,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "modelEnvelope": [
+          {
+            "worldX": -1850,
+            "worldY": -2550,
+            "worldZ": 0,
+            "screenX": 0.27098058064778646,
+            "screenY": 0.1876982088442202,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -1850,
+            "worldY": -2550,
+            "worldZ": 620,
+            "screenX": 0.27098058064778646,
+            "screenY": 0.07592585528338397,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -1850,
+            "worldY": 2550,
+            "worldZ": 0,
+            "screenX": 0.2709805488586426,
+            "screenY": 0.8314814814814815,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -1850,
+            "worldY": 2550,
+            "worldZ": 620,
+            "screenX": 0.2709805488586426,
+            "screenY": 0.7197090996636285,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": -2550,
+            "worldZ": 0,
+            "screenX": 0.7290195465087891,
+            "screenY": 0.18769825122974537,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": -2550,
+            "worldZ": 620,
+            "screenX": 0.7290195465087891,
+            "screenY": 0.07592588354040075,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": 2550,
+            "worldZ": 0,
+            "screenX": 0.7290195465087891,
+            "screenY": 0.8314814814814815,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": 2550,
+            "worldZ": 620,
+            "screenX": 0.7290195465087891,
+            "screenY": 0.7197090996636285,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": -2100,
+            "worldZ": 0,
+            "screenX": 0.4566720326741536,
+            "screenY": 0.24450262564199943,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": -2100,
+            "worldZ": 620,
+            "screenX": 0.4566720326741536,
+            "screenY": 0.1327302720811632,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": 2100,
+            "worldZ": 0,
+            "screenX": 0.45667200088500975,
+            "screenY": 0.774677022298177,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": 2100,
+            "worldZ": 620,
+            "screenX": 0.45667200088500975,
+            "screenY": 0.6629046969943576,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": -2100,
+            "worldZ": 0,
+            "screenX": 0.5433280309041341,
+            "screenY": 0.24450262564199943,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": -2100,
+            "worldZ": 620,
+            "screenX": 0.5433280309041341,
+            "screenY": 0.1327302720811632,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": 2100,
+            "worldZ": 0,
+            "screenX": 0.5433280309041341,
+            "screenY": 0.774677022298177,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": 2100,
+            "worldZ": 620,
+            "screenX": 0.5433280309041341,
+            "screenY": 0.6629046969943576,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "modelEnvelopePassed": true,
+        "projectedModelBounds": [
+          {
+            "entityId": "1",
+            "cardId": "",
+            "kind": "core",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 72.89935302734375,
+            "heightPixels": 140.6502685546875,
+            "minXPixels": 923.5504150390625,
+            "minYPixels": 666.46533203125,
+            "maxXPixels": 996.4497680664062,
+            "maxYPixels": 807.1156005859375,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "2",
+            "cardId": "",
+            "kind": "guard",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 63.94677734375,
+            "heightPixels": 102.15606689453125,
+            "minXPixels": 733.1248779296875,
+            "minYPixels": 649.2230834960938,
+            "maxXPixels": 797.0716552734375,
+            "maxYPixels": 751.379150390625,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "3",
+            "cardId": "",
+            "kind": "guard",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 63.9468994140625,
+            "heightPixels": 102.15606689453125,
+            "minXPixels": 1122.9283447265625,
+            "minYPixels": 649.2230834960938,
+            "maxXPixels": 1186.875244140625,
+            "maxYPixels": 751.379150390625,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "4",
+            "cardId": "",
+            "kind": "core",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 72.89935302734375,
+            "heightPixels": 140.65020751953125,
+            "minXPixels": 923.5504150390625,
+            "minYPixels": 194.76162719726562,
+            "maxXPixels": 996.4497680664062,
+            "maxYPixels": 335.4118347167969,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "5",
+            "cardId": "",
+            "kind": "guard",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 63.94677734375,
+            "heightPixels": 102.15609741210938,
+            "minXPixels": 733.1249389648438,
+            "minYPixels": 283.857177734375,
+            "maxXPixels": 797.0717163085938,
+            "maxYPixels": 386.0132751464844,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "7",
+            "cardId": "boulderback",
+            "kind": "troop",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 87.1663818359375,
+            "heightPixels": 175.91131591796875,
+            "minXPixels": 1059.2353515625,
+            "minYPixels": 391.3690185546875,
+            "maxXPixels": 1146.4017333984375,
+            "maxYPixels": 567.2803344726562,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "8",
+            "cardId": "ironclad",
+            "kind": "troop",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 92.46148681640625,
+            "heightPixels": 148.2073211669922,
+            "minXPixels": 950.4696655273438,
+            "minYPixels": 252.7936248779297,
+            "maxXPixels": 1042.93115234375,
+            "maxYPixels": 401.0009460449219,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          }
+        ],
+        "projectedModelBoundsPassed": true,
+        "troopModelCount": 2,
+        "averageTroopWidthPixels": 89.81393432617188,
+        "averageTroopHeightPixels": 162.05931854248047,
+        "minimumTroopHeightPixels": 148.2073211669922,
+        "maximumTroopHeightPixels": 175.91131591796875,
+        "passed": true
+      }
+    },
+    {
+      "name": "arena134-left-enemy",
+      "passed": true,
+      "png": {
+        "path": "Artifacts/QA/Visual/arena134-left-enemy.png",
+        "sha256": "e21d166ab619698517c4411044f20e8ebcfe3b39613a61326bbf2c022be9ccd1",
+        "bytes": 2497596
+      },
+      "state": "Artifacts/QA/Visual/arena134-left-enemy.state.json",
+      "report": "Artifacts/QA/Visual/arena134-left-enemy.json",
+      "processId": 13300,
+      "arenaGeometry": {
+        "schemaVersion": 1,
+        "inspection": "Actual production HISM instance transforms and collision modes",
+        "widthTiles": 30,
+        "heightTiles": 44,
+        "playableFloorTiles": 1200,
+        "expectedPlayableFloorTiles": 1200,
+        "decorativeFloorTiles": 640,
+        "expectedDecorativeFloorTiles": 640,
+        "floorPassed": true,
+        "playableFloorCenters": {
+          "valid": true,
+          "minX": -14.5,
+          "maxX": 14.5,
+          "minZ": -21.5,
+          "maxZ": 21.5
+        },
+        "decorativeGroundCenters": {
+          "valid": true,
+          "minX": -19.5,
+          "maxX": 19.5,
+          "minZ": -24.5,
+          "maxZ": 24.5
+        },
+        "riverWidthTiles": 30,
+        "riverDepthTiles": 3.3,
+        "riverPassed": true,
+        "bridges": [
+          {
+            "x": -7.2,
+            "z": 0
+          },
+          {
+            "x": 7.2,
+            "z": 0
+          }
+        ],
+        "bridgesPassed": true,
+        "borderStones": 104,
+        "borderPassed": true,
+        "passed": true
+      },
+      "towerPathing": {
+        "schemaVersion": 2,
+        "routeCase": "left_pocket",
+        "routeTeam": "enemy",
+        "route": "SetTowerHP / paid Match Play / fixed steps / live arena presentation",
+        "ordinarySpawnOnly": false,
+        "paidPlayOnly": true,
+        "destroyedGuardId": 2,
+        "oppositeGuardId": 3,
+        "expectedCoreId": 1,
+        "intendedBridge": -1,
+        "sameSideGuardDestroyed": true,
+        "paidCostAndCyclePassed": true,
+        "coreTargetsRequired": true,
+        "allCoreTargetsObserved": true,
+        "allBridgeHistoriesPassed": true,
+        "crossingRequired": true,
+        "requestedAge": 5,
+        "sampledAge": 4.999999999999988,
+        "fixedSteps": 300,
+        "deploymentCount": 2,
+        "expectedUnitCount": 2,
+        "actualUnitCount": 2,
+        "towerNavigationPadding": 0.22,
+        "spawnTowerClearancePassed": true,
+        "allStepTowerClearancePassed": true,
+        "allContinuousSegmentTowerClearancePassed": true,
+        "progressRequired": true,
+        "progressPassed": true,
+        "units": [
+          {
+            "id": 7,
+            "team": "enemy",
+            "cardId": "arc_mage",
+            "role": "own_half",
+            "requestedX": -7.5,
+            "requestedZ": -4.5,
+            "spawnX": -7.5,
+            "spawnZ": -4.5,
+            "x": -5.289831482341541,
+            "z": 4.624024015184615,
+            "present": true,
+            "alive": true,
+            "targetId": 1,
+            "targetKind": "core",
+            "radius": 0.4224,
+            "intendedBridge": -1,
+            "expectedCoreId": 1,
+            "spawnTowerClearance": 7.135085648266258,
+            "minimumStepTowerClearance": 7.135085648266258,
+            "minimumSegmentTowerClearance": 7.135085648266258,
+            "sawCoreTarget": true,
+            "crossedRiver": true,
+            "bridgeHistoryPassed": true,
+            "crossingHistory": [
+              {
+                "event": "enter_bridge",
+                "time": 1.3000000000000003,
+                "x": -7.3159318531380695,
+                "z": -1.9065743182918804,
+                "bridge": -1
+              },
+              {
+                "event": "river_center",
+                "time": 2.2666666666666635,
+                "x": -7.1090999941345565,
+                "z": 0.015531053862621852,
+                "bridge": -1
+              },
+              {
+                "event": "leave_bridge",
+                "time": 3.3166666666666598,
+                "x": -6.714078664981567,
+                "z": 1.9427048210852362,
+                "bridge": -1
+              }
+            ],
+            "bridgeHistory": [
+              {
+                "event": "bridge_commit",
+                "time": 0.016666666666666666,
+                "x": -7.497443450037175,
+                "z": -4.466764850483281,
+                "bridge": -1
+              },
+              {
+                "event": "bridge_commit",
+                "time": 3.766666666666658,
+                "x": -6.838710397170758,
+                "z": 2.7228379568526933,
+                "bridge": 0
+              }
+            ],
+            "distanceFromSpawn": 9.387899610994685,
+            "progressForward": 9.124024015184615,
+            "progressPassed": true
+          },
+          {
+            "id": 8,
+            "team": "enemy",
+            "cardId": "rambeast",
+            "role": "pocket",
+            "requestedX": -8.5,
+            "requestedZ": 5.5,
+            "spawnX": -8.5,
+            "spawnZ": 5.5,
+            "x": -1.760276809444928,
+            "z": 15.137840169545147,
+            "present": true,
+            "alive": true,
+            "targetId": 1,
+            "targetKind": "core",
+            "radius": 0.46640000000000004,
+            "intendedBridge": -1,
+            "expectedCoreId": 1,
+            "spawnTowerClearance": 12.50629576110289,
+            "minimumStepTowerClearance": 0.7517014289839203,
+            "minimumSegmentTowerClearance": 0.7517014289839203,
+            "sawCoreTarget": true,
+            "crossedRiver": false,
+            "bridgeHistoryPassed": true,
+            "crossingHistory": [],
+            "bridgeHistory": [
+              {
+                "event": "bridge_commit",
+                "time": 0.016666666666666666,
+                "x": -8.469358706148583,
+                "z": 5.530641293851417,
+                "bridge": 0
+              }
+            ],
+            "distanceFromSpawn": 11.760605078779061,
+            "progressForward": 9.637840169545147,
+            "progressPassed": true
+          }
+        ],
+        "towers": [
+          {
+            "id": 1,
+            "team": "player",
+            "kind": "core",
+            "lane": 0,
+            "x": 0,
+            "z": 17.3,
+            "radius": 1.35,
+            "dead": false
+          },
+          {
+            "id": 2,
+            "team": "player",
+            "kind": "guard",
+            "lane": -1,
+            "x": -8.2,
+            "z": 13.4,
+            "radius": 1.15,
+            "dead": true
+          },
+          {
+            "id": 3,
+            "team": "player",
+            "kind": "guard",
+            "lane": 1,
+            "x": 8.2,
+            "z": 13.4,
+            "radius": 1.15,
+            "dead": false
+          },
+          {
+            "id": 4,
+            "team": "enemy",
+            "kind": "core",
+            "lane": 0,
+            "x": 0,
+            "z": -17.3,
+            "radius": 1.35,
+            "dead": false
+          },
+          {
+            "id": 5,
+            "team": "enemy",
+            "kind": "guard",
+            "lane": -1,
+            "x": -8.2,
+            "z": -13.4,
+            "radius": 1.15,
+            "dead": false
+          },
+          {
+            "id": 6,
+            "team": "enemy",
+            "kind": "guard",
+            "lane": 1,
+            "x": 8.2,
+            "z": -13.4,
+            "radius": 1.15,
+            "dead": false
+          }
+        ],
+        "paidPlays": [
+          {
+            "role": "own_half",
+            "cardId": "arc_mage",
+            "handIndex": 3,
+            "cost": 4,
+            "memberCount": 1,
+            "aetherBefore": 10,
+            "aetherAfter": 6,
+            "spentDelta": 4,
+            "accepted": true,
+            "handCycledOnce": true
+          },
+          {
+            "role": "pocket",
+            "cardId": "rambeast",
+            "handIndex": 2,
+            "cost": 4,
+            "memberCount": 1,
+            "aetherBefore": 10,
+            "aetherAfter": 6,
+            "spentDelta": 4,
+            "accepted": true,
+            "handCycledOnce": true
+          }
+        ],
+        "passed": true
+      },
+      "framing": {
+        "activeBattleView": true,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 0.849313497543335,
+        "minimumZoom": 0.849313497543335,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 8077.9150390625,
+        "cameraElevationDegrees": 34.99999733453399,
+        "safeTop": 0.07592592388391495,
+        "safeBottom": 0.8314814567565918,
+        "safeLeft": 0.14687499403953552,
+        "safeRight": 0.8531249761581421,
+        "usableWidthPixels": 1356,
+        "usableHeightPixels": 816,
+        "legalFieldWidthTiles": 30,
+        "legalFieldHeightTiles": 44,
+        "legalFieldHalfWidthTiles": 15,
+        "legalFieldHalfHeightTiles": 22,
+        "tilePitchProjected": true,
+        "tilePitchPixels": 23.7684326171875,
+        "tileDepthPixels": 13.633056640625,
+        "modelHeightPixelsPerMeter": 19.47003173828125,
+        "legalFieldWidthPixels": 713.052978515625,
+        "legalFieldDepthPixels": 599.8544921875,
+        "arenaGroundWidthPixels": 950.7373046875,
+        "legalFieldCorners": [
+          {
+            "tileX": -15,
+            "tileY": -22,
+            "screenX": 0.3143085797627767,
+            "screenY": 0.23187942504882814,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -15,
+            "tileY": 22,
+            "screenX": 0.31430854797363283,
+            "screenY": 0.7873002228913484,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 15,
+            "tileY": -22,
+            "screenX": 0.6856915156046549,
+            "screenY": 0.23187943917733653,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 15,
+            "tileY": 22,
+            "screenX": 0.6856915156046549,
+            "screenY": 0.7873002794053819,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "modelEnvelope": [
+          {
+            "worldX": -1850,
+            "worldY": -2550,
+            "worldZ": 0,
+            "screenX": 0.27098058064778646,
+            "screenY": 0.1876982088442202,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -1850,
+            "worldY": -2550,
+            "worldZ": 620,
+            "screenX": 0.27098058064778646,
+            "screenY": 0.07592585528338397,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -1850,
+            "worldY": 2550,
+            "worldZ": 0,
+            "screenX": 0.2709805488586426,
+            "screenY": 0.8314814814814815,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -1850,
+            "worldY": 2550,
+            "worldZ": 620,
+            "screenX": 0.2709805488586426,
+            "screenY": 0.7197090996636285,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": -2550,
+            "worldZ": 0,
+            "screenX": 0.7290195465087891,
+            "screenY": 0.18769825122974537,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": -2550,
+            "worldZ": 620,
+            "screenX": 0.7290195465087891,
+            "screenY": 0.07592588354040075,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": 2550,
+            "worldZ": 0,
+            "screenX": 0.7290195465087891,
+            "screenY": 0.8314814814814815,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": 2550,
+            "worldZ": 620,
+            "screenX": 0.7290195465087891,
+            "screenY": 0.7197090996636285,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": -2100,
+            "worldZ": 0,
+            "screenX": 0.4566720326741536,
+            "screenY": 0.24450262564199943,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": -2100,
+            "worldZ": 620,
+            "screenX": 0.4566720326741536,
+            "screenY": 0.1327302720811632,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": 2100,
+            "worldZ": 0,
+            "screenX": 0.45667200088500975,
+            "screenY": 0.774677022298177,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": 2100,
+            "worldZ": 620,
+            "screenX": 0.45667200088500975,
+            "screenY": 0.6629046969943576,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": -2100,
+            "worldZ": 0,
+            "screenX": 0.5433280309041341,
+            "screenY": 0.24450262564199943,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": -2100,
+            "worldZ": 620,
+            "screenX": 0.5433280309041341,
+            "screenY": 0.1327302720811632,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": 2100,
+            "worldZ": 0,
+            "screenX": 0.5433280309041341,
+            "screenY": 0.774677022298177,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": 2100,
+            "worldZ": 620,
+            "screenX": 0.5433280309041341,
+            "screenY": 0.6629046969943576,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "modelEnvelopePassed": true,
+        "projectedModelBounds": [
+          {
+            "entityId": "1",
+            "cardId": "",
+            "kind": "core",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 72.89935302734375,
+            "heightPixels": 140.6502685546875,
+            "minXPixels": 923.5504150390625,
+            "minYPixels": 666.46533203125,
+            "maxXPixels": 996.4497680664062,
+            "maxYPixels": 807.1156005859375,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "3",
+            "cardId": "",
+            "kind": "guard",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 63.9468994140625,
+            "heightPixels": 102.15606689453125,
+            "minXPixels": 1122.9283447265625,
+            "minYPixels": 649.2230834960938,
+            "maxXPixels": 1186.875244140625,
+            "maxYPixels": 751.379150390625,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "4",
+            "cardId": "",
+            "kind": "core",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 72.89935302734375,
+            "heightPixels": 140.65020751953125,
+            "minXPixels": 923.5504150390625,
+            "minYPixels": 194.76162719726562,
+            "maxXPixels": 996.4497680664062,
+            "maxYPixels": 335.4118347167969,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "5",
+            "cardId": "",
+            "kind": "guard",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 63.94677734375,
+            "heightPixels": 102.15609741210938,
+            "minXPixels": 733.1249389648438,
+            "minYPixels": 283.857177734375,
+            "maxXPixels": 797.0717163085938,
+            "maxYPixels": 386.0132751464844,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "6",
+            "cardId": "",
+            "kind": "guard",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 63.94677734375,
+            "heightPixels": 102.15609741210938,
+            "minXPixels": 1122.928466796875,
+            "minYPixels": 283.857177734375,
+            "maxXPixels": 1186.875244140625,
+            "maxYPixels": 386.0132751464844,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "7",
+            "cardId": "arc_mage",
+            "kind": "troop",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 92.46600341796875,
+            "heightPixels": 144.37301635742188,
+            "minXPixels": 794.9830322265625,
+            "minYPixels": 502.3531188964844,
+            "maxXPixels": 887.4490356445312,
+            "maxYPixels": 646.7261352539062,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "8",
+            "cardId": "rambeast",
+            "kind": "troop",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 123.15802001953125,
+            "heightPixels": 136.0013427734375,
+            "minXPixels": 857.8338623046875,
+            "minYPixels": 664.803466796875,
+            "maxXPixels": 980.9918823242188,
+            "maxYPixels": 800.8048095703125,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          }
+        ],
+        "projectedModelBoundsPassed": true,
+        "troopModelCount": 2,
+        "averageTroopWidthPixels": 107.81201171875,
+        "averageTroopHeightPixels": 140.1871795654297,
+        "minimumTroopHeightPixels": 136.0013427734375,
+        "maximumTroopHeightPixels": 144.37301635742188,
+        "passed": true
+      }
+    },
+    {
+      "name": "arena134-right-enemy",
+      "passed": true,
+      "png": {
+        "path": "Artifacts/QA/Visual/arena134-right-enemy.png",
+        "sha256": "b3e6caa7bf991576bd322c49c9ef77d970481cb1299abc3dab9921d7ee9443ba",
+        "bytes": 2498552
+      },
+      "state": "Artifacts/QA/Visual/arena134-right-enemy.state.json",
+      "report": "Artifacts/QA/Visual/arena134-right-enemy.json",
+      "processId": 12408,
+      "arenaGeometry": {
+        "schemaVersion": 1,
+        "inspection": "Actual production HISM instance transforms and collision modes",
+        "widthTiles": 30,
+        "heightTiles": 44,
+        "playableFloorTiles": 1200,
+        "expectedPlayableFloorTiles": 1200,
+        "decorativeFloorTiles": 640,
+        "expectedDecorativeFloorTiles": 640,
+        "floorPassed": true,
+        "playableFloorCenters": {
+          "valid": true,
+          "minX": -14.5,
+          "maxX": 14.5,
+          "minZ": -21.5,
+          "maxZ": 21.5
+        },
+        "decorativeGroundCenters": {
+          "valid": true,
+          "minX": -19.5,
+          "maxX": 19.5,
+          "minZ": -24.5,
+          "maxZ": 24.5
+        },
+        "riverWidthTiles": 30,
+        "riverDepthTiles": 3.3,
+        "riverPassed": true,
+        "bridges": [
+          {
+            "x": -7.2,
+            "z": 0
+          },
+          {
+            "x": 7.2,
+            "z": 0
+          }
+        ],
+        "bridgesPassed": true,
+        "borderStones": 104,
+        "borderPassed": true,
+        "passed": true
+      },
+      "towerPathing": {
+        "schemaVersion": 2,
+        "routeCase": "right_pocket",
+        "routeTeam": "enemy",
+        "route": "SetTowerHP / paid Match Play / fixed steps / live arena presentation",
+        "ordinarySpawnOnly": false,
+        "paidPlayOnly": true,
+        "destroyedGuardId": 3,
+        "oppositeGuardId": 2,
+        "expectedCoreId": 1,
+        "intendedBridge": 1,
+        "sameSideGuardDestroyed": true,
+        "paidCostAndCyclePassed": true,
+        "coreTargetsRequired": true,
+        "allCoreTargetsObserved": true,
+        "allBridgeHistoriesPassed": true,
+        "crossingRequired": true,
+        "requestedAge": 5,
+        "sampledAge": 4.999999999999988,
+        "fixedSteps": 300,
+        "deploymentCount": 2,
+        "expectedUnitCount": 2,
+        "actualUnitCount": 2,
+        "towerNavigationPadding": 0.22,
+        "spawnTowerClearancePassed": true,
+        "allStepTowerClearancePassed": true,
+        "allContinuousSegmentTowerClearancePassed": true,
+        "progressRequired": true,
+        "progressPassed": true,
+        "units": [
+          {
+            "id": 7,
+            "team": "enemy",
+            "cardId": "arc_mage",
+            "role": "own_half",
+            "requestedX": 7.5,
+            "requestedZ": -4.5,
+            "spawnX": 7.5,
+            "spawnZ": -4.5,
+            "x": 4.19971711615338,
+            "z": 3.6306122961427705,
+            "present": true,
+            "alive": true,
+            "targetId": 1,
+            "targetKind": "core",
+            "radius": 0.4224,
+            "intendedBridge": 1,
+            "expectedCoreId": 1,
+            "spawnTowerClearance": 7.135085648266258,
+            "minimumStepTowerClearance": 7.135085648266258,
+            "minimumSegmentTowerClearance": 7.135085648266258,
+            "sawCoreTarget": true,
+            "crossedRiver": true,
+            "bridgeHistoryPassed": true,
+            "crossingHistory": [
+              {
+                "event": "enter_bridge",
+                "time": 1.4,
+                "x": 7.678157081495263,
+                "z": -1.9089859786611343,
+                "bridge": 1
+              },
+              {
+                "event": "river_center",
+                "time": 2.799999999999995,
+                "x": 6.272944099233195,
+                "z": 0.004888200659075505,
+                "bridge": 1
+              },
+              {
+                "event": "leave_bridge",
+                "time": 3.816666666666658,
+                "x": 5.821761617605028,
+                "z": 1.9389534975767353,
+                "bridge": 1
+              }
+            ],
+            "bridgeHistory": [
+              {
+                "event": "bridge_commit",
+                "time": 0.016666666666666666,
+                "x": 7.510540925533895,
+                "z": -4.468377223398316,
+                "bridge": 1
+              },
+              {
+                "event": "bridge_commit",
+                "time": 4.383333333333323,
+                "x": 5.0149799096628795,
+                "z": 2.7308562173612505,
+                "bridge": 0
+              }
+            ],
+            "distanceFromSpawn": 8.774891647399356,
+            "progressForward": 8.13061229614277,
+            "progressPassed": true
+          },
+          {
+            "id": 8,
+            "team": "enemy",
+            "cardId": "rambeast",
+            "role": "pocket",
+            "requestedX": 8.5,
+            "requestedZ": 5.5,
+            "spawnX": 8.5,
+            "spawnZ": 5.5,
+            "x": 1.7217088811828192,
+            "z": 15.036517272468966,
+            "present": true,
+            "alive": true,
+            "targetId": 1,
+            "targetKind": "core",
+            "radius": 0.46640000000000004,
+            "intendedBridge": 1,
+            "expectedCoreId": 1,
+            "spawnTowerClearance": 12.50629576110289,
+            "minimumStepTowerClearance": 0.8074768484895973,
+            "minimumSegmentTowerClearance": 0.8074768484895973,
+            "sawCoreTarget": true,
+            "crossedRiver": false,
+            "bridgeHistoryPassed": true,
+            "crossingHistory": [],
+            "bridgeHistory": [
+              {
+                "event": "bridge_commit",
+                "time": 0.016666666666666666,
+                "x": 8.513703203194064,
+                "z": 5.541109609582189,
+                "bridge": 0
+              }
+            ],
+            "distanceFromSpawn": 11.700016759797176,
+            "progressForward": 9.536517272468966,
+            "progressPassed": true
+          }
+        ],
+        "towers": [
+          {
+            "id": 1,
+            "team": "player",
+            "kind": "core",
+            "lane": 0,
+            "x": 0,
+            "z": 17.3,
+            "radius": 1.35,
+            "dead": false
+          },
+          {
+            "id": 2,
+            "team": "player",
+            "kind": "guard",
+            "lane": -1,
+            "x": -8.2,
+            "z": 13.4,
+            "radius": 1.15,
+            "dead": false
+          },
+          {
+            "id": 3,
+            "team": "player",
+            "kind": "guard",
+            "lane": 1,
+            "x": 8.2,
+            "z": 13.4,
+            "radius": 1.15,
+            "dead": true
+          },
+          {
+            "id": 4,
+            "team": "enemy",
+            "kind": "core",
+            "lane": 0,
+            "x": 0,
+            "z": -17.3,
+            "radius": 1.35,
+            "dead": false
+          },
+          {
+            "id": 5,
+            "team": "enemy",
+            "kind": "guard",
+            "lane": -1,
+            "x": -8.2,
+            "z": -13.4,
+            "radius": 1.15,
+            "dead": false
+          },
+          {
+            "id": 6,
+            "team": "enemy",
+            "kind": "guard",
+            "lane": 1,
+            "x": 8.2,
+            "z": -13.4,
+            "radius": 1.15,
+            "dead": false
+          }
+        ],
+        "paidPlays": [
+          {
+            "role": "own_half",
+            "cardId": "arc_mage",
+            "handIndex": 1,
+            "cost": 4,
+            "memberCount": 1,
+            "aetherBefore": 10,
+            "aetherAfter": 6,
+            "spentDelta": 4,
+            "accepted": true,
+            "handCycledOnce": true
+          },
+          {
+            "role": "pocket",
+            "cardId": "rambeast",
+            "handIndex": 2,
+            "cost": 4,
+            "memberCount": 1,
+            "aetherBefore": 10,
+            "aetherAfter": 6,
+            "spentDelta": 4,
+            "accepted": true,
+            "handCycledOnce": true
+          }
+        ],
+        "passed": true
+      },
+      "framing": {
+        "activeBattleView": true,
+        "width": 1920,
+        "height": 1080,
+        "uiScale": 1,
+        "zoom": 0.849313497543335,
+        "minimumZoom": 0.849313497543335,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 8077.9150390625,
+        "cameraElevationDegrees": 34.99999733453399,
+        "safeTop": 0.07592592388391495,
+        "safeBottom": 0.8314814567565918,
+        "safeLeft": 0.14687499403953552,
+        "safeRight": 0.8531249761581421,
+        "usableWidthPixels": 1356,
+        "usableHeightPixels": 816,
+        "legalFieldWidthTiles": 30,
+        "legalFieldHeightTiles": 44,
+        "legalFieldHalfWidthTiles": 15,
+        "legalFieldHalfHeightTiles": 22,
+        "tilePitchProjected": true,
+        "tilePitchPixels": 23.7684326171875,
+        "tileDepthPixels": 13.633056640625,
+        "modelHeightPixelsPerMeter": 19.47003173828125,
+        "legalFieldWidthPixels": 713.052978515625,
+        "legalFieldDepthPixels": 599.8544921875,
+        "arenaGroundWidthPixels": 950.7373046875,
+        "legalFieldCorners": [
+          {
+            "tileX": -15,
+            "tileY": -22,
+            "screenX": 0.3143085797627767,
+            "screenY": 0.23187942504882814,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -15,
+            "tileY": 22,
+            "screenX": 0.31430854797363283,
+            "screenY": 0.7873002228913484,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 15,
+            "tileY": -22,
+            "screenX": 0.6856915156046549,
+            "screenY": 0.23187943917733653,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 15,
+            "tileY": 22,
+            "screenX": 0.6856915156046549,
+            "screenY": 0.7873002794053819,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "modelEnvelope": [
+          {
+            "worldX": -1850,
+            "worldY": -2550,
+            "worldZ": 0,
+            "screenX": 0.27098058064778646,
+            "screenY": 0.1876982088442202,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -1850,
+            "worldY": -2550,
+            "worldZ": 620,
+            "screenX": 0.27098058064778646,
+            "screenY": 0.07592585528338397,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -1850,
+            "worldY": 2550,
+            "worldZ": 0,
+            "screenX": 0.2709805488586426,
+            "screenY": 0.8314814814814815,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -1850,
+            "worldY": 2550,
+            "worldZ": 620,
+            "screenX": 0.2709805488586426,
+            "screenY": 0.7197090996636285,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": -2550,
+            "worldZ": 0,
+            "screenX": 0.7290195465087891,
+            "screenY": 0.18769825122974537,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": -2550,
+            "worldZ": 620,
+            "screenX": 0.7290195465087891,
+            "screenY": 0.07592588354040075,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": 2550,
+            "worldZ": 0,
+            "screenX": 0.7290195465087891,
+            "screenY": 0.8314814814814815,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": 2550,
+            "worldZ": 620,
+            "screenX": 0.7290195465087891,
+            "screenY": 0.7197090996636285,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": -2100,
+            "worldZ": 0,
+            "screenX": 0.4566720326741536,
+            "screenY": 0.24450262564199943,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": -2100,
+            "worldZ": 620,
+            "screenX": 0.4566720326741536,
+            "screenY": 0.1327302720811632,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": 2100,
+            "worldZ": 0,
+            "screenX": 0.45667200088500975,
+            "screenY": 0.774677022298177,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": 2100,
+            "worldZ": 620,
+            "screenX": 0.45667200088500975,
+            "screenY": 0.6629046969943576,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": -2100,
+            "worldZ": 0,
+            "screenX": 0.5433280309041341,
+            "screenY": 0.24450262564199943,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": -2100,
+            "worldZ": 620,
+            "screenX": 0.5433280309041341,
+            "screenY": 0.1327302720811632,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": 2100,
+            "worldZ": 0,
+            "screenX": 0.5433280309041341,
+            "screenY": 0.774677022298177,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": 2100,
+            "worldZ": 620,
+            "screenX": 0.5433280309041341,
+            "screenY": 0.6629046969943576,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "modelEnvelopePassed": true,
+        "projectedModelBounds": [
+          {
+            "entityId": "1",
+            "cardId": "",
+            "kind": "core",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 72.89935302734375,
+            "heightPixels": 140.6502685546875,
+            "minXPixels": 923.5504150390625,
+            "minYPixels": 666.46533203125,
+            "maxXPixels": 996.4497680664062,
+            "maxYPixels": 807.1156005859375,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "2",
+            "cardId": "",
+            "kind": "guard",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 63.94677734375,
+            "heightPixels": 102.15606689453125,
+            "minXPixels": 733.1248779296875,
+            "minYPixels": 649.2230834960938,
+            "maxXPixels": 797.0716552734375,
+            "maxYPixels": 751.379150390625,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "4",
+            "cardId": "",
+            "kind": "core",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 72.89935302734375,
+            "heightPixels": 140.65020751953125,
+            "minXPixels": 923.5504150390625,
+            "minYPixels": 194.76162719726562,
+            "maxXPixels": 996.4497680664062,
+            "maxYPixels": 335.4118347167969,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "5",
+            "cardId": "",
+            "kind": "guard",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 63.94677734375,
+            "heightPixels": 102.15609741210938,
+            "minXPixels": 733.1249389648438,
+            "minYPixels": 283.857177734375,
+            "maxXPixels": 797.0717163085938,
+            "maxYPixels": 386.0132751464844,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "6",
+            "cardId": "",
+            "kind": "guard",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 63.94677734375,
+            "heightPixels": 102.15609741210938,
+            "minXPixels": 1122.928466796875,
+            "minYPixels": 283.857177734375,
+            "maxXPixels": 1186.875244140625,
+            "maxYPixels": 386.0132751464844,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "7",
+            "cardId": "arc_mage",
+            "kind": "troop",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 91.81011962890625,
+            "heightPixels": 141.36907958984375,
+            "minXPixels": 1018.4483032226562,
+            "minYPixels": 495.2276611328125,
+            "maxXPixels": 1110.2584228515625,
+            "maxYPixels": 636.5967407226562,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "8",
+            "cardId": "rambeast",
+            "kind": "troop",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 125.63543701171875,
+            "heightPixels": 141.46942138671875,
+            "minXPixels": 935.7227172851562,
+            "minYPixels": 660.94482421875,
+            "maxXPixels": 1061.358154296875,
+            "maxYPixels": 802.4142456054688,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          }
+        ],
+        "projectedModelBoundsPassed": true,
+        "troopModelCount": 2,
+        "averageTroopWidthPixels": 108.7227783203125,
+        "averageTroopHeightPixels": 141.41925048828125,
+        "minimumTroopHeightPixels": 141.36907958984375,
+        "maximumTroopHeightPixels": 141.46942138671875,
+        "passed": true
+      }
+    },
+    {
+      "name": "arena134-720",
+      "passed": true,
+      "png": {
+        "path": "Artifacts/QA/Visual/arena134-720.png",
+        "sha256": "2f8ede77c7c69e6ec31ba0c775ddfe8cf8cf2c1a18f3e3f2a121a8b6c7120d10",
+        "bytes": 1137971
+      },
+      "state": "Artifacts/QA/Visual/arena134-720.state.json",
+      "report": "Artifacts/QA/Visual/arena134-720.json",
+      "processId": 35808,
+      "arenaGeometry": {
+        "schemaVersion": 1,
+        "inspection": "Actual production HISM instance transforms and collision modes",
+        "widthTiles": 30,
+        "heightTiles": 44,
+        "playableFloorTiles": 1200,
+        "expectedPlayableFloorTiles": 1200,
+        "decorativeFloorTiles": 640,
+        "expectedDecorativeFloorTiles": 640,
+        "floorPassed": true,
+        "playableFloorCenters": {
+          "valid": true,
+          "minX": -14.5,
+          "maxX": 14.5,
+          "minZ": -21.5,
+          "maxZ": 21.5
+        },
+        "decorativeGroundCenters": {
+          "valid": true,
+          "minX": -19.5,
+          "maxX": 19.5,
+          "minZ": -24.5,
+          "maxZ": 24.5
+        },
+        "riverWidthTiles": 30,
+        "riverDepthTiles": 3.3,
+        "riverPassed": true,
+        "bridges": [
+          {
+            "x": -7.2,
+            "z": 0
+          },
+          {
+            "x": 7.2,
+            "z": 0
+          }
+        ],
+        "bridgesPassed": true,
+        "borderStones": 104,
+        "borderPassed": true,
+        "passed": true
+      },
+      "towerPathing": {
+        "schemaVersion": 1,
+        "route": "ordinary Match Spawn / fixed steps / live arena presentation",
+        "routeCase": "clearance",
+        "routeTeam": "both",
+        "requestedAge": 5,
+        "sampledAge": 4.999999999999988,
+        "fixedSteps": 300,
+        "deploymentCount": 6,
+        "expectedUnitCount": 8,
+        "actualUnitCount": 8,
+        "towerNavigationPadding": 0.22,
+        "ordinarySpawnOnly": true,
+        "spawnTowerClearancePassed": true,
+        "allStepTowerClearancePassed": true,
+        "allContinuousSegmentTowerClearancePassed": true,
+        "progressRequired": true,
+        "progressPassed": true,
+        "towers": [
+          {
+            "id": 1,
+            "team": "player",
+            "kind": "core",
+            "lane": 0,
+            "x": 0,
+            "z": 17.3,
+            "radius": 1.35
+          },
+          {
+            "id": 2,
+            "team": "player",
+            "kind": "guard",
+            "lane": -1,
+            "x": -8.2,
+            "z": 13.4,
+            "radius": 1.15
+          },
+          {
+            "id": 3,
+            "team": "player",
+            "kind": "guard",
+            "lane": 1,
+            "x": 8.2,
+            "z": 13.4,
+            "radius": 1.15
+          },
+          {
+            "id": 4,
+            "team": "enemy",
+            "kind": "core",
+            "lane": 0,
+            "x": 0,
+            "z": -17.3,
+            "radius": 1.35
+          },
+          {
+            "id": 5,
+            "team": "enemy",
+            "kind": "guard",
+            "lane": -1,
+            "x": -8.2,
+            "z": -13.4,
+            "radius": 1.15
+          },
+          {
+            "id": 6,
+            "team": "enemy",
+            "kind": "guard",
+            "lane": 1,
+            "x": 8.2,
+            "z": -13.4,
+            "radius": 1.15
+          }
+        ],
+        "units": [
+          {
+            "id": 7,
+            "team": "player",
+            "cardId": "ironclad",
+            "deploymentTowerId": 1,
+            "requestedX": 0.5,
+            "requestedZ": 18.5,
+            "spawnX": 0.7734615384615392,
+            "spawnZ": 19.156307692307692,
+            "radius": 0.44,
+            "spawnTowerClearance": 0.000999999999999196,
+            "minimumStepTowerClearance": 0.000999999999999196,
+            "minimumSegmentTowerClearance": 0.000999999999999196,
+            "x": 2.9493841261987623,
+            "z": 10.04338107298546,
+            "alive": true,
+            "distanceFromSpawn": 9.369101914109846,
+            "progressTowardRiver": 9.112926619322232,
+            "progressPassed": true,
+            "present": true
+          },
+          {
+            "id": 8,
+            "team": "player",
+            "cardId": "boulderback",
+            "deploymentTowerId": 2,
+            "requestedX": -8.5,
+            "requestedZ": 14.5,
+            "spawnX": -8.701975386770187,
+            "spawnZ": 15.240576418157346,
+            "radius": 0.5367999999999999,
+            "spawnTowerClearance": 0.0010000000000009723,
+            "minimumStepTowerClearance": 0.0010000000000009723,
+            "minimumSegmentTowerClearance": 0.0010000000000009723,
+            "x": -10.980417341992043,
+            "z": 11.089565994785524,
+            "alive": true,
+            "distanceFromSpawn": 4.735206994235491,
+            "progressTowardRiver": 4.151010423371822,
+            "progressPassed": true,
+            "present": true
+          },
+          {
+            "id": 9,
+            "team": "player",
+            "cardId": "twin_blades",
+            "deploymentTowerId": 3,
+            "requestedX": 8.5,
+            "requestedZ": 14.5,
+            "spawnX": 8.030477094148909,
+            "spawnZ": 15.123482876152764,
+            "radius": 0.36079999999999995,
+            "spawnTowerClearance": 0.0010000000000000842,
+            "minimumStepTowerClearance": 0.0010000000000000842,
+            "minimumSegmentTowerClearance": 0.0010000000000000842,
+            "x": 6.880559045531626,
+            "z": 0.8774435703288679,
+            "alive": true,
+            "distanceFromSpawn": 14.29237375041722,
+            "progressTowardRiver": 14.246039305823896,
+            "progressPassed": true,
+            "present": true
+          },
+          {
+            "id": 10,
+            "team": "player",
+            "cardId": "twin_blades",
+            "deploymentTowerId": 3,
+            "requestedX": 8.5,
+            "requestedZ": 14.5,
+            "spawnX": 9.225357968333126,
+            "spawnZ": 14.795626123564533,
+            "radius": 0.36079999999999995,
+            "spawnTowerClearance": 0.0010000000000009723,
+            "minimumStepTowerClearance": 0.0010000000000009723,
+            "minimumSegmentTowerClearance": 0.0010000000000009723,
+            "x": 8.075996903695335,
+            "z": 0.7152010884497728,
+            "alive": true,
+            "distanceFromSpawn": 14.127257342683038,
+            "progressTowardRiver": 14.08042503511476,
+            "progressPassed": true,
+            "present": true
+          },
+          {
+            "id": 11,
+            "team": "enemy",
+            "cardId": "ironclad",
+            "deploymentTowerId": 4,
+            "requestedX": 0.5,
+            "requestedZ": -18.5,
+            "spawnX": 0.7734615384615392,
+            "spawnZ": -19.156307692307692,
+            "radius": 0.44,
+            "spawnTowerClearance": 0.000999999999999196,
+            "minimumStepTowerClearance": 0.000999999999999196,
+            "minimumSegmentTowerClearance": 0.000999999999999196,
+            "x": 2.9493841261987623,
+            "z": -10.04338107298546,
+            "alive": true,
+            "distanceFromSpawn": 9.369101914109846,
+            "progressTowardRiver": 9.112926619322232,
+            "progressPassed": true,
+            "present": true
+          },
+          {
+            "id": 12,
+            "team": "enemy",
+            "cardId": "boulderback",
+            "deploymentTowerId": 5,
+            "requestedX": -8.5,
+            "requestedZ": -14.5,
+            "spawnX": -8.701975386770187,
+            "spawnZ": -15.240576418157346,
+            "radius": 0.5367999999999999,
+            "spawnTowerClearance": 0.0010000000000009723,
+            "minimumStepTowerClearance": 0.0010000000000009723,
+            "minimumSegmentTowerClearance": 0.0010000000000009723,
+            "x": -10.980417341992043,
+            "z": -11.089565994785524,
+            "alive": true,
+            "distanceFromSpawn": 4.735206994235491,
+            "progressTowardRiver": 4.151010423371822,
+            "progressPassed": true,
+            "present": true
+          },
+          {
+            "id": 13,
+            "team": "enemy",
+            "cardId": "twin_blades",
+            "deploymentTowerId": 6,
+            "requestedX": 8.5,
+            "requestedZ": -14.5,
+            "spawnX": 7.989514966374363,
+            "spawnZ": -15.118961107942706,
+            "radius": 0.36079999999999995,
+            "spawnTowerClearance": 0.0009999999999998621,
+            "minimumStepTowerClearance": 0.0009999999999998621,
+            "minimumSegmentTowerClearance": 0.0009999999999998621,
+            "x": 6.886336694814328,
+            "z": -0.8271331194717786,
+            "alive": true,
+            "distanceFromSpawn": 14.334341615535857,
+            "progressTowardRiver": 14.291827988470928,
+            "progressPassed": true,
+            "present": true
+          },
+          {
+            "id": 14,
+            "team": "enemy",
+            "cardId": "twin_blades",
+            "deploymentTowerId": 6,
+            "requestedX": 8.5,
+            "requestedZ": -14.5,
+            "spawnX": 9.080193557708357,
+            "spawnZ": -14.891439083894713,
+            "radius": 0.36079999999999995,
+            "spawnTowerClearance": 0.000999999999999418,
+            "minimumStepTowerClearance": 0.000999999999999418,
+            "minimumSegmentTowerClearance": 0.000999999999999418,
+            "x": 8.07813353720474,
+            "z": -0.8310182801075108,
+            "alive": true,
+            "distanceFromSpawn": 14.096083053964447,
+            "progressTowardRiver": 14.060420803787203,
+            "progressPassed": true,
+            "present": true
+          }
+        ],
+        "passed": true
+      },
+      "framing": {
+        "activeBattleView": true,
+        "width": 1280,
+        "height": 720,
+        "uiScale": 0.75,
+        "zoom": 0.8851083517074585,
+        "minimumZoom": 0.8851083517074585,
+        "maximumZoom": 1.2000000476837158,
+        "orthoWidth": 8418.3642578125,
+        "cameraElevationDegrees": 34.99999733453399,
+        "safeTop": 0.08541666716337204,
+        "safeBottom": 0.8104166388511658,
+        "safeLeft": 0.16523437201976776,
+        "safeRight": 0.834765613079071,
+        "usableWidthPixels": 857,
+        "usableHeightPixels": 522,
+        "legalFieldWidthTiles": 30,
+        "legalFieldHeightTiles": 44,
+        "legalFieldHalfWidthTiles": 15,
+        "legalFieldHalfHeightTiles": 22,
+        "tilePitchProjected": true,
+        "tilePitchPixels": 15.20489501953125,
+        "tileDepthPixels": 8.721160888671875,
+        "modelHeightPixelsPerMeter": 12.455078125,
+        "legalFieldWidthPixels": 456.1468505859375,
+        "legalFieldDepthPixels": 383.7310791015625,
+        "arenaGroundWidthPixels": 608.19580078125,
+        "legalFieldCorners": [
+          {
+            "tileX": -15,
+            "tileY": -22,
+            "screenX": 0.3218181610107422,
+            "screenY": 0.2350632561577691,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": -15,
+            "tileY": 22,
+            "screenX": 0.3218181371688843,
+            "screenY": 0.7680221557617187,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 15,
+            "tileY": -22,
+            "screenX": 0.6781819343566895,
+            "screenY": 0.23506327735053167,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "tileX": 15,
+            "tileY": 22,
+            "screenX": 0.6781818866729736,
+            "screenY": 0.7680221557617187,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "modelEnvelope": [
+          {
+            "worldX": -1850,
+            "worldY": -2550,
+            "worldZ": 0,
+            "screenX": 0.28024241924285886,
+            "screenY": 0.19266878763834636,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -1850,
+            "worldY": -2550,
+            "worldZ": 620,
+            "screenX": 0.28024241924285886,
+            "screenY": 0.08541666136847602,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -1850,
+            "worldY": 2550,
+            "worldZ": 0,
+            "screenX": 0.280242395401001,
+            "screenY": 0.8104165818956163,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -1850,
+            "worldY": 2550,
+            "worldZ": 620,
+            "screenX": 0.280242395401001,
+            "screenY": 0.7031644609239366,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": -2550,
+            "worldZ": 0,
+            "screenX": 0.7197577476501464,
+            "screenY": 0.19266883002387153,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": -2550,
+            "worldZ": 620,
+            "screenX": 0.7197577476501464,
+            "screenY": 0.0854166825612386,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": 2550,
+            "worldZ": 0,
+            "screenX": 0.7197576522827148,
+            "screenY": 0.8104166666666667,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 1850,
+            "worldY": 2550,
+            "worldZ": 620,
+            "screenX": 0.7197576522827148,
+            "screenY": 0.7031644609239366,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": -2100,
+            "worldZ": 0,
+            "screenX": 0.4584242820739746,
+            "screenY": 0.24717595842149523,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": -2100,
+            "worldZ": 620,
+            "screenX": 0.4584242820739746,
+            "screenY": 0.13992382685343424,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": 2100,
+            "worldZ": 0,
+            "screenX": 0.4584242820739746,
+            "screenY": 0.7559094746907552,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": -350,
+            "worldY": 2100,
+            "worldZ": 620,
+            "screenX": 0.4584242820739746,
+            "screenY": 0.6486573113335503,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": -2100,
+            "worldZ": 0,
+            "screenX": 0.5415758609771728,
+            "screenY": 0.2471759796142578,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": -2100,
+            "worldZ": 620,
+            "screenX": 0.5415758609771728,
+            "screenY": 0.13992383744981554,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": 2100,
+            "worldZ": 0,
+            "screenX": 0.541575813293457,
+            "screenY": 0.7559094746907552,
+            "projected": true,
+            "insideSafeArea": true
+          },
+          {
+            "worldX": 350,
+            "worldY": 2100,
+            "worldZ": 620,
+            "screenX": 0.541575813293457,
+            "screenY": 0.6486573113335503,
+            "projected": true,
+            "insideSafeArea": true
+          }
+        ],
+        "modelEnvelopePassed": true,
+        "projectedModelBounds": [
+          {
+            "entityId": "1",
+            "cardId": "",
+            "kind": "core",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 46.6341552734375,
+            "heightPixels": 89.97470092773438,
+            "minXPixels": 616.6829833984375,
+            "minYPixels": 435.3859558105469,
+            "maxXPixels": 663.317138671875,
+            "maxYPixels": 525.3606567382812,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "2",
+            "cardId": "",
+            "kind": "guard",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 40.907135009765625,
+            "heightPixels": 65.349853515625,
+            "minXPixels": 494.8666687011719,
+            "minYPixels": 424.3559265136719,
+            "maxXPixels": 535.7738037109375,
+            "maxYPixels": 489.7057800292969,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "3",
+            "cardId": "",
+            "kind": "guard",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 40.9071044921875,
+            "heightPixels": 65.349853515625,
+            "minXPixels": 744.226318359375,
+            "minYPixels": 424.3559265136719,
+            "maxXPixels": 785.1334228515625,
+            "maxYPixels": 489.7057800292969,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "4",
+            "cardId": "",
+            "kind": "core",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 46.6341552734375,
+            "heightPixels": 89.97476196289062,
+            "minXPixels": 616.6829833984375,
+            "minYPixels": 133.63430786132812,
+            "maxXPixels": 663.317138671875,
+            "maxYPixels": 223.60906982421875,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "5",
+            "cardId": "",
+            "kind": "guard",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 40.907196044921875,
+            "heightPixels": 65.34982299804688,
+            "minXPixels": 494.8666687011719,
+            "minYPixels": 190.62925720214844,
+            "maxXPixels": 535.7738647460938,
+            "maxYPixels": 255.9790802001953,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "6",
+            "cardId": "",
+            "kind": "guard",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 40.9071044921875,
+            "heightPixels": 65.34980773925781,
+            "minXPixels": 744.226318359375,
+            "minYPixels": 190.6292724609375,
+            "maxXPixels": 785.1334228515625,
+            "maxYPixels": 255.9790802001953,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "7",
+            "cardId": "ironclad",
+            "kind": "troop",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 55.84674072265625,
+            "heightPixels": 78.36288452148438,
+            "minXPixels": 656.393798828125,
+            "minYPixels": 384.6018981933594,
+            "maxXPixels": 712.2405395507812,
+            "maxYPixels": 462.96478271484375,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "8",
+            "cardId": "boulderback",
+            "kind": "troop",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 52.966461181640625,
+            "heightPixels": 111.4691162109375,
+            "minXPixels": 446.2637023925781,
+            "minYPixels": 367.28759765625,
+            "maxXPixels": 499.23016357421875,
+            "maxYPixels": 478.7567138671875,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "9",
+            "cardId": "twin_blades",
+            "kind": "troop",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 30.42559814453125,
+            "heightPixels": 58.711090087890625,
+            "minXPixels": 729.4571533203125,
+            "minYPixels": 324.5879821777344,
+            "maxXPixels": 759.8827514648438,
+            "maxYPixels": 383.299072265625,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "10",
+            "cardId": "twin_blades",
+            "kind": "troop",
+            "team": 0,
+            "projected": true,
+            "widthPixels": 24.86328125,
+            "heightPixels": 55.4979248046875,
+            "minXPixels": 750.6066284179688,
+            "minYPixels": 324.7911071777344,
+            "maxXPixels": 775.4699096679688,
+            "maxYPixels": 380.2890319824219,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "11",
+            "cardId": "ironclad",
+            "kind": "troop",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 56.4642333984375,
+            "heightPixels": 76.7978515625,
+            "minXPixels": 654.7437133789062,
+            "minYPixels": 213.1236572265625,
+            "maxXPixels": 711.2079467773438,
+            "maxYPixels": 289.9215087890625,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "12",
+            "cardId": "boulderback",
+            "kind": "troop",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 53.090179443359375,
+            "heightPixels": 112.9259033203125,
+            "minXPixels": 446.55230712890625,
+            "minYPixels": 182.0810546875,
+            "maxXPixels": 499.6424865722656,
+            "maxYPixels": 295.0069580078125,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "13",
+            "cardId": "twin_blades",
+            "kind": "troop",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 29.622802734375,
+            "heightPixels": 58.330078125,
+            "minXPixels": 729.5313110351562,
+            "minYPixels": 308.902099609375,
+            "maxXPixels": 759.1541137695312,
+            "maxYPixels": 367.232177734375,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          },
+          {
+            "entityId": "14",
+            "cardId": "twin_blades",
+            "kind": "troop",
+            "team": 1,
+            "projected": true,
+            "widthPixels": 24.8631591796875,
+            "heightPixels": 55.453521728515625,
+            "minXPixels": 750.1514282226562,
+            "minYPixels": 310.59307861328125,
+            "maxXPixels": 775.0145874023438,
+            "maxYPixels": 366.0466003417969,
+            "insideSafeArea": true,
+            "healthAnchorInsideSafeArea": true
+          }
+        ],
+        "projectedModelBoundsPassed": true,
+        "troopModelCount": 8,
+        "averageTroopWidthPixels": 41.01780700683594,
+        "averageTroopHeightPixels": 75.94354629516602,
+        "minimumTroopHeightPixels": 55.453521728515625,
+        "maximumTroopHeightPixels": 112.9259033203125,
+        "passed": true
+      }
+    },
+    {
+      "name": "arena134-meta-guide",
+      "passed": true,
+      "png": {
+        "path": "Artifacts/QA/Visual/arena134-meta-guide.png",
+        "sha256": "20b15ec23a5cac5dc97bbea2aa6a9355b0f0872b7ec767e17f40fd736dbccf18",
+        "bytes": 361887
+      },
+      "state": "Artifacts/QA/Visual/arena134-meta-guide.state.json",
+      "report": "Artifacts/QA/Visual/arena134-meta-guide.json",
+      "processId": 11828,
+      "page": "MetaGuide"
+    }
+  ],
+  "physicalVisualReview": "Artifacts/QA/arena134-visual-review.json",
+  "meta": {
+    "navigationRevision": 3,
+    "games": 100,
+    "fingerprint": "50e3be867ab070246b34be2cc6914196",
+    "audit": "Docs/QA/arena-routing-meta-100.json",
+    "runtime": {
+      "path": "Artifacts/QA/arena134-meta100/RuntimeProject/Binaries/Win64/UnrealEditor-RiftCrownArena.dll",
+      "sha256": "74727c0d8c48410fd858f0a77548fc155c07c1111511556c69dd1b01590c6ed2",
+      "bytes": 2989056
+    },
+    "allSixAuthoritativeSourcesMatch": true,
+    "newCohortObserved": true
+  },
+  "beforeFix": {
+    "scope": "Preserved development history only; original six stalls and baseline rejection remain bound to the immutable 1.3.3 packet",
+    "version": "1.3.3",
+    "packet": {
+      "path": "Artifacts/Release/RiftCrownArena-TowerPathing-QAEvidence-1.3.3.zip",
+      "sha256": "8df2d1c7cdf8990b3b1e0b8e1c94fdd918ff684d56992316c40f92c8cc550ab4",
+      "bytes": 5697944
+    },
+    "checksumFile": {
+      "path": "Artifacts/QA/Release133History/SHA256SUMS.txt",
+      "sha256": "d4309c09e4d559277956e0a9dd601d80bc3ad9ab6ebd2fbe2a341cb71c1fffde",
+      "bytes": 778
+    },
+    "report": "Artifacts/QA/TowerPathing/before-fix-witness.json",
+    "baselineCommit": "e27e14fd9c631a6027cfde6826c8ff8407cd7b7f",
+    "cases": [
+      {
+        "team": "player",
+        "paid": true,
+        "startX": 0.5,
+        "startZ": 17.5,
+        "afterX": 0.5,
+        "afterZ": 17.5,
+        "delta": 0.0,
+        "seconds": 5,
+        "targetId": 6,
+        "pathPoints": 0
+      },
+      {
+        "team": "player",
+        "paid": true,
+        "startX": 0.5,
+        "startZ": 16.5,
+        "afterX": 0.5,
+        "afterZ": 16.5,
+        "delta": 0.0,
+        "seconds": 5,
+        "targetId": 6,
+        "pathPoints": 0
+      },
+      {
+        "team": "player",
+        "paid": true,
+        "startX": 8.5,
+        "startZ": 13.5,
+        "afterX": 8.5,
+        "afterZ": 13.5,
+        "delta": 0.0,
+        "seconds": 5,
+        "targetId": 6,
+        "pathPoints": 0
+      },
+      {
+        "team": "enemy",
+        "paid": true,
+        "startX": 0.5,
+        "startZ": -17.5,
+        "afterX": 0.5,
+        "afterZ": -17.5,
+        "delta": 0.0,
+        "seconds": 5,
+        "targetId": 3,
+        "pathPoints": 0
+      },
+      {
+        "team": "enemy",
+        "paid": true,
+        "startX": 0.5,
+        "startZ": -16.5,
+        "afterX": 0.5,
+        "afterZ": -16.5,
+        "delta": 0.0,
+        "seconds": 5,
+        "targetId": 3,
+        "pathPoints": 0
+      },
+      {
+        "team": "enemy",
+        "paid": true,
+        "startX": 8.5,
+        "startZ": -13.5,
+        "afterX": 8.5,
+        "afterZ": -13.5,
+        "delta": 0.0,
+        "seconds": 5,
+        "targetId": 3,
+        "pathPoints": 0
+      }
+    ],
+    "newWitnessRun": false
+  },
+  "windowsChecks": 51,
+  "windowsDelivery": {
+    "manifest": "Artifacts/Release/update-manifest.json",
+    "gameArchive": {
+      "path": "Artifacts/Release/RiftCrownArena-Windows-x64-1.3.4.zip",
+      "sha256": "73e50801a783e28d377132f5bc02ca201fad673bb17421e69614c3b6c8b75d76",
+      "bytes": 398027057
+    },
+    "installer": {
+      "path": "Artifacts/Release/RiftCrownArena-Setup.msi",
+      "sha256": "667c227345b0df9b166327d04ace30d118e36ee718b0bb8c717d9dc2c52cf860",
+      "bytes": 383787008
+    },
+    "launcher": {
+      "path": "Artifacts/Release/RiftCrownLauncher.exe",
+      "sha256": "ca533a10c0c125a8ef3f172aa54ea5afdaec0bd9f03fd8d4ce581306e6624215",
+      "bytes": 161820808
+    }
+  },
+  "inputs": [
+    {
+      "path": "Artifacts/QA/app-local-runtime.json",
+      "sha256": "3b8e2665ec8275eabbc0df8a827b94fefcfa8c8ee6aeda14222a02cdbac1c8eb",
+      "bytes": 6106
+    },
+    {
+      "path": "Artifacts/QA/arena134-meta100/context.json",
+      "sha256": "849735cb3114710828752f3e6fb782737fa54e618bbe1f04ac68fde9839cd8c6",
+      "bytes": 1671
+    },
+    {
+      "path": "Artifacts/QA/arena134-meta100/engine.log",
+      "sha256": "f094d362cb087aabc62aed3ed1f38d0960401a8374979e4d62fa750228037559",
+      "bytes": 185482
+    },
+    {
+      "path": "Artifacts/QA/arena134-meta100/run.json",
+      "sha256": "e639bea9d1d7b4bac7eb9c87cfc8be1b2a7cf5bc132790514181969a9e91449f",
+      "bytes": 668
+    },
+    {
+      "path": "Artifacts/QA/arena134-meta100/UserData/meta-validation.json",
+      "sha256": "1f339c0e8eb53f8c9de1b539b85acdbb35c465806b02aac72ae51c699573280f",
+      "bytes": 24368
+    },
+    {
+      "path": "Artifacts/QA/arena134-meta100/UserData/Meta/F57C8F4A4AE2B7097FF6C688DF94FDD0.json",
+      "sha256": "b342ccffe1cc80817dcd74a52aea53e305abe9f6de844c293be1cb049100d1ab",
+      "bytes": 1847236
+    },
+    {
+      "path": "Artifacts/QA/arena134-visual-review.json",
+      "sha256": "a0c0a78eef42627a6cf66c8af63c324e3c2483386554ecb74b7bacd505eaa6f6",
+      "bytes": 5357
+    },
+    {
+      "path": "Artifacts/QA/ArenaRouting/portable-verification.json",
+      "sha256": "ca3080ad35deab216e3d043a05457f321b46cd50acbed74888f70e091cebe17c",
+      "bytes": 4435
+    },
+    {
+      "path": "Artifacts/QA/installer-build.json",
+      "sha256": "b1746434698c327394b1608819b825ee85be0801395c22b5866b04d5602f0d5b",
+      "bytes": 933
+    },
+    {
+      "path": "Artifacts/QA/installer-tests.json",
+      "sha256": "935fce74f5b03c8418deda20efc6bab363ed913762cd71e8b942b22dcdad47c0",
+      "bytes": 5329
+    },
+    {
+      "path": "Artifacts/QA/lane134-portable-before-source-pins.json",
+      "sha256": "0362b82e97a1b3683ccad1b1000101cfd6def5c8dc4ae7c67a0b12c4beed5c9f",
+      "bytes": 2128
+    },
+    {
+      "path": "Artifacts/QA/lane134-portable-final3.log",
+      "sha256": "b2b360aac9d47bc06b2c02ae84eee39d9d3aad55da1574032bd5d30f55a09888",
+      "bytes": 3346
+    },
+    {
+      "path": "Artifacts/QA/launcher-play-smoke.json",
+      "sha256": "918486259f1805f9e5fd2fea7663c24e97fa4826fe77fa122eec60412aeb7286",
+      "bytes": 2103
+    },
+    {
+      "path": "Artifacts/QA/Release133History/SHA256SUMS.txt",
+      "sha256": "d4309c09e4d559277956e0a9dd601d80bc3ad9ab6ebd2fbe2a341cb71c1fffde",
+      "bytes": 778
+    },
+    {
+      "path": "Artifacts/QA/TowerPathing/before-fix-witness.json",
+      "sha256": "a63f3e026604a8d7cb97b0f35f74c1ce1326c90008f587a433b663d3728dbddb",
+      "bytes": 6964
+    },
+    {
+      "path": "Artifacts/QA/Visual/arena134-720.json",
+      "sha256": "287d8117be2583a27e046dc5cd2fce5a3bee931ec34f784a1bdf83cf0952f060",
+      "bytes": 30348
+    },
+    {
+      "path": "Artifacts/QA/Visual/arena134-720.png",
+      "sha256": "2f8ede77c7c69e6ec31ba0c775ddfe8cf8cf2c1a18f3e3f2a121a8b6c7120d10",
+      "bytes": 1137971
+    },
+    {
+      "path": "Artifacts/QA/Visual/arena134-720.state.json",
+      "sha256": "7e458910f2da927806af1e8bb2b208506da616c9d6a8080f79cf9aecb6f486ca",
+      "bytes": 24555
+    },
+    {
+      "path": "Artifacts/QA/Visual/arena134-after5.json",
+      "sha256": "66984549cb6e5601c02a6ce7db841c8bdc660749f955b6683261bcc8e70b306b",
+      "bytes": 30374
+    },
+    {
+      "path": "Artifacts/QA/Visual/arena134-after5.png",
+      "sha256": "e916d576dcb73eea1b7b3dabd4528d4929681f98557c099275c9baf09c6862e8",
+      "bytes": 2519997
+    },
+    {
+      "path": "Artifacts/QA/Visual/arena134-after5.state.json",
+      "sha256": "a5ecbb2f4f3939faf73d9d6f5ecfbb3571e80fa6b98aff7328fb224565e728f1",
+      "bytes": 24536
+    },
+    {
+      "path": "Artifacts/QA/Visual/arena134-initial.json",
+      "sha256": "05ac055b6b9565429c79e10cad1efd5091d495758f510bd3ab349ba0ab228e38",
+      "bytes": 30395
+    },
+    {
+      "path": "Artifacts/QA/Visual/arena134-initial.png",
+      "sha256": "7656fa8df0ec2cf522446e175cc10f0822e0e73d0e44f81a148fe591ed1da93d",
+      "bytes": 2505240
+    },
+    {
+      "path": "Artifacts/QA/Visual/arena134-initial.state.json",
+      "sha256": "347962d908343994bc1f166d684cd8b230c703bc31bc40b1af87a9743b476c27",
+      "bytes": 24133
+    },
+    {
+      "path": "Artifacts/QA/Visual/arena134-left-enemy.json",
+      "sha256": "7881d888e8806ea7fa3e62a4e39cacf0bfafecc3825849182529a44e3bbc5b7a",
+      "bytes": 27046
+    },
+    {
+      "path": "Artifacts/QA/Visual/arena134-left-enemy.png",
+      "sha256": "e21d166ab619698517c4411044f20e8ebcfe3b39613a61326bbf2c022be9ccd1",
+      "bytes": 2497596
+    },
+    {
+      "path": "Artifacts/QA/Visual/arena134-left-enemy.state.json",
+      "sha256": "e80cedb1da4a707c77c985864721fb2a4624a89792e50d480af713c51f5122f7",
+      "bytes": 22536
+    },
+    {
+      "path": "Artifacts/QA/Visual/arena134-left-player.json",
+      "sha256": "e876e2c31a2ad0384de8fc00190a2602a52c2dbfaf52384bb46a8424f943fc54",
+      "bytes": 27065
+    },
+    {
+      "path": "Artifacts/QA/Visual/arena134-left-player.png",
+      "sha256": "fbf68375e2d21dad11209e8df3ae3a23cbfb19d6ea993567a31d8572e5138d0e",
+      "bytes": 2497554
+    },
+    {
+      "path": "Artifacts/QA/Visual/arena134-left-player.state.json",
+      "sha256": "cd0a35741cc4f84b6b5043a197b15513beea1e2520a7ac7c19ce5cff7527f27a",
+      "bytes": 18005
+    },
+    {
+      "path": "Artifacts/QA/Visual/arena134-meta-guide.json",
+      "sha256": "649fb548fd181c8f587f93386fb93a7b713d8a5790dfd33afb517882bafaa9e9",
+      "bytes": 23415
+    },
+    {
+      "path": "Artifacts/QA/Visual/arena134-meta-guide.png",
+      "sha256": "20b15ec23a5cac5dc97bbea2aa6a9355b0f0872b7ec767e17f40fd736dbccf18",
+      "bytes": 361887
+    },
+    {
+      "path": "Artifacts/QA/Visual/arena134-meta-guide.state.json",
+      "sha256": "1367763f45ebddcd2b227486d38b499b705078e311fa179fa8afa30a107ac1ea",
+      "bytes": 6757
+    },
+    {
+      "path": "Artifacts/QA/Visual/arena134-right-enemy.json",
+      "sha256": "712c681d8e795bca488ac7145303a3d743f8325c688cc6dab87d1ab2be45da59",
+      "bytes": 27059
+    },
+    {
+      "path": "Artifacts/QA/Visual/arena134-right-enemy.png",
+      "sha256": "b3e6caa7bf991576bd322c49c9ef77d970481cb1299abc3dab9921d7ee9443ba",
+      "bytes": 2498552
+    },
+    {
+      "path": "Artifacts/QA/Visual/arena134-right-enemy.state.json",
+      "sha256": "2e5a8a7c827bfcd8e57fc356a69a081a235034f9452707dd009b3628956aa5ed",
+      "bytes": 20324
+    },
+    {
+      "path": "Artifacts/QA/Visual/arena134-right-player.json",
+      "sha256": "a87a3ca2e00d14c75a770a3641980c9906ab733af00b6bf223ad4b46ee6a11d3",
+      "bytes": 27069
+    },
+    {
+      "path": "Artifacts/QA/Visual/arena134-right-player.png",
+      "sha256": "baf3b85f7f10921aee460765c57121560732d423c746dd58e63ced35219ccd82",
+      "bytes": 2496868
+    },
+    {
+      "path": "Artifacts/QA/Visual/arena134-right-player.state.json",
+      "sha256": "76d97400975e73e198e6b0ea0ad1fcd6083bcb4eecbdc6c6659542a252317df3",
+      "bytes": 20018
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/arena134-720-d2d2b3d576114448bc304ca6b700159e/Diagnostics/RiftGame-2026-10-09-35808-21-16-52-0.log",
+      "sha256": "77c82e7f046c71c439e7ac59075c13860d68277d05ad377a1976f21fb1770ac9",
+      "bytes": 2195
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/arena134-after5-65aea9ba5776477089a092e2e67f4330/Diagnostics/RiftGame-2026-10-09-25068-21-16-03-0.log",
+      "sha256": "4636e6ac7562e07727a11146a1e60c6b590384633fc10da5b4ad0f88acc234d6",
+      "bytes": 2201
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/arena134-initial-91642bf58fa84fdfa8649d8eb7e14988/Diagnostics/RiftGame-2026-10-09-4828-21-15-06-0.log",
+      "sha256": "e87a00a6bb39ded9e2847e5d91786ed11a045f0804d9402e9cc83618543b7144",
+      "bytes": 2200
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/arena134-left-enemy-cbb5235e72264d74bcacbd3b51879fbf/Diagnostics/RiftGame-2026-10-09-13300-21-16-33-0.log",
+      "sha256": "4760beadae20cc09e47b92fe99cbe4e9f5cd2fecb37c7b625bcd9be14b309306",
+      "bytes": 2208
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/arena134-left-player-eeace9dfff544e11a3d1148aa36907f3/Diagnostics/RiftGame-2026-10-09-20768-21-16-13-0.log",
+      "sha256": "1a12557d80817df242741bc956c5e19107a663a8c5e8245c956dd0b38643d7ef",
+      "bytes": 2210
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/arena134-meta-guide-9b336d36dcb54e1a934cb2eb92e41933/Diagnostics/RiftGame-2026-10-09-11828-21-17-02-0.log",
+      "sha256": "04c87a2a3dff8b80a59a4d09c7f86de59d769ad187a5a2a165e3f74d3f62084d",
+      "bytes": 1222
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/arena134-right-enemy-70f2eef0e31744b186cfec14a04a86c7/Diagnostics/RiftGame-2026-10-09-12408-21-16-42-0.log",
+      "sha256": "530b524a80b0631e8fc996967ad3f94b76a9042f54019ca135af7f747d9e47a1",
+      "bytes": 2210
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/arena134-right-player-f9993dfde0ed44af9e833704c38177d5/Diagnostics/RiftGame-2026-10-09-27476-21-16-23-0.log",
+      "sha256": "2e68d481c4da9496b970a34bef45866d5e2c3debb2376b3c1dcf85e3ee674903",
+      "bytes": 2213
+    },
+    {
+      "path": "Artifacts/Release/update-manifest.json",
+      "sha256": "8c7b095b7ac773d2b85a73ddf872fc653d0478852cb58ea45fd36f28d625b16d",
+      "bytes": 10569
+    },
+    {
+      "path": "Artifacts/Release/windows-release-verification.json",
+      "sha256": "57851981d51e858ac1166b2953d6d1cf2771a87af266c8968714d3865c784964",
+      "bytes": 1082
+    },
+    {
+      "path": "Build/Automation/20261009-171133/context.json",
+      "sha256": "c996b0a57978005c829f31e710019dc080ec70870f60e755cf22d24ea6850103",
+      "bytes": 23961
+    },
+    {
+      "path": "Build/Automation/20261009-171133/Report/index.json",
+      "sha256": "0a394f98ae9cebb39b1050c43d4dfa41b5573fe71ed0e0c07f6cda1cb3187ed6",
+      "bytes": 8788
+    },
+    {
+      "path": "Build/Automation/20261009-171133/UnrealIntegration.log",
+      "sha256": "f59e8de2ce3fb09c730183e5ec5e57b221fafd36ff668fa11414148dad695043",
+      "bytes": 311142
+    },
+    {
+      "path": "Build/Capture-Unreal.ps1",
+      "sha256": "dc0456b59e96d9b96775b5345311383306e91982ebcb302a270111c8c190dbde",
+      "bytes": 19239
+    },
+    {
+      "path": "Build/Curate-UnrealQA.ps1",
+      "sha256": "d85ad8c5796fc1ac6db56006d73fa07006f4db91392456f337007dbb56956ec3",
+      "bytes": 8579
+    },
+    {
+      "path": "Build/Package-ArenaRoutingQAEvidence.ps1",
+      "sha256": "b6d5c7f4bc5a36488b5255aa1d5cd88da77df302b3cf9d752a805d3ed2f4cd29",
+      "bytes": 43931
+    },
+    {
+      "path": "Build/Package-HoverQAEvidence.ps1",
+      "sha256": "1d257f1fd100316dbf00816ade2355c19b5a560895c96522cb0c305282b71d5d",
+      "bytes": 25011
+    },
+    {
+      "path": "Build/Package-ModelInputQAEvidence.ps1",
+      "sha256": "11e49b8c6ca316f8600bb99517bf937d5b71ec4d7f4812a735ea387c430a0fe3",
+      "bytes": 52029
+    },
+    {
+      "path": "Build/ShippingDiagnostics.ps1",
+      "sha256": "4f0d275ddc211931a82ad2cd8e645587e7d5016f488cddd6fdde8675ebc6c5ab",
+      "bytes": 6401
+    },
+    {
+      "path": "Build/Test-LauncherPlay.ps1",
+      "sha256": "369d178f82b7926f514c8a2194d8421f8f54c4aa5e6e14be313fd892e2e97e6e",
+      "bytes": 3387
+    },
+    {
+      "path": "Build/Test-Unreal.ps1",
+      "sha256": "435ba4c25486b49f0ac164f8cb49f857f1a8cf2c3985a5081a23afab4da57ec6",
+      "bytes": 5277
+    },
+    {
+      "path": "Build/Tests/Audit-NativeMeta.py",
+      "sha256": "d1338ed72b01ff839245d52d954423cfa839c8c4d166dd7d2c05a89272201ad9",
+      "bytes": 28843
+    },
+    {
+      "path": "Build/Tests/RiftSimulationTests.cpp",
+      "sha256": "6af2638dabb413fca482b7c6c7a751007fa93efe463fe6fc443f0d76f4604c19",
+      "bytes": 76192
+    },
+    {
+      "path": "Build/Tests/Run-NativeSimulationTests.ps1",
+      "sha256": "ed1248381d6e978597b70740d659026a22086f1ad7db8a1ccc97fa3409400959",
+      "bytes": 1730
+    },
+    {
+      "path": "Build/Validate-NativeMeta.ps1",
+      "sha256": "53ae1898cfbb0e2a2bf158375b71c41e67a462d74a63affe5c8a2a401dc9e30a",
+      "bytes": 4700
+    },
+    {
+      "path": "Docs/PATCH_NOTES_1.3.4.md",
+      "sha256": "eef3ea347256e2e8e6197a17ae9ff5f5ae5696ca81fc490c3c69b2d5b667054e",
+      "bytes": 1136
+    },
+    {
+      "path": "Docs/QA/arena-routing-first-failed-native-1.3.4.json",
+      "sha256": "3f83767eec25d9c34bdf6f8fc997766c816293af8624bea1ba272f189242babd",
+      "bytes": 11533
+    },
+    {
+      "path": "Docs/QA/arena-routing-meta-100.json",
+      "sha256": "a5c19b34f7c9370ae065417bcff22a93daa04b1bf25b50ffdb6246efdfe565b1",
+      "bytes": 10725
+    },
+    {
+      "path": "Docs/QA/audio-hotfix-1.3.2.json",
+      "sha256": "71e16b391f179d7ff227ad5ae9dca892b1ca30240f006f2311c75eb480178fdc",
+      "bytes": 40856
+    },
+    {
+      "path": "Docs/QA/native-integration.json",
+      "sha256": "9c23c7714fcc8a7bb3c703d406952db0e79a4cfd1963fc38232386491b5e9e12",
+      "bytes": 35966
+    },
+    {
+      "path": "Docs/QA/tower-pathing-1.3.3.json",
+      "sha256": "227dd71d6f6cf23e3ea32ac00bf08badb5bdc82259a7b37d000c11470ce41b13",
+      "bytes": 46519
+    },
+    {
+      "path": "Docs/QA/tower-pathing-first-failed-native-1.3.3.json",
+      "sha256": "c4c30314b405fca2394b96471ebca45a90661f2a7f100694a643be4c036f324e",
+      "bytes": 11451
+    },
+    {
+      "path": "Installer/Test-Installer.ps1",
+      "sha256": "602e4f70e6f2cecac358422b820cd86520369c79dc60260481f1942d01f5d103",
+      "bytes": 23380
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Config/DefaultEngine.ini",
+      "sha256": "d203dc05bd1a8d857f7773eb44529ce45637647a5d5638f52b4e9ee21ffec885",
+      "bytes": 1379
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Config/DefaultGame.ini",
+      "sha256": "9f79171ba2f94894b501bc566646a94158267f82582ec2d75a247de4fd67d5ae",
+      "bytes": 835
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Config/DefaultInput.ini",
+      "sha256": "40f9320c2416a85aa30c765ce1d9c62b45c6a9ad52ef998d102f05b8819679fd",
+      "bytes": 9535
+    },
+    {
+      "path": "Unreal/RiftCrownArena/RiftCrownArena.uproject",
+      "sha256": "39fc040329e6d46e5087c74c0765c626ac16940daee8e662f67b7b2033acda4b",
+      "bytes": 745
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena.Target.cs",
+      "sha256": "283ee32c736fcdae9c0bf3f9c5fe8f26f5261a827db4db5a12a740a8138d5e17",
+      "bytes": 493
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftArenaPresentation.cpp",
+      "sha256": "4c1673c1797b04a8e1fa426f65c4f3f941ddacbc5351a02d3bb76e54cc96afd6",
+      "bytes": 85459
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftBattleAudioSubsystem.cpp",
+      "sha256": "a8fbfc90918a98c64ad16731236422a7194d530d034cd0201eeb7c32b135093b",
+      "bytes": 36127
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftBattleOverlay.cpp",
+      "sha256": "fedfb7b1c4ed6c559a5256f83d517a4278a21739ae964f05f9bcf50e63e8230e",
+      "bytes": 15671
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftTrainingOverlay.cpp",
+      "sha256": "f2f25d5c13f5bfffddf84deacf2a03bdec837f1cc55f6f868fdd65a625947b2e",
+      "bytes": 6277
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftUnitVisual.cpp",
+      "sha256": "7066f3c77e4c43b74574f201c6417919db54ead28be92a74308788315156daa4",
+      "bytes": 24111
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftAssetLibrary.cpp",
+      "sha256": "d9e2f4bdad16de3302a16b330fb25356f738ea100a224a76041cee2b8f8b9160",
+      "bytes": 3046
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftBattleHUD.cpp",
+      "sha256": "709890574f78de35cd9a736be0ddf72b75a5a65bd7f2afc7f7cfce47fdba5c18",
+      "bytes": 24103
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftCollectionUI.cpp",
+      "sha256": "5ae7dc27b009a84032a7cfd9812b1295bee4303b17946d2b7e3f3b8764bf5c34",
+      "bytes": 18113
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftCrownArena.cpp",
+      "sha256": "b3cecae7f7bcb962f9e9729951b2c79b56aad833b7fde79dba1a6e209188e90e",
+      "bytes": 124
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftDiagnostics.cpp",
+      "sha256": "bdfd03a5c9b8f31098ebf73f62a81f12bffcbd6a05ccfd559461585d85b851d4",
+      "bytes": 4750
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftFieldManual.cpp",
+      "sha256": "1cbe10cabedf5825118d9d0f7dffdb07ebdf62eb9bc0d4606f9246fc7b7c2bde",
+      "bytes": 8689
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftGameMode.cpp",
+      "sha256": "8f16aa44278afda2944f02004f638e0e78d6c2f83814cf047e1e1708f8970424",
+      "bytes": 85153
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftHandButton.cpp",
+      "sha256": "b4f6815780b662b5a8950c7831c5e709d92862622f5276b6d1d35480959c059a",
+      "bytes": 4962
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftMatchSubsystem.cpp",
+      "sha256": "c0b89ba7cf16641b546078d86a6fb9ec90ac478ad7ce23898ce29282a182bc44",
+      "bytes": 9768
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftMetaSimulationSubsystem.cpp",
+      "sha256": "36bfd07a65c376c7432e26c6113ecf20c3a2e327426570b1464d06f50451aeab",
+      "bytes": 50520
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftPerformanceCapture.cpp",
+      "sha256": "9e287a28260f6ae5a7cbca3995a2e28e12181b0fd4747c1707038e5628b19e33",
+      "bytes": 7292
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftProfileSubsystem.cpp",
+      "sha256": "306fb84b2f7ec1e8ea8e62892e1d38a7669577c04d4d9d52c3ca7f348d9c9403",
+      "bytes": 22175
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftReplaySubsystem.cpp",
+      "sha256": "5a0af0575622942c43e876f5e974de3130784803f04e91e7f4388f459f8a957d",
+      "bytes": 60365
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftReplayUI.cpp",
+      "sha256": "77199b01e7db0e8108f94347d4a7b39a7b257cec9c7dc719b59f20e0616812d6",
+      "bytes": 30477
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftTrainingPanel.cpp",
+      "sha256": "f24527c664a3108d500fed5cf4722845f37e0cd1bbdb31009f6aa2bf9d88d49c",
+      "bytes": 9350
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftTypography.cpp",
+      "sha256": "8d6f45373e0991955576bace26dad66a19ffabd1aa6090da76aa2ff6f52215d2",
+      "bytes": 1761
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftUIPrimitives.cpp",
+      "sha256": "cb653a1e9de5ede6bedf1ce4834f65d29df84e328afb11ba9d35aa8750e32179",
+      "bytes": 3237
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftUIWidget.cpp",
+      "sha256": "0283e57f9150b1a585d564ab8698696f80f4fd957392141b30aeae41cbcd6824",
+      "bytes": 69557
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftAI.cpp",
+      "sha256": "883f20513632eab99711bb22f42f995c181331e6d5f0c42a2ad6469817493bfc",
+      "bytes": 23293
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftCombat.cpp",
+      "sha256": "0a079ca0598a66224b47ed56a8849a05351e5cc0b28354ddddfc3b2bc5bfb63e",
+      "bytes": 14827
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftDeckAnalysis.cpp",
+      "sha256": "07d7063f15a66338892ccc65e603caa859cccd2b3d22fcd4257719bd059e21b2",
+      "bytes": 28525
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftPathfinding.cpp",
+      "sha256": "c9ee3368b3fbd290daa5a81641bdb0421c9a311cb6aad189469974b23b52b01f",
+      "bytes": 22331
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftSimulation.cpp",
+      "sha256": "7ddeef691917dacf8a292f50abf6cea644dd010556702133edb0bcc1214d54e0",
+      "bytes": 37689
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftBattleInputTests.cpp",
+      "sha256": "57fd645398ee636206439355eb6da150b5c1f4372443c3bdcb8e35e6a8b65732",
+      "bytes": 17746
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftCardDragSmoke.cpp",
+      "sha256": "c7566d8e47c5f5cde97c4bbcc7f1b071d12307da91665e81f4273a19be3edaba",
+      "bytes": 21642
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftIntegrationTests.cpp",
+      "sha256": "cdfdcc4b5f1ec92ee62ae76e4839804cac0c86908f81b830184a4fae9b63dc67",
+      "bytes": 82781
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftPresentationTests.cpp",
+      "sha256": "d027b77d9a0bf3269930a15b101fba78703221d65eb23ca730e5391994507913",
+      "bytes": 10525
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftProjectilePresentationTests.cpp",
+      "sha256": "4768c7e3a0cd25cc7d13a8781c15fc0f5c72cde625d0d25c871601f5564c0018",
+      "bytes": 3482
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftTowerPathingTests.cpp",
+      "sha256": "fc3fb43a30b777165ebf6154f419830681dbc6656f822a3734a76ceac4719d6f",
+      "bytes": 19673
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftTypographyTests.cpp",
+      "sha256": "cfe1166bf1f92b5bc198078c316c7c741ce831fc0449d45b982beba0530921de",
+      "bytes": 5577
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftUnitMotionTests.cpp",
+      "sha256": "0d7a64b34e82ef082eedd1074473f59293c0db4e8f6838847e2a8f7fda764d24",
+      "bytes": 23139
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftArenaGeometry.h",
+      "sha256": "f050dd6450c163aa593309ec81198612d443ba91add7baf25047e0ea6158bd1a",
+      "bytes": 869
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftArenaPresentation.h",
+      "sha256": "e0408bb6348f8f02281f147d6bc71eabd9c2b3b13d7c5762d88c0961ac41b441",
+      "bytes": 6678
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleAudioSubsystem.h",
+      "sha256": "bf05929b4797a3dc30f2a9fabb3aa5b84416c5ad2d52a509ddd6e48e2e761588",
+      "bytes": 2102
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleLayout.h",
+      "sha256": "0d953944dccba5ffdd20cea601240a157769de54c929ba804fcef12f0ec4dd27",
+      "bytes": 799
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleOverlay.h",
+      "sha256": "ecc4bbd6d9a9a9e2729e51eaaa4fb64f5ea1ab712d6c44a389686876bb57187d",
+      "bytes": 1025
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftUnitVisual.h",
+      "sha256": "c8099aa871bdeb1f5ee9768360759f53031654d3070b0cccfda2acd62ec3a4ff",
+      "bytes": 4020
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftAssetLibrary.h",
+      "sha256": "8cfcb77f51d477773e87d37cff482542072825be38c95ea6ab43118dfc50e80b",
+      "bytes": 735
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftCardData.h",
+      "sha256": "b8956971c1192e714541db8ef11aac3501ba563df7d1752660414c7a9b86958e",
+      "bytes": 3451
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftDiagnostics.h",
+      "sha256": "93d91726c726127c03b310972a8482906dc45ec9936cc48adab01599f7750b42",
+      "bytes": 522
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftGameMode.h",
+      "sha256": "f66c2caef75a5d1f138d1c33f49c845fa77f76bbaa33bdd42bc8c1b5a5a1268e",
+      "bytes": 2999
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftHandButton.h",
+      "sha256": "4ba3b6c2c352b8ebdc399cab258bdd26f0cecc8bfb2421edbfd2866a22e4488d",
+      "bytes": 604
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftMatchSubsystem.h",
+      "sha256": "bd67f6f1dba4ab9199407a938258cd611748b8c97db898f2429d13fb93ac0c44",
+      "bytes": 3623
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftMetaSimulationSubsystem.h",
+      "sha256": "cd73661b90be8b789f9318c3242f1bdaf97325b87641578eda88d8ced62f0293",
+      "bytes": 2659
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftPerformanceCapture.h",
+      "sha256": "7962fa18d55571a6ac0b94c07eb17ff4b225472af687a898dd93ebe28879ec3c",
+      "bytes": 943
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftProfileSubsystem.h",
+      "sha256": "9a94ff3fb118194b4c296187b47e0f42bc1fae2d8d4187c58e1fb38ee9f22af6",
+      "bytes": 4074
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftReplaySubsystem.h",
+      "sha256": "35c7fa47599a4b132d58b4cdc619af1bdf818a86e1ec81806c866cb2c816e7ff",
+      "bytes": 3628
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftTypography.h",
+      "sha256": "7cac7b91d1224aea7555b932c24635ba369c3aae1209782e05f2c13f6119f840",
+      "bytes": 381
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftUIPrimitives.h",
+      "sha256": "93e9c0253a03efd8b64ccbf3bb8003c19cfb94e83edc660e56a844c6dcb101e4",
+      "bytes": 1198
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftUIWidget.h",
+      "sha256": "f4e0ad5ddfdede41af7d04143a8916b5f2a32ac599f6a16a03af338ee71652bf",
+      "bytes": 8951
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Simulation/RiftSimulation.h",
+      "sha256": "1b52fb8f8dfb6e700f027e4a39bc45843e1ab0bf1b60ccbeb6f62db9f2a10bc4",
+      "bytes": 10819
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/RiftCrownArena.Build.cs",
+      "sha256": "2f629214df393aa0a385784eb9a752d1e47c9803f471ed69d7107f8a4e7866a3",
+      "bytes": 860
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor.Target.cs",
+      "sha256": "d8cad02a8fb12c7d19cb31a6da6ef8b7aa872415bf9860e7146541238b277e95",
+      "bytes": 417
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Private/RiftCrownArenaEditor.cpp",
+      "sha256": "487f1f731292b9b76e5e77d85ba045cac11b2045579faa5c421f57f682125e28",
+      "bytes": 95
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Private/RiftEditorAssetLibrary.cpp",
+      "sha256": "ee275b194bb70a1e77d0a1730b2caa0143f1f87697e48ce8515365e8ed85cc09",
+      "bytes": 15854
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Public/RiftEditorAssetLibrary.h",
+      "sha256": "3ed46978d15e2f9b279601a6e5339f1e89e983cb75dfa173e6410c75dfb5c372",
+      "bytes": 814
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/RiftCrownArenaEditor.Build.cs",
+      "sha256": "7f5d7d8cc4cda35f3d38ddce7d82e00f4d28cfac4c42d6c44be1eb146b954a2f",
+      "bytes": 517
+    }
+  ],
+  "historicalAudio": {
+    "version": "1.3.2",
+    "checksPerRun": 61,
+    "runtimeSourceUnchanged": true,
+    "newAudioRun": false
+  },
+  "newModelArtAuditRun": false,
+  "publicDelivery": "Pending publication. Anonymous download and published update checks are separate postpublication evidence."
+}

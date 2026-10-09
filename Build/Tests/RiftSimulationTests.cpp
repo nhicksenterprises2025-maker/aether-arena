@@ -59,8 +59,8 @@ double SegmentDistance(Vec2 from, Vec2 to, Vec2 point) {
 }
 void ClearOwnStructures(const Match &m, const Entity &unit, Vec2 from) {
     const double edge = .40 + unit.radius * .72;
-    Check(std::abs(unit.position.x) <= 14 - edge + 1e-8 &&
-              std::abs(unit.position.z) <= 21 - edge + 1e-8,
+    Check(std::abs(unit.position.x) <= arena::HalfWidth - edge + 1e-8 &&
+              std::abs(unit.position.z) <= arena::HalfHeight - edge + 1e-8,
           "ground member stays inside radius-aware arena bounds");
     for (const auto &e : m.State().entities)
         if (!e.dead && e.team == unit.team && e.kind != EntityKind::Troop)
@@ -164,7 +164,7 @@ int main() {
             Match m(Quiet());
             const auto id = Tower(m, Team::Enemy, EntityKind::Core).id;
             Check(!Tower(m, Team::Enemy, EntityKind::Core).active, "Core initially dormant");
-            m.Spawn(Team::Player, "nova_flask", {0, -16.3});
+            m.Spawn(Team::Player, "nova_flask", {0, -arena::CoreDepth});
             Near(Tower(m, Team::Enemy, EntityKind::Core).hp, 3415, 0, "Core takes spell damage");
             Check(!Tower(m, Team::Enemy, EntityKind::Core).active, "Core hit does not activate");
             Check(m.SetTowerHP(Tower(m, Team::Enemy, EntityKind::Guard, -1).id, 0), "destroy Guard");
@@ -182,14 +182,14 @@ int main() {
             Check(m.CanPlace(Team::Player, *c, {-7.5, -5.5}), "destroyed lane pocket");
             Check(!m.CanPlace(Team::Player, *c, {7.5, -5.5}), "other lane still locked");
             Check(!m.CanPlace(Team::Player, *c, {-.5, -5.5}), "Core strip excluded");
-            Check(!m.CanPlace(Team::Player, *c, {-7.5, -10.5}), "deep backfield excluded");
+            Check(!m.CanPlace(Team::Player, *c, {-7.5, -11.5}), "deep backfield excluded");
         });
         Test("building full footprint and collision", [] {
             Match m(Quiet());
             const auto *c = FindCard("archer_tower");
             Check(!m.CanPlace(Team::Player, *c, {7.5, 2.5}), "footprint crosses bank");
             Check(m.CanPlace(Team::Player, *c, {7.5, 4.5}), "full footprint fits");
-            Check(!m.CanPlace(Team::Player, *c, {8.5, 12.5}), "Tower overlap");
+            Check(!m.CanPlace(Team::Player, *c, {8.5, 13.5}), "Tower overlap");
             m.Spawn(Team::Player, c->id, {7.5, 4.5});
             Check(!m.CanPlace(Team::Player, *c, {7.5, 5.5}), "building overlap");
             Check(m.CanPlace(Team::Player, *FindCard("nova_flask"), {0, -20.5}), "spell any board region");
@@ -238,7 +238,7 @@ int main() {
             m.Spawn(Team::Player, "nova_flask", {0, 0});
             Near(Unit(m, "boulderback", Team::Enemy).hp, 1245, 0, "375 troop damage");
             Near(Unit(m, "boulderback", Team::Player).hp, 1620, 0, "friendly immune");
-            m.Spawn(Team::Player, "bullet_burst", {0, -16.3});
+            m.Spawn(Team::Player, "bullet_burst", {0, -arena::CoreDepth});
             Near(Tower(m, Team::Enemy, EntityKind::Core).hp, 3600, 0, "Bullet damage is delayed");
             m.Step(.30);
             Near(Tower(m, Team::Enemy, EntityKind::Core).hp, 3545, 0, "55 structure damage");
@@ -451,7 +451,7 @@ int main() {
             for (const auto &event : clear.Events())
                 Check(event.type != "spell_impact", "cleared casts cannot land later");
             Match finished(Quiet());
-            finished.Spawn(Team::Player, "bullet_burst", {0, -16.3});
+            finished.Spawn(Team::Player, "bullet_burst", {0, -arena::CoreDepth});
             finished.SetTowerHP(Tower(finished, Team::Enemy, EntityKind::Core).id, 0);
             Check(finished.State().phase == Phase::Finished && finished.State().spellCasts.empty(),
                   "result cancels pending cast");
@@ -469,8 +469,8 @@ int main() {
                 Check(event.type != "spell_impact", "no cast lands during tiebreaker");
             Match lethal(Quiet());
             lethal.SetTowerHP(Tower(lethal, Team::Enemy, EntityKind::Core).id, 55);
-            lethal.Spawn(Team::Player, "bullet_burst", {0, -16.3});
-            lethal.Spawn(Team::Enemy, "bullet_burst", {0, 16.3});
+            lethal.Spawn(Team::Player, "bullet_burst", {0, -arena::CoreDepth});
+            lethal.Spawn(Team::Enemy, "bullet_burst", {0, arena::CoreDepth});
             lethal.Step(.30);
             Check(lethal.State().phase == Phase::Finished && lethal.State().spellCasts.empty(),
                   "lethal impact safely clears another due cast");
@@ -507,11 +507,11 @@ int main() {
         });
         Test("Crown hardlock survives defender before next hit", [] {
             Match m(Quiet());
-            m.Spawn(Team::Player, "ironclad", {-8.5, -10.5});
+            m.Spawn(Team::Player, "ironclad", {-8.5, -11.5});
             m.Step(.05);
             auto tower = Tower(m, Team::Enemy, EntityKind::Guard, -1).id;
             Check(Unit(m, "ironclad", Team::Player).hardLock == tower, "locks upon reaching attack range");
-            m.Spawn(Team::Enemy, "ironclad", {-7.5, -10.5});
+            m.Spawn(Team::Enemy, "ironclad", {-7.5, -11.5});
             m.Step(.05);
             Check(Unit(m, "ironclad", Team::Player).target == tower, "fresh defender cannot pull hardlock");
         });
@@ -654,6 +654,160 @@ int main() {
                     crossed |= e.team == Team::Player ? e.position.z < 0 : e.position.z > 0;
             Check(crossed, "large units cross bridge");
         });
+        Test("expanded arena moves every tower back one tile and keeps full new edge placement", [] {
+            Match m(Quiet());
+            Check(arena::Width == 30 && arena::Height == 44, "new 30 by 44 physical board");
+            for (Team team : {Team::Player, Team::Enemy}) {
+                const double sign = team == Team::Player ? 1. : -1.;
+                Near(Tower(m, team, EntityKind::Core).position.z, sign * 17.3, 0, "Core moves back exactly one tile");
+                for (int lane : {-1, 1}) {
+                    Near(Tower(m, team, EntityKind::Guard, lane).position.z, sign * 13.4, 0, "Guard moves back exactly one tile");
+                    Near(Tower(m, team, EntityKind::Guard, lane).position.x, lane * 8.2, 0, "Guard lateral position preserved");
+                }
+                Check(m.CanPlace(team, *FindCard("ironclad"), {14.5, sign * 21.5}), "new outer corner accepts ordinary ground card");
+                m.SetAether(team, 10);
+                Check(m.Play(team, 0, {-14.5, sign * 21.5}), "new outer paid corner accepted");
+                ClearOwnStructures(m, Unit(m, "ironclad", team), Unit(m, "ironclad", team).position);
+                Check(m.Spawn(team, "sky_manta", {14.5, sign * 21.5}), "new outer DEV corner accepted");
+            }
+            Near(SnapToTile({15, 22}).x, 14.5, 0, "positive X tile reaches widened edge");
+            Near(SnapToTile({15, 22}).z, 21.5, 0, "positive Z tile reaches deeper edge");
+            Near(SnapToTile({-15, -22}).x, -14.5, 0, "negative X tile reaches widened edge");
+            Near(SnapToTile({-15, -22}).z, -21.5, 0, "negative Z tile reaches deeper edge");
+            Check(!m.Spawn(Team::Player, "ironclad", {15.001, 10}), "outside new width rejected");
+            Check(!m.Spawn(Team::Enemy, "ironclad", {0, -22.001}), "outside new depth rejected");
+            Near(arena::PocketOuterX, 14.2, 1e-12, "pocket widens with board");
+            Near(arena::PocketMaxDepth, 10.25, 1e-12, "pocket retreats with Guard");
+        });
+        Test("all ground cards retain their bridge side and advance to Core through a destroyed lane", [] {
+            int fixtures = 0, members = 0;
+            for (const auto &card : Cards()) {
+                if (card.flying || card.spell || card.building)
+                    continue;
+                auto options = Quiet();
+                auto deck = DefaultDeck();
+                deck.erase(std::remove(deck.begin(), deck.end(), card.id), deck.end());
+                deck.insert(deck.begin(), card.id);
+                deck.resize(8);
+                options.decks = {deck, deck};
+                for (Team team : {Team::Player, Team::Enemy})
+                    for (int lane : {-1, 1})
+                        for (int mode = 0; mode < 3; ++mode) {
+                            Match m(options);
+                            const double sign = team == Team::Player ? 1. : -1.;
+                            const Team other = team == Team::Player ? Team::Enemy : Team::Player;
+                            const auto sameGuard = Tower(m, other, EntityKind::Guard, lane).id;
+                            const auto oppositeGuard = Tower(m, other, EntityKind::Guard, -lane).id;
+                            const auto core = Tower(m, other, EntityKind::Core).id;
+                            if (mode)
+                                Check(m.SetTowerHP(sameGuard, 0), "selected enemy lane Guard destroyed");
+                            const EntityId expected = mode ? core : sameGuard;
+                            const Vec2 drop{lane * 7.5, sign * (mode == 2 ? -5.5 : 5.5)};
+                            m.SetAether(team, 10);
+                            Check(m.Play(team, 0, drop), "ordinary own-lane or unlocked-pocket deployment succeeds");
+                            std::vector<EntityId> ids;
+                            for (const auto &e : m.State().entities)
+                                if (e.kind == EntityKind::Troop)
+                                    ids.push_back(e.id);
+                            std::vector<bool> crossed(ids.size(), false);
+                            m.Step(1. / 60);
+                            for (EntityId id : ids)
+                                Check(ById(m, id).target == expected, "default advance targets same Guard or exposed Core");
+                            const auto present = [&](EntityId id) -> const Entity * {
+                                for (const auto &e : m.State().entities)
+                                    if (e.id == id)
+                                        return &e;
+                                return nullptr;
+                            };
+                            for (int n = 0; n < 480; ++n) {
+                                std::vector<Vec2> prior(ids.size());
+                                for (std::size_t i = 0; i < ids.size(); ++i)
+                                    if (const auto *e = present(ids[i]))
+                                        prior[i] = e->position;
+                                m.Step(1. / 60);
+                                for (std::size_t i = 0; i < ids.size(); ++i) {
+                                    const auto *current = present(ids[i]);
+                                    if (!current)
+                                        continue; // Normal deaths can retire a pocket attacker after its advance.
+                                    const auto &e = *current;
+                                    ClearOwnStructures(m, e, prior[i]);
+                                    Check(e.target != oppositeGuard, "opposite surviving Guard cannot redirect this lane");
+                                    if (std::abs(e.position.z) < arena::RiverHalfWidth + .28) {
+                                        const double half = std::max(.34, arena::BridgeWidth / 2 - .16 - e.radius * .92);
+                                        Check(std::abs(e.position.x - lane * arena::BridgeCenterX) <= half + 1e-8,
+                                              "actual river traversal uses only the deployment side bridge");
+                                        Check(e.bridge == lane, "bridge commitment stays stable while crossing");
+                                    }
+                                    crossed[i] = crossed[i] || e.position.z * sign < -arena::RiverHalfWidth;
+                                }
+                            }
+                            for (bool reached : crossed)
+                                Check(reached, "each ground member makes progress onto the enemy bank");
+                            Check(!ById(m, oppositeGuard).dead, "opposite Guard remains a real standing alternative");
+                            fixtures++;
+                            members += static_cast<int>(ids.size());
+                        }
+            }
+            Check(fixtures == 84 && members == 96, "all seven ground cards, both teams, both lane states and pockets");
+        });
+        Test("continuous routes to an opposite target still use the current side bridge", [] {
+            int routes = 0;
+            for (const auto &card : Cards()) {
+                if (card.flying || card.spell || card.building)
+                    continue;
+                for (Team team : {Team::Player, Team::Enemy})
+                    for (int lane : {-1, 1}) {
+                        Match m(Quiet());
+                        Entity source;
+                        source.id = 9000;
+                        source.team = team;
+                        source.cardId = card.id;
+                        source.radius = .44 * card.scale;
+                        source.lane = lane;
+                        source.position = {lane * 7.5, team == Team::Player ? 5.5 : -5.5};
+                        const auto &target = Tower(m, team == Team::Player ? Team::Enemy : Team::Player,
+                                                   EntityKind::Guard, -lane);
+                        const auto path = m.FindPath(source, target);
+                        Check(!path.empty(), "opposite target has an obstacle-aware route");
+                        bool river = false;
+                        Vec2 prior = source.position;
+                        for (Vec2 point : path) {
+                            if (std::abs(point.z) < arena::RiverHalfWidth + .28) {
+                                Check(point.x * lane > 0, "default path crosses the bridge on the source side");
+                                river = true;
+                            }
+                            if (prior.z * point.z <= 0 && std::abs(point.z - prior.z) > 1e-9) {
+                                const double along = -prior.z / (point.z - prior.z);
+                                const double x = prior.x + (point.x - prior.x) * along;
+                                Check(x * lane > 0, "compressed segment crosses only the current-side bridge");
+                                river = true;
+                            }
+                            prior = point;
+                        }
+                        Check(river, "route includes the actual river crossing");
+                        routes++;
+                    }
+            }
+            Check(routes == 28, "all ground cards mirror the current-side route policy");
+        });
+        Test("destroyed-lane Core advances stay deterministic across frame chunks", [] {
+            auto options = Quiet();
+            options.seed = 20261011;
+            Match a(options), b(options);
+            for (Match *m : {&a, &b})
+                for (Team team : {Team::Player, Team::Enemy}) {
+                    const double sign = team == Team::Player ? 1. : -1.;
+                    const Team other = team == Team::Player ? Team::Enemy : Team::Player;
+                    m->SetTowerHP(Tower(*m, other, EntityKind::Guard, -1).id, 0);
+                    m->SetAether(team, 10);
+                    Check(m->Play(team, 0, {-7.5, sign * 5.5}), "paid exposed-lane advance");
+                    Check(m->Spawn(team, "twin_blades", {-7.5, -sign * 5.5}), "pocket swarm advance");
+                }
+            a.Step(8);
+            for (int n = 0; n < 960; ++n)
+                b.Step(1. / 120);
+            Same(a, b);
+        });
         Test("paid ground members clear both teams Core and Guards without changing costs or events", [] {
             int fixtures = 0, members = 0;
             for (const auto &card : Cards()) {
@@ -755,8 +909,9 @@ int main() {
         });
         Test("paid rear rows and corner drops resolve each ground member before its first tick", [] {
             int fixtures = 0, members = 0;
-            const std::vector<Vec2> points{{.5, 20.5}, {-12.5, 20.5}, {12.5, 20.5},
-                                           {-13.5, 20.5}, {13.5, 20.5}, {-12.5, 8.5}, {12.5, 8.5}};
+            const std::vector<Vec2> points{{.5, arena::LastTileZ}, {-13.5, arena::LastTileZ},
+                                           {13.5, arena::LastTileZ}, {-arena::LastTileX, arena::LastTileZ},
+                                           {arena::LastTileX, arena::LastTileZ}, {-13.5, 8.5}, {13.5, 8.5}};
             for (const auto &card : Cards()) {
                 if (card.flying || card.spell || card.building)
                     continue;

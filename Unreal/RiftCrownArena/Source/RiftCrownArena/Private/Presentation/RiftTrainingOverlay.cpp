@@ -41,11 +41,14 @@ int32 URiftBattleOverlay::PaintTrainingOverlay(const FGeometry& Geometry,FSlateW
     if(Dev->ShowTiles)
     {
         const FLinearColor Grid(.63f,.77f,.88f,.30f);
-        for(int32 X=-14;X<=14;++X)Line(FVector(X*100,-2100,12),FVector(X*100,2100,12),Grid,.7f);
-        for(int32 Z=-21;Z<=21;++Z)Line(FVector(-1400,Z*100,12),FVector(1400,Z*100,12),Grid,.7f);
+        for(int32 X=-rift::arena::HalfWidth;X<=rift::arena::HalfWidth;++X)
+            Line(FVector(X*100,-rift::arena::HalfHeight*100,12),FVector(X*100,rift::arena::HalfHeight*100,12),Grid,.7f);
+        for(int32 Z=-rift::arena::HalfHeight;Z<=rift::arena::HalfHeight;++Z)
+            Line(FVector(-rift::arena::HalfWidth*100,Z*100,12),FVector(rift::arena::HalfWidth*100,Z*100,12),Grid,.7f);
         const auto Font=RiftTypography::Font(TEXT("Regular"),9);
         const FSlateBrush* White=FCoreStyle::Get().GetBrush(TEXT("WhiteBrush"));
-        for(double X=-12.5;X<14;X+=4)for(double Z=-18.5;Z<21;Z+=4)
+        for(double X=-rift::arena::HalfWidth+1.5;X<rift::arena::HalfWidth;X+=4)
+            for(double Z=-rift::arena::HalfHeight+2.5;Z<rift::arena::HalfHeight;Z+=4)
         {
             FVector2D Point;if(!Project(FVector(X*100,Z*100,20),Point))continue;
             Point-=FVector2D(28,7);

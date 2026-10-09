@@ -79,9 +79,12 @@ canonical = ("rift-native-1|native-observed-2|ai-v15-port-2|nav-grid-a-star-1|te
              "drain180|coreGuardOnly|hardlockAtRange|pocket2,13.2,2.25,9.25")
 canonical = canonical.replace("telemetry-2", f"telemetry-{revision}")
 navigation_revision = data["rulesSnapshot"].get("navigationRevision", 1)
-check(not isinstance(navigation_revision, bool) and navigation_revision in (1, 2),
+check(not isinstance(navigation_revision, bool) and navigation_revision in (1, 2, 3),
       "Unsupported captured navigation revision")
-canonical = canonical.replace("nav-grid-a-star-1", f"nav-grid-a-star-{2 if navigation_revision == 2 else 1}")
+canonical = canonical.replace("nav-grid-a-star-1", f"nav-grid-a-star-{navigation_revision}")
+if navigation_revision == 3:
+    canonical = canonical.replace("arena28x42", "arena30x44").replace(
+        "pocket2,13.2,2.25,9.25", "pocket2,14.2,2.25,10.25|towers8.2,13.4,17.3|source-side-bridge-1|same-lane-guard-else-core-1")
 timed_spells = any("castDelay" in card for card in data["cardSnapshot"])
 if timed_spells:
     check(all("castDelay" in card for card in data["cardSnapshot"]),
@@ -111,11 +114,18 @@ expected_rules = {"arenaWidth": 28, "arenaHeight": 42, "riverHalfWidth": 1.65,
                   "coreActivation": "friendly Guard Tower destroyed",
                   "targetHardLock": "at Crown Tower attack range",
                   "navigation": "card-aware ground grid A-star with bridges; flying ignores obstacles"}
-if navigation_revision == 2:
-    expected_rules["navigationRevision"] = 2
+if navigation_revision >= 2:
+    expected_rules["navigationRevision"] = navigation_revision
     expected_rules["navigation"] += "; clear ground spawns and continuous segment clearance"
+if navigation_revision == 3:
+    expected_rules.update(arenaWidth=30, arenaHeight=44, coreDepth=17.3, guardDepth=13.4,
+                          guardX=8.2, pocketOuterX=14.2, pocketMaxDepth=10.25)
+    expected_rules["navigation"] += "; source-side bridge commitment; same-lane Guard else Core"
 for key, value in expected_rules.items():
-    check(data["rulesSnapshot"].get(key) == value, f"Captured rule mismatch: {key}")
+    if isinstance(value, (int, float)):
+        near(data["rulesSnapshot"].get(key, -1), value, f"Captured rule mismatch: {key}")
+    else:
+        check(data["rulesSnapshot"].get(key) == value, f"Captured rule mismatch: {key}")
 if timed_spells:
     check(data["rulesSnapshot"].get("spellImpact") ==
           "fixed target area; current enemy positions at impact; Meteor Shards 0.75s, Bullet Burst 0.30s; Nova Flask instant",
@@ -177,8 +187,8 @@ for bucket_id, bucket in buckets.items():
               f"{prefix}: opening denominator range")
         check(number(stats, "firstPlays") <= ap and number(stats, "overtimePlays") <= plays and
               number(stats, "connected") <= plays, f"{prefix}: per-cast event bounds")
-        check(abs(number(stats, "placementX")) <= 13.5 * plays + 1e-5 and
-              abs(number(stats, "placementZ")) <= 20.5 * plays + 1e-5, f"{prefix}: paid placement bounds")
+        check(abs(number(stats, "placementX")) <= (14.5 if navigation_revision == 3 else 13.5) * plays + 1e-5 and
+              abs(number(stats, "placementZ")) <= (21.5 if navigation_revision == 3 else 20.5) * plays + 1e-5, f"{prefix}: paid placement bounds")
         check(number(stats, "slowTime") <= number(stats, "slowTrackedSeconds") + 1e-5 and
               number(stats, "stunTime") <= number(stats, "stunTrackedSeconds") + 1e-5,
               f"{prefix}: credited status exceeds affected exposure")

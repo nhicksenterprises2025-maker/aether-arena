@@ -245,6 +245,20 @@ bool FRiftConnectedUIIntegrationTest::RunTest(const FString &Parameters) {
         return false;
     TestTrue(TEXT("Training Home finalization succeeds"), Replay->FlushPendingWrites());
     TestEqual(TEXT("Battle and Training each archive once"), Profile->ReplayFiles.Num(), OriginalReplays + 2);
+    if (!Click(TEXT("Meta")) || !Click(TEXT("STATS GUIDE")))
+        return false;
+    bool HasGuide=false,HasCleanExplanation=false,HasMechanicalExplanation=false;
+    for(auto* Text:ActiveWidgets<UTextBlock>(Canvas))
+    {
+        const FString Value=Text->GetText().ToString();
+        HasGuide|=Value==TEXT("READING THE META LAB");
+        HasCleanExplanation|=Value.Contains(TEXT("Card Clean N excludes"));
+        HasMechanicalExplanation|=Value.Contains(TEXT("rule-based mechanical coverage edges"));
+    }
+    TestTrue(TEXT("Actual Stats Guide callback opens definitions and distinguishes observed results from mechanical matchups"),HasGuide&&HasCleanExplanation&&HasMechanicalExplanation);
+    TestEqual(TEXT("Guide leaves table filter/export controls out of the reading view"),ActiveWidgets<UComboBoxString>(Canvas).Num(),0);
+    if(!Click(TEXT("CARDS"),true))return false;
+    TestTrue(TEXT("Stats Guide returns to live filtered Meta tables"),ActiveWidgets<UComboBoxString>(Canvas).Num()>0&&ActiveButton(UI,TEXT("STATS GUIDE")));
     if (!Click(TEXT("Settings")))
         return false;
     const auto Combos = ActiveWidgets<UComboBoxString>(Canvas);
@@ -1213,7 +1227,7 @@ bool FRiftFullReplayIntegrationTest::RunTest(const FString &Parameters) {
         // Pin an ordinary paid fixture that still reaches zero-crown overtime
         // and the existing >=20 population burden under continuous path clearance.
         // The separate Developer congestion fixture retains its known >=40 load.
-        AIOptions.seed = Congestion ? 32 : 64;
+        AIOptions.seed = Congestion ? 32 : 114;
         AIOptions.aiEnabled = {true, true};
         AIOptions.aiStyles = {"control", "counter"};
         const std::vector<std::string> SwarmDeck{"ironclad",    "twin_blades",  "archer_tower",

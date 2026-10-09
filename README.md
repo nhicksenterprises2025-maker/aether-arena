@@ -3,6 +3,12 @@
 Original Windows card battler: fourteen cards, two lanes, deterministic combat,
 seven AI personalities, deck workshop, Meta Lab, replays and developer training.
 
+Version 1.3.4 expands the arena by one tile on each edge, moves all towers one
+tile toward their own rear, and keeps ground troops on their current side's
+bridge and same-lane route toward the Core after a Guard falls. Meta Lab adds a
+Stats Guide and simulates the new rules separately from historical datasets.
+See [the update notes](Docs/PATCH_NOTES_1.3.4.md).
+
 Version 1.3.3 fixes ground troops getting stuck near towers. Ground deployments
 start in clear space and units route around tower edges. See
 [the pathing fix notes](Docs/PATCH_NOTES_1.3.3.md).
