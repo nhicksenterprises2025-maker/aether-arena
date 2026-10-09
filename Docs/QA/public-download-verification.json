@@ -1,72 +1,25 @@
 {
+  "schema": 1,
+  "version": "1.1.0",
   "passed": true,
-  "utc": "2026-10-08T21:53:07.1601113Z",
-  "version": "1.0.0",
-  "releaseUrl": "https://github.com/nhicksenterprises2025-maker/aether-arena/releases/tag/v1.0.0",
-  "sourceCommit": "77bdaa4cd0136cb22f81c75a41b5fa11f139a071",
-  "anonymousDownloads": [
+  "utc": "2026-10-09T03:51:23.0221252Z",
+  "files": [
     {
-      "passed": true,
-      "utc": "2026-10-08T21:50:55.6483231Z",
-      "name": "RiftCrownArena-Windows-x64-1.0.0.zip",
-      "anonymous": true,
-      "url": "https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.0.0/RiftCrownArena-Windows-x64-1.0.0.zip",
-      "bytes": 447292600,
-      "sha256": "954d6ec8268860a8f6f616ff8dd9bc6dd9ea2768342c127e76d2290caaa9a46c"
+      "file": "RiftCrownArena-Windows-x64-1.1.0.zip",
+      "url": "https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.1.0/RiftCrownArena-Windows-x64-1.1.0.zip",
+      "bytes": 448655642,
+      "sha256": "fc32c6add036ee0c4baaf2656bfb599642fed05028231e17da197db92555c5f2",
+      "matchesTestedPayload": true,
+      "anonymousHttpsDownload": true
     },
     {
-      "passed": true,
-      "utc": "2026-10-08T21:51:00.5270382Z",
-      "name": "RiftCrownArena-Setup.msi",
-      "anonymous": true,
-      "url": "https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.0.0/RiftCrownArena-Setup.msi",
-      "bytes": 428171368,
-      "sha256": "00e5228cfffac7c847b73f13a5dca04014c22ca6d5330d2c8671aea6ad520c75"
+      "file": "RiftCrownArena-Setup.msi",
+      "url": "https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.1.0/RiftCrownArena-Setup.msi",
+      "bytes": 429428840,
+      "sha256": "ed7244eb6909f8a9529eb1d5da0cb1fc1fe2a37f7175fe9cf74e5446cf663491",
+      "matchesTestedPayload": true,
+      "anonymousHttpsDownload": true
     }
   ],
-  "immutableReleaseAssets": [
-    {
-      "name": "RiftCrownArena-Windows-x64-1.0.0.zip",
-      "size": 447292600,
-      "sha256": "954d6ec8268860a8f6f616ff8dd9bc6dd9ea2768342c127e76d2290caaa9a46c",
-      "remoteDigest": "sha256:954d6ec8268860a8f6f616ff8dd9bc6dd9ea2768342c127e76d2290caaa9a46c",
-      "matched": true
-    },
-    {
-      "name": "RiftCrownArena-Setup.msi",
-      "size": 428171368,
-      "sha256": "00e5228cfffac7c847b73f13a5dca04014c22ca6d5330d2c8671aea6ad520c75",
-      "remoteDigest": "sha256:00e5228cfffac7c847b73f13a5dca04014c22ca6d5330d2c8671aea6ad520c75",
-      "matched": true
-    },
-    {
-      "name": "RiftCrownLauncher.exe",
-      "size": 161820808,
-      "sha256": "ca533a10c0c125a8ef3f172aa54ea5afdaec0bd9f03fd8d4ce581306e6624215",
-      "remoteDigest": "sha256:ca533a10c0c125a8ef3f172aa54ea5afdaec0bd9f03fd8d4ce581306e6624215",
-      "matched": true
-    },
-    {
-      "name": "update-manifest.json",
-      "size": 12279,
-      "sha256": "0c6e2af2cf264e4371d382f3c38d3cfc8453fa5ebe97af344668379734a966d2",
-      "remoteDigest": "sha256:0c6e2af2cf264e4371d382f3c38d3cfc8453fa5ebe97af344668379734a966d2",
-      "matched": true
-    },
-    {
-      "name": "windows-release-verification.json",
-      "size": 1082,
-      "sha256": "d8017a0fa5b036a81cae96c0d8718e8ba67344df4b7315cc540416bc005778f1",
-      "remoteDigest": "sha256:d8017a0fa5b036a81cae96c0d8718e8ba67344df4b7315cc540416bc005778f1",
-      "matched": true
-    },
-    {
-      "name": "RiftCrownArena-QAEvidence-Windows-x64-1.0.0.zip",
-      "size": 101777975,
-      "sha256": "658c0be7e99a4879fcb33a640e486c61ed7e95269041dc70db7be36dfaa5f2fe",
-      "remoteDigest": "sha256:658c0be7e99a4879fcb33a640e486c61ed7e95269041dc70db7be36dfaa5f2fe",
-      "matched": true
-    }
-  ],
-  "scope": "Actual anonymous complete game ZIP/MSI downloads and GitHub server SHA-256 digests for the six immutable release payloads; public WPF update check is a separate report."
+  "scope": "Fresh anonymous downloads of the complete public game ZIP and MSI, compared byte-for-byte by size and SHA-256 to the exact locally tested release."
 }
