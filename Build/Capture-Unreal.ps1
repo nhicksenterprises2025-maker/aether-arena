@@ -6,6 +6,15 @@ param(
     [ValidateRange(0.05,2)][float]$EffectAge = 0.12,
     [ValidateRange(0.25,4)][float]$Speed = 1,
     [switch]$BreathSmoke,
+    [ValidateRange(-1,3)][int]$Hand=-1,
+    [switch]$Developer,
+    [switch]$BattleMenu,
+    [switch]$RecordedMatch,
+    [switch]$AllowExternalInput,
+    [ValidateSet('','double','triple','overtime','tiebreaker','victory')][string]$Phase='',
+    [ValidateSet('','tiles','ranges','sight','paths','targets','locks','all')][string]$Overlay='',
+    [ValidateRange(0.7,1.4)][float]$UIScale=1,
+    [ValidateRange(0.85,2)][float]$Zoom=1,
     [string]$PreviewCard = '',
     [float]$PreviewX = 0,
     [float]$PreviewY = 7,
@@ -50,6 +59,15 @@ $arguments = @(
 if ($isEditor) { $arguments = @(('"' + $projectPath + '"')) + $arguments }
 if ($Scenario) { $arguments += "-RiftVisualScenario=$Scenario" }
 if ($BreathSmoke) { $arguments += '-RiftBreathSmoke' }
+if ($Hand -ge 0) { $arguments += "-RiftCaptureHand=$Hand" }
+if ($Developer) { $arguments += '-RiftCaptureDeveloper' }
+if ($BattleMenu) { $arguments += '-RiftCaptureBattleMenu' }
+if ($RecordedMatch) { $arguments += '-RiftCaptureRecordedMatch' }
+if ($AllowExternalInput) { $arguments += '-RiftCaptureAllowInput' }
+if ($Phase) { $arguments += "-RiftCapturePhase=$Phase" }
+if ($Overlay) { $arguments += "-RiftCaptureOverlay=$Overlay" }
+$arguments += '-RiftCaptureUIScale=' + $UIScale.ToString([System.Globalization.CultureInfo]::InvariantCulture)
+$arguments += '-RiftCaptureZoom=' + $Zoom.ToString([System.Globalization.CultureInfo]::InvariantCulture)
 if ($Scenario -eq 'effects17') { $arguments += '-RiftEffectAge=' + $EffectAge.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
 if ($Scenario -in @('effects','congestion')) { $arguments += '-RiftCaptureSpeed=' + $Speed.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
 if ($PreviewCard) {
@@ -83,14 +101,27 @@ if ($freshCapture) {
 $resolutionMatches = $actualWidth -eq $Width -and $actualHeight -eq $Height
 $statePath = [System.IO.Path]::ChangeExtension($capturePath,'state.json')
 $stateCaptured = (Test-Path -LiteralPath $statePath) -and ((Get-Item -LiteralPath $statePath).LastWriteTime -ge $started.AddSeconds(-1))
-if ($stateCaptured) { $null = Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json }
+$riftCaptureState = if ($stateCaptured) { Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json } else { $null }
+$riftPhaseFixturePassed = $true
+if ($Phase) {
+    $riftExpectedPhase = switch ($Phase) { 'double' { 'regulation' }; 'triple' { 'overtime' }; 'overtime' { 'overtime' }; 'tiebreaker' { 'tiebreaker' }; 'victory' { 'finished' } }
+    $riftExpectedElapsed = switch ($Phase) { 'double' { 121 }; 'triple' { 241 }; 'overtime' { 181 }; 'tiebreaker' { 301 }; 'victory' { 0 } }
+    $riftPhaseFixturePassed = $stateCaptured -and $riftCaptureState.phase -eq $riftExpectedPhase -and
+        [math]::Abs($riftCaptureState.elapsed - $riftExpectedElapsed) -lt 0.01 -and
+        $riftCaptureState.speed -eq 0 -and $riftCaptureState.events.match_start -eq 1
+    if ($Phase -eq 'victory') {
+        $riftPhaseFixturePassed = $riftPhaseFixturePassed -and $riftCaptureState.winner -eq 0 -and
+            $riftCaptureState.playerCrowns -eq 3 -and $riftCaptureState.enemyCrowns -eq 0 -and
+            $riftCaptureState.resultReason -eq 'core_destroyed' -and $riftCaptureState.events.match_end -eq 1
+    }
+}
 $errors = @()
 if (Test-Path -LiteralPath $logPath) {
     $errors = @(Select-String -LiteralPath $logPath -Pattern 'LogRift: Error:|LogUIActionRouter: Error:|Fatal error[:!]?|Unhandled Exception:|Assertion failed:|Failed to load.*(/Game/Rift|Rift/)|Authored .* missing|LogMaterial: (Error:|Warning:.*(Failed to compile|Default Material|missing usage flag))|LogShaderCompilers: Error:' | ForEach-Object { $_.Line })
 }
 $report = [ordered]@{
-    schema = 1; name = $Name; page = $Page; scenario = $Scenario; speed = $Speed; breathSmoke = [bool]$BreathSmoke;
-    state = $statePath; stateCaptured = $stateCaptured;
+    schema = 1; name = $Name; page = $Page; scenario = $Scenario; speed = $Speed; breathSmoke = [bool]$BreathSmoke; uiScale=$UIScale; zoom=$Zoom;
+    state = $statePath; stateCaptured = $stateCaptured; phaseFixture = $Phase; phaseFixturePassed = $riftPhaseFixturePassed; allowExternalInput = [bool]$AllowExternalInput;
     width = $Width; height = $Height; actualWidth = $actualWidth; actualHeight = $actualHeight;
     resolutionMatches = $resolutionMatches; delay = $Delay;
     screenshot = $capturePath; engineLog = $logPath; executable = $Executable; executableSha256 = $riftCaptureExecutableHash;
@@ -101,4 +132,4 @@ $report = [ordered]@{
 }
 [System.IO.File]::WriteAllText($reportPath,($report | ConvertTo-Json -Depth 20),[System.Text.UTF8Encoding]::new($false))
 Write-Output ($report | ConvertTo-Json -Depth 20)
-if ($timedOut -or !$freshCapture -or !$stateCaptured -or !$resolutionMatches -or $process.ExitCode -ne 0 -or $errors.Count -gt 0) { throw "Unreal capture failed; inspect $reportPath" }
+if ($timedOut -or !$freshCapture -or !$stateCaptured -or !$resolutionMatches -or !$riftPhaseFixturePassed -or $process.ExitCode -ne 0 -or $errors.Count -gt 0) { throw "Unreal capture failed; inspect $reportPath" }

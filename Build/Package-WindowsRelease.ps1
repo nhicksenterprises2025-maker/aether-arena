@@ -1,6 +1,6 @@
 param(
     [string]$GamePackage,
-    [string]$Version='1.0.0',
+    [string]$Version='1.1.0',
     [string]$Repository='nhicksenterprises2025-maker/aether-arena',
     [string]$ToolchainRoot,
     [string]$BuildLog,

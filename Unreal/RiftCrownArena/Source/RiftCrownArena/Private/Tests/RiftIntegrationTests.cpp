@@ -23,6 +23,7 @@
 #include "RiftReplaySubsystem.h"
 #include "RiftUIWidget.h"
 #include "Serialization/JsonSerializer.h"
+#include <cmath>
 #include <limits>
 
 namespace {
@@ -1059,10 +1060,20 @@ bool FRiftPausedResultIntegrationTest::RunTest(const FString &Parameters) {
     auto *Profile = GI->GetSubsystem<URiftProfileSubsystem>();
     auto *Replay = GI->GetSubsystem<URiftReplaySubsystem>();
     const int32 InitialMatches = Profile->Matches, InitialWins = Profile->Wins;
+    // NativeConstruct opens Home and intentionally closes any loaded replay.
+    // Build the real UI before recording/opening the endpoint fixture.
+    auto* UI = CreateWidget<URiftUIWidget>(GI, URiftUIWidget::StaticClass());
+    TSharedPtr<SWidget> Slate = UI->TakeWidget();
     Match->StartMatch(true, false);
     Match->SetSpeed(0);
-    Match->Simulation()->Step(.2);
+    // Training keeps the enemy AI enabled; isolate the intended terminal edit
+    // through the real developer AI setter before advancing the fractional clock.
+    World->GetSubsystem<URiftAISubsystem>()->SetEnabled(1, false);
+    // This actual fractional match end rounds down when reduced to a float.
+    Match->Simulation()->Step(299.05);
     Match->FlushEvents();
+    TestTrue(TEXT("Fractional fixture remains live until its explicit Core destruction"),
+             Match->Simulation()->State().phase != rift::Phase::Finished);
     uint64 Core = 0;
     for (const auto &E : Match->Simulation()->State().entities)
         if (E.kind == rift::EntityKind::Core && E.team == rift::Team::Enemy)
@@ -1077,18 +1088,64 @@ bool FRiftPausedResultIntegrationTest::RunTest(const FString &Parameters) {
     TestEqual(TEXT("Repeated finished tick cannot duplicate result"), Profile->Matches, InitialMatches + 1);
     const FString Filename = Replay->LatestFilename;
     std::vector<uint64> CrossedEvents;
+    int32 CrossedTowerEnds = 0, CrossedMatchEnds = 0;
     const auto Handle =
-        Match->OnEvent.AddLambda([&](const rift::Event &E) { CrossedEvents.push_back(E.sequence); });
+        Match->OnEvent.AddLambda([&](const rift::Event &E) {
+            CrossedEvents.push_back(E.sequence);
+            if (E.type == "tower_destroy")
+                ++CrossedTowerEnds;
+            if (E.type == "match_end")
+                ++CrossedMatchEnds;
+        });
     TestTrue(TEXT("World replay opens"), Replay->OpenReplay(Filename));
-    Replay->Seek(.15f);
+    const double RecordedEnd = Replay->CurrentAnalysis()->GetNumberField(TEXT("time"));
+    TestTrue(TEXT("Fractional replay fixture exercises downward float endpoint rounding"),
+             RecordedEnd > double(Replay->Duration()));
+    TestEqual(TEXT("Replay preserves the exact recorded double duration"), Replay->TimelineDuration(), RecordedEnd);
+    const float BeforeEnd = std::nextafter(Replay->Duration(), 0.f);
+    Replay->Seek(BeforeEnd);
+    TestTrue(TEXT("The preceding representable slider position cannot expose the final result early"),
+             Match->ViewState()->phase != rift::Phase::Finished);
+    int32 EarlyTerminalEvents = 0;
+    for (const auto& Event : Replay->EventsNear(Replay->TimelinePosition(), 5)) {
+        const FString Type = Event->GetStringField(TEXT("type"));
+        if (Type == TEXT("tower_destroy") || Type == TEXT("match_end"))
+            ++EarlyTerminalEvents;
+    }
+    TestEqual(TEXT("Exact event queries do not include terminal events before their timestamp"), EarlyTerminalEvents, 0);
     TestTrue(TEXT("Seeking emits no historical presentation events"), CrossedEvents.empty());
     Replay->Advance(.1f);
     TestTrue(TEXT("Forward playback broadcasts crossed terminal events"), CrossedEvents.size() >= 4);
+    TestEqual(TEXT("Forward playback includes the final tower destruction once"), CrossedTowerEnds, 1);
+    TestEqual(TEXT("Forward playback includes the final match-end event once"), CrossedMatchEnds, 1);
+    TestEqual(TEXT("Forward playback reaches the exact fractional endpoint"), Replay->TimelinePosition(), RecordedEnd);
+    TestTrue(TEXT("Final recorded snapshot is shown instead of its preceding regulation/overtime state"),
+             Match->ViewState()->phase == rift::Phase::Finished && Match->ViewState()->winner == 0 &&
+                 Match->ViewState()->crowns[0] == 3 && Match->ViewState()->resultReason == "core_destroyed");
+    TestEqual(TEXT("Playback pauses at the recorded end"), Replay->Speed(), 0.f);
     TestTrue(TEXT("Presentation events remain chronological"),
              std::is_sorted(CrossedEvents.begin(), CrossedEvents.end()));
     const auto Count = CrossedEvents.size();
+    Replay->Advance(1.f);
+    TestEqual(TEXT("Paused final playback cannot repeat its terminal effects"), int32(CrossedEvents.size()), int32(Count));
     Replay->Seek(0);
     TestEqual(TEXT("Backward seek stays silent"), int32(CrossedEvents.size()), int32(Count));
+    Replay->Seek(Replay->Duration());
+    TestEqual(TEXT("Float slider maximum maps to the exact double recorded end"), Replay->TimelinePosition(), RecordedEnd);
+    TestTrue(TEXT("Explicit endpoint seeking restores the finished snapshot"), Match->ViewState()->phase == rift::Phase::Finished);
+    TestEqual(TEXT("Endpoint seeking also stays silent"), int32(CrossedEvents.size()), int32(Count));
+    UI->Navigate(TEXT("ReplayView"));
+    auto* TowerBookmark = ActiveButton(UI, TEXT("TOWER FALL"));
+    TestNotNull(TEXT("Actual replay UI retains the terminal fractional tower-fall bookmark"), TowerBookmark);
+    Replay->Seek(BeforeEnd);
+    if (TowerBookmark)
+        TowerBookmark->OnClicked.Broadcast();
+    const auto* BookmarkState = Match->ViewState();
+    TestTrue(TEXT("Tower-fall bookmark reaches the recorded finished result"),
+             BookmarkState && BookmarkState->phase == rift::Phase::Finished);
+    TestEqual(TEXT("Bookmark seeking emits no historical presentation events"), int32(CrossedEvents.size()), int32(Count));
+    UI->ReleaseSlateResources(true);
+    Slate.Reset();
     Replay->CloseReplay();
     Match->OnEvent.Remove(Handle);
     Match->LeaveMatch();

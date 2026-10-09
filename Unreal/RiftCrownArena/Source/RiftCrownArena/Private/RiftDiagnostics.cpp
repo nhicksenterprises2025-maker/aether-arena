@@ -6,6 +6,7 @@
 #include "HAL/PlatformFileManager.h"
 #include "HAL/PlatformProcess.h"
 #include "Misc/App.h"
+#include "Misc/ConfigCacheIni.h"
 #include "Misc/EngineVersion.h"
 #include "Misc/Paths.h"
 #include "Misc/ScopeLock.h"
@@ -44,7 +45,8 @@ namespace
     void SystemContext(const FString& Directory)
     {
         auto Record=MakeShared<FJsonObject>();Record->SetNumberField(TEXT("schemaVersion"),1);Record->SetStringField(TEXT("event"),TEXT("system_context"));Record->SetStringField(TEXT("timestamp"),FDateTime::UtcNow().ToIso8601());
-        Record->SetStringField(TEXT("project"),FApp::GetProjectName());Record->SetStringField(TEXT("gameVersion"),TEXT("1.0.0"));Record->SetStringField(TEXT("engineVersion"),FEngineVersion::Current().ToString());Record->SetStringField(TEXT("platform"),TEXT("Windows x64"));
+        FString GameVersion=TEXT("unknown");if(GConfig)GConfig->GetString(TEXT("/Script/EngineSettings.GeneralProjectSettings"),TEXT("ProjectVersion"),GameVersion,GGameIni);
+        Record->SetStringField(TEXT("project"),FApp::GetProjectName());Record->SetStringField(TEXT("gameVersion"),GameVersion);Record->SetStringField(TEXT("engineVersion"),FEngineVersion::Current().ToString());Record->SetStringField(TEXT("platform"),TEXT("Windows x64"));
 #if UE_BUILD_SHIPPING
         Record->SetStringField(TEXT("build"),TEXT("Shipping"));
 #elif UE_BUILD_DEVELOPMENT

@@ -3,6 +3,12 @@
 Original Windows card battler: fourteen cards, two lanes, deterministic combat,
 seven AI personalities, deck workshop, Meta Lab, replays and developer training.
 
+Version 1.1.0 adds a rebuilt battle hand, illustrated next-card preview, segmented
+Aether meter, crown scoreboard, pause menu and Field Manual. Training overlays
+work in the packaged game. Recorded combat sounds and a new original orchestral
+score replace the earlier audio palette. The arena graphics and numerical game
+rules are preserved. See [the update notes](Docs/PATCH_NOTES_1.1.0.md).
+
 `Reference/BrowserV15` preserves the tested browser game and its gameplay
 specification. Run its `start_game.bat` or follow its README.
 

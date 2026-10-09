@@ -35,9 +35,17 @@ class RIFTCROWNARENA_API URiftReplaySubsystem : public UGameInstanceSubsystem, p
     UFUNCTION(BlueprintCallable) bool DeleteReplay(const FString &Filename);
     void Advance(float DeltaTime);
     float Position() const {
-        return PlaybackTime;
+        return float(PlaybackTime);
     }
     float Duration() const {
+        return float(PlaybackDuration);
+    }
+    // Recording timestamps are doubles; sliders retain their float interface.
+    // Use the exact timeline for inclusive event queries and final snapshots.
+    double TimelinePosition() const {
+        return PlaybackTime;
+    }
+    double TimelineDuration() const {
         return PlaybackDuration;
     }
     float Speed() const {
@@ -62,7 +70,8 @@ class RIFTCROWNARENA_API URiftReplaySubsystem : public UGameInstanceSubsystem, p
     TArray<TSharedPtr<FJsonValue>> RecordedEvents, RecordedSamples;
     rift::Snapshot View;
     double LastSample = -1;
-    float PlaybackTime = 0, PlaybackDuration = 0, PlaybackSpeed = 1;
+    double PlaybackTime = 0, PlaybackDuration = 0;
+    float PlaybackSpeed = 1;
     int32 EventCursor = 0;
     uint64 RecordedSequence = 0;
     TArray<rift::Event> PlaybackEvents;

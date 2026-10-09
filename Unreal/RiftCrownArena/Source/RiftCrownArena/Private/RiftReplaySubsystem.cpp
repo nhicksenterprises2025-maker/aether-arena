@@ -1101,7 +1101,7 @@ bool URiftReplaySubsystem::OpenReplay(const FString &Filename) {
     Loaded = O;
     PlaybackEvents = MoveTemp(ParsedEvents);
     PlaybackTime = 0;
-    PlaybackDuration = float(N(O, TEXT("duration")));
+    PlaybackDuration = N(O, TEXT("duration"));
     PlaybackSpeed = 1;
     UpdateView();
     ResetEventCursor();
@@ -1129,7 +1129,9 @@ void URiftReplaySubsystem::ResetEventCursor() {
 void URiftReplaySubsystem::Seek(float Seconds) {
     if (!FMath::IsFinite(Seconds) || !Loaded)
         return;
-    PlaybackTime = FMath::Clamp(Seconds, 0.f, PlaybackDuration);
+    // The slider's maximum can round below the recording's last timestamp.
+    // An explicit seek to that maximum still means the exact recorded end.
+    PlaybackTime = Seconds >= Duration() ? PlaybackDuration : FMath::Clamp(double(Seconds), 0.0, PlaybackDuration);
     UpdateView();
     ResetEventCursor();
 }
@@ -1142,8 +1144,8 @@ void URiftReplaySubsystem::SetSpeed(float Value) {
 void URiftReplaySubsystem::Advance(float DeltaTime) {
     if (!Loaded || !FMath::IsFinite(DeltaTime) || DeltaTime <= 0)
         return;
-    const float Before = PlaybackTime;
-    PlaybackTime = FMath::Min(PlaybackDuration, PlaybackTime + DeltaTime * PlaybackSpeed);
+    const double Before = PlaybackTime;
+    PlaybackTime = FMath::Min(PlaybackDuration, PlaybackTime + double(DeltaTime) * PlaybackSpeed);
     UpdateView();
     auto *W = GetWorld();
     auto *M = W ? W->GetSubsystem<URiftMatchSubsystem>() : nullptr;

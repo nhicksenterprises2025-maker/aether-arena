@@ -2,7 +2,82 @@
 
 The runtime implementation is in `Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation` and `Private/Presentation`. `ARiftArenaPresentation` consumes `URiftMatchSubsystem::ViewState()` and `OnEvent`. `ARiftUnitVisual` has no gameplay collision and never applies damage. Existing simulation, card costs, health, damage, targeting, pathing, lifetimes and status durations remain authoritative.
 
-## Connected systems
+## 1.1.0 presentation evidence
+
+The 1.1.0 presentation update preserves the existing arena, character and tower
+meshes, materials, card illustrations, animations, scenery and Niagara assets.
+The fourteen-card roster and numerical simulation rules remain authoritative.
+It changes the interface and sound bank, with a narrow event-to-impact-sound
+mapping correction that does not alter damage or event timing.
+
+The native UMG interface now uses Slate-drawn card frames, crowns, segmented
+Aether and selection feedback around the existing illustrations. The lobby,
+deck/card pages, profile, settings, replay controls, match reports and Field
+Manual use the revised layout. Battle includes separate crown scores, next-card
+art, phase announcements, a drag preview and an Escape pause menu. Training
+shows current speed, Aether, friendly/enemy AI and tower health. Its projected
+paths, front/rear sight, ranges, targets, hard locks and tile coordinates use
+Slate painting so they also work in Shipping; these remain default-off tools.
+Current renderer observations and their limits belong to
+`Docs/QA/presentation-review.json`, rather than the historical captures below.
+
+The final Shipping Niagara run at
+`Artifacts/QA/polish15-shipping-vfx-final-verification.json` passed all 80
+checks: all 17 original systems executed their actual graph, the immediate
+fixture contained 156 particles, and all seven persistent systems retained
+their single particle at the lifecycle sample. The capture fixture advances
+the authored graph in small synchronous steps to the requested 0.12 or 1.2
+seconds and holds that sample for diagnostics/rendering. This avoids measuring
+a startup frame hitch as effect age; it does not change particle recipes,
+ordinary effect lifetimes or gameplay behavior.
+
+The new recorded sound bank contains 61 SoundWaves: all 41 original cue IDs and
+20 additional combat takes. Recorded impacts, tactile UI feedback, water
+ambience, a new original chamber-orchestra arrangement and related stingers
+replace the earlier synthesized palette. The runtime reserves six UI and 26
+combat voices, aggregates repeated swarm cues, prioritizes decisive events,
+ducks music for announcements and routes playback through a registered stereo
+limiter. Independent Master, Music, SFX and UI settings are retained.
+
+The final-source sound-enabled Editor and final Shipping runs passed all 49 checks,
+including all 61 assets, bound Settings callbacks, independent mutes, voice
+reservation, event priority, loop voice survival, live submix registration and
+post-effect floating-point capture. Their separate QA profiles left the player
+save untouched. The following measurements are from the real stereo 48 kHz
+mixer before PCM encoding; the overload deliberately plays two large cues at
+12 times their ordinary gain.
+
+| Run under `Artifacts/QA/Audio` | Normal peak / RMS | Overload peak / RMS | Clipped floats |
+| --- | --- | --- | --- |
+| `polish15-editor-audio-final` (final sources) | 0.206878617 / 0.047645573 | 0.800180495 / 0.172086378 | 0 in both captures |
+| `polish15-shipping-audio-final` (final executable) | 0.203053907 / 0.051877354 | 0.801191688 / 0.173328368 | 0 in both captures |
+
+Each run supplies `audio-smoke.json`, `run.json`, `mixed-output.wav` and
+`limiter-overload.wav`. `Build/Package-QAEvidence.ps1` independently validates
+the raw-float content/headroom assertions and the PCM16 WAV container, sample
+layout, quantized peak/RMS and exact SHA256 bytes. The resulting
+`mixed-recording-verification.json` preserves those two measurement stages
+separately. This establishes limiter/mixer behavior; no human listening
+acceptance, perceived balance or subjective sound quality is claimed.
+
+The final-source Editor captures contain 59,392 normal and 116,736 overload
+float samples; its actual audio run exited 0 in 22.60 seconds. Final Shipping
+captures contain 61,440 normal and 114,688 overload samples. Its actual audio
+run exited 0 in 11.16 seconds and pins native
+executable SHA256
+`0f35c7e9f52bb6009876c5e2eef23be8d4033712d844a91f04a8c28c68aa176b`.
+The evidence packager verifies this executable against the final release
+manifest. Earlier provisional Shipping audio reports are not used as the final
+binary's test.
+
+## Historical 1.0.0 implementation and review record
+
+All sections below retain the original release's implementation notes, failed
+captures, fixes and measured review. Their 41-sound/263-asset counts, old UI
+screenshots, runtime hashes and acceptance status refer to 1.0.0 and are not
+the current 1.1.0 inventory or release certification.
+
+### Connected systems
 
 - Authored instanced ground, paving, river banks, bridge, boundary masonry, foliage, trees, crystal plinths, banners, ruins and floating island terrain. The 28×42 playable tiles, ±7.2 m bridges and 3.3 m river retain the simulation coordinates; additional scenery sits outside the field.
 - Imported skeletal troops, round Archer Tower and miniature archer, guard cannon towers, core spire towers and destroyed masonry. Imported forward is +X; simulation `(x,z)` maps to engine `(X,Y)` in centimeters. Friendly and enemy trim use the material atlas's team mask.
@@ -12,13 +87,13 @@ The runtime implementation is in `Unreal/RiftCrownArena/Source/RiftCrownArena/Pu
 - Imported original sound effects and streamed original score. Profile master, music, SFX and UI settings apply to the appropriate voice and update active components. At most 32 one-shot voices mix simultaneously. UI calls `URiftBattleAudioSubsystem::PlayUI` with `ui_click`, `ui_error`, `ui_save` or `ui_hover`.
 - Paths, front/rear sight, ranges, target arrows, tiles and tower hard-lock lines are all behind the existing default-off developer flags.
 
-## Verified before renderer review
+### Verified before renderer review
 
 The final presentation sources compiled in the Editor and Shipping targets (`Artifacts/QA/native-editor-build-audit-final.log` and `Artifacts/QA/native-shipping-build.log`). A clean legacy FBX import of Ironclad measured 139.40 cm across, 62.22 cm forward and 214.86 cm tall, with forward axis +X and a generated Physics Asset. This agrees with the authored meter dimensions and requires import scale 1. Existing skeletal reimports can restore stale settings; the importer must perform clean generated imports and explicitly clear cached skeleton/physics pointers before importing each unrelated skeleton.
 
 `Build/Capture-Unreal.ps1` launches the real renderer offscreen, records its log and exit code, rejects stale captures, and checks the PNG's actual width/height against the requested resolution. A captured image is not accepted until it has been visually inspected. Captures use a separate QA save root and leave the player's save untouched.
 
-## Engine review required
+### Engine review required
 
 The main build pipeline owns the complete import, render and packaged-play results. The source/export audit, clean single-mesh import and successful compilation do not by themselves establish the following visual or performance results:
 
@@ -35,7 +110,7 @@ Root replay integration must dispatch recorded events during normal playback and
 
 Until those engine and packaged reviews are recorded, this document reports connected implementation and its acceptance criteria, not completed release approval.
 
-## First engine capture
+### First engine capture
 
 `Artifacts/QA/Visual/battle-roster-baseline-1920x1080.png` is the first actual engine capture. Its PNG dimensions were correct, and the projected health overlay drew for both teams. It failed acceptance: the world rendered black, the main Battle widget tree was absent, shared materials lacked skeletal/instanced usage flags, and shutdown crashed in replay recording. Nearby Archer Tower and Guard numeric health labels also overlapped. The associated JSON and engine log retain this failed evidence. Camera exposure, the persistent UMG root, material flags and teardown ownership are being repaired by their owning engineers; the next capture must verify those corrections before visual approval.
 
@@ -45,7 +120,7 @@ Subsequent fixed captures exited cleanly with the arena, models and UI visible. 
 
 The full physics diagnostic now verifies all eleven generated assets in the disk registry. Their real body counts range from one to seven, with the expected constraints; package flags are zero and the objects are real public standalone assets. The successful Shipping cook follows generated physics saves and an explicit scan by filename. `Artifacts/QA/unreal_physics_inspection.json` retains the native body/constraint counts and registry checks; `Artifacts/QA/native-shipping-package-final.log` records the cook result. No collision assets were removed to fix package discovery.
 
-## Reproducible event and audio checks
+### Reproducible event and audio checks
 
 `Build/Capture-Unreal.ps1` supports `roster`, `congestion`, `effects` and `placement` scenarios. The effects scenario deploys original cards through the real sandbox API and lets ordinary combat emit attacks, projectiles, slow, stun, aura and damage events; timers cast the original Meteor Shards, Bullet Burst and Nova Flask. It supports simulation speeds 0.25, 1 and 4. The placement capture passes an original card and snapped tile through the real `CanPlace` rule, then draws the same preview API used by the player controller. Each capture saves an adjacent `.state.json` containing actual event counts, simulation time/speed, live projectiles, hazards, statuses and the preview validity/size. These explicit capture flags are isolated QA behavior and do not alter normal play.
 
@@ -53,7 +128,7 @@ The full physics diagnostic now verifies all eleven generated assets in the disk
 
 These checks establish actual Settings callbacks, component mixing, mute behavior and physical-voice survival across mixer ticks. They do not establish acoustic quality, perceived loudness, voice balance or absence of an audible loop seam; no listening review was performed.
 
-## Actual combat and menu evidence
+### Actual combat and menu evidence
 
 All following images come directly from `FScreenshotRequest` in the running Unreal renderer; none are composites. Each adjacent capture JSON records a clean exit, exact PNG resolution, fresh state metadata and no authored-asset errors. The real completed Meta dataset was copied only into the isolated QA profile; `Artifacts/QA/Visual/meta-capture-provenance.json` records its original and copied SHA256 hashes.
 
@@ -71,7 +146,7 @@ The first effects fixture failed to exercise Raven aura because five enemy Bats 
 
 The event totals establish that combat actually occurred. These earlier frames establish status labels and hazard rings, but a subsequent native diagnostic found zero actual Niagara particles. They are historical event/overlay evidence, not successful particle-effect evidence. The concrete graph defect and its repaired runtime proof are recorded below. Single screenshots do not prove continuous animation transitions, exact visible contact synchronization, replay seek cleanup, perceived audio quality or production-level model detail.
 
-## Final camera, placement and UI inspection
+### Final camera, placement and UI inspection
 
 The final camera uses a 5350 cm vertical span at default zoom and looks toward `(0,500,0)`. `battle-roster-final-camera-1920x1080.png` shows the entire legal 28×42 field above the hand. The legal friendly back row ends around y=827 while the hand begins at y=876; both cores, tower numbers, upper HUD and the hand remain visible. The square rear-corner preview at tile `(13.5,20.5)` occupies approximately x=1222..1243 and y=800..821, entirely above the hand. The outer decorative grass can extend beneath the HUD without hiding legal placement tiles.
 
@@ -83,7 +158,7 @@ The six `placement-final-*` frames use actual `CanPlace` results. `rear-corner` 
 
 The final menu review includes `home-final-1920x1080`, `cards-final-1920x1080`, `profile-final-1920x1080`, `meta-final-table-1920x1080`, `settings-final-combo-1920x1080`, `patch-notes-final-1920x1080` and `loadout-final-width-1920x1080`. All 14 cards are visible on Cards. Home shows all eight selected cards. The final Loadout image shows all eight complete selected-card names, illustrations and costs, including the full single-line Boulderback name, plus a readable editable deck name. Its below-scroll catalog is not shown and is not certified by this one screenshot. Meta uses aligned table cells, whole counts, two-decimal metrics and both confidence bounds; Settings uses the shared dark/ivory Combo palette and readable sliders/actions. Their connected callbacks are tested separately by native ConnectedUI automation.
 
-## Actual Niagara graph repair and lifecycle proof
+### Actual Niagara graph repair and lifecycle proof
 
 `battle-effects-niagara-diagnostic-1920x1080.state.json` recorded compiled-ready systems with zero particles and zero spawned particles. The builder had called `UNiagaraSystem::AddEmitterHandle` directly, leaving the executable system graph incomplete. The repair follows the installed engine factory's `FNiagaraEditorUtilities::AddEmitterToSystem`, which rebuilds emitter nodes and synchronizes the overview graph. Existing packages are loaded fully before mutation; failed saves now appear in the report rather than being hidden by `SAVE_NoError`. `Build/repair_unreal_vfx.py` repairs only the 17 generated VFX systems; no card mechanics, meshes or collision assets are changed. `Artifacts/QA/unreal_vfx_graph_repair.json` records all 17 saves as true with zero errors.
 
@@ -107,7 +182,7 @@ The final scope review found Frost Fang's authored `Breath` clip was imported bu
 
 `frost-breath-final-1920x1080` verifies the actual binding and ambience. The explicit `-RiftBreathSmoke` QA flag briefly resumes the existing roster through ordinary simulation and pauses it again; it does not replace snapshots. At real elapsed 0.883333 seconds, both Frost Fang entities select `Breath`, bound to `/Game/Rift/Characters/frost_fang/Animations/AN_frost_fang_Breath.AN_frost_fang_Breath`, at clip positions 1.100369 and 1.216056 seconds. Two mouth puffs have emitted; both actual Frost systems are active at age 0.166668 seconds with eight live particles each and finite nonzero dimensions. The original 1920×1080 PNG was inspected, the subtle frost does not obstruct the field, and the renderer exited 0 without authored-asset errors. `Artifacts/QA/native-editor-build-frost-breath-final.log` records the successful Editor compile. This capture's runtime DLL SHA256 is `5cc353a2acb11ede59d5d3aef366fe02fee620265d64a21e72b5b07754d81333`; the subsequent complete native tests and Shipping restage must use that source revision. The QA timer only exists when its explicit flag is supplied.
 
-## Current native asset evidence
+### Native asset evidence at 1.0.0
 
 `Build/inspect_unreal_assets.py` performs a read-only scan and loads existing current assets. `Artifacts/QA/unreal_asset_audit.json` contains 263 actual on-disk registry records: 113 animation sequences, seven materials, 17 Niagara systems, 11 Physics Assets, 14 original Card DataAssets, 11 skeletal meshes, 11 skeletons, 41 SoundWaves, 19 static meshes, 18 textures and the Arena map. All non-map records load successfully, and the native card validation reports all 14 originals with zero errors, intended illustrations/animations/effects/sounds and valid character dimensions/physics. The map's generic asset-load check is explicitly omitted because map loading is a different operation; actual native Arena captures establish that the World loads. Earlier native physics inspection separately records all eleven real body assets. This populated audit has a separate filename and does not overwrite import or materials-only reports.
 

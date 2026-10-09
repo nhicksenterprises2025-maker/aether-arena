@@ -2,6 +2,7 @@
 #include "RiftProfileSubsystem.h"
 #include "RiftReplaySubsystem.h"
 #include "RiftMetaSimulationSubsystem.h"
+#include "RiftDiagnostics.h"
 #include "Engine/GameInstance.h"
 #include "Engine/World.h"
 #include "Misc/CommandLine.h"
@@ -18,16 +19,24 @@ TStatId URiftMatchSubsystem::GetStatId()const{RETURN_QUICK_DECLARE_CYCLE_STAT(UR
 bool URiftMatchSubsystem::IsTickable()const{return GetWorld()&&GetWorld()->IsGameWorld()&&(Match||ReplayView);}
 void URiftMatchSubsystem::StartMatch(bool Training,bool BothAI)
 {
+    FString CapturePath;
+    if(FParse::Value(FCommandLine::Get(),TEXT("RiftCapture="),CapturePath))
+        RIFT_LOG(LogRift,Log,TEXT("QA StartMatch training=%d bothAI=%d previousPhase=%s previousElapsed=%.6f"),Training,BothAI,*GetPhase(),ViewState()?ViewState()->elapsed:0.);
+    auto* GI=GetWorld()->GetGameInstance();auto* Replay=GI->GetSubsystem<URiftReplaySubsystem>();
+    // Starting live play ends the loaded playback session, including launches
+    // from Analysis/Loadout. Otherwise Escape can still route back to its replay.
+    // CloseReplay releases playback only; recordings and saved archives survive.
+    if(Replay->IsPlaying())Replay->CloseReplay();
     LeaveMatch();bTraining=Training;bResultSaved=false;ReplayView=nullptr;Speed=1;ReplaySampleClock=0;
-    auto* GI=GetWorld()->GetGameInstance();auto* Profile=GI->GetSubsystem<URiftProfileSubsystem>();
+    auto* Profile=GI->GetSubsystem<URiftProfileSubsystem>();
     rift::MatchOptions Options;Options.seed=FPlatformTime::Cycles();
     for(const auto& Id:Profile->ActiveDeck())Options.decks[0].push_back(TCHAR_TO_UTF8(*Id));
     static const char* Styles[]={"beatdown","aggro","control","cycle","split","spell_cycle","counter"};
     Options.aiStyles[1]=Training&&!BothAI?"control":Styles[Options.seed%7];Options.aiEnabled={BothAI,true};Options.decks[1]=rift::BuildAIDeck(Options.aiStyles[1],Options.seed^0x2CB4U);
     Match=std::make_unique<rift::Match>(Options);
     GI->GetSubsystem<URiftMetaSimulationSubsystem>()->SetBattleActive(true);
-    GI->GetSubsystem<URiftReplaySubsystem>()->BeginRecording(Options,Training);
-    GI->GetSubsystem<URiftReplaySubsystem>()->Sample(Match->State());
+    Replay->BeginRecording(Options,Training);
+    Replay->Sample(Match->State());
     FlushEvents();OnChanged.Broadcast();
 }
 void URiftMatchSubsystem::LeaveMatch()
@@ -100,7 +109,20 @@ TArray<FVector> URiftPathfindingSubsystem::Route(rift::EntityId Source,rift::Ent
 }
 void URiftAISubsystem::SetEnabled(int32 Team,bool Enabled){auto* M=GetWorld()->GetSubsystem<URiftMatchSubsystem>();if(M->Simulation()){M->SampleBeforeMutation();M->Simulation()->SetAIEnabled(rift::Team(FMath::Clamp(Team,0,1)),Enabled);M->FlushEvents();}}
 bool URiftAISubsystem::SetStyle(int32 Team,const FString& Style){auto* M=GetWorld()->GetSubsystem<URiftMatchSubsystem>();if(!M->Simulation())return false;M->SampleBeforeMutation();bool Result=M->Simulation()->SetAIStyle(rift::Team(FMath::Clamp(Team,0,1)),TCHAR_TO_UTF8(*Style));M->FlushEvents();return Result;}
-FString URiftAISubsystem::Readout(int32 Team)const{auto* S=GetWorld()->GetSubsystem<URiftMatchSubsystem>()->ViewState();if(!S)return TEXT("No active match");const auto& AI=S->ai[FMath::Clamp(Team,0,1)];return FString::Printf(TEXT("%s · %s\n%s\nEstimated opponent Aether %.1f"),UTF8_TO_TCHAR(AI.style.c_str()),UTF8_TO_TCHAR(AI.decision.c_str()),UTF8_TO_TCHAR(AI.reason.c_str()),AI.estimatedOpponentAether);}
+FString URiftAISubsystem::Readout(int32 Team)const
+{
+    const auto* State=GetWorld()->GetSubsystem<URiftMatchSubsystem>()->ViewState();if(!State)return TEXT("No active match");
+    const int32 Index=FMath::Clamp(Team,0,1);const auto& AI=State->ai[Index];
+    FString Cycle;const int32 Start=FMath::Max(0,int32(AI.observedCycle.size())-5);
+    for(int32 I=Start;I<int32(AI.observedCycle.size());++I)
+    {
+        if(!Cycle.IsEmpty())Cycle+=TEXT(" → ");
+        const auto* Card=rift::FindCard(AI.observedCycle[I]);Cycle+=UTF8_TO_TCHAR((Card?Card->name:AI.observedCycle[I]).c_str());
+    }
+    if(Cycle.IsEmpty())Cycle=TEXT("No cards observed");
+    FString Style=UTF8_TO_TCHAR(AI.style.c_str());Style.ReplaceInline(TEXT("_"),TEXT(" "));
+    return FString::Printf(TEXT("%s · %s\n%s\nAether %.1f · opponent estimate %.1f\nPhase: %s\nObserved cycle: %s"),*Style.ToUpper(),UTF8_TO_TCHAR(AI.decision.c_str()),UTF8_TO_TCHAR(AI.reason.c_str()),State->aether[Index],AI.estimatedOpponentAether,UTF8_TO_TCHAR(AI.phase.c_str()),*Cycle);
+}
 void URiftDeveloperSubsystem::ChangeAether(int32 Team,float Delta,bool Maximum){auto* M=GetWorld()->GetSubsystem<URiftMatchSubsystem>();if(M->Simulation()){M->SampleBeforeMutation();int32 T=FMath::Clamp(Team,0,1);M->Simulation()->SetAether(rift::Team(T),Maximum?10:M->Simulation()->State().aether[T]+Delta);M->FlushEvents();}}
 bool URiftDeveloperSubsystem::SpawnCard(int32 Team,const FString& Card,FVector2D Tile){auto* M=GetWorld()->GetSubsystem<URiftMatchSubsystem>();if(!M->Simulation())return false;M->SampleBeforeMutation();bool R=M->Simulation()->Spawn(rift::Team(FMath::Clamp(Team,0,1)),TCHAR_TO_UTF8(*Card),{Tile.X,Tile.Y});M->FlushEvents();return R;}
 bool URiftDeveloperSubsystem::SetTowerHP(int64 Tower,float HP){auto* M=GetWorld()->GetSubsystem<URiftMatchSubsystem>();if(!M->Simulation())return false;M->SampleBeforeMutation();bool R=M->Simulation()->SetTowerHP(Tower,HP);M->FlushEvents();return R;}

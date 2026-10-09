@@ -38,7 +38,10 @@ public:
     bool PreviewIsValid() const { return bPlacementValid; }
     // On-demand native QA; never runs during ordinary rendering.
     FString NiagaraDiagnosticsJSON();
+    int32 TrainingOverlayLineCount()const;
+    int32 TrainingOverlayLabelCount()const;
     void ShowcaseNiagara();
+    void ShowcaseNiagaraAtAge(float Age);
 private:
     void ConstructArena();
     UHierarchicalInstancedStaticMeshComponent* Instances(FName Mesh, int32 Team=-1);
@@ -48,7 +51,6 @@ private:
     void SynchronizeProjectiles(const rift::Snapshot& State);
     void SynchronizeHazards(const rift::Snapshot& State);
     void SynchronizeStatuses(const rift::Snapshot& State);
-    void DrawDeveloperOverlay(const rift::Snapshot& State);
     void OnSimulationEvent(const rift::Event& Event);
     void OnMatchChanged();
     void ClearVisuals();
@@ -75,6 +77,8 @@ private:
     TMap<uint64,FVector> ProjectileOrigins;
     TMap<uint64,double> NextFrostBreath;
     TArray<TWeakObjectPtr<UNiagaraComponent>> TransientEffects;
+    TArray<TWeakObjectPtr<UNiagaraComponent>> ShowcaseEffects;
+    float ShowcaseSampleAge=-1.f;
     TSet<FName> MissingAssets;
     FDelegateHandle EventHandle, MatchHandle;
     uint32 LastSeed=0;

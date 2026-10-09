@@ -1,9 +1,11 @@
 param(
-    [string]$Version = '1.0.0',
+    [string]$Version = '1.1.0',
     [string]$StageRoot = '',
     [switch]$Finalize,
     [string]$ShippingAudioRoot = '',
     [string]$ShippingVFXReport = '',
+    [string]$EditorAudioRoot = 'Artifacts/QA/Audio/native-audio-postmix64',
+    [string]$PresentationReview = 'Docs/QA/presentation-review.json',
     [string[]]$ShippingCaptureNames = @(),
     [string[]]$PerformanceReports = @(),
     [string[]]$PerformanceLogs = @(),
@@ -13,6 +15,7 @@ param(
 $ErrorActionPreference = 'Stop'
 if ($PSVersionTable.PSVersion.Major -lt 7) { throw 'Run this evidence packager with PowerShell 7.' }
 if ($Version -notmatch '^\d+\.\d+\.\d+(\.\d+)?$') { throw 'Use a numeric release version.' }
+$qaPolishRelease = [version]$Version -ge [version]'1.1.0'
 $qaRepo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 function Assert-QANoLinks([string]$Path) {
     $qaLinkPath = [IO.Path]::GetFullPath($Path)
@@ -147,18 +150,41 @@ if ($qaPortableOutput -notmatch 'Native authoritative simulation: 36 scenarios p
     $qaPortableOutput -notmatch 'SOAK 21 complete matches') { throw 'The portable production-core result is incomplete.' }
 Select-QAEvidence 'Build/NativeTests/latest-results.txt' 'Native/portable-results.txt'
 $qaIntegration = Read-QAJson 'Docs/QA/native-integration.json'
-if (!$qaIntegration.curatedEvidence.allNineScenariosObserved -or
+if (($qaPolishRelease -and (!$qaIntegration.curatedEvidence.allScenariosObserved -or $qaIntegration.curatedEvidence.schema -ne 2 -or $qaIntegration.curatedEvidence.version -ne $Version)) -or
+    (!$qaPolishRelease -and !$qaIntegration.curatedEvidence.allNineScenariosObserved) -or
     $qaIntegration.curatedEvidence.sourceReport -notmatch '^Build/Automation/\d{8}-\d{6}/Report/index\.json$' -or
     $qaIntegration.curatedEvidence.commandletLog -notmatch '^Build/Automation/\d{8}-\d{6}/UnrealIntegration\.log$' -or
     $qaIntegration.curatedEvidence.wrapperExitCode -ne 0 -or $qaIntegration.curatedEvidence.commandletExitCode -ne 0 -or
     $qaIntegration.curatedEvidence.sourceReportSha256 -ne (Get-FileHash -LiteralPath (Resolve-QASource $qaIntegration.curatedEvidence.sourceReport) -Algorithm SHA256).Hash.ToLowerInvariant()) {
-    throw 'Curated integration evidence does not match the final complete nine-test run.'
+    throw 'Curated integration evidence does not match the completed named release suite.'
 }
 $qaFinalReport = Read-QAJson $qaIntegration.curatedEvidence.sourceReport
-if ($qaFinalReport.failed -ne 0 -or $qaFinalReport.notRun -ne 0 -or $qaFinalReport.tests.Count -ne 9 -or
-    ($qaFinalReport.succeeded + $qaFinalReport.succeededWithWarnings) -ne 9 -or
-    @($qaFinalReport.tests | Where-Object state -ne 'Success').Count -ne 0) { throw 'The final complete nine-test automation did not pass.' }
-Select-QAEvidence $qaIntegration.curatedEvidence.sourceReport 'Native/ue-nine-tests.json' 'json'
+$qaRequiredTests = @('Rift.Integration.CardData','Rift.Integration.ConnectedUI','Rift.Integration.FullLengthReplay',
+    'Rift.Integration.PausedResultAndReplayEvents','Rift.Integration.ProfilePersistence','Rift.Integration.ReplayTimeline',
+    'Rift.Integration.SnapshotRoundtrip','Rift.Meta.AggregationEconomy','Rift.Meta.WorkerPauseAndRecovery')
+if ($qaPolishRelease) { $qaRequiredTests += @('Rift.Integration.BattleInputRouting','Rift.Integration.Presentation') }
+$qaActualTests = @($qaFinalReport.tests)
+if ($qaFinalReport.failed -ne 0 -or $qaFinalReport.notRun -ne 0 -or $qaFinalReport.inProcess -ne 0 -or
+    $qaActualTests.Count -lt $qaRequiredTests.Count -or ($qaFinalReport.succeeded + $qaFinalReport.succeededWithWarnings) -ne $qaActualTests.Count -or
+    @($qaActualTests | Where-Object { $_.state -ne 'Success' -or $_.errors -ne 0 }).Count -ne 0 -or
+    @($qaActualTests.fullTestPath | Sort-Object -Unique).Count -ne $qaActualTests.Count) { throw 'The complete named release automation did not pass.' }
+foreach ($qaRequiredTest in $qaRequiredTests) { if ($qaRequiredTest -notin $qaActualTests.fullTestPath) { throw "A required release test is absent: $qaRequiredTest" } }
+$qaAutomationCount = $qaActualTests.Count
+if ($qaPolishRelease) {
+    $qaIntegrationContext = Read-QAJson $qaIntegration.curatedEvidence.context
+    if ($qaIntegrationContext.schema -ne 2 -or !$qaIntegrationContext.completed -or !$qaIntegrationContext.sourcesUnchanged -or !$qaIntegrationContext.runtimeModulesUnchanged -or
+        $qaIntegrationContext.wrapperExitCode -ne 0 -or $qaIntegrationContext.commandletExitCode -ne 0 -or !$qaIntegrationContext.isolation.automationSandbox -or
+        $qaIntegrationContext.report -ne $qaIntegration.curatedEvidence.sourceReport -or $qaIntegrationContext.sourceReportSha256 -ne $qaIntegration.curatedEvidence.sourceReportSha256 -or
+        $qaIntegration.curatedEvidence.observedTestCount -ne $qaAutomationCount -or
+        $qaIntegration.curatedEvidence.contextSha256 -ne (Get-FileHash -LiteralPath (Resolve-QASource $qaIntegration.curatedEvidence.context) -Algorithm SHA256).Hash.ToLowerInvariant()) {
+        throw 'The release suite lacks matching successful launch-time source/module provenance.'
+    }
+    foreach ($qaModule in $qaIntegrationContext.runtimeModules) {
+        if ($qaModule.sha256 -ne (Get-FileHash -LiteralPath (Resolve-QASource $qaModule.path) -Algorithm SHA256).Hash.ToLowerInvariant()) { throw 'An Editor module changed after the release automation.' }
+    }
+    Select-QAEvidence $qaIntegration.curatedEvidence.context 'Native/automation-context.json' 'json'
+}
+Select-QAEvidence $qaIntegration.curatedEvidence.sourceReport 'Native/ue-release-tests.json' 'json'
 $qaDPIReportPath = 'Build/Automation/20261008-161916/Report/index.json'
 $qaDPIReport = Read-QAJson $qaDPIReportPath
 if ($qaDPIReport.failed -ne 0 -or $qaDPIReport.notRun -ne 0 -or
@@ -166,7 +192,22 @@ if ($qaDPIReport.failed -ne 0 -or $qaDPIReport.notRun -ne 0 -or
 Select-QAEvidence $qaDPIReportPath 'Native/connected-ui-dpi.json' 'json'
 foreach ($qaSource in $qaIntegration.curatedEvidence.sourceHashes) {
     if ($qaSource.sha256 -ne (Get-FileHash -LiteralPath (Resolve-QASource $qaSource.path) -Algorithm SHA256).Hash.ToLowerInvariant()) {
-        throw 'A production source changed after the final nine-test run.'
+        throw 'A production source changed after the completed release suite.'
+    }
+}
+if ($qaPolishRelease) {
+    $qaHashPaths = @($qaIntegration.curatedEvidence.sourceHashes.path)
+    $qaRequiredSourcePaths = @(
+        Get-ChildItem -LiteralPath (Join-Path $qaRepo 'Unreal/RiftCrownArena/Source'),(Join-Path $qaRepo 'Unreal/RiftCrownArena/Config') -File -Recurse |
+            Where-Object Extension -in @('.cpp','.h','.cs','.ini') | ForEach-Object { [IO.Path]::GetRelativePath($qaRepo,$_.FullName).Replace('\','/') }
+    ) + @('Unreal/RiftCrownArena/RiftCrownArena.uproject','Build/Test-Unreal.ps1','Build/generate_audio.py',
+        'Assets/Source/Audio/audio_manifest.json','Assets/Source/Audio/Palette/sources.json')
+    $qaRequiredSourcePaths += @(Get-ChildItem -LiteralPath (Join-Path $qaRepo 'Assets/Source/Audio') -File | Where-Object Extension -eq '.wav' | ForEach-Object { [IO.Path]::GetRelativePath($qaRepo,$_.FullName).Replace('\','/') })
+    foreach ($qaSourcePath in $qaRequiredSourcePaths) {
+        if ($qaSourcePath -notin $qaHashPaths) { throw "Launch-time source hash is missing for a current module, UI, input or audio source: $qaSourcePath" }
+        $qaCuratedHash = @($qaIntegration.curatedEvidence.sourceHashes | Where-Object path -eq $qaSourcePath)
+        $qaLaunchHash = @($qaIntegrationContext.sourceHashes | Where-Object path -eq $qaSourcePath)
+        if ($qaCuratedHash.Count -ne 1 -or $qaLaunchHash.Count -ne 1 -or $qaCuratedHash[0].sha256 -ne $qaLaunchHash[0].sha256) { throw 'Curated source hashes differ from the actual automation launch.' }
     }
 }
 Select-QAEvidence 'Docs/QA/native-integration.json' 'Native/curated-integration.json' 'json'
@@ -174,22 +215,131 @@ Select-QAEvidence $qaIntegration.curatedEvidence.commandletLog 'Native/commandle
 foreach ($qaSourcePath in @('Build/Tests/RiftSimulationTests.cpp','Build/Tests/Run-NativeSimulationTests.ps1',
     'Build/Tests/Audit-NativeMeta.py','Build/Tests/RiftBankNormalizationWitness.cpp','Build/Tests/Compare-BankNormalization.ps1',
     'Build/Tests/README.md','Build/Validate-NativeMeta.ps1','Build/Test-Unreal.ps1','Build/Test-UnrealVFX.ps1','Build/Test-UnrealAudio.ps1',
-    'Build/Measure-Unreal.ps1','Build/Capture-Unreal.ps1','Build/Package-QAEvidence.ps1',
+    'Build/Measure-Unreal.ps1','Build/Capture-Unreal.ps1','Build/Package-QAEvidence.ps1','Build/Curate-UnrealQA.ps1',
     'Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftIntegrationTests.cpp') + @($qaContext.simulationSources.path)) {
     Select-QAEvidence $qaSourcePath ('Source/' + $qaSourcePath)
+}
+if ($qaPolishRelease) {
+    foreach ($qaNewSource in @('Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftBattleInputTests.cpp',
+        'Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftPresentationTests.cpp','Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftBattleHUD.cpp',
+        'Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftCollectionUI.cpp','Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftFieldManual.cpp',
+        'Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftReplayUI.cpp','Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftTrainingPanel.cpp',
+        'Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftUIPrimitives.cpp','Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftUIPrimitives.h',
+        'Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftUIWidget.cpp','Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftUIWidget.h',
+        'Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftGameMode.cpp','Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftGameMode.h',
+        'Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftMatchSubsystem.cpp','Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftMatchSubsystem.h',
+        'Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftBattleAudioSubsystem.cpp','Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleAudioSubsystem.h',
+        'Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftArenaPresentation.cpp','Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftArenaPresentation.h',
+        'Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftBattleOverlay.cpp','Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleOverlay.h',
+        'Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftTrainingOverlay.cpp','Unreal/RiftCrownArena/Config/DefaultGame.ini',
+        'Build/generate_audio.py','Build/fetch_audio_sources.py','Build/import_unreal_audio.py','Build/verify_audio_masters.py','Build/requirements-audio.txt',
+        'Assets/Source/Audio/audio_manifest.json','Assets/Source/Audio/Palette/sources.json')) { Select-QAEvidence $qaNewSource ('Source/' + $qaNewSource) }
 }
 foreach ($qaDoc in @('Docs/NativeMetaQA.md','Docs/NativeSimulationQA.md','Docs/NativePersistenceReplay.md','Docs/QA/README.md')) {
     Select-QAEvidence $qaDoc ('Documentation/' + [IO.Path]::GetFileName($qaDoc))
 }
-$qaEditorAudio = Read-QAJson 'Artifacts/QA/Audio/native-audio-postmix64/audio-smoke.json'
-$qaEditorRun = Read-QAJson 'Artifacts/QA/Audio/native-audio-postmix64/run.json'
+function Select-QAMixedAudioEvidence([string]$Root,[object]$Report,[string]$Label) {
+    $qaRequiredMixChecks = @('masterMixRegisteredWithLiveDevice','limiterDetectsIsolatedPeaksWithoutAttackSmoothing',
+        'actualMixedPCMHasHeadroom','limiterOverloadPCMDoesNotClip')
+    if (@($Report.checks).Count -lt 49 -or @($qaRequiredMixChecks | Where-Object { $_ -notin $Report.checks.name }).Count -ne 0) {
+        throw 'Current audio evidence must exercise the registered limiter and actual mixed PCM.'
+    }
+    $qaRecordingMeasurements = [Collections.Generic.List[object]]::new()
+    foreach ($qaRecording in @(@{field='normalMixedOutput';file='mixed-output.wav'},@{field='limiterOverloadOutput';file='limiter-overload.wav'})) {
+        $qaRawMix = $Report.($qaRecording.field)
+        if (!$qaRawMix -or !$qaRawMix.wavSaved -or $qaRawMix.wavFile -ne $qaRecording.file -or
+            $qaRawMix.captureStage -ne 'Live MasterMix output after the submix effect chain; before PCM encoding' -or
+            ![double]::IsFinite($qaRawMix.peak) -or $qaRawMix.peak -le .0001 -or $qaRawMix.peak -ge .95 -or
+            ![double]::IsFinite($qaRawMix.rms) -or $qaRawMix.rms -le .00001 -or $qaRawMix.rms -gt $qaRawMix.peak -or
+            $qaRawMix.clippedFloatSamples -ne 0 -or $qaRawMix.channels -ne 2 -or
+            $qaRawMix.sampleRate -lt 8000 -or $qaRawMix.sampleRate -gt 192000 -or
+            $qaRawMix.samples -le $qaRawMix.channels*$qaRawMix.sampleRate*.15 -or
+            $qaRawMix.samples % $qaRawMix.channels -ne 0 -or
+            ![double]::IsFinite($qaRawMix.seconds) -or
+            [math]::Abs($qaRawMix.seconds - $qaRawMix.samples/($qaRawMix.channels*$qaRawMix.sampleRate)) -gt .00001) {
+            throw 'A real mixer recording failed the raw floating-point headroom/content assertions.'
+        }
+        # Verify encoded bytes independently. PCM16 cannot establish whether the
+        # upstream float signal clipped, so retain both measurements separately.
+        $qaWavePath = Resolve-QASource (Join-Path $Root $qaRecording.file)
+        $qaWaveBytes = [IO.File]::ReadAllBytes($qaWavePath)
+        if ($qaWaveBytes.Length -lt 44 -or [Text.Encoding]::ASCII.GetString($qaWaveBytes,0,4) -ne 'RIFF' -or
+            [Text.Encoding]::ASCII.GetString($qaWaveBytes,8,4) -ne 'WAVE' -or
+            [BitConverter]::ToUInt32($qaWaveBytes,4) + 8 -ne $qaWaveBytes.Length) { throw 'A mixed-output WAV has an invalid RIFF container.' }
+        $qaFormatOffset = -1; $qaDataOffset = -1; $qaDataBytes = 0; $qaChunkOffset = 12
+        while ($qaChunkOffset + 8 -le $qaWaveBytes.Length) {
+            $qaChunkName = [Text.Encoding]::ASCII.GetString($qaWaveBytes,$qaChunkOffset,4)
+            $qaChunkBytes = [long][BitConverter]::ToUInt32($qaWaveBytes,$qaChunkOffset+4)
+            if ($qaChunkOffset + 8 + $qaChunkBytes -gt $qaWaveBytes.Length) { throw 'A mixed-output WAV chunk is truncated.' }
+            if ($qaChunkName -eq 'fmt ') {
+                if ($qaFormatOffset -ne -1 -or $qaChunkBytes -lt 16) { throw 'A mixed-output WAV format chunk is invalid.' }
+                $qaFormatOffset = $qaChunkOffset + 8
+            } elseif ($qaChunkName -eq 'data') {
+                if ($qaDataOffset -ne -1) { throw 'A mixed-output WAV has duplicate sample chunks.' }
+                $qaDataOffset = $qaChunkOffset + 8; $qaDataBytes = $qaChunkBytes
+            }
+            $qaChunkOffset += 8 + $qaChunkBytes + ($qaChunkBytes % 2)
+        }
+        if ($qaFormatOffset -lt 0 -or $qaDataOffset -lt 0 -or $qaChunkOffset -ne $qaWaveBytes.Length -or
+            [BitConverter]::ToUInt16($qaWaveBytes,$qaFormatOffset) -ne 1 -or
+            [BitConverter]::ToUInt16($qaWaveBytes,$qaFormatOffset+2) -ne $qaRawMix.channels -or
+            [BitConverter]::ToUInt32($qaWaveBytes,$qaFormatOffset+4) -ne $qaRawMix.sampleRate -or
+            [BitConverter]::ToUInt16($qaWaveBytes,$qaFormatOffset+12) -ne $qaRawMix.channels*2 -or
+            [BitConverter]::ToUInt16($qaWaveBytes,$qaFormatOffset+14) -ne 16 -or
+            [BitConverter]::ToUInt32($qaWaveBytes,$qaFormatOffset+8) -ne $qaRawMix.sampleRate*$qaRawMix.channels*2 -or
+            $qaDataBytes -ne $qaRawMix.samples*2) { throw 'A mixed-output PCM16 WAV differs from the captured sample layout.' }
+        $qaEncodedPeak = [double]0; $qaEncodedEnergy = [double]0; $qaFullScaleSamples = 0
+        for ($qaSampleOffset=$qaDataOffset; $qaSampleOffset -lt $qaDataOffset+$qaDataBytes; $qaSampleOffset+=2) {
+            $qaIntegerSample = [BitConverter]::ToInt16($qaWaveBytes,$qaSampleOffset)
+            if ($qaIntegerSample -eq -32768 -or $qaIntegerSample -eq 32767) { ++$qaFullScaleSamples }
+            $qaEncodedSample = $qaIntegerSample / 32768.0
+            $qaEncodedPeak = [math]::Max($qaEncodedPeak,[math]::Abs($qaEncodedSample))
+            $qaEncodedEnergy += $qaEncodedSample*$qaEncodedSample
+        }
+        $qaEncodedRms = [math]::Sqrt($qaEncodedEnergy/$qaRawMix.samples)
+        if ($qaFullScaleSamples -ne 0 -or [math]::Abs($qaEncodedPeak-$qaRawMix.peak) -gt 2.0/32768 -or
+            [math]::Abs($qaEncodedRms-$qaRawMix.rms) -gt 2.0/32768) { throw 'Encoded WAV content differs from the raw mixed output beyond PCM16 quantization.' }
+        $qaWaveHash = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($qaWaveBytes)).ToLowerInvariant()
+        $qaRecordingMeasurements.Add([ordered]@{file=$qaRecording.file;rawFloatMeasurement=$qaRawMix;
+            encodedWavMeasurement=[ordered]@{format='PCM16 little-endian';channels=$qaRawMix.channels;sampleRate=$qaRawMix.sampleRate;
+                samples=$qaRawMix.samples;fileBytes=$qaWaveBytes.Length;dataBytes=$qaDataBytes;peak=$qaEncodedPeak;rms=$qaEncodedRms;
+                fullScaleSamples=$qaFullScaleSamples;sha256=$qaWaveHash};passed=$true})
+        Select-QAEvidence $qaWavePath ('Audio/' + $Label + '-' + $qaRecording.file)
+    }
+    $qaRecordingVerificationPath = Join-Path (Split-Path -Parent (Resolve-QASource (Join-Path $Root 'audio-smoke.json'))) 'mixed-recording-verification.json'
+    $qaRecordingVerification = [ordered]@{schema=1;checks=@($Report.checks).Count;passed=$true;
+        scope='Raw post-effect float assertions and separate encoded PCM16 byte verification; no human listening acceptance';
+        recordings=$qaRecordingMeasurements.ToArray()}
+    [IO.File]::WriteAllText($qaRecordingVerificationPath,($qaRecordingVerification | ConvertTo-Json -Depth 20),[Text.UTF8Encoding]::new($false))
+    Select-QAEvidence $qaRecordingVerificationPath ('Audio/' + $Label + '-recording-verification.json') 'json'
+}
+$qaEditorAudio = Read-QAJson (Join-Path $EditorAudioRoot 'audio-smoke.json')
+$qaEditorRun = Read-QAJson (Join-Path $EditorAudioRoot 'run.json')
+if ($qaPolishRelease -and $EditorAudioRoot -eq 'Artifacts/QA/Audio/native-audio-postmix64') { throw 'A polish release requires a fresh Editor audio report from its current audio bank.' }
 if (!$qaEditorAudio.passed -or @($qaEditorAudio.checks | Where-Object { !$_.passed }).Count -ne 0 -or
-    !$qaEditorRun.passed -or $qaEditorRun.exitCode -ne 0 -or $qaEditorRun.audioDisabled) { throw 'Editor audio evidence did not pass.' }
-Select-QAEvidence 'Artifacts/QA/Audio/native-audio-postmix64/audio-smoke.json' 'Audio/editor-postmix64.json' 'json'
-Select-QAEvidence 'Artifacts/QA/Audio/native-audio-postmix64/run.json' 'Audio/editor-postmix64-run.json' 'json'
-Select-QAEvidence 'Docs/QA/audio-master-waveform.json' 'Audio/master-waveform.json' 'json'
+    !$qaEditorRun.editor -or !$qaEditorRun.freshReport -or !$qaEditorRun.passed -or $qaEditorRun.timedOut -or
+    $qaEditorRun.exitCode -ne 0 -or $qaEditorRun.audioDisabled -or @($qaEditorRun.errors).Count -ne 0) { throw 'Editor audio evidence did not pass.' }
+if ($qaPolishRelease -and ($qaEditorAudio.loadedSounds -ne 41 -or $qaEditorAudio.loadedCombatVariations -ne 20 -or
+    'all20CombatVariationsLoad' -notin $qaEditorAudio.checks.name)) { throw 'The fresh Editor audio run did not exercise the complete new combat sound bank.' }
+Select-QAEvidence (Join-Path $EditorAudioRoot 'audio-smoke.json') 'Audio/editor.json' 'json'
+Select-QAEvidence (Join-Path $EditorAudioRoot 'run.json') 'Audio/editor-run.json' 'json'
+if ($qaPolishRelease) { Select-QAMixedAudioEvidence $EditorAudioRoot $qaEditorAudio 'editor' }
+Select-QAEvidence 'Docs/QA/audio-master-waveform.json' $(if ($qaPolishRelease) { 'Audio/historical-v1.0-master-waveform.json' } else { 'Audio/master-waveform.json' }) 'json'
 $qaRegistry = Read-QAJson 'Artifacts/QA/unreal_asset_audit.json'
-if ($qaRegistry.assetCount -ne 263 -or $qaRegistry.classCounts.RiftCardData -ne 14 -or
+$qaAudioManifest = Read-QAJson 'Assets/Source/Audio/audio_manifest.json'
+$qaSoundEntries = @($qaAudioManifest.sounds.PSObject.Properties)
+if ($qaPolishRelease) {
+    $qaAudioPolish = Read-QAJson 'Docs/QA/audio-polish-1.1.0.json'
+    if ($qaAudioPolish.manifestSha256 -ne (Get-FileHash -LiteralPath (Resolve-QASource 'Assets/Source/Audio/audio_manifest.json') -Algorithm SHA256).Hash.ToLowerInvariant() -or
+        @($qaAudioPolish.sounds.PSObject.Properties).Count -ne $qaSoundEntries.Count) { throw 'Current audio waveform measurements do not match the actual sound manifest.' }
+    Select-QAEvidence 'Docs/QA/audio-polish-1.1.0.json' 'Audio/current-master-waveform.json' 'json'
+    Select-QAEvidence 'Docs/AUDIO_DESIGN.md' 'Documentation/AUDIO_DESIGN.md'
+}
+foreach ($qaSoundEntry in $qaSoundEntries) {
+    if ($qaSoundEntry.Value.sha256 -ne (Get-FileHash -LiteralPath (Resolve-QASource $qaSoundEntry.Value.file) -Algorithm SHA256).Hash.ToLowerInvariant()) { throw 'An audio master changed after its manifest was generated.' }
+}
+$qaExpectedAssetCount = 263 - 41 + $qaSoundEntries.Count
+if ($qaRegistry.assetCount -ne $qaExpectedAssetCount -or $qaRegistry.classCounts.SoundWave -ne $qaSoundEntries.Count -or $qaRegistry.classCounts.RiftCardData -ne 14 -or
     $qaRegistry.classCounts.NiagaraSystem -ne 17 -or $qaRegistry.classCounts.PhysicsAsset -ne 11 -or
     @($qaRegistry.errors).Count -ne 0 -or @($qaRegistry.nativeValidation.errors).Count -ne 0 -or
     $qaRegistry.nativeValidation.cards.Count -ne 14 -or @($qaRegistry.assets | Where-Object { !$_.onDisk -or (!$_.loadable -and $_.class -ne 'World') }).Count -ne 0) {
@@ -202,19 +352,44 @@ if (!$qaEditorVFX.passed -or $qaEditorVFX.effectSystems -ne 17 -or $qaEditorVFX.
     throw 'The corrected final 17-system particle verification did not pass.'
 }
 Select-QAEvidence 'Artifacts/QA/niagara-all17-final-verification.json' 'Visual/editor-particle-verification.json' 'json'
-$qaPresentationReview = Read-QAJson 'Docs/QA/presentation-review.json'
+$qaPresentationReview = Read-QAJson $PresentationReview
+$qaRequiredPresentationPages = @('Home','Battle','Loadout','Cards','CardDetail','Settings','Help','Replays','ReplayView','Analysis','Meta','PatchNotes')
 if ($qaPresentationReview.sourceReview.sha256 -ne (Get-FileHash -LiteralPath (Resolve-QASource $qaPresentationReview.sourceReview.path) -Algorithm SHA256).Hash.ToLowerInvariant() -or
-    $qaPresentationReview.captureCount -ne 28 -or @($qaPresentationReview.captures | Where-Object stem -match '^profile-').Count -ne 0) {
+    $qaPresentationReview.captureCount -ne @($qaPresentationReview.captures).Count -or
+    ($qaPolishRelease -and ($qaPresentationReview.version -ne $Version -or $qaPresentationReview.captureCount -lt $qaRequiredPresentationPages.Count)) -or
+    (!$qaPolishRelease -and $qaPresentationReview.captureCount -ne 28) -or
+    @($qaPresentationReview.captures | Where-Object stem -match '^profile-').Count -ne 0) {
     throw 'The curated presentation review is stale or includes a Profile page.'
 }
+$qaReviewedPages = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+$qaReviewedCaptures = @{}
 foreach ($qaReviewedCapture in $qaPresentationReview.captures) {
+    if ($qaReviewedCapture.stem -notmatch '^[a-z0-9][a-z0-9_-]*$' -or $qaReviewedCaptures.ContainsKey($qaReviewedCapture.stem) -or
+        [string]::IsNullOrWhiteSpace($qaReviewedCapture.observation)) { throw 'A reviewed capture lacks a unique valid stem or actual inspection notes.' }
     foreach ($qaReviewedFile in $qaReviewedCapture.files) {
         if ($qaReviewedFile.sha256 -ne (Get-FileHash -LiteralPath (Resolve-QASource $qaReviewedFile.path) -Algorithm SHA256).Hash.ToLowerInvariant()) {
             throw 'A reviewed renderer capture changed after its final inspection.'
         }
     }
+    if ($qaPolishRelease) {
+        $qaReviewedBase = 'Artifacts/QA/Visual/' + $qaReviewedCapture.stem
+        $qaExpectedReviewedFiles = @(($qaReviewedBase + '.png'), ($qaReviewedBase + '.json'), ($qaReviewedBase + '.state.json'))
+        if (@($qaReviewedCapture.files).Count -ne 3 -or @($qaReviewedCapture.files.path | Sort-Object -Unique).Count -ne 3) { throw 'A current visual review must pin the PNG, launch metadata and captured state exactly once.' }
+        foreach ($qaExpectedFile in $qaExpectedReviewedFiles) { if ($qaExpectedFile -notin $qaReviewedCapture.files.path) { throw 'A current visual review does not identify its matching PNG/metadata/state triplet.' } }
+        $qaReviewedMetadata = Read-QAJson ($qaReviewedBase + '.json')
+        if (!$qaReviewedMetadata.captured -or !$qaReviewedMetadata.stateCaptured -or !$qaReviewedMetadata.resolutionMatches -or
+            $qaReviewedMetadata.exitCode -ne 0 -or $qaReviewedMetadata.timedOut -or @($qaReviewedMetadata.errors).Count -ne 0 -or
+            $qaReviewedMetadata.page -notin $qaRequiredPresentationPages -or
+            $qaReviewedCapture.actualDimensions[0] -ne $qaReviewedMetadata.actualWidth -or $qaReviewedCapture.actualDimensions[1] -ne $qaReviewedMetadata.actualHeight) {
+            throw 'The current visual review includes an incomplete capture, private Profile page or incorrect dimensions.'
+        }
+        $null = $qaReviewedPages.Add($qaReviewedMetadata.page)
+        $qaReviewedCaptures.Add($qaReviewedCapture.stem,$qaReviewedMetadata)
+    } else { $qaReviewedCaptures.Add($qaReviewedCapture.stem,$null) }
 }
-Select-QAEvidence 'Docs/QA/presentation-review.json' 'Visual/presentation-review.json' 'json'
+if ($qaPolishRelease) { foreach ($qaRequiredPage in $qaRequiredPresentationPages) { if (!$qaReviewedPages.Contains($qaRequiredPage)) { throw "A required current game page has not been visually reviewed: $qaRequiredPage" } } }
+Select-QAEvidence $PresentationReview 'Visual/presentation-review.json' 'json'
+Select-QAEvidence $qaPresentationReview.sourceReview.path 'Documentation/presentation-source-review.md'
 
 # Explicit latest synthetic capture stems. Never enumerate/copy the QA or save tree.
 $qaCaptureNames = @('home-final-1920x1080','cards-final-1920x1080','loadout-final-width-1920x1080',
@@ -248,7 +423,7 @@ foreach ($qaCaptureName in $qaCaptureNames) {
     }
     # These effect captures predate the particle graph correction. Their gameplay
     # events were real, but the diagnostic proved zero rendered Niagara particles.
-    $qaCaptureEntry = $(if ($qaHistoricalCaptureNames -contains $qaCaptureName) { 'Visual/Historical-BeforeParticleFix/' } else { 'Visual/' }) + $qaCaptureName
+    $qaCaptureEntry = $(if ($qaHistoricalCaptureNames -contains $qaCaptureName) { 'Visual/Historical-BeforeParticleFix/' } elseif ($qaPolishRelease) { 'Visual/Historical-v1.0/' } else { 'Visual/' }) + $qaCaptureName
     Select-QAEvidence ($qaCapturePath + '.json') ($qaCaptureEntry + '.json') 'json'
     Select-QAEvidence ($qaCapturePath + '.state.json') ($qaCaptureEntry + '.state.json') 'json'
     Select-QAEvidence ($qaCapturePath + '.png') ($qaCaptureEntry + '.png')
@@ -266,8 +441,11 @@ if ($Finalize) {
         $qaShippingRun.exitCode -ne 0 -or $qaShippingRun.audioDisabled -or @($qaShippingRun.errors).Count -ne 0) {
         throw 'The selected actual Shipping audio run did not pass.'
     }
+    if ($qaPolishRelease -and ($qaShippingAudio.loadedSounds -ne 41 -or $qaShippingAudio.loadedCombatVariations -ne 20 -or
+        'all20CombatVariationsLoad' -notin $qaShippingAudio.checks.name)) { throw 'The final Shipping audio run did not load the complete new combat sound bank.' }
     Select-QAEvidence (Join-Path $ShippingAudioRoot 'audio-smoke.json') 'Audio/shipping.json' 'json'
     Select-QAEvidence (Join-Path $ShippingAudioRoot 'run.json') 'Audio/shipping-run.json' 'json'
+    if ($qaPolishRelease) { Select-QAMixedAudioEvidence $ShippingAudioRoot $qaShippingAudio 'shipping' }
     $qaPerfIndex = 0
     $qaPerfRuns = [Collections.Generic.List[object]]::new()
     foreach ($qaPerformancePath in $PerformanceReports) {
@@ -344,6 +522,9 @@ if ($Finalize) {
         $qaShippingVFX.executableSha256 -ne $qaNativeExecutable[0].sha256) { throw 'The Shipping particle report used another requested executable.' }
     Select-QAEvidence $ShippingVFXReport 'Visual/shipping-particle-verification.json' 'json'
     $qaShippingCaptureSet = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+    $qaCurrentReviewedShippingPages = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+    $qaCurrentReviewedBattleRatios = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+    $qaCurrentFrostProof = $false
     foreach ($qaCaptureName in @(($qaShippingVFX.name + '-immediate'),($qaShippingVFX.name + '-lifecycle')) + $ShippingCaptureNames) {
         if (!$qaShippingCaptureSet.Add($qaCaptureName)) { continue }
         if ($qaCaptureName -notmatch '^[a-z0-9][a-z0-9_-]*$') { throw 'Invalid Shipping capture name.' }
@@ -351,7 +532,7 @@ if ($Finalize) {
         $qaCapture = Read-QAJson ($qaCapturePath + '.json')
         if ($qaCapture.editor -or !$qaCapture.captured -or !$qaCapture.stateCaptured -or !$qaCapture.resolutionMatches -or
             $qaCapture.exitCode -ne 0 -or $qaCapture.timedOut -or @($qaCapture.errors).Count -ne 0 -or
-            $qaCapture.page -notin @('Home','Cards','Loadout','Settings','Meta','PatchNotes','Battle') -or
+            $qaCapture.page -notin @('Home','Cards','CardDetail','Loadout','Settings','Meta','PatchNotes','Battle','Help','Replays','ReplayView','Analysis') -or
             $qaCapture.executableSha256 -ne $qaNativeExecutable[0].sha256 -or
             ($qaCapture.nativeExecutableSha256 -and $qaCapture.nativeExecutableSha256 -ne $qaNativeExecutable[0].sha256)) {
             throw 'The selected Shipping capture is incomplete, includes a Profile page or used another executable.'
@@ -359,7 +540,23 @@ if ($Finalize) {
         $qaCaptureBinary = Assert-QAShippingBinary $qaCapture.executable $qaReleaseManifest $qaNativeExecutable[0]
         if ($qaCaptureBinary.requestedManifestEntry -ne $qaNativeExecutable[0].path) { throw 'The Shipping capture did not launch the exact native executable directly.' }
         $qaShippingState = Read-QAJson ($qaCapturePath + '.state.json')
-        if ($qaCaptureName.StartsWith('shipping-frost-breath-')) { Assert-QAFrostProof $qaShippingState }
+        if ($qaPolishRelease -and ($qaCapture.allowExternalInput -or
+            !$qaShippingState.captureInput.active -or !$qaShippingState.captureInput.consuming -or
+            ($qaCapture.phaseFixture -and !$qaCapture.phaseFixturePassed))) {
+            throw 'Current Shipping evidence requires isolated external input and a successful requested phase fixture.'
+        }
+        if ($qaCapture.breathSmoke -or $qaCaptureName.StartsWith('shipping-frost-breath-')) { Assert-QAFrostProof $qaShippingState; $qaCurrentFrostProof = $true }
+        if ($qaPolishRelease -and $qaReviewedCaptures.ContainsKey($qaCaptureName)) {
+            $qaReviewedMetadata = $qaReviewedCaptures[$qaCaptureName]
+            if ($qaReviewedMetadata.editor -or $qaReviewedMetadata.executableSha256 -ne $qaNativeExecutable[0].sha256) { throw 'The current reviewed Shipping capture belongs to another executable.' }
+            $null = $qaCurrentReviewedShippingPages.Add($qaCapture.page)
+            if ($qaCapture.page -eq 'Battle') {
+                $qaRatio = [double]$qaCapture.actualWidth / [double]$qaCapture.actualHeight
+                if ([math]::Abs($qaRatio - (16.0/9.0)) -lt 0.015) { $null = $qaCurrentReviewedBattleRatios.Add('16:9') }
+                if ([math]::Abs($qaRatio - (16.0/10.0)) -lt 0.015) { $null = $qaCurrentReviewedBattleRatios.Add('16:10') }
+                if ($qaRatio -ge 2.3 -and $qaRatio -le 2.45) { $null = $qaCurrentReviewedBattleRatios.Add('21:9') }
+            }
+        }
         if ($qaCapture.scenario -eq 'effects' -and
             ($qaShippingState.elapsed -lt 3 -or $qaShippingState.events.aura -lt 1 -or $qaShippingState.events.stun -lt 1 -or
                 $qaShippingState.events.slow -lt 1 -or $qaShippingState.events.attack -lt 1 -or $qaShippingState.hazards -lt 1 -or
@@ -367,6 +564,11 @@ if ($Finalize) {
         Select-QAEvidence ($qaCapturePath + '.json') ('Visual/Shipping/' + $qaCaptureName + '.json') 'json'
         Select-QAEvidence ($qaCapturePath + '.state.json') ('Visual/Shipping/' + $qaCaptureName + '.state.json') 'json'
         Select-QAEvidence ($qaCapturePath + '.png') ('Visual/Shipping/' + $qaCaptureName + '.png')
+    }
+    if ($qaPolishRelease) {
+        foreach ($qaRequiredPage in $qaRequiredPresentationPages) { if (!$qaCurrentReviewedShippingPages.Contains($qaRequiredPage)) { throw "The current native Shipping executable lacks a selected and reviewed game page: $qaRequiredPage" } }
+        foreach ($qaRequiredRatio in @('16:9','16:10','21:9')) { if (!$qaCurrentReviewedBattleRatios.Contains($qaRequiredRatio)) { throw "The current native Shipping battle HUD lacks reviewed aspect-ratio coverage: $qaRequiredRatio" } }
+        if (!$qaCurrentFrostProof) { throw 'The current Shipping executable lacks its selected actual Frost Breath animation/particle proof.' }
     }
 }
 
@@ -385,9 +587,9 @@ foreach ($qaSelection in $qaSelections) {
         [IO.File]::WriteAllText($qaDestination,($qaSanitizedLines -join "`n") + "`n",[Text.UTF8Encoding]::new($false))
     } elseif ($qaSelection.kind -in @('meta-log-excerpt','integration-log-excerpt')) {
         $qaLogPattern = $(if ($qaSelection.kind -eq 'meta-log-excerpt') { 'Native Meta validation completed: 10000 actual games\.|FPlatformMisc::RequestExitWithStatus\(0, 0|LogExit: Exiting\.' }
-            else { 'Automation Test Queue Empty 9 tests performed\.|FPlatformMisc::RequestExitWithStatus\(1, 0|LogExit: Exiting\.' })
+            else { "Automation Test Queue Empty $qaAutomationCount tests performed\.|FPlatformMisc::RequestExitWithStatus\(1, 0|LogExit: Exiting\." })
         $qaLogExcerpt = @([IO.File]::ReadAllLines($qaSelection.source) | Where-Object { $_ -match $qaLogPattern }) -join "`n"
-        $qaRequiredMarker = $(if ($qaSelection.kind -eq 'meta-log-excerpt') { 'Native Meta validation completed: 10000 actual games.' } else { 'Automation Test Queue Empty 9 tests performed.' })
+        $qaRequiredMarker = $(if ($qaSelection.kind -eq 'meta-log-excerpt') { 'Native Meta validation completed: 10000 actual games.' } else { "Automation Test Queue Empty $qaAutomationCount tests performed." })
         if (!$qaLogExcerpt.Contains($qaRequiredMarker)) { throw 'Selected original completion log marker is missing.' }
         $qaLogExcerpt = $qaLogExcerpt.Replace($qaRepo.Replace('\','/') + '/','').Replace($qaRepo + '\','')
         [IO.File]::WriteAllText($qaDestination,("# Selected original completion/shutdown lines; full source SHA-256: $qaOriginalHash`n" + $qaLogExcerpt + "`n"),[Text.UTF8Encoding]::new($false))
@@ -408,7 +610,9 @@ This archive uses an explicit synthetic evidence whitelist. It excludes player_s
 
 Meta/validity.json passes the final completed 10,000-match cohort. Meta/historical-comparison.json separately records real differences after the numerical bank correction; aggregate differences are not a changed-match count. Meta/bank-normalization-witness.json gives a controlled causal seed. Renderer capture metadata preserves actual review limitations. Visual/Historical-BeforeParticleFix contains real combat events and screenshots from before the particle graph correction; its diagnostic reported zero Niagara particles. Those files are historical failed particle coverage, not final VFX acceptance.
 
-Portable core/test source is included under Source/ in its original relative layout. UE automation reports distinguish the final complete nine-test run from the earlier focused UI-DPI correction test. Audio reports distinguish waveform analysis, real Editor playback and actual Shipping playback. Performance JSON contains measured frame/CPU/GPU values, not a general hardware guarantee.
+Portable core/test source is included under Source/ in its original relative layout. UE automation reports distinguish the final complete $qaAutomationCount-test release suite from the earlier focused UI-DPI correction test. Its launch-time context pins all current native/UI/input/audio sources and both Editor modules. Historical-v1.0 captures preserve the original release baseline; Visual/Shipping contains the current executable's captures. Audio reports distinguish waveform analysis, real Editor playback and actual Shipping playback. Performance JSON contains measured frame/CPU/GPU values, not a general hardware guarantee.
+
+Audio recording-verification reports retain raw post-effect floating-point peak/RMS and clipping checks separately from encoded PCM16 WAV measurements and byte hashes. The normal burst and deliberate 12x overload WAVs are actual mixer recordings; no human listening acceptance is claimed.
 
 Completion log files are selected original lines, explicitly labeled excerpts with the complete source log SHA-256. Reproduce final cohort validity with: python Source/Build/Tests/Audit-NativeMeta.py Meta/final-dataset.json --output audit-validity.json --log Meta/completion-excerpt.log --export Meta/final-export.json --require-complete. Add --compare Meta/historical-telemetry3-dataset.json for the separate strict comparison; its nonzero exit reflects documented aggregate differences.
 "@
