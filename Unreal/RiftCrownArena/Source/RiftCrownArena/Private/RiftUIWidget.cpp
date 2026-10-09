@@ -384,6 +384,9 @@ void URiftUIWidget::ExportMeta()
 }
 void URiftUIWidget::PatchNotes()
 {
+    Add(Body,Text(TEXT("UNIT COLLISION & CROWD MOVEMENT · 1.3.5"),25,Brass));
+    Add(Body,Text(TEXT("Troops now have solid bodies. Ground units move around troops, towers and buildings; flying units keep clear of other flying units while passing over the ground. Crowds fan out around blockers and queue at narrow bridge crossings. Attacking and stunned units still occupy space."),16));
+    Add(Body,Text(TEXT("Deployment finds clear space for every member, including swarms. Bridge choice and same-lane Guard-to-Core advances are retained. Meta Lab starts a fresh ruleset for collision-aware matches and keeps earlier results as history."),16));
     Add(Body,Text(TEXT("ARENA & LANE ROUTING · 1.3.4"),25,Brass));
     Add(Body,Text(TEXT("The arena gains one tile on every edge. All six Crown Towers move one tile toward their own rear. Ground troops choose the bridge on their current side and advance toward the Core when that lane's Guard Tower falls, while still responding to nearby troops and buildings."),16));
     Add(Body,Text(TEXT("Meta Lab now includes a Stats Guide explaining samples, win rates, confidence ranges, damage efficiency, synergy and mechanical matchups. New simulations use the expanded arena and routing fingerprint; older datasets remain readable as history."),16));

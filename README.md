@@ -3,6 +3,11 @@
 Original Windows card battler: fourteen cards, two lanes, deterministic combat,
 seven AI personalities, deck workshop, Meta Lab, replays and developer training.
 
+Version 1.3.5 adds collision bodies to every troop and building, including flying
+swarms on their own layer. Troops steer around crowds and queue at narrow
+crossings while retaining their lane and bridge choices. Meta Lab simulates the
+same collision rules. See [the update notes](Docs/PATCH_NOTES_1.3.5.md).
+
 Version 1.3.4 expands the arena by one tile on each edge, moves all towers one
 tile toward their own rear, and keeps ground troops on their current side's
 bridge and same-lane route toward the Core after a Guard falls. Meta Lab adds a

@@ -4,6 +4,7 @@
 #include "GameFramework/GameUserSettings.h"
 #include "HAL/PlatformFileManager.h"
 #include "HAL/PlatformMisc.h"
+#include "HAL/PlatformProcess.h"
 #include "JsonObjectConverter.h"
 #include "Misc/CommandLine.h"
 #include "Misc/FileHelper.h"
@@ -142,11 +143,146 @@ void ReadSettings(const TSharedPtr<FJsonObject> &O, FRiftSettings &S) {
     O->TryGetBoolField(TEXT("vSync"), S.VSync);
     NormalizeSettings(S);
 }
-bool ReplaceAtomically(const FString &Destination, const FString &Source) {
 #if PLATFORM_WINDOWS
-    return ::MoveFileExW(*Source, *Destination, MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH) != 0;
+struct FAtomicFileResult {
+    bool Succeeded = false;
+    uint32 ErrorCode = ERROR_SUCCESS;
+    uint32 SharingCode = ERROR_SUCCESS;
+    int32 Attempts = 0;
+    bool AccessibleRename = false;
+    bool DeleteAccessProbed = false;
+    uint32 SourceDeleteError = ERROR_SUCCESS;
+    uint32 DestinationDeleteError = ERROR_SUCCESS;
+    DWORD DestinationAttributes = INVALID_FILE_ATTRIBUTES;
+};
+struct FSharingProbeResult {
+    uint32 SharingCode = ERROR_SUCCESS;
+    bool AccessibleRename = false;
+    bool DeleteAccessProbed = false;
+    uint32 SourceDeleteError = ERROR_SUCCESS;
+    uint32 DestinationDeleteError = ERROR_SUCCESS;
+    DWORD DestinationAttributes = INVALID_FILE_ATTRIBUTES;
+};
+bool IsSharingConflict(uint32 Code) {
+    return Code == ERROR_SHARING_VIOLATION || Code == ERROR_LOCK_VIOLATION;
+}
+uint32 ProbeDeleteAccess(const FString &Filename) {
+    // Windows can report access denied when a rename is blocked by an open
+    // handle. Request access only: no delete disposition or file changes.
+    const HANDLE Probe = ::CreateFileW(*Filename, DELETE,
+                                       FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nullptr,
+                                       OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+    const uint32 Code = Probe == INVALID_HANDLE_VALUE ? ::GetLastError() : ERROR_SUCCESS;
+    if (Probe != INVALID_HANDLE_VALUE)
+        ::CloseHandle(Probe);
+    return Code;
+}
+template <class Operation, class SharingProbe>
+FAtomicFileResult RetryWindowsFileOperation(Operation &&Perform, SharingProbe &&ProbeSharing) {
+    constexpr float Delays[] = {.005f, .010f, .020f};
+    FAtomicFileResult Result;
+    for (int32 Attempt = 0; Attempt < 4; ++Attempt) {
+        Result.Attempts = Attempt + 1;
+        if (Perform()) {
+            Result.Succeeded = true;
+            Result.ErrorCode = ERROR_SUCCESS;
+            Result.SharingCode = ERROR_SUCCESS;
+            return Result;
+        }
+        // Capture the operation's OS error before sleep, formatting or cleanup
+        // can replace it. Retry eligibility is checked independently below.
+        Result.ErrorCode = ::GetLastError();
+        const FSharingProbeResult Probe = Result.ErrorCode == ERROR_ACCESS_DENIED
+                                              ? ProbeSharing()
+                                              : FSharingProbeResult{};
+        Result.SharingCode = IsSharingConflict(Result.ErrorCode) ? Result.ErrorCode : Probe.SharingCode;
+        Result.AccessibleRename = Probe.AccessibleRename;
+        Result.DeleteAccessProbed = Probe.DeleteAccessProbed;
+        Result.SourceDeleteError = Probe.SourceDeleteError;
+        Result.DestinationDeleteError = Probe.DestinationDeleteError;
+        Result.DestinationAttributes = Probe.DestinationAttributes;
+        if (Attempt == 3 || (!IsSharingConflict(Result.SharingCode) && !Result.AccessibleRename))
+            return Result;
+        FPlatformProcess::SleepNoStats(Delays[Attempt]);
+    }
+    return Result;
+}
+FString WindowsFileFailure(const TCHAR *Stage, const FString &Filename,
+                           const FAtomicFileResult &Result) {
+    return FString::Printf(TEXT("stage=%s; file=%s; Win32=%u; sharingWin32=%u; attempts=%d; "
+                                "accessibleRename=%d; deleteAccessProbed=%d; sourceDeleteWin32=%u; "
+                                "destinationDeleteWin32=%u; destinationAttributes=%u"), Stage,
+                           *FPaths::GetCleanFilename(Filename), Result.ErrorCode, Result.SharingCode,
+                           Result.Attempts, Result.AccessibleRename, Result.DeleteAccessProbed,
+                           Result.SourceDeleteError, Result.DestinationDeleteError, Result.DestinationAttributes);
+}
+#endif
+bool ReplaceAtomically(const FString &Destination, const FString &Source,
+                       FString *Failure = nullptr, const TCHAR *Stage = TEXT("atomic-rename")) {
+#if PLATFORM_WINDOWS
+    const auto Result = RetryWindowsFileOperation(
+        [&]() {
+            return ::MoveFileExW(*Source, *Destination, MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH) != 0;
+        },
+        [&]() {
+            FSharingProbeResult Probe;
+            Probe.DeleteAccessProbed = true;
+            Probe.DestinationDeleteError = ProbeDeleteAccess(Destination);
+            Probe.SourceDeleteError = ProbeDeleteAccess(Source);
+            Probe.SharingCode = IsSharingConflict(Probe.DestinationDeleteError)
+                                    ? Probe.DestinationDeleteError
+                                    : (IsSharingConflict(Probe.SourceDeleteError) ? Probe.SourceDeleteError
+                                                                                : ERROR_SUCCESS);
+            Probe.DestinationAttributes = ::GetFileAttributesW(*Destination);
+            // Access denial can disappear before these probes. A short retry
+            // is safe when both existing files are deletable and the target is
+            // writable; this does not classify the original denial as a lock.
+            Probe.AccessibleRename = Probe.SourceDeleteError == ERROR_SUCCESS &&
+                                     Probe.DestinationDeleteError == ERROR_SUCCESS &&
+                                     Probe.DestinationAttributes != INVALID_FILE_ATTRIBUTES &&
+                                     (Probe.DestinationAttributes & FILE_ATTRIBUTE_READONLY) == 0;
+            return Probe;
+        });
+    if (!Result.Succeeded && Failure)
+        *Failure = WindowsFileFailure(Stage, Destination, Result);
+    return Result.Succeeded;
 #else
     return IFileManager::Get().Move(*Destination, *Source, true, true, false, true);
+#endif
+}
+bool CopyPreviousSave(const FString &Destination, const FString &Source, FString &Failure) {
+#if PLATFORM_WINDOWS
+    const auto Result = RetryWindowsFileOperation(
+        [&]() {
+            // Destination is this write's GUID-unique staging file. A failed copy
+            // can leave it partial, so retry may overwrite that owned stage only.
+            return ::CopyFileW(*Source, *Destination, false) != 0;
+        },
+        []() { return FSharingProbeResult{}; });
+    if (!Result.Succeeded) {
+        Failure = WindowsFileFailure(TEXT("backup-copy"), Source, Result);
+        return false;
+    }
+    // CopyFileW inherits source attributes. Keep only our staging copy writable
+    // so cleanup and the future backup do not inherit a read-only primary.
+    const DWORD Attributes = ::GetFileAttributesW(*Destination);
+    uint32 AttributeError = Attributes == INVALID_FILE_ATTRIBUTES ? ::GetLastError() : ERROR_SUCCESS;
+    if (Attributes != INVALID_FILE_ATTRIBUTES && (Attributes & FILE_ATTRIBUTE_READONLY) != 0) {
+        const DWORD WritableAttributes = Attributes & ~FILE_ATTRIBUTE_READONLY;
+        if (!::SetFileAttributesW(*Destination,
+                                  WritableAttributes != 0 ? WritableAttributes : FILE_ATTRIBUTE_NORMAL))
+            AttributeError = ::GetLastError();
+    }
+    if (AttributeError != ERROR_SUCCESS) {
+        FAtomicFileResult AttributeResult;
+        AttributeResult.ErrorCode = AttributeError;
+        AttributeResult.Attempts = 1;
+        Failure = WindowsFileFailure(TEXT("backup-stage-attributes"), Destination, AttributeResult);
+        return false;
+    }
+    return true;
+#else
+    return FPlatformFileManager::Get().GetPlatformFile().CopyFile(*Destination, *Source);
 #endif
 }
 int32 AddCount(int32 N, int32 Delta = 1) {
@@ -349,16 +485,23 @@ bool URiftProfileSubsystem::AtomicWriteBytes(const FString &Filename, const TArr
     }
     if (Files.FileExists(*Filename)) {
         const FString Backup = Filename + TEXT(".bak"), BackupTemp = Backup + TEXT(".tmp-") + Suffix;
-        if (!Files.CopyFile(*BackupTemp, *Filename) || !ReplaceAtomically(Backup, BackupTemp)) {
+        FString Failure;
+        if (!CopyPreviousSave(BackupTemp, Filename, Failure) ||
+            !ReplaceAtomically(Backup, BackupTemp, &Failure, TEXT("backup-rename"))) {
             Files.DeleteFile(*Temp);
             Files.DeleteFile(*BackupTemp);
             Error = TEXT("Unable to preserve the previous save.");
+            if (!Failure.IsEmpty())
+                Error += TEXT(" ") + Failure;
             return false;
         }
     }
-    if (!ReplaceAtomically(Filename, Temp)) {
+    FString Failure;
+    if (!ReplaceAtomically(Filename, Temp, &Failure, TEXT("primary-rename"))) {
         Files.DeleteFile(*Temp);
         Error = TEXT("Unable to commit save; previous file remains available.");
+        if (!Failure.IsEmpty())
+            Error += TEXT(" ") + Failure;
         return false;
     }
     return true;

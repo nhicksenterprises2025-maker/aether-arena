@@ -342,6 +342,10 @@ void Match::FixedStep(double dt) {
     UpdateAI(first == 0 ? Team::Enemy : Team::Player, dt);
     if (!Running(state_.phase))
         return;
+    bodyStepStarts_.clear();
+    for (const auto &entity : state_.entities)
+        if (!entity.dead)
+            bodyStepStarts_.emplace(entity.id, entity.position);
     std::vector<EntityId> order;
     for (EntityKind k : {EntityKind::Core, EntityKind::Guard, EntityKind::Building, EntityKind::Troop})
         for (const auto &e : state_.entities)
@@ -580,6 +584,11 @@ bool Match::Play(Team team, int index, Vec2 p, const std::string &reason) {
     p = SnapToTile(p);
     if (!c || state_.aether[t] + Epsilon < c->cost || !CanPlace(team, *c, p))
         return false;
+    std::vector<Vec2> positions;
+    // Reserve every body atomically before spending or cycling the hand. A full
+    // deployment area cannot consume a card while silently losing a member.
+    if (!PlanDeployment(team, *c, p, false, positions))
+        return false;
     const PlayId play = nextPlay_++;
     const double before = state_.aether[t];
     // Affordability permits floating-point residue at the exact cost boundary.
@@ -627,7 +636,7 @@ bool Match::Play(Team team, int index, Vec2 p, const std::string &reason) {
     observer.observedCycle.push_back(c->id);
     if (observer.observedCycle.size() > 12)
         observer.observedCycle.erase(observer.observedCycle.begin());
-    Deploy(team, *c, p, play, false);
+    Deploy(team, *c, p, play, false, positions);
     return true;
 }
 bool Match::Spawn(Team team, const std::string &id, Vec2 p) {
@@ -635,6 +644,9 @@ bool Match::Spawn(Team team, const std::string &id, Vec2 p) {
     if (!c || !Running(state_.phase) || !CanPlace(team, *c, p, true))
         return false;
     p = SnapToTile(p);
+    std::vector<Vec2> positions;
+    if (!PlanDeployment(team, *c, p, true, positions))
+        return false;
     const PlayId play = nextPlay_++;
     auto &e = Emit("card_play", team);
     e.cardId = id;
@@ -644,10 +656,41 @@ bool Match::Spawn(Team team, const std::string &id, Vec2 p) {
     e.reason = "developer_spawn";
     e.aetherBefore = e.aetherAfter = state_.aether[Index(team)];
     e.until = c->castDelay > 0 ? state_.elapsed + c->castDelay : 0;
-    Deploy(team, *c, p, play, true);
+    Deploy(team, *c, p, play, true, positions);
     return true;
 }
-void Match::Deploy(Team team, const Card &c, Vec2 p, PlayId play, bool sandbox) {
+bool Match::PlanDeployment(Team team, const Card &c, Vec2 p, bool sandbox,
+                           std::vector<Vec2> &positions) const {
+    positions.clear();
+    if (c.spell)
+        return true;
+    const std::vector<Vec2> offsets =
+        c.count == 2   ? std::vector<Vec2>{{-.42, .12}, {.42, -.12}}
+        : c.count == 5 ? std::vector<Vec2>{{-.86, -.18}, {0, -.42}, {.86, -.18}, {-.43, .38}, {.43, .38}}
+                       : std::vector<Vec2>{{0, 0}};
+    std::vector<Entity> planned;
+    for (int i = 0; i < c.count; ++i) {
+        Entity body;
+        body.id = nextEntity_ + static_cast<EntityId>(i);
+        body.team = team;
+        body.kind = c.building ? EntityKind::Building : EntityKind::Troop;
+        body.cardId = c.id;
+        body.radius = c.building ? c.footprint * .52 : .44 * c.scale;
+        body.flying = c.flying;
+        body.facing = {0, -Sign(team)};
+        const Vec2 requested{Clamp(p.x + offsets[i].x, -arena::DeploymentMaxX, arena::DeploymentMaxX),
+                             p.z + offsets[i].z};
+        if (!ResolveBodyPlacement(requested, body, sandbox, planned, body.position)) {
+            positions.clear();
+            return false;
+        }
+        positions.push_back(body.position);
+        planned.push_back(body);
+    }
+    return true;
+}
+void Match::Deploy(Team team, const Card &c, Vec2 p, PlayId play, bool sandbox,
+                   const std::vector<Vec2> &positions) {
     if (c.spell) {
         if (c.castDelay > 0) {
             SpellCast cast;
@@ -669,10 +712,6 @@ void Match::Deploy(Team team, const Card &c, Vec2 p, PlayId play, bool sandbox) 
         }
         return;
     }
-    const std::vector<Vec2> offsets =
-        c.count == 2   ? std::vector<Vec2>{{-.42, .12}, {.42, -.12}}
-        : c.count == 5 ? std::vector<Vec2>{{-.86, -.18}, {0, -.42}, {.86, -.18}, {-.43, .38}, {.43, .38}}
-                       : std::vector<Vec2>{{0, 0}};
     std::vector<EntityId> deployed;
     for (int i = 0; i < c.count; ++i) {
         Entity e;
@@ -681,16 +720,11 @@ void Match::Deploy(Team team, const Card &c, Vec2 p, PlayId play, bool sandbox) 
         e.kind = c.building ? EntityKind::Building : EntityKind::Troop;
         e.cardId = c.id;
         e.playId = play;
-        e.position = {Clamp(p.x + offsets[i].x, -arena::DeploymentMaxX, arena::DeploymentMaxX),
-                      p.z + offsets[i].z};
+        e.position = positions[static_cast<std::size_t>(i)];
         e.facing = {0, -Sign(team)};
         e.hp = e.maxHp = c.hp;
         e.radius = c.building ? c.footprint * .52 : .44 * c.scale;
         e.flying = c.flying;
-        // Hand drops remain legal near towers; each ground member starts beside
-        // the solid footprint rather than inside an inescapable blocked cell.
-        if (e.kind == EntityKind::Troop && !e.flying)
-            e.position = ResolveGroundPlacement(e.position, e, sandbox);
         e.born = state_.elapsed;
         e.memberCount = c.count;
         e.cooldown = c.building ? .35 : 0;

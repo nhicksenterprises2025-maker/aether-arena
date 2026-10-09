@@ -1,6 +1,6 @@
 # Native verification sources
 
-`RiftSimulationTests.cpp` contains the 41 portable regressions, including delayed spell impacts, and the 21 complete seeded-match soak. `Run-NativeSimulationTests.ps1` locates installed Visual Studio C++ x64 tools with `vswhere`, compiles the exact production simulation sources using C++20, and runs that harness. No Unreal runtime or substituted combat model is used. Binaries, object files and generated command files go under ignored `Build/NativeTests`.
+`RiftSimulationTests.cpp` contains the 61 portable regressions, including delayed spell impacts, and the 21 complete seeded-match soak. The collision regressions check paid placement for all eleven physical cards, opposing traffic, ground/air layers, stationary blockers, bridge queues and full relative movement sweeps. Four paid three-building pockets require every ground member to escape and cross its selected bridge, with strict separation and authored movement speed. Every seeded match also checks live-body separation. `Run-NativeSimulationTests.ps1` locates installed Visual Studio C++ x64 tools with `vswhere`, compiles the exact production simulation sources using C++20, and runs that harness. No Unreal runtime or substituted combat model is used. Binaries, object files and generated command files go under ignored `Build/NativeTests`.
 
 Run from the repository root:
 
@@ -16,7 +16,7 @@ python Build/Tests/Audit-NativeMeta.py '<dataset.json>' --output '<audit.json>' 
 
 Add `--compare '<baseline-dataset.json>'` to compare the retained gameplay/economy/status totals. The default seed is the production QA seed; a dataset created with another seed must supply its actual initial seed. Generated private datasets and reports stay outside source control. The independent audit distinguishes dataset counts, active core time and descriptive deck/card associations from renderer performance or causal balance evidence.
 
-`Build/Test-Unreal.ps1 -Filter Rift` runs the complete fifteen-test UE suite, including UI, typography, input routing, unit motion, projectiles, delayed-spell replay and native Meta checks. It isolates both native saves and engine settings, and validates the exported automation result rather than inferring success from process startup. `Build/Test-CardDrag.ps1` separately exercises real Slate pointer capture and cancellation against Editor or Shipping builds. Version 1.3.1 requires 32 assertions: the original 29 drag routes plus initial hover, sustained tooltip identity/window/opacity and updated tooltip content after a card cycles. Explicit 1.3.0 runs retain their original 29-check expectation.
+`Build/Test-Unreal.ps1 -Filter Rift` runs the complete seventeen-test UE suite, including solid-body collision, tower/lane routing, UI, typography, input routing, unit motion, projectiles, delayed-spell replay and native Meta checks. It isolates both native saves and engine settings, and validates the exported automation result rather than inferring success from process startup. `Build/Test-CardDrag.ps1` separately exercises real Slate pointer capture and cancellation against Editor or Shipping builds. Version 1.3.1 requires 32 assertions: the original 29 drag routes plus initial hover, sustained tooltip identity/window/opacity and updated tooltip content after a card cycles. Explicit 1.3.0 runs retain their original 29-check expectation.
 
 `Build/Test-UnrealAudio.ps1` runs the live audio mixer in Editor or Shipping with isolated saves and settings. The 1.3.2 smoke exercises menu and battle transitions, scans playing audio components for the unwanted river loop, measures quiet background output with music muted, and retains the music, interface, combat, volume-control and overload checks. Reports bind the actual executable, process, source/module bytes and completion logs; waveform measurements establish runtime output rather than subjective listening quality.
 
@@ -27,3 +27,9 @@ Add `--compare '<baseline-dataset.json>'` to compare the retained gameplay/econo
 ```
 
 Run aggregate validity without `--compare` to get a standalone validity result. Run a separate strict comparison with `--compare` when evaluating historical cohorts; its nonzero exit reports genuine differences. The final numerical correction cohort passes validity while differing from its historical baseline. Public, path-sanitized reports and that distinction are preserved in `Docs/QA`.
+
+`Verify-UnitCollision.ps1` runs the same full portable harness with source hashes captured before compilation and checked after execution. Timestamped failed attempts are preserved. Its report records independent raw-radius endpoint and relative swept-trajectory checks, paid deployment/member counts and progress through four dense bridge queues. Spell cards have no collision body; air and ground use separate layers.
+
+```powershell
+& Build/Tests/Verify-UnitCollision.ps1
+```

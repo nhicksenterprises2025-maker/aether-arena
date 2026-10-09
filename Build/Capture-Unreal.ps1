@@ -2,7 +2,9 @@ param(
     [string]$EngineRoot = 'C:\Program Files\Epic Games\UE_5.8',
     [string]$Executable = '',
     [string]$Page = 'Battle',
-    [ValidateSet('','roster','congestion','effects','effects17','placement','projectiles','spells','tower_pathing')][string]$Scenario = '',
+    [ValidateSet('','roster','congestion','effects','effects17','placement','projectiles','spells','tower_pathing','unit_collision')][string]$Scenario = '',
+    [ValidateSet('crowd','contact','layers')][string]$CollisionCase = 'crowd',
+    [ValidateRange(0,12)][float]$CollisionAge = 3,
     [ValidateRange(0,6)][float]$PathingAge = 0,
     [ValidateSet('clearance','left_pocket','right_pocket')][string]$RouteCase = 'clearance',
     [ValidateSet('player','enemy')][string]$RouteTeam = 'player',
@@ -41,6 +43,7 @@ $Executable = (Resolve-Path -LiteralPath $Executable).Path
 $riftCaptureExecutableHash = (Get-FileHash -LiteralPath $Executable -Algorithm SHA256).Hash.ToLowerInvariant()
 $isEditor = [System.IO.Path]::GetFileNameWithoutExtension($Executable) -in @('UnrealEditor','UnrealEditor-Cmd')
 if($Scenario -eq 'tower_pathing' -and ($Page -ne 'Battle' -or $Phase -or $RecordedMatch -or $BreathSmoke)) { throw 'Tower pathing requires its live Battle fixture without another phase, recorded-match or breath fixture.' }
+if($Scenario -eq 'unit_collision' -and ($Page -ne 'Battle' -or $Phase -or $RecordedMatch -or $BreathSmoke)) { throw 'Unit collision requires its live paid Battle fixture without another phase, recorded-match or breath fixture.' }
 $riftTowerSources=@(Get-ChildItem -LiteralPath (Join-Path $repoRoot 'Unreal/RiftCrownArena/Source'),(Join-Path $repoRoot 'Unreal/RiftCrownArena/Config') -File -Recurse | Where-Object Extension -in @('.cpp','.h','.cs','.ini') | ForEach-Object FullName)+@($projectPath,$PSCommandPath)
 if($isEditor) { $riftTowerSources+=@('Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArena.dll','Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArenaEditor.dll') | ForEach-Object { Join-Path $repoRoot $_ } }
 $riftTowerSourcePins=@($riftTowerSources | Sort-Object -Unique | ForEach-Object { [ordered]@{path=[IO.Path]::GetRelativePath($repoRoot,$_).Replace('\','/');sha256=(Get-FileHash -LiteralPath $_ -Algorithm SHA256).Hash.ToLowerInvariant();bytes=(Get-Item -LiteralPath $_).Length} })
@@ -71,6 +74,7 @@ $arguments = @(
 if ($isEditor) { $arguments = @(('"' + $projectPath + '"')) + $arguments }
 if ($Scenario) { $arguments += "-RiftVisualScenario=$Scenario" }
 if ($Scenario -eq 'tower_pathing') { $arguments += '-RiftPathingAge=' + $PathingAge.ToString([System.Globalization.CultureInfo]::InvariantCulture);$arguments += "-RiftRouteCase=$RouteCase";$arguments += "-RiftRouteTeam=$RouteTeam" }
+if ($Scenario -eq 'unit_collision') { $arguments += '-RiftCollisionAge=' + $CollisionAge.ToString([System.Globalization.CultureInfo]::InvariantCulture);$arguments += "-RiftCollisionCase=$CollisionCase" }
 if ($BreathSmoke) { $arguments += '-RiftBreathSmoke' }
 if ($Hand -ge 0) { $arguments += "-RiftCaptureHand=$Hand" }
 if ($Developer) { $arguments += '-RiftCaptureDeveloper' }
@@ -158,6 +162,7 @@ if ($Phase) {
     }
 }
 $riftTowerPathingPassed=$true
+$riftUnitCollisionPassed=$true
 $riftTowerSourcesUnchanged=$true
 if($Scenario -eq 'tower_pathing') {
     $pathing=$riftCaptureState.towerPathing
@@ -184,6 +189,29 @@ if($Scenario -eq 'tower_pathing') {
         if($PathingAge -ge 5) { $riftTowerPathingPassed=$riftTowerPathingPassed -and $pathing.crossingRequired -eq $true -and @($pathing.units | Where-Object { $_.role -eq 'own_half' -and ($_.crossedRiver -ne $true -or @($_.crossingHistory | Where-Object { $_.event -eq 'river_center' -and $_.bridge -eq $lane -and $_.x*$lane -gt 0 }).Count -ne 1) }).Count -eq 0 }
     }
 }
+if($Scenario -eq 'unit_collision') {
+    $collision=$riftCaptureState.unitCollision
+    $riftUnitCollisionPassed=$stateCaptured -and $null -ne $collision -and $collision.schemaVersion -eq 1 -and $collision.passed -eq $true -and
+        $collision.case -eq $CollisionCase -and $collision.paidPlayOnly -eq $true -and $collision.paidCostAndCyclePassed -eq $true -and
+        $collision.expectedUnitCount -gt 0 -and $collision.actualUnitCount -eq $collision.expectedUnitCount -and @($collision.units).Count -eq $collision.actualUnitCount -and
+        @($collision.units.id | Sort-Object -Unique).Count -eq $collision.actualUnitCount -and $collision.allMembersAccounted -eq $true -and
+        $collision.initialMemberCount -eq $collision.actualUnitCount -and $collision.initialGroundMemberCount -eq $collision.groundMembers -and
+        $collision.allMembersSeen -eq $true -and $collision.captureSeenMemberCount -eq $collision.actualUnitCount -and
+        (($collision.captureSeenIds | Sort-Object) -join '|') -eq (($collision.units.id | Sort-Object) -join '|') -and
+        $collision.spawnClearancePassed -eq $true -and $collision.allFixedStepClearancePassed -eq $true -and
+        $collision.allRelativeMovementSegmentClearancePassed -eq $true -and $collision.allBridgeHistoriesPassed -eq $true -and $collision.stationaryBuildingsPassed -eq $true -and
+        $collision.layerCoveragePassed -eq $true -and $collision.minimumGap -ge -.000001 -and $collision.minimumSegmentGap -ge -.000001 -and
+        $collision.collisionSkin -eq .02 -and $collision.structurePadding -eq .22 -and @($collision.paidPlays).Count -eq $collision.deploymentCount -and
+        @($collision.paidPlays | Where-Object { $_.accepted -ne $true -or $_.handCycledOnce -ne $true -or $_.spentDelta -ne $_.cost -or $_.aetherAfter -ne (10-$_.cost) }).Count -eq 0 -and
+        @($collision.pairs).Count -eq ($collision.groundPairs+$collision.airPairs) -and @($collision.pairs | Where-Object { $_.minimumGap -lt -.000001 -or $_.minimumSegmentGap -lt -.000001 }).Count -eq 0 -and
+        [math]::Abs($collision.requestedAge-$CollisionAge) -lt .00001 -and [math]::Abs($collision.sampledAge-([math]::Round($CollisionAge*60)/60)) -lt .00001 -and
+        $collision.fixedSteps -eq [math]::Round($CollisionAge*60) -and @($collision.samples).Count -eq ($collision.fixedSteps+1) -and $riftCaptureState.speed -eq 0
+    if($CollisionAge -ge 2) { $riftUnitCollisionPassed=$riftUnitCollisionPassed -and $collision.progressRequired -eq $true -and $collision.progressPassed -eq $true -and $collision.membersProgressed -gt 0 }
+    if($CollisionCase -eq 'contact' -and $CollisionAge -ge 3) { $riftUnitCollisionPassed=$riftUnitCollisionPassed -and $collision.enemyContactRequired -eq $true -and $collision.enemyContactObserved -eq $true }
+    if($CollisionCase -eq 'layers') { $riftUnitCollisionPassed=$riftUnitCollisionPassed -and $collision.airMembers -ge 2 -and $collision.groundMembers -ge 1 -and $collision.buildingMembers -ge 1 -and $collision.airPairs -gt 0 -and $collision.crossLayerOverlapObservations -gt 0 }
+    if($CollisionCase -eq 'crowd') { $riftUnitCollisionPassed=$riftUnitCollisionPassed -and $collision.actualUnitCount -eq 31 -and $collision.deploymentCount -eq 16 -and $collision.groundMembers -eq 11 -and $collision.airMembers -eq 17 -and $collision.buildingMembers -eq 3 }
+    if($CollisionCase -eq 'crowd' -and $CollisionAge -ge 12) { $riftUnitCollisionPassed=$riftUnitCollisionPassed -and $collision.bridgeCrossingRequired -eq $true -and $collision.farBankDepth -eq 1.93 -and $collision.groundMembersFarBankCrossed -eq 11 -and $collision.allGroundMembersFarBankCrossed -eq $true -and @($collision.units | Where-Object { $_.kind -eq 0 -and $_.flying -ne $true -and ($_.crossedFarBank -ne $true -or @($_.farBankCrossingHistory).Count -ne 1) }).Count -eq 0 }
+}
 foreach($pin in $riftTowerSourcePins) { $file=Join-Path $repoRoot $pin.path;if((Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $pin.sha256 -or (Get-Item -LiteralPath $file).Length -ne $pin.bytes) { $riftTowerSourcesUnchanged=$false } }
 $riftCaptureExecutableUnchanged=(Get-FileHash -LiteralPath $Executable -Algorithm SHA256).Hash.ToLowerInvariant() -eq $riftCaptureExecutableHash
 $errors = @()
@@ -197,11 +225,12 @@ if ($isEditor) {
     $diagnostics=Get-RiftShippingDiagnostics -RepoRoot $repoRoot -DestinationRoot $runRoot -SaveRoot $saveRoot -EngineUserRoot $engineUserRoot -ProcessId $process.Id -ExpectedVersion $ExpectedVersion -StartedUTC $started -FinishedUTC $finished -ErrorPattern $errorPattern
     $errors=@($diagnostics.errors); $diagnosticSource=$diagnostics.diagnosticSource; $nativeDiagnosticLogs=@($diagnostics.nativeDiagnosticLogs); $diagnosticVerification=$diagnostics.diagnosticVerification; $logPath=$diagnostics.engineLog
 }
-$riftCapturePassed=!$timedOut -and $freshCapture -and $stateCaptured -and $resolutionMatches -and $riftPhaseFixturePassed -and $riftCameraFramingPassed -and $riftModelEnvelopeCheckPassed -and $riftArenaGeometryPassed -and $riftTowerPathingPassed -and $riftTowerSourcesUnchanged -and $riftCaptureExecutableUnchanged -and $process.ExitCode -eq 0 -and $errors.Count -eq 0
+$riftCapturePassed=!$timedOut -and $freshCapture -and $stateCaptured -and $resolutionMatches -and $riftPhaseFixturePassed -and $riftCameraFramingPassed -and $riftModelEnvelopeCheckPassed -and $riftArenaGeometryPassed -and $riftTowerPathingPassed -and $riftUnitCollisionPassed -and $riftTowerSourcesUnchanged -and $riftCaptureExecutableUnchanged -and $process.ExitCode -eq 0 -and $errors.Count -eq 0
 $report = [ordered]@{
     schema = 1; version=$ExpectedVersion; passed=[bool]$riftCapturePassed; name = $Name; page = $Page; scenario = $Scenario; inspectCard = $InspectCard; speed = $Speed; breathSmoke = [bool]$BreathSmoke; uiScale=$UIScale; zoom=$Zoom;
     state = $statePath; stateCaptured = $stateCaptured; phaseFixture = $Phase; phaseFixturePassed = $riftPhaseFixturePassed; allowExternalInput = [bool]$AllowExternalInput;
     pathingAge = $(if($Scenario -eq 'tower_pathing'){$PathingAge}else{$null}); routeCase=$(if($Scenario -eq 'tower_pathing'){$RouteCase}else{$null}); routeTeam=$(if($Scenario -eq 'tower_pathing'){$RouteTeam}else{$null}); towerPathingPassed = $riftTowerPathingPassed;
+    collisionAge=$(if($Scenario -eq 'unit_collision'){$CollisionAge}else{$null}); collisionCase=$(if($Scenario -eq 'unit_collision'){$CollisionCase}else{$null}); unitCollisionPassed=$riftUnitCollisionPassed;
     sourcePins=$riftTowerSourcePins; sourcePinsUnchanged=$riftTowerSourcesUnchanged; executableUnchanged=$riftCaptureExecutableUnchanged;
     cameraFramingRequired = $riftCameraFramingRequired; cameraFramingPassed = $riftCameraFramingPassed; cameraFraming = $riftCameraFraming;
     modelEnvelopeAvailable = $riftModelEnvelopeAvailable; modelEnvelopePassed = $riftModelEnvelopePassed;

@@ -1,0 +1,500 @@
+{
+  "devices": [
+    {
+      "deviceName": "QA workstation",
+      "instance": "5DD35B6B4679EBD0D2E142AC2598E273",
+      "instanceName": "QA workstation instance",
+      "platform": "WindowsEditor",
+      "oSVersion": "Windows 11 (25H2) [10.0.26200.9457] ",
+      "model": "Default",
+      "gPU": "NVIDIA GeForce RTX 5060",
+      "cPUModel": "AMD Ryzen 7 5700                               ",
+      "rAMInGB": 32,
+      "renderMode": "SM6",
+      "rHI": "",
+      "appInstanceLog": ""
+    }
+  ],
+  "reportCreatedOn": "2026.10.09-22.18.20",
+  "succeeded": 15,
+  "succeededWithWarnings": 1,
+  "failed": 1,
+  "notRun": 0,
+  "inProcess": 0,
+  "totalDuration": 77.7171630859375,
+  "comparisonExported": false,
+  "comparisonExportDirectory": "",
+  "tests": [
+    {
+      "testDisplayName": "BattleInputRouting",
+      "fullTestPath": "Rift.Integration.BattleInputRouting",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "5DD35B6B4679EBD0D2E142AC2598E273"
+      ],
+      "duration": 4.969764232635498,
+      "dateTime": "2026.10.09-22.17.02",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "CardData",
+      "fullTestPath": "Rift.Integration.CardData",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "5DD35B6B4679EBD0D2E142AC2598E273"
+      ],
+      "duration": 0.008852999657392502,
+      "dateTime": "2026.10.09-22.17.07",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "ConnectedUI",
+      "fullTestPath": "Rift.Integration.ConnectedUI",
+      "tags": [],
+      "state": "Fail",
+      "deviceInstance": [
+        "5DD35B6B4679EBD0D2E142AC2598E273"
+      ],
+      "duration": 0.4818108081817627,
+      "dateTime": "2026.10.09-22.17.07",
+      "entries": [
+        {
+          "event": {
+            "type": "Error",
+            "message": "LogRift: Unable to preserve the previous save.",
+            "context": "log",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-22.17.08"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "LogCsvProfiler: Metadata set : systemresolution.resx=\"1600\"",
+            "context": "log",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-22.17.08"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "LogCsvProfiler: Metadata set : systemresolution.resy=\"900\"",
+            "context": "log",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-22.17.08"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "LogCsvProfiler: Metadata set : systemresolution.resx=\"1920\"",
+            "context": "log",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-22.17.08"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "LogCsvProfiler: Metadata set : systemresolution.resy=\"1080\"",
+            "context": "log",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-22.17.08"
+        }
+      ],
+      "warnings": 0,
+      "errors": 1,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "FullLengthReplay",
+      "fullTestPath": "Rift.Integration.FullLengthReplay",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "5DD35B6B4679EBD0D2E142AC2598E273"
+      ],
+      "duration": 59.75498962402344,
+      "dateTime": "2026.10.09-22.17.08",
+      "entries": [
+        {
+          "event": {
+            "type": "Info",
+            "message": "Full native replay: 34324 events, 1256 samples, 662334 stored bytes, 43886862 decoded bytes, 313.350 seconds.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-22.17.18"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Long replay game-thread finalization queue time 1.724 ms.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-22.17.18"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Paid control/counter AI replay: 209.700s, peak 21, 1636 events, 841 samples, 755863 stored, 0 exported JSON, 0.745ms queue.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-22.17.21"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Congested Developer/paid AI replay: 313.350s, peak 80, 23956 events, 1256 samples, 10924305 stored, 93679284 exported JSON, 3.213ms queue.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-22.18.08"
+        }
+      ],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "PausedResultAndReplayEvents",
+      "fullTestPath": "Rift.Integration.PausedResultAndReplayEvents",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "5DD35B6B4679EBD0D2E142AC2598E273"
+      ],
+      "duration": 2.8582215309143066,
+      "dateTime": "2026.10.09-22.18.08",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "Presentation",
+      "fullTestPath": "Rift.Integration.Presentation",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "5DD35B6B4679EBD0D2E142AC2598E273"
+      ],
+      "duration": 1.1550489664077759,
+      "dateTime": "2026.10.09-22.18.11",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "ProfilePersistence",
+      "fullTestPath": "Rift.Integration.ProfilePersistence",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "5DD35B6B4679EBD0D2E142AC2598E273"
+      ],
+      "duration": 0.04857080057263374,
+      "dateTime": "2026.10.09-22.18.12",
+      "entries": [
+        {
+          "event": {
+            "type": "Warning",
+            "message": "LogRift: Recovered native save backup",
+            "context": "log",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-22.18.12"
+        }
+      ],
+      "warnings": 1,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "ProjectilePresentation",
+      "fullTestPath": "Rift.Integration.ProjectilePresentation",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "5DD35B6B4679EBD0D2E142AC2598E273"
+      ],
+      "duration": 0.0408129021525383,
+      "dateTime": "2026.10.09-22.18.12",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "ReplayTimeline",
+      "fullTestPath": "Rift.Integration.ReplayTimeline",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "5DD35B6B4679EBD0D2E142AC2598E273"
+      ],
+      "duration": 0.18878090381622314,
+      "dateTime": "2026.10.09-22.18.12",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "SnapshotRoundtrip",
+      "fullTestPath": "Rift.Integration.SnapshotRoundtrip",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "5DD35B6B4679EBD0D2E142AC2598E273"
+      ],
+      "duration": 0.046360600739717484,
+      "dateTime": "2026.10.09-22.18.12",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "SpellCastReplay",
+      "fullTestPath": "Rift.Integration.SpellCastReplay",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "5DD35B6B4679EBD0D2E142AC2598E273"
+      ],
+      "duration": 0.23716509342193604,
+      "dateTime": "2026.10.09-22.18.12",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "TowerPathing",
+      "fullTestPath": "Rift.Integration.TowerPathing",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "5DD35B6B4679EBD0D2E142AC2598E273"
+      ],
+      "duration": 0.775262176990509,
+      "dateTime": "2026.10.09-22.18.12",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "Typography",
+      "fullTestPath": "Rift.Integration.Typography",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "5DD35B6B4679EBD0D2E142AC2598E273"
+      ],
+      "duration": 0.1567988097667694,
+      "dateTime": "2026.10.09-22.18.13",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "UnitCollision",
+      "fullTestPath": "Rift.Integration.UnitCollision",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "5DD35B6B4679EBD0D2E142AC2598E273"
+      ],
+      "duration": 5.006805896759033,
+      "dateTime": "2026.10.09-22.18.13",
+      "entries": [
+        {
+          "event": {
+            "type": "Info",
+            "message": "Collision paid queue team 0 lane -1: 24 of 24 crossed.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-22.18.15"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Collision paid queue team 0 lane 1: 24 of 24 crossed.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-22.18.16"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Collision paid queue team 1 lane -1: 24 of 24 crossed.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-22.18.17"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Collision paid queue team 1 lane 1: 24 of 24 crossed.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-22.18.18"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Collision capacity team 0: 312 actual buildings, 6 residual troops, 19 rejected sandbox requests; paid rejection and air follow-up checked.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-22.18.18"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Collision capacity team 1: 312 actual buildings, 6 residual troops, 19 rejected sandbox requests; paid rejection and air follow-up checked.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-22.18.18"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Independent native collision checks: 1890288 endpoint pairs, 1661196 relative sweeps; minimum gaps 0.020000001 / 0.020000001 tiles.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-22.18.18"
+        }
+      ],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "UnitMotion",
+      "fullTestPath": "Rift.Integration.UnitMotion",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "5DD35B6B4679EBD0D2E142AC2598E273"
+      ],
+      "duration": 0.16254369914531708,
+      "dateTime": "2026.10.09-22.18.18",
+      "entries": [
+        {
+          "event": {
+            "type": "Info",
+            "message": "Flying death altitude before 89.683446072746 cm; at start 89.683446072746 cm; displacement 0.000000000000 cm.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-22.18.18"
+        }
+      ],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "AggregationEconomy",
+      "fullTestPath": "Rift.Meta.AggregationEconomy",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "5DD35B6B4679EBD0D2E142AC2598E273"
+      ],
+      "duration": 0.3509846031665802,
+      "dateTime": "2026.10.09-22.18.19",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "WorkerPauseAndRecovery",
+      "fullTestPath": "Rift.Meta.WorkerPauseAndRecovery",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "5DD35B6B4679EBD0D2E142AC2598E273"
+      ],
+      "duration": 1.4743850231170654,
+      "dateTime": "2026.10.09-22.18.19",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    }
+  ],
+  "curatedEvidence": {
+    "schema": 2,
+    "version": "1.3.5",
+    "historicalFailedRun": true,
+    "sourceReport": "Build/Automation/20261009-181643/Report/index.json",
+    "sourceReportSha256": "f2ca2a7a264018b032cd2d8e8d7217c5bef17e9fb706981e93c589a829495d8a",
+    "context": "Build/Automation/20261009-181643/context.json",
+    "contextSha256": "bf76bce132454007b3b49278cfc13d7c8f62ccd3604c06a66d03b7a38d061c4b",
+    "sourcesUnchangedObservedAfterExit": true,
+    "runtimeModulesUnchangedObservedAfterExit": true,
+    "observedTestCount": 17,
+    "explanation": "Collision and replay assertions passed. ConnectedUI again logged Unable to preserve the previous save during shutdown. No OS reason was recorded. This repeat led to bounded Windows transient-lock retry hardening and real held-lock tests; this failed run is historical only."
+  }
+}

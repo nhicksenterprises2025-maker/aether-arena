@@ -2,7 +2,7 @@
   "devices": [
     {
       "deviceName": "QA workstation",
-      "instance": "C999F29E4430CEB74BF15B8B6421F9B0",
+      "instance": "2CAFC2694692F14C7D18FF85FC6B4BDF",
       "instanceName": "QA workstation instance",
       "platform": "WindowsEditor",
       "oSVersion": "Windows 11 (25H2) [10.0.26200.9457] ",
@@ -15,13 +15,13 @@
       "appInstanceLog": ""
     }
   ],
-  "reportCreatedOn": "2026.10.09-22.57.01",
-  "succeeded": 16,
+  "reportCreatedOn": "2026.10.09-21.12.41",
+  "succeeded": 15,
   "succeededWithWarnings": 1,
   "failed": 0,
   "notRun": 0,
   "inProcess": 0,
-  "totalDuration": 74.62525939941406,
+  "totalDuration": 50.175785064697266,
   "comparisonExported": false,
   "comparisonExportDirectory": "",
   "tests": [
@@ -31,10 +31,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "C999F29E4430CEB74BF15B8B6421F9B0"
+        "2CAFC2694692F14C7D18FF85FC6B4BDF"
       ],
-      "duration": 4.614008903503418,
-      "dateTime": "2026.10.09-22.55.46",
+      "duration": 4.275792121887207,
+      "dateTime": "2026.10.09-21.11.50",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -46,10 +46,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "C999F29E4430CEB74BF15B8B6421F9B0"
+        "2CAFC2694692F14C7D18FF85FC6B4BDF"
       ],
-      "duration": 0.005580000579357147,
-      "dateTime": "2026.10.09-22.55.51",
+      "duration": 0.006577298045158386,
+      "dateTime": "2026.10.09-21.11.54",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -61,10 +61,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "C999F29E4430CEB74BF15B8B6421F9B0"
+        "2CAFC2694692F14C7D18FF85FC6B4BDF"
       ],
-      "duration": 0.34428671002388,
-      "dateTime": "2026.10.09-22.55.51",
+      "duration": 0.32913491129875183,
+      "dateTime": "2026.10.09-21.11.54",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -76,54 +76,54 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "C999F29E4430CEB74BF15B8B6421F9B0"
+        "2CAFC2694692F14C7D18FF85FC6B4BDF"
       ],
-      "duration": 56.44273376464844,
-      "dateTime": "2026.10.09-22.55.51",
+      "duration": 40.385276794433594,
+      "dateTime": "2026.10.09-21.11.55",
       "entries": [
         {
           "event": {
             "type": "Info",
-            "message": "Full native replay: 34324 events, 1256 samples, 662330 stored bytes, 43886862 decoded bytes, 313.350 seconds.",
+            "message": "Full native replay: 34324 events, 1256 samples, 662334 stored bytes, 43886862 decoded bytes, 313.350 seconds.",
             "context": "",
             "artifact": "00000000000000000000000000000000"
           },
           "filename": "",
           "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.01"
+          "timestamp": "2026.10.09-21.12.03"
         },
         {
           "event": {
             "type": "Info",
-            "message": "Long replay game-thread finalization queue time 2.855 ms.",
+            "message": "Long replay game-thread finalization queue time 1.792 ms.",
             "context": "",
             "artifact": "00000000000000000000000000000000"
           },
           "filename": "",
           "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.01"
+          "timestamp": "2026.10.09-21.12.03"
         },
         {
           "event": {
             "type": "Info",
-            "message": "Paid control/counter AI replay: 233.200s, peak 21, 2087 events, 935 samples, 819324 stored, 0 exported JSON, 0.739ms queue.",
+            "message": "Paid control/counter AI replay: 269.900s, peak 23, 2704 events, 1082 samples, 1108176 stored, 0 exported JSON, 0.835ms queue.",
             "context": "",
             "artifact": "00000000000000000000000000000000"
           },
           "filename": "",
           "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.04"
+          "timestamp": "2026.10.09-21.12.07"
         },
         {
           "event": {
             "type": "Info",
-            "message": "Congested Developer/paid AI replay: 313.350s, peak 84, 23535 events, 1256 samples, 10714816 stored, 92151028 exported JSON, 2.893ms queue.",
+            "message": "Congested Developer/paid AI replay: 313.350s, peak 83, 24159 events, 1256 samples, 8472236 stored, 87736110 exported JSON, 2.345ms queue.",
             "context": "",
             "artifact": "00000000000000000000000000000000"
           },
           "filename": "",
           "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.47"
+          "timestamp": "2026.10.09-21.12.35"
         }
       ],
       "warnings": 0,
@@ -136,10 +136,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "C999F29E4430CEB74BF15B8B6421F9B0"
+        "2CAFC2694692F14C7D18FF85FC6B4BDF"
       ],
-      "duration": 2.401491403579712,
-      "dateTime": "2026.10.09-22.56.47",
+      "duration": 2.3167505264282227,
+      "dateTime": "2026.10.09-21.12.35",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -151,10 +151,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "C999F29E4430CEB74BF15B8B6421F9B0"
+        "2CAFC2694692F14C7D18FF85FC6B4BDF"
       ],
-      "duration": 0.9973441958427429,
-      "dateTime": "2026.10.09-22.56.50",
+      "duration": 0.9949480295181274,
+      "dateTime": "2026.10.09-21.12.38",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -166,66 +166,11 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "C999F29E4430CEB74BF15B8B6421F9B0"
+        "2CAFC2694692F14C7D18FF85FC6B4BDF"
       ],
-      "duration": 0.21615689992904663,
-      "dateTime": "2026.10.09-22.56.51",
+      "duration": 0.04676530137658119,
+      "dateTime": "2026.10.09-21.12.39",
       "entries": [
-        {
-          "event": {
-            "type": "Info",
-            "message": "Real Windows backup-rename released-lock save: saved=1, 18.643ms, recovered",
-            "context": "",
-            "artifact": "00000000000000000000000000000000"
-          },
-          "filename": "",
-          "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.51"
-        },
-        {
-          "event": {
-            "type": "Info",
-            "message": "Real Windows backup-rename persistent-lock save: saved=0, 37.790ms, Unable to preserve the previous save. stage=backup-rename; file=B6F44A8149BD40FD731D28BAC35BEB7C-locked-atomic.json.bak; Win32=5; sharingWin32=32; attempts=4; accessibleRename=0; deleteAccessProbed=1; sourceDeleteWin32=0; destinationDeleteWin32=32; destinationAttributes=32",
-            "context": "",
-            "artifact": "00000000000000000000000000000000"
-          },
-          "filename": "",
-          "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.51"
-        },
-        {
-          "event": {
-            "type": "Info",
-            "message": "Real Windows backup-copy released-lock save: saved=1, 17.523ms, recovered",
-            "context": "",
-            "artifact": "00000000000000000000000000000000"
-          },
-          "filename": "",
-          "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.51"
-        },
-        {
-          "event": {
-            "type": "Info",
-            "message": "Real Windows backup-copy persistent-lock save: saved=0, 35.466ms, Unable to preserve the previous save. stage=backup-copy; file=9B437F994556A4028849ECA695BD4ADD-locked-atomic.json; Win32=32; sharingWin32=32; attempts=4; accessibleRename=0; deleteAccessProbed=0; sourceDeleteWin32=0; destinationDeleteWin32=0; destinationAttributes=4294967295",
-            "context": "",
-            "artifact": "00000000000000000000000000000000"
-          },
-          "filename": "",
-          "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.51"
-        },
-        {
-          "event": {
-            "type": "Info",
-            "message": "Real Windows permanent read-only save: 2.207ms, Unable to preserve the previous save. stage=backup-rename; file=B38F831F4C57EC32AE81399E69D69E22-readonly-atomic.json.bak; Win32=5; sharingWin32=0; attempts=1; accessibleRename=0; deleteAccessProbed=1; sourceDeleteWin32=0; destinationDeleteWin32=0; destinationAttributes=33",
-            "context": "",
-            "artifact": "00000000000000000000000000000000"
-          },
-          "filename": "",
-          "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.51"
-        },
         {
           "event": {
             "type": "Warning",
@@ -235,7 +180,7 @@
           },
           "filename": "",
           "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.51"
+          "timestamp": "2026.10.09-21.12.39"
         }
       ],
       "warnings": 1,
@@ -248,10 +193,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "C999F29E4430CEB74BF15B8B6421F9B0"
+        "2CAFC2694692F14C7D18FF85FC6B4BDF"
       ],
-      "duration": 0.03375210240483284,
-      "dateTime": "2026.10.09-22.56.51",
+      "duration": 0.035599999129772186,
+      "dateTime": "2026.10.09-21.12.39",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -263,10 +208,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "C999F29E4430CEB74BF15B8B6421F9B0"
+        "2CAFC2694692F14C7D18FF85FC6B4BDF"
       ],
-      "duration": 0.17573510110378265,
-      "dateTime": "2026.10.09-22.56.51",
+      "duration": 0.17334839701652527,
+      "dateTime": "2026.10.09-21.12.39",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -278,10 +223,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "C999F29E4430CEB74BF15B8B6421F9B0"
+        "2CAFC2694692F14C7D18FF85FC6B4BDF"
       ],
-      "duration": 0.05062760040163994,
-      "dateTime": "2026.10.09-22.56.51",
+      "duration": 0.04500240087509155,
+      "dateTime": "2026.10.09-21.12.39",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -293,10 +238,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "C999F29E4430CEB74BF15B8B6421F9B0"
+        "2CAFC2694692F14C7D18FF85FC6B4BDF"
       ],
-      "duration": 0.2110999971628189,
-      "dateTime": "2026.10.09-22.56.51",
+      "duration": 0.21243980526924133,
+      "dateTime": "2026.10.09-21.12.39",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -308,10 +253,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "C999F29E4430CEB74BF15B8B6421F9B0"
+        "2CAFC2694692F14C7D18FF85FC6B4BDF"
       ],
-      "duration": 0.6002876162528992,
-      "dateTime": "2026.10.09-22.56.52",
+      "duration": 0.21665890514850616,
+      "dateTime": "2026.10.09-21.12.39",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -323,192 +268,11 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "C999F29E4430CEB74BF15B8B6421F9B0"
+        "2CAFC2694692F14C7D18FF85FC6B4BDF"
       ],
-      "duration": 0.09331750124692917,
-      "dateTime": "2026.10.09-22.56.52",
+      "duration": 0.09151089936494827,
+      "dateTime": "2026.10.09-21.12.39",
       "entries": [],
-      "warnings": 0,
-      "errors": 0,
-      "artifacts": []
-    },
-    {
-      "testDisplayName": "UnitCollision",
-      "fullTestPath": "Rift.Integration.UnitCollision",
-      "tags": [],
-      "state": "Success",
-      "deviceInstance": [
-        "C999F29E4430CEB74BF15B8B6421F9B0"
-      ],
-      "duration": 6.532005786895752,
-      "dateTime": "2026.10.09-22.56.52",
-      "entries": [
-        {
-          "event": {
-            "type": "Info",
-            "message": "Collision paid building pocket team 0 lane -1: 11 of 11 ground crossed, 11 crossed at 12s; 16 paid casts, 31 members, 3 live fixed buildings, deadline 12s, 0 adjusted building requests.",
-            "context": "",
-            "artifact": "00000000000000000000000000000000"
-          },
-          "filename": "",
-          "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.53"
-        },
-        {
-          "event": {
-            "type": "Info",
-            "message": "Collision paid building pocket team 0 lane 1: 11 of 11 ground crossed, 11 crossed at 12s; 16 paid casts, 31 members, 3 live fixed buildings, deadline 12s, 0 adjusted building requests.",
-            "context": "",
-            "artifact": "00000000000000000000000000000000"
-          },
-          "filename": "",
-          "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.54"
-        },
-        {
-          "event": {
-            "type": "Info",
-            "message": "Collision building requested tile team 1 lane -1 play 9: -6.5,-7.5 -> -4.5,-7.5.",
-            "context": "",
-            "artifact": "00000000000000000000000000000000"
-          },
-          "filename": "",
-          "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.54"
-        },
-        {
-          "event": {
-            "type": "Info",
-            "message": "Collision building requested tile team 1 lane -1 play 15: -8.5,-7.5 -> -9.5,-6.5.",
-            "context": "",
-            "artifact": "00000000000000000000000000000000"
-          },
-          "filename": "",
-          "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.54"
-        },
-        {
-          "event": {
-            "type": "Info",
-            "message": "Collision paid building pocket team 1 lane -1: 11 of 11 ground crossed, 9 crossed at 12s; 16 paid casts, 31 members, 3 live fixed buildings, deadline 15s, 2 adjusted building requests.",
-            "context": "",
-            "artifact": "00000000000000000000000000000000"
-          },
-          "filename": "",
-          "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.54"
-        },
-        {
-          "event": {
-            "type": "Info",
-            "message": "Collision building requested tile team 1 lane 1 play 9: 6.5,-7.5 -> 5.5,-6.5.",
-            "context": "",
-            "artifact": "00000000000000000000000000000000"
-          },
-          "filename": "",
-          "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.54"
-        },
-        {
-          "event": {
-            "type": "Info",
-            "message": "Collision building requested tile team 1 lane 1 play 15: 8.5,-7.5 -> 10.5,-7.5.",
-            "context": "",
-            "artifact": "00000000000000000000000000000000"
-          },
-          "filename": "",
-          "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.54"
-        },
-        {
-          "event": {
-            "type": "Info",
-            "message": "Collision paid building pocket team 1 lane 1: 11 of 11 ground crossed, 10 crossed at 12s; 16 paid casts, 31 members, 3 live fixed buildings, deadline 15s, 2 adjusted building requests.",
-            "context": "",
-            "artifact": "00000000000000000000000000000000"
-          },
-          "filename": "",
-          "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.55"
-        },
-        {
-          "event": {
-            "type": "Info",
-            "message": "Collision paid queue team 0 lane -1: 24 of 24 crossed.",
-            "context": "",
-            "artifact": "00000000000000000000000000000000"
-          },
-          "filename": "",
-          "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.56"
-        },
-        {
-          "event": {
-            "type": "Info",
-            "message": "Collision paid queue team 0 lane 1: 24 of 24 crossed.",
-            "context": "",
-            "artifact": "00000000000000000000000000000000"
-          },
-          "filename": "",
-          "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.57"
-        },
-        {
-          "event": {
-            "type": "Info",
-            "message": "Collision paid queue team 1 lane -1: 24 of 24 crossed.",
-            "context": "",
-            "artifact": "00000000000000000000000000000000"
-          },
-          "filename": "",
-          "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.58"
-        },
-        {
-          "event": {
-            "type": "Info",
-            "message": "Collision paid queue team 1 lane 1: 24 of 24 crossed.",
-            "context": "",
-            "artifact": "00000000000000000000000000000000"
-          },
-          "filename": "",
-          "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.59"
-        },
-        {
-          "event": {
-            "type": "Info",
-            "message": "Collision capacity team 0: 312 actual buildings, 6 residual troops, 19 rejected sandbox requests; paid rejection and air follow-up checked.",
-            "context": "",
-            "artifact": "00000000000000000000000000000000"
-          },
-          "filename": "",
-          "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.59"
-        },
-        {
-          "event": {
-            "type": "Info",
-            "message": "Collision capacity team 1: 312 actual buildings, 6 residual troops, 19 rejected sandbox requests; paid rejection and air follow-up checked.",
-            "context": "",
-            "artifact": "00000000000000000000000000000000"
-          },
-          "filename": "",
-          "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.59"
-        },
-        {
-          "event": {
-            "type": "Info",
-            "message": "Independent native collision checks: 2912076 endpoint pairs, 2673980 relative sweeps; minimum gaps 0.020000001 / 0.020000001 tiles.",
-            "context": "",
-            "artifact": "00000000000000000000000000000000"
-          },
-          "filename": "",
-          "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.59"
-        }
-      ],
       "warnings": 0,
       "errors": 0,
       "artifacts": []
@@ -519,10 +283,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "C999F29E4430CEB74BF15B8B6421F9B0"
+        "2CAFC2694692F14C7D18FF85FC6B4BDF"
       ],
-      "duration": 0.1652383953332901,
-      "dateTime": "2026.10.09-22.56.59",
+      "duration": 0.16057920455932617,
+      "dateTime": "2026.10.09-21.12.39",
       "entries": [
         {
           "event": {
@@ -533,7 +297,7 @@
           },
           "filename": "",
           "lineNumber": -1,
-          "timestamp": "2026.10.09-22.56.59"
+          "timestamp": "2026.10.09-21.12.40"
         }
       ],
       "warnings": 0,
@@ -546,10 +310,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "C999F29E4430CEB74BF15B8B6421F9B0"
+        "2CAFC2694692F14C7D18FF85FC6B4BDF"
       ],
-      "duration": 0.29330480098724365,
-      "dateTime": "2026.10.09-22.56.59",
+      "duration": 0.19754290580749512,
+      "dateTime": "2026.10.09-21.12.40",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -561,10 +325,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "C999F29E4430CEB74BF15B8B6421F9B0"
+        "2CAFC2694692F14C7D18FF85FC6B4BDF"
       ],
-      "duration": 1.448297381401062,
-      "dateTime": "2026.10.09-22.56.59",
+      "duration": 0.687860369682312,
+      "dateTime": "2026.10.09-21.12.40",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -573,16 +337,16 @@
   ],
   "curatedEvidence": {
     "schema": 2,
-    "version": "1.3.5",
-    "sourceReport": "Build/Automation/20261009-185528/Report/index.json",
-    "sourceReportSha256": "fc5233e333705b1839ebd132289f629649d9e7c2c1b38665753e5080c381e2d9",
-    "context": "Build/Automation/20261009-185528/context.json",
-    "contextSha256": "93f42219959dbac750cc8e04e054647657df49934b29bff585900c90d7ff93ba",
-    "commandletLog": "Build/Automation/20261009-185528/UnrealIntegration.log",
+    "version": "1.3.4",
+    "sourceReport": "Build/Automation/20261009-171133/Report/index.json",
+    "sourceReportSha256": "0a394f98ae9cebb39b1050c43d4dfa41b5573fe71ed0e0c07f6cda1cb3187ed6",
+    "context": "Build/Automation/20261009-171133/context.json",
+    "contextSha256": "c996b0a57978005c829f31e710019dc080ec70870f60e755cf22d24ea6850103",
+    "commandletLog": "Build/Automation/20261009-171133/UnrealIntegration.log",
     "wrapperExitCode": 0,
     "commandletExitCode": 0,
     "allScenariosObserved": true,
-    "observedTestCount": 17,
+    "observedTestCount": 16,
     "requiredTests": [
       "Rift.Integration.CardData",
       "Rift.Integration.ConnectedUI",
@@ -599,15 +363,14 @@
       "Rift.Integration.ProjectilePresentation",
       "Rift.Integration.SpellCastReplay",
       "Rift.Integration.Typography",
-      "Rift.Integration.TowerPathing",
-      "Rift.Integration.UnitCollision"
+      "Rift.Integration.TowerPathing"
     ],
     "runtimeModule": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArena.dll",
-    "runtimeModuleSha256": "04dbd61df4696569f567baadf12ed257de688bf8ce14e08680aa3073fff425db",
+    "runtimeModuleSha256": "74727c0d8c48410fd858f0a77548fc155c07c1111511556c69dd1b01590c6ed2",
     "runtimeModules": [
       {
         "path": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArena.dll",
-        "sha256": "04dbd61df4696569f567baadf12ed257de688bf8ce14e08680aa3073fff425db"
+        "sha256": "74727c0d8c48410fd858f0a77548fc155c07c1111511556c69dd1b01590c6ed2"
       },
       {
         "path": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArenaEditor.dll",
@@ -883,7 +646,7 @@
       },
       {
         "path": "Unreal/RiftCrownArena/Config/DefaultGame.ini",
-        "sha256": "0d9aea33a4bcb7a0ab0d6a35775f14a50f2a1b1f6184e60fa4bec769cd1e9bab"
+        "sha256": "9f79171ba2f94894b501bc566646a94158267f82582ec2d75a247de4fd67d5ae"
       },
       {
         "path": "Unreal/RiftCrownArena/Config/DefaultInput.ini",
@@ -943,7 +706,7 @@
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftGameMode.cpp",
-        "sha256": "039905795a5b2ad48a5e278f94101d38ade6d70a6bd2836462d5c280149a33a3"
+        "sha256": "8f16aa44278afda2944f02004f638e0e78d6c2f83814cf047e1e1708f8970424"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftHandButton.cpp",
@@ -955,7 +718,7 @@
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftMetaSimulationSubsystem.cpp",
-        "sha256": "a88adde65115f6ff28562d58559aee117fbd228972217bdf21cd722efebb01bf"
+        "sha256": "36bfd07a65c376c7432e26c6113ecf20c3a2e327426570b1464d06f50451aeab"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftPerformanceCapture.cpp",
@@ -963,7 +726,7 @@
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftProfileSubsystem.cpp",
-        "sha256": "db04e6c38e05a95c51a969ecc2dfd042c95490739cec4c54926a3b739edd49d3"
+        "sha256": "306fb84b2f7ec1e8ea8e62892e1d38a7669577c04d4d9d52c3ca7f348d9c9403"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftReplaySubsystem.cpp",
@@ -987,7 +750,7 @@
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftUIWidget.cpp",
-        "sha256": "1496c8d3d7c5d451cd8b574bb90a5558113aace72e80b6522aa5902ccee54080"
+        "sha256": "0283e57f9150b1a585d564ab8698696f80f4fd957392141b30aeae41cbcd6824"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftAI.cpp",
@@ -1003,11 +766,11 @@
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftPathfinding.cpp",
-        "sha256": "cbce12f7e32f3d4f17367b678703ef2582959b8cf201d129cdac7dcabf96a3b7"
+        "sha256": "c9ee3368b3fbd290daa5a81641bdb0421c9a311cb6aad189469974b23b52b01f"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftSimulation.cpp",
-        "sha256": "fe2112da32ddc9ec606074a664aedaa4f0bcac52566b5972c76c45d80e7df29b"
+        "sha256": "7ddeef691917dacf8a292f50abf6cea644dd010556702133edb0bcc1214d54e0"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftBattleInputTests.cpp",
@@ -1019,7 +782,7 @@
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftIntegrationTests.cpp",
-        "sha256": "ace03b5ad67998421f48b8c5c951d956d170cca31e68495ab0ede8c2bed89ca1"
+        "sha256": "cdfdcc4b5f1ec92ee62ae76e4839804cac0c86908f81b830184a4fae9b63dc67"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftPresentationTests.cpp",
@@ -1036,10 +799,6 @@
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftTypographyTests.cpp",
         "sha256": "cfe1166bf1f92b5bc198078c316c7c741ce831fc0449d45b982beba0530921de"
-      },
-      {
-        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftUnitCollisionTests.cpp",
-        "sha256": "4e6e65507b4403a044efb4585db80229dfd794c5f8137138457fc33e5694b176"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftUnitMotionTests.cpp",
@@ -1123,7 +882,7 @@
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Simulation/RiftSimulation.h",
-        "sha256": "2ea2d10082e19efcb463f53f7cc94266ba805657c4bca3b703cddd8419f67a6e"
+        "sha256": "1b52fb8f8dfb6e700f027e4a39bc45843e1ab0bf1b60ccbeb6f62db9f2a10bc4"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/RiftCrownArena.Build.cs",
