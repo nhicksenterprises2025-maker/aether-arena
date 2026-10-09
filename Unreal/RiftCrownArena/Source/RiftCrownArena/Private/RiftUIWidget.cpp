@@ -367,6 +367,8 @@ void URiftUIWidget::ExportMeta()
 }
 void URiftUIWidget::PatchNotes()
 {
+    Add(Body,Text(TEXT("AUDIO FIX · 1.3.2"),25,Brass));
+    Add(Body,Text(TEXT("The continuous river sound no longer plays in menus or battles. Music, interface sounds and combat effects keep their existing volume controls."),16));
     Add(Body,Text(TEXT("CARD HOVER FIX · 1.3.1"),25,Brass));
     Add(Body,Text(TEXT("Card stats stay visible while hovering over your hand. Tooltips now update when a hand slot changes cards, instead of restarting on every HUD refresh."),16));
     Add(Body,Text(TEXT("MODELS, CARD ART & CONTROLS · 1.3.0"),25,Brass));

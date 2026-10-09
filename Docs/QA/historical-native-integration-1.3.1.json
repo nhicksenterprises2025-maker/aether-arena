@@ -2,7 +2,7 @@
   "devices": [
     {
       "deviceName": "QA workstation",
-      "instance": "0124A02146D774EB049880A6E35A6433",
+      "instance": "6062CCF24D87FA6843D68594D477D640",
       "instanceName": "QA workstation instance",
       "platform": "WindowsEditor",
       "oSVersion": "Windows 11 (25H2) [10.0.26200.9457] ",
@@ -15,13 +15,13 @@
       "appInstanceLog": ""
     }
   ],
-  "reportCreatedOn": "2026.10.09-20.08.27",
-  "succeeded": 14,
-  "succeededWithWarnings": 1,
+  "reportCreatedOn": "2026.10.09-19.42.23",
+  "succeeded": 13,
+  "succeededWithWarnings": 2,
   "failed": 0,
   "notRun": 0,
   "inProcess": 0,
-  "totalDuration": 53.15312957763672,
+  "totalDuration": 63.373077392578125,
   "comparisonExported": false,
   "comparisonExportDirectory": "",
   "tests": [
@@ -31,10 +31,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "0124A02146D774EB049880A6E35A6433"
+        "6062CCF24D87FA6843D68594D477D640"
       ],
-      "duration": 4.261688709259033,
-      "dateTime": "2026.10.09-20.07.34",
+      "duration": 5.0287675857543945,
+      "dateTime": "2026.10.09-19.41.19",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -46,10 +46,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "0124A02146D774EB049880A6E35A6433"
+        "6062CCF24D87FA6843D68594D477D640"
       ],
-      "duration": 0.005551300942897797,
-      "dateTime": "2026.10.09-20.07.38",
+      "duration": 0.005048397928476334,
+      "dateTime": "2026.10.09-19.41.24",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -61,10 +61,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "0124A02146D774EB049880A6E35A6433"
+        "6062CCF24D87FA6843D68594D477D640"
       ],
-      "duration": 0.2961336076259613,
-      "dateTime": "2026.10.09-20.07.38",
+      "duration": 0.36066219210624695,
+      "dateTime": "2026.10.09-19.41.24",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -76,54 +76,54 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "0124A02146D774EB049880A6E35A6433"
+        "6062CCF24D87FA6843D68594D477D640"
       ],
-      "duration": 41.41847610473633,
-      "dateTime": "2026.10.09-20.07.39",
+      "duration": 50.1985969543457,
+      "dateTime": "2026.10.09-19.41.24",
       "entries": [
         {
           "event": {
             "type": "Info",
-            "message": "Full native replay: 34324 events, 1256 samples, 662333 stored bytes, 43886862 decoded bytes, 313.350 seconds.",
+            "message": "Full native replay: 34324 events, 1256 samples, 662335 stored bytes, 43886862 decoded bytes, 313.350 seconds.",
             "context": "",
             "artifact": "00000000000000000000000000000000"
           },
           "filename": "",
           "lineNumber": -1,
-          "timestamp": "2026.10.09-20.07.47"
+          "timestamp": "2026.10.09-19.41.35"
         },
         {
           "event": {
             "type": "Info",
-            "message": "Long replay game-thread finalization queue time 1.813 ms.",
+            "message": "Long replay game-thread finalization queue time 2.287 ms.",
             "context": "",
             "artifact": "00000000000000000000000000000000"
           },
           "filename": "",
           "lineNumber": -1,
-          "timestamp": "2026.10.09-20.07.47"
+          "timestamp": "2026.10.09-19.41.35"
         },
         {
           "event": {
             "type": "Info",
-            "message": "Paid control/counter AI replay: 201.100s, peak 23, 1685 events, 807 samples, 842855 stored, 0 exported JSON, 0.708ms queue.",
+            "message": "Paid control/counter AI replay: 201.100s, peak 23, 1685 events, 807 samples, 842854 stored, 0 exported JSON, 0.817ms queue.",
             "context": "",
             "artifact": "00000000000000000000000000000000"
           },
           "filename": "",
           "lineNumber": -1,
-          "timestamp": "2026.10.09-20.07.50"
+          "timestamp": "2026.10.09-19.41.40"
         },
         {
           "event": {
             "type": "Info",
-            "message": "Congested Developer/paid AI replay: 313.350s, peak 80, 24181 events, 1256 samples, 8748892 stored, 89417273 exported JSON, 2.053ms queue.",
+            "message": "Congested Developer/paid AI replay: 313.350s, peak 80, 24181 events, 1256 samples, 8748881 stored, 89417273 exported JSON, 2.716ms queue.",
             "context": "",
             "artifact": "00000000000000000000000000000000"
           },
           "filename": "",
           "lineNumber": -1,
-          "timestamp": "2026.10.09-20.08.20"
+          "timestamp": "2026.10.09-19.42.14"
         }
       ],
       "warnings": 0,
@@ -136,12 +136,24 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "0124A02146D774EB049880A6E35A6433"
+        "6062CCF24D87FA6843D68594D477D640"
       ],
-      "duration": 2.5893006324768066,
-      "dateTime": "2026.10.09-20.08.20",
-      "entries": [],
-      "warnings": 0,
+      "duration": 3.2339587211608887,
+      "dateTime": "2026.10.09-19.42.15",
+      "entries": [
+        {
+          "event": {
+            "type": "Warning",
+            "message": "LogHttp: HTTP request timed out after 3.00 seconds URL=https://www.google.com/generate_204",
+            "context": "log",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-19.42.18"
+        }
+      ],
+      "warnings": 1,
       "errors": 0,
       "artifacts": []
     },
@@ -151,10 +163,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "0124A02146D774EB049880A6E35A6433"
+        "6062CCF24D87FA6843D68594D477D640"
       ],
-      "duration": 1.1020716428756714,
-      "dateTime": "2026.10.09-20.08.23",
+      "duration": 1.281761646270752,
+      "dateTime": "2026.10.09-19.42.18",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -166,10 +178,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "0124A02146D774EB049880A6E35A6433"
+        "6062CCF24D87FA6843D68594D477D640"
       ],
-      "duration": 0.06534929573535919,
-      "dateTime": "2026.10.09-20.08.24",
+      "duration": 0.08914169669151306,
+      "dateTime": "2026.10.09-19.42.19",
       "entries": [
         {
           "event": {
@@ -180,7 +192,7 @@
           },
           "filename": "",
           "lineNumber": -1,
-          "timestamp": "2026.10.09-20.08.24"
+          "timestamp": "2026.10.09-19.42.19"
         }
       ],
       "warnings": 1,
@@ -193,10 +205,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "0124A02146D774EB049880A6E35A6433"
+        "6062CCF24D87FA6843D68594D477D640"
       ],
-      "duration": 0.0409293994307518,
-      "dateTime": "2026.10.09-20.08.24",
+      "duration": 0.043574899435043335,
+      "dateTime": "2026.10.09-19.42.19",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -208,10 +220,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "0124A02146D774EB049880A6E35A6433"
+        "6062CCF24D87FA6843D68594D477D640"
       ],
-      "duration": 0.23671790957450867,
-      "dateTime": "2026.10.09-20.08.24",
+      "duration": 0.24846260249614716,
+      "dateTime": "2026.10.09-19.42.19",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -223,10 +235,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "0124A02146D774EB049880A6E35A6433"
+        "6062CCF24D87FA6843D68594D477D640"
       ],
-      "duration": 0.0751291960477829,
-      "dateTime": "2026.10.09-20.08.24",
+      "duration": 0.07489030063152313,
+      "dateTime": "2026.10.09-19.42.20",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -238,10 +250,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "0124A02146D774EB049880A6E35A6433"
+        "6062CCF24D87FA6843D68594D477D640"
       ],
-      "duration": 0.29048430919647217,
-      "dateTime": "2026.10.09-20.08.24",
+      "duration": 0.28818491101264954,
+      "dateTime": "2026.10.09-19.42.20",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -253,10 +265,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "0124A02146D774EB049880A6E35A6433"
+        "6062CCF24D87FA6843D68594D477D640"
       ],
-      "duration": 0.13463819026947021,
-      "dateTime": "2026.10.09-20.08.25",
+      "duration": 0.1466946005821228,
+      "dateTime": "2026.10.09-19.42.20",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -268,10 +280,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "0124A02146D774EB049880A6E35A6433"
+        "6062CCF24D87FA6843D68594D477D640"
       ],
-      "duration": 0.18574880063533783,
-      "dateTime": "2026.10.09-20.08.25",
+      "duration": 0.210213303565979,
+      "dateTime": "2026.10.09-19.42.20",
       "entries": [
         {
           "event": {
@@ -282,7 +294,7 @@
           },
           "filename": "",
           "lineNumber": -1,
-          "timestamp": "2026.10.09-20.08.25"
+          "timestamp": "2026.10.09-19.42.20"
         }
       ],
       "warnings": 0,
@@ -295,10 +307,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "0124A02146D774EB049880A6E35A6433"
+        "6062CCF24D87FA6843D68594D477D640"
       ],
-      "duration": 0.3957540988922119,
-      "dateTime": "2026.10.09-20.08.25",
+      "duration": 0.4342501163482666,
+      "dateTime": "2026.10.09-19.42.20",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -310,10 +322,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "0124A02146D774EB049880A6E35A6433"
+        "6062CCF24D87FA6843D68594D477D640"
       ],
-      "duration": 2.0551509857177734,
-      "dateTime": "2026.10.09-20.08.25",
+      "duration": 1.7288706302642822,
+      "dateTime": "2026.10.09-19.42.21",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -322,12 +334,12 @@
   ],
   "curatedEvidence": {
     "schema": 2,
-    "version": "1.3.2",
-    "sourceReport": "Build/Automation/20261009-160716/Report/index.json",
-    "sourceReportSha256": "622e2f100f86b57aa97511c69f7ddd21b31f5e9c34d6e9d36b38c67685fe5ab1",
-    "context": "Build/Automation/20261009-160716/context.json",
-    "contextSha256": "641f5617b881d62a1feb258dbe765bcc5c68dce11131145b1e6b09814028a9ad",
-    "commandletLog": "Build/Automation/20261009-160716/UnrealIntegration.log",
+    "version": "1.3.1",
+    "sourceReport": "Build/Automation/20261009-154100/Report/index.json",
+    "sourceReportSha256": "8b5fe0c79cac4edc0b5df06634c84c99042bd9a98d46d9ba86816c32f29aee98",
+    "context": "Build/Automation/20261009-154100/context.json",
+    "contextSha256": "63b2ddcf41f234cc3f68fd294d7b93824ce85fcf95f1106ab44bcd0e1db1122c",
+    "commandletLog": "Build/Automation/20261009-154100/UnrealIntegration.log",
     "wrapperExitCode": 0,
     "commandletExitCode": 0,
     "allScenariosObserved": true,
@@ -350,11 +362,11 @@
       "Rift.Integration.Typography"
     ],
     "runtimeModule": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArena.dll",
-    "runtimeModuleSha256": "bdf3a351f0741ecc208c69aac399a072816ef7d7f5236a6c962d10cf65918905",
+    "runtimeModuleSha256": "10c684995f974537b3ddaf35f7f045956f788434f58aefd10f630e16601b90a8",
     "runtimeModules": [
       {
         "path": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArena.dll",
-        "sha256": "bdf3a351f0741ecc208c69aac399a072816ef7d7f5236a6c962d10cf65918905"
+        "sha256": "10c684995f974537b3ddaf35f7f045956f788434f58aefd10f630e16601b90a8"
       },
       {
         "path": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArenaEditor.dll",
@@ -630,7 +642,7 @@
       },
       {
         "path": "Unreal/RiftCrownArena/Config/DefaultGame.ini",
-        "sha256": "8c2178fb222c1a8cc9a2d34e288894c34922a9535d04d1ef50ff40e2a26d28c5"
+        "sha256": "9384e1e0b5e8414edfa9f7bf2f5c67f2e8452d96246199c34c8996622745fe16"
       },
       {
         "path": "Unreal/RiftCrownArena/Config/DefaultInput.ini",
@@ -650,7 +662,7 @@
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftBattleAudioSubsystem.cpp",
-        "sha256": "a8fbfc90918a98c64ad16731236422a7194d530d034cd0201eeb7c32b135093b"
+        "sha256": "7c2617b69b5f455699cff1ad85e9873a79147574dc81ce380ec2e66b79da51cd"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftBattleOverlay.cpp",
@@ -734,7 +746,7 @@
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftUIWidget.cpp",
-        "sha256": "57da41890e0182128dc577ae7d0e21332b384ad37608fdfd3c66ff31d2f52349"
+        "sha256": "aab79be4a47703f59f5f2799ac242549f6801f6440e1e263568a0d1acbdb6db4"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftAI.cpp",
@@ -790,7 +802,7 @@
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleAudioSubsystem.h",
-        "sha256": "bf05929b4797a3dc30f2a9fabb3aa5b84416c5ad2d52a509ddd6e48e2e761588"
+        "sha256": "c1fb344a9334157e34a439931bc8594d40d02720b5f27d14cb1c3b086269e1c6"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleLayout.h",

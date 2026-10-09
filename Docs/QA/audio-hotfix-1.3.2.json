@@ -1,0 +1,1222 @@
+{
+  "schema": 1,
+  "version": "1.3.2",
+  "passed": true,
+  "utc": "2026-10-09T20:13:19.0683738Z",
+  "scope": "Actual enabled Editor and Shipping audio settings/voice/limiter checks, live river-loop absence lifecycle and quiet mixer output",
+  "nativeExecutable": {
+    "path": "Artifacts/Game-1.3.2/Windows/RiftCrownArena/Binaries/Win64/RiftCrownArena-Win64-Shipping.exe",
+    "sha256": "63f928171ef5d5ba0263efc2d35af02d4596f65cd33090c9432b8b819f9d4e1f",
+    "bytes": 167781888
+  },
+  "integrationTests": 15,
+  "audioRuns": [
+    {
+      "name": "water132-editor-audio",
+      "editor": true,
+      "version": "1.3.2",
+      "passed": true,
+      "processId": 6860,
+      "startedUtc": "2026-10-09T20:03:38.4772554Z",
+      "finishedUtc": "2026-10-09T20:04:08.3137558Z",
+      "executable": {
+        "name": "UnrealEditor-Cmd.exe",
+        "sha256": "ae92f55952a3c9a7def90983fcf5aedce52d8ee8e4565fbd923985e9d9d3e05e",
+        "bytes": 512952
+      },
+      "run": "Artifacts/QA/Audio/water132-editor-audio/run.json",
+      "report": "Artifacts/QA/Audio/water132-editor-audio/audio-smoke.json",
+      "checks": [
+        {
+          "name": "liveAudioDevice",
+          "passed": true
+        },
+        {
+          "name": "profileAvailable",
+          "passed": true
+        },
+        {
+          "name": "settingsInterfaceAvailable",
+          "passed": true
+        },
+        {
+          "name": "physicalBudgetIncludes32OneShotsAndMusic",
+          "passed": true
+        },
+        {
+          "name": "allVoicesHaveLimiterRoute",
+          "passed": true
+        },
+        {
+          "name": "masterMixRegisteredWithLiveDevice",
+          "passed": true
+        },
+        {
+          "name": "stereoPeakLimiterBelowFullScale",
+          "passed": true
+        },
+        {
+          "name": "limiterDetectsIsolatedPeaksWithoutAttackSmoothing",
+          "passed": true
+        },
+        {
+          "name": "riverVoiceInspectionDetectsSilentControl",
+          "passed": true
+        },
+        {
+          "name": "noRiverVoiceInHome",
+          "passed": true
+        },
+        {
+          "name": "battleLifecycleSubsystemAvailable",
+          "passed": true
+        },
+        {
+          "name": "actualBattleActiveForWaterCheck",
+          "passed": true
+        },
+        {
+          "name": "noRiverVoiceInBattle",
+          "passed": true
+        },
+        {
+          "name": "noRiverVoiceAfterRepeatedWorldBinding",
+          "passed": true
+        },
+        {
+          "name": "noRiverVoiceAfterReturningHome",
+          "passed": true
+        },
+        {
+          "name": "musicPreservedAcrossPagesAndWorldBinding",
+          "passed": true
+        },
+        {
+          "name": "noRiverVoiceInSettings",
+          "passed": true
+        },
+        {
+          "name": "actualSettingsAudioSliders",
+          "passed": true
+        },
+        {
+          "name": "all41ImportedSoundsLoad",
+          "passed": true
+        },
+        {
+          "name": "all20CombatVariationsLoad",
+          "passed": true
+        },
+        {
+          "name": "masterCallback",
+          "actual": 0.6000000238418579,
+          "expected": 0.6000000238418579,
+          "passed": true
+        },
+        {
+          "name": "musicCallback",
+          "actual": 0.3499999940395355,
+          "expected": 0.3499999940395355,
+          "passed": true
+        },
+        {
+          "name": "sfxCallback",
+          "actual": 0.4000000059604645,
+          "expected": 0.4000000059604645,
+          "passed": true
+        },
+        {
+          "name": "uiCallback",
+          "actual": 0.800000011920929,
+          "expected": 0.800000011920929,
+          "passed": true
+        },
+        {
+          "name": "musicPlaying",
+          "passed": true
+        },
+        {
+          "name": "musicMasterProduct",
+          "actual": 0.21000000834465027,
+          "expected": 0.20999999344348907,
+          "passed": true
+        },
+        {
+          "name": "musicLoopConfigured",
+          "passed": true
+        },
+        {
+          "name": "musicStreamed",
+          "passed": true
+        },
+        {
+          "name": "effectPlaying",
+          "passed": true
+        },
+        {
+          "name": "uiPlaying",
+          "passed": true
+        },
+        {
+          "name": "effectMasterProduct",
+          "actual": 0.12000000476837158,
+          "expected": 0.11999999731779099,
+          "passed": true
+        },
+        {
+          "name": "uiMasterProduct",
+          "actual": 0.48000001907348633,
+          "expected": 0.47999998927116394,
+          "passed": true
+        },
+        {
+          "name": "musicIndependentMute",
+          "actual": 0,
+          "expected": 0,
+          "passed": true
+        },
+        {
+          "name": "musicMuteKeepsUI",
+          "actual": 0.48000001907348633,
+          "expected": 0.47999998927116394,
+          "passed": true
+        },
+        {
+          "name": "sfxIndependentMute",
+          "actual": 0,
+          "expected": 0,
+          "passed": true
+        },
+        {
+          "name": "sfxMuteKeepsUI",
+          "actual": 0.48000001907348633,
+          "expected": 0.47999998927116394,
+          "passed": true
+        },
+        {
+          "name": "uiIndependentMute",
+          "actual": 0,
+          "expected": 0,
+          "passed": true
+        },
+        {
+          "name": "uiMuteKeepsSFX",
+          "actual": 0.12000000476837158,
+          "expected": 0.11999999731779099,
+          "passed": true
+        },
+        {
+          "name": "masterMutesMusic",
+          "actual": 0,
+          "expected": 0,
+          "passed": true
+        },
+        {
+          "name": "masterMutesSFX",
+          "actual": 0,
+          "expected": 0,
+          "passed": true
+        },
+        {
+          "name": "masterMutesUI",
+          "actual": 0,
+          "expected": 0,
+          "passed": true
+        },
+        {
+          "name": "mutedPlayCreatesNoVoice",
+          "passed": true
+        },
+        {
+          "name": "combinedUIAndSFXVoiceLimit",
+          "passed": true
+        },
+        {
+          "name": "sixUIVoicesReservedUnderCombatLoad",
+          "passed": true
+        },
+        {
+          "name": "sameTickSwarmCueAggregated",
+          "passed": true
+        },
+        {
+          "name": "importantEventReplacesLowerPriorityVoice",
+          "passed": true
+        },
+        {
+          "name": "crowdedEffectMixHasHeadroom",
+          "passed": true
+        },
+        {
+          "name": "settingsRestored",
+          "passed": true
+        },
+        {
+          "name": "postMixDeferredAcrossGameTicks",
+          "passed": true
+        },
+        {
+          "name": "musicSurvivesBoundedBurst",
+          "passed": true
+        },
+        {
+          "name": "musicRetainsPhysicalVoice",
+          "passed": true
+        },
+        {
+          "name": "noRiverVoiceAfterDeferredBurst",
+          "passed": true
+        },
+        {
+          "name": "actualMixedPCMHasHeadroom",
+          "passed": true
+        },
+        {
+          "name": "limiterOverloadPCMDoesNotClip",
+          "passed": true
+        },
+        {
+          "name": "noRiverVoiceDuringLimiterOverload",
+          "passed": true
+        },
+        {
+          "name": "quietMusicMuteUsesActualSettingsSlider",
+          "passed": true
+        },
+        {
+          "name": "quietMusicSliderMuteApplied",
+          "passed": true
+        },
+        {
+          "name": "quietSceneSettledAcrossGameTicks",
+          "passed": true
+        },
+        {
+          "name": "noRiverVoiceInQuietScene",
+          "passed": true
+        },
+        {
+          "name": "quietLiveMixerHasNoConstantSound",
+          "passed": true
+        },
+        {
+          "name": "postMixSettingsRestored",
+          "passed": true
+        }
+      ],
+      "waterAmbienceLifecycle": {
+        "cue": "SFX_river_ambience",
+        "inspection": "Live UAudioComponent instances in the active world, matching river SoundWave and IsPlaying",
+        "controlPlayingVoices": 1,
+        "homePlayingVoices": 0,
+        "battlePlayingVoices": 0,
+        "reboundPlayingVoices": 0,
+        "returnedHomePlayingVoices": 0,
+        "settingsPlayingVoices": 0,
+        "burstPlayingVoices": 0,
+        "overloadPlayingVoices": 0,
+        "quietPlayingVoices": 0
+      },
+      "quietTailSettleGameSeconds": 0.8000386022031307,
+      "normalMixedOutput": {
+        "samples": 196608,
+        "channels": 8,
+        "sampleRate": 48000,
+        "peak": 0.19380588829517365,
+        "rms": 0.02302498147803475,
+        "clippedFloatSamples": 0,
+        "seconds": 0.5120000243186951,
+        "captureStage": "Live MasterMix output after the submix effect chain; before PCM encoding",
+        "silenceExpected": false,
+        "wavSaved": true,
+        "wavFile": "mixed-output.wav"
+      },
+      "limiterOverloadOutput": {
+        "samples": 458752,
+        "channels": 8,
+        "sampleRate": 48000,
+        "peak": 0.8002375364303589,
+        "rms": 0.08667851472252693,
+        "clippedFloatSamples": 0,
+        "seconds": 1.1946666240692139,
+        "captureStage": "Live MasterMix output after the submix effect chain; before PCM encoding",
+        "silenceExpected": false,
+        "wavSaved": true,
+        "wavFile": "limiter-overload.wav"
+      },
+      "quietMixedOutput": {
+        "samples": 245760,
+        "channels": 8,
+        "sampleRate": 48000,
+        "peak": 0,
+        "rms": 0,
+        "clippedFloatSamples": 0,
+        "seconds": 0.6399999856948853,
+        "captureStage": "Live MasterMix output after the submix effect chain; before PCM encoding",
+        "silenceExpected": true,
+        "wavSaved": true,
+        "wavFile": "quiet-output.wav"
+      }
+    },
+    {
+      "name": "water132-shipping-audio",
+      "editor": false,
+      "version": "1.3.2",
+      "passed": true,
+      "processId": 18900,
+      "startedUtc": "2026-10-09T20:06:48.1919617Z",
+      "finishedUtc": "2026-10-09T20:07:00.9154363Z",
+      "executable": {
+        "path": "Artifacts/Game-1.3.2/Windows/RiftCrownArena/Binaries/Win64/RiftCrownArena-Win64-Shipping.exe",
+        "sha256": "63f928171ef5d5ba0263efc2d35af02d4596f65cd33090c9432b8b819f9d4e1f",
+        "bytes": 167781888
+      },
+      "run": "Artifacts/QA/Audio/water132-shipping-audio/run.json",
+      "report": "Artifacts/QA/Audio/water132-shipping-audio/audio-smoke.json",
+      "checks": [
+        {
+          "name": "liveAudioDevice",
+          "passed": true
+        },
+        {
+          "name": "profileAvailable",
+          "passed": true
+        },
+        {
+          "name": "settingsInterfaceAvailable",
+          "passed": true
+        },
+        {
+          "name": "physicalBudgetIncludes32OneShotsAndMusic",
+          "passed": true
+        },
+        {
+          "name": "allVoicesHaveLimiterRoute",
+          "passed": true
+        },
+        {
+          "name": "masterMixRegisteredWithLiveDevice",
+          "passed": true
+        },
+        {
+          "name": "stereoPeakLimiterBelowFullScale",
+          "passed": true
+        },
+        {
+          "name": "limiterDetectsIsolatedPeaksWithoutAttackSmoothing",
+          "passed": true
+        },
+        {
+          "name": "riverVoiceInspectionDetectsSilentControl",
+          "passed": true
+        },
+        {
+          "name": "noRiverVoiceInHome",
+          "passed": true
+        },
+        {
+          "name": "battleLifecycleSubsystemAvailable",
+          "passed": true
+        },
+        {
+          "name": "actualBattleActiveForWaterCheck",
+          "passed": true
+        },
+        {
+          "name": "noRiverVoiceInBattle",
+          "passed": true
+        },
+        {
+          "name": "noRiverVoiceAfterRepeatedWorldBinding",
+          "passed": true
+        },
+        {
+          "name": "noRiverVoiceAfterReturningHome",
+          "passed": true
+        },
+        {
+          "name": "musicPreservedAcrossPagesAndWorldBinding",
+          "passed": true
+        },
+        {
+          "name": "noRiverVoiceInSettings",
+          "passed": true
+        },
+        {
+          "name": "actualSettingsAudioSliders",
+          "passed": true
+        },
+        {
+          "name": "all41ImportedSoundsLoad",
+          "passed": true
+        },
+        {
+          "name": "all20CombatVariationsLoad",
+          "passed": true
+        },
+        {
+          "name": "masterCallback",
+          "actual": 0.6000000238418579,
+          "expected": 0.6000000238418579,
+          "passed": true
+        },
+        {
+          "name": "musicCallback",
+          "actual": 0.3499999940395355,
+          "expected": 0.3499999940395355,
+          "passed": true
+        },
+        {
+          "name": "sfxCallback",
+          "actual": 0.4000000059604645,
+          "expected": 0.4000000059604645,
+          "passed": true
+        },
+        {
+          "name": "uiCallback",
+          "actual": 0.800000011920929,
+          "expected": 0.800000011920929,
+          "passed": true
+        },
+        {
+          "name": "musicPlaying",
+          "passed": true
+        },
+        {
+          "name": "musicMasterProduct",
+          "actual": 0.21000000834465027,
+          "expected": 0.20999999344348907,
+          "passed": true
+        },
+        {
+          "name": "musicLoopConfigured",
+          "passed": true
+        },
+        {
+          "name": "musicStreamed",
+          "passed": true
+        },
+        {
+          "name": "effectPlaying",
+          "passed": true
+        },
+        {
+          "name": "uiPlaying",
+          "passed": true
+        },
+        {
+          "name": "effectMasterProduct",
+          "actual": 0.12000000476837158,
+          "expected": 0.11999999731779099,
+          "passed": true
+        },
+        {
+          "name": "uiMasterProduct",
+          "actual": 0.48000001907348633,
+          "expected": 0.47999998927116394,
+          "passed": true
+        },
+        {
+          "name": "musicIndependentMute",
+          "actual": 0,
+          "expected": 0,
+          "passed": true
+        },
+        {
+          "name": "musicMuteKeepsUI",
+          "actual": 0.48000001907348633,
+          "expected": 0.47999998927116394,
+          "passed": true
+        },
+        {
+          "name": "sfxIndependentMute",
+          "actual": 0,
+          "expected": 0,
+          "passed": true
+        },
+        {
+          "name": "sfxMuteKeepsUI",
+          "actual": 0.48000001907348633,
+          "expected": 0.47999998927116394,
+          "passed": true
+        },
+        {
+          "name": "uiIndependentMute",
+          "actual": 0,
+          "expected": 0,
+          "passed": true
+        },
+        {
+          "name": "uiMuteKeepsSFX",
+          "actual": 0.12000000476837158,
+          "expected": 0.11999999731779099,
+          "passed": true
+        },
+        {
+          "name": "masterMutesMusic",
+          "actual": 0,
+          "expected": 0,
+          "passed": true
+        },
+        {
+          "name": "masterMutesSFX",
+          "actual": 0,
+          "expected": 0,
+          "passed": true
+        },
+        {
+          "name": "masterMutesUI",
+          "actual": 0,
+          "expected": 0,
+          "passed": true
+        },
+        {
+          "name": "mutedPlayCreatesNoVoice",
+          "passed": true
+        },
+        {
+          "name": "combinedUIAndSFXVoiceLimit",
+          "passed": true
+        },
+        {
+          "name": "sixUIVoicesReservedUnderCombatLoad",
+          "passed": true
+        },
+        {
+          "name": "sameTickSwarmCueAggregated",
+          "passed": true
+        },
+        {
+          "name": "importantEventReplacesLowerPriorityVoice",
+          "passed": true
+        },
+        {
+          "name": "crowdedEffectMixHasHeadroom",
+          "passed": true
+        },
+        {
+          "name": "settingsRestored",
+          "passed": true
+        },
+        {
+          "name": "postMixDeferredAcrossGameTicks",
+          "passed": true
+        },
+        {
+          "name": "musicSurvivesBoundedBurst",
+          "passed": true
+        },
+        {
+          "name": "musicRetainsPhysicalVoice",
+          "passed": true
+        },
+        {
+          "name": "noRiverVoiceAfterDeferredBurst",
+          "passed": true
+        },
+        {
+          "name": "actualMixedPCMHasHeadroom",
+          "passed": true
+        },
+        {
+          "name": "limiterOverloadPCMDoesNotClip",
+          "passed": true
+        },
+        {
+          "name": "noRiverVoiceDuringLimiterOverload",
+          "passed": true
+        },
+        {
+          "name": "quietMusicMuteUsesActualSettingsSlider",
+          "passed": true
+        },
+        {
+          "name": "quietMusicSliderMuteApplied",
+          "passed": true
+        },
+        {
+          "name": "quietSceneSettledAcrossGameTicks",
+          "passed": true
+        },
+        {
+          "name": "noRiverVoiceInQuietScene",
+          "passed": true
+        },
+        {
+          "name": "quietLiveMixerHasNoConstantSound",
+          "passed": true
+        },
+        {
+          "name": "postMixSettingsRestored",
+          "passed": true
+        }
+      ],
+      "waterAmbienceLifecycle": {
+        "cue": "SFX_river_ambience",
+        "inspection": "Live UAudioComponent instances in the active world, matching river SoundWave and IsPlaying",
+        "controlPlayingVoices": 1,
+        "homePlayingVoices": 0,
+        "battlePlayingVoices": 0,
+        "reboundPlayingVoices": 0,
+        "returnedHomePlayingVoices": 0,
+        "settingsPlayingVoices": 0,
+        "burstPlayingVoices": 0,
+        "overloadPlayingVoices": 0,
+        "quietPlayingVoices": 0
+      },
+      "quietTailSettleGameSeconds": 0.8000073991715908,
+      "normalMixedOutput": {
+        "samples": 221184,
+        "channels": 8,
+        "sampleRate": 48000,
+        "peak": 0.19765764474868774,
+        "rms": 0.023697299195032318,
+        "clippedFloatSamples": 0,
+        "seconds": 0.5759999752044678,
+        "captureStage": "Live MasterMix output after the submix effect chain; before PCM encoding",
+        "silenceExpected": false,
+        "wavSaved": true,
+        "wavFile": "mixed-output.wav"
+      },
+      "limiterOverloadOutput": {
+        "samples": 458752,
+        "channels": 8,
+        "sampleRate": 48000,
+        "peak": 0.8012075424194336,
+        "rms": 0.08668622480426141,
+        "clippedFloatSamples": 0,
+        "seconds": 1.1946666240692139,
+        "captureStage": "Live MasterMix output after the submix effect chain; before PCM encoding",
+        "silenceExpected": false,
+        "wavSaved": true,
+        "wavFile": "limiter-overload.wav"
+      },
+      "quietMixedOutput": {
+        "samples": 245760,
+        "channels": 8,
+        "sampleRate": 48000,
+        "peak": 0,
+        "rms": 0,
+        "clippedFloatSamples": 0,
+        "seconds": 0.6399999856948853,
+        "captureStage": "Live MasterMix output after the submix effect chain; before PCM encoding",
+        "silenceExpected": true,
+        "wavSaved": true,
+        "wavFile": "quiet-output.wav"
+      }
+    }
+  ],
+  "windowsChecks": 51,
+  "windowsDelivery": {
+    "manifest": "Artifacts/Release/update-manifest.json",
+    "gameArchive": {
+      "path": "Artifacts/Release/RiftCrownArena-Windows-x64-1.3.2.zip",
+      "sha256": "b134013ec747bbee3703dbbe1ccea73481d26d1b79f2b1d64912088b8995c88d",
+      "bytes": 397990465
+    },
+    "installer": {
+      "path": "Artifacts/Release/RiftCrownArena-Setup.msi",
+      "sha256": "ba1743a53d6d4311331934ff6f8c82d7c9ca936032521ba23fe3861c83e2cfeb",
+      "bytes": 383737856
+    },
+    "launcher": {
+      "path": "Artifacts/Release/RiftCrownLauncher.exe",
+      "sha256": "ca533a10c0c125a8ef3f172aa54ea5afdaec0bd9f03fd8d4ce581306e6624215",
+      "bytes": 161820808
+    }
+  },
+  "inputs": [
+    {
+      "path": "Artifacts/QA/app-local-runtime.json",
+      "sha256": "405f8da402bfd97d152908da3201d942b732e5c83c2bbc9ef691be9cf041499e",
+      "bytes": 6106
+    },
+    {
+      "path": "Artifacts/QA/Audio/water132-editor-audio/audio-smoke.json",
+      "sha256": "d2d10fff990385d1d046ea07b8cfc6efda6af4997d7715ffb6ca23829065ab7e",
+      "bytes": 7385
+    },
+    {
+      "path": "Artifacts/QA/Audio/water132-editor-audio/engine.log",
+      "sha256": "c0f3b1b33e4dd92d8487efd321d5aa1c25147c3a014083f9cf2e14efa2076223",
+      "bytes": 205716
+    },
+    {
+      "path": "Artifacts/QA/Audio/water132-editor-audio/limiter-overload.wav",
+      "sha256": "dc15e169de4229136893f301db4365bda9e5780f56ed2356b5bc4df823a6cbd1",
+      "bytes": 917548
+    },
+    {
+      "path": "Artifacts/QA/Audio/water132-editor-audio/mixed-output.wav",
+      "sha256": "cd5e98185bf975586dd7513b1f3234684ec7fb28c24745586c3d2249f854504b",
+      "bytes": 393260
+    },
+    {
+      "path": "Artifacts/QA/Audio/water132-editor-audio/quiet-output.wav",
+      "sha256": "d75b9effc57cfd360b0046ca7d4112af4b7e73f748870ce6250c9d41b8f08559",
+      "bytes": 491564
+    },
+    {
+      "path": "Artifacts/QA/Audio/water132-editor-audio/run.json",
+      "sha256": "8742b7002318db625a60161593c9d1a540cee1157702869d74bb084ff965ffd3",
+      "bytes": 23837
+    },
+    {
+      "path": "Artifacts/QA/Audio/water132-shipping-audio/audio-smoke.json",
+      "sha256": "a529f0d6a10a176339c8e3ab61531aaeb8c12e7fa6c4a5263b5c6f9ff7e9166c",
+      "bytes": 7386
+    },
+    {
+      "path": "Artifacts/QA/Audio/water132-shipping-audio/Diagnostics/RiftGame-2026-10-09-18900-20-06-49-0.log",
+      "sha256": "e59ffe9a358939862fe5bb2d978d2fe2c3f7f01c576a2815b7de423343d37547",
+      "bytes": 1725
+    },
+    {
+      "path": "Artifacts/QA/Audio/water132-shipping-audio/limiter-overload.wav",
+      "sha256": "85e31bf90493129a7904188001575f1b81b25c5120ec5f769e463fc5f03849ad",
+      "bytes": 917548
+    },
+    {
+      "path": "Artifacts/QA/Audio/water132-shipping-audio/mixed-output.wav",
+      "sha256": "2d66f62e3409902f9da810b7c0e102137c58a677d6852d0129c8a2a4c74eb907",
+      "bytes": 442412
+    },
+    {
+      "path": "Artifacts/QA/Audio/water132-shipping-audio/quiet-output.wav",
+      "sha256": "d75b9effc57cfd360b0046ca7d4112af4b7e73f748870ce6250c9d41b8f08559",
+      "bytes": 491564
+    },
+    {
+      "path": "Artifacts/QA/Audio/water132-shipping-audio/run.json",
+      "sha256": "9995e86dee261e473700f5e5c3be51d68d8ececabf7f0cf801d7682fa109be2e",
+      "bytes": 24513
+    },
+    {
+      "path": "Artifacts/QA/installer-build.json",
+      "sha256": "ad25aafadeadd625d51ba4c416a8b02fc175a3854d62400ed656dc021d9e15e8",
+      "bytes": 933
+    },
+    {
+      "path": "Artifacts/QA/installer-tests.json",
+      "sha256": "6772de0150f93115d839aca730ad8b81d4cec3969137ed38fb30197a52cb54dd",
+      "bytes": 5392
+    },
+    {
+      "path": "Artifacts/QA/launcher-play-smoke.json",
+      "sha256": "a2f6c2c643e97538693dae14a52f8f6389798d2a17b14b0daf791683012a0990",
+      "bytes": 2103
+    },
+    {
+      "path": "Artifacts/Release/update-manifest.json",
+      "sha256": "075c8f3f7436bae64ec769917772b7bd31f5f8ec34d83ffeef050fe6a1e8ac48",
+      "bytes": 9644
+    },
+    {
+      "path": "Artifacts/Release/windows-release-verification.json",
+      "sha256": "655092dc68482fb0de09188db854e7c0257eaa86807bc74c1141d296b0d0f978",
+      "bytes": 1082
+    },
+    {
+      "path": "Assets/Source/Audio/audio_manifest.json",
+      "sha256": "ef9955a5129b05465e313f263edbcfb20646c59a7d4ebc8d3d393a869bacd87c",
+      "bytes": 31966
+    },
+    {
+      "path": "Build/Automation/20261009-160716/context.json",
+      "sha256": "641f5617b881d62a1feb258dbe765bcc5c68dce11131145b1e6b09814028a9ad",
+      "bytes": 23559
+    },
+    {
+      "path": "Build/Automation/20261009-160716/Report/index.json",
+      "sha256": "622e2f100f86b57aa97511c69f7ddd21b31f5e9c34d6e9d36b38c67685fe5ab1",
+      "bytes": 8418
+    },
+    {
+      "path": "Build/Automation/20261009-160716/UnrealIntegration.log",
+      "sha256": "68b258fad26d4e06a12c7ef450fe06b637bfa4eeb5908816bff8d074e87e6f7c",
+      "bytes": 309690
+    },
+    {
+      "path": "Build/Curate-UnrealQA.ps1",
+      "sha256": "1ce6ca272b2fafba546739dc63330923241725a580beb9fdec9c1457214dec99",
+      "bytes": 8477
+    },
+    {
+      "path": "Build/Package-AudioHotfixQAEvidence.ps1",
+      "sha256": "e83a29f528d5743fde3ae072e0c2f03a889e052931a35a790c73ed2c3a49a862",
+      "bytes": 24164
+    },
+    {
+      "path": "Build/Package-HoverQAEvidence.ps1",
+      "sha256": "1d257f1fd100316dbf00816ade2355c19b5a560895c96522cb0c305282b71d5d",
+      "bytes": 25011
+    },
+    {
+      "path": "Build/Package-ModelInputQAEvidence.ps1",
+      "sha256": "11e49b8c6ca316f8600bb99517bf937d5b71ec4d7f4812a735ea387c430a0fe3",
+      "bytes": 52029
+    },
+    {
+      "path": "Build/ShippingDiagnostics.ps1",
+      "sha256": "4f0d275ddc211931a82ad2cd8e645587e7d5016f488cddd6fdde8675ebc6c5ab",
+      "bytes": 6401
+    },
+    {
+      "path": "Build/Test-LauncherPlay.ps1",
+      "sha256": "369d178f82b7926f514c8a2194d8421f8f54c4aa5e6e14be313fd892e2e97e6e",
+      "bytes": 3387
+    },
+    {
+      "path": "Build/Test-Unreal.ps1",
+      "sha256": "435ba4c25486b49f0ac164f8cb49f857f1a8cf2c3985a5081a23afab4da57ec6",
+      "bytes": 5277
+    },
+    {
+      "path": "Build/Test-UnrealAudio.ps1",
+      "sha256": "c8202bba5584aeb4826441482cd662f04bd7c5d4d7b87e0b0434e6e7d9649d12",
+      "bytes": 8207
+    },
+    {
+      "path": "Docs/PATCH_NOTES_1.3.2.md",
+      "sha256": "003cf7a409eca4e6517d3c7903b88d9a3e31a934c9ef34ea44f4000263278a71",
+      "bytes": 226
+    },
+    {
+      "path": "Docs/QA/native-integration.json",
+      "sha256": "fe08ebe89ef82e7856edd88187c1e340b2cf0ebf11a5abe64d8c664975217a39",
+      "bytes": 35091
+    },
+    {
+      "path": "Installer/Test-Installer.ps1",
+      "sha256": "602e4f70e6f2cecac358422b820cd86520369c79dc60260481f1942d01f5d103",
+      "bytes": 23380
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Config/DefaultEngine.ini",
+      "sha256": "d203dc05bd1a8d857f7773eb44529ce45637647a5d5638f52b4e9ee21ffec885",
+      "bytes": 1379
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Config/DefaultGame.ini",
+      "sha256": "8c2178fb222c1a8cc9a2d34e288894c34922a9535d04d1ef50ff40e2a26d28c5",
+      "bytes": 808
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Config/DefaultInput.ini",
+      "sha256": "40f9320c2416a85aa30c765ce1d9c62b45c6a9ad52ef998d102f05b8819679fd",
+      "bytes": 9535
+    },
+    {
+      "path": "Unreal/RiftCrownArena/RiftCrownArena.uproject",
+      "sha256": "39fc040329e6d46e5087c74c0765c626ac16940daee8e662f67b7b2033acda4b",
+      "bytes": 745
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena.Target.cs",
+      "sha256": "283ee32c736fcdae9c0bf3f9c5fe8f26f5261a827db4db5a12a740a8138d5e17",
+      "bytes": 493
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftArenaPresentation.cpp",
+      "sha256": "3324311b48e533f80e314a71f854b7b3deabb2389cfe25cbd2d931c9cc634279",
+      "bytes": 76823
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftBattleAudioSubsystem.cpp",
+      "sha256": "a8fbfc90918a98c64ad16731236422a7194d530d034cd0201eeb7c32b135093b",
+      "bytes": 36127
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftBattleOverlay.cpp",
+      "sha256": "fedfb7b1c4ed6c559a5256f83d517a4278a21739ae964f05f9bcf50e63e8230e",
+      "bytes": 15671
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftTrainingOverlay.cpp",
+      "sha256": "27bf6b4160405cc89ddc38329b4723108b018d35e16e421022a18d52e63d658d",
+      "bytes": 5980
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftUnitVisual.cpp",
+      "sha256": "7066f3c77e4c43b74574f201c6417919db54ead28be92a74308788315156daa4",
+      "bytes": 24111
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftAssetLibrary.cpp",
+      "sha256": "d9e2f4bdad16de3302a16b330fb25356f738ea100a224a76041cee2b8f8b9160",
+      "bytes": 3046
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftBattleHUD.cpp",
+      "sha256": "709890574f78de35cd9a736be0ddf72b75a5a65bd7f2afc7f7cfce47fdba5c18",
+      "bytes": 24103
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftCollectionUI.cpp",
+      "sha256": "5ae7dc27b009a84032a7cfd9812b1295bee4303b17946d2b7e3f3b8764bf5c34",
+      "bytes": 18113
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftCrownArena.cpp",
+      "sha256": "b3cecae7f7bcb962f9e9729951b2c79b56aad833b7fde79dba1a6e209188e90e",
+      "bytes": 124
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftDiagnostics.cpp",
+      "sha256": "bdfd03a5c9b8f31098ebf73f62a81f12bffcbd6a05ccfd559461585d85b851d4",
+      "bytes": 4750
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftFieldManual.cpp",
+      "sha256": "1cbe10cabedf5825118d9d0f7dffdb07ebdf62eb9bc0d4606f9246fc7b7c2bde",
+      "bytes": 8689
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftGameMode.cpp",
+      "sha256": "240d5d6498effdfce6168b56f9aa41e326362663bc82fdaf7245614391a2caa5",
+      "bytes": 62602
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftHandButton.cpp",
+      "sha256": "b4f6815780b662b5a8950c7831c5e709d92862622f5276b6d1d35480959c059a",
+      "bytes": 4962
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftMatchSubsystem.cpp",
+      "sha256": "c0b89ba7cf16641b546078d86a6fb9ec90ac478ad7ce23898ce29282a182bc44",
+      "bytes": 9768
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftMetaSimulationSubsystem.cpp",
+      "sha256": "d5dc9628cb32c7b7ee1836fd06747c589f3d02ba87f043989c36293b82bd99a4",
+      "bytes": 45745
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftPerformanceCapture.cpp",
+      "sha256": "9e287a28260f6ae5a7cbca3995a2e28e12181b0fd4747c1707038e5628b19e33",
+      "bytes": 7292
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftProfileSubsystem.cpp",
+      "sha256": "306fb84b2f7ec1e8ea8e62892e1d38a7669577c04d4d9d52c3ca7f348d9c9403",
+      "bytes": 22175
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftReplaySubsystem.cpp",
+      "sha256": "5a0af0575622942c43e876f5e974de3130784803f04e91e7f4388f459f8a957d",
+      "bytes": 60365
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftReplayUI.cpp",
+      "sha256": "77199b01e7db0e8108f94347d4a7b39a7b257cec9c7dc719b59f20e0616812d6",
+      "bytes": 30477
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftTrainingPanel.cpp",
+      "sha256": "f24527c664a3108d500fed5cf4722845f37e0cd1bbdb31009f6aa2bf9d88d49c",
+      "bytes": 9350
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftTypography.cpp",
+      "sha256": "8d6f45373e0991955576bace26dad66a19ffabd1aa6090da76aa2ff6f52215d2",
+      "bytes": 1761
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftUIPrimitives.cpp",
+      "sha256": "cb653a1e9de5ede6bedf1ce4834f65d29df84e328afb11ba9d35aa8750e32179",
+      "bytes": 3237
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftUIWidget.cpp",
+      "sha256": "57da41890e0182128dc577ae7d0e21332b384ad37608fdfd3c66ff31d2f52349",
+      "bytes": 63948
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftAI.cpp",
+      "sha256": "6c49f975df3c4256c0871bfef5ccb147255f5c0404ff1f56680cadc41937a538",
+      "bytes": 23188
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftCombat.cpp",
+      "sha256": "3ce60d57341267ac5fc0afba01be33fa027262f66659fae7a13678505160ddaf",
+      "bytes": 13777
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftDeckAnalysis.cpp",
+      "sha256": "07d7063f15a66338892ccc65e603caa859cccd2b3d22fcd4257719bd059e21b2",
+      "bytes": 28525
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftPathfinding.cpp",
+      "sha256": "17dc4b4cccaf425f48134d907a22bff586b72332fa780832186be4555e3a6e17",
+      "bytes": 15558
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftSimulation.cpp",
+      "sha256": "60b60bbe25c2cb59a01658b0c7aafd39f9c88720b6362ec32a64a23e09875884",
+      "bytes": 36852
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftBattleInputTests.cpp",
+      "sha256": "4fbe27a4a7f8ef9659c5d78a4d1e16e41af3a6c7858e6f5646331b6126db96dd",
+      "bytes": 17467
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftCardDragSmoke.cpp",
+      "sha256": "c7566d8e47c5f5cde97c4bbcc7f1b071d12307da91665e81f4273a19be3edaba",
+      "bytes": 21642
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftIntegrationTests.cpp",
+      "sha256": "a6b2d218e641c7c8afbec22cb9e333258af8c0e0ac87112f640bcc271561a517",
+      "bytes": 81494
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftPresentationTests.cpp",
+      "sha256": "d027b77d9a0bf3269930a15b101fba78703221d65eb23ca730e5391994507913",
+      "bytes": 10525
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftProjectilePresentationTests.cpp",
+      "sha256": "4768c7e3a0cd25cc7d13a8781c15fc0f5c72cde625d0d25c871601f5564c0018",
+      "bytes": 3482
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftTypographyTests.cpp",
+      "sha256": "cfe1166bf1f92b5bc198078c316c7c741ce831fc0449d45b982beba0530921de",
+      "bytes": 5577
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftUnitMotionTests.cpp",
+      "sha256": "0d7a64b34e82ef082eedd1074473f59293c0db4e8f6838847e2a8f7fda764d24",
+      "bytes": 23139
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftArenaPresentation.h",
+      "sha256": "a9c31fe9d1c7747c64c34cab6d39d0ff6ae92437f3b0b024a53ef46bdacba448",
+      "bytes": 6633
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleAudioSubsystem.h",
+      "sha256": "bf05929b4797a3dc30f2a9fabb3aa5b84416c5ad2d52a509ddd6e48e2e761588",
+      "bytes": 2102
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleLayout.h",
+      "sha256": "0d953944dccba5ffdd20cea601240a157769de54c929ba804fcef12f0ec4dd27",
+      "bytes": 799
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleOverlay.h",
+      "sha256": "ecc4bbd6d9a9a9e2729e51eaaa4fb64f5ea1ab712d6c44a389686876bb57187d",
+      "bytes": 1025
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftUnitVisual.h",
+      "sha256": "c8099aa871bdeb1f5ee9768360759f53031654d3070b0cccfda2acd62ec3a4ff",
+      "bytes": 4020
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftAssetLibrary.h",
+      "sha256": "8cfcb77f51d477773e87d37cff482542072825be38c95ea6ab43118dfc50e80b",
+      "bytes": 735
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftCardData.h",
+      "sha256": "b8956971c1192e714541db8ef11aac3501ba563df7d1752660414c7a9b86958e",
+      "bytes": 3451
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftDiagnostics.h",
+      "sha256": "93d91726c726127c03b310972a8482906dc45ec9936cc48adab01599f7750b42",
+      "bytes": 522
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftGameMode.h",
+      "sha256": "f66c2caef75a5d1f138d1c33f49c845fa77f76bbaa33bdd42bc8c1b5a5a1268e",
+      "bytes": 2999
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftHandButton.h",
+      "sha256": "4ba3b6c2c352b8ebdc399cab258bdd26f0cecc8bfb2421edbfd2866a22e4488d",
+      "bytes": 604
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftMatchSubsystem.h",
+      "sha256": "bd67f6f1dba4ab9199407a938258cd611748b8c97db898f2429d13fb93ac0c44",
+      "bytes": 3623
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftMetaSimulationSubsystem.h",
+      "sha256": "1b9a568b334ce2c0f57c891129a1f1d13cd3e00db5f7437efec6749e3295df3f",
+      "bytes": 2616
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftPerformanceCapture.h",
+      "sha256": "7962fa18d55571a6ac0b94c07eb17ff4b225472af687a898dd93ebe28879ec3c",
+      "bytes": 943
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftProfileSubsystem.h",
+      "sha256": "9a94ff3fb118194b4c296187b47e0f42bc1fae2d8d4187c58e1fb38ee9f22af6",
+      "bytes": 4074
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftReplaySubsystem.h",
+      "sha256": "35c7fa47599a4b132d58b4cdc619af1bdf818a86e1ec81806c866cb2c816e7ff",
+      "bytes": 3628
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftTypography.h",
+      "sha256": "7cac7b91d1224aea7555b932c24635ba369c3aae1209782e05f2c13f6119f840",
+      "bytes": 381
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftUIPrimitives.h",
+      "sha256": "93e9c0253a03efd8b64ccbf3bb8003c19cfb94e83edc660e56a844c6dcb101e4",
+      "bytes": 1198
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftUIWidget.h",
+      "sha256": "f4e0ad5ddfdede41af7d04143a8916b5f2a32ac599f6a16a03af338ee71652bf",
+      "bytes": 8951
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Simulation/RiftSimulation.h",
+      "sha256": "c453c1e2022f2821b05b7bdfa5f2cde0fa474040f9a85edcf2cff30e67c13817",
+      "bytes": 10006
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/RiftCrownArena.Build.cs",
+      "sha256": "2f629214df393aa0a385784eb9a752d1e47c9803f471ed69d7107f8a4e7866a3",
+      "bytes": 860
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor.Target.cs",
+      "sha256": "d8cad02a8fb12c7d19cb31a6da6ef8b7aa872415bf9860e7146541238b277e95",
+      "bytes": 417
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Private/RiftCrownArenaEditor.cpp",
+      "sha256": "487f1f731292b9b76e5e77d85ba045cac11b2045579faa5c421f57f682125e28",
+      "bytes": 95
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Private/RiftEditorAssetLibrary.cpp",
+      "sha256": "ee275b194bb70a1e77d0a1730b2caa0143f1f87697e48ce8515365e8ed85cc09",
+      "bytes": 15854
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Public/RiftEditorAssetLibrary.h",
+      "sha256": "3ed46978d15e2f9b279601a6e5339f1e89e983cb75dfa173e6410c75dfb5c372",
+      "bytes": 814
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/RiftCrownArenaEditor.Build.cs",
+      "sha256": "7f5d7d8cc4cda35f3d38ddce7d82e00f4d28cfac4c42d6c44be1eb146b954a2f",
+      "bytes": 517
+    }
+  ],
+  "historicalAcceptanceScope": "Existing 1.3.1 hover/model evidence stays historical and unchanged. No new model/art audit, card-drag rerun or balance cohort is claimed.",
+  "publicDelivery": "Pending publication. Anonymous download and published update checks are separate postpublication evidence."
+}
