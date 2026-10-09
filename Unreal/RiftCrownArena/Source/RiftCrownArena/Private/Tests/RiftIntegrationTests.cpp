@@ -1,4 +1,5 @@
 #if WITH_DEV_AUTOMATION_TESTS
+#include "Async/Async.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/ComboBoxString.h"
 #include "Components/EditableTextBox.h"
@@ -9,7 +10,9 @@
 #include "Engine/SkeletalMesh.h"
 #include "Engine/UserInterfaceSettings.h"
 #include "Engine/World.h"
+#include "HAL/Event.h"
 #include "HAL/PlatformFileManager.h"
+#include "HAL/PlatformProcess.h"
 #include "JsonObjectConverter.h"
 #include "Misc/AutomationTest.h"
 #include "Misc/CommandLine.h"
@@ -26,6 +29,9 @@
 #include "Serialization/JsonSerializer.h"
 #include <cmath>
 #include <limits>
+#if PLATFORM_WINDOWS
+#include "Windows/WindowsHWrapper.h"
+#endif
 
 namespace {
 constexpr EAutomationTestFlags Flags =
@@ -371,6 +377,157 @@ bool FRiftProfilePersistenceTest::RunTest(const FString &Parameters) {
     TestEqual(TEXT("Previous version backup"), Read, FString(TEXT("first")));
     TestTrue(TEXT("Abandoned staging files do not block next write"),
              URiftProfileSubsystem::AtomicWrite(File, TEXT("third"), Error));
+#if PLATFORM_WINDOWS
+    // Real sharing-denied handles exercise both backup operations. The
+    // transient owner releases only after it observes the production stage,
+    // holding a real conflict while this save creates its own staging file.
+    auto ExerciseSaveLock = [&](bool BackupRename, bool Transient) {
+        const FString LockedFile = Fixture(TEXT("-locked-atomic.json"));
+        const FString LockedBackup = LockedFile + TEXT(".bak");
+        FString LockError;
+        if (!TestTrue(TEXT("Lock fixture creates previous bytes"),
+                      URiftProfileSubsystem::AtomicWrite(LockedFile, TEXT("previous"), LockError)) ||
+            !TestTrue(TEXT("Lock fixture creates current bytes and previous backup"),
+                      URiftProfileSubsystem::AtomicWrite(LockedFile, TEXT("current"), LockError)))
+            return;
+        const TCHAR *Stage = BackupRename ? TEXT("backup-rename") : TEXT("backup-copy");
+        const FString LockedPath = BackupRename ? LockedBackup : LockedFile;
+        HANDLE Lock = ::CreateFileW(*LockedPath, GENERIC_READ,
+                                    BackupRename ? FILE_SHARE_READ : 0, nullptr, OPEN_EXISTING,
+                                    FILE_ATTRIBUTE_NORMAL, nullptr);
+        if (!TestTrue(FString::Printf(TEXT("Real Windows %s sharing lock opens"), Stage),
+                      Lock != INVALID_HANDLE_VALUE))
+            return;
+        ON_SCOPE_EXIT {
+            if (Lock != INVALID_HANDLE_VALUE)
+                ::CloseHandle(Lock);
+        };
+        TFuture<bool> Released;
+        FEvent *WatcherReady = nullptr;
+        if (Transient) {
+            WatcherReady = FPlatformProcess::GetSynchEventFromPool(true);
+            const HANDLE ReleaseHandle = Lock;
+            const FString StagePattern = (BackupRename ? LockedBackup : LockedFile) + TEXT(".tmp-*");
+            Released = Async(EAsyncExecution::ThreadPool, [ReleaseHandle, StagePattern, WatcherReady]() {
+                WatcherReady->Trigger();
+                const double Started = FPlatformTime::Seconds();
+                bool SawStage = false;
+                while (FPlatformTime::Seconds() - Started < .25) {
+                    TArray<FString> Stages;
+                    IFileManager::Get().FindFiles(Stages, *StagePattern, true, false);
+                    if (!Stages.IsEmpty()) {
+                        SawStage = true;
+                        break;
+                    }
+                    FPlatformProcess::SleepNoStats(.001f);
+                }
+                FPlatformProcess::SleepNoStats(.012f);
+                ::CloseHandle(ReleaseHandle);
+                return SawStage;
+            });
+            // The releaser now owns this actual OS handle.
+            Lock = INVALID_HANDLE_VALUE;
+            TestTrue(TEXT("Independent transient-lock watcher starts before the write"),
+                     WatcherReady->Wait(1000));
+        }
+        const double Started = FPlatformTime::Seconds();
+        const bool Saved = URiftProfileSubsystem::AtomicWrite(LockedFile, TEXT("replacement"), LockError);
+        const double Elapsed = FPlatformTime::Seconds() - Started;
+        const FString FailureDetail = LockError;
+        if (Transient) {
+            TestTrue(TEXT("Transient owner observed the actual save staging file before releasing"),
+                     Released.Get());
+            FPlatformProcess::ReturnSynchEventToPool(WatcherReady);
+            TestTrue(FString::Printf(TEXT("Released Windows %s lock permits bounded save recovery"), Stage),
+                     Saved && LockError.IsEmpty());
+        } else {
+            TestFalse(FString::Printf(TEXT("Persistent Windows %s lock rejects the save"), Stage), Saved);
+            TestTrue(TEXT("Persistent lock reports exact failing stage, OS code and four attempts"),
+                     LockError.Contains(FString(TEXT("stage=")) + Stage) &&
+                         (LockError.Contains(TEXT("Win32=32;")) ||
+                          LockError.Contains(TEXT("Win32=5; sharingWin32=32;"))) &&
+                         LockError.Contains(TEXT("attempts=4")));
+            TestTrue(TEXT("Persistent sharing conflict waits only the bounded retry budget"),
+                     Elapsed >= .030 && Elapsed < .5);
+            ::CloseHandle(Lock);
+            Lock = INVALID_HANDLE_VALUE;
+        }
+        FString PrimaryBytes, BackupBytes;
+        TestTrue(TEXT("Locked-save primary remains readable"),
+                 FFileHelper::LoadFileToString(PrimaryBytes, *LockedFile));
+        TestTrue(TEXT("Locked-save backup remains readable"),
+                 FFileHelper::LoadFileToString(BackupBytes, *LockedBackup));
+        TestEqual(TEXT("Lock handling preserves the exact expected primary bytes"), PrimaryBytes,
+                  FString(Transient ? TEXT("replacement") : TEXT("current")));
+        TestEqual(TEXT("Lock handling preserves the exact expected previous backup bytes"), BackupBytes,
+                  FString(Transient ? TEXT("current") : TEXT("previous")));
+        TArray<FString> PrimaryStages, BackupStages;
+        IFileManager::Get().FindFiles(PrimaryStages, *(LockedFile + TEXT(".tmp-*")), true, false);
+        IFileManager::Get().FindFiles(BackupStages, *(LockedBackup + TEXT(".tmp-*")), true, false);
+        TestTrue(TEXT("Successful and rejected locked writes clean their owned staging files"),
+                 PrimaryStages.IsEmpty() && BackupStages.IsEmpty());
+        if (!Transient) {
+            TestTrue(TEXT("Releasing a persistent lock permits a subsequent ordinary save"),
+                     URiftProfileSubsystem::AtomicWrite(LockedFile, TEXT("after-release"), LockError));
+            FFileHelper::LoadFileToString(PrimaryBytes, *LockedFile);
+            FFileHelper::LoadFileToString(BackupBytes, *LockedBackup);
+            TestEqual(TEXT("Subsequent save commits exact requested bytes"), PrimaryBytes,
+                      FString(TEXT("after-release")));
+            TestEqual(TEXT("Subsequent save backs up the unmodified pre-failure primary"), BackupBytes,
+                      FString(TEXT("current")));
+        }
+        AddInfo(FString::Printf(TEXT("Real Windows %s %s-lock save: saved=%d, %.3fms, %s"), Stage,
+                                Transient ? TEXT("released") : TEXT("persistent"), Saved,
+                                Elapsed * 1000, Transient ? TEXT("recovered") : *FailureDetail));
+    };
+    ExerciseSaveLock(true, true);
+    ExerciseSaveLock(true, false);
+    ExerciseSaveLock(false, true);
+    ExerciseSaveLock(false, false);
+    {
+        const FString ReadOnlyFile = Fixture(TEXT("-readonly-atomic.json"));
+        const FString ReadOnlyBackup = ReadOnlyFile + TEXT(".bak");
+        FString ReadOnlyError;
+        if (TestTrue(TEXT("Read-only fixture creates previous bytes"),
+                     URiftProfileSubsystem::AtomicWrite(ReadOnlyFile, TEXT("previous"), ReadOnlyError)) &&
+            TestTrue(TEXT("Read-only fixture creates current bytes and previous backup"),
+                     URiftProfileSubsystem::AtomicWrite(ReadOnlyFile, TEXT("current"), ReadOnlyError))) {
+            const DWORD Attributes = ::GetFileAttributesW(*ReadOnlyBackup);
+            TestTrue(TEXT("Permanent read-only backup attributes are available"),
+                     Attributes != INVALID_FILE_ATTRIBUTES);
+            ON_SCOPE_EXIT {
+                if (Attributes != INVALID_FILE_ATTRIBUTES)
+                    ::SetFileAttributesW(*ReadOnlyBackup, Attributes);
+            };
+            if (Attributes != INVALID_FILE_ATTRIBUTES &&
+                TestTrue(TEXT("Actual backup becomes read-only"),
+                         ::SetFileAttributesW(*ReadOnlyBackup, Attributes | FILE_ATTRIBUTE_READONLY) != 0)) {
+                const double Started = FPlatformTime::Seconds();
+                TestFalse(TEXT("Permanent read-only denial rejects atomic save"),
+                          URiftProfileSubsystem::AtomicWrite(ReadOnlyFile, TEXT("replacement"), ReadOnlyError));
+                const double Elapsed = FPlatformTime::Seconds() - Started;
+                TestTrue(TEXT("Permanent access denial is distinguished from a positive sharing conflict"),
+                         ReadOnlyError.Contains(TEXT("stage=backup-rename")) &&
+                             ReadOnlyError.Contains(TEXT("Win32=5; sharingWin32=0; attempts=1")));
+                TestTrue(TEXT("Permanent access denial returns within the bounded I/O allowance"), Elapsed < .5);
+                FString PrimaryBytes, BackupBytes;
+                FFileHelper::LoadFileToString(PrimaryBytes, *ReadOnlyFile);
+                FFileHelper::LoadFileToString(BackupBytes, *ReadOnlyBackup);
+                TestEqual(TEXT("Permanent read-only denial leaves primary bytes untouched"), PrimaryBytes,
+                          FString(TEXT("current")));
+                TestEqual(TEXT("Permanent read-only denial leaves backup bytes untouched"), BackupBytes,
+                          FString(TEXT("previous")));
+                TArray<FString> PrimaryStages, BackupStages;
+                IFileManager::Get().FindFiles(PrimaryStages, *(ReadOnlyFile + TEXT(".tmp-*")), true, false);
+                IFileManager::Get().FindFiles(BackupStages, *(ReadOnlyBackup + TEXT(".tmp-*")), true, false);
+                TestTrue(TEXT("Permanent denial also removes only its owned staging files"),
+                         PrimaryStages.IsEmpty() && BackupStages.IsEmpty());
+                AddInfo(FString::Printf(TEXT("Real Windows permanent read-only save: %.3fms, %s"),
+                                        Elapsed * 1000, *ReadOnlyError));
+            }
+        }
+    }
+#endif
     const FString Browser = Fixture(TEXT("-browser.json"));
     auto Root = MakeShared<FJsonObject>();
     Root->SetStringField(TEXT("extensionRoot"), TEXT("preserved"));
@@ -1224,10 +1381,10 @@ bool FRiftFullReplayIntegrationTest::RunTest(const FString &Parameters) {
     Replay->CloseReplay();
     auto RecordAIMatch = [&](bool Congestion) {
         rift::MatchOptions AIOptions;
-        // Pin an ordinary paid fixture that still reaches zero-crown overtime
-        // and the existing >=20 population burden under continuous path clearance.
+        // Ordinary paid fixture preserves zero-crown overtime and >=20 live bodies
+        // under the final crowd routing.
         // The separate Developer congestion fixture retains its known >=40 load.
-        AIOptions.seed = Congestion ? 32 : 114;
+        AIOptions.seed = Congestion ? 32 : 76;
         AIOptions.aiEnabled = {true, true};
         AIOptions.aiStyles = {"control", "counter"};
         const std::vector<std::string> SwarmDeck{"ironclad",    "twin_blades",  "archer_tower",

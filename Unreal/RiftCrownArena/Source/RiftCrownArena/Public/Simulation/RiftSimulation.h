@@ -213,6 +213,14 @@ class Match {
     };
     std::map<PlayId, StatusCredit> statusCredits_;
     std::map<EntityId, std::map<std::pair<Team, std::string>, double>> towerCredits_;
+    // Private fixed-step origins also constrain presentation's interpolation.
+    // They never enter card stats, saves, replay snapshots, or random decisions.
+    std::map<EntityId, Vec2> bodyStepStarts_;
+    struct CollisionBody {
+        Vec2 from, to;
+        double radius = 0;
+        EntityKind kind = EntityKind::Troop;
+    };
     double Random();
     Entity *Get(EntityId id);
     const Entity *Get(EntityId id) const;
@@ -221,7 +229,17 @@ class Match {
     void Finish(int winner, const std::string &reason);
     void BeginTiebreaker();
     void UpdateTiebreaker(double dt);
-    void Deploy(Team team, const Card &card, Vec2 point, PlayId play, bool sandbox);
+    bool PlanDeployment(Team team, const Card &card, Vec2 point, bool sandbox,
+                        std::vector<Vec2> &positions) const;
+    void Deploy(Team team, const Card &card, Vec2 point, PlayId play, bool sandbox,
+                const std::vector<Vec2> &positions);
+    bool BodyPlacementValid(Vec2 point, const Entity &source, bool sandbox,
+                            const std::vector<Entity> &planned) const;
+    bool ResolveBodyPlacement(Vec2 point, const Entity &source, bool sandbox,
+                              const std::vector<Entity> &planned, Vec2 &result) const;
+    std::vector<CollisionBody> CollisionBodies(const Entity &source, double distance) const;
+    double BodyMotionFraction(const Entity &source, Vec2 to,
+                              const std::vector<CollisionBody> &bodies, bool forecast = false) const;
     void ApplySpell(Team team, const Card &card, Vec2 point, PlayId play);
     void Damage(EntityId target, double amount, Team team, const std::string &card, PlayId play,
                 EntityId source = 0, const std::string &kind = "attack");
@@ -233,8 +251,6 @@ class Match {
     void Move(Entity &source, const Entity &target, double dt);
     bool NavValid(Vec2 point, const Entity &source, EntityId goal, int bridge = 0) const;
     bool NavSegmentValid(Vec2 from, Vec2 to, const Entity &source, EntityId goal, int bridge = 0) const;
-    Vec2 ResolveGroundPlacement(Vec2 point, const Entity &source, bool sandbox,
-                                EntityId goal = 0, int bridge = 0) const;
     void UpdateAI(Team team, double dt);
     void Decision(Team team, const std::string &label, const std::string &reason);
     bool AIPlay(Team team, int index, Vec2 point, const std::string &reason, double reserve = 0);

@@ -33,6 +33,7 @@ if ([version]$Version -ge [version]'1.2.0') { $riftRequiredTests += @('Rift.Inte
 if ([version]$Version -ge [version]'1.2.1') { $riftRequiredTests += 'Rift.Integration.SpellCastReplay' }
 if ([version]$Version -ge [version]'1.3.0') { $riftRequiredTests += 'Rift.Integration.Typography' }
 if ([version]$Version -ge [version]'1.3.3') { $riftRequiredTests += 'Rift.Integration.TowerPathing' }
+if ([version]$Version -ge [version]'1.3.5') { $riftRequiredTests += 'Rift.Integration.UnitCollision' }
 $riftTests = @($riftReport.tests)
 $riftNames = @($riftTests.fullTestPath)
 if ($riftReport.failed -ne 0 -or $riftReport.notRun -ne 0 -or $riftReport.inProcess -ne 0 -or

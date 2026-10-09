@@ -11,6 +11,9 @@
 using namespace rift;
 namespace {
 int passed = 0;
+std::uint64_t collisionPairChecks = 0, collisionSweepChecks = 0;
+int collisionPaidFixtures = 0, collisionPaidPlays = 0, collisionMembers = 0;
+double collisionMinimumGap = 1e9, collisionMinimumSweepGap = 1e9;
 void Check(bool yes, const std::string &message) {
     if (!yes)
         throw std::runtime_error(message);
@@ -43,10 +46,15 @@ int Count(const Match &m, const std::string &id, Team team, bool living = true) 
         n += e.cardId == id && e.team == team && (!living || !e.dead);
     return n;
 }
-const Entity &ById(const Match &m, EntityId id) {
+const Entity *FindEntity(const Match &m, EntityId id) {
     for (const auto &e : m.State().entities)
         if (e.id == id)
-            return e;
+            return &e;
+    return nullptr;
+}
+const Entity &ById(const Match &m, EntityId id) {
+    if (const auto *entity = FindEntity(m, id))
+        return *entity;
     throw std::runtime_error("entity missing " + std::to_string(id));
 }
 double SegmentDistance(Vec2 from, Vec2 to, Vec2 point) {
@@ -73,6 +81,116 @@ void ClearOwnStructures(const Match &m, const Entity &unit, Vec2 from) {
                   std::abs(unit.position.x - 7.2) <= half + 1e-8,
               "ground unit stays on a radius-aware bridge");
     }
+}
+// Observational checks deliberately do not call the production collision or
+// navigation helpers: a clear path result alone cannot establish body contact.
+bool PhysicalPair(const Entity &a, const Entity &b) {
+    if (a.dead || b.dead || a.id == b.id)
+        return false;
+    const bool airA = a.kind == EntityKind::Troop && a.flying;
+    const bool airB = b.kind == EntityKind::Troop && b.flying;
+    return airA == airB;
+}
+void BodyClearance(const Match &m, const std::string &label) {
+    const auto &entities = m.State().entities;
+    for (std::size_t i = 0; i < entities.size(); ++i)
+        for (std::size_t j = i + 1; j < entities.size(); ++j) {
+            const auto &a = entities[i], &b = entities[j];
+            if (!PhysicalPair(a, b))
+                continue;
+            const double gap = std::hypot(a.position.x - b.position.x, a.position.z - b.position.z) -
+                               a.radius - b.radius;
+            collisionMinimumGap = std::min(collisionMinimumGap, gap);
+            ++collisionPairChecks;
+            const double required = a.kind != EntityKind::Troop || b.kind != EntityKind::Troop ? .22 : .02;
+            Check(gap >= required - 1e-8, label + " body separation " + a.cardId + "/" + b.cardId +
+                                            " gap=" + std::to_string(gap));
+        }
+}
+void SweptBodyClearance(const Match &m, const std::vector<Entity> &before, const std::string &label) {
+    BodyClearance(m, label);
+    for (const auto &start : before)
+        if (!start.dead && start.kind == EntityKind::Troop)
+            if (const auto *after = FindEntity(m, start.id))
+                Check(std::hypot(after->position.x - start.position.x, after->position.z - start.position.z) <=
+                          FindCard(start.cardId)->moveSpeed / 60. + 1e-6,
+                      label + " never teleports or exceeds authored movement speed " + start.cardId);
+    for (std::size_t i = 0; i < before.size(); ++i)
+        for (std::size_t j = i + 1; j < before.size(); ++j) {
+            const auto &a = before[i], &b = before[j];
+            if (!PhysicalPair(a, b))
+                continue;
+            const auto &afterA = ById(m, a.id), &afterB = ById(m, b.id);
+            if (afterA.dead || afterB.dead)
+                continue;
+            const Vec2 from{a.position.x - b.position.x, a.position.z - b.position.z};
+            const Vec2 to{afterA.position.x - afterB.position.x, afterA.position.z - afterB.position.z};
+            const double x = to.x - from.x, z = to.z - from.z, length = x * x + z * z;
+            const double along = length > 0 ? std::clamp(-(from.x * x + from.z * z) / length, 0., 1.) : 0.;
+            const double gap = std::hypot(from.x + along * x, from.z + along * z) - a.radius - b.radius;
+            collisionMinimumSweepGap = std::min(collisionMinimumSweepGap, gap);
+            ++collisionSweepChecks;
+            const double required = a.kind != EntityKind::Troop || b.kind != EntityKind::Troop ? .22 : .02;
+            Check(gap >= required - 1e-8, label + " swept relative separation " + a.cardId + "/" +
+                                          b.cardId + " gap=" + std::to_string(gap));
+        }
+}
+MatchOptions CollisionOptions(const std::string &first, const std::string &second) {
+    auto options = Quiet();
+    std::vector<std::string> deck{first};
+    if (second != first)
+        deck.push_back(second);
+    for (const auto &card : Cards())
+        if (card.id != first && card.id != second && deck.size() < 8)
+            deck.push_back(card.id);
+    options.decks = {deck, deck};
+    return options;
+}
+std::vector<Entity> PaidCollisionCard(Match &m, Team team, const std::string &id, Vec2 point) {
+    const int side = int(team);
+    int handIndex = -1;
+    for (int n = 0; n < 4; ++n)
+        if (m.State().hands[side][n] == id)
+            handIndex = n;
+    Check(handIndex >= 0, "collision fixture card is actually in the paid hand " + id);
+    const auto *card = FindCard(id);
+    const auto hand = m.State().hands[side];
+    const auto queue = m.State().queues[side];
+    const auto spent = m.State().spent[side];
+    const auto eventStart = m.Events().size();
+    m.SetAether(team, 10);
+    Check(m.Play(team, handIndex, point), "collision fixture paid deployment accepted " + id);
+    ++collisionPaidPlays;
+    Near(m.State().aether[side], 10 - card->cost, 1e-9, "collision pays canonical cost");
+    Near(m.State().spent[side], spent + card->cost, 1e-9, "collision pays once");
+    for (int n = 0; n < 4; ++n)
+        Check(m.State().hands[side][n] == (n == handIndex ? queue[0] : hand[n]), "collision cycles selected slot only");
+    Check(m.State().queues[side].back() == id, "collision queues selected card once");
+    int plays = 0;
+    std::vector<Entity> members;
+    for (std::size_t n = eventStart; n < m.Events().size(); ++n) {
+        const auto &event = m.Events()[n];
+        if (event.type == "card_play") {
+            ++plays;
+            Check(event.cardId == id && !event.sandbox, "collision remains a real paid cast");
+            Near(std::hypot(event.position.x - SnapToTile(point).x, event.position.z - SnapToTile(point).z),
+                 0, 1e-9, "collision play keeps the requested tile");
+        }
+        if (event.type == "entity_spawn") {
+            const auto &entity = ById(m, event.source);
+            Check(entity.cardId == id && entity.team == team && entity.playId == event.playId && !event.sandbox,
+                  "collision spawn preserves every actual paid member identity");
+            Near(std::hypot(event.position.x - entity.position.x, event.position.z - entity.position.z),
+                 0, 1e-9, "spawn event records resolved body position");
+            Near(entity.hp, card->hp, 0, "collision keeps canonical per-member HP");
+            Near(entity.radius, card->building ? card->footprint * .52 : card->scale * .44,
+                 1e-12, "collision keeps canonical per-member radius");
+            members.push_back(entity);
+        }
+    }
+    Check(plays == 1 && int(members.size()) == (card->spell ? 0 : card->count), "collision no missing or extra paid members");
+    collisionMembers += int(members.size());
+    return members;
 }
 void Test(const char *name, const std::function<void()> &fn) {
     fn();
@@ -977,9 +1095,9 @@ int main() {
                 Check(m.Spawn(team, "sky_manta", {.5, sign * 16.5}), "flying tower-center fixture");
                 Near(Unit(m, "sky_manta", team).position.x, .5, 0, "air X unchanged");
                 Near(Unit(m, "sky_manta", team).position.z, sign * 16.5, 0, "air can still fly over towers");
-                Check(m.Spawn(team, "archer_tower", {.5, sign * 16.5}), "existing DEV building fixture");
+                Check(m.Spawn(team, "archer_tower", {.5, sign * 8.5}), "existing legal DEV building fixture");
                 Near(Unit(m, "archer_tower", team).position.x, .5, 0, "building X unchanged");
-                Near(Unit(m, "archer_tower", team).position.z, sign * 16.5, 0, "building rules unchanged");
+                Near(Unit(m, "archer_tower", team).position.z, sign * 8.5, 0, "legal fixed building position unchanged");
                 Check(m.Spawn(team, "meteor_shards", {.5, sign * 16.5}), "existing fixed spell fixture");
                 Near(m.State().spellCasts.back().position.x, .5, 0, "spell area X unchanged");
                 Near(m.State().spellCasts.back().position.z, sign * 16.5, 0, "spell area Z unchanged");
@@ -1242,6 +1360,392 @@ int main() {
             Near(meteor.placementX, -3.5, 0, "spell placement recorded");
             Near(meteor.placementZ, -5.5, 0, "spell placement recorded");
         });
+        Test("every physical paid card separates same-tile members and existing bodies on both teams", [] {
+            const int fixtureStart = collisionPaidFixtures, playStart = collisionPaidPlays, memberStart = collisionMembers;
+            for (const auto &card : Cards()) if (!card.spell)
+                for (const Team team : {Team::Player, Team::Enemy}) {
+                    const std::string blocker = card.flying ? (card.id == "sky_manta" ? "vampire_bats" : "sky_manta")
+                                                          : (card.id == "ironclad" ? "boulderback" : "ironclad");
+                    Match m(CollisionOptions(card.id, blocker));
+                    const Vec2 drop{7.5, (team == Team::Player ? 1 : -1) * 8.5};
+                    const auto first = PaidCollisionCard(m, team, card.id, drop);
+                    const auto second = PaidCollisionCard(m, team, blocker, drop);
+                    ++collisionPaidFixtures;
+                    BodyClearance(m, "all-card same-tile spawn " + card.id);
+                    for (const auto &e : second)
+                        Check(m.CanPlace(team, *FindCard(e.cardId), e.position), "resolved member stays in actual legal deployment zone");
+                    for (int step = 0; step < 120; ++step) {
+                        const auto before = m.State().entities;
+                        m.Step(1. / 60.);
+                        SweptBodyClearance(m, before, "all-card movement " + card.id);
+                    }
+                    for (const auto &start : first)
+                        if (start.kind == EntityKind::Troop) {
+                            const auto &after = ById(m, start.id);
+                            Check(!after.dead && std::hypot(after.position.x - start.position.x,
+                                                          after.position.z - start.position.z) > .5,
+                                  "body collision permits real movement for " + card.id);
+                        } else {
+                            const auto &after = ById(m, start.id);
+                            Near(std::hypot(after.position.x - start.position.x, after.position.z - start.position.z),
+                                 0, 0, "building stays fixed while nearby troops route around it");
+                        }
+                }
+            Check(collisionPaidFixtures - fixtureStart == 22 && collisionPaidPlays - playStart == 44 &&
+                      collisionMembers - memberStart == 62,
+                  "all eleven physical cards, both teams, forty-four paid casts and sixty-two actual members");
+        });
+        Test("ground and air occupy distinct collision layers while spells have no body", [] {
+            for (const Team team : {Team::Player, Team::Enemy}) {
+                Match m(CollisionOptions("ironclad", "sky_manta"));
+                const Vec2 drop{.5, (team == Team::Player ? 1 : -1) * 8.5};
+                const auto ground = PaidCollisionCard(m, team, "ironclad", drop);
+                const auto air = PaidCollisionCard(m, team, "sky_manta", drop);
+                ++collisionPaidFixtures;
+                Near(std::hypot(ground[0].position.x - air[0].position.x,
+                                ground[0].position.z - air[0].position.z), 0, 1e-9,
+                     "flying troop can pass above a ground body without fake lateral displacement");
+                BodyClearance(m, "distinct collision layers");
+                for (const auto &spell : Cards()) if (spell.spell) {
+                    Match cast(CollisionOptions(spell.id, "ironclad"));
+                    const auto troop = PaidCollisionCard(cast, team, "ironclad", drop);
+                    const auto entities = cast.State().entities.size();
+                    PaidCollisionCard(cast, team, spell.id, drop);
+                    ++collisionPaidFixtures;
+                    Check(cast.State().entities.size() == entities, "spell never creates an invisible collision body");
+                    Near(std::hypot(ById(cast, troop[0].id).position.x - troop[0].position.x,
+                                    ById(cast, troop[0].id).position.z - troop[0].position.z),
+                         0, 0, "spell cast never displaces friendly body");
+                    cast.Step(.8);
+                    Near(ById(cast, troop[0].id).hp, FindCard("ironclad")->hp, 0,
+                         "spell collision policy retains no friendly damage");
+                }
+            }
+        });
+        Test("opposing paid melee swarms make contact without overlap or crossing through one another", [] {
+            for (const int lane : {-1, 1}) {
+                Match m(CollisionOptions("twin_blades", "ironclad"));
+                for (const Team team : {Team::Player, Team::Enemy})
+                    PaidCollisionCard(m, team, "twin_blades", {lane * 7.5, (team == Team::Player ? 1 : -1) * 2.5});
+                ++collisionPaidFixtures;
+                BodyClearance(m, "opposing fast twin spawn");
+                for (int step = 0; step < 480; ++step) {
+                    const auto before = m.State().entities;
+                    m.Step(1. / 60.);
+                    SweptBodyClearance(m, before, "opposing melee contact");
+                }
+                int hits = 0;
+                for (const auto &event : m.Events())
+                    hits += event.type == "damage" && event.cardId == "twin_blades" && event.targetKind == EntityKind::Troop;
+                Check(hits >= 4, "collision permits actual reciprocal melee attacks rather than separating enemies forever");
+            }
+        });
+        Test("opposing structure-only runners pass on their selected bridge without tunneling or permanent deadlock", [] {
+            for (const int lane : {-1, 1}) {
+                Match m(CollisionOptions("rambeast", "boulderback"));
+                std::vector<Entity> starts;
+                for (const Team team : {Team::Player, Team::Enemy}) {
+                    const auto members = PaidCollisionCard(m, team, "rambeast",
+                                                          {lane * 7.5, (team == Team::Player ? 1 : -1) * 2.5});
+                    starts.insert(starts.end(), members.begin(), members.end());
+                }
+                ++collisionPaidFixtures;
+                bool crossed[2] = {false, false};
+                for (int step = 0; step < 600; ++step) {
+                    const auto before = m.State().entities;
+                    m.Step(1. / 60.);
+                    SweptBodyClearance(m, before, "fast structure-only counterflow");
+                    for (const auto &start : starts) {
+                        const auto *body = FindEntity(m, start.id);
+                        if (!body)
+                            continue;
+                        const auto &unit = *body;
+                        const int side = int(start.team), sign = side == 0 ? 1 : -1;
+                        crossed[side] |= unit.position.z * sign < -arena::RiverHalfWidth - .3;
+                        if (!unit.dead && std::abs(unit.position.z) < arena::RiverHalfWidth + .28)
+                            Check(unit.position.x * lane > 0, "counterflow uses the deployment-side bridge");
+                    }
+                }
+                Check(crossed[0] && crossed[1], "both non-aggro runners pass the opposing body and clear the same bridge");
+            }
+        });
+        Test("dense paid mixed ground crowd queues at bridges and makes bounded forward progress", [] {
+            const std::vector<std::string> deck{"boulderback", "twin_blades", "ironclad", "rambeast",
+                                                "frost_fang", "ember_archer", "arc_mage", "bullet_burst"};
+            for (const Team team : {Team::Player, Team::Enemy}) for (const int lane : {-1, 1}) {
+                auto options = Quiet();options.decks = {deck, deck};Match m(options);
+                const int sign = team == Team::Player ? 1 : -1;
+                std::vector<Entity> starts;
+                for (int cycle = 0; cycle < 3; ++cycle)
+                    for (const auto &id : deck) {
+                        const auto members = PaidCollisionCard(m, team, id,
+                            id == "bullet_burst" ? Vec2{-lane * 13.5, -sign * 20.5} : Vec2{lane * 7.5, sign * 6.5});
+                        starts.insert(starts.end(), members.begin(), members.end());
+                        BodyClearance(m, "dense paid same-tile deployment");
+                    }
+                ++collisionPaidFixtures;
+                Check(starts.size() == 24, "dense paid crowd keeps all twenty-four actual troop members");
+                std::map<EntityId, bool> crossed;
+                for (int step = 0; step < 900; ++step) {
+                    const auto before = m.State().entities;
+                    m.Step(1. / 60.);
+                    SweptBodyClearance(m, before, "dense mixed bridge queue");
+                    for (const auto &start : starts) {
+                        const auto *body = FindEntity(m, start.id);
+                        if (!body)
+                            continue;
+                        const auto &unit = *body;
+                        if (unit.position.z * sign < -arena::RiverHalfWidth - .28)
+                            crossed[unit.id] = true;
+                        if (!unit.dead && std::abs(unit.position.z) < arena::RiverHalfWidth + .28) {
+                            Check(unit.position.x * lane > 0, "dense queue does not change to the other bridge");
+                            ClearOwnStructures(m, unit, unit.position);
+                        }
+                    }
+                }
+                std::cout << "COLLISION_QUEUE team=" << int(team) << " lane=" << lane << " members=24 crossed=" << crossed.size() << '\n';
+                if (crossed.size() < 18)
+                    std::cerr << "QUEUE_MATCH phase=" << PhaseName(m.State().phase) << " elapsed=" << m.State().elapsed
+                              << " winner=" << m.State().winner << " enemy_core_hp=" << Tower(m, team == Team::Player ? Team::Enemy : Team::Player, EntityKind::Core).hp << '\n';
+                if (crossed.size() < 18)
+                    for (const auto &start : starts) {
+                        const auto *body = FindEntity(m, start.id);
+                        if (!body) {
+                            std::cerr << "QUEUE_MEMBER " << start.id << ' ' << start.cardId << " removed_after_death=1 crossed=" << crossed.count(start.id) << '\n';
+                            continue;
+                        }
+                        const auto &unit = *body;
+                        std::cerr << "QUEUE_MEMBER " << unit.id << ' ' << unit.cardId << " start=" << start.position.x << ',' << start.position.z
+                                  << " end=" << unit.position.x << ',' << unit.position.z << " dead=" << unit.dead
+                                  << " target=" << unit.target << " bridge=" << unit.bridge << " stuck=" << unit.stuckTime
+                                  << " path_size=" << unit.path.size() << " path_front=" << (unit.path.empty() ? 0 : unit.path.front().x)
+                                  << ',' << (unit.path.empty() ? 0 : unit.path.front().z)
+                                  << " path_target=" << unit.pathTarget.x << ',' << unit.pathTarget.z
+                                  << " crossed=" << crossed.count(unit.id) << '\n';
+                    }
+                Check(crossed.size() >= 18, "at least three quarters of a twenty-four-member paid crowd clears its bridge within fifteen seconds");
+            }
+        });
+        Test("paid three-building pocket releases every ground member through the selected bridge", [] {
+            const std::vector<std::string> deck{"ironclad", "twin_blades", "boulderback", "archer_tower",
+                                                "sky_manta", "vampire_bats", "storm_raven", "frost_fang"};
+            const int slots[]{1, 2, 2, 3, 0, 1, 0, 1, 0, 1, 2, 3, 2, 3, 2, 3};
+            for (const Team team : {Team::Player, Team::Enemy}) for (const int lane : {-1, 1}) {
+                auto options = Quiet();options.seed = 135;options.decks[int(team)] = deck;Match m(options);
+                const int sign = team == Team::Player ? 1 : -1;
+                const int deadline = team == Team::Player ? 12 : 15;
+                std::vector<Entity> members, ground, buildings;
+                int adjustedBuildingDrops = 0;
+                for (int play = 0; play < 16; ++play) {
+                    Vec2 drop{lane * 7.5, sign * 8.5};
+                    if (play == 9) drop = {lane * 6.5, sign * 7.5};
+                    if (play == 15) drop = {lane * 8.5, sign * 7.5};
+                    const Vec2 requested = drop;
+                    const auto id = m.State().hands[int(team)][slots[play]];
+                    const auto *card = FindCard(id);
+                    // Mirror body offsets can make a building request illegal.
+                    // Choose a real legal requested tile, never edit a spawned body.
+                    if (card->building && !m.CanPlace(team, *card, drop)) {
+                        bool legal = false;
+                        for (int ring = 1; ring <= 8 && !legal; ++ring)
+                            for (int direction = 0; direction < 8 && !legal; ++direction) {
+                                const double angle = direction * 3.14159265358979323846 * .25;
+                                const Vec2 candidate = SnapToTile({requested.x + ring * std::cos(angle),
+                                                                   requested.z + ring * std::sin(angle)});
+                                if (m.CanPlace(team, *card, candidate)) {drop = candidate;legal = true;}
+                            }
+                        Check(legal, "paid building pocket finds a lawful nearby requested building tile");
+                        ++adjustedBuildingDrops;
+                        std::cout << "COLLISION_BUILDING_DROP team=" << int(team) << " lane=" << lane
+                                  << " play=" << play << " requested=" << requested.x << ',' << requested.z
+                                  << " legal=" << drop.x << ',' << drop.z << '\n';
+                    }
+                    const auto added = PaidCollisionCard(m, team, id, drop);
+                    for (const auto &entity : added) {
+                        members.push_back(entity);
+                        if (entity.kind == EntityKind::Troop && !entity.flying) ground.push_back(entity);
+                        if (entity.kind == EntityKind::Building) buildings.push_back(entity);
+                    }
+                    BodyClearance(m, "paid three-building pocket deployment");
+                }
+                ++collisionPaidFixtures;
+                Check(members.size() == 31 && ground.size() == 11 && buildings.size() == 3,
+                      "exact sixteen paid drops retain thirty-one bodies including eleven ground troops and three buildings");
+                Near(FindCard("archer_tower")->lifetime, 25, 0, "pocket keeps authored twenty-five-second building lifetime");
+                if (team == Team::Player && lane == 1)
+                    Check(adjustedBuildingDrops == 0, "original Shipping pocket preserves every exact requested tile");
+                std::map<EntityId, bool> crossed;
+                std::size_t crossedAt12 = 0;
+                for (int step = 0; step < deadline * 60; ++step) {
+                    const auto before = m.State().entities;m.Step(1. / 60.);
+                    SweptBodyClearance(m, before, "paid three-building pocket movement");
+                    for (const auto &start : before) if (!start.dead && start.kind == EntityKind::Troop)
+                        if (const auto *end = FindEntity(m, start.id))
+                            Check(std::hypot(end->position.x - start.position.x, end->position.z - start.position.z) <=
+                                      FindCard(start.cardId)->moveSpeed / 60. + 1e-8,
+                                  "building pocket obeys strict authored movement speed without teleporting");
+                    for (const auto &start : buildings) {
+                        const auto *body = FindEntity(m, start.id);
+                        Check(body && !body->dead && body->hp > 0, "all three paid buildings remain live obstacles until the progress deadline");
+                        Near(std::hypot(body->position.x - start.position.x, body->position.z - start.position.z),
+                             0, 1e-9, "crowd never shoves its stationary paid building blockers");
+                    }
+                    for (const auto &start : ground) if (const auto *body = FindEntity(m, start.id)) {
+                        if (body->position.z * sign < -arena::RiverHalfWidth - .28) crossed[body->id] = true;
+                        if (!body->dead && std::abs(body->position.z) < arena::RiverHalfWidth + .28)
+                            Check(body->position.x * lane > 0, "building pocket keeps its deployment-side bridge");
+                    }
+                    if (step == 719) crossedAt12 = crossed.size();
+                }
+                std::cout << "COLLISION_BUILDING_POCKET team=" << int(team) << " lane=" << lane
+                          << " plays=16 members=31 buildings=3 ground=11 crossed=" << crossed.size()
+                          << " crossed_at12=" << crossedAt12 << " living_buildings=3 seconds=" << deadline
+                          << " adjusted_building_drops=" << adjustedBuildingDrops << '\n';
+                if (crossed.size() != ground.size()) for (const auto &start : ground) if (!crossed.count(start.id)) {
+                    const auto *body = FindEntity(m, start.id);
+                    std::cerr << "BUILDING_POCKET_STUCK team=" << int(team) << " lane=" << lane
+                              << " id=" << start.id << " card=" << start.cardId << " start=" << start.position.x << ',' << start.position.z;
+                    if (body) std::cerr << " end=" << body->position.x << ',' << body->position.z
+                                       << " dead=" << body->dead << " target=" << body->target << " bridge=" << body->bridge
+                                       << " stuck=" << body->stuckTime << " path_size=" << body->path.size();
+                    else std::cerr << " removed_after_death=1";
+                    std::cerr << '\n';
+                }
+                Check(crossed.size() == ground.size(), "every paid mobile ground member escapes the live three-building pocket and clears its bridge by the authored deadline");
+            }
+        });
+        Test("collision crowd remains deterministic across fixed-step frame chunks", [] {
+            auto options = CollisionOptions("twin_blades", "vampire_bats");
+            Match a(options), b(options);
+            for (Match *m : {&a, &b})
+                for (const Team team : {Team::Player, Team::Enemy}) {
+                    const int sign = team == Team::Player ? 1 : -1;
+                    PaidCollisionCard(*m, team, "twin_blades", {7.5, sign * 3.5});
+                    PaidCollisionCard(*m, team, "vampire_bats", {7.5, sign * 3.5});
+                    PaidCollisionCard(*m, team, "ironclad", {7.5, sign * 3.5});
+                }
+            for (int step = 0; step < 360; ++step) a.Step(1. / 60.);
+            for (int step = 0; step < 24; ++step) b.Step(.25);
+            Same(a, b);
+            BodyClearance(a, "deterministic crowd final bodies");
+        });
+        Test("stationary paid ranged attackers remain solid while friendly melee routes past", [] {
+            const std::vector<std::string> deck{"ember_archer", "ironclad", "archer_tower", "boulderback",
+                                                "arc_mage", "rambeast", "frost_fang", "bullet_burst"};
+            for (const Team team : {Team::Player, Team::Enemy}) {
+                auto options = Quiet();options.decks = {deck, deck};Match m(options);
+                const Team opponent = team == Team::Player ? Team::Enemy : Team::Player;
+                const int sign = team == Team::Player ? 1 : -1;
+                Check(m.SetTowerHP(Tower(m, opponent, EntityKind::Guard, -1).id, 0), "actual Guard destruction exposes the attacker pocket");
+                PaidCollisionCard(m, opponent, "archer_tower", {-7.5, -sign * 8.5});
+                const auto archer = PaidCollisionCard(m, team, "ember_archer", {-7.5, -sign * 4.5});
+                const auto melee = PaidCollisionCard(m, team, "ironclad", {-7.5, -sign * 2.5});
+                ++collisionPaidFixtures;
+                double closest = 1e9;bool routedPast = false;
+                for (int step = 0; step < 150; ++step) {
+                    const auto before = m.State().entities;m.Step(1. / 60.);
+                    SweptBodyClearance(m, before, "stationary ranged blocker");
+                    const auto &a = ById(m, archer[0].id), &b = ById(m, melee[0].id);
+                    if (!a.dead && !b.dead) {
+                        Near(std::hypot(a.position.x - archer[0].position.x, a.position.z - archer[0].position.z),
+                             0, 1e-9, "attacking ranged unit is not forcibly pushed away");
+                        closest = std::min(closest, std::hypot(a.position.x - b.position.x, a.position.z - b.position.z));
+                        routedPast |= (b.position.z - a.position.z) * sign < -.25;
+                    }
+                }
+                Check(closest < 1.3 && routedPast, "melee approaches and routes past an immobile friendly attack body");
+                int shots = 0;for (const auto &event : m.Events())shots += event.type == "attack" && event.source == archer[0].id;
+                Check(shots >= 2, "stationary body actually performs ordinary ranged attacks");
+            }
+        });
+        Test("real Raven aura stun keeps the stopped body solid to an unstunned paid follower", [] {
+            const auto options = CollisionOptions("boulderback", "ironclad");
+            for (const Team team : {Team::Player, Team::Enemy}) {
+                auto fixture = options;
+                fixture.decks = {std::vector<std::string>{"boulderback", "ironclad", "storm_raven", "twin_blades",
+                                                         "arc_mage", "rambeast", "frost_fang", "bullet_burst"},
+                                 std::vector<std::string>{"boulderback", "ironclad", "storm_raven", "twin_blades",
+                                                         "arc_mage", "rambeast", "frost_fang", "bullet_burst"}};
+                Match m(fixture);const int sign = team == Team::Player ? 1 : -1;
+                const Team opponent = team == Team::Player ? Team::Enemy : Team::Player;
+                PaidCollisionCard(m, opponent, "storm_raven", {7.5, -sign * 6.5});
+                const auto front = PaidCollisionCard(m, team, "boulderback", {7.5, sign * 2.5});
+                const auto follow = PaidCollisionCard(m, team, "ironclad", {7.5, sign * 6.5});
+                ++collisionPaidFixtures;
+                int stoppedFrames = 0, independentFollowerFrames = 0;
+                for (int step = 0; step < 240; ++step) {
+                    const auto before = m.State().entities;
+                    const Entity frontBefore = ById(m, front[0].id);
+                    m.Step(1. / 60.);SweptBodyClearance(m, before, "actual stun contact");
+                    const auto &a = ById(m, front[0].id), &b = ById(m, follow[0].id);
+                    // An aura may begin during this update. Only intervals that
+                    // started with the status active establish immobility.
+                    if (!a.dead && frontBefore.stunUntil > m.State().elapsed + 1e-9) {
+                        ++stoppedFrames;
+                        Near(std::hypot(a.position.x - frontBefore.position.x, a.position.z - frontBefore.position.z),
+                             0, 1e-9, "stunned body never moves or is shoved by the crowd");
+                        independentFollowerFrames += !b.dead && b.stunUntil < m.State().elapsed &&
+                            std::hypot(a.position.x - b.position.x, a.position.z - b.position.z) < 1.5;
+                    }
+                }
+                Check(stoppedFrames >= 12 && independentFollowerFrames >= 6,
+                      "real aura stuns the front body for observed frames while a nearby follower remains unstunned");
+            }
+        });
+        Test("full physical deployment capacity rejects paid cards atomically without consuming IDs", [] {
+            for (const Team team : {Team::Player, Team::Enemy}) {
+                Match m(CollisionOptions("boulderback", "sky_manta"));
+                int buildings = 0, residuals = 0, rejected = 0;
+                // These are actual public sandbox casts, including deliberate
+                // river rows, rather than fabricated occupied cells or radii.
+                for (double z = -21.5; z <= 21.5; z += 2)
+                    for (double x = -13.5; x <= 14.5; x += 2)
+                        if (m.Spawn(team, "archer_tower", {x, z})) ++buildings; else ++rejected;
+                bool exhausted = false;
+                for (int n = 0; n < 100; ++n) {
+                    if (!m.Spawn(team, "boulderback", {7.5, 8.5})) {++rejected;exhausted = true;break;}
+                    ++residuals;
+                }
+                Check(buildings >= 300 && residuals > 0 && exhausted,
+                      "bounded real large/small bodies genuinely exhaust arena capacity");
+                BodyClearance(m, "capacity fixture real physical bodies");
+                const Vec2 drop{7.5, (team == Team::Player ? 1 : -1) * 8.5};
+                Check(m.CanPlace(team, *FindCard("boulderback"), drop), "capacity rejection is a legal-zone attempt");
+                m.SetAether(team, 10);
+                const Match before = m;
+                const auto eventCount = m.Events().size();
+                const auto telemetry = m.State().telemetry[int(team)];
+                EntityId lastEntity = 0;PlayId lastPlay = 0;
+                for (const auto &entity : m.State().entities) lastEntity = std::max(lastEntity, entity.id);
+                for (const auto &event : m.Events()) lastPlay = std::max(lastPlay, event.playId);
+                const auto lastSequence = m.Events().back().sequence;
+                Check(!m.Play(team, 0, drop), "full area rejects paid ground deployment");
+                Same(before, m);
+                Check(m.Events().size() == eventCount && m.State().queues == before.State().queues &&
+                          m.State().spent == before.State().spent && m.State().leaked == before.State().leaked &&
+                          m.State().telemetry[int(team)].size() == telemetry.size(),
+                      "capacity failure changes no event, queue, economy or telemetry entry");
+                for (const auto &[id, original] : telemetry) {
+                    const auto &after = m.State().telemetry[int(team)].at(id);
+                    Check(after.spawns == original.spawns && after.plays == original.plays && after.spent == original.spent,
+                          "rejected capacity keeps every original card spawn/play/spend count");
+                }
+                const auto air = PaidCollisionCard(m, team, "sky_manta", drop);
+                ++collisionPaidFixtures;
+                Check(air.size() == 1 && air[0].id == lastEntity + 1 && air[0].playId == lastPlay + 1,
+                      "capacity rejection consumes neither entity nor paid play identity");
+                // PaidCollisionCard's ordinary SetAether emits the intervening
+                // sandbox event. Both subsequent sequences remain contiguous.
+                Check(m.Events()[eventCount].sequence == lastSequence + 1 &&
+                          m.Events()[eventCount + 1].sequence == lastSequence + 2 &&
+                          m.Events()[eventCount + 1].type == "card_play",
+                      "capacity rejection consumes no event sequence identity");
+                BodyClearance(m, "capacity air layer follow-up");
+                std::cout << "COLLISION_CAPACITY team=" << int(team) << " building_spawned=" << buildings
+                          << " troop_spawned=" << residuals << " rejected_spawn_requests=" << rejected
+                          << " paid_rejected=1 air_followup=1\n";
+            }
+        });
         Test("twenty-one full seeded AI-v-AI matches all styles", [] {
             const std::vector<std::string> styles{"beatdown", "aggro",       "control", "cycle",
                                                   "split",    "spell_cycle", "counter"};
@@ -1252,8 +1756,10 @@ int main() {
                 o.aiEnabled = {true, true};
                 o.aiStyles = {styles[n % 7], styles[(n * 3 + 1) % 7]};
                 Match m(o);
-                for (int tick = 0; tick < 1440 && m.State().phase != Phase::Finished; ++tick)
-                    m.Step(.25);
+                for (int tick = 0; tick < 7200 && m.State().phase != Phase::Finished; ++tick) {
+                    m.Step(.05);
+                    BodyClearance(m, "full-match AI crowd");
+                }
                 Check(m.State().phase == Phase::Finished, "full match terminates within360");
                 Check(m.State().elapsed <= 330, "finite TB duration");
                 for (int side = 0; side < 2; ++side) {
@@ -1274,6 +1780,11 @@ int main() {
                 std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
             std::cout << "SOAK 21 complete matches wall seconds " << wall << '\n';
         });
+        std::cout.precision(12);
+        std::cout << "COLLISION_SUMMARY paid_fixtures=" << collisionPaidFixtures << " paid_plays=" << collisionPaidPlays
+                  << " members=" << collisionMembers << " endpoint_pair_checks=" << collisionPairChecks
+                  << " swept_pair_checks=" << collisionSweepChecks << " min_body_gap=" << collisionMinimumGap
+                  << " min_swept_gap=" << collisionMinimumSweepGap << '\n';
         std::cout << "Native authoritative simulation: " << passed << " scenarios passed.\n";
         return 0;
     } catch (const std::exception &e) {

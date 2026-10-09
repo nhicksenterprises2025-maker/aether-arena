@@ -1,0 +1,248 @@
+{
+  "schema": "rift.unit-collision.replay-seed-probe.historical.v1",
+  "version": "1.3.5",
+  "passed": true,
+  "recordedUtc": "2026-10-09T22:12:29.5452791Z",
+  "scope": "Exact portable authoritative simulation reproduction of RecordAIMatch(false); native replay writer/archive QA is performed separately by the full UE suite.",
+  "historical": true,
+  "pathConvention": "Paths are relative to the workspace root. SHA256 and byte counts identify original unsanitized files; historical source pins describe the source frozen during the recorded run.",
+  "originalVerification": {
+    "path": "Artifacts/QA/UnitCollisionReplaySeedProbe/verification.json",
+    "sha256": "cc5da0decfeee05eff0a5da770090e45fffcf2fd9631bb667b2145c6adf9b9b4",
+    "bytes": 5240
+  },
+  "originalPreRunPins": {
+    "path": "Artifacts/QA/UnitCollisionReplaySeedProbe/before-source-pins.json",
+    "sha256": "4cae08bf6b0131daae445f245185a490a082910009b04bf8dcb932a237e2bbb4",
+    "bytes": 2449
+  },
+  "compileLog": {
+    "path": "Artifacts/QA/UnitCollisionReplaySeedProbe/compile.log",
+    "sha256": "d640e73f5ae1d3fdacf4cc85abd5c76677cb690c0b5602b13e135588314c1eab",
+    "bytes": 132
+  },
+  "compileCommand": {
+    "path": "Artifacts/QA/UnitCollisionReplaySeedProbe/compile.cmd",
+    "sha256": "8d5d971164bebbdcdb1eba71c5e855e3db28de984ba7cad0e7a19fbc67b876a3",
+    "bytes": 1205
+  },
+  "sourcePinsUnchangedDuringRun": true,
+  "sourcePins": [
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftSimulation.cpp",
+      "sha256": "fe2112da32ddc9ec606074a664aedaa4f0bcac52566b5972c76c45d80e7df29b",
+      "bytes": 39991
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftCombat.cpp",
+      "sha256": "0a079ca0598a66224b47ed56a8849a05351e5cc0b28354ddddfc3b2bc5bfb63e",
+      "bytes": 14827
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftPathfinding.cpp",
+      "sha256": "8aa10f7d014e3c5c8fd7335bca0c53e9f692265062324193e97eaa143cb2ab2a",
+      "bytes": 29007
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftDeckAnalysis.cpp",
+      "sha256": "07d7063f15a66338892ccc65e603caa859cccd2b3d22fcd4257719bd059e21b2",
+      "bytes": 28525
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftAI.cpp",
+      "sha256": "883f20513632eab99711bb22f42f995c181331e6d5f0c42a2ad6469817493bfc",
+      "bytes": 23293
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Simulation/RiftSimulation.h",
+      "sha256": "2ea2d10082e19efcb463f53f7cc94266ba805657c4bca3b703cddd8419f67a6e",
+      "bytes": 12019
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftIntegrationTests.cpp",
+      "sha256": "cdfdcc4b5f1ec92ee62ae76e4839804cac0c86908f81b830184a4fae9b63dc67",
+      "bytes": 82781
+    },
+    {
+      "path": "Artifacts/QA/UnitCollisionReplaySeedProbe/ReplaySeedProbe.cpp",
+      "sha256": "4871d85e0f8817b83a80067aaac4299cf976c38252bf16af6be87fd5ce6d4eb8",
+      "bytes": 2531
+    },
+    {
+      "path": "Artifacts/QA/UnitCollisionReplaySeedProbe/Run-Probe.ps1",
+      "sha256": "ce0905cb96475dda4b44210797fe369bceacf2d3d1108d24aab46122aa216015",
+      "bytes": 3561
+    }
+  ],
+  "executable": {
+    "path": "Artifacts/QA/UnitCollisionReplaySeedProbe/ReplaySeedProbe.exe",
+    "sha256": "1f836bd4d86676735b50c2b49097500352df0a13660ff5b3b517a14247a78191",
+    "bytes": 465920
+  },
+  "resultLog": {
+    "path": "Artifacts/QA/UnitCollisionReplaySeedProbe/results.jsonl",
+    "sha256": "55fbc464694241a874e4c11917b1f2c8071664b63a27d8301742b1f9430176c4",
+    "bytes": 6395
+  },
+  "wallSeconds": 19.94325,
+  "ordinaryMatchOptions": {
+    "aiEnabled": [
+      true,
+      true
+    ],
+    "aiStyles": [
+      "control",
+      "counter"
+    ],
+    "decks": [
+      [
+        "ironclad",
+        "twin_blades",
+        "archer_tower",
+        "frost_fang",
+        "vampire_bats",
+        "sky_manta",
+        "storm_raven",
+        "meteor_shards"
+      ],
+      [
+        "ironclad",
+        "twin_blades",
+        "archer_tower",
+        "frost_fang",
+        "vampire_bats",
+        "sky_manta",
+        "storm_raven",
+        "meteor_shards"
+      ]
+    ],
+    "stepSeconds": 0.25,
+    "maximumElapsedSeconds": 360,
+    "developerCommandsUsed": false,
+    "entityStateOverridesUsed": false
+  },
+  "unchangedOrdinaryPredicates": [
+    "phase == Finished",
+    "elapsed > 180",
+    "At least one actual Overtime snapshot has crowns[0] == 0 and crowns[1] == 0",
+    "spent[0] > 100",
+    "spent[1] > 100",
+    "maximum actual State().entities.size() >= 20"
+  ],
+  "assertionsLowered": false,
+  "previousOrdinarySeed114": {
+    "kind": "previous",
+    "seed": 114,
+    "valid": false,
+    "elapsed": 180.00000000003539,
+    "peak": 21,
+    "spent0": 88,
+    "spent1": 88,
+    "winner": 0,
+    "finished": true,
+    "zeroCrownOvertime": false,
+    "loops": 720,
+    "events": 1370,
+    "expectedReplaySamples": 722
+  },
+  "search": {
+    "firstSeed": 1,
+    "lastSeed": 26,
+    "count": 26,
+    "stoppedAtFirstValidSeed": true,
+    "loggedRows": 30
+  },
+  "selectedOrdinarySeed26": {
+    "kind": "search",
+    "seed": 26,
+    "valid": true,
+    "elapsed": 209.70000000005902,
+    "peak": 21,
+    "spent0": 107,
+    "spent1": 109,
+    "winner": 0,
+    "finished": true,
+    "zeroCrownOvertime": true,
+    "loops": 839,
+    "events": 1636,
+    "expectedReplaySamples": 841
+  },
+  "identicalRepeatCount": 3,
+  "repeats": [
+    {
+      "kind": "repeat",
+      "seed": 26,
+      "valid": true,
+      "elapsed": 209.70000000005902,
+      "peak": 21,
+      "spent0": 107,
+      "spent1": 109,
+      "winner": 0,
+      "finished": true,
+      "zeroCrownOvertime": true,
+      "loops": 839,
+      "events": 1636,
+      "expectedReplaySamples": 841
+    },
+    {
+      "kind": "repeat",
+      "seed": 26,
+      "valid": true,
+      "elapsed": 209.70000000005902,
+      "peak": 21,
+      "spent0": 107,
+      "spent1": 109,
+      "winner": 0,
+      "finished": true,
+      "zeroCrownOvertime": true,
+      "loops": 839,
+      "events": 1636,
+      "expectedReplaySamples": 841
+    },
+    {
+      "kind": "repeat",
+      "seed": 26,
+      "valid": true,
+      "elapsed": 209.70000000005902,
+      "peak": 21,
+      "spent0": 107,
+      "spent1": 109,
+      "winner": 0,
+      "finished": true,
+      "zeroCrownOvertime": true,
+      "loops": 839,
+      "events": 1636,
+      "expectedReplaySamples": 841
+    }
+  ],
+  "repeatMetricsCompared": [
+    "seed",
+    "valid",
+    "elapsed",
+    "peak",
+    "spent0",
+    "spent1",
+    "winner",
+    "finished",
+    "zeroCrownOvertime",
+    "loops",
+    "events",
+    "expectedReplaySamples"
+  ],
+  "replaySampleCountMeaning": "expectedReplaySamples is loops + 2, matching initial sample, one sample per simulation loop, and final sample in RecordAIMatch. This portable probe does not write or inspect a native replay archive.",
+  "congestionFixture": {
+    "seed": 32,
+    "changed": false,
+    "executedByThisOrdinaryProbe": false,
+    "populationPredicate": "maximum actual State().entities.size() >= 40",
+    "nativeReplayArchiveAcceptance": "Performed separately by the full native Unreal suite."
+  },
+  "historicalIntegrationSource": {
+    "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftIntegrationTests.cpp",
+    "ordinarySeedAtProbe": 114,
+    "congestionSeedAtProbe": 32,
+    "laterOrdinarySeedSelection": 26,
+    "note": "The captured integration source hash precedes the ordinary fixture seed update. It is a historical pin, not a claim that the current integration source still matches."
+  },
+  "probeModifiedProductionOrTestSources": false
+}
