@@ -3,6 +3,10 @@
 Original Windows card battler: fourteen cards, two lanes, deterministic combat,
 seven AI personalities, deck workshop, Meta Lab, replays and developer training.
 
+Version 1.3.2 stops the continuous river sound in menus and battles while
+retaining music, interface sounds and combat effects. See
+[the audio fix notes](Docs/PATCH_NOTES_1.3.2.md).
+
 Version 1.3.1 fixes flickering stats when hovering over hand cards. The tooltip
 stays open through HUD refreshes and changes when the card in its slot changes.
 See [the fix notes](Docs/PATCH_NOTES_1.3.1.md).

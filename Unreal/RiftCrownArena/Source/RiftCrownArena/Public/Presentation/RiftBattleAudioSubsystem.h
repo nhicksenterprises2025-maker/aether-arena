@@ -39,7 +39,6 @@ private:
     UPROPERTY() TMap<FName,TObjectPtr<USoundBase>> Sounds;
     UPROPERTY() TMap<FName,TObjectPtr<USoundSubmixBase>> OriginalSubmixRoutes;
     UPROPERTY() TObjectPtr<UAudioComponent> Music;
-    UPROPERTY() TObjectPtr<UAudioComponent> Ambience;
     UPROPERTY() TObjectPtr<USoundSubmix> MasterMix;
     UPROPERTY() TObjectPtr<USubmixEffectDynamicsProcessorPreset> Limiter;
     struct FVoice { TWeakObjectPtr<UAudioComponent> Component; float Gain=1.f; bool UI=false; uint8 Priority=20; FName Cue; };

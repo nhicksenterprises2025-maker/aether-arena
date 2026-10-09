@@ -1,5 +1,6 @@
 #include "Presentation/RiftBattleAudioSubsystem.h"
 #include "RiftDiagnostics.h"
+#include "RiftMatchSubsystem.h"
 #include "RiftProfileSubsystem.h"
 #include "RiftUIWidget.h"
 #include "AudioDevice.h"
@@ -23,6 +24,7 @@
 #include "Misc/CommandLine.h"
 #include "Misc/Parse.h"
 #include "Misc/Paths.h"
+#include "UObject/UObjectIterator.h"
 
 namespace
 {
@@ -44,7 +46,15 @@ float CueCooldown(FName Name)
     if(Name==TEXT("tower_destroy")||Name==TEXT("core_awaken"))return .09f;
     return .065f;
 }
-bool SaveMixedOutput(UWorld* World,USoundSubmix* Mix,const TSharedPtr<FJsonObject>& Report,const TCHAR* Field,const TCHAR* FileName)
+int32 PlayingRiverVoices(UWorld* World)
+{
+    int32 Count=0;
+    for(TObjectIterator<UAudioComponent> Component;Component;++Component)
+        if(Component->GetWorld()==World&&Component->IsPlaying()&&Component->Sound&&
+            Component->Sound->GetFName()==FName(TEXT("SFX_river_ambience")))++Count;
+    return Count;
+}
+bool SaveMixedOutput(UWorld* World,USoundSubmix* Mix,const TSharedPtr<FJsonObject>& Report,const TCHAR* Field,const TCHAR* FileName,bool ExpectSilence=false)
 {
     auto Item=MakeShared<FJsonObject>();Report->SetObjectField(Field,Item);
     auto* Device=FAudioDeviceManager::GetAudioMixerDeviceFromWorldContext(World);
@@ -63,6 +73,7 @@ bool SaveMixedOutput(UWorld* World,USoundSubmix* Mix,const TSharedPtr<FJsonObjec
     Item->SetNumberField(TEXT("rms"),RMS);Item->SetNumberField(TEXT("clippedFloatSamples"),Clipped);
     Item->SetNumberField(TEXT("seconds"),Channels>0&&SampleRate>0?Samples.Num()/(Channels*SampleRate):0);
     Item->SetStringField(TEXT("captureStage"),TEXT("Live MasterMix output after the submix effect chain; before PCM encoding"));
+    Item->SetBoolField(TEXT("silenceExpected"),ExpectSilence);
     if(Samples.IsEmpty()||Channels<1||SampleRate<=0)return false;
     FString SmokePath;FParse::Value(FCommandLine::Get(),TEXT("RiftAudioSmoke="),SmokePath);
     const FString Directory=SmokePath.IsEmpty()?FPaths::Combine(URiftProfileSubsystem::SaveRoot(),TEXT("AudioQA")):FPaths::GetPath(SmokePath);
@@ -70,7 +81,8 @@ bool SaveMixedOutput(UWorld* World,USoundSubmix* Mix,const TSharedPtr<FJsonObjec
     Audio::FSoundWavePCMWriter Writer;FString SavedPath;
     const bool Saved=Writer.SynchronouslyWriteToWavFile(PCM,FileName,Directory,&SavedPath);
     Item->SetBoolField(TEXT("wavSaved"),Saved);Item->SetStringField(TEXT("wavFile"),FPaths::GetCleanFilename(SavedPath));
-    return Saved&&Samples.Num()>Channels*SampleRate*.15f&&Peak>.0001f&&RMS>.00001&&Clipped==0&&Peak<.95f;
+    const bool LevelsPassed=ExpectSilence?Peak<=.00001f&&RMS<=.000001:Peak>.0001f&&RMS>.00001&&Clipped==0&&Peak<.95f;
+    return Saved&&Samples.Num()>Channels*SampleRate*.15f&&LevelsPassed;
 }
 }
 
@@ -105,14 +117,13 @@ void URiftBattleAudioSubsystem::Deinitialize()
 {
     for (auto& Voice:Voices) if (Voice.Component.IsValid()) Voice.Component->Stop();
     if (Music) Music->Stop();
-    if (Ambience) Ambience->Stop();
     if(auto* Manager=FAudioDeviceManager::Get())for(const uint32 DeviceId:RegisteredDeviceIds)
         if(auto* Device=Manager->GetAudioDeviceRaw(DeviceId))Device->UnregisterSoundSubmix(MasterMix,false);
     RegisteredDeviceIds.Reset();
     for(const auto& Entry:Sounds)if(Entry.Value&&Entry.Value->SoundSubmixObject==MasterMix)
         Entry.Value->SoundSubmixObject=OriginalSubmixRoutes.FindRef(Entry.Key);
     OriginalSubmixRoutes.Reset();
-    Voices.Reset();LastPlayTime.Reset();VariantSequence.Reset();Sounds.Reset();Music=nullptr;Ambience=nullptr;BattleWorld.Reset();
+    Voices.Reset();LastPlayTime.Reset();VariantSequence.Reset();Sounds.Reset();Music=nullptr;BattleWorld.Reset();
     Limiter=nullptr;MasterMix=nullptr;
     Super::Deinitialize();
 }
@@ -146,8 +157,7 @@ void URiftBattleAudioSubsystem::SetBattleWorld(UWorld* World)
 {
     if (BattleWorld.Get()==World && Music && Music->IsPlaying()) return;
     if (Music) { Music->Stop(); Music->DestroyComponent(); }
-    if (Ambience) { Ambience->Stop(); Ambience->DestroyComponent(); }
-    Music=nullptr; Ambience=nullptr; BattleWorld=World;
+    Music=nullptr; BattleWorld=World;
     StopOneShots();MusicDuck=1.f;
     if (!World||!EnsureMixRegistered(World)) return;
     // Preload short foley variations before play, preventing first-hit disk work.
@@ -158,11 +168,6 @@ void URiftBattleAudioSubsystem::SetBattleWorld(UWorld* World)
     {
         if (auto* Wave=Cast<USoundWave>(Score)) Wave->bLooping=true;
         Music=UGameplayStatics::SpawnSound2D(World,Score,Master*MusicGain,1.f,0.f,nullptr,false,false);
-    }
-    if (auto* River=Sound(TEXT("river_ambience")))
-    {
-        if (auto* Wave=Cast<USoundWave>(River)) Wave->bLooping=true;
-        Ambience=UGameplayStatics::SpawnSound2D(World,River,Master*SFX*.26f,1.f,0.f,nullptr,false,false);
     }
 }
 void URiftBattleAudioSubsystem::RefreshVolumes()
@@ -180,7 +185,6 @@ void URiftBattleAudioSubsystem::RefreshVolumes()
     const float EffectHeadroom=EffectCount>5?FMath::Sqrt(5.f/EffectCount):1.f;
     const float UIHeadroom=UICount>2?FMath::Sqrt(2.f/UICount):1.f;
     if (Music) Music->SetVolumeMultiplier(Master*MusicGain*MusicDuck);
-    if (Ambience) Ambience->SetVolumeMultiplier(Master*SFX*.26f);
     for (int32 Index=Voices.Num()-1; Index>=0; --Index)
     {
         auto& Voice=Voices[Index];
@@ -292,7 +296,7 @@ FString URiftBattleAudioSubsystem::RunAudioSmokeJSON(URiftUIWidget* Interface)
     Check(TEXT("profileAvailable"),Profile!=nullptr);Check(TEXT("settingsInterfaceAvailable"),Interface&&Interface->WidgetTree);
     if(!World||!Profile||!Interface||!Interface->WidgetTree||!World->GetAudioDevice().IsValid())return Result();
     const int32 DeviceChannels=World->GetAudioDevice()->GetMaxChannels();
-    Report->SetNumberField(TEXT("deviceMaxChannels"),DeviceChannels);Check(TEXT("physicalBudgetIncludes32OneShotsAnd2Loops"),DeviceChannels>=34);
+    Report->SetNumberField(TEXT("deviceMaxChannels"),DeviceChannels);Check(TEXT("physicalBudgetIncludes32OneShotsAndMusic"),DeviceChannels>=33);
     Check(TEXT("allVoicesHaveLimiterRoute"),MasterMix&&Limiter&&MasterMix->SubmixEffectChain.Contains(Limiter));
     auto* Mixer=FAudioDeviceManager::GetAudioMixerDeviceFromWorldContext(World);
     Check(TEXT("masterMixRegisteredWithLiveDevice"),Mixer&&Mixer->GetSubmixInstance(MasterMix).IsValid());
@@ -306,8 +310,32 @@ FString URiftBattleAudioSubsystem::RunAudioSmokeJSON(URiftUIWidget* Interface)
     Check(TEXT("limiterDetectsIsolatedPeaksWithoutAttackSmoothing"),Limiter&&RuntimeDynamics.PeakMode==ESubmixEffectDynamicsPeakMode::Peak&&
         RuntimeDynamics.AttackTimeMsec==0.f&&!RuntimeDynamics.bAnalogMode&&RuntimeDynamics.LookAheadMsec==5.f&&
         RuntimeDynamics.ThresholdDb==-3.f&&RuntimeDynamics.ReleaseTimeMsec==120.f);
+    auto RiverLifecycle=MakeShared<FJsonObject>();Report->SetObjectField(TEXT("waterAmbienceLifecycle"),RiverLifecycle);
+    RiverLifecycle->SetStringField(TEXT("cue"),TEXT("SFX_river_ambience"));
+    RiverLifecycle->SetStringField(TEXT("inspection"),TEXT("Live UAudioComponent instances in the active world, matching river SoundWave and IsPlaying"));
+    auto RiverCheck=[&](const TCHAR* Name,const TCHAR* Field)
+    {const int32 Count=PlayingRiverVoices(World);RiverLifecycle->SetNumberField(Field,Count);Check(Name,Count==0);};
+    // A silent, immediately stopped control proves this scan can see an actual
+    // river component; a broken inspection must not report every page clean.
+    auto* Control=UGameplayStatics::SpawnSound2D(World,Sound(TEXT("river_ambience")),0.f,1.f,0.f,nullptr,false,false);
+    const int32 ControlRiverVoices=PlayingRiverVoices(World);RiverLifecycle->SetNumberField(TEXT("controlPlayingVoices"),ControlRiverVoices);
+    Check(TEXT("riverVoiceInspectionDetectsSilentControl"),Control&&ControlRiverVoices==1);
+    if(Control){Control->Stop();Control->DestroyComponent();}
+    auto* InitialMusic=Music.Get();
+    Interface->Navigate(TEXT("Home"));RiverCheck(TEXT("noRiverVoiceInHome"),TEXT("homePlayingVoices"));
+    auto* Match=World->GetSubsystem<URiftMatchSubsystem>();
+    Check(TEXT("battleLifecycleSubsystemAvailable"),Match!=nullptr);
+    if(!Match)return Result();
+    Match->StartMatch(true);Match->SetSpeed(0.f);Interface->Navigate(TEXT("Battle"));
+    Check(TEXT("actualBattleActiveForWaterCheck"),Match->IsActive());
+    RiverCheck(TEXT("noRiverVoiceInBattle"),TEXT("battlePlayingVoices"));
+    SetBattleWorld(World);SetBattleWorld(World);
+    RiverCheck(TEXT("noRiverVoiceAfterRepeatedWorldBinding"),TEXT("reboundPlayingVoices"));
+    Interface->Navigate(TEXT("Home"));RiverCheck(TEXT("noRiverVoiceAfterReturningHome"),TEXT("returnedHomePlayingVoices"));
+    Check(TEXT("musicPreservedAcrossPagesAndWorldBinding"),Music.Get()==InitialMusic&&Music&&Music->IsPlaying());
     const auto OriginalSettings=Profile->Settings;
     Interface->Navigate(TEXT("Settings"));TArray<URiftValueSlider*> Sliders;
+    RiverCheck(TEXT("noRiverVoiceInSettings"),TEXT("settingsPlayingVoices"));
     Interface->WidgetTree->ForEachWidget([&](UWidget* Widget){if(auto* Slider=Cast<URiftValueSlider>(Widget))Sliders.Add(Slider);});
     Check(TEXT("actualSettingsAudioSliders"),Sliders.Num()>=4);
     if(Sliders.Num()<4){Interface->Navigate(TEXT("Home"));return Result();}
@@ -324,9 +352,8 @@ FString URiftBattleAudioSubsystem::RunAudioSmokeJSON(URiftUIWidget* Interface)
     FloatCheck(TEXT("masterCallback"),Profile->Settings.MasterVolume,.6f);FloatCheck(TEXT("musicCallback"),Profile->Settings.MusicVolume,.35f);
     FloatCheck(TEXT("sfxCallback"),Profile->Settings.SFXVolume,.4f);FloatCheck(TEXT("uiCallback"),Profile->Settings.UIVolume,.8f);
     if(!Music||!Music->IsPlaying())SetBattleWorld(World);
-    Check(TEXT("musicPlaying"),Music&&Music->IsPlaying());Check(TEXT("ambiencePlaying"),Ambience&&Ambience->IsPlaying());
+    Check(TEXT("musicPlaying"),Music&&Music->IsPlaying());
     if(Music){FloatCheck(TEXT("musicMasterProduct"),Music->VolumeMultiplier,.21f);if(auto* Wave=Cast<USoundWave>(Music->Sound)){Check(TEXT("musicLoopConfigured"),Wave->bLooping);Check(TEXT("musicStreamed"),Wave->IsStreaming());}}
-    if(Ambience)FloatCheck(TEXT("ambienceMasterProduct"),Ambience->VolumeMultiplier,.0624f);
     PlayEffect(TEXT("sword_hit"),FVector::ZeroVector,.5f);PlayUI(TEXT("ui_save"));
     UAudioComponent* EffectVoice=nullptr;UAudioComponent* UIVoice=nullptr;
     for(const auto& Voice:Voices)if(Voice.UI)UIVoice=Voice.Component.Get();else EffectVoice=Voice.Component.Get();
@@ -385,8 +412,8 @@ void URiftBattleAudioSubsystem::RunAudioSmoke(URiftUIWidget* Interface,TFunction
     // immediate component registration alone cannot prove that loops survive it.
     if(auto* Device=FAudioDeviceManager::GetAudioMixerDeviceFromWorldContext(World))Device->StartRecording(MasterMix,2.f);
     FillSmokeBurst();
-    const double Started=World->GetTimeSeconds();TWeakObjectPtr<URiftBattleAudioSubsystem> WeakThis(this);
-    FTimerHandle MixedTimer;World->GetTimerManager().SetTimer(MixedTimer,[WeakThis,Report,OriginalSettings,OriginalAppVolumeOverride,Started,Completed=MoveTemp(Completed)]() mutable
+    const double Started=World->GetTimeSeconds();TWeakObjectPtr<URiftBattleAudioSubsystem> WeakThis(this);TWeakObjectPtr<URiftUIWidget> WeakInterface(Interface);
+    FTimerHandle MixedTimer;World->GetTimerManager().SetTimer(MixedTimer,[WeakThis,WeakInterface,Report,OriginalSettings,OriginalAppVolumeOverride,Started,Completed=MoveTemp(Completed)]() mutable
     {
         auto* Audio=WeakThis.Get();if(!Audio)return;
         auto Checks=Report->GetArrayField(TEXT("checks"));auto Errors=Report->GetArrayField(TEXT("errors"));
@@ -396,8 +423,9 @@ void URiftBattleAudioSubsystem::RunAudioSmoke(URiftUIWidget* Interface,TFunction
         Report->SetNumberField(TEXT("postMixGameSeconds"),Delay);Check(TEXT("postMixDeferredAcrossGameTicks"),Delay>=.1);
         Check(TEXT("musicSurvivesBoundedBurst"),Audio->Music&&Audio->Music->IsPlaying());
         Check(TEXT("musicRetainsPhysicalVoice"),Audio->Music&&!Audio->Music->IsVirtualized());
-        Check(TEXT("ambienceSurvivesBoundedBurst"),Audio->Ambience&&Audio->Ambience->IsPlaying());
-        Check(TEXT("ambienceRetainsPhysicalVoice"),Audio->Ambience&&!Audio->Ambience->IsVirtualized());
+        const int32 BurstRiverVoices=PlayingRiverVoices(Audio->BattleWorld.Get());
+        Report->GetObjectField(TEXT("waterAmbienceLifecycle"))->SetNumberField(TEXT("burstPlayingVoices"),BurstRiverVoices);
+        Check(TEXT("noRiverVoiceAfterDeferredBurst"),BurstRiverVoices==0);
         Check(TEXT("actualMixedPCMHasHeadroom"),SaveMixedOutput(Audio->BattleWorld.Get(),Audio->MasterMix,Report,TEXT("normalMixedOutput"),TEXT("mixed-output")));
         int32 ActiveOneShots=0;for(auto& Voice:Audio->Voices)if(Voice.Component.IsValid()){if(Voice.Component->IsPlaying())++ActiveOneShots;Voice.Component->Stop();}
         Report->SetNumberField(TEXT("postMixActiveOneShots"),ActiveOneShots);Audio->StopOneShots();Audio->MusicDuck=1.f;
@@ -408,19 +436,53 @@ void URiftBattleAudioSubsystem::RunAudioSmoke(URiftUIWidget* Interface,TFunction
         if(auto* Device=FAudioDeviceManager::GetAudioMixerDeviceFromWorldContext(StressWorld))Device->StartRecording(Audio->MasterMix,2.f);
         Audio->PlayEffect(TEXT("tower_destroy"),FVector::ZeroVector,12.f);
         Audio->PlayEffect(TEXT("meteor_impact"),FVector::ZeroVector,12.f);
-        FTimerHandle LimitTimer;StressWorld->GetTimerManager().SetTimer(LimitTimer,[WeakThis,Report,OriginalSettings,OriginalAppVolumeOverride,Completed=MoveTemp(Completed)]()
+        FTimerHandle LimitTimer;StressWorld->GetTimerManager().SetTimer(LimitTimer,[WeakThis,WeakInterface,Report,OriginalSettings,OriginalAppVolumeOverride,Completed=MoveTemp(Completed)]() mutable
         {
             auto* MixAudio=WeakThis.Get();if(!MixAudio)return;
             auto FinalChecks=Report->GetArrayField(TEXT("checks"));auto FinalErrors=Report->GetArrayField(TEXT("errors"));
             auto FinalCheck=[&](const TCHAR* Name,bool Passed)
             {auto Item=MakeShared<FJsonObject>();Item->SetStringField(TEXT("name"),Name);Item->SetBoolField(TEXT("passed"),Passed);FinalChecks.Add(MakeShared<FJsonValueObject>(Item));if(!Passed)FinalErrors.Add(MakeShared<FJsonValueString>(Name));};
             FinalCheck(TEXT("limiterOverloadPCMDoesNotClip"),SaveMixedOutput(MixAudio->BattleWorld.Get(),MixAudio->MasterMix,Report,TEXT("limiterOverloadOutput"),TEXT("limiter-overload")));
+            const int32 OverloadRiverVoices=PlayingRiverVoices(MixAudio->BattleWorld.Get());
+            Report->GetObjectField(TEXT("waterAmbienceLifecycle"))->SetNumberField(TEXT("overloadPlayingVoices"),OverloadRiverVoices);
+            FinalCheck(TEXT("noRiverVoiceDuringLimiterOverload"),OverloadRiverVoices==0);
             MixAudio->StopOneShots();MixAudio->MusicDuck=1.f;
-            auto* RestoredProfile=MixAudio->GetGameInstance()->GetSubsystem<URiftProfileSubsystem>();RestoredProfile->Settings=OriginalSettings;MixAudio->RefreshVolumes();
-            FinalCheck(TEXT("postMixSettingsRestored"),RestoredProfile->Settings.MasterVolume==OriginalSettings.MasterVolume&&RestoredProfile->Settings.MusicVolume==OriginalSettings.MusicVolume&&RestoredProfile->Settings.SFXVolume==OriginalSettings.SFXVolume&&RestoredProfile->Settings.UIVolume==OriginalSettings.UIVolume);
-            if(auto* AppOverride=IConsoleManager::Get().FindConsoleVariable(TEXT("au.DisableAppVolume")))AppOverride->Set(OriginalAppVolumeOverride,ECVF_SetByCode);
-            Report->SetArrayField(TEXT("checks"),FinalChecks);Report->SetArrayField(TEXT("errors"),FinalErrors);Report->SetBoolField(TEXT("passed"),FinalErrors.IsEmpty());
-            FString Result;auto Writer=TJsonWriterFactory<>::Create(&Result);FJsonSerializer::Serialize(Report.ToSharedRef(),Writer);Completed(Result);
+            // Muting only music through the actual Settings callback leaves
+            // SFX/UI enabled. A settled live mix must then contain no constant
+            // environmental bed, including one outside our voice bookkeeping.
+            auto* QuietInterface=WeakInterface.Get();TArray<URiftValueSlider*> QuietSliders;
+            if(QuietInterface&&QuietInterface->WidgetTree)
+            {QuietInterface->Navigate(TEXT("Settings"));QuietInterface->WidgetTree->ForEachWidget([&](UWidget* Widget){if(auto* Slider=Cast<URiftValueSlider>(Widget))QuietSliders.Add(Slider);});}
+            FinalCheck(TEXT("quietMusicMuteUsesActualSettingsSlider"),QuietSliders.Num()>=4);
+            if(QuietSliders.Num()>=4){QuietSliders[1]->SetValue(0.f);QuietSliders[1]->OnValueChanged.Broadcast(0.f);}
+            auto* QuietProfile=MixAudio->GetGameInstance()->GetSubsystem<URiftProfileSubsystem>();
+            FinalCheck(TEXT("quietMusicSliderMuteApplied"),QuietProfile->Settings.MusicVolume==0.f&&QuietProfile->Settings.MasterVolume>0.f&&QuietProfile->Settings.SFXVolume>0.f&&QuietProfile->Settings.UIVolume>0.f);
+            MixAudio->RefreshVolumes();Report->SetArrayField(TEXT("checks"),FinalChecks);Report->SetArrayField(TEXT("errors"),FinalErrors);
+            auto* QuietWorld=MixAudio->BattleWorld.Get();const double QuietStarted=QuietWorld->GetTimeSeconds();
+            FTimerHandle QuietSettleTimer;QuietWorld->GetTimerManager().SetTimer(QuietSettleTimer,[WeakThis,WeakInterface,Report,OriginalSettings,OriginalAppVolumeOverride,QuietStarted,Completed=MoveTemp(Completed)]() mutable
+            {
+                auto* QuietAudio=WeakThis.Get();if(!QuietAudio)return;auto* CaptureWorld=QuietAudio->BattleWorld.Get();
+                const double Settled=CaptureWorld->GetTimeSeconds()-QuietStarted;Report->SetNumberField(TEXT("quietTailSettleGameSeconds"),Settled);
+                if(auto* Device=FAudioDeviceManager::GetAudioMixerDeviceFromWorldContext(CaptureWorld))Device->StartRecording(QuietAudio->MasterMix,1.f);
+                FTimerHandle QuietCaptureTimer;CaptureWorld->GetTimerManager().SetTimer(QuietCaptureTimer,[WeakThis,WeakInterface,Report,OriginalSettings,OriginalAppVolumeOverride,Completed=MoveTemp(Completed)]()
+                {
+                    auto* RestoredAudio=WeakThis.Get();if(!RestoredAudio)return;
+                    auto Checks=Report->GetArrayField(TEXT("checks"));auto Errors=Report->GetArrayField(TEXT("errors"));
+                    auto Check=[&](const TCHAR* Name,bool Passed)
+                    {auto Item=MakeShared<FJsonObject>();Item->SetStringField(TEXT("name"),Name);Item->SetBoolField(TEXT("passed"),Passed);Checks.Add(MakeShared<FJsonValueObject>(Item));if(!Passed)Errors.Add(MakeShared<FJsonValueString>(Name));};
+                    Check(TEXT("quietSceneSettledAcrossGameTicks"),Report->GetNumberField(TEXT("quietTailSettleGameSeconds"))>=.75);
+                    const int32 QuietRiverVoices=PlayingRiverVoices(RestoredAudio->BattleWorld.Get());
+                    Report->GetObjectField(TEXT("waterAmbienceLifecycle"))->SetNumberField(TEXT("quietPlayingVoices"),QuietRiverVoices);
+                    Check(TEXT("noRiverVoiceInQuietScene"),QuietRiverVoices==0);
+                    Check(TEXT("quietLiveMixerHasNoConstantSound"),SaveMixedOutput(RestoredAudio->BattleWorld.Get(),RestoredAudio->MasterMix,Report,TEXT("quietMixedOutput"),TEXT("quiet-output"),true));
+                    auto* RestoredProfile=RestoredAudio->GetGameInstance()->GetSubsystem<URiftProfileSubsystem>();RestoredProfile->Settings=OriginalSettings;RestoredAudio->RefreshVolumes();
+                    Check(TEXT("postMixSettingsRestored"),RestoredProfile->Settings.MasterVolume==OriginalSettings.MasterVolume&&RestoredProfile->Settings.MusicVolume==OriginalSettings.MusicVolume&&RestoredProfile->Settings.SFXVolume==OriginalSettings.SFXVolume&&RestoredProfile->Settings.UIVolume==OriginalSettings.UIVolume);
+                    if(auto* RestoredInterface=WeakInterface.Get())RestoredInterface->Navigate(TEXT("Home"));
+                    if(auto* AppOverride=IConsoleManager::Get().FindConsoleVariable(TEXT("au.DisableAppVolume")))AppOverride->Set(OriginalAppVolumeOverride,ECVF_SetByCode);
+                    Report->SetArrayField(TEXT("checks"),Checks);Report->SetArrayField(TEXT("errors"),Errors);Report->SetBoolField(TEXT("passed"),Errors.IsEmpty());
+                    FString Result;auto Writer=TJsonWriterFactory<>::Create(&Result);FJsonSerializer::Serialize(Report.ToSharedRef(),Writer);Completed(Result);
+                },.65f,false);
+            },.8f,false);
         },1.2f,false);
     },.65f,false);
 }
