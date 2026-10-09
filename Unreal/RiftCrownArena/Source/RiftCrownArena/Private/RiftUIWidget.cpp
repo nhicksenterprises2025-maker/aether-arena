@@ -367,6 +367,8 @@ void URiftUIWidget::ExportMeta()
 }
 void URiftUIWidget::PatchNotes()
 {
+    Add(Body,Text(TEXT("CARD HOVER FIX · 1.3.1"),25,Brass));
+    Add(Body,Text(TEXT("Card stats stay visible while hovering over your hand. Tooltips now update when a hand slot changes cards, instead of restarting on every HUD refresh."),16));
     Add(Body,Text(TEXT("MODELS, CARD ART & CONTROLS · 1.3.0"),25,Brass));
     Add(Body,Text(TEXT("Revised characters have fitted equipment, cleaner weapon grips and clearer silhouettes. All fourteen portraits are rendered from the upgraded in-game models, with closer framing for faces and held equipment."),16));
     Add(Body,Text(TEXT("The interface uses the bundled Barlow Semi Condensed font. Drag a card to a legal arena position and release to deploy. Return it to the hand, release on an invalid position or UI panel, or cancel to keep the card and Aether."),16));

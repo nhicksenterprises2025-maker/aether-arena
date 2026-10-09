@@ -2,7 +2,15 @@
 
 These reports contain executed results and repository-relative evidence paths. Complete generated datasets, binaries, traces and commandlet logs remain ignored under `Artifacts/QA`, `Build/NativeTests` and `Build/Automation`. Version 1.2.1 adds delayed impacts to Meteor Shards and Bullet Burst. This changes the authoritative gameplay fingerprint; the completed 10,000-match instant-spell cohort remains historical evidence.
 
-## Version 1.3.0 model, typography and hand input checks
+## Version 1.3.1 card hover checks
+
+[hover-stats-1.3.1.json](hover-stats-1.3.1.json) identifies the hotfix's exact final Shipping executable and actual pointer/tooltip results. Both 1080p and 720p runs pass 32 assertions: all original 29 drag/cancel checks plus natural tooltip opening, twelve stable refreshes and six stable refreshes after a real card cycle changes the stats. The actual tooltip/window remains fully opaque. The application-local faux cursor does not operate the OS mouse. Fresh native logs, context/source/executable hashes, clean exits and zero errors are required.
+
+The complete current fifteen-test suite passes in 63.373077 seconds with zero failed/unrun tests. Its two warnings are intentional profile recovery and an engine connectivity timeout. The previous native report is preserved as [historical-native-integration-1.3.0.json](historical-native-integration-1.3.0.json). Model, card-art, font and authoritative-core fingerprints remain unchanged; earlier physical reviews, sound and performance measurements retain their original versions. [RELEASE_QA.md](../RELEASE_QA.md) records the release's verification and limits.
+
+Actual WPF Play and all 51 installed lifecycle checks passed for the 49-file 1.3.1 package, including upgrade from public 1.3.0, repair, uninstall and isolated save preservation. The compact immutable hover packet has 49 independently reopened entries and keeps original source-file hashes separate from sanitized entry hashes. The unchanged 1.3.0 model archive is identified by its immutable digest rather than repackaged or relabeled. Public delivery is a separate postpublication check.
+
+## Historical version 1.3.0 model, typography and hand input checks
 
 [model-input-checks-1.3.0.json](model-input-checks-1.3.0.json) pins the current production source, raw exports, portraits, embedded fonts, import provenance, native integration, actual hand input and final Windows acceptance. Its evidence archive contains the authored assets and verified reports/logs with an independently reopened entry inventory. Runtime binaries are identified by hash rather than duplicated in the evidence archive.
 
