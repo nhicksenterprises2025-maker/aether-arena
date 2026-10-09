@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "version": "1.3.2",
+  "passed": true,
+  "utc": "2026-10-09T20:16:31.5165354Z",
+  "files": [
+    {
+      "file": "RiftCrownArena-Windows-x64-1.3.2.zip",
+      "url": "https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.3.2/RiftCrownArena-Windows-x64-1.3.2.zip",
+      "bytes": 397990465,
+      "sha256": "b134013ec747bbee3703dbbe1ccea73481d26d1b79f2b1d64912088b8995c88d",
+      "matchesTestedPayload": true,
+      "anonymousHttpsDownload": true
+    },
+    {
+      "file": "RiftCrownArena-Setup.msi",
+      "url": "https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.3.2/RiftCrownArena-Setup.msi",
+      "bytes": 383737856,
+      "sha256": "ba1743a53d6d4311331934ff6f8c82d7c9ca936032521ba23fe3861c83e2cfeb",
+      "matchesTestedPayload": true,
+      "anonymousHttpsDownload": true
+    }
+  ],
+  "localManifestSha256": "075c8f3f7436bae64ec769917772b7bd31f5f8ec34d83ffeef050fe6a1e8ac48",
+  "localReleaseVerificationSha256": "655092dc68482fb0de09188db854e7c0257eaa86807bc74c1141d296b0d0f978",
+  "rawPublishedUpdateCheckSha256": "552831bd7817c10e1792e08cb324b521a10f376dd4d2c9537988a38e01b9025b",
+  "scope": "Fresh anonymous downloads of the complete public game ZIP and MSI, compared by byte count and SHA-256 to the exact locally tested release; actual final WPF CheckButton.Click separately matched the default latest HTTPS manifest without installing or downloading the game."
+}

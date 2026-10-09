@@ -78,6 +78,10 @@ canonical = ("rift-native-1|native-observed-2|ai-v15-port-2|nav-grid-a-star-1|te
              "arena28x42|river1.65|bridges7.2,4.2|sight8,5|phase180,120|aether2.8,120,240|"
              "drain180|coreGuardOnly|hardlockAtRange|pocket2,13.2,2.25,9.25")
 canonical = canonical.replace("telemetry-2", f"telemetry-{revision}")
+navigation_revision = data["rulesSnapshot"].get("navigationRevision", 1)
+check(not isinstance(navigation_revision, bool) and navigation_revision in (1, 2),
+      "Unsupported captured navigation revision")
+canonical = canonical.replace("nav-grid-a-star-1", f"nav-grid-a-star-{2 if navigation_revision == 2 else 1}")
 timed_spells = any("castDelay" in card for card in data["cardSnapshot"])
 if timed_spells:
     check(all("castDelay" in card for card in data["cardSnapshot"]),
@@ -107,6 +111,9 @@ expected_rules = {"arenaWidth": 28, "arenaHeight": 42, "riverHalfWidth": 1.65,
                   "coreActivation": "friendly Guard Tower destroyed",
                   "targetHardLock": "at Crown Tower attack range",
                   "navigation": "card-aware ground grid A-star with bridges; flying ignores obstacles"}
+if navigation_revision == 2:
+    expected_rules["navigationRevision"] = 2
+    expected_rules["navigation"] += "; clear ground spawns and continuous segment clearance"
 for key, value in expected_rules.items():
     check(data["rulesSnapshot"].get(key) == value, f"Captured rule mismatch: {key}")
 if timed_spells:

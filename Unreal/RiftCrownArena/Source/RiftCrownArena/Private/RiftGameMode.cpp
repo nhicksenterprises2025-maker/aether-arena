@@ -32,6 +32,109 @@
 #include "Framework/Application/IInputProcessor.h"
 #include "Input/Events.h"
 
+namespace
+{
+double CaptureTowerSegmentClearance(const rift::Snapshot& State,const rift::Entity& Unit,rift::Vec2 From)
+{
+    double Minimum=1.e9;const double DX=Unit.position.x-From.x,DZ=Unit.position.z-From.z,Length=DX*DX+DZ*DZ;
+    for(const auto& Tower:State.entities)if(!Tower.dead&&Tower.kind>=rift::EntityKind::Guard)
+    {
+        const double T=Length>1.e-12?FMath::Clamp(((Tower.position.x-From.x)*DX+(Tower.position.z-From.z)*DZ)/Length,0.,1.):0.;
+        const double X=From.x+T*DX-Tower.position.x,Z=From.z+T*DZ-Tower.position.z;
+        Minimum=FMath::Min(Minimum,FMath::Sqrt(X*X+Z*Z)-Unit.radius-Tower.radius-.22);
+    }
+    return Minimum;
+}
+bool BuildTowerPathingCapture(URiftMatchSubsystem* Match,const TSharedRef<FJsonObject>& Report)
+{
+    auto* Sim=Match->Simulation();if(!Sim)return false;Match->SetSpeed(0);
+    float Age=0;FParse::Value(FCommandLine::Get(),TEXT("RiftPathingAge="),Age);
+    Age=FMath::IsFinite(Age)?FMath::Clamp(Age,0.f,6.f):0.f;
+    TArray<rift::Entity> Towers;for(const auto& Entity:Sim->State().entities)
+        if(Entity.kind>=rift::EntityKind::Guard)Towers.Add(Entity);
+    TArray<TSharedPtr<FJsonValue>> Rows,TowerRows;
+    bool Deployed=true,SpawnClear=true,StepsClear=true,SegmentsClear=true;int32 Deployments=0;
+    TMap<uint64,rift::Vec2> PreviousPositions;
+    for(const auto& Tower:Towers)
+    {
+        auto TowerRow=MakeShared<FJsonObject>();TowerRow->SetNumberField(TEXT("id"),Tower.id);
+        TowerRow->SetStringField(TEXT("team"),UTF8_TO_TCHAR(rift::TeamName(Tower.team).c_str()));
+        TowerRow->SetStringField(TEXT("kind"),Tower.kind==rift::EntityKind::Core?TEXT("core"):TEXT("guard"));
+        TowerRow->SetNumberField(TEXT("lane"),Tower.lane);TowerRow->SetNumberField(TEXT("x"),Tower.position.x);
+        TowerRow->SetNumberField(TEXT("z"),Tower.position.z);TowerRow->SetNumberField(TEXT("radius"),Tower.radius);
+        TowerRows.Add(MakeShared<FJsonValueObject>(TowerRow));
+        const char* Card=Tower.kind==rift::EntityKind::Core?"ironclad":Tower.lane<0?"boulderback":"twin_blades";
+        const rift::Vec2 Drop{Tower.position.x,Tower.position.z+(Tower.team==rift::Team::Player?1.:-1.)};
+        const auto Tile=rift::SnapToTile(Drop);
+        const size_t Before=Sim->State().entities.size();const bool Accepted=Sim->Spawn(Tower.team,Card,Drop);
+        Deployed&=Accepted;if(Accepted)++Deployments;
+        for(size_t I=Before;I<Sim->State().entities.size();++I)
+        {
+            const auto& Unit=Sim->State().entities[I];const double Clearance=CaptureTowerSegmentClearance(Sim->State(),Unit,Unit.position);
+            auto Row=MakeShared<FJsonObject>();Row->SetNumberField(TEXT("id"),Unit.id);
+            Row->SetStringField(TEXT("team"),UTF8_TO_TCHAR(rift::TeamName(Unit.team).c_str()));
+            Row->SetStringField(TEXT("cardId"),UTF8_TO_TCHAR(Unit.cardId.c_str()));
+            Row->SetNumberField(TEXT("deploymentTowerId"),Tower.id);Row->SetNumberField(TEXT("requestedX"),Tile.x);
+            Row->SetNumberField(TEXT("requestedZ"),Tile.z);Row->SetNumberField(TEXT("spawnX"),Unit.position.x);
+            Row->SetNumberField(TEXT("spawnZ"),Unit.position.z);Row->SetNumberField(TEXT("radius"),Unit.radius);
+            Row->SetNumberField(TEXT("spawnTowerClearance"),Clearance);Row->SetNumberField(TEXT("minimumStepTowerClearance"),Clearance);
+            Row->SetNumberField(TEXT("minimumSegmentTowerClearance"),Clearance);PreviousPositions.Add(Unit.id,Unit.position);
+            SpawnClear&=Clearance>=-1.e-6;Rows.Add(MakeShared<FJsonValueObject>(Row));
+        }
+    }
+    Match->FlushEvents();const double Started=Sim->State().elapsed;const int32 Steps=FMath::RoundToInt(double(Age)*60.);
+    for(int32 Step=0;Step<Steps;++Step)
+    {
+        Sim->Step(1./60.);Match->FlushEvents();
+        for(const auto& Value:Rows)
+        {
+            const auto Row=Value->AsObject();const uint64 Id=uint64(Row->GetNumberField(TEXT("id")));
+            for(const auto& Unit:Sim->State().entities)if(Unit.id==Id&&!Unit.dead)
+            {
+                const double Clearance=CaptureTowerSegmentClearance(Sim->State(),Unit,Unit.position);
+                const double Segment=CaptureTowerSegmentClearance(Sim->State(),Unit,PreviousPositions.FindChecked(Unit.id));
+                Row->SetNumberField(TEXT("minimumStepTowerClearance"),FMath::Min(Clearance,Row->GetNumberField(TEXT("minimumStepTowerClearance"))));
+                Row->SetNumberField(TEXT("minimumSegmentTowerClearance"),FMath::Min(Segment,Row->GetNumberField(TEXT("minimumSegmentTowerClearance"))));
+                SegmentsClear&=Segment>=-1.e-6;PreviousPositions.FindChecked(Unit.id)=Unit.position;
+                StepsClear&=Clearance>=-1.e-6;break;
+            }
+        }
+        for(TActorIterator<ARiftArenaPresentation> It(Match->GetWorld());It;++It)It->Tick(0.f);
+    }
+    bool Progress=true;int32 Found=0;
+    for(const auto& Value:Rows)
+    {
+        const auto Row=Value->AsObject();const uint64 Id=uint64(Row->GetNumberField(TEXT("id")));
+        bool Present=false;
+        for(const auto& Unit:Sim->State().entities)if(Unit.id==Id)
+        {
+            Present=true;++Found;const double X=Unit.position.x-Row->GetNumberField(TEXT("spawnX"));
+            const double Z=Unit.position.z-Row->GetNumberField(TEXT("spawnZ"));const double Distance=FMath::Sqrt(X*X+Z*Z);
+            const double Forward=-Z*(Unit.team==rift::Team::Player?1.:-1.);const bool Moved=Distance>.5&&Forward>.25;
+            Row->SetNumberField(TEXT("x"),Unit.position.x);Row->SetNumberField(TEXT("z"),Unit.position.z);
+            Row->SetBoolField(TEXT("alive"),!Unit.dead);Row->SetNumberField(TEXT("distanceFromSpawn"),Distance);
+            Row->SetNumberField(TEXT("progressTowardRiver"),Forward);Row->SetBoolField(TEXT("progressPassed"),Moved);
+            Progress&=Moved;break;
+        }
+        Row->SetBoolField(TEXT("present"),Present);if(!Present)Progress=false;
+    }
+    const bool RequireProgress=Steps>=120;
+    Report->SetNumberField(TEXT("schemaVersion"),1);Report->SetStringField(TEXT("route"),TEXT("ordinary Match Spawn / fixed steps / live arena presentation"));
+    Report->SetNumberField(TEXT("requestedAge"),Age);Report->SetNumberField(TEXT("sampledAge"),Sim->State().elapsed-Started);
+    Report->SetNumberField(TEXT("fixedSteps"),Steps);Report->SetNumberField(TEXT("deploymentCount"),Deployments);
+    Report->SetNumberField(TEXT("expectedUnitCount"),8);Report->SetNumberField(TEXT("actualUnitCount"),Found);
+    Report->SetNumberField(TEXT("towerNavigationPadding"),.22);Report->SetBoolField(TEXT("ordinarySpawnOnly"),true);
+    Report->SetBoolField(TEXT("spawnTowerClearancePassed"),SpawnClear);Report->SetBoolField(TEXT("allStepTowerClearancePassed"),StepsClear);
+    Report->SetBoolField(TEXT("allContinuousSegmentTowerClearancePassed"),SegmentsClear);
+    Report->SetBoolField(TEXT("progressRequired"),RequireProgress);Report->SetBoolField(TEXT("progressPassed"),Progress);
+    Report->SetArrayField(TEXT("towers"),TowerRows);Report->SetArrayField(TEXT("units"),Rows);
+    const bool Passed=Deployed&&Deployments==6&&Rows.Num()==8&&Found==8&&SpawnClear&&StepsClear&&SegmentsClear&&(!RequireProgress||Progress);
+    Report->SetBoolField(TEXT("passed"),Passed);
+    RIFT_LOG(LogRift,Log,TEXT("Actual tower pathing capture: %d deployments, %d members, %d fixed steps, spawnClear=%d stepClear=%d segmentClear=%d progress=%d passed=%d"),Deployments,Found,Steps,SpawnClear,StepsClear,SegmentsClear,Progress,Passed);
+    return Passed;
+}
+}
+
 class FRiftCaptureInputFilter final : public IInputProcessor
 {
 public:
@@ -134,8 +237,9 @@ void ARiftGameMode::BeginPlay()
         auto CapturedEvents=MakeShared<TMap<FString,int32>>();
         auto RecordedCapture=MakeShared<bool>(false);
         auto RecordedDuration=MakeShared<double>(0.);
+        auto TowerPathingCapture=MakeShared<FJsonObject>();
         GetWorld()->GetSubsystem<URiftMatchSubsystem>()->OnEvent.AddLambda([CapturedEvents](const rift::Event& Event){++CapturedEvents->FindOrAdd(UTF8_TO_TCHAR(Event.type.c_str()));});
-        FTimerHandle SetupTimer;GetWorld()->GetTimerManager().SetTimer(SetupTimer,[this,Page,Scenario,RecordedCapture,RecordedDuration]()
+        FTimerHandle SetupTimer;GetWorld()->GetTimerManager().SetTimer(SetupTimer,[this,Page,Scenario,RecordedCapture,RecordedDuration,TowerPathingCapture]()
         {
             auto* PC=Cast<ARiftPlayerController>(GetWorld()->GetFirstPlayerController());if(!PC||!PC->Interface)return;
             auto* Match=GetWorld()->GetSubsystem<URiftMatchSubsystem>();
@@ -276,8 +380,13 @@ void ARiftGameMode::BeginPlay()
                     }
                     Sim->Step(.35);Match->FlushEvents();
                 }
+                else if(Scenario==TEXT("tower_pathing"))
+                {
+                    if(!BuildTowerPathingCapture(Match,TowerPathingCapture))
+                    {RIFT_LOG(LogRift,Error,TEXT("Tower pathing capture failed its actual deployment/clearance/progress checks"));FPlatformMisc::RequestExitWithStatus(false,2);return;}
+                }
                 else if(Scenario==TEXT("placement")||Scenario==TEXT("effects17"))Match->SetSpeed(0);
-                if(Scenario!=TEXT("roster")&&Scenario!=TEXT("placement")&&Scenario!=TEXT("effects17")&&Scenario!=TEXT("projectiles")&&Scenario!=TEXT("spells"))
+                if(Scenario!=TEXT("roster")&&Scenario!=TEXT("placement")&&Scenario!=TEXT("effects17")&&Scenario!=TEXT("projectiles")&&Scenario!=TEXT("spells")&&Scenario!=TEXT("tower_pathing"))
                 {float CaptureSpeed=1;FParse::Value(FCommandLine::Get(),TEXT("RiftCaptureSpeed="),CaptureSpeed);Match->SetSpeed(FMath::Clamp(CaptureSpeed,.25f,4.f));}
                 Match->FlushEvents();
             }
@@ -392,12 +501,13 @@ void ARiftGameMode::BeginPlay()
                 {It->ShowcaseNiagaraAtAge(Age);break;}
             }),FMath::Max(1.f,Delay)-.5f,false);
         }
-        FTimerHandle CaptureTimer;GetWorld()->GetTimerManager().SetTimer(CaptureTimer,FTimerDelegate::CreateWeakLambda(this,[this,CapturePath,Quit,CapturedEvents,RecordedCapture,RecordedDuration]()
+        FTimerHandle CaptureTimer;GetWorld()->GetTimerManager().SetTimer(CaptureTimer,FTimerDelegate::CreateWeakLambda(this,[this,CapturePath,Quit,CapturedEvents,RecordedCapture,RecordedDuration,TowerPathingCapture]()
         {
             IFileManager::Get().MakeDirectory(*FPaths::GetPath(CapturePath),true);
             auto Snapshot=MakeShared<FJsonObject>();auto EventCounts=MakeShared<FJsonObject>();
             if(CaptureInputFilter)Snapshot->SetObjectField(TEXT("captureInput"),CaptureInputFilter->Report());
             Snapshot->SetBoolField(TEXT("recordedMatchFixture"),*RecordedCapture);
+            if(TowerPathingCapture->HasField(TEXT("passed")))Snapshot->SetObjectField(TEXT("towerPathing"),TowerPathingCapture);
             if(*RecordedCapture)
             {
                 const auto* Replay=GetGameInstance()->GetSubsystem<URiftReplaySubsystem>();

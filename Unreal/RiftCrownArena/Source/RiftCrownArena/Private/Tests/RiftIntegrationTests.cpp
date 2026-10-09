@@ -1210,7 +1210,10 @@ bool FRiftFullReplayIntegrationTest::RunTest(const FString &Parameters) {
     Replay->CloseReplay();
     auto RecordAIMatch = [&](bool Congestion) {
         rift::MatchOptions AIOptions;
-        AIOptions.seed = Congestion ? 32 : 40;
+        // Pin an ordinary paid fixture that still reaches zero-crown overtime
+        // and the existing >=20 population burden under continuous path clearance.
+        // The separate Developer congestion fixture retains its known >=40 load.
+        AIOptions.seed = Congestion ? 32 : 64;
         AIOptions.aiEnabled = {true, true};
         AIOptions.aiStyles = {"control", "counter"};
         const std::vector<std::string> SwarmDeck{"ironclad",    "twin_blades",  "archer_tower",

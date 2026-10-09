@@ -1,0 +1,1260 @@
+{
+  "schema": 1,
+  "version": "1.3.3",
+  "passed": true,
+  "utc": "2026-10-09T20:47:12.3906878Z",
+  "scope": "Ordinary deployments and continuous tower clearance, forward progress, saved replay, complete native regression, new one-hundred-match navigation cohort and Windows delivery",
+  "nativeExecutable": {
+    "path": "Artifacts/Game-1.3.3/Windows/RiftCrownArena/Binaries/Win64/RiftCrownArena-Win64-Shipping.exe",
+    "sha256": "e31e72c9121c61aa5d6ba226fdf07a127eda5e56548c9e69a63682e14d313c83",
+    "bytes": 167802880
+  },
+  "integrationTests": 16,
+  "portableScenarios": 47,
+  "portableExecutable": {
+    "path": "Build/NativeTests/RiftSimulationTests.exe",
+    "sha256": "a0f9132839aa2cd13591f803538a5b0bfae1b34fc7ccf4d0eda20f59d0778224",
+    "bytes": 663552
+  },
+  "portableProvenance": "Final post-fix portable compilation and execution. All eight authored source/helper SHA-256 pins were captured before compilation and checked unchanged after the completed 47-scenario execution.",
+  "paidGroundFixtures": 182,
+  "paidGroundMembers": 208,
+  "continuousPerimeterPaths": 768,
+  "captures": [
+    {
+      "name": "tower133-initial",
+      "passed": true,
+      "png": {
+        "path": "Artifacts/QA/Visual/tower133-initial.png",
+        "sha256": "47b081d578e23ed5e9f9ab0ce36b0588370a938bb69a9d1d8852b350bca07338",
+        "bytes": 2487087
+      },
+      "state": "Artifacts/QA/Visual/tower133-initial.state.json",
+      "report": "Artifacts/QA/Visual/tower133-initial.json",
+      "processId": 4968,
+      "towerPathing": {
+        "schemaVersion": 1,
+        "route": "ordinary Match Spawn / fixed steps / live arena presentation",
+        "requestedAge": 0,
+        "sampledAge": 0,
+        "fixedSteps": 0,
+        "deploymentCount": 6,
+        "expectedUnitCount": 8,
+        "actualUnitCount": 8,
+        "towerNavigationPadding": 0.22,
+        "ordinarySpawnOnly": true,
+        "spawnTowerClearancePassed": true,
+        "allStepTowerClearancePassed": true,
+        "allContinuousSegmentTowerClearancePassed": true,
+        "progressRequired": false,
+        "progressPassed": false,
+        "towers": [
+          {
+            "id": 1,
+            "team": "player",
+            "kind": "core",
+            "lane": 0,
+            "x": 0,
+            "z": 16.3,
+            "radius": 1.35
+          },
+          {
+            "id": 2,
+            "team": "player",
+            "kind": "guard",
+            "lane": -1,
+            "x": -8.2,
+            "z": 12.4,
+            "radius": 1.15
+          },
+          {
+            "id": 3,
+            "team": "player",
+            "kind": "guard",
+            "lane": 1,
+            "x": 8.2,
+            "z": 12.4,
+            "radius": 1.15
+          },
+          {
+            "id": 4,
+            "team": "enemy",
+            "kind": "core",
+            "lane": 0,
+            "x": 0,
+            "z": -16.3,
+            "radius": 1.35
+          },
+          {
+            "id": 5,
+            "team": "enemy",
+            "kind": "guard",
+            "lane": -1,
+            "x": -8.2,
+            "z": -12.4,
+            "radius": 1.15
+          },
+          {
+            "id": 6,
+            "team": "enemy",
+            "kind": "guard",
+            "lane": 1,
+            "x": 8.2,
+            "z": -12.4,
+            "radius": 1.15
+          }
+        ],
+        "units": [
+          {
+            "id": 7,
+            "team": "player",
+            "cardId": "ironclad",
+            "deploymentTowerId": 1,
+            "requestedX": 0.5,
+            "requestedZ": 17.5,
+            "spawnX": 0.7734615384615392,
+            "spawnZ": 18.156307692307692,
+            "radius": 0.44,
+            "spawnTowerClearance": 0.000999999999999196,
+            "minimumStepTowerClearance": 0.000999999999999196,
+            "minimumSegmentTowerClearance": 0.000999999999999196,
+            "x": 0.7734615384615392,
+            "z": 18.156307692307692,
+            "alive": true,
+            "distanceFromSpawn": 0,
+            "progressTowardRiver": 0,
+            "progressPassed": false,
+            "present": true
+          },
+          {
+            "id": 8,
+            "team": "player",
+            "cardId": "boulderback",
+            "deploymentTowerId": 2,
+            "requestedX": -8.5,
+            "requestedZ": 13.5,
+            "spawnX": -8.701975386770187,
+            "spawnZ": 14.240576418157346,
+            "radius": 0.5367999999999999,
+            "spawnTowerClearance": 0.0010000000000009723,
+            "minimumStepTowerClearance": 0.0010000000000009723,
+            "minimumSegmentTowerClearance": 0.0010000000000009723,
+            "x": -8.701975386770187,
+            "z": 14.240576418157346,
+            "alive": true,
+            "distanceFromSpawn": 0,
+            "progressTowardRiver": 0,
+            "progressPassed": false,
+            "present": true
+          },
+          {
+            "id": 9,
+            "team": "player",
+            "cardId": "twin_blades",
+            "deploymentTowerId": 3,
+            "requestedX": 8.5,
+            "requestedZ": 13.5,
+            "spawnX": 8.030477094148909,
+            "spawnZ": 14.123482876152764,
+            "radius": 0.36079999999999995,
+            "spawnTowerClearance": 0.0010000000000000842,
+            "minimumStepTowerClearance": 0.0010000000000000842,
+            "minimumSegmentTowerClearance": 0.0010000000000000842,
+            "x": 8.030477094148909,
+            "z": 14.123482876152764,
+            "alive": true,
+            "distanceFromSpawn": 0,
+            "progressTowardRiver": 0,
+            "progressPassed": false,
+            "present": true
+          },
+          {
+            "id": 10,
+            "team": "player",
+            "cardId": "twin_blades",
+            "deploymentTowerId": 3,
+            "requestedX": 8.5,
+            "requestedZ": 13.5,
+            "spawnX": 9.225357968333126,
+            "spawnZ": 13.795626123564533,
+            "radius": 0.36079999999999995,
+            "spawnTowerClearance": 0.0010000000000009723,
+            "minimumStepTowerClearance": 0.0010000000000009723,
+            "minimumSegmentTowerClearance": 0.0010000000000009723,
+            "x": 9.225357968333126,
+            "z": 13.795626123564533,
+            "alive": true,
+            "distanceFromSpawn": 0,
+            "progressTowardRiver": 0,
+            "progressPassed": false,
+            "present": true
+          },
+          {
+            "id": 11,
+            "team": "enemy",
+            "cardId": "ironclad",
+            "deploymentTowerId": 4,
+            "requestedX": 0.5,
+            "requestedZ": -17.5,
+            "spawnX": 0.7734615384615392,
+            "spawnZ": -18.156307692307692,
+            "radius": 0.44,
+            "spawnTowerClearance": 0.000999999999999196,
+            "minimumStepTowerClearance": 0.000999999999999196,
+            "minimumSegmentTowerClearance": 0.000999999999999196,
+            "x": 0.7734615384615392,
+            "z": -18.156307692307692,
+            "alive": true,
+            "distanceFromSpawn": 0,
+            "progressTowardRiver": 0,
+            "progressPassed": false,
+            "present": true
+          },
+          {
+            "id": 12,
+            "team": "enemy",
+            "cardId": "boulderback",
+            "deploymentTowerId": 5,
+            "requestedX": -8.5,
+            "requestedZ": -13.5,
+            "spawnX": -8.701975386770187,
+            "spawnZ": -14.240576418157346,
+            "radius": 0.5367999999999999,
+            "spawnTowerClearance": 0.0010000000000009723,
+            "minimumStepTowerClearance": 0.0010000000000009723,
+            "minimumSegmentTowerClearance": 0.0010000000000009723,
+            "x": -8.701975386770187,
+            "z": -14.240576418157346,
+            "alive": true,
+            "distanceFromSpawn": 0,
+            "progressTowardRiver": 0,
+            "progressPassed": false,
+            "present": true
+          },
+          {
+            "id": 13,
+            "team": "enemy",
+            "cardId": "twin_blades",
+            "deploymentTowerId": 6,
+            "requestedX": 8.5,
+            "requestedZ": -13.5,
+            "spawnX": 7.989514966374363,
+            "spawnZ": -14.118961107942706,
+            "radius": 0.36079999999999995,
+            "spawnTowerClearance": 0.0009999999999998621,
+            "minimumStepTowerClearance": 0.0009999999999998621,
+            "minimumSegmentTowerClearance": 0.0009999999999998621,
+            "x": 7.989514966374363,
+            "z": -14.118961107942706,
+            "alive": true,
+            "distanceFromSpawn": 0,
+            "progressTowardRiver": 0,
+            "progressPassed": false,
+            "present": true
+          },
+          {
+            "id": 14,
+            "team": "enemy",
+            "cardId": "twin_blades",
+            "deploymentTowerId": 6,
+            "requestedX": 8.5,
+            "requestedZ": -13.5,
+            "spawnX": 9.080193557708357,
+            "spawnZ": -13.891439083894713,
+            "radius": 0.36079999999999995,
+            "spawnTowerClearance": 0.000999999999999418,
+            "minimumStepTowerClearance": 0.000999999999999418,
+            "minimumSegmentTowerClearance": 0.000999999999999418,
+            "x": 9.080193557708357,
+            "z": -13.891439083894713,
+            "alive": true,
+            "distanceFromSpawn": 0,
+            "progressTowardRiver": 0,
+            "progressPassed": false,
+            "present": true
+          }
+        ],
+        "passed": true
+      }
+    },
+    {
+      "name": "tower133-after5",
+      "passed": true,
+      "png": {
+        "path": "Artifacts/QA/Visual/tower133-after5.png",
+        "sha256": "c452566f9177cdd97a4b86bbb4b669004c061d29121447318e25ded8be414544",
+        "bytes": 2506430
+      },
+      "state": "Artifacts/QA/Visual/tower133-after5.state.json",
+      "report": "Artifacts/QA/Visual/tower133-after5.json",
+      "processId": 8768,
+      "towerPathing": {
+        "schemaVersion": 1,
+        "route": "ordinary Match Spawn / fixed steps / live arena presentation",
+        "requestedAge": 5,
+        "sampledAge": 4.999999999999988,
+        "fixedSteps": 300,
+        "deploymentCount": 6,
+        "expectedUnitCount": 8,
+        "actualUnitCount": 8,
+        "towerNavigationPadding": 0.22,
+        "ordinarySpawnOnly": true,
+        "spawnTowerClearancePassed": true,
+        "allStepTowerClearancePassed": true,
+        "allContinuousSegmentTowerClearancePassed": true,
+        "progressRequired": true,
+        "progressPassed": true,
+        "towers": [
+          {
+            "id": 1,
+            "team": "player",
+            "kind": "core",
+            "lane": 0,
+            "x": 0,
+            "z": 16.3,
+            "radius": 1.35
+          },
+          {
+            "id": 2,
+            "team": "player",
+            "kind": "guard",
+            "lane": -1,
+            "x": -8.2,
+            "z": 12.4,
+            "radius": 1.15
+          },
+          {
+            "id": 3,
+            "team": "player",
+            "kind": "guard",
+            "lane": 1,
+            "x": 8.2,
+            "z": 12.4,
+            "radius": 1.15
+          },
+          {
+            "id": 4,
+            "team": "enemy",
+            "kind": "core",
+            "lane": 0,
+            "x": 0,
+            "z": -16.3,
+            "radius": 1.35
+          },
+          {
+            "id": 5,
+            "team": "enemy",
+            "kind": "guard",
+            "lane": -1,
+            "x": -8.2,
+            "z": -12.4,
+            "radius": 1.15
+          },
+          {
+            "id": 6,
+            "team": "enemy",
+            "kind": "guard",
+            "lane": 1,
+            "x": 8.2,
+            "z": -12.4,
+            "radius": 1.15
+          }
+        ],
+        "units": [
+          {
+            "id": 7,
+            "team": "player",
+            "cardId": "ironclad",
+            "deploymentTowerId": 1,
+            "requestedX": 0.5,
+            "requestedZ": 17.5,
+            "spawnX": 0.7734615384615392,
+            "spawnZ": 18.156307692307692,
+            "radius": 0.44,
+            "spawnTowerClearance": 0.000999999999999196,
+            "minimumStepTowerClearance": 0.000999999999999196,
+            "minimumSegmentTowerClearance": 0.000999999999999196,
+            "x": 2.9748185853681335,
+            "z": 9.048527620966722,
+            "alive": true,
+            "distanceFromSpawn": 9.370038990093962,
+            "progressTowardRiver": 9.10778007134097,
+            "progressPassed": true,
+            "present": true
+          },
+          {
+            "id": 8,
+            "team": "player",
+            "cardId": "boulderback",
+            "deploymentTowerId": 2,
+            "requestedX": -8.5,
+            "requestedZ": 13.5,
+            "spawnX": -8.701975386770187,
+            "spawnZ": 14.240576418157346,
+            "radius": 0.5367999999999999,
+            "spawnTowerClearance": 0.0010000000000009723,
+            "minimumStepTowerClearance": 0.0010000000000009723,
+            "minimumSegmentTowerClearance": 0.0010000000000009723,
+            "x": -10.980417341992043,
+            "z": 10.089565994785524,
+            "alive": true,
+            "distanceFromSpawn": 4.735206994235491,
+            "progressTowardRiver": 4.151010423371822,
+            "progressPassed": true,
+            "present": true
+          },
+          {
+            "id": 9,
+            "team": "player",
+            "cardId": "twin_blades",
+            "deploymentTowerId": 3,
+            "requestedX": 8.5,
+            "requestedZ": 13.5,
+            "spawnX": 8.030477094148909,
+            "spawnZ": 14.123482876152764,
+            "radius": 0.36079999999999995,
+            "spawnTowerClearance": 0.0010000000000000842,
+            "minimumStepTowerClearance": 0.0010000000000000842,
+            "minimumSegmentTowerClearance": 0.0010000000000000842,
+            "x": 7.015179688661188,
+            "z": 0.294219726067761,
+            "alive": true,
+            "distanceFromSpawn": 13.866482902880927,
+            "progressTowardRiver": 13.829263150085003,
+            "progressPassed": true,
+            "present": true
+          },
+          {
+            "id": 10,
+            "team": "player",
+            "cardId": "twin_blades",
+            "deploymentTowerId": 3,
+            "requestedX": 8.5,
+            "requestedZ": 13.5,
+            "spawnX": 9.225357968333126,
+            "spawnZ": 13.795626123564533,
+            "radius": 0.36079999999999995,
+            "spawnTowerClearance": 0.0010000000000009723,
+            "minimumStepTowerClearance": 0.0010000000000009723,
+            "minimumSegmentTowerClearance": 0.0010000000000009723,
+            "x": 8.079102277972249,
+            "z": 0.720279101453452,
+            "alive": true,
+            "distanceFromSpawn": 13.125494347121323,
+            "progressTowardRiver": 13.075347022111082,
+            "progressPassed": true,
+            "present": true
+          },
+          {
+            "id": 11,
+            "team": "enemy",
+            "cardId": "ironclad",
+            "deploymentTowerId": 4,
+            "requestedX": 0.5,
+            "requestedZ": -17.5,
+            "spawnX": 0.7734615384615392,
+            "spawnZ": -18.156307692307692,
+            "radius": 0.44,
+            "spawnTowerClearance": 0.000999999999999196,
+            "minimumStepTowerClearance": 0.000999999999999196,
+            "minimumSegmentTowerClearance": 0.000999999999999196,
+            "x": 2.9748185853681335,
+            "z": -9.048527620966722,
+            "alive": true,
+            "distanceFromSpawn": 9.370038990093962,
+            "progressTowardRiver": 9.10778007134097,
+            "progressPassed": true,
+            "present": true
+          },
+          {
+            "id": 12,
+            "team": "enemy",
+            "cardId": "boulderback",
+            "deploymentTowerId": 5,
+            "requestedX": -8.5,
+            "requestedZ": -13.5,
+            "spawnX": -8.701975386770187,
+            "spawnZ": -14.240576418157346,
+            "radius": 0.5367999999999999,
+            "spawnTowerClearance": 0.0010000000000009723,
+            "minimumStepTowerClearance": 0.0010000000000009723,
+            "minimumSegmentTowerClearance": 0.0010000000000009723,
+            "x": -10.980417341992043,
+            "z": -10.089565994785524,
+            "alive": true,
+            "distanceFromSpawn": 4.735206994235491,
+            "progressTowardRiver": 4.151010423371822,
+            "progressPassed": true,
+            "present": true
+          },
+          {
+            "id": 13,
+            "team": "enemy",
+            "cardId": "twin_blades",
+            "deploymentTowerId": 6,
+            "requestedX": 8.5,
+            "requestedZ": -13.5,
+            "spawnX": 7.989514966374363,
+            "spawnZ": -14.118961107942706,
+            "radius": 0.36079999999999995,
+            "spawnTowerClearance": 0.0009999999999998621,
+            "minimumStepTowerClearance": 0.0009999999999998621,
+            "minimumSegmentTowerClearance": 0.0009999999999998621,
+            "x": 7.004810183074731,
+            "z": -0.35364204686387163,
+            "alive": true,
+            "distanceFromSpawn": 13.800494641988506,
+            "progressTowardRiver": 13.765319061078834,
+            "progressPassed": true,
+            "present": true
+          },
+          {
+            "id": 14,
+            "team": "enemy",
+            "cardId": "twin_blades",
+            "deploymentTowerId": 6,
+            "requestedX": 8.5,
+            "requestedZ": -13.5,
+            "spawnX": 9.080193557708357,
+            "spawnZ": -13.891439083894713,
+            "radius": 0.36079999999999995,
+            "spawnTowerClearance": 0.000999999999999418,
+            "minimumStepTowerClearance": 0.000999999999999418,
+            "minimumSegmentTowerClearance": 0.000999999999999418,
+            "x": 8.081371822252745,
+            "z": -0.8360978983574734,
+            "alive": true,
+            "distanceFromSpawn": 13.093493740404181,
+            "progressTowardRiver": 13.055341185537241,
+            "progressPassed": true,
+            "present": true
+          }
+        ],
+        "passed": true
+      }
+    }
+  ],
+  "physicalVisualReview": "Artifacts/QA/tower133-visual-review.json",
+  "meta": {
+    "navigationRevision": 2,
+    "games": 100,
+    "fingerprint": "6e74a0ba433dc47d8e8a2de834a3cad1",
+    "audit": "Docs/QA/tower-pathing-meta-100.json",
+    "runtime": {
+      "path": "Artifacts/QA/tower133-meta100/RuntimeProject/Binaries/Win64/UnrealEditor-RiftCrownArena.dll",
+      "sha256": "05b6a5eb2a58a00328595f8cb468e9104e3a8d2e76882836e2d1f400e7edb857",
+      "bytes": 2912768
+    },
+    "allSixAuthoritativeSourcesMatch": true,
+    "newCohortObserved": true
+  },
+  "beforeFix": {
+    "scope": "Development history only; six actual observations of units stuck on the previous navigation implementation",
+    "report": "Artifacts/QA/TowerPathing/before-fix-witness.json",
+    "baselineCommit": "e27e14fd9c631a6027cfde6826c8ff8407cd7b7f",
+    "cases": [
+      {
+        "team": "player",
+        "paid": true,
+        "startX": 0.5,
+        "startZ": 17.5,
+        "afterX": 0.5,
+        "afterZ": 17.5,
+        "delta": 0.0,
+        "seconds": 5,
+        "targetId": 6,
+        "pathPoints": 0
+      },
+      {
+        "team": "player",
+        "paid": true,
+        "startX": 0.5,
+        "startZ": 16.5,
+        "afterX": 0.5,
+        "afterZ": 16.5,
+        "delta": 0.0,
+        "seconds": 5,
+        "targetId": 6,
+        "pathPoints": 0
+      },
+      {
+        "team": "player",
+        "paid": true,
+        "startX": 8.5,
+        "startZ": 13.5,
+        "afterX": 8.5,
+        "afterZ": 13.5,
+        "delta": 0.0,
+        "seconds": 5,
+        "targetId": 6,
+        "pathPoints": 0
+      },
+      {
+        "team": "enemy",
+        "paid": true,
+        "startX": 0.5,
+        "startZ": -17.5,
+        "afterX": 0.5,
+        "afterZ": -17.5,
+        "delta": 0.0,
+        "seconds": 5,
+        "targetId": 3,
+        "pathPoints": 0
+      },
+      {
+        "team": "enemy",
+        "paid": true,
+        "startX": 0.5,
+        "startZ": -16.5,
+        "afterX": 0.5,
+        "afterZ": -16.5,
+        "delta": 0.0,
+        "seconds": 5,
+        "targetId": 3,
+        "pathPoints": 0
+      },
+      {
+        "team": "enemy",
+        "paid": true,
+        "startX": 8.5,
+        "startZ": -13.5,
+        "afterX": 8.5,
+        "afterZ": -13.5,
+        "delta": 0.0,
+        "seconds": 5,
+        "targetId": 3,
+        "pathPoints": 0
+      }
+    ],
+    "newRegressionRejectsOldImplementation": true
+  },
+  "windowsChecks": 51,
+  "windowsDelivery": {
+    "manifest": "Artifacts/Release/update-manifest.json",
+    "gameArchive": {
+      "path": "Artifacts/Release/RiftCrownArena-Windows-x64-1.3.3.zip",
+      "sha256": "51c79779a83eeb7849e78a6704b90de1306b89b5070a07d5c71c1378d24b31ea",
+      "bytes": 398003438
+    },
+    "installer": {
+      "path": "Artifacts/Release/RiftCrownArena-Setup.msi",
+      "sha256": "59ee636f7bf14ff6ac5289db83cc1ef0573051aab74ad43fc9081772229373f9",
+      "bytes": 383737856
+    },
+    "launcher": {
+      "path": "Artifacts/Release/RiftCrownLauncher.exe",
+      "sha256": "ca533a10c0c125a8ef3f172aa54ea5afdaec0bd9f03fd8d4ce581306e6624215",
+      "bytes": 161820808
+    }
+  },
+  "inputs": [
+    {
+      "path": "Artifacts/QA/app-local-runtime.json",
+      "sha256": "b7c8b0d7b97d096f68b49a0e5bc7ba79387ea92a6a1ee17884d00b94c434b544",
+      "bytes": 6106
+    },
+    {
+      "path": "Artifacts/QA/installer-build.json",
+      "sha256": "aea94ce6b1207e7e88eedc0edee8bc23a59e64c55eb323764a54e129fd450541",
+      "bytes": 933
+    },
+    {
+      "path": "Artifacts/QA/installer-tests.json",
+      "sha256": "2c19da1a01c0c3c29af4af1204d01b70e738f2415d3162154274366e71f16539",
+      "bytes": 5329
+    },
+    {
+      "path": "Artifacts/QA/launcher-play-smoke.json",
+      "sha256": "c23383cef7517fc2171d7ebe9a3ee3809a89baf24eba5f55388d8c35dbc23bc4",
+      "bytes": 2104
+    },
+    {
+      "path": "Artifacts/QA/tower133-meta100/context.json",
+      "sha256": "53947aa28bf2d92fc555e5afbc0eca737290866888cdbf95048de825449f7733",
+      "bytes": 1671
+    },
+    {
+      "path": "Artifacts/QA/tower133-meta100/engine.log",
+      "sha256": "2832aea96403d6e6ad50066ddf2bafd1a0f34325ad5ecca0384bd07ec03331b4",
+      "bytes": 185483
+    },
+    {
+      "path": "Artifacts/QA/tower133-meta100/run.json",
+      "sha256": "6f62b4295371508789ed8b7d1774f27f2818e5d19ac24121e2190408340ccf4e",
+      "bytes": 668
+    },
+    {
+      "path": "Artifacts/QA/tower133-meta100/UserData/meta-validation.json",
+      "sha256": "badeed2f5f97d0085f163ac5e32057adf21574d4ff941545e57c4d7044ddac00",
+      "bytes": 24359
+    },
+    {
+      "path": "Artifacts/QA/tower133-meta100/UserData/Meta/771A5B9D432AFAB44EDEFCB063DACF72.json",
+      "sha256": "1bde95bfcf0d49ebcd87531d288696a2c03a7550eb1d03159fa86e253842b8b5",
+      "bytes": 1849227
+    },
+    {
+      "path": "Artifacts/QA/tower133-visual-review.json",
+      "sha256": "24918b406b79284cd678e00263d113bcdfd96f240cec35293bbc7a0f4be36af1",
+      "bytes": 1792
+    },
+    {
+      "path": "Artifacts/QA/TowerPathing/baseline-regression-final-results.txt",
+      "sha256": "d4513369c4b0edc2fbbd595de094016684c5435010fd3397615090d879dc9446",
+      "bytes": 1704
+    },
+    {
+      "path": "Artifacts/QA/TowerPathing/BaselineSource/Private/RiftAI.cpp",
+      "sha256": "6c49f975df3c4256c0871bfef5ccb147255f5c0404ff1f56680cadc41937a538",
+      "bytes": 23188
+    },
+    {
+      "path": "Artifacts/QA/TowerPathing/BaselineSource/Private/RiftCombat.cpp",
+      "sha256": "3ce60d57341267ac5fc0afba01be33fa027262f66659fae7a13678505160ddaf",
+      "bytes": 13777
+    },
+    {
+      "path": "Artifacts/QA/TowerPathing/BaselineSource/Private/RiftDeckAnalysis.cpp",
+      "sha256": "07d7063f15a66338892ccc65e603caa859cccd2b3d22fcd4257719bd059e21b2",
+      "bytes": 28525
+    },
+    {
+      "path": "Artifacts/QA/TowerPathing/BaselineSource/Private/RiftPathfinding.cpp",
+      "sha256": "17dc4b4cccaf425f48134d907a22bff586b72332fa780832186be4555e3a6e17",
+      "bytes": 15558
+    },
+    {
+      "path": "Artifacts/QA/TowerPathing/BaselineSource/Private/RiftSimulation.cpp",
+      "sha256": "60b60bbe25c2cb59a01658b0c7aafd39f9c88720b6362ec32a64a23e09875884",
+      "bytes": 36852
+    },
+    {
+      "path": "Artifacts/QA/TowerPathing/BaselineSource/Public/Simulation/RiftSimulation.h",
+      "sha256": "c453c1e2022f2821b05b7bdfa5f2cde0fa474040f9a85edcf2cff30e67c13817",
+      "bytes": 10006
+    },
+    {
+      "path": "Artifacts/QA/TowerPathing/before-fix-bound-results.txt",
+      "sha256": "4b3602eff7160ed35ea527c2eb977f89bb14227139edb50357709681b5ad6a96",
+      "bytes": 878
+    },
+    {
+      "path": "Artifacts/QA/TowerPathing/before-fix-witness.json",
+      "sha256": "a63f3e026604a8d7cb97b0f35f74c1ce1326c90008f587a433b663d3728dbddb",
+      "bytes": 6964
+    },
+    {
+      "path": "Artifacts/QA/TowerPathing/BeforeFix.cpp",
+      "sha256": "242ec7662dadb66d507cbcb2caebd52ae22a14946b842d3d6eb97237388af957",
+      "bytes": 905
+    },
+    {
+      "path": "Artifacts/QA/TowerPathing/portable-final-before-source-pins.json",
+      "sha256": "086edb29e072ab62d940a96a93d06c85efc06d459c41927dfd5ca92e7c2ffacd",
+      "bytes": 2128
+    },
+    {
+      "path": "Artifacts/QA/TowerPathing/portable-tower-pathing-final.log",
+      "sha256": "11c5f3a0dad34cb25c0c17a2db3103103a714cd438af59608bd68fe57383c399",
+      "bytes": 3012
+    },
+    {
+      "path": "Artifacts/QA/TowerPathing/portable-verification.json",
+      "sha256": "87431b5221131e451b9ba3d5b90e74c6981546044d1d6f138b1818f5f32c7db9",
+      "bytes": 4253
+    },
+    {
+      "path": "Artifacts/QA/Visual/tower133-after5.json",
+      "sha256": "26e3916f8539f195a3b3706c6ef3c939fe0d1975c29b07da1da1d868cf516bd8",
+      "bytes": 29841
+    },
+    {
+      "path": "Artifacts/QA/Visual/tower133-after5.png",
+      "sha256": "c452566f9177cdd97a4b86bbb4b669004c061d29121447318e25ded8be414544",
+      "bytes": 2506430
+    },
+    {
+      "path": "Artifacts/QA/Visual/tower133-after5.state.json",
+      "sha256": "8acd28ba40289f48d33805e1d9cea7c08bf604893f47b95ef2c685180ecf782d",
+      "bytes": 23534
+    },
+    {
+      "path": "Artifacts/QA/Visual/tower133-initial.json",
+      "sha256": "7b088b610b0b1a24e95aad4a623ef06b2f5c5089b6ff4857c63010b0b58bac4b",
+      "bytes": 29860
+    },
+    {
+      "path": "Artifacts/QA/Visual/tower133-initial.png",
+      "sha256": "47b081d578e23ed5e9f9ab0ce36b0588370a938bb69a9d1d8852b350bca07338",
+      "bytes": 2487087
+    },
+    {
+      "path": "Artifacts/QA/Visual/tower133-initial.state.json",
+      "sha256": "de5cc8f5fa18188ce39164397aad9883944112b62a7cc7f63fe405752765ff53",
+      "bytes": 22988
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/tower133-after5-afe1d0c2876d4d7295b68dbefefa14fa/Diagnostics/RiftGame-2026-10-09-8768-20-41-07-0.log",
+      "sha256": "e4e28f876d89c6ab09afd0e5e0666ec3ca6fbc6280d7d9685fc2a318457de357",
+      "bytes": 2200
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/tower133-initial-f9b54950b99e40a3ad5e63345aa7cd29/Diagnostics/RiftGame-2026-10-09-4968-20-40-35-0.log",
+      "sha256": "cb53b7d44ee8443a41631a24a081826f8f27b75348c89f037b665abcbeb08c12",
+      "bytes": 2200
+    },
+    {
+      "path": "Artifacts/Release/update-manifest.json",
+      "sha256": "f6e1fe392174ad4a26eea119639ca1be115d8bdd2e1f8e09611379c59f719582",
+      "bytes": 9990
+    },
+    {
+      "path": "Artifacts/Release/windows-release-verification.json",
+      "sha256": "78d5f2aac0bb4855189ccbb0cba379a5d0e4dd5492c30364922256bca779ab1d",
+      "bytes": 1082
+    },
+    {
+      "path": "Build/Automation/20261009-163641/context.json",
+      "sha256": "5b8cd79deab31fbbca5d23ce6430daee4555f0b1a98b66183b896366411d43d6",
+      "bytes": 23760
+    },
+    {
+      "path": "Build/Automation/20261009-163641/Report/index.json",
+      "sha256": "228b360b5e8c471297f2e9627984198dab2c01d44057a68b005a73427926c68c",
+      "bytes": 8784
+    },
+    {
+      "path": "Build/Automation/20261009-163641/UnrealIntegration.log",
+      "sha256": "88734830f99f886c37be5c535899eb54abc2e7bbb956ca052cd275851fa6b2ef",
+      "bytes": 311226
+    },
+    {
+      "path": "Build/Capture-Unreal.ps1",
+      "sha256": "23a06370b97ebc6be4d1c01688205947cfa99a4901659983cfb9e4ccf4f878e3",
+      "bytes": 15726
+    },
+    {
+      "path": "Build/Curate-UnrealQA.ps1",
+      "sha256": "d85ad8c5796fc1ac6db56006d73fa07006f4db91392456f337007dbb56956ec3",
+      "bytes": 8579
+    },
+    {
+      "path": "Build/Package-HoverQAEvidence.ps1",
+      "sha256": "1d257f1fd100316dbf00816ade2355c19b5a560895c96522cb0c305282b71d5d",
+      "bytes": 25011
+    },
+    {
+      "path": "Build/Package-ModelInputQAEvidence.ps1",
+      "sha256": "11e49b8c6ca316f8600bb99517bf937d5b71ec4d7f4812a735ea387c430a0fe3",
+      "bytes": 52029
+    },
+    {
+      "path": "Build/Package-TowerPathingQAEvidence.ps1",
+      "sha256": "426fb8d7e6502a5a56055d3984b2d42a26cc1d415fb4524452fd2bdbc3963c61",
+      "bytes": 35891
+    },
+    {
+      "path": "Build/ShippingDiagnostics.ps1",
+      "sha256": "4f0d275ddc211931a82ad2cd8e645587e7d5016f488cddd6fdde8675ebc6c5ab",
+      "bytes": 6401
+    },
+    {
+      "path": "Build/Test-LauncherPlay.ps1",
+      "sha256": "369d178f82b7926f514c8a2194d8421f8f54c4aa5e6e14be313fd892e2e97e6e",
+      "bytes": 3387
+    },
+    {
+      "path": "Build/Test-Unreal.ps1",
+      "sha256": "435ba4c25486b49f0ac164f8cb49f857f1a8cf2c3985a5081a23afab4da57ec6",
+      "bytes": 5277
+    },
+    {
+      "path": "Build/Tests/Audit-NativeMeta.py",
+      "sha256": "3cfade766c6427f383560ee0b72423a3aebcff4a2baee2788b38299cffb3a2ea",
+      "bytes": 27644
+    },
+    {
+      "path": "Build/Tests/RiftSimulationTests.cpp",
+      "sha256": "e1ed29a969ca77ea9d2b2f071e23bf7000c98a907e33fd5438658773cf93d551",
+      "bytes": 65744
+    },
+    {
+      "path": "Build/Tests/Run-NativeSimulationTests.ps1",
+      "sha256": "ed1248381d6e978597b70740d659026a22086f1ad7db8a1ccc97fa3409400959",
+      "bytes": 1730
+    },
+    {
+      "path": "Build/Validate-NativeMeta.ps1",
+      "sha256": "53ae1898cfbb0e2a2bf158375b71c41e67a462d74a63affe5c8a2a401dc9e30a",
+      "bytes": 4700
+    },
+    {
+      "path": "Docs/PATCH_NOTES_1.3.3.md",
+      "sha256": "5c412597994ec0583fb4239a70ec2e3717ed92e409b98af43123c90cf131e607",
+      "bytes": 570
+    },
+    {
+      "path": "Docs/QA/audio-hotfix-1.3.2.json",
+      "sha256": "71e16b391f179d7ff227ad5ae9dca892b1ca30240f006f2311c75eb480178fdc",
+      "bytes": 40856
+    },
+    {
+      "path": "Docs/QA/native-integration.json",
+      "sha256": "3efd7dc29e943241690a81e80b0d282749273dde58da70d8c8ab704f4fa90c32",
+      "bytes": 35750
+    },
+    {
+      "path": "Docs/QA/tower-pathing-first-failed-native-1.3.3.json",
+      "sha256": "c4c30314b405fca2394b96471ebca45a90661f2a7f100694a643be4c036f324e",
+      "bytes": 11451
+    },
+    {
+      "path": "Docs/QA/tower-pathing-meta-100.json",
+      "sha256": "b5395be8df4ff4d33094d1c28cb000801ee55969c92373f19b56296b33ad96dc",
+      "bytes": 10701
+    },
+    {
+      "path": "Installer/Test-Installer.ps1",
+      "sha256": "602e4f70e6f2cecac358422b820cd86520369c79dc60260481f1942d01f5d103",
+      "bytes": 23380
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Config/DefaultEngine.ini",
+      "sha256": "d203dc05bd1a8d857f7773eb44529ce45637647a5d5638f52b4e9ee21ffec885",
+      "bytes": 1379
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Config/DefaultGame.ini",
+      "sha256": "d8835c0ad0217cbd8cf4151ee27176ab5df9e5099c5e459913a00b070981b7d4",
+      "bytes": 808
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Config/DefaultInput.ini",
+      "sha256": "40f9320c2416a85aa30c765ce1d9c62b45c6a9ad52ef998d102f05b8819679fd",
+      "bytes": 9535
+    },
+    {
+      "path": "Unreal/RiftCrownArena/RiftCrownArena.uproject",
+      "sha256": "39fc040329e6d46e5087c74c0765c626ac16940daee8e662f67b7b2033acda4b",
+      "bytes": 745
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena.Target.cs",
+      "sha256": "283ee32c736fcdae9c0bf3f9c5fe8f26f5261a827db4db5a12a740a8138d5e17",
+      "bytes": 493
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftArenaPresentation.cpp",
+      "sha256": "3324311b48e533f80e314a71f854b7b3deabb2389cfe25cbd2d931c9cc634279",
+      "bytes": 76823
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftBattleAudioSubsystem.cpp",
+      "sha256": "a8fbfc90918a98c64ad16731236422a7194d530d034cd0201eeb7c32b135093b",
+      "bytes": 36127
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftBattleOverlay.cpp",
+      "sha256": "fedfb7b1c4ed6c559a5256f83d517a4278a21739ae964f05f9bcf50e63e8230e",
+      "bytes": 15671
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftTrainingOverlay.cpp",
+      "sha256": "27bf6b4160405cc89ddc38329b4723108b018d35e16e421022a18d52e63d658d",
+      "bytes": 5980
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftUnitVisual.cpp",
+      "sha256": "7066f3c77e4c43b74574f201c6417919db54ead28be92a74308788315156daa4",
+      "bytes": 24111
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftAssetLibrary.cpp",
+      "sha256": "d9e2f4bdad16de3302a16b330fb25356f738ea100a224a76041cee2b8f8b9160",
+      "bytes": 3046
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftBattleHUD.cpp",
+      "sha256": "709890574f78de35cd9a736be0ddf72b75a5a65bd7f2afc7f7cfce47fdba5c18",
+      "bytes": 24103
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftCollectionUI.cpp",
+      "sha256": "5ae7dc27b009a84032a7cfd9812b1295bee4303b17946d2b7e3f3b8764bf5c34",
+      "bytes": 18113
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftCrownArena.cpp",
+      "sha256": "b3cecae7f7bcb962f9e9729951b2c79b56aad833b7fde79dba1a6e209188e90e",
+      "bytes": 124
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftDiagnostics.cpp",
+      "sha256": "bdfd03a5c9b8f31098ebf73f62a81f12bffcbd6a05ccfd559461585d85b851d4",
+      "bytes": 4750
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftFieldManual.cpp",
+      "sha256": "1cbe10cabedf5825118d9d0f7dffdb07ebdf62eb9bc0d4606f9246fc7b7c2bde",
+      "bytes": 8689
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftGameMode.cpp",
+      "sha256": "a887bb774eab60066966fecd27bf7feea9db110da07c60ec03bfde757b3fa208",
+      "bytes": 70724
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftHandButton.cpp",
+      "sha256": "b4f6815780b662b5a8950c7831c5e709d92862622f5276b6d1d35480959c059a",
+      "bytes": 4962
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftMatchSubsystem.cpp",
+      "sha256": "c0b89ba7cf16641b546078d86a6fb9ec90ac478ad7ce23898ce29282a182bc44",
+      "bytes": 9768
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftMetaSimulationSubsystem.cpp",
+      "sha256": "f4ef2fc2f3259926230eb197f686f355fe827221f7a63956fbdcbdf4337079d6",
+      "bytes": 46287
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftPerformanceCapture.cpp",
+      "sha256": "9e287a28260f6ae5a7cbca3995a2e28e12181b0fd4747c1707038e5628b19e33",
+      "bytes": 7292
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftProfileSubsystem.cpp",
+      "sha256": "306fb84b2f7ec1e8ea8e62892e1d38a7669577c04d4d9d52c3ca7f348d9c9403",
+      "bytes": 22175
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftReplaySubsystem.cpp",
+      "sha256": "5a0af0575622942c43e876f5e974de3130784803f04e91e7f4388f459f8a957d",
+      "bytes": 60365
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftReplayUI.cpp",
+      "sha256": "77199b01e7db0e8108f94347d4a7b39a7b257cec9c7dc719b59f20e0616812d6",
+      "bytes": 30477
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftTrainingPanel.cpp",
+      "sha256": "f24527c664a3108d500fed5cf4722845f37e0cd1bbdb31009f6aa2bf9d88d49c",
+      "bytes": 9350
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftTypography.cpp",
+      "sha256": "8d6f45373e0991955576bace26dad66a19ffabd1aa6090da76aa2ff6f52215d2",
+      "bytes": 1761
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftUIPrimitives.cpp",
+      "sha256": "cb653a1e9de5ede6bedf1ce4834f65d29df84e328afb11ba9d35aa8750e32179",
+      "bytes": 3237
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftUIWidget.cpp",
+      "sha256": "24486e28b4d6bf9a2c8f88d2597df6345ccda9b7b2a5347c36860f018fc96cbb",
+      "bytes": 64227
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftAI.cpp",
+      "sha256": "6c49f975df3c4256c0871bfef5ccb147255f5c0404ff1f56680cadc41937a538",
+      "bytes": 23188
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftCombat.cpp",
+      "sha256": "3ce60d57341267ac5fc0afba01be33fa027262f66659fae7a13678505160ddaf",
+      "bytes": 13777
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftDeckAnalysis.cpp",
+      "sha256": "07d7063f15a66338892ccc65e603caa859cccd2b3d22fcd4257719bd059e21b2",
+      "bytes": 28525
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftPathfinding.cpp",
+      "sha256": "80ed3d77b6a1415fbabbd4a0684ecc4c7876cde3db8e925800e3736ad2a44fb8",
+      "bytes": 22353
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftSimulation.cpp",
+      "sha256": "2631f53a6ffacfaec7ee628a48e3a278bd995cc5546f0736cb79b4a65fdb17c5",
+      "bytes": 37139
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftBattleInputTests.cpp",
+      "sha256": "4fbe27a4a7f8ef9659c5d78a4d1e16e41af3a6c7858e6f5646331b6126db96dd",
+      "bytes": 17467
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftCardDragSmoke.cpp",
+      "sha256": "c7566d8e47c5f5cde97c4bbcc7f1b071d12307da91665e81f4273a19be3edaba",
+      "bytes": 21642
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftIntegrationTests.cpp",
+      "sha256": "f5b98d33e56f62a09c4e240ff8c2c65eb2af81e34bd5863d8b0350eabfe64482",
+      "bytes": 81739
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftPresentationTests.cpp",
+      "sha256": "d027b77d9a0bf3269930a15b101fba78703221d65eb23ca730e5391994507913",
+      "bytes": 10525
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftProjectilePresentationTests.cpp",
+      "sha256": "4768c7e3a0cd25cc7d13a8781c15fc0f5c72cde625d0d25c871601f5564c0018",
+      "bytes": 3482
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftTowerPathingTests.cpp",
+      "sha256": "7d03ffc60a123bd4ed1da77f2d28fdeef8ac774ab0a1fc360e0138ad5978d28c",
+      "bytes": 14542
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftTypographyTests.cpp",
+      "sha256": "cfe1166bf1f92b5bc198078c316c7c741ce831fc0449d45b982beba0530921de",
+      "bytes": 5577
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftUnitMotionTests.cpp",
+      "sha256": "0d7a64b34e82ef082eedd1074473f59293c0db4e8f6838847e2a8f7fda764d24",
+      "bytes": 23139
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftArenaPresentation.h",
+      "sha256": "a9c31fe9d1c7747c64c34cab6d39d0ff6ae92437f3b0b024a53ef46bdacba448",
+      "bytes": 6633
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleAudioSubsystem.h",
+      "sha256": "bf05929b4797a3dc30f2a9fabb3aa5b84416c5ad2d52a509ddd6e48e2e761588",
+      "bytes": 2102
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleLayout.h",
+      "sha256": "0d953944dccba5ffdd20cea601240a157769de54c929ba804fcef12f0ec4dd27",
+      "bytes": 799
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleOverlay.h",
+      "sha256": "ecc4bbd6d9a9a9e2729e51eaaa4fb64f5ea1ab712d6c44a389686876bb57187d",
+      "bytes": 1025
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftUnitVisual.h",
+      "sha256": "c8099aa871bdeb1f5ee9768360759f53031654d3070b0cccfda2acd62ec3a4ff",
+      "bytes": 4020
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftAssetLibrary.h",
+      "sha256": "8cfcb77f51d477773e87d37cff482542072825be38c95ea6ab43118dfc50e80b",
+      "bytes": 735
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftCardData.h",
+      "sha256": "b8956971c1192e714541db8ef11aac3501ba563df7d1752660414c7a9b86958e",
+      "bytes": 3451
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftDiagnostics.h",
+      "sha256": "93d91726c726127c03b310972a8482906dc45ec9936cc48adab01599f7750b42",
+      "bytes": 522
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftGameMode.h",
+      "sha256": "f66c2caef75a5d1f138d1c33f49c845fa77f76bbaa33bdd42bc8c1b5a5a1268e",
+      "bytes": 2999
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftHandButton.h",
+      "sha256": "4ba3b6c2c352b8ebdc399cab258bdd26f0cecc8bfb2421edbfd2866a22e4488d",
+      "bytes": 604
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftMatchSubsystem.h",
+      "sha256": "bd67f6f1dba4ab9199407a938258cd611748b8c97db898f2429d13fb93ac0c44",
+      "bytes": 3623
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftMetaSimulationSubsystem.h",
+      "sha256": "1b9a568b334ce2c0f57c891129a1f1d13cd3e00db5f7437efec6749e3295df3f",
+      "bytes": 2616
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftPerformanceCapture.h",
+      "sha256": "7962fa18d55571a6ac0b94c07eb17ff4b225472af687a898dd93ebe28879ec3c",
+      "bytes": 943
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftProfileSubsystem.h",
+      "sha256": "9a94ff3fb118194b4c296187b47e0f42bc1fae2d8d4187c58e1fb38ee9f22af6",
+      "bytes": 4074
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftReplaySubsystem.h",
+      "sha256": "35c7fa47599a4b132d58b4cdc619af1bdf818a86e1ec81806c866cb2c816e7ff",
+      "bytes": 3628
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftTypography.h",
+      "sha256": "7cac7b91d1224aea7555b932c24635ba369c3aae1209782e05f2c13f6119f840",
+      "bytes": 381
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftUIPrimitives.h",
+      "sha256": "93e9c0253a03efd8b64ccbf3bb8003c19cfb94e83edc660e56a844c6dcb101e4",
+      "bytes": 1198
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftUIWidget.h",
+      "sha256": "f4e0ad5ddfdede41af7d04143a8916b5f2a32ac599f6a16a03af338ee71652bf",
+      "bytes": 8951
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Simulation/RiftSimulation.h",
+      "sha256": "f1b44e26dc32984fd4a06dd8dc37df3d05427e0bb3fd0a36e4777c4cea15163e",
+      "bytes": 10265
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/RiftCrownArena.Build.cs",
+      "sha256": "2f629214df393aa0a385784eb9a752d1e47c9803f471ed69d7107f8a4e7866a3",
+      "bytes": 860
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor.Target.cs",
+      "sha256": "d8cad02a8fb12c7d19cb31a6da6ef8b7aa872415bf9860e7146541238b277e95",
+      "bytes": 417
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Private/RiftCrownArenaEditor.cpp",
+      "sha256": "487f1f731292b9b76e5e77d85ba045cac11b2045579faa5c421f57f682125e28",
+      "bytes": 95
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Private/RiftEditorAssetLibrary.cpp",
+      "sha256": "ee275b194bb70a1e77d0a1730b2caa0143f1f87697e48ce8515365e8ed85cc09",
+      "bytes": 15854
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Public/RiftEditorAssetLibrary.h",
+      "sha256": "3ed46978d15e2f9b279601a6e5339f1e89e983cb75dfa173e6410c75dfb5c372",
+      "bytes": 814
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/RiftCrownArenaEditor.Build.cs",
+      "sha256": "7f5d7d8cc4cda35f3d38ddce7d82e00f4d28cfac4c42d6c44be1eb146b954a2f",
+      "bytes": 517
+    }
+  ],
+  "historicalAudio": {
+    "version": "1.3.2",
+    "checksPerRun": 61,
+    "runtimeSourceUnchanged": true,
+    "newAudioRun": false
+  },
+  "newModelArtAuditRun": false,
+  "publicDelivery": "Pending publication. Anonymous download and published update checks are separate postpublication evidence."
+}

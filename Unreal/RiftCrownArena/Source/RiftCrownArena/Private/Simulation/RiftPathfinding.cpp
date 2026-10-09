@@ -14,6 +14,45 @@ double D(Vec2 a, Vec2 b) {
 double Clamp(double v, double a, double b) {
     return std::max(a, std::min(b, v));
 }
+double SegmentDistanceSquared(Vec2 from, Vec2 to, Vec2 point) {
+    const double dx = to.x - from.x, dz = to.z - from.z;
+    const double lengthSquared = dx * dx + dz * dz;
+    const double along = lengthSquared > 1e-12
+                             ? Clamp(((point.x - from.x) * dx + (point.z - from.z) * dz) /
+                                         lengthSquared, 0., 1.)
+                             : 0.;
+    const double x = from.x + dx * along - point.x, z = from.z + dz * along - point.z;
+    return x * x + z * z;
+}
+bool ArenaSegmentValid(Vec2 from, Vec2 to, double radius, int bridge) {
+    const double edge = .40 + radius * .72;
+    if (std::abs(from.x) > 14 - edge || std::abs(from.z) > 21 - edge ||
+        std::abs(to.x) > 14 - edge || std::abs(to.z) > 21 - edge)
+        return false;
+    // A segment is legal through the river only if the whole part inside its
+    // banks stays on one bridge, including off-grid entry and exit points.
+    constexpr double Bank = 1.65 + .28;
+    const double dz = to.z - from.z;
+    double enter = 0., leave = 1.;
+    if (std::abs(dz) < 1e-12) {
+        if (std::abs(from.z) >= Bank)
+            return true;
+    } else {
+        const double a = (-Bank - from.z) / dz, b = (Bank - from.z) / dz;
+        enter = std::max(0., std::min(a, b));
+        leave = std::min(1., std::max(a, b));
+        if (enter >= leave)
+            return true;
+    }
+    const double half = std::max(.34, 2.1 - .16 - radius * .92);
+    const double x1 = from.x + (to.x - from.x) * enter,
+                 x2 = from.x + (to.x - from.x) * leave;
+    for (int lane : {-1, 1})
+        if ((!bridge || bridge == lane) && std::abs(x1 - lane * 7.2) <= half &&
+            std::abs(x2 - lane * 7.2) <= half)
+            return true;
+    return false;
+}
 struct Cell {
     int x = 0, z = 0;
     bool operator==(const Cell &b) const {
@@ -49,6 +88,71 @@ bool Match::NavValid(Vec2 p, const Entity &s, EntityId goal, int bridge) const {
             D(p, e.position) < e.radius + s.radius + .22)
             return false;
     return true;
+}
+bool Match::NavSegmentValid(Vec2 from, Vec2 to, const Entity &s, EntityId goal, int bridge) const {
+    if (!ArenaSegmentValid(from, to, s.radius, bridge))
+        return false;
+    for (const auto &e : state_.entities)
+        if (!e.dead && e.kind != EntityKind::Troop && e.id != goal && e.id != s.id) {
+            const double clearance = e.radius + s.radius + .22;
+            if (SegmentDistanceSquared(from, to, e.position) < clearance * clearance)
+                return false;
+        }
+    return true;
+}
+Vec2 Match::ResolveGroundPlacement(Vec2 p, const Entity &s, bool sandbox, EntityId goal,
+                                   int bridge) const {
+    if (NavValid(p, s, goal, bridge))
+        return p;
+    bool insideStructure = false;
+    for (const auto &e : state_.entities)
+        if (!e.dead && e.kind != EntityKind::Troop && e.id != goal && e.id != s.id &&
+            D(p, e.position) < e.radius + s.radius + .22) {
+            insideStructure = true;
+            break;
+        }
+    // DEV spawns deliberately permit river/edge fixtures. Paid members must
+    // also start inside radius-aware bounds rather than snap inward on tick one.
+    if (!insideStructure && sandbox)
+        return p;
+    const Card *card = FindCard(s.cardId);
+    Vec2 best = p;
+    double bestDistance = std::numeric_limits<double>::infinity();
+    auto consider = [&](Vec2 point) {
+        const double dx = point.x - p.x, dz = point.z - p.z;
+        const double distance = dx * dx + dz * dz;
+        if (distance + 1e-10 < bestDistance && NavValid(point, s, goal, bridge) &&
+            (sandbox || (card && CanPlace(s.team, *card, point)))) {
+            best = point;
+            bestDistance = distance;
+        }
+    };
+    const double edge = .40 + s.radius * .72 + .001;
+    consider({Clamp(p.x, -14 + edge, 14 - edge), Clamp(p.z, -21 + edge, 21 - edge)});
+    if (!insideStructure && std::isfinite(bestDistance))
+        return best;
+    const double forward = std::atan2(s.facing.z, s.facing.x);
+    constexpr double Tau = 6.28318530717958647692;
+    for (const auto &e : state_.entities)
+        if (!e.dead && e.kind != EntityKind::Troop && e.id != goal && e.id != s.id) {
+            const double clearance = e.radius + s.radius + .22 + .001;
+            const double angle = D(p, e.position) > 1e-9
+                                     ? std::atan2(p.z - e.position.z, p.x - e.position.x)
+                                     : forward;
+            consider({e.position.x + std::cos(angle) * clearance,
+                      e.position.z + std::sin(angle) * clearance});
+            for (int n = 0; n < 64; ++n) {
+                const double bearing = forward + n * Tau / 64.;
+                consider({e.position.x + std::cos(bearing) * clearance,
+                          e.position.z + std::sin(bearing) * clearance});
+            }
+        }
+    // Bounded fallback also handles edge/river DEV placements and intersecting
+    // footprints. It runs only for a blocked member, never during ordinary walks.
+    for (int z = -20; z <= 20; ++z)
+        for (int x = -13; x <= 13; ++x)
+            consider({static_cast<double>(x), static_cast<double>(z)});
+    return best;
 }
 std::vector<Vec2> Match::FindPath(const Entity &s, const Entity &t, int bridge) const {
     if (s.flying)
@@ -103,6 +207,14 @@ std::vector<Vec2> Match::FindPath(const Entity &s, const Entity &t, int bridge) 
     auto valid = [&](Cell c) {
         return c.x >= -14 && c.x <= 14 && c.z >= -21 && c.z <= 21 && walkable[index(c)] != 0;
     };
+    auto segmentValid = [&](Vec2 from, Vec2 to) {
+        if (!ArenaSegmentValid(from, to, s.radius, bridge))
+            return false;
+        for (const auto &o : obstacles)
+            if (SegmentDistanceSquared(from, to, o.position) < o.clearanceSquared)
+                return false;
+        return true;
+    };
     std::array<double, 2> congestion{};
     for (const auto &other : state_.entities)
         if (!other.dead && !other.flying && other.kind == EntityKind::Troop && other.team == s.team &&
@@ -112,10 +224,29 @@ std::vector<Vec2> Match::FindPath(const Entity &s, const Entity &t, int bridge) 
                     congestion[lane < 0 ? 0 : 1] += std::min(.34, .10 + std::max(.7, other.radius) * .07);
     for (auto &cost : congestion)
         cost = std::min(1.35, cost);
-    const Cell start = Grid(s.position);
+    Cell start = Grid(s.position);
     Cell goal = Grid(t.position);
     if (start.x < -14 || start.x > 14 || start.z < -21 || start.z > 21)
         return {};
+    // A legal continuous position can round into a blocked cell. Connect to an
+    // actually visible legal node rather than routing out of a blocked start or
+    // cutting a tower corner from the half-tile deployment position.
+    if (!valid(start) || !segmentValid(s.position, Point(start))) {
+        double best = std::numeric_limits<double>::infinity();
+        bool found = false;
+        for (int z = -21; z <= 21; ++z)
+            for (int x = -14; x <= 14; ++x) {
+                Cell candidate{x, z};
+                const double distance = D(s.position, Point(candidate));
+                if (distance < best && valid(candidate) && segmentValid(s.position, Point(candidate))) {
+                    best = distance;
+                    start = candidate;
+                    found = true;
+                }
+            }
+        if (!found)
+            return {};
+    }
     if (!valid(goal)) {
         const Cell raw = goal;
         bool found = false;
@@ -174,7 +305,10 @@ std::vector<Vec2> Match::FindPath(const Entity &s, const Entity &t, int bridge) 
                 }
                 path.push_back(Point(cells[i]));
             }
-            if (NavValid(t.position, s, t.id, bridge) && (path.empty() || D(path.back(), t.position) > .01))
+            if (!path.empty() && !segmentValid(s.position, path.front()))
+                path.insert(path.begin(), Point(start));
+            if (segmentValid(path.empty() ? s.position : path.back(), t.position) &&
+                (path.empty() || D(path.back(), t.position) > .01))
                 path.push_back(t.position);
             return path;
         }
@@ -186,6 +320,8 @@ std::vector<Vec2> Match::FindPath(const Entity &s, const Entity &t, int bridge) 
                 if (!valid(n) || closed[index(n)])
                     continue;
                 if (dx && dz && (!valid({e.c.x + dx, e.c.z}) || !valid({e.c.x, e.c.z + dz})))
+                    continue;
+                if (!segmentValid(Point(e.c), Point(n)))
                     continue;
                 const double traffic = std::abs(n.z) <= 3 ? congestion[n.x < 0 ? 0 : 1] : 0;
                 double g = e.g + (dx && dz ? 1.4142135623730951 : 1) + traffic;
@@ -215,6 +351,11 @@ void Match::Move(Entity &s, const Entity &t, double dt) {
             s.facing = {d.x / distance, d.z / distance};
         }
     } else {
+        if (!NavValid(s.position, s, t.id, s.bridge)) {
+            s.position = ResolveGroundPlacement(s.position, s, true, t.id, s.bridge);
+            s.path.clear();
+            s.repathClock = 0;
+        }
         const bool crossing = s.position.z * t.position.z < 0;
         const bool targetChanged = D(s.pathTarget, t.position) > 1.05;
         if (s.bridge && std::abs(s.position.z) > 1.65 + .92 + .12 && !crossing)
@@ -257,7 +398,8 @@ void Match::Move(Entity &s, const Entity &t, double dt) {
                           {x, direction * (1.65 + .18)},  {x, direction * (1.65 + .92)},  t.position};
             }
         }
-        while (!s.path.empty() && D(s.position, s.path.front()) < .34)
+        while (!s.path.empty() && D(s.position, s.path.front()) < .34 &&
+               (s.path.size() == 1 || NavSegmentValid(s.position, s.path[1], s, t.id, s.bridge)))
             s.path.erase(s.path.begin());
         if (!s.path.empty()) {
             Vec2 d{s.path.front().x - s.position.x, s.path.front().z - s.position.z};
@@ -265,7 +407,7 @@ void Match::Move(Entity &s, const Entity &t, double dt) {
             if (distance > 1e-9) {
                 Vec2 next{s.position.x + d.x / distance * std::min(step, distance),
                           s.position.z + d.z / distance * std::min(step, distance)};
-                if (NavValid(next, s, t.id, s.bridge)) {
+                if (NavSegmentValid(s.position, next, s, t.id, s.bridge)) {
                     s.position = next;
                     s.facing = {d.x / distance, d.z / distance};
                 } else {
@@ -308,7 +450,7 @@ void Match::Move(Entity &s, const Entity &t, double dt) {
             push.z *= dt * (onBridge ? .8 : 2.1) / overlapping;
         }
         Vec2 separated{s.position.x + push.x, s.position.z + push.z};
-        if (NavValid(separated, s, t.id, s.bridge))
+        if (NavSegmentValid(s.position, separated, s, t.id, s.bridge))
             s.position = separated;
         if (std::abs(s.position.z) < 1.65 + .28) {
             const int lane = s.bridge ? s.bridge : (s.position.x < 0 ? -1 : 1);
@@ -337,7 +479,7 @@ void Match::Move(Entity &s, const Entity &t, double dt) {
                     for (Vec2 probe : {Vec2{forward.x, forward.z}, Vec2{-forward.z, forward.x},
                                        Vec2{forward.z, -forward.x}}) {
                         Vec2 p{s.position.x + probe.x * .22, s.position.z + probe.z * .22};
-                        if (NavValid(p, s, t.id, s.bridge)) {
+                        if (NavSegmentValid(s.position, p, s, t.id, s.bridge)) {
                             s.position.x += probe.x * .14;
                             s.position.z += probe.z * .14;
                             break;
