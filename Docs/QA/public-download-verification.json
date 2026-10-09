@@ -1,25 +1,28 @@
 {
   "schema": 1,
-  "version": "1.1.0",
+  "version": "1.2.0",
   "passed": true,
-  "utc": "2026-10-09T03:51:23.0221252Z",
+  "utc": "2026-10-09T16:23:48.0482833Z",
   "files": [
     {
-      "file": "RiftCrownArena-Windows-x64-1.1.0.zip",
-      "url": "https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.1.0/RiftCrownArena-Windows-x64-1.1.0.zip",
-      "bytes": 448655642,
-      "sha256": "fc32c6add036ee0c4baaf2656bfb599642fed05028231e17da197db92555c5f2",
+      "file": "RiftCrownArena-Windows-x64-1.2.0.zip",
+      "url": "https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.2.0/RiftCrownArena-Windows-x64-1.2.0.zip",
+      "bytes": 396373442,
+      "sha256": "63d02e6f3de1a535e9563691724c1e0ccf0dfacc6eaf86472b569c2326431e0b",
       "matchesTestedPayload": true,
       "anonymousHttpsDownload": true
     },
     {
       "file": "RiftCrownArena-Setup.msi",
-      "url": "https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.1.0/RiftCrownArena-Setup.msi",
-      "bytes": 429428840,
-      "sha256": "ed7244eb6909f8a9529eb1d5da0cb1fc1fe2a37f7175fe9cf74e5446cf663491",
+      "url": "https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.2.0/RiftCrownArena-Setup.msi",
+      "bytes": 382181376,
+      "sha256": "77efc44db0ca00ce9ad874437baabb833fdfeb4be815c707d60f7b2099f8e768",
       "matchesTestedPayload": true,
       "anonymousHttpsDownload": true
     }
   ],
-  "scope": "Fresh anonymous downloads of the complete public game ZIP and MSI, compared byte-for-byte by size and SHA-256 to the exact locally tested release."
+  "localManifestSha256": "8a41cb77687d5d16ceba668e1166e12d05f33cb35711a23dc952685720600693",
+  "localReleaseVerificationSha256": "86db4abee18467e439879eb5fc9f230afd966dd8b315bc0520182ec58e48534b",
+  "rawPublishedUpdateCheckSha256": "76c2ad5dd8de9e20fbbf18509be32e8da080d24d7624b4956f31e26651be776a",
+  "scope": "Fresh anonymous downloads of the complete public game ZIP and MSI, compared by byte count and SHA-256 to the exact locally tested release; actual final WPF CheckButton.Click separately matched the default latest HTTPS manifest without installing or downloading the game."
 }
