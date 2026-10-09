@@ -3,6 +3,14 @@
 Original Windows card battler: fourteen cards, two lanes, deterministic combat,
 seven AI personalities, deck workshop, Meta Lab, replays and developer training.
 
+The 1.3.0 update revises every card model and its production-rendered portrait,
+fits equipment around the character's actual hand and armor layers, and bundles
+Barlow Semi Condensed for the interface. Cards support captured mouse dragging:
+release in a legal arena position to deploy, or return to the hand to cancel
+without spending Aether. The main interface layout is retained. See
+[the update notes](Docs/PATCH_NOTES_1.3.0.md) and
+[model, typography and input details](Docs/MODEL_INPUT_1.3.0.md).
+
 The 1.2.1 spell update gives Meteor Shards a 0.75-second fall and Bullet Burst
 a 0.30-second flight before damage. Both hit enemies at their impact-time
 positions in the chosen area. See [spell timing notes](Docs/PATCH_NOTES_1.2.1.md).

@@ -59,6 +59,7 @@ public:
     UFUNCTION(BlueprintCallable) bool IsLiveBattleView()const{return Page==TEXT("Battle");}
     bool IsBattleDeveloperVisible()const{return IsLiveBattleView()&&bDev;}
     UFUNCTION(BlueprintCallable) bool CanAcceptBattleInput()const;
+    bool IsCardDragGhostVisible()const;
     UFUNCTION(BlueprintCallable) void ToggleBattleMenu();
     UFUNCTION(BlueprintCallable) int32 SelectedHand()const{return HandIndex;}
     UFUNCTION(BlueprintCallable) FString SelectedCardId()const;
@@ -149,7 +150,7 @@ private:
     int32 LastSurge=1;
     TArray<FString> Draft;
     UTextBlock* Text(const FString&,int32 Size=16,FLinearColor Color=FLinearColor(.9f,.9f,.85f,1));
-    URiftActionButton* Button(const FString&,TFunction<void()> Action,bool Accent=false);
+    URiftActionButton* Button(const FString&,TFunction<void()> Action,bool Accent=false,bool HandCard=false);
     UWidget* Illustration(const FString& CardId,float Width,UImage** ImageOut=nullptr);
     URiftActionButton* CardButton(const FString& CardId,float Width,TFunction<void()> Action,bool Selected=false);
     UHorizontalBox* Row(UVerticalBox* Target=nullptr);

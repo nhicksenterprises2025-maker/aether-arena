@@ -36,6 +36,7 @@ class FRiftCaptureInputFilter final : public IInputProcessor
 {
 public:
     explicit FRiftCaptureInputFilter(bool Consume):bConsumeInput(Consume){}
+    void SetConsumption(bool Consume){bConsumeInput=Consume;}
     void Tick(float,FSlateApplication&,TSharedRef<ICursor>)override{}
     const TCHAR* GetDebugName()const override{return TEXT("Rift automated capture input");}
     bool HandleKeyDownEvent(FSlateApplication&,const FKeyEvent& Event)override
@@ -84,7 +85,7 @@ void ARiftGameMode::BeginPlay()
     Super::BeginPlay();
     FString AutomatedPath;
     const bool Capture=FParse::Value(FCommandLine::Get(),TEXT("RiftCapture="),AutomatedPath);
-    if(FSlateApplication::IsInitialized()&&(Capture||FParse::Value(FCommandLine::Get(),TEXT("RiftAudioSmoke="),AutomatedPath)||FParse::Value(FCommandLine::Get(),TEXT("RiftPerfReport="),AutomatedPath)))
+    if(FSlateApplication::IsInitialized()&&(Capture||FParse::Value(FCommandLine::Get(),TEXT("RiftAudioSmoke="),AutomatedPath)||FParse::Value(FCommandLine::Get(),TEXT("RiftPerfReport="),AutomatedPath)||FParse::Value(FCommandLine::Get(),TEXT("RiftDragSmoke="),AutomatedPath)))
     {
         // RenderOffScreen uses the Null application on Windows, which still
         // polls external gamepads. Consume their events without disabling or
@@ -93,6 +94,21 @@ void ARiftGameMode::BeginPlay()
         FSlateApplication::Get().RegisterInputPreProcessor(CaptureInputFilter,0);
     }
     GetWorld()->SpawnActor<ARiftArenaPresentation>();
+    FString DragSmokePath;
+    if(FParse::Value(FCommandLine::Get(),TEXT("RiftDragSmoke="),DragSmokePath))
+    {
+        if(!FParse::Param(FCommandLine::Get(),TEXT("RiftAutomationSandbox")))
+        {RIFT_LOG(LogRift,Error,TEXT("Card drag smoke requires an isolated -RiftAutomationSandbox."));FPlatformMisc::RequestExitWithStatus(false,2);return;}
+        FTimerHandle DragTimer;GetWorld()->GetTimerManager().SetTimer(DragTimer,FTimerDelegate::CreateWeakLambda(this,[this,DragSmokePath]()
+        {
+            // Only the synchronous fixture's generated events pass the input
+            // filter. External input remains consumed during startup/shutdown.
+            if(CaptureInputFilter)CaptureInputFilter->SetConsumption(false);
+            if(auto* PC=Cast<ARiftPlayerController>(GetWorld()->GetFirstPlayerController()))PC->RunCardDragSmoke(DragSmokePath);
+            else FPlatformMisc::RequestExitWithStatus(false,2);
+            if(CaptureInputFilter)CaptureInputFilter->SetConsumption(true);
+        }),6.f,false);
+    }
     FString AudioSmokePath;
     if(FParse::Value(FCommandLine::Get(),TEXT("RiftAudioSmoke="),AudioSmokePath))
     {
@@ -490,6 +506,9 @@ void ARiftPlayerController::BeginPlay()
     FInputModeGameAndUI Mode;Mode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);Mode.SetHideCursorDuringCapture(false);SetInputMode(Mode);
     if(FParse::Param(FCommandLine::Get(),TEXT("RiftTraining"))){GetWorld()->GetSubsystem<URiftMatchSubsystem>()->StartMatch(true);Interface->SetBattleView();}
     if(FParse::Param(FCommandLine::Get(),TEXT("RiftAutoBattle"))){GetWorld()->GetSubsystem<URiftMatchSubsystem>()->StartMatch(true,true);Interface->SetBattleView();}
+    FString DragSmokePath;
+    if(FParse::Value(FCommandLine::Get(),TEXT("RiftDragSmoke="),DragSmokePath))
+    {auto* Match=GetWorld()->GetSubsystem<URiftMatchSubsystem>();Match->StartMatch(true);Match->SetSpeed(0);Interface->SetBattleView();}
     UpdateArenaCamera();
 }
 void ARiftPlayerController::SetupInputComponent()
@@ -505,8 +524,26 @@ void ARiftPlayerController::SetupInputComponent()
 }
 bool ARiftPlayerController::CursorTile(FVector2D& Out)const
 {
-    FVector Origin,Direction;if(!DeprojectMousePositionToWorld(Origin,Direction)||FMath::Abs(Direction.Z)<.001)return false;
+    if(bCardDragStarted)return ScreenPointToTile(CardDragCursor,Out);
+    float X=0,Y=0;int32 Width=0,Height=0;GetViewportSize(Width,Height);
+    if(!GetMousePosition(X,Y)||X<0||Y<0||X>=Width||Y>=Height||!BattleSafeScreenBounds().IsInside(FVector2D(X,Y)))return false;
+    FVector Origin,Direction;if(!DeprojectScreenPositionToWorld(X,Y,Origin,Direction)||FMath::Abs(Direction.Z)<.001)return false;
     double T=-Origin.Z/Direction.Z;if(T<0)return false;return GroundPointToTile(Origin+Direction*T,Out);
+}
+bool ARiftPlayerController::ScreenPointToTile(FVector2D ScreenPoint,FVector2D& Out)const
+{
+    const FGeometry Viewport=UWidgetLayoutLibrary::GetViewportWidgetGeometry(this);
+    const FVector2D Local=Viewport.AbsoluteToLocal(ScreenPoint),Size=Viewport.GetLocalSize();
+    int32 Width=0,Height=0;GetViewportSize(Width,Height);
+    if(Size.X<=0||Size.Y<=0||Width<=0||Height<=0||Local.X<0||Local.Y<0||Local.X>=Size.X||Local.Y>=Size.Y)return false;
+    const FVector2D Pixel(Local.X/Size.X*Width,Local.Y/Size.Y*Height);
+    // Captured hand releases still route to their original button. Reject HUD,
+    // the hand dock and points beyond the viewport before world projection.
+    if(!BattleSafeScreenBounds().IsInside(Pixel))return false;
+    FVector Origin,Direction;
+    if(!DeprojectScreenPositionToWorld(Pixel.X,Pixel.Y,Origin,Direction)||FMath::Abs(Direction.Z)<.001)return false;
+    const double T=-Origin.Z/Direction.Z;
+    return T>=0&&GroundPointToTile(Origin+Direction*T,Out);
 }
 bool ARiftPlayerController::GroundPointToTile(FVector GroundPoint,FVector2D& Out)
 {
@@ -518,7 +555,8 @@ bool ARiftPlayerController::GroundPointToTile(FVector GroundPoint,FVector2D& Out
 }
 void ARiftPlayerController::PlayerTick(float DeltaTime)
 {
-    if(bCardDragStarted&&FSlateApplication::IsInitialized()&&(!FSlateApplication::Get().IsActive()||!FSlateApplication::Get().GetPressedMouseButtons().Contains(EKeys::LeftMouseButton)))Cancel();
+    if(bCardDragStarted&&(!CardDragSelectionIsCurrent()||(FSlateApplication::IsInitialized()&&
+        (!FSlateApplication::Get().IsActive()||!FSlateApplication::Get().GetPressedMouseButtons().Contains(EKeys::LeftMouseButton)))))CancelCardDrag();
     Super::PlayerTick(DeltaTime);UpdateArenaCamera();
     if(!Arena)for(TActorIterator<ARiftArenaPresentation> It(GetWorld());It;++It){Arena=*It;break;}
     FString CapturePath,PreviewCard;
@@ -543,9 +581,7 @@ void ARiftPlayerController::Deploy(FVector2D Tile)
     if(!Interface||!Interface->CanAcceptBattleInput())return;
     auto* Profile=GetGameInstance()->GetSubsystem<URiftProfileSubsystem>();const FString Card=Interface->SelectedCardId();
     if(Card.IsEmpty())return;
-    auto* Match=GetWorld()->GetSubsystem<URiftMatchSubsystem>();const auto* State=Match->ViewState();const auto* Selected=rift::FindCard(TCHAR_TO_UTF8(*Card));
-    bool Valid=Match->CanPlace(Interface->SelectedHand(),Tile)&&State&&Selected&&State->aether[0]>=Selected->cost;
-    if(Interface->PlacementIsSandbox()&&Match->Simulation()&&Selected)Valid=Match->Simulation()->CanPlace(rift::Team(Interface->PlacementTeam()),*Selected,{Tile.X,Tile.Y},true);
+    bool Valid=CanDeployTile(Tile);
     if(!Valid){bConfirmed=false;Interface->WorldClicked(Tile);return;}
     if(Profile->Settings.ConfirmDeploy&&(!bConfirmed||ConfirmCard!=Card||!ConfirmTile.Equals(Tile,.001)))
     {bConfirmed=true;ConfirmCard=Card;ConfirmTile=Tile;Interface->Notify(TEXT("Click the highlighted tile again to deploy."));return;}
@@ -553,53 +589,95 @@ void ARiftPlayerController::Deploy(FVector2D Tile)
 }
 void ARiftPlayerController::Press()
 {
+    if(bCardDragStarted)return;
     bPressed=Interface&&Interface->CanAcceptBattleInput()&&!Interface->SelectedCardId().IsEmpty();
     auto* Profile=GetGameInstance()->GetSubsystem<URiftProfileSubsystem>();FVector2D Tile;
     if(bPressed&&!Profile->Settings.DragDeploy&&CursorTile(Tile))Deploy(Tile);
 }
 void ARiftPlayerController::Release()
 {
-    if(bCardDragStarted){FinishCardDrag(true);return;}
-    const bool Armed=bPressed;bPressed=false;bCardDragOriginValid=false;
+    // Slate owns captured hand releases. A viewport mouse-up queued before a
+    // new hand press must not finish that newer drag transaction.
+    if(bCardDragStarted)return;
+    const bool Armed=bPressed;bPressed=false;
     auto* Profile=GetGameInstance()->GetSubsystem<URiftProfileSubsystem>();FVector2D Tile;
     if(Armed&&Profile->Settings.DragDeploy&&CursorTile(Tile))Deploy(Tile);
 }
-void ARiftPlayerController::BeginCardDrag()
+bool ARiftPlayerController::CanDeployTile(FVector2D Tile)const
 {
-    bCardDragStarted=Interface&&Interface->CanAcceptBattleInput()&&Interface->SelectedHand()>=0;bConfirmed=false;bPressed=false;
-    float X=0,Y=0;bCardDragOriginValid=bCardDragStarted&&GetMousePosition(X,Y);CardDragOrigin=FVector2D(X,Y);
+    if(!Interface||!Interface->CanAcceptBattleInput())return false;
+    auto* Match=GetWorld()->GetSubsystem<URiftMatchSubsystem>();
+    const auto* State=Match->ViewState();const FString Id=Interface->SelectedCardId();const auto* Card=rift::FindCard(TCHAR_TO_UTF8(*Id));
+    if(Interface->PlacementIsSandbox()&&Card)
+        return Match->Simulation()&&Match->Simulation()->CanPlace(rift::Team(Interface->PlacementTeam()),*Card,{Tile.X,Tile.Y},true);
+    return State&&Card&&State->aether[0]+1e-9>=Card->cost&&Match->CanPlace(Interface->SelectedHand(),Tile);
+}
+bool ARiftPlayerController::CardDragSelectionIsCurrent()const
+{
+    return Interface&&Interface->CanAcceptBattleInput()&&Interface->SelectedHand()==CardDragHand&&
+        !CardDragId.IsEmpty()&&Interface->SelectedCardId()==CardDragId;
+}
+void ARiftPlayerController::BeginCardDragAtScreen(FVector2D ScreenPoint)
+{
+    ResetCardDrag();bConfirmed=false;bPressed=false;
+    if(!Interface||!Interface->CanAcceptBattleInput()||Interface->SelectedHand()<0)return;
+    bCardDragStarted=true;CardDragOrigin=ScreenPoint;CardDragCursor=ScreenPoint;
+    CardDragHand=Interface->SelectedHand();CardDragId=Interface->SelectedCardId();
+}
+void ARiftPlayerController::BeginCardDrag()
+{if(FSlateApplication::IsInitialized())BeginCardDragAtScreen(FSlateApplication::Get().GetCursorPos());}
+void ARiftPlayerController::UpdateCardDragAtScreen(FVector2D ScreenPoint)
+{
+    if(!bCardDragStarted)return;
+    CardDragCursor=ScreenPoint;
+    if(!CardDragSelectionIsCurrent()){CancelCardDrag();return;}
+    const auto* Profile=GetGameInstance()->GetSubsystem<URiftProfileSubsystem>();
+    // Latch once crossed: returning to the original card remains a drag that
+    // must be cancelled, rather than becoming a fresh card-selection click.
+    if(Profile->Settings.DragDeploy&&FVector2D::DistSquared(CardDragOrigin,ScreenPoint)>49.)bCardDragActive=true;
 }
 bool ARiftPlayerController::IsDraggingCard()const
 {
-    if(!bCardDragStarted||!bCardDragOriginValid||!Interface||!Interface->CanAcceptBattleInput()||Interface->SelectedHand()<0)return false;
-    const auto* Profile=GetGameInstance()->GetSubsystem<URiftProfileSubsystem>();if(!Profile->Settings.DragDeploy)return false;
-    float X=0,Y=0;return GetMousePosition(X,Y)&&FVector2D::DistSquared(CardDragOrigin,FVector2D(X,Y))>49.;
+    return bCardDragStarted&&bCardDragActive&&CardDragSelectionIsCurrent();
 }
+void ARiftPlayerController::FinishCardDragAtScreen(FVector2D ScreenPoint)
+{UpdateCardDragAtScreen(ScreenPoint);FinishCardDrag(true);}
 void ARiftPlayerController::FinishCardDrag(bool DeployIfOutside)
 {
-    const bool Dragged=IsDraggingCard();bCardDragStarted=false;bCardDragOriginValid=false;bPressed=false;
-    if(!Dragged)return;
-    FVector2D Tile;
-    if(DeployIfOutside&&CursorTile(Tile))Deploy(Tile);
-    else if(Interface&&Interface->CanAcceptBattleInput()){Interface->SelectHand(-1);Interface->Notify(TEXT("Card returned to hand."));}
+    if(!bCardDragStarted)return;
+    const bool Current=CardDragSelectionIsCurrent(),Dragged=bCardDragActive;
+    FVector2D Tile=FVector2D::ZeroVector;const bool Legal=Current&&DeployIfOutside&&Dragged&&ScreenPointToTile(CardDragCursor,Tile)&&CanDeployTile(Tile);
+    ResetCardDrag();bPressed=false;
+    if(!Current){CancelCardDrag();return;}
+    if(!Dragged)return; // A simple click selects; it never deploys from the hand.
+    if(Legal)Deploy(Tile);
+    else{CancelCardDrag();if(Interface&&Interface->CanAcceptBattleInput())Interface->Notify(TEXT("Card returned to hand."));}
+}
+void ARiftPlayerController::ResetCardDrag()
+{bCardDragStarted=false;bCardDragActive=false;CardDragHand=INDEX_NONE;CardDragId.Empty();if(Arena)Arena->ClearPlacementPreview();}
+void ARiftPlayerController::CancelCardDrag()
+{
+    const bool HadPointer=bCardDragStarted;bConfirmed=false;bPressed=false;ResetCardDrag();if(Interface)Interface->SelectHand(-1);
+    if(HadPointer&&FSlateApplication::IsInitialized())FSlateApplication::Get().ReleaseAllPointerCapture();
 }
 void ARiftPlayerController::ReleaseCardAtCursor()
 {FinishCardDrag(true);}
 void ARiftPlayerController::Cancel()
-{bConfirmed=false;bPressed=false;bCardDragStarted=false;bCardDragOriginValid=false;if(Interface)Interface->SelectHand(-1);}
+{CancelCardDrag();}
 void ARiftPlayerController::EscapeMenu()
 {
-    bConfirmed=false;bPressed=false;bCardDragStarted=false;bCardDragOriginValid=false;if(!Interface)return;
+    if(bCardDragStarted||(Interface&&!Interface->SelectedCardId().IsEmpty())){CancelCardDrag();return;}
+    bConfirmed=false;bPressed=false;if(!Interface)return;
     if(Interface->IsLiveBattleView())Interface->ToggleBattleMenu();
     else if(GetGameInstance()->GetSubsystem<URiftReplaySubsystem>()->IsPlaying())Interface->Navigate(TEXT("ReplayView"));
     else if(GetWorld()->GetSubsystem<URiftMatchSubsystem>()->IsActive())Interface->Navigate(TEXT("Battle"));
     else Interface->Navigate(TEXT("Home"));
 }
 void ARiftPlayerController::Developer(){if(Interface&&Interface->CanAcceptBattleInput())Interface->ToggleDeveloper();}
-void ARiftPlayerController::Hand0(){if(Interface&&Interface->CanAcceptBattleInput())Interface->SelectHand(0);bConfirmed=false;}
-void ARiftPlayerController::Hand1(){if(Interface&&Interface->CanAcceptBattleInput())Interface->SelectHand(1);bConfirmed=false;}
-void ARiftPlayerController::Hand2(){if(Interface&&Interface->CanAcceptBattleInput())Interface->SelectHand(2);bConfirmed=false;}
-void ARiftPlayerController::Hand3(){if(Interface&&Interface->CanAcceptBattleInput())Interface->SelectHand(3);bConfirmed=false;}
+void ARiftPlayerController::Hand0(){CancelCardDrag();if(Interface&&Interface->CanAcceptBattleInput())Interface->SelectHand(0);}
+void ARiftPlayerController::Hand1(){CancelCardDrag();if(Interface&&Interface->CanAcceptBattleInput())Interface->SelectHand(1);}
+void ARiftPlayerController::Hand2(){CancelCardDrag();if(Interface&&Interface->CanAcceptBattleInput())Interface->SelectHand(2);}
+void ARiftPlayerController::Hand3(){CancelCardDrag();if(Interface&&Interface->CanAcceptBattleInput())Interface->SelectHand(3);}
 
 namespace
 {

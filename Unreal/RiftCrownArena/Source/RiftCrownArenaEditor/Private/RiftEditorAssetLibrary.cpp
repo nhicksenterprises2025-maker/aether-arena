@@ -11,12 +11,17 @@
 #include "Engine/SkeletalMesh.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
+#include "Engine/Font.h"
+#include "Engine/FontFace.h"
 #include "PhysicsEngine/PhysicsAsset.h"
 #include "UObject/SavePackage.h"
 #include "Misc/PackageName.h"
 #include "Serialization/JsonSerializer.h"
 #include "RiftAssetLibrary.h"
 #include "RiftCardData.h"
+#include "Framework/Application/SlateApplication.h"
+#include "Interfaces/ISlateNullRendererModule.h"
+#include "Modules/ModuleManager.h"
 
 namespace
 {
@@ -28,6 +33,61 @@ bool SaveAsset(UObject* Object,const FString& Extension=FPackageName::GetAssetPa
 }
 FString Json(const TSharedRef<FJsonObject>& Object){FString Text;FJsonSerializer::Serialize(Object,TJsonWriterFactory<>::Create(&Text));return Text;}
 struct EffectRecipe{const TCHAR* Name;const TCHAR* Emitter;int32 Count;float Life,Size,Speed;};
+}
+bool URiftEditorAssetLibrary::EnsureFontImportSlate()
+{
+    if (!FSlateApplication::IsInitialized())
+    {
+        // A Python commandlet has no Slate application. The null renderer
+        // supplies real font services without opening an editor or window.
+        auto& Module=FModuleManager::LoadModuleChecked<ISlateNullRendererModule>(TEXT("SlateNullRenderer"));
+        FSlateApplication::InitializeAsStandaloneApplication(Module.CreateSlateNullRenderer());
+    }
+    return FSlateApplication::IsInitialized();
+}
+FString URiftEditorAssetLibrary::BuildUIFontJSON()
+{
+    auto Report=MakeShared<FJsonObject>();TArray<TSharedPtr<FJsonValue>> Faces,Errors;
+    const TCHAR* Weights[]={TEXT("Regular"),TEXT("Medium"),TEXT("SemiBold"),TEXT("Bold")};
+    FCompositeFont Composite;
+    for (const TCHAR* Weight:Weights)
+    {
+        const FString Name=TEXT("FF_BarlowSemiCondensed_")+FString(Weight);
+        const FString Path=TEXT("/Game/Rift/Fonts/")+Name+TEXT(".")+Name;
+        auto* Face=LoadObject<UFontFace>(nullptr,*Path);
+        if (!Face || Face->GetLoadingPolicy()!=EFontLoadingPolicy::Inline || Face->GetFontFaceData()->GetData().Num()==0)
+        {Errors.Add(MakeShared<FJsonValueString>(TEXT("Missing or non-inline UI font face: ")+Path));continue;}
+        FTypefaceEntry Entry{FName(Weight)};
+        Entry.Font=FFontData(Face);
+        Composite.DefaultTypeface.Fonts.Add(MoveTemp(Entry));
+        auto Item=MakeShared<FJsonObject>();Item->SetStringField(TEXT("weight"),Weight);
+        Item->SetStringField(TEXT("path"),Face->GetPathName());Item->SetNumberField(TEXT("bytes"),Face->GetFontFaceData()->GetData().Num());
+        Item->SetStringField(TEXT("loadingPolicy"),TEXT("Inline"));Faces.Add(MakeShared<FJsonValueObject>(Item));
+    }
+    if (Errors.IsEmpty())
+    {
+        const FString PackagePath=TEXT("/Game/Rift/Fonts/F_RiftUI");
+        auto* Font=LoadObject<UFont>(nullptr,*(PackagePath+TEXT(".F_RiftUI")));
+        if (!Font)
+        {
+            Font=NewObject<UFont>(CreatePackage(*PackagePath),TEXT("F_RiftUI"),RF_Public|RF_Standalone|RF_Transactional);
+            FAssetRegistryModule::AssetCreated(Font);
+        }
+        Font->FontCacheType=EFontCacheType::Runtime;
+        Font->RuntimeFontSource=ERuntimeFontSource::Asset;
+        Font->LegacyFontName=TEXT("Regular");
+        auto& SavedComposite=Font->GetMutableInternalCompositeFont();
+        SavedComposite=MoveTemp(Composite);SavedComposite.MakeDirty();Font->PostEditChange();
+        if (!SaveAsset(Font))Errors.Add(MakeShared<FJsonValueString>(TEXT("Could not save the composite UI font.")));
+        const auto& Entries=Font->GetInternalCompositeFont().DefaultTypeface.Fonts;
+        if (Entries.Num()!=UE_ARRAY_COUNT(Weights))Errors.Add(MakeShared<FJsonValueString>(TEXT("Saved UI typeface is incomplete.")));
+        for (int32 I=0;I<Entries.Num();++I)
+            if (Entries[I].Name!=Weights[I] || !Cast<UFontFace>(Entries[I].Font.GetFontFaceAsset()))
+                Errors.Add(MakeShared<FJsonValueString>(TEXT("Saved UI typeface names or references differ.")));
+        Report->SetStringField(TEXT("font"),Font->GetPathName());
+    }
+    Report->SetArrayField(TEXT("faces"),Faces);Report->SetArrayField(TEXT("errors"),Errors);
+    Report->SetBoolField(TEXT("passed"),Errors.IsEmpty());return Json(Report);
 }
 FString URiftEditorAssetLibrary::BuildPresentationAssetsJSON()
 {

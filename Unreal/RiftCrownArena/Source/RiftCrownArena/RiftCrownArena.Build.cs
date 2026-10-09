@@ -11,5 +11,8 @@ public class RiftCrownArena : ModuleRules
             "UMG", "CommonUI", "Slate", "SlateCore", "Niagara", "Json",
             "JsonUtilities", "RenderCore", "RHI", "DeveloperSettings", "Projects", "AudioMixer"
         });
+        // The bundled typeface is OFL licensed. Keep its complete copyright
+        // notice and license directly readable beside the cooked game assets.
+        RuntimeDependencies.Add("$(ProjectDir)/Content/Rift/Fonts/Barlow-OFL.txt", StagedFileType.NonUFS);
     }
 }

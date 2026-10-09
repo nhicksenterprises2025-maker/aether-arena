@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "build": "UE-1.2.0",
+  "build": "UE-1.3.0",
   "source": {
     "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
-    "sha256": "d763b953357faca66184c3612fc66c338e3f715c42b4cfab5f49ca2470cc1fd6",
-    "bytes": 9426457
+    "sha256": "e05ec2783365cef7543c600bfbf236f7a96e457a2424ca2b2d809540be290cd6",
+    "bytes": 12048439
   },
   "units": {
     "blender": "meter",
@@ -46,8 +46,8 @@
       "rigFamily": "humanoid",
       "mesh": {
         "file": "Assets/Export/Characters/ironclad/SK_ironclad.fbx",
-        "sha256": "99a64e041110b442df211c03fbf3f67bc2aace2837d54b8bda347ef0de34f7f4",
-        "bytes": 498428
+        "sha256": "0cc389218b3ee59ed171cf8c18bcba860196e95c4ecbdb2af1a363f99812caf1",
+        "bytes": 635180
       },
       "bones": [
         "root",
@@ -118,9 +118,9 @@
           "bone": "attack_origin",
           "parent": "hand_r",
           "positionMeters": [
-            0.49,
-            -0.3,
-            1.1
+            0.48500001430511475,
+            -0.1770000010728836,
+            1.4900000095367432
           ]
         },
         "impact_origin": {
@@ -133,37 +133,37 @@
           ]
         }
       },
-      "triangles": 19972,
+      "triangles": 24240,
       "materials": [
         "M_RiftSurface",
         "M_RiftGlow"
       ],
       "boundsMeters": [
-        1.3939998149871826,
-        0.6705851554870605,
-        2.1924731731414795
+        1.3285150527954102,
+        0.6670000553131104,
+        2.1555709838867188
       ],
       "lods": [
         {
           "level": 1,
-          "triangles": 9986,
+          "triangles": 12120,
           "file": "Assets/Export/Characters/ironclad/SK_ironclad_LOD1.fbx",
-          "sha256": "ce31cd1ed86876816585d14d15c91d96ee069f984090960351b8814baaed175c",
-          "bytes": 369724
+          "sha256": "8055198b96c318fa1801b3b319cd6206a5a7c27cb496811e7e4fb7454f9288ea",
+          "bytes": 427916
         },
         {
           "level": 2,
-          "triangles": 4990,
+          "triangles": 6060,
           "file": "Assets/Export/Characters/ironclad/SK_ironclad_LOD2.fbx",
-          "sha256": "d3395b86612895987305c271b0593f49a3053ab42f227b76d220a51373d284fc",
-          "bytes": 241980
+          "sha256": "84523a8e81db3cfbd9514277331e5c99e056de9df4e0e2f72f357cd3a92a8ad9",
+          "bytes": 278892
         },
         {
           "level": 3,
-          "triangles": 2390,
+          "triangles": 2896,
           "file": "Assets/Export/Characters/ironclad/SK_ironclad_LOD3.fbx",
-          "sha256": "43336fed55e12bfab9b19221b2192ca0a23e8ffd54fe0fb9bea329545d63149a",
-          "bytes": 160812
+          "sha256": "244eabbb743dd74b24e73ebe4d3658614567cfa5b90002512ac391fdbd42351f",
+          "bytes": 183516
         }
       ],
       "animations": [
@@ -175,8 +175,8 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/ironclad/AN_ironclad_Idle.fbx",
-          "sha256": "cde6d8c5bf7708b68483753356047db5f97cc08908711a5c59ceb3e0ba9a6d69",
-          "bytes": 252108
+          "sha256": "2347596162d6eae7299769be6d06ffd7dc3964e6d7abad20454784c52e27521c",
+          "bytes": 252076
         },
         {
           "name": "Locomotion",
@@ -186,7 +186,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/ironclad/AN_ironclad_Locomotion.fbx",
-          "sha256": "27b2c55918f0c9f733cdec3d37d90c2477645c17bf0b8e46965a4e766c91b924",
+          "sha256": "41eadbac7c4d6685ef165078521d6882da695a88256cd29500dcec159c330543",
           "bytes": 228796
         },
         {
@@ -197,7 +197,7 @@
           "releaseNormalized": 0.48,
           "loop": false,
           "file": "Assets/Export/Characters/ironclad/AN_ironclad_Attack.fbx",
-          "sha256": "889403b65852ef00746aa195e1d3890339e4c27211ed447b478e25e7ea46c2e3",
+          "sha256": "309b795b8c507a0dfd71d39300f26f178f039f7f75327b1ad44b5306807f9fec",
           "bytes": 228796
         },
         {
@@ -208,7 +208,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/ironclad/AN_ironclad_Hit.fbx",
-          "sha256": "2b7bd4b4ba573e9fe4196444e06ed15bf038766d495319f9f4c7defd5843f09d",
+          "sha256": "176ef7910a816555a989962af0a7cbaa4cbe5d59405a9809f86e57c97eb8b3b1",
           "bytes": 200236
         },
         {
@@ -219,8 +219,8 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/ironclad/AN_ironclad_Death.fbx",
-          "sha256": "2b9b3f917d59d41554098b04f4d43706365d73f95f9c4d07d5ee0ed125924e46",
-          "bytes": 241468
+          "sha256": "e61e2c8eb0011e71516c6fa135284f613309aeb23f3b290c79717fd82af4b175",
+          "bytes": 241452
         },
         {
           "name": "Deploy",
@@ -230,7 +230,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/ironclad/AN_ironclad_Deploy.fbx",
-          "sha256": "ba71c3ff3e9ed952386f15e16de3556b1a85a2945dad11e7627faee237826bb9",
+          "sha256": "49ac09bbd86e7103878e4373455be2461af6e25b44b791405687b754bfbb2545",
           "bytes": 214508
         },
         {
@@ -241,7 +241,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/ironclad/AN_ironclad_Status.fbx",
-          "sha256": "48eda52cdb74ac4a57b78157995b530935809d2467a931ec7253bbc52b277cfb",
+          "sha256": "82d2c5e8335b7168bea4ff2c2d9af1c90b8560c60a80a08314d3ffeaea284974",
           "bytes": 228796
         },
         {
@@ -252,7 +252,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/ironclad/AN_ironclad_Turn.fbx",
-          "sha256": "279f120f8c8ed28a68022c19840d50f84bbddccc0677e4e5095e284598064a48",
+          "sha256": "214a7da3899bc30b636ab2b508340ec5bbf9db6b8ff09d841bbb50220b8446a7",
           "bytes": 214508
         },
         {
@@ -263,10 +263,16 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/ironclad/AN_ironclad_Acquire.fbx",
-          "sha256": "be3b052bc1491037cc31e37512a678eaa882ede5ea932c3bb3fc2c5fa608e320",
+          "sha256": "d1dfcc75d8693118f834f48b8219d54f4d9ac27aebc9a47855fb7bae77da0e1f",
           "bytes": 200236
         }
       ],
+      "modelDesign": {
+        "revision": "1.3.0",
+        "equipmentFit": "rest-pose hand center; same-bone equipment and glove",
+        "detailPasses": 1,
+        "wingWeights": null
+      },
       "physics": {
         "type": "capsule",
         "simulationCollisionAuthoritative": false,
@@ -278,8 +284,8 @@
       "rigFamily": "humanoid",
       "mesh": {
         "file": "Assets/Export/Characters/ember_archer/SK_ember_archer.fbx",
-        "sha256": "7c38e6874592aad1cfe5f9a324bfe057ca224ff815c92e02c6bfe470581cad81",
-        "bytes": 425804
+        "sha256": "3df2997dd6f3ca74b33f26264e7a585dd0e97d635cd4249695d7d901610dffd0",
+        "bytes": 670588
       },
       "bones": [
         "root",
@@ -350,9 +356,9 @@
           "bone": "attack_origin",
           "parent": "hand_r",
           "positionMeters": [
-            0.4523076923076923,
-            -0.3,
-            1.0153846153846156
+            0.44769230484962463,
+            -0.19600000977516174,
+            0.8270769715309143
           ]
         },
         "impact_origin": {
@@ -365,37 +371,36 @@
           ]
         }
       },
-      "triangles": 15732,
+      "triangles": 24988,
       "materials": [
-        "M_RiftSurface",
-        "M_RiftGlow"
+        "M_RiftSurface"
       ],
       "boundsMeters": [
-        1.049999713897705,
-        1.1230882406234741,
-        1.8914785385131836
+        1.038766622543335,
+        0.6501976251602173,
+        1.8976101875305176
       ],
       "lods": [
         {
           "level": 1,
-          "triangles": 7866,
+          "triangles": 12494,
           "file": "Assets/Export/Characters/ember_archer/SK_ember_archer_LOD1.fbx",
-          "sha256": "fd0e19df84fec76a44fbd4a831c39490d99f824252e4466f8d17ad3caf5196b5",
-          "bytes": 300524
+          "sha256": "158defe1a85d60a683ded1fbe77e355c7c857fccbd3906a0cde341ee70131038",
+          "bytes": 438076
         },
         {
           "level": 2,
-          "triangles": 3930,
+          "triangles": 6246,
           "file": "Assets/Export/Characters/ember_archer/SK_ember_archer_LOD2.fbx",
-          "sha256": "f8275085b22636f734ce5ab73d04556139e0b73b026423fe7574a6b656282e2f",
-          "bytes": 202684
+          "sha256": "a38f1b071e1aee72052d6b1251c515def8ff37ff35f1ec02d7e502149162a719",
+          "bytes": 280972
         },
         {
           "level": 3,
-          "triangles": 1880,
+          "triangles": 2998,
           "file": "Assets/Export/Characters/ember_archer/SK_ember_archer_LOD3.fbx",
-          "sha256": "f5ef6e59b3a6a00fdc55535f18d43443ea4150e22c4d157682094aaa6d1aaea3",
-          "bytes": 138316
+          "sha256": "b5827feefd6f13d00f8384d2ee0888c8cf9f67d25ac3488fe1cfc2a863103ea4",
+          "bytes": 181532
         }
       ],
       "animations": [
@@ -407,8 +412,8 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/ember_archer/AN_ember_archer_Idle.fbx",
-          "sha256": "07713524c4b5a73c743832206a408546244b690fcafb04571769107eabf45788",
-          "bytes": 252156
+          "sha256": "b84335282ae6b084f89a4f2da583f91d092157c0707439ed3e80059c271bfaa1",
+          "bytes": 252092
         },
         {
           "name": "Locomotion",
@@ -418,7 +423,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/ember_archer/AN_ember_archer_Locomotion.fbx",
-          "sha256": "7af4ee875dfd3bd962fdba5199fb770279b5fcc570d1a31104a08a5194d777d9",
+          "sha256": "a9a9d6dc6c889f02706f786245f47e110fa37257882094e639927ccdd5e36028",
           "bytes": 228796
         },
         {
@@ -429,7 +434,7 @@
           "releaseNormalized": 0.48,
           "loop": false,
           "file": "Assets/Export/Characters/ember_archer/AN_ember_archer_Attack.fbx",
-          "sha256": "5db6f69357bed7f8e70b80b3cb5ffcb49ab259a1c9d97bd0f5504df47822f9ee",
+          "sha256": "718b7efdefb5e096b8745ca57c80d2dcf9c7bf47314cd1a2ca12154765482450",
           "bytes": 228796
         },
         {
@@ -440,7 +445,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/ember_archer/AN_ember_archer_Hit.fbx",
-          "sha256": "56b9cfec96afdf701731275efd1f1547b767e80845fe7f2b73fac8cedd8b0419",
+          "sha256": "0179bb8d35fadbde3848146572029f87e0472ea516c880010cfdadb99895fb91",
           "bytes": 200252
         },
         {
@@ -451,8 +456,8 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/ember_archer/AN_ember_archer_Death.fbx",
-          "sha256": "ea079a4560aa19a18ef77842a909937824b499c7ebcb500b9b28a99e7b96e125",
-          "bytes": 241468
+          "sha256": "5b44c22d2ae5f7e73b6f845e5186f1e38b77554343748f7c32b661fe12aeeff0",
+          "bytes": 241404
         },
         {
           "name": "Deploy",
@@ -462,7 +467,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/ember_archer/AN_ember_archer_Deploy.fbx",
-          "sha256": "016e4b05c73075383b4be345de4803f1f5a71bc672e757aaa2ed01721707f821",
+          "sha256": "96e763c3bb1907dcc26775da7f6f777e8566df50bec6b90c8477a340d3646285",
           "bytes": 214524
         },
         {
@@ -473,7 +478,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/ember_archer/AN_ember_archer_Status.fbx",
-          "sha256": "4b833574776a6025e49609b9c5720ad0f5b8788e3e60bd381037847545be1414",
+          "sha256": "19235da17b9aeaf13ca1abbdf55477b954f25b391020f9357b07b961ea2c6e6f",
           "bytes": 228796
         },
         {
@@ -484,7 +489,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/ember_archer/AN_ember_archer_Turn.fbx",
-          "sha256": "9d0d73b33defca74a4a154b76876c7ad6b09d2048de543a070791692a53193eb",
+          "sha256": "3aa7a0a90023e456ac20effed344c3cb112b25916e4eab1644e007c95b878638",
           "bytes": 214524
         },
         {
@@ -495,7 +500,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/ember_archer/AN_ember_archer_Acquire.fbx",
-          "sha256": "1e1afbac9710c3fc66e27ae9a42f0761ed16d6a93106263449389cc6494b154c",
+          "sha256": "58a079bb744472de20cb4accd34d276ae58c0bfdb5f001444d8b952e7ea8541b",
           "bytes": 200252
         },
         {
@@ -506,10 +511,16 @@
           "releaseNormalized": 0.48,
           "loop": false,
           "file": "Assets/Export/Characters/ember_archer/AN_ember_archer_DrawRelease.fbx",
-          "sha256": "6575e0a94dd3f19f2ca71dfb3890fa8b32def38ec070098fd6376de6a0629c3b",
-          "bytes": 239100
+          "sha256": "13e7b900561c1a6885cb426d653b43cd5bb14a007fcdf35fec090b7bb03bbeab",
+          "bytes": 239452
         }
       ],
+      "modelDesign": {
+        "revision": "1.3.0",
+        "equipmentFit": "rest-pose hand center; same-bone equipment and glove",
+        "detailPasses": 1,
+        "wingWeights": null
+      },
       "physics": {
         "type": "capsule",
         "simulationCollisionAuthoritative": false,
@@ -521,8 +532,8 @@
       "rigFamily": "humanoid",
       "mesh": {
         "file": "Assets/Export/Characters/twin_blades/SK_twin_blades.fbx",
-        "sha256": "06d6a34fa1141eb5b5d451f69dae34ebf73e01e7cb5741535d29884b51f27017",
-        "bytes": 331308
+        "sha256": "3a14017174407b9740ed1294f4e38f418d241e1e58ce4731bbdb42dc4b4ae339",
+        "bytes": 726892
       },
       "bones": [
         "root",
@@ -593,9 +604,9 @@
           "bone": "attack_origin",
           "parent": "hand_r",
           "positionMeters": [
-            0.4322051282051282,
-            -0.3,
-            0.9702564102564103
+            0.427794873714447,
+            -0.1770000010728836,
+            1.3142564296722412
           ]
         },
         "impact_origin": {
@@ -608,37 +619,37 @@
           ]
         }
       },
-      "triangles": 11332,
+      "triangles": 28734,
       "materials": [
         "M_RiftSurface",
         "M_RiftGlow"
       ],
       "boundsMeters": [
-        1.1400001049041748,
-        0.5415657162666321,
-        1.8011819124221802
+        1.0735392570495605,
+        0.5861743688583374,
+        1.8132785558700562
       ],
       "lods": [
         {
           "level": 1,
-          "triangles": 5666,
+          "triangles": 14366,
           "file": "Assets/Export/Characters/twin_blades/SK_twin_blades_LOD1.fbx",
-          "sha256": "3abac9e030a51d42754aa7f5bc62025b4e1f8c8656a98ecde7c38ba218e81fd7",
-          "bytes": 241036
+          "sha256": "e8577552ce4b95d031cfc7b0474105718ca922c095ede6cffe1c18b3c6247a54",
+          "bytes": 486780
         },
         {
           "level": 2,
-          "triangles": 2830,
+          "triangles": 7182,
           "file": "Assets/Export/Characters/twin_blades/SK_twin_blades_LOD2.fbx",
-          "sha256": "af038db77cdb59c618b76ca3699ed72f950c484e054de93039a8814c750d0bab",
-          "bytes": 169004
+          "sha256": "62c88fdfda4328a925f1e48271a15aa7c8e4f69dc41f81f782808f23b7731444",
+          "bytes": 312780
         },
         {
           "level": 3,
-          "triangles": 1356,
+          "triangles": 3448,
           "file": "Assets/Export/Characters/twin_blades/SK_twin_blades_LOD3.fbx",
-          "sha256": "d0b1c2332b9f762578bd4a60f4967d961166310df4cc02f97371de63d3bbe282",
-          "bytes": 122668
+          "sha256": "c7961b199944dbcf755f8a88300a8b12ec0d7687227ca2538e2ff62942a2e9c9",
+          "bytes": 199884
         }
       ],
       "animations": [
@@ -650,8 +661,8 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/twin_blades/AN_twin_blades_Idle.fbx",
-          "sha256": "547a960e4bf224e4b09326b8f8840618c9ce4ba6cec6e98e566329a6dfe5432b",
-          "bytes": 251964
+          "sha256": "1ce4b664f6f70827794a850f70039f17d2552a8e99148850b37428e108cd7255",
+          "bytes": 251884
         },
         {
           "name": "Locomotion",
@@ -661,7 +672,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/twin_blades/AN_twin_blades_Locomotion.fbx",
-          "sha256": "0b142fe0f1d8f1f191e5444a63ff1d9b11fbbc8371b73fc43fd0e9c00ce0998d",
+          "sha256": "e8833a478d371ae76f44be880404c43fb90363751ae69c2c141963af13c556bd",
           "bytes": 228796
         },
         {
@@ -672,7 +683,7 @@
           "releaseNormalized": 0.48,
           "loop": false,
           "file": "Assets/Export/Characters/twin_blades/AN_twin_blades_Attack.fbx",
-          "sha256": "90055f83d9464a22a39937c253df6e7aab978d8d8930b66baf03fc79fe879f95",
+          "sha256": "0187f47a1d7fa33424905dc730eaa76125bfc9cc307c59847e271e8ca8434e38",
           "bytes": 228796
         },
         {
@@ -683,7 +694,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/twin_blades/AN_twin_blades_Hit.fbx",
-          "sha256": "041bb4ffa1cb40bf59478795d190ecdb4dd9ddd8174c762468a2f833ef16df1c",
+          "sha256": "0ed23d396c3de35a85f51c8197e2ae4b65b001bfc8d041dac1f0792a9f5240fb",
           "bytes": 200252
         },
         {
@@ -694,8 +705,8 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/twin_blades/AN_twin_blades_Death.fbx",
-          "sha256": "4d34f82ab9430ef61620d2e3610f599d5ccf59bf1427b0a5d1a52c78c2341d23",
-          "bytes": 241228
+          "sha256": "ca2e6d1e1d79104c0054b24c7e64bf1347db1116ed4e6d219cf54a0b1b676486",
+          "bytes": 241180
         },
         {
           "name": "Deploy",
@@ -705,7 +716,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/twin_blades/AN_twin_blades_Deploy.fbx",
-          "sha256": "67af0838f09d24b0375aad773e884ae68368755c0b1f0c994bef94638e1344c8",
+          "sha256": "f3d7e2a740ac2f1bb779f19e5ecdfdd6677e1b257f727fb69410a831ecef7c2f",
           "bytes": 214524
         },
         {
@@ -716,7 +727,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/twin_blades/AN_twin_blades_Status.fbx",
-          "sha256": "f9c275c861135ddc3c07d894adf3c94b049d5828dac26256d6724eccdbbe656d",
+          "sha256": "3c82ddbe1bd0383599321a421d6dc04edf4689ac841e34107292c66279d5d6b1",
           "bytes": 228796
         },
         {
@@ -727,7 +738,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/twin_blades/AN_twin_blades_Turn.fbx",
-          "sha256": "3e8db7d7dea359b88af79c8166824146618bdb30647ade4a879bbea789d99730",
+          "sha256": "089e281c663298d9065de3c64bd29580c7c38e23c0994f75b9d2f054950293b7",
           "bytes": 214524
         },
         {
@@ -738,7 +749,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/twin_blades/AN_twin_blades_Acquire.fbx",
-          "sha256": "d1893dc93c2eaea8ec5cbf33fdf5db39618d1c27c2786efe48b64d9da303ab9e",
+          "sha256": "9e4a401f747ba904381e3a92a5394fc8921017974c30610a7bf3f970be325006",
           "bytes": 200252
         },
         {
@@ -749,10 +760,16 @@
           "releaseNormalized": 0.48,
           "loop": false,
           "file": "Assets/Export/Characters/twin_blades/AN_twin_blades_AlternateStrike.fbx",
-          "sha256": "8789b54607d0e126c99adf014fb0d6f9962fa60a530f161411995e48021bc733",
-          "bytes": 236188
+          "sha256": "b0dd4ec412f599c3914d7b62cf7aef4e59c0d658bd8a001b7ffc70b2b0045fbf",
+          "bytes": 236508
         }
       ],
+      "modelDesign": {
+        "revision": "1.3.0",
+        "equipmentFit": "rest-pose hand center; same-bone equipment and glove",
+        "detailPasses": 1,
+        "wingWeights": null
+      },
       "physics": {
         "type": "capsule",
         "simulationCollisionAuthoritative": false,
@@ -764,8 +781,8 @@
       "rigFamily": "humanoid",
       "mesh": {
         "file": "Assets/Export/Characters/arc_mage/SK_arc_mage.fbx",
-        "sha256": "6814819a5b29123f58e0f6fb4168339b28028e9b10d11c0b467fd0ab90abb1b7",
-        "bytes": 477996
+        "sha256": "21628aad857c30217a7df1bb1570d49d726a16de0a964c22e636a387b5a656de",
+        "bytes": 745628
       },
       "bones": [
         "root",
@@ -836,9 +853,9 @@
           "bone": "attack_origin",
           "parent": "hand_r",
           "positionMeters": [
-            0.4648717948717949,
-            -0.3,
-            1.0435897435897437
+            0.46012818813323975,
+            -0.24199999868869781,
+            1.9069230556488037
           ]
         },
         "impact_origin": {
@@ -851,37 +868,37 @@
           ]
         }
       },
-      "triangles": 17424,
+      "triangles": 28302,
       "materials": [
         "M_RiftSurface",
         "M_RiftGlow"
       ],
       "boundsMeters": [
-        1.2630000114440918,
-        0.7260000705718994,
-        2.3225269317626953
+        1.1741681098937988,
+        0.6206409931182861,
+        2.276381254196167
       ],
       "lods": [
         {
           "level": 1,
-          "triangles": 8712,
+          "triangles": 14150,
           "file": "Assets/Export/Characters/arc_mage/SK_arc_mage_LOD1.fbx",
-          "sha256": "00df30cfb99b03b901f2889c64646bec02cc5e3d4eafec47bdb0461b601854f8",
-          "bytes": 336908
+          "sha256": "07b519069b13dd9f443aa90a5e46d5d8a9915dce5c2af007cd021cec9ec1e185",
+          "bytes": 492252
         },
         {
           "level": 2,
-          "triangles": 4355,
+          "triangles": 7074,
           "file": "Assets/Export/Characters/arc_mage/SK_arc_mage_LOD2.fbx",
-          "sha256": "84fafb65b7ed625174d9fde00f391ff61af159bc22af4f096c4e04ede880a8d8",
-          "bytes": 225740
+          "sha256": "f279fcb2860ecd40714697a14440ab2dba9a32455d8535b9fb77a78dfc115ba9",
+          "bytes": 313372
         },
         {
           "level": 3,
-          "triangles": 2088,
+          "triangles": 3396,
           "file": "Assets/Export/Characters/arc_mage/SK_arc_mage_LOD3.fbx",
-          "sha256": "5e607c92626cb0df9c975eb6f3a74e7e56992ef968eb5a2b55f785c44b8e263b",
-          "bytes": 152988
+          "sha256": "f793fc0d8dbfccc63ef40de492278c7dd32d9befe3d3bd51ac92a07b14e0b48f",
+          "bytes": 199452
         }
       ],
       "animations": [
@@ -893,8 +910,8 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/arc_mage/AN_arc_mage_Idle.fbx",
-          "sha256": "6c00812c1df40db1b18fa94730eb353bcc71b17fbaafe4a4f847556f9666f8b9",
-          "bytes": 251900
+          "sha256": "e17ae9c04dc93446594632cae742affdfe73b19ce35efe3ef12cd5e5ae4d8281",
+          "bytes": 251868
         },
         {
           "name": "Locomotion",
@@ -904,7 +921,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/arc_mage/AN_arc_mage_Locomotion.fbx",
-          "sha256": "9d531517fd8d314cc37022631d0e8c55990de8ac4099a677337ed7f8156c8bdd",
+          "sha256": "cfc0dcf3509a375614562228208e49beba1514c2add631ccc0e2528db1defd39",
           "bytes": 228796
         },
         {
@@ -915,7 +932,7 @@
           "releaseNormalized": 0.48,
           "loop": false,
           "file": "Assets/Export/Characters/arc_mage/AN_arc_mage_Attack.fbx",
-          "sha256": "7bfb095ea329e301dd7c7e900d9fb6f291ff59c53003221ff13bc8db23ab7a66",
+          "sha256": "b0648f1923aacc3dec6fc10e8a7df9457bd9c48f58803bf1cf6d0e32520a90ef",
           "bytes": 228796
         },
         {
@@ -926,7 +943,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/arc_mage/AN_arc_mage_Hit.fbx",
-          "sha256": "0cd154dca6e260aad5d090bf91ec58c164015e9c3934f91830ec133080337649",
+          "sha256": "f50a98082c998385a73e709c0c189b2054c7bc404b181bf57dcbb21383241694",
           "bytes": 200236
         },
         {
@@ -937,7 +954,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/arc_mage/AN_arc_mage_Death.fbx",
-          "sha256": "77b343c3f5fe91ae90f01e10ee7a8dec3d753a492811f81e472e477de3aafed8",
+          "sha256": "120ea5ea3cd3b1b0c2c7f8464f077d9dd806f88184f15fcb2225c2229f64161c",
           "bytes": 241292
         },
         {
@@ -948,7 +965,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/arc_mage/AN_arc_mage_Deploy.fbx",
-          "sha256": "15a350464d4dca18dc8e9e9d463bf9e374632274a4b0032cc0df20e2777a905e",
+          "sha256": "75f19773e35c3866680da03817680bc60ec7562efc5d57c8d35951847a8e04eb",
           "bytes": 214508
         },
         {
@@ -959,7 +976,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/arc_mage/AN_arc_mage_Status.fbx",
-          "sha256": "ecfccce97931ea8a668fdaec7cfe02a41ce19ce5a2fc1de7d573a34f2253f181",
+          "sha256": "3a2401640b66003414f8a31a7e941bd2ce770a66c389619c167555601f052fab",
           "bytes": 228796
         },
         {
@@ -970,7 +987,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/arc_mage/AN_arc_mage_Turn.fbx",
-          "sha256": "056d138ec37362ae9a4640394854e617b222a99698233c02ced390adfc93574e",
+          "sha256": "25f8b5986a9be11bc8761f0032e3442e3af383bf9c48e295d6a983cea60066f0",
           "bytes": 214508
         },
         {
@@ -981,7 +998,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/arc_mage/AN_arc_mage_Acquire.fbx",
-          "sha256": "09982576be94177459896d8ca8a3b13f7f3bccd109b19c7ec1531fd65c295b33",
+          "sha256": "c0e0a27d5c1f700c569de32ae859e7b9834c52770cddef1108c5493b76430753",
           "bytes": 200236
         },
         {
@@ -992,10 +1009,16 @@
           "releaseNormalized": 0.48,
           "loop": false,
           "file": "Assets/Export/Characters/arc_mage/AN_arc_mage_Cast.fbx",
-          "sha256": "64a752c01d6aa020ef9f60d5ab63aa6e4c8f35cdb5a7d45eb4ddec7792120489",
+          "sha256": "5b1642d6d26e4e96567b131b0539617018b157337578f3edc3171d0dc39a8ba7",
           "bytes": 228796
         }
       ],
+      "modelDesign": {
+        "revision": "1.3.0",
+        "equipmentFit": "rest-pose hand center; same-bone equipment and glove",
+        "detailPasses": 1,
+        "wingWeights": null
+      },
       "physics": {
         "type": "capsule",
         "simulationCollisionAuthoritative": false,
@@ -1007,8 +1030,8 @@
       "rigFamily": "humanoid",
       "mesh": {
         "file": "Assets/Export/Characters/tower_archer/SK_tower_archer.fbx",
-        "sha256": "7f0b8ecfd2eb0466e71cca153742318fb15adc3965c37956261754ba250032fc",
-        "bytes": 425692
+        "sha256": "b1e0872961a867270477b6fd074829eb41b69e9816f1ab240aab0f0ecd3cf199",
+        "bytes": 670428
       },
       "bones": [
         "root",
@@ -1079,9 +1102,9 @@
           "bone": "attack_origin",
           "parent": "hand_r",
           "positionMeters": [
-            0.4523076923076923,
-            -0.3,
-            1.0153846153846156
+            0.44769230484962463,
+            -0.19600000977516174,
+            0.8270769715309143
           ]
         },
         "impact_origin": {
@@ -1094,37 +1117,36 @@
           ]
         }
       },
-      "triangles": 15732,
+      "triangles": 24988,
       "materials": [
-        "M_RiftSurface",
-        "M_RiftGlow"
+        "M_RiftSurface"
       ],
       "boundsMeters": [
-        1.049999713897705,
-        1.1230882406234741,
-        1.8914785385131836
+        1.038766622543335,
+        0.6501976251602173,
+        1.8976101875305176
       ],
       "lods": [
         {
           "level": 1,
-          "triangles": 7866,
+          "triangles": 12494,
           "file": "Assets/Export/Characters/tower_archer/SK_tower_archer_LOD1.fbx",
-          "sha256": "f7050be0b69b00a84b2210cb87ab554e5727da15098bc3a02712de20e8195fb6",
-          "bytes": 300460
+          "sha256": "5f3c1f2b732c5525314c6ce451048624a30d65bb2a0e1350a45e340e5c69ab0c",
+          "bytes": 438028
         },
         {
           "level": 2,
-          "triangles": 3930,
+          "triangles": 6246,
           "file": "Assets/Export/Characters/tower_archer/SK_tower_archer_LOD2.fbx",
-          "sha256": "cabf312fefa5300b35343ed854450b863e4d0945a98c775279f7e02b61ccdd2f",
-          "bytes": 202604
+          "sha256": "fd86fefb95da450ce3b3b3a5d625403e7e1ccabda6bfcbca0353686a219d9871",
+          "bytes": 280972
         },
         {
           "level": 3,
-          "triangles": 1880,
+          "triangles": 2998,
           "file": "Assets/Export/Characters/tower_archer/SK_tower_archer_LOD3.fbx",
-          "sha256": "5aa9b928015f02ab44e0d36c91e4959a82a625d8115d28299d5cd91cf18976f8",
-          "bytes": 138252
+          "sha256": "f0b779ed7b03a14aaa4b8ab7b99356fcae5127e74bb46b3cd7c50b5510480ccb",
+          "bytes": 181548
         }
       ],
       "animations": [
@@ -1136,8 +1158,8 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/tower_archer/AN_tower_archer_Idle.fbx",
-          "sha256": "a37b26b4760fddd2a7880d10a5a2a3f2759e845f3235de48344c3066fe5e91a3",
-          "bytes": 252156
+          "sha256": "12560b325117cb880bb45e3ce0c6808a92865d6232f401179e25f7a842191a6c",
+          "bytes": 252092
         },
         {
           "name": "Locomotion",
@@ -1147,7 +1169,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/tower_archer/AN_tower_archer_Locomotion.fbx",
-          "sha256": "32a7beb5151ad4e02b19f9c6813b1a049817f866dc7a53960575f20362da6351",
+          "sha256": "985577febfec35d06d41c9a9f2e60da8af306aaac46c6e8752fdc37d1526d076",
           "bytes": 228796
         },
         {
@@ -1158,7 +1180,7 @@
           "releaseNormalized": 0.48,
           "loop": false,
           "file": "Assets/Export/Characters/tower_archer/AN_tower_archer_Attack.fbx",
-          "sha256": "3507e08306028eaf882be1459c695cf752f84e13847fec5ba949a38afdf19678",
+          "sha256": "9df1bba160ae0751456a34d638469cc81fd46cd91bea6f9c5410eb010c5be5de",
           "bytes": 228796
         },
         {
@@ -1169,7 +1191,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/tower_archer/AN_tower_archer_Hit.fbx",
-          "sha256": "37a03a0f3ac78f016fbb48f5d04e90c09789868e0b0a277a28816c7d3895ec61",
+          "sha256": "b069433e893e285082e7e594f089a4b0f89cb974f6199110650e9c412a47fa43",
           "bytes": 200252
         },
         {
@@ -1180,8 +1202,8 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/tower_archer/AN_tower_archer_Death.fbx",
-          "sha256": "3f38d3c5c6c51a9b8753c3d9cbfed786710b414a139a17d336f261709795b29a",
-          "bytes": 241468
+          "sha256": "73f85b87bdd6eef38da123ed60ddba5f2aff3d6a41e83595ca5c01b759cc19ed",
+          "bytes": 241404
         },
         {
           "name": "Deploy",
@@ -1191,7 +1213,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/tower_archer/AN_tower_archer_Deploy.fbx",
-          "sha256": "d7b3a11a786d973eb8f230e7005d9b089177aa453b4ef611ef1d94167697086d",
+          "sha256": "00c0207b5b2e2548d97f7df472bb92584ffa09f4e0fedae2831b69e71d65cf12",
           "bytes": 214524
         },
         {
@@ -1202,7 +1224,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/tower_archer/AN_tower_archer_Status.fbx",
-          "sha256": "e78e3bafc6b6dda751afafdc88f144d9f5d7c0660307fee9e63b31663b2b7f14",
+          "sha256": "81a90e9815de3ca85e38cd992cbae9e97e4d9fb3ba8a35ae3324d6e25c5f6d60",
           "bytes": 228796
         },
         {
@@ -1213,7 +1235,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/tower_archer/AN_tower_archer_Turn.fbx",
-          "sha256": "3ea05239fc806403354f33fc2c35d2a094db992a852c32eb730480e42465b16e",
+          "sha256": "e8b91215df4af3a124c0a48748131cc2c69dac4bf8a4a18d1127b31037c02447",
           "bytes": 214524
         },
         {
@@ -1224,7 +1246,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/tower_archer/AN_tower_archer_Acquire.fbx",
-          "sha256": "2dc470cd59aaf316e8c63097209d77179eacbb07796e63864a23ac821d1bc299",
+          "sha256": "1c9271bae1d0c380f959547266ce3ff4f057a158b791a34ecc90b5950c86e7ba",
           "bytes": 200252
         },
         {
@@ -1235,10 +1257,16 @@
           "releaseNormalized": 0.48,
           "loop": false,
           "file": "Assets/Export/Characters/tower_archer/AN_tower_archer_DrawRelease.fbx",
-          "sha256": "592f252699d6ba8a4183c78cd7f819a80318c867f079b26d3c715ace8d56665b",
-          "bytes": 217004
+          "sha256": "bfe22132bc4b8e018a2693a56d0018123deafcb825af89c7f3bca5ca0150007d",
+          "bytes": 217228
         }
       ],
+      "modelDesign": {
+        "revision": "1.3.0",
+        "equipmentFit": "rest-pose hand center; same-bone equipment and glove",
+        "detailPasses": 1,
+        "wingWeights": null
+      },
       "physics": {
         "type": "capsule",
         "simulationCollisionAuthoritative": false,
@@ -1250,8 +1278,8 @@
       "rigFamily": "quadruped",
       "mesh": {
         "file": "Assets/Export/Characters/boulderback/SK_boulderback.fbx",
-        "sha256": "4fd171c09918f500ba59eb6cef56e9a3f0084feb8d12dd29c92d97dd763840da",
-        "bytes": 1392124
+        "sha256": "92fc85ffee512a1e156c2f770c3a76f7fde9f154de7d86681f37c5f55cc8026b",
+        "bytes": 1435420
       },
       "bones": [
         "root",
@@ -1357,37 +1385,37 @@
           ]
         }
       },
-      "triangles": 39662,
+      "triangles": 41516,
       "materials": [
         "M_RiftSurface",
         "M_RiftGlow"
       ],
       "boundsMeters": [
-        1.3349417448043823,
+        1.239999771118164,
         2.2259891033172607,
-        2.3461179733276367
+        2.1162524223327637
       ],
       "lods": [
         {
           "level": 1,
-          "triangles": 19830,
+          "triangles": 20758,
           "file": "Assets/Export/Characters/boulderback/SK_boulderback_LOD1.fbx",
-          "sha256": "d15ff31773338c332a790f20986e01b31949aa3dd6ac97e3c3081a6ee1d524b6",
-          "bytes": 793292
+          "sha256": "ea85df2c10a227d830725376926bfecd767419f518a6d7f193da0282373e3782",
+          "bytes": 814460
         },
         {
           "level": 2,
-          "triangles": 9914,
+          "triangles": 10378,
           "file": "Assets/Export/Characters/boulderback/SK_boulderback_LOD2.fbx",
-          "sha256": "415c6fb5cbe34b64571d73517803c22a780e6d181735649c41b7528c6dc99260",
-          "bytes": 448156
+          "sha256": "cf8e8faddf62aa54e72e8a149008de357cfdc0a10b2b6e2c2a420d5317b33c7d",
+          "bytes": 459292
         },
         {
           "level": 3,
-          "triangles": 4758,
+          "triangles": 4980,
           "file": "Assets/Export/Characters/boulderback/SK_boulderback_LOD3.fbx",
-          "sha256": "bd7217b94cfa8bdf12bbeed3b0af965369ad4358317839af5421c5423ee4a7bf",
-          "bytes": 269020
+          "sha256": "3e314b21286dfd8183a77ffc67c92addd548c7115afbf692a4d182bcbeb498ca",
+          "bytes": 274108
         }
       ],
       "animations": [
@@ -1399,7 +1427,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/boulderback/AN_boulderback_Idle.fbx",
-          "sha256": "48a27e01dbcd3cd673ad8e41d0ed08f3cb2f613068dbc835eea80833afceb0c7",
+          "sha256": "a1d715d7babfdbc8af13c21682b0ed585b204606d49153426fb5207b9b392756",
           "bytes": 264764
         },
         {
@@ -1410,7 +1438,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/boulderback/AN_boulderback_Locomotion.fbx",
-          "sha256": "0391ce73cb03142ac3b7de8bd4d490d1008e470269185f61d6e0f7680ccb3e21",
+          "sha256": "9ccbe5f4a86839efb32c5e210bdbb7a206e6c249be44ed54cb099a0c031c9695",
           "bytes": 245660
         },
         {
@@ -1421,7 +1449,7 @@
           "releaseNormalized": 0.48,
           "loop": false,
           "file": "Assets/Export/Characters/boulderback/AN_boulderback_Attack.fbx",
-          "sha256": "b0489687e4e6256ac5b68437bf69ef46fda15a5e367ab9db345aa77896181c51",
+          "sha256": "c59eeff6818a9da32dc1b01a87702de6060273f039de54039961bd3f1758fb71",
           "bytes": 245660
         },
         {
@@ -1432,7 +1460,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/boulderback/AN_boulderback_Hit.fbx",
-          "sha256": "29f9cb81ebe81502bd9fa4c601831bb8bda264edc78d46a34071db05686613b4",
+          "sha256": "2496131552e30e86df35dc6e642cd8a3a8d1b87c41c736970d746c1bc76a8cd9",
           "bytes": 214908
         },
         {
@@ -1443,7 +1471,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/boulderback/AN_boulderback_Death.fbx",
-          "sha256": "553a0d7273e6f9b02ff8d7c56aa51efa48e23270c9334a037176cfa43b4064a4",
+          "sha256": "28b6634788d1c1692cece6aa9e29e4be9918c4aac5758bba1c9af3dbd9359634",
           "bytes": 251660
         },
         {
@@ -1454,7 +1482,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/boulderback/AN_boulderback_Deploy.fbx",
-          "sha256": "90e74f352155e49568fe0eb9c1ef8c183612bb62056bb14ac99f0137c0884919",
+          "sha256": "6b0c110a39b226c7d854d4520770ef90fb8cfa6386926f5b453b050a61de2105",
           "bytes": 230284
         },
         {
@@ -1465,7 +1493,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/boulderback/AN_boulderback_Status.fbx",
-          "sha256": "8f612b84c23f3ef6a47f9ddfa2cf02f09849a18d4408850716c7e3cc8e5c7b38",
+          "sha256": "7e5a82cce3203cb568388cf7360821800acfd2954cc434afc4ebae5295e12bc8",
           "bytes": 245660
         },
         {
@@ -1476,7 +1504,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/boulderback/AN_boulderback_Turn.fbx",
-          "sha256": "8be999a1927dba2ba23a76eb299c015f5fb94a42aa0ffac203288bf2c6f2e0c0",
+          "sha256": "115e71444d40c12a9ebfd8ef8701673b14afc35c8fbcd4550682fc7837d1bb3d",
           "bytes": 230284
         },
         {
@@ -1487,7 +1515,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/boulderback/AN_boulderback_Acquire.fbx",
-          "sha256": "f33a57ca061fa1d70a044216ff06529a5b65b8eb3ab3819158e6ed97be881a4b",
+          "sha256": "436077dcc4c6df232738f8cc6ed8a8f3650f5b3bd7e938c11d948bb8b7cf0762",
           "bytes": 214908
         },
         {
@@ -1498,10 +1526,16 @@
           "releaseNormalized": 0.48,
           "loop": false,
           "file": "Assets/Export/Characters/boulderback/AN_boulderback_HeavyImpact.fbx",
-          "sha256": "c9eaccd882cb9a88a99663cefd628d35b8f12894a8c26bc3c652ceb391fb34df",
+          "sha256": "bca82dacd5b84c3dea1fc710dd77f2ba999d56feac78134d660671d329d31a49",
           "bytes": 270892
         }
       ],
+      "modelDesign": {
+        "revision": "1.3.0",
+        "equipmentFit": null,
+        "detailPasses": 1,
+        "wingWeights": null
+      },
       "physics": {
         "type": "capsule",
         "simulationCollisionAuthoritative": false,
@@ -1513,8 +1547,8 @@
       "rigFamily": "quadruped",
       "mesh": {
         "file": "Assets/Export/Characters/rambeast/SK_rambeast.fbx",
-        "sha256": "d01677c9273ad2dcdbc65fd2a604f49e02f37e2ce2f5420777242136c911ebd6",
-        "bytes": 1547596
+        "sha256": "72f251be12d58de1d46a32d651fe5ad4f99d05781c382141343e72fbd6cf0327",
+        "bytes": 2030348
       },
       "bones": [
         "root",
@@ -1620,37 +1654,37 @@
           ]
         }
       },
-      "triangles": 46580,
+      "triangles": 44386,
       "materials": [
         "M_RiftSurface",
         "M_RiftGlow"
       ],
       "boundsMeters": [
-        1.3683075904846191,
-        2.5663092136383057,
-        1.6128190755844116
+        1.2982109785079956,
+        2.5863091945648193,
+        1.7150214910507202
       ],
       "lods": [
         {
           "level": 1,
-          "triangles": 23290,
+          "triangles": 22192,
           "file": "Assets/Export/Characters/rambeast/SK_rambeast_LOD1.fbx",
-          "sha256": "2e7bbca0939821fe8eb2b83d0ca0f4a1318a2c0893d7486d3773005bc05ee4fa",
-          "bytes": 859036
+          "sha256": "754363537afcd3696a0fc7ac1b04bf46c1eb8ca77864805adef3faf88801b32f",
+          "bytes": 1076268
         },
         {
           "level": 2,
-          "triangles": 11644,
+          "triangles": 11096,
           "file": "Assets/Export/Characters/rambeast/SK_rambeast_LOD2.fbx",
-          "sha256": "3206fa53817a36e5f023dd412caf5b174d2e8faecef507272cd16411087b199b",
-          "bytes": 487500
+          "sha256": "2fce749e30d5c34cd7dc99b46f4159ac1fc5102741d6ad3488f72ec6797e36fb",
+          "bytes": 584444
         },
         {
           "level": 3,
-          "triangles": 5586,
+          "triangles": 5324,
           "file": "Assets/Export/Characters/rambeast/SK_rambeast_LOD3.fbx",
-          "sha256": "00c9d769c84cb3bf165612249de630665122c0b8aba3ead1db364baf30e464de",
-          "bytes": 295948
+          "sha256": "10a51e1a453cb3eb0bebd363899a1993f24e72b274e401c4ea6abe87306398ea",
+          "bytes": 341564
         }
       ],
       "animations": [
@@ -1662,7 +1696,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/rambeast/AN_rambeast_Idle.fbx",
-          "sha256": "01b1fe6554ae59560c4e3550fba8e9a269557d33d7fd5f51a20a7fb3f33c11e3",
+          "sha256": "140215b44cb45e077d37e21c09af3ca5a8da72a6992ff87aa386be110bb7ec84",
           "bytes": 264764
         },
         {
@@ -1673,7 +1707,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/rambeast/AN_rambeast_Locomotion.fbx",
-          "sha256": "b355764201cf47b85f79639c069fdd47c14dc09b9d37734a5b5e7603035975b4",
+          "sha256": "44f0703b4ec60cffeabb848ee006b6078ad1a0955b8a9e45a4c753c4fd6cd4b5",
           "bytes": 245644
         },
         {
@@ -1684,7 +1718,7 @@
           "releaseNormalized": 0.48,
           "loop": false,
           "file": "Assets/Export/Characters/rambeast/AN_rambeast_Attack.fbx",
-          "sha256": "7f840b4bbc1373d251069c6fe579e02ac190ca44a20002a11b9d0c2a0e85c09a",
+          "sha256": "53ab1c17199287f4d2bc07b63cbb4da45732b3e906bb1525dae49c29c0e3d193",
           "bytes": 245644
         },
         {
@@ -1695,7 +1729,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/rambeast/AN_rambeast_Hit.fbx",
-          "sha256": "4b7a8c54385b565ba50defc4b410bca4a436c8a7d49a270f65b6b25a3954acaa",
+          "sha256": "6dfa919fc6bfd0a753f9bff7b240d5b5913072adc7503c7c2b4890edca1f8916",
           "bytes": 214908
         },
         {
@@ -1706,7 +1740,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/rambeast/AN_rambeast_Death.fbx",
-          "sha256": "242c3ae331b276e74d0f3bbd5eafbb02db12876dfcad84bad740a4279d01a355",
+          "sha256": "71e47bd6be50d64e5da2631730aef4c813a5eef65c28ef79c047dd1f228d03f3",
           "bytes": 251644
         },
         {
@@ -1717,7 +1751,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/rambeast/AN_rambeast_Deploy.fbx",
-          "sha256": "f27b45b8601d98bdf0b825c26a1b14b1afbf1253b8ddc863b89fcd72005863f8",
+          "sha256": "d2ea1af61d36827f02b61eda706d430906a04f9f61927247aa181fcaaf8b235c",
           "bytes": 230284
         },
         {
@@ -1728,7 +1762,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/rambeast/AN_rambeast_Status.fbx",
-          "sha256": "5a1391aac367004f8bb77eda5a5734a6f7601f1fe68a6ab0dbbf9e4cb6d0ed82",
+          "sha256": "8b43f7bbea75319d6ae7db3b640645ca6c51d220271925bb5c96201b9bd70ab3",
           "bytes": 245644
         },
         {
@@ -1739,7 +1773,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/rambeast/AN_rambeast_Turn.fbx",
-          "sha256": "79db52f2da953a6e7ff1cc9b18ce9ee8f4f2be11aac0ddbe6984a3278432c5e9",
+          "sha256": "515c85b18695cac4dc9b41d84bc695b4e8aee6fbc8beca1795ad24c2c9e60041",
           "bytes": 230284
         },
         {
@@ -1750,7 +1784,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/rambeast/AN_rambeast_Acquire.fbx",
-          "sha256": "be86f63cc0cece4b89e6d7c222f3fc9aa76cc752207f3f7ec76e229142addff0",
+          "sha256": "16ef4d484f43f0c650068f80cff36e0e4063b578c79163047b73fbe4c0f93f6d",
           "bytes": 214908
         },
         {
@@ -1761,10 +1795,16 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/rambeast/AN_rambeast_Charge.fbx",
-          "sha256": "841f69bba15746e6becc87b194eec52155d9ecf0cc5bdd84e59ab559ac1ca8ae",
+          "sha256": "b760c5e07c88fa9d3b4f227454a504ad81970ec736210e9824fa9e6b83807abe",
           "bytes": 245644
         }
       ],
+      "modelDesign": {
+        "revision": "1.3.0",
+        "equipmentFit": null,
+        "detailPasses": 1,
+        "wingWeights": null
+      },
       "physics": {
         "type": "capsule",
         "simulationCollisionAuthoritative": false,
@@ -1776,8 +1816,8 @@
       "rigFamily": "quadruped",
       "mesh": {
         "file": "Assets/Export/Characters/frost_fang/SK_frost_fang.fbx",
-        "sha256": "99ab846e708ac9ffb2f5e366fa960f3c52713deeee7f3e47b79ab5b23b576a14",
-        "bytes": 1505340
+        "sha256": "e9c53d0b9ef1a9d0033415e5a5748a4c36c7c2f08d609a843b63a967f17ed510",
+        "bytes": 1370396
       },
       "bones": [
         "root",
@@ -1883,7 +1923,7 @@
           ]
         }
       },
-      "triangles": 45484,
+      "triangles": 41158,
       "materials": [
         "M_RiftSurface",
         "M_RiftGlow"
@@ -1891,29 +1931,29 @@
       "boundsMeters": [
         1.2199997901916504,
         2.546309232711792,
-        1.9604722261428833
+        1.717002034187317
       ],
       "lods": [
         {
           "level": 1,
-          "triangles": 22742,
+          "triangles": 20578,
           "file": "Assets/Export/Characters/frost_fang/SK_frost_fang_LOD1.fbx",
-          "sha256": "6e82c5607f518bfc7f01e324d79bce107f73aae6094f31e8bab999202fb63184",
-          "bytes": 841788
+          "sha256": "f29fbd875cdb683f4347e31b3d1c10c2a37e7b86eb54dc977b76610d834c6037",
+          "bytes": 772380
         },
         {
           "level": 2,
-          "triangles": 11370,
+          "triangles": 10288,
           "file": "Assets/Export/Characters/frost_fang/SK_frost_fang_LOD2.fbx",
-          "sha256": "9d0d93540e146fc845cee24a10e5b451efef0b7b9878715fd9384b6a5662b2c2",
-          "bytes": 487020
+          "sha256": "c7f35d4aa27ab61462e4f2c0aaf15bd761b19d7efb7e413bc6efe33c3f6cdec7",
+          "bytes": 452636
         },
         {
           "level": 3,
-          "triangles": 5458,
+          "triangles": 4938,
           "file": "Assets/Export/Characters/frost_fang/SK_frost_fang_LOD3.fbx",
-          "sha256": "f1c23f19c6387dd6c7cd959939cbfd878cb0ffbd6eb298f246c91a784da26391",
-          "bytes": 297948
+          "sha256": "ffa96a7be904a55123917fa229d12fc41ce56f74560731178f57150dc64bfc85",
+          "bytes": 274460
         }
       ],
       "animations": [
@@ -1925,7 +1965,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/frost_fang/AN_frost_fang_Idle.fbx",
-          "sha256": "b25c277bf292c6aad31bdeaab94b01bf91d23d690192c733a7c2cb0f6c747589",
+          "sha256": "3ca063feddf79322f3ac935223d71a696189d1a19366f0a68fef1c1401750c51",
           "bytes": 264764
         },
         {
@@ -1936,7 +1976,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/frost_fang/AN_frost_fang_Locomotion.fbx",
-          "sha256": "db7e8cb0e911dd373e918ca730e1f7f962b7c432e10babc4242dc2c18513cbd8",
+          "sha256": "d7e606a6d8bb86f3e15a8a6c68c1cc415aa7872136e246b567ca4a424d0fc413",
           "bytes": 245660
         },
         {
@@ -1947,7 +1987,7 @@
           "releaseNormalized": 0.48,
           "loop": false,
           "file": "Assets/Export/Characters/frost_fang/AN_frost_fang_Attack.fbx",
-          "sha256": "15ff8677a6a0d15bb271416421a3e9b896e49739d1b9842c8f67aa517fbb6c76",
+          "sha256": "608f21fd7520229c2945f2879281db140e532272cd2004e02b7ba213daeebd5c",
           "bytes": 245660
         },
         {
@@ -1958,7 +1998,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/frost_fang/AN_frost_fang_Hit.fbx",
-          "sha256": "64b2cb22217db6c43a3ead52f1016d8a99afbb66ed531308c0fd186ee8e53931",
+          "sha256": "975e3047e6ff9c0ade48c9935e0a72d0f13bb32aba141a2cd0a4d7903ac9991c",
           "bytes": 214908
         },
         {
@@ -1969,7 +2009,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/frost_fang/AN_frost_fang_Death.fbx",
-          "sha256": "13565711c926e74da8488df6b0ce271dc2dc1bebde8679ebad6d14b86839d2bd",
+          "sha256": "7dc72575ca47d940e34ff8cad3efb33227b925fb38a1a1a4cc5c629c66c64d4a",
           "bytes": 251644
         },
         {
@@ -1980,7 +2020,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/frost_fang/AN_frost_fang_Deploy.fbx",
-          "sha256": "2a24795766198c4c5c2664621c7003e2b4bbae0bf575a9fd91bc875ae41aaaed",
+          "sha256": "5d8d5fe90f3168d0889a05788c634d064e5527f84b0a0b85c315e329c3d05c3d",
           "bytes": 230284
         },
         {
@@ -1991,7 +2031,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/frost_fang/AN_frost_fang_Status.fbx",
-          "sha256": "bb3f15ac6cad54f78037e96fb64dd5744267062e69f939f31f926b7d48b31da9",
+          "sha256": "322d1ae9d5ad160754f99254f1aa5bab0a655768ac8c7eae7c7b1b4b302492db",
           "bytes": 245660
         },
         {
@@ -2002,7 +2042,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/frost_fang/AN_frost_fang_Turn.fbx",
-          "sha256": "3591ef0a339067ed30dae5409be88f9bf215d032fc12f429b2b5bd6e629c5483",
+          "sha256": "d4e3cc6fce42ef72a21a2a27d6683dccfc319beb0478484ac483bd51f2ba015c",
           "bytes": 230284
         },
         {
@@ -2013,7 +2053,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/frost_fang/AN_frost_fang_Acquire.fbx",
-          "sha256": "4e8e0af6b2226adb4f0aba31c3efda3e96ed00ccc09d2cb733e9dfa30931cfac",
+          "sha256": "1eaf1be8ce643208e7d90ebb7402070a93fcb9c4e473a2f30f38c402bf6bdb5a",
           "bytes": 214908
         },
         {
@@ -2024,7 +2064,7 @@
           "releaseNormalized": 0.48,
           "loop": false,
           "file": "Assets/Export/Characters/frost_fang/AN_frost_fang_FrostAttack.fbx",
-          "sha256": "2a8cd96cb55a4fa3287b780b7cc013df3cfd33af5beda8136d50bba1f87f1691",
+          "sha256": "9b80abe3b1ce33d9d4bda0254d2454610ff0d496b0f6fae4550d555c8ff0a497",
           "bytes": 230284
         },
         {
@@ -2035,10 +2075,16 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/frost_fang/AN_frost_fang_Breath.fbx",
-          "sha256": "7e824c69a1eafea310068f1fbc1f7bc423adc55e9796c22d0bd2ad463767ef8f",
+          "sha256": "70b0e329cd61630bd878a5c07f7c3de8166a6f807aa8546dddff5ce3ff4ed500",
           "bytes": 263916
         }
       ],
+      "modelDesign": {
+        "revision": "1.3.0",
+        "equipmentFit": null,
+        "detailPasses": 1,
+        "wingWeights": null
+      },
       "physics": {
         "type": "capsule",
         "simulationCollisionAuthoritative": false,
@@ -2050,8 +2096,8 @@
       "rigFamily": "flyer",
       "mesh": {
         "file": "Assets/Export/Characters/sky_manta/SK_sky_manta.fbx",
-        "sha256": "c4092730d5b632f859fb1908f44beb28a1f835c8e0a87e8d5739c2773ee8be4b",
-        "bytes": 224668
+        "sha256": "238ea347eaa0a606988466684f86da774ec009c8050416756eaf0fb637f54fd4",
+        "bytes": 622428
       },
       "bones": [
         "root",
@@ -2132,37 +2178,37 @@
           ]
         }
       },
-      "triangles": 7876,
+      "triangles": 19600,
       "materials": [
         "M_RiftSurface",
         "M_RiftGlow"
       ],
       "boundsMeters": [
         3.126688003540039,
-        2.1502785682678223,
-        0.37999993562698364
+        2.1787590980529785,
+        0.344443678855896
       ],
       "lods": [
         {
           "level": 1,
-          "triangles": 3938,
+          "triangles": 9800,
           "file": "Assets/Export/Characters/sky_manta/SK_sky_manta_LOD1.fbx",
-          "sha256": "3d685ffae1fab802ad98cf4d1d93ea79f9c001b46b4986a3da3a56c54b7d4dd9",
-          "bytes": 164844
+          "sha256": "23ab5920e6a50728ff8cc21a78be2e788f8539f1b334b8b8b5b897dc57deb642",
+          "bytes": 365052
         },
         {
           "level": 2,
-          "triangles": 1968,
+          "triangles": 4900,
           "file": "Assets/Export/Characters/sky_manta/SK_sky_manta_LOD2.fbx",
-          "sha256": "9cb4f4bcde64024bc2df74880f8461b8f5604e6c0d2d368bebb1dbff2d4086be",
-          "bytes": 123324
+          "sha256": "2e8d736216da557d01e9ccb1690939620058e60176e09ca9cb1e11d152a7f0ed",
+          "bytes": 225244
         },
         {
           "level": 3,
-          "triangles": 944,
+          "triangles": 2352,
           "file": "Assets/Export/Characters/sky_manta/SK_sky_manta_LOD3.fbx",
-          "sha256": "c57eb22b2062007f377d92fc898ad1722a89b111b19e5df8ddb3f25c6d399ea4",
-          "bytes": 95500
+          "sha256": "9ad5daab2bc9a0829324c82f0143e0f8c17e11bda5fd3f4a6c0c76b5e376dd6f",
+          "bytes": 148604
         }
       ],
       "animations": [
@@ -2174,7 +2220,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/sky_manta/AN_sky_manta_Idle.fbx",
-          "sha256": "d768a434d60fe4edc6a6d53c4c09b5abd1ac7fb1884d54b8d26dfe5ad6c2b035",
+          "sha256": "e3a210328da18189e3f273e8ff708814c4dd1254a15febfd575119b940bd4fc3",
           "bytes": 209740
         },
         {
@@ -2185,7 +2231,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/sky_manta/AN_sky_manta_Locomotion.fbx",
-          "sha256": "dcf8d5371fb72f764535e3fff9222c6e1d128722b1265b83a73c138099b7465b",
+          "sha256": "82768fd27085b2907a695caf5a2f00f9fd96f064b79e74256d83a68d7b933d27",
           "bytes": 187036
         },
         {
@@ -2196,7 +2242,7 @@
           "releaseNormalized": 0.48,
           "loop": false,
           "file": "Assets/Export/Characters/sky_manta/AN_sky_manta_Attack.fbx",
-          "sha256": "2882a2a5f2085ac525f3f4efcc3c73afc8ff1f0f75fcf2ba3b51136658e08d78",
+          "sha256": "401a96c2209122637cff08416efa5dcf95415c8446dbadd6a9d5aaeee56fb504",
           "bytes": 187036
         },
         {
@@ -2207,7 +2253,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/sky_manta/AN_sky_manta_Hit.fbx",
-          "sha256": "2952d5b6c7b44a2c33c6ee69cbdf5bcdc89c796fa828d2c5a6f0f9303bdcc1da",
+          "sha256": "ebe04961b9587988af50abb33ac6b8d42146417b8b0cb5253d366f79b7abd124",
           "bytes": 163964
         },
         {
@@ -2218,7 +2264,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/sky_manta/AN_sky_manta_Death.fbx",
-          "sha256": "c8d2baa0428dabc677ed6a806e42d5371b8cde1374c0c10f2c713e1eda6286f0",
+          "sha256": "b4275d8c98a41981d7db63523e6038995dadf49117abf749ae7c27f1bbb413c5",
           "bytes": 197164
         },
         {
@@ -2229,7 +2275,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/sky_manta/AN_sky_manta_Deploy.fbx",
-          "sha256": "6bbe9d23f3a3891fcf393e1e24c0937378dbe7ffa4e689a127eaa3d0d1ab2038",
+          "sha256": "c78c6f9d05cf626563dfe1ce285e47628c805486df0012fb9c31f0bf9a7849df",
           "bytes": 175500
         },
         {
@@ -2240,7 +2286,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/sky_manta/AN_sky_manta_Status.fbx",
-          "sha256": "34b5387b7e75ab732d43bf7e2ff76425d6aaa216c94ded2c65a7d5205b1cab00",
+          "sha256": "0d1c919ae4c05a10efdfd33f81451b28e920f8978de7c9f7972b2fafd210d240",
           "bytes": 187036
         },
         {
@@ -2251,7 +2297,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/sky_manta/AN_sky_manta_Turn.fbx",
-          "sha256": "fab95b9b55f96dcc396e248871fc4f21bd716f392bd54f17779753d5da73dc38",
+          "sha256": "6088a0bda407c7dcef3423337b67b5a83d1f949a8834d5242c9df757fb0a4b26",
           "bytes": 175500
         },
         {
@@ -2262,7 +2308,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/sky_manta/AN_sky_manta_Acquire.fbx",
-          "sha256": "812808384c61062fb8376ceb2ac91da4324d7823fe819cae52134e9d3ec16506",
+          "sha256": "50e3fb68e6e186a4162ac989682790db82ddf02c85b9da07495f6365b9d7664f",
           "bytes": 163964
         },
         {
@@ -2273,10 +2319,16 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/sky_manta/AN_sky_manta_WingCycle.fbx",
-          "sha256": "58ca0b874e95161ecf06379cf9860c9dc5f7e0b3ec20279e6fbc9677119b96f9",
+          "sha256": "09d3e8405e7721bf59ec190755d9d205a589f5aa2621032ee34d29a7f73e0ad0",
           "bytes": 188556
         }
       ],
+      "modelDesign": {
+        "revision": "1.3.0",
+        "equipmentFit": null,
+        "detailPasses": 1,
+        "wingWeights": "continuous shared span gradient"
+      },
       "physics": {
         "type": "capsule",
         "simulationCollisionAuthoritative": false,
@@ -2288,8 +2340,8 @@
       "rigFamily": "flyer",
       "mesh": {
         "file": "Assets/Export/Characters/vampire_bats/SK_vampire_bats.fbx",
-        "sha256": "9824ebc3ae8926bcca3e904368b499652b26eb7d143348a66e6efe831740096c",
-        "bytes": 197612
+        "sha256": "22df583bb28c0e0fe77bbd75adb09cb4ad9f8421609447216d0bd47e58a1f56b",
+        "bytes": 482156
       },
       "bones": [
         "root",
@@ -2370,37 +2422,37 @@
           ]
         }
       },
-      "triangles": 6532,
+      "triangles": 14598,
       "materials": [
         "M_RiftSurface",
         "M_RiftGlow"
       ],
       "boundsMeters": [
-        2.2638726234436035,
-        1.2117503881454468,
-        0.7885020971298218
+        2.2638723850250244,
+        1.2457504272460938,
+        0.8178354501724243
       ],
       "lods": [
         {
           "level": 1,
-          "triangles": 3266,
+          "triangles": 7298,
           "file": "Assets/Export/Characters/vampire_bats/SK_vampire_bats_LOD1.fbx",
-          "sha256": "c539ad1d717b71b7f75183d442eb3e8bc5fe13039f8ed7ae6d76aa9740111aaf",
-          "bytes": 149740
+          "sha256": "d6149d275cfc8b0dc10352d4689a68d1f89aecf21b709c44aa5fcd36bc0e9de6",
+          "bytes": 300236
         },
         {
           "level": 2,
-          "triangles": 1632,
+          "triangles": 3648,
           "file": "Assets/Export/Characters/vampire_bats/SK_vampire_bats_LOD2.fbx",
-          "sha256": "fb37504a89a1a7e11385ab205e0502aed200e0e9a15c1893d032fb0aba52e555",
-          "bytes": 115036
+          "sha256": "417bf7ac0b429525a99e371d8bf704b2322aa832338d8152d6e33cd1dbde9dd2",
+          "bytes": 192652
         },
         {
           "level": 3,
-          "triangles": 782,
+          "triangles": 1750,
           "file": "Assets/Export/Characters/vampire_bats/SK_vampire_bats_LOD3.fbx",
-          "sha256": "3236f149e05de56c247840411131ddfd49e199b6859aa64fa51feb25ac013a90",
-          "bytes": 91692
+          "sha256": "2153a911f9c42baf3a3b4732871e1ccd6d6a74a403ac37c224605ac5567d9d59",
+          "bytes": 130972
         }
       ],
       "animations": [
@@ -2412,7 +2464,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/vampire_bats/AN_vampire_bats_Idle.fbx",
-          "sha256": "aa97278a673e347bce4c39585acad40e09584a5bf66729b9bf8c46c9d53da6c6",
+          "sha256": "53496f578d8a46e51f93225cf33c684ee1df68cea4a9d1dc6178ba8ddf5e3bec",
           "bytes": 209788
         },
         {
@@ -2423,7 +2475,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/vampire_bats/AN_vampire_bats_Locomotion.fbx",
-          "sha256": "81702d8427a6befa8709e318049f23764b2fde10b6eaaf1ecb85caf4a919e792",
+          "sha256": "0ab8a58255deae2e633d0ec4faf16b01596a306748881015525e7d3223244944",
           "bytes": 187036
         },
         {
@@ -2434,7 +2486,7 @@
           "releaseNormalized": 0.48,
           "loop": false,
           "file": "Assets/Export/Characters/vampire_bats/AN_vampire_bats_Attack.fbx",
-          "sha256": "3797160196fd20d24bf74a0b18a03aea42a3d2d35bf902b5d7f6b33b033bcff0",
+          "sha256": "d7c9ec531c2adddc1c56210b87a0501bb8a0761d41e0585e17b6e8056c4f6d09",
           "bytes": 187036
         },
         {
@@ -2445,7 +2497,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/vampire_bats/AN_vampire_bats_Hit.fbx",
-          "sha256": "fc42dda0f76c22a27cb842b39b8786716ddddfad000190fc2fc25512edf2bc43",
+          "sha256": "c59fa91c9fb8b52f0cfd2c87360f3dc22ddcb7c1b7b9ff43e7e387ecc42cdcf5",
           "bytes": 163980
         },
         {
@@ -2456,7 +2508,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/vampire_bats/AN_vampire_bats_Death.fbx",
-          "sha256": "923e73abebb7eac334a0688132f4531b3bb8a53e5233f031b59b72a21992c9d6",
+          "sha256": "118cd18cc98c006fdafc746b743e8efca3adddd79c38c096de20de9a9737ac79",
           "bytes": 197180
         },
         {
@@ -2467,7 +2519,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/vampire_bats/AN_vampire_bats_Deploy.fbx",
-          "sha256": "aa2670ef68f530552ec441804a222c8b8a4e18aea21cfae8c553262b051c2f63",
+          "sha256": "f9548f7e86db5c45336ab228b5e28993eae448482d16e9bc9c061d69bbad8a3f",
           "bytes": 175500
         },
         {
@@ -2478,7 +2530,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/vampire_bats/AN_vampire_bats_Status.fbx",
-          "sha256": "55e03cbfba889b8970c67820293f4d5fcaa949fdcac0e087af95bfaded0fb879",
+          "sha256": "819885c9cb69d43bb3b7a83df79192da2ee2c250a054b0fbec7b4b548589f9a2",
           "bytes": 187036
         },
         {
@@ -2489,7 +2541,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/vampire_bats/AN_vampire_bats_Turn.fbx",
-          "sha256": "a7dbc27987281231483d85ba820dfbac04f9b1ae2ab609678ab18d09dc2862c5",
+          "sha256": "ef2ef6ae275bf0bb3e53c1ac125ef340df8c62711a0c508e1bd72a5e65236ea0",
           "bytes": 175500
         },
         {
@@ -2500,7 +2552,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/vampire_bats/AN_vampire_bats_Acquire.fbx",
-          "sha256": "c11a9aaee99234ddab5a1344bcc110fb3ca90c1a01354913d782c7617d3e5476",
+          "sha256": "528c22a6affc8f0e1219ad95fd51332757feaefb58339d081cfcf09d300edd35",
           "bytes": 163980
         },
         {
@@ -2511,10 +2563,16 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/vampire_bats/AN_vampire_bats_WingCycle.fbx",
-          "sha256": "d6c3dcfc00972e4f5929ee79915f6aa7b182fd2edea670f814802556d4e35a90",
+          "sha256": "7a95df45c47592de1818ea7e6d60849a518dc23455b54b5f9f4310f5d4f34b53",
           "bytes": 163980
         }
       ],
+      "modelDesign": {
+        "revision": "1.3.0",
+        "equipmentFit": null,
+        "detailPasses": 1,
+        "wingWeights": "continuous shared span gradient"
+      },
       "physics": {
         "type": "capsule",
         "simulationCollisionAuthoritative": false,
@@ -2526,8 +2584,8 @@
       "rigFamily": "flyer",
       "mesh": {
         "file": "Assets/Export/Characters/storm_raven/SK_storm_raven.fbx",
-        "sha256": "fddb0aac19872e26cfa1bcfe2fdffad13152e5dc0bf86b232ac13b2ac50545e1",
-        "bytes": 359532
+        "sha256": "9a1480876b257edfd3e31862709c041dba66e5f3d5bcdf82481456122255d20f",
+        "bytes": 761212
       },
       "bones": [
         "root",
@@ -2608,37 +2666,37 @@
           ]
         }
       },
-      "triangles": 12744,
+      "triangles": 23344,
       "materials": [
         "M_RiftSurface",
         "M_RiftGlow"
       ],
       "boundsMeters": [
         3.332244396209717,
-        1.8476276397705078,
+        1.8566105365753174,
         0.7926256656646729
       ],
       "lods": [
         {
           "level": 1,
-          "triangles": 6352,
+          "triangles": 11672,
           "file": "Assets/Export/Characters/storm_raven/SK_storm_raven_LOD1.fbx",
-          "sha256": "25869212fdcd6702a569c71db5345dfd81ada9d82ab8bc7e75847a67ef43f652",
-          "bytes": 255932
+          "sha256": "050b05aa896e70ce15cfd7408e899f0d8860b17581a5375e622358fc149ba8ec",
+          "bytes": 438988
         },
         {
           "level": 2,
-          "triangles": 3186,
+          "triangles": 5820,
           "file": "Assets/Export/Characters/storm_raven/SK_storm_raven_LOD2.fbx",
-          "sha256": "d78d95fcdb2fe363d11f027bd58cbad2d49364028c30bdb096f016d17d90f7d6",
-          "bytes": 173996
+          "sha256": "e907c14d9a83a5f8d759341631da02b68e85fa52defcc4f34bc3292b794c1a50",
+          "bytes": 274268
         },
         {
           "level": 3,
-          "triangles": 1528,
+          "triangles": 2800,
           "file": "Assets/Export/Characters/storm_raven/SK_storm_raven_LOD3.fbx",
-          "sha256": "6a2f778c6be06930ba703208185bbdf822c4880cef60a1669c7b5b4e33762930",
-          "bytes": 125356
+          "sha256": "619e22f3b8ce9f37be3de9c60bc6c9c540f3cadffcd0b3e59368adba06c58570",
+          "bytes": 176540
         }
       ],
       "animations": [
@@ -2650,7 +2708,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/storm_raven/AN_storm_raven_Idle.fbx",
-          "sha256": "ddbe0bd150877c6d1731c4720d699f37900e4e55f8284f0e133d3a6e6c732eb5",
+          "sha256": "a49d3ec75de1ca5889289261656c87e9530b4a84896b7dbcc65b4f4baf01aa8c",
           "bytes": 209756
         },
         {
@@ -2661,7 +2719,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/storm_raven/AN_storm_raven_Locomotion.fbx",
-          "sha256": "4c11c9c4602eb965761309fc83b4cbfe4f3b2aeadd6d59748f9325d42e1eb504",
+          "sha256": "da1085bf40a9ad0199d8ef1ba5d0d5c495593f0fc16a93cc09230a9807c83eba",
           "bytes": 187036
         },
         {
@@ -2672,7 +2730,7 @@
           "releaseNormalized": 0.48,
           "loop": false,
           "file": "Assets/Export/Characters/storm_raven/AN_storm_raven_Attack.fbx",
-          "sha256": "40f72d25a9e1514f5d35c8b1f6e0f71c6a2182d50d46b60f5b3f63a163f4235e",
+          "sha256": "fb57e61d2faf3de85c797f8584ff613222d6476536dbb48b743ed10eb9dee011",
           "bytes": 187036
         },
         {
@@ -2683,7 +2741,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/storm_raven/AN_storm_raven_Hit.fbx",
-          "sha256": "71a9041d38e40579bdabd05ae7b276085c9dd55676a1fd4d237556169064f7cb",
+          "sha256": "f01dc6235c71d6c7fe3c34de7ed59ca0508db09d6755b19ccd843237f5c5c71e",
           "bytes": 163980
         },
         {
@@ -2694,7 +2752,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/storm_raven/AN_storm_raven_Death.fbx",
-          "sha256": "ee3f90f05a27a0eea74b2357155239fbd8aa4fb3e0eb414c4dccd4b58d3006ac",
+          "sha256": "0fc813b8a0ceac49a63cbfc73525870e2e510927fcf12f87d233a29291a408fe",
           "bytes": 197164
         },
         {
@@ -2705,7 +2763,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/storm_raven/AN_storm_raven_Deploy.fbx",
-          "sha256": "37742bb2ff69f1ccd1215f2dd3b0216277301dfd8f7d3b394e7bba30c400d9fe",
+          "sha256": "eb8e8e57f53061d208e6f88d5d265edeeb55859d3cc9068a00d84ed32719b1f9",
           "bytes": 175500
         },
         {
@@ -2716,7 +2774,7 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/storm_raven/AN_storm_raven_Status.fbx",
-          "sha256": "33571df362e2368a74aa0b14dcfffa32e9b23a8d06ecd8981ea8213539eb2a53",
+          "sha256": "671f672f27f2e4e9e2a2bd3df5b02b34c1d14f8e76bade7a0b071b01fdca84e9",
           "bytes": 187036
         },
         {
@@ -2727,7 +2785,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/storm_raven/AN_storm_raven_Turn.fbx",
-          "sha256": "3d46e538f216dc43e07cdd22ceef0784e5ff995d201b6e5c4c4d374236cccdd6",
+          "sha256": "fafccdd4fb8e2daa401c375beb4630645b0c38113a38020f334c35c58fc72989",
           "bytes": 175500
         },
         {
@@ -2738,7 +2796,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/storm_raven/AN_storm_raven_Acquire.fbx",
-          "sha256": "2ec5cdbf7e21f2e9c0170f34147a52418d5af65904385572cebf075b2611489c",
+          "sha256": "49de9556b58a4fadb34d1c72bec9023512246d9638d46aa793a1a2fe573d45d7",
           "bytes": 163980
         },
         {
@@ -2749,7 +2807,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/storm_raven/AN_storm_raven_AuraCharge.fbx",
-          "sha256": "11b5eebcfbc17443ff8992c34306e72f1335a10e027a19ce676c5c5de95b581e",
+          "sha256": "e4ad5d7b1b6ca92c9217fc770dbe35aee46de5a2b763415c563d5b4368a05f33",
           "bytes": 192108
         },
         {
@@ -2760,7 +2818,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/storm_raven/AN_storm_raven_Pulse.fbx",
-          "sha256": "6005dbb47e1d5662ee9b413f9b94968c27904661a965de9e7ce78dbee66bc3a0",
+          "sha256": "800ec82ef2e951f514f2b9f749f7f0eb862b44b702e50cb92c28a1ad94277a58",
           "bytes": 163980
         },
         {
@@ -2771,7 +2829,7 @@
           "releaseNormalized": null,
           "loop": false,
           "file": "Assets/Export/Characters/storm_raven/AN_storm_raven_StunDischarge.fbx",
-          "sha256": "4ea254fcd8aedbfba191ad9812f135e1f07852faa0860aba92501c944e08ec1c",
+          "sha256": "a4780d8417465764a133eb6f16ee23294af1ef410b1641b871b568ee3544b659",
           "bytes": 163980
         },
         {
@@ -2782,10 +2840,16 @@
           "releaseNormalized": null,
           "loop": true,
           "file": "Assets/Export/Characters/storm_raven/AN_storm_raven_WingCycle.fbx",
-          "sha256": "f3af276cdc9ae0d240abf4b2ff9e021e2762aeebb8cebedea31fa825b9d7959d",
+          "sha256": "8d439a3133d8b388f2f40830de54a3e4721e02de7491995d341ccfb55c9c326f",
           "bytes": 180364
         }
       ],
+      "modelDesign": {
+        "revision": "1.3.0",
+        "equipmentFit": null,
+        "detailPasses": 1,
+        "wingWeights": "continuous shared span gradient"
+      },
       "physics": {
         "type": "capsule",
         "simulationCollisionAuthoritative": false,
@@ -2796,6 +2860,9 @@
   "statics": {
     "tower_guard": {
       "name": "tower_guard",
+      "file": "Assets/Export/Environment/SM_tower_guard.fbx",
+      "sha256": "dc5164c623f26b3a7df1fdbcecb1205edc8a58eab132d059125a4254ab7f77b6",
+      "bytes": 281500,
       "triangles": 16960,
       "boundsMeters": [
         2.2800002098083496,
@@ -2811,20 +2878,17 @@
           "level": 1,
           "triangles": 8480,
           "file": "Assets/Export/Environment/SM_tower_guard_LOD1.fbx",
-          "sha256": "9f57420a2fe1615c9c5d94f4ff12d878680f6d6062883d927b9d7bebbdbec03c",
-          "bytes": 236380
+          "sha256": "42539140330ad4ba9d61d2146e1ae1d502097fe1e2a346957089197eb13e2a9b",
+          "bytes": 236268
         },
         {
           "level": 2,
           "triangles": 3730,
           "file": "Assets/Export/Environment/SM_tower_guard_LOD2.fbx",
-          "sha256": "2283dc8c3a0e0ac5cd7fb2c85470e30202bced103db83bc0e7a20ce130113952",
-          "bytes": 124300
+          "sha256": "0d2dd66a5e2f227f46125040d0240741f3e550575a59f987aae3b2b347c60274",
+          "bytes": 124188
         }
       ],
-      "file": "Assets/Export/Environment/SM_tower_guard.fbx",
-      "sha256": "4ad1bcee29e689c5dd9680ef15d3aede4d5e8fecf9efcd21903dcb7a912f6dc2",
-      "bytes": 281676,
       "sockets": {
         "hp_anchor": {
           "positionMeters": [
@@ -2839,11 +2903,58 @@
         "stationaryArchitecture": true
       }
     },
+    "guard_cannon": {
+      "name": "guard_cannon",
+      "file": "Assets/Export/Environment/SM_guard_cannon.fbx",
+      "sha256": "f12767da3fd3d685552d647149065dd389c8f52f0e782d64f468f68768a9256a",
+      "bytes": 83020,
+      "triangles": 2956,
+      "boundsMeters": [
+        1.4470000267028809,
+        0.8399996161460876,
+        0.5299999713897705
+      ],
+      "materials": [
+        "M_RiftSurface",
+        "M_RiftGlow"
+      ],
+      "lods": [
+        {
+          "level": 1,
+          "triangles": 1478,
+          "file": "Assets/Export/Environment/SM_guard_cannon_LOD1.fbx",
+          "sha256": "1e9004c569192767078b38f9bc571293b15b312136bd9d4fdb56e7de5251898a",
+          "bytes": 65532
+        },
+        {
+          "level": 2,
+          "triangles": 650,
+          "file": "Assets/Export/Environment/SM_guard_cannon_LOD2.fbx",
+          "sha256": "45e01fcff6ee13661d8c1d202f601a1a080ec39ba618ec6217662565c8b5c63c",
+          "bytes": 45660
+        }
+      ],
+      "sockets": {
+        "muzzle": {
+          "positionMeters": [
+            0,
+            -0.99,
+            2.63
+          ]
+        }
+      },
+      "pivotMeters": [
+        0,
+        0,
+        0
+      ],
+      "originalPartCount": 7
+    },
     "tower_core": {
       "name": "tower_core",
       "file": "Assets/Export/Environment/SM_tower_core.fbx",
-      "sha256": "34ed94c1f9dbc577735bf88b637ee9aea9c5a4101a5cacb8a0771af349eb802b",
-      "bytes": 397356,
+      "sha256": "fb8ede9edb6aafc9c6fe0d746345c51a8e6f04fb72b0d681294dbdb825e5e029",
+      "bytes": 397308,
       "triangles": 24240,
       "boundsMeters": [
         2.5992002487182617,
@@ -2859,14 +2970,14 @@
           "level": 1,
           "triangles": 12120,
           "file": "Assets/Export/Environment/SM_tower_core_LOD1.fbx",
-          "sha256": "6df0ad6d5650374e8934acc86a8e3173492de7e642a0d1e2963bc61a59581601",
-          "bytes": 332428
+          "sha256": "36fa5305dc179e9333f84dc716ec2b4b9fde465e143e1aa26038b3dcf8723c88",
+          "bytes": 332444
         },
         {
           "level": 2,
           "triangles": 5332,
           "file": "Assets/Export/Environment/SM_tower_core_LOD2.fbx",
-          "sha256": "93bfb99ee07e2f851ea92abb6fbf6bb2794fa9406cb533660f5b71d82ed6bb0b",
+          "sha256": "3aee2e93a577f45f353b78954b50ad263d3fc2df7ec709a9717b6934ebe298d0",
           "bytes": 170604
         }
       ],
@@ -2890,13 +3001,13 @@
     "archer_tower": {
       "name": "archer_tower",
       "file": "Assets/Export/Environment/SM_archer_tower.fbx",
-      "sha256": "bcab30f7647de4f5596c47798ef8bdd556c918bab164beff04ef094c1b960dfa",
-      "bytes": 318108,
-      "triangles": 17044,
+      "sha256": "bc4f15ec691b3e69d12c23147a17223456a628fdec51c34fb8f1335865954f25",
+      "bytes": 344316,
+      "triangles": 18752,
       "boundsMeters": [
-        2.1619999408721924,
-        2.161850690841675,
-        2.2800002098083496
+        2.131898880004883,
+        2.131999969482422,
+        2.2664999961853027
       ],
       "materials": [
         "M_RiftSurface",
@@ -2905,17 +3016,17 @@
       "lods": [
         {
           "level": 1,
-          "triangles": 8522,
+          "triangles": 9376,
           "file": "Assets/Export/Environment/SM_archer_tower_LOD1.fbx",
-          "sha256": "5dbad0d498c518975cc12e04d8b6e60d0c7143ea05138405b87b5acb53b4bf40",
-          "bytes": 250012
+          "sha256": "59efdecc807c3f1d50ebe10e4e3f41dcb2bfc3a129f5dd04bfb33d3624aa47b6",
+          "bytes": 270268
         },
         {
           "level": 2,
-          "triangles": 3748,
+          "triangles": 4124,
           "file": "Assets/Export/Environment/SM_archer_tower_LOD2.fbx",
-          "sha256": "a1fd6399e90c678ca01df345d2a2ae1a33a9d199e61a5b117669aa659e5a9424",
-          "bytes": 133660
+          "sha256": "1e9398e127f0a869710b41e2ca3fe7d316f1e961b7b8b5e25bdceb7afb828f00",
+          "bytes": 137644
         }
       ],
       "sockets": {
@@ -2938,13 +3049,13 @@
     "nova_flask": {
       "name": "nova_flask",
       "file": "Assets/Export/Environment/SM_nova_flask.fbx",
-      "sha256": "131a3291b3be28e32cb3c37be9a857f9bef0fa8396f5475268c1cc15ff9e50b6",
-      "bytes": 108876,
-      "triangles": 4588,
+      "sha256": "30e978ea7e7b8108bfc1a86470defe1eccdac3ee8339bf8aa5fea86610e3b9fe",
+      "bytes": 127900,
+      "triangles": 4934,
       "boundsMeters": [
-        0.6485106348991394,
-        0.6200001239776611,
-        0.9699999690055847
+        0.6779645681381226,
+        0.7039647102355957,
+        0.9810000658035278
       ],
       "materials": [
         "M_RiftGlass",
@@ -2954,25 +3065,25 @@
       "lods": [
         {
           "level": 1,
-          "triangles": 2294,
+          "triangles": 2466,
           "file": "Assets/Export/Environment/SM_nova_flask_LOD1.fbx",
-          "sha256": "df8d4614e0d936892b9d58226da8d578b1821b4617109ded7afa03910b05bae7",
-          "bytes": 86748
+          "sha256": "38b7971969e44edead3038e9369b2a075218644e1db7f439521fd3c6aab02186",
+          "bytes": 97356
         },
         {
           "level": 2,
-          "triangles": 1008,
+          "triangles": 1084,
           "file": "Assets/Export/Environment/SM_nova_flask_LOD2.fbx",
-          "sha256": "1112cb1a621e0a6a7065a845dbf03bd4ef633a7022249a89bf7fe922eb1932ba",
-          "bytes": 57340
+          "sha256": "932255e580559affebc4aff775714f2baa944bf772ff0ac16c361f4200e36f6f",
+          "bytes": 62172
         }
       ]
     },
     "bridge": {
       "name": "bridge",
       "file": "Assets/Export/Environment/SM_bridge.fbx",
-      "sha256": "ecd7b490fd39465b6fa2bf75301128ab55d1f94b06cfa240709fbf7b8d23be6d",
-      "bytes": 192892,
+      "sha256": "ff3b0b0eca4f032948dd5acc6f9fbea849c71ebffe9377f13676da500cc4cb61",
+      "bytes": 192652,
       "triangles": 10512,
       "boundsMeters": [
         4.199999809265137,
@@ -2987,23 +3098,23 @@
           "level": 1,
           "triangles": 5256,
           "file": "Assets/Export/Environment/SM_bridge_LOD1.fbx",
-          "sha256": "65ca4cd718764b15027cac9a94d882e29be32356125c9c54fe25e34704b7e34e",
-          "bytes": 155308
+          "sha256": "f8bace4988a3f456b8af4f95e1279a689d8f78e8039b4ae02aad193d0fba3942",
+          "bytes": 155212
         },
         {
           "level": 2,
           "triangles": 2312,
           "file": "Assets/Export/Environment/SM_bridge_LOD2.fbx",
-          "sha256": "70c7a50571ed4a5f3bf6b801c256fdb6a777986dfe1fb7c45677d02bdb6fcfc0",
-          "bytes": 87740
+          "sha256": "e6d953bac8f8f2a1d1beac822147956f7b477ec336ad40852a58d03163b4efcf",
+          "bytes": 87708
         }
       ]
     },
     "floor_tile": {
       "name": "floor_tile",
       "file": "Assets/Export/Environment/SM_floor_tile.fbx",
-      "sha256": "101a94757b262fc6e31c0f55a04d891a224adedfa32b68a46e15c189bd9fccb2",
-      "bytes": 42972,
+      "sha256": "a46f2f7fe9a4d0791db120996777f86085d15eb81a333e007895def4c6df02a8",
+      "bytes": 42940,
       "triangles": 1196,
       "boundsMeters": [
         1.0,
@@ -3018,22 +3129,22 @@
           "level": 1,
           "triangles": 598,
           "file": "Assets/Export/Environment/SM_floor_tile_LOD1.fbx",
-          "sha256": "c18f28c22a9b8fc9ef3ca5aea0f4b63e9888bed32d101b6177f4a76d2dafa7aa",
+          "sha256": "2e59339907a3eff1b5029a865dfa432b138862984ae945c97ae2be032fe5f309",
           "bytes": 36924
         },
         {
           "level": 2,
           "triangles": 262,
           "file": "Assets/Export/Environment/SM_floor_tile_LOD2.fbx",
-          "sha256": "474d3bc6ca595f8edf5b033b3600937cca0b24ac2701d732bdb746ca4fd7cba2",
-          "bytes": 28844
+          "sha256": "62bdef8e41304d2f365a25f2fba2625e8c93364bf2ac7e190e2788a5b46cbc16",
+          "bytes": 28828
         }
       ]
     },
     "lane_paver": {
       "name": "lane_paver",
       "file": "Assets/Export/Environment/SM_lane_paver.fbx",
-      "sha256": "0f722ec682839962a905e8bf69eb9b46a928b9cbd5c16bde248aced4e1efa987",
+      "sha256": "5962508f94816352ea59d720a52f3874f13c329c522ab55edc156a2b8eb3eb87",
       "bytes": 25596,
       "triangles": 252,
       "boundsMeters": [
@@ -3049,14 +3160,14 @@
           "level": 1,
           "triangles": 126,
           "file": "Assets/Export/Environment/SM_lane_paver_LOD1.fbx",
-          "sha256": "9b7c4e94e95a25f6afb078ea1242a2aaf69b4da07bdd73849fcf26d93c315957",
+          "sha256": "535bc6fc922002a582c67599b16abadccca45cc09946c769a69027a14febabd4",
           "bytes": 23996
         },
         {
           "level": 2,
           "triangles": 54,
           "file": "Assets/Export/Environment/SM_lane_paver_LOD2.fbx",
-          "sha256": "2d6d3d656a0b214c2ef873f124ac73883dfe64d850985849d56600f03bca3189",
+          "sha256": "5242c8ac3a6dfbacb0ed7f937492ec8c50d93341b3715b6264ef27d666d2bb46",
           "bytes": 22060
         }
       ]
@@ -3064,7 +3175,7 @@
     "bank_segment": {
       "name": "bank_segment",
       "file": "Assets/Export/Environment/SM_bank_segment.fbx",
-      "sha256": "3ef6783e766408793799e9499103601a197fd3fcd2f6edf2b86cbf5a2b0bf8de",
+      "sha256": "3b6c08a024115409b0cfec3074a845adc0c548b8533bc7a77ed1d19f71c881d4",
       "bytes": 40364,
       "triangles": 1316,
       "boundsMeters": [
@@ -3080,14 +3191,14 @@
           "level": 1,
           "triangles": 658,
           "file": "Assets/Export/Environment/SM_bank_segment_LOD1.fbx",
-          "sha256": "4088a84588b3d75c76238180faab123d8c467146a9c50d1a3ce0d5fc67d863c8",
+          "sha256": "ea3379d95f6f3374a26bb5eef736f84e4ab7d358df84ae6b540ed699217ca40a",
           "bytes": 38988
         },
         {
           "level": 2,
           "triangles": 288,
           "file": "Assets/Export/Environment/SM_bank_segment_LOD2.fbx",
-          "sha256": "5ff80c1a9a8db34cd5abbb84589a58b05127f424661cd44a4a84c5c4b8af2bd0",
+          "sha256": "692628f4b55c2b0b807660f66e6760beffca528592528ff214be482c77221598",
           "bytes": 28524
         }
       ]
@@ -3095,7 +3206,7 @@
     "boundary_stone": {
       "name": "boundary_stone",
       "file": "Assets/Export/Environment/SM_boundary_stone.fbx",
-      "sha256": "d5a8b0a805873cfa4c2548aded67d8925a1d3b9e1d32d52f8e0e53af13f9a057",
+      "sha256": "c117b7aac81736895f36262291ba29a01260ebe0c99e95e432c9eddf95c812dd",
       "bytes": 35852,
       "triangles": 716,
       "boundsMeters": [
@@ -3111,14 +3222,14 @@
           "level": 1,
           "triangles": 358,
           "file": "Assets/Export/Environment/SM_boundary_stone_LOD1.fbx",
-          "sha256": "8c3eee48ba8b5c968bc8ab07bd35d3691042ecfb248794c20b85d623aa1f5a74",
+          "sha256": "62928d1c0c595ed3a1269e8e5edd3ab9d98291625878b0ed9604a23d607d7d8b",
           "bytes": 30236
         },
         {
           "level": 2,
           "triangles": 156,
           "file": "Assets/Export/Environment/SM_boundary_stone_LOD2.fbx",
-          "sha256": "ec215bc08bf336f06e9508a62017aaf275e8a9fa18cd3409b73c3df7f19aa266",
+          "sha256": "914f131cfc730f012a5b7f1fa5a538c45e29e4fb8471cdbba7f3172999616934",
           "bytes": 25260
         }
       ]
@@ -3126,7 +3237,7 @@
     "grass_tuft": {
       "name": "grass_tuft",
       "file": "Assets/Export/Environment/SM_grass_tuft.fbx",
-      "sha256": "8b281dc0413034472e5c267f96577e3800639b33ea4e48aaf21f5b45901c7cbf",
+      "sha256": "89dfd6cf604e9be6143446d4347dafa9f366e493c1ec287d13dc0f647c841671",
       "bytes": 34604,
       "triangles": 512,
       "boundsMeters": [
@@ -3142,14 +3253,14 @@
           "level": 1,
           "triangles": 256,
           "file": "Assets/Export/Environment/SM_grass_tuft_LOD1.fbx",
-          "sha256": "bff9337b1923c35aca27c0c173f86a37546fe2374e6e9375cbbeb077b083c411",
+          "sha256": "6a77dbe39dd86440ecabd5baece12a5f2531b1d229c87fb28bbff572e7d2413a",
           "bytes": 29196
         },
         {
           "level": 2,
           "triangles": 112,
           "file": "Assets/Export/Environment/SM_grass_tuft_LOD2.fbx",
-          "sha256": "26df0660ff4e2e934098d2066da51bf811a3d2c6a66924918715c967c8b17a6d",
+          "sha256": "738aef69e5a0fd2a593c4fd41ff294fc2bdf5c2462eed86f59f534bd440906f5",
           "bytes": 24956
         }
       ]
@@ -3157,7 +3268,7 @@
     "shrub": {
       "name": "shrub",
       "file": "Assets/Export/Environment/SM_shrub.fbx",
-      "sha256": "4141f0325a7178b603db8b02aa42647ff39c2a0845e8943265e23dc6c48c38c6",
+      "sha256": "514e057f2a038c715ae9259e4248bc5ccea0138df79a3fd95dae928ac74b15df",
       "bytes": 50492,
       "triangles": 1120,
       "boundsMeters": [
@@ -3173,14 +3284,14 @@
           "level": 1,
           "triangles": 560,
           "file": "Assets/Export/Environment/SM_shrub_LOD1.fbx",
-          "sha256": "c800e8a196f1149b58a1e2845efc8297ab2a17f63e00dc81ed5e6b43122244a2",
+          "sha256": "b63191dd334e7ec57e735e4d43608a22d3ef81f804ba4fab95c05481277495c1",
           "bytes": 38524
         },
         {
           "level": 2,
           "triangles": 246,
           "file": "Assets/Export/Environment/SM_shrub_LOD2.fbx",
-          "sha256": "40881c7799297c6ce5251b2f944a92dfa2f097cec49db97e5ea5060124cdb68b",
+          "sha256": "ae98b3a609601b2350a77255228e01a8735ad2f28bfed0a30ad3ecaa23b41c8b",
           "bytes": 30348
         }
       ]
@@ -3188,8 +3299,8 @@
     "tree": {
       "name": "tree",
       "file": "Assets/Export/Environment/SM_tree.fbx",
-      "sha256": "00d8c8099d9cb6fe90a1a717363c8507526993049023d2593eece9dd288e3bd2",
-      "bytes": 152092,
+      "sha256": "dcadeccff1ecf624d6732de3780bda14934750c7f1657247fafe133edb9d5fcf",
+      "bytes": 152012,
       "triangles": 7456,
       "boundsMeters": [
         1.5548818111419678,
@@ -3204,22 +3315,22 @@
           "level": 1,
           "triangles": 3728,
           "file": "Assets/Export/Environment/SM_tree_LOD1.fbx",
-          "sha256": "85cf442611706ce519792f35386df4ab6cf823d7c5510b2dc016a7465b1f3a8e",
-          "bytes": 109388
+          "sha256": "82d47a7a61c3312625a892413cf6c8084c863538c220a4fafa750aecffdb9ca8",
+          "bytes": 109452
         },
         {
           "level": 2,
           "triangles": 1640,
           "file": "Assets/Export/Environment/SM_tree_LOD2.fbx",
-          "sha256": "f5410ad4b3173176213728950f7e2ae0c8835671c652799e28284889db290d2b",
-          "bytes": 68268
+          "sha256": "81bc883df6e0cdd0e882edcf7c51266fd302f792edf190c1d62573233bbd1a4e",
+          "bytes": 68316
         }
       ]
     },
     "crystal_plinth": {
       "name": "crystal_plinth",
       "file": "Assets/Export/Environment/SM_crystal_plinth.fbx",
-      "sha256": "87c6fc509a1a94f41e4213ed14f73cc53980d80e64b932e28a5ff8138e42bbc7",
+      "sha256": "5efa3009043ddcd5a466a15175f56819d65855f271630a2732407e5a81df46a9",
       "bytes": 32412,
       "triangles": 448,
       "boundsMeters": [
@@ -3236,14 +3347,14 @@
           "level": 1,
           "triangles": 224,
           "file": "Assets/Export/Environment/SM_crystal_plinth_LOD1.fbx",
-          "sha256": "ab36ba4010e71c2f3e0e711b6219b9dd51c2f232124587f027b439f4076865f6",
+          "sha256": "9fa434109000c4364f7d596fcc66e84f18d59ba57d365ca107524fe755a4df1f",
           "bytes": 29692
         },
         {
           "level": 2,
           "triangles": 98,
           "file": "Assets/Export/Environment/SM_crystal_plinth_LOD2.fbx",
-          "sha256": "e560dd4ee1f8b7fc0ad64a4f7db4a2c591cefbf5477e43fc8f833cb07b803a1e",
+          "sha256": "f6c5ffbf5ee32ecb1c9694a6f52b9409d4de0149e17f53d6ec4ad8cd652d9b5d",
           "bytes": 26636
         }
       ]
@@ -3251,7 +3362,7 @@
     "banner": {
       "name": "banner",
       "file": "Assets/Export/Environment/SM_banner.fbx",
-      "sha256": "61521c3a3a23f8027c579caadbbf5375bb413e6525848ad6092988ebdcd1ddf2",
+      "sha256": "3fb80645f123383b8b2f511b5f7b545319f146fc2fa8dcac56caea7f388a1023",
       "bytes": 30044,
       "triangles": 452,
       "boundsMeters": [
@@ -3267,14 +3378,14 @@
           "level": 1,
           "triangles": 225,
           "file": "Assets/Export/Environment/SM_banner_LOD1.fbx",
-          "sha256": "304d9dc9792097e107dcd9857dc6ce88befcc2c2cf9746bb5f231d332fd6b223",
+          "sha256": "5b2374d98a6d5931a434d99d7da628e6be87f4fc4957e20326731df9a171069b",
           "bytes": 25964
         },
         {
           "level": 2,
           "triangles": 98,
           "file": "Assets/Export/Environment/SM_banner_LOD2.fbx",
-          "sha256": "91995020c5894a7d44d5f5cbd30a84c76eecd9ac74e2a6d82365bbcf6de3822b",
+          "sha256": "6a2b6e7c8f6c232eaf361f4cf062da792c0b2335e189975c7f69b551897e5aeb",
           "bytes": 23564
         }
       ]
@@ -3282,8 +3393,8 @@
     "ruin": {
       "name": "ruin",
       "file": "Assets/Export/Environment/SM_ruin.fbx",
-      "sha256": "cd3542e6de442c16233396d9afa8a7948c03f0ba4c6824ad57064986a544e61c",
-      "bytes": 57372,
+      "sha256": "a733cbd54ca06a5acabda0c24284cf49487a2c9a7a8a6f752fefc834bff2b5ed",
+      "bytes": 57356,
       "triangles": 2292,
       "boundsMeters": [
         1.6770265102386475,
@@ -3298,23 +3409,23 @@
           "level": 1,
           "triangles": 1146,
           "file": "Assets/Export/Environment/SM_ruin_LOD1.fbx",
-          "sha256": "dad61cb32238a5f5e6fc7cfe0665ef6192e8d43c81b5a0b9420f5cfd280e68b4",
+          "sha256": "6a956d58d12fbf69e82288f78cf05a061252b155301aff5d2204d8e994a79c76",
           "bytes": 50828
         },
         {
           "level": 2,
           "triangles": 504,
           "file": "Assets/Export/Environment/SM_ruin_LOD2.fbx",
-          "sha256": "22f6cd1629924d0be802b1986f36ef0e328735819e4bbb29bfee6f1f86ee26d3",
-          "bytes": 34396
+          "sha256": "b3ddbf5d15da93b785818aa16067c336ee0bec49a505a3c5d41ca4c16acbf7a2",
+          "bytes": 34380
         }
       ]
     },
     "distant_island": {
       "name": "distant_island",
       "file": "Assets/Export/Environment/SM_distant_island.fbx",
-      "sha256": "35453a9772b1b572758ad58c1926336ff6658ab6fa183b8fcb6f7637b0e19999",
-      "bytes": 36252,
+      "sha256": "6d3711076a923345401f91e473bacdaeea7abafa16cef8d1f0515943419646aa",
+      "bytes": 36236,
       "triangles": 844,
       "boundsMeters": [
         4.052600383758545,
@@ -3329,28 +3440,28 @@
           "level": 1,
           "triangles": 422,
           "file": "Assets/Export/Environment/SM_distant_island_LOD1.fbx",
-          "sha256": "918e9e8f25754b959bb6ece3fe61c9c5f36a2a82a0c94d2283a28ba94331043a",
-          "bytes": 30972
+          "sha256": "1d6fc82d7bbbcce9c301bd509c444f4327a804930c07f9bc3e0bd6b43bf9a1c9",
+          "bytes": 30988
         },
         {
           "level": 2,
           "triangles": 184,
           "file": "Assets/Export/Environment/SM_distant_island_LOD2.fbx",
-          "sha256": "4848bed8bc8883ee8739cf4bea058907d910d1486bf1743a1990d7d9bfe69b3f",
-          "bytes": 25628
+          "sha256": "7b22ada85948d749ef979d16cafa087b0beaf9d5b34e37dfb68fc8ca06d06f58",
+          "bytes": 25612
         }
       ]
     },
     "meteor_shard": {
       "name": "meteor_shard",
       "file": "Assets/Export/Environment/SM_meteor_shard.fbx",
-      "sha256": "16118a5e178ae67e238eb4a06ff97810750f3c5c9068848e17207e3b96462231",
-      "bytes": 25900,
-      "triangles": 84,
+      "sha256": "9c01b747dbe7b3ec9836ae7f5045b5f5ee7a82d345f0185a46f4037af3a59ee8",
+      "bytes": 29820,
+      "triangles": 184,
       "boundsMeters": [
-        0.38475123047828674,
-        0.3667214512825012,
-        0.841834306716919
+        0.3780798614025116,
+        0.36719125509262085,
+        0.8401453495025635
       ],
       "materials": [
         "M_RiftSurface",
@@ -3359,30 +3470,30 @@
       "lods": [
         {
           "level": 1,
-          "triangles": 42,
+          "triangles": 92,
           "file": "Assets/Export/Environment/SM_meteor_shard_LOD1.fbx",
-          "sha256": "db4e2b801c31a61bb4632d055a3b24c235e639704cc1d7beff92d2fb8e47c79d",
-          "bytes": 25052
+          "sha256": "a6146913ad9d9eecc3b0c3f0effa06d568d3e913fb1ac5cd288b453336788a9b",
+          "bytes": 27148
         },
         {
           "level": 2,
-          "triangles": 18,
+          "triangles": 40,
           "file": "Assets/Export/Environment/SM_meteor_shard_LOD2.fbx",
-          "sha256": "1119ef7bba14b6523100c419a7473db26eb6a329400974f9cc8a789659705852",
-          "bytes": 24236
+          "sha256": "8a4f6f1c533f078e741b835f1f3620e1962e6b6fc338d545f2b129c1d6fe4e98",
+          "bytes": 25132
         }
       ]
     },
     "bullet_round": {
       "name": "bullet_round",
       "file": "Assets/Export/Environment/SM_bullet_round.fbx",
-      "sha256": "c38f1b4b54e7f80a4afcc13c06f84111c7e336392974f70324190c6fc578c3e5",
-      "bytes": 30908,
-      "triangles": 616,
+      "sha256": "91dadef5c2307162b09c47b97101eab9e4254e08bf44e4188b241037586c1f2c",
+      "bytes": 49516,
+      "triangles": 1696,
       "boundsMeters": [
-        0.06997592747211456,
-        0.07000000029802322,
-        0.23499999940395355
+        0.06678362190723419,
+        0.06679999828338623,
+        0.24639999866485596
       ],
       "materials": [
         "M_RiftSurface"
@@ -3390,24 +3501,24 @@
       "lods": [
         {
           "level": 1,
-          "triangles": 308,
+          "triangles": 848,
           "file": "Assets/Export/Environment/SM_bullet_round_LOD1.fbx",
-          "sha256": "8a6688089c720f5d40ea059b54c6d73e85053785ccb0732ab07b326c686c8449",
-          "bytes": 28060
+          "sha256": "a35582c32eee78cd4ef322589039da4fe7b104495e375f802bda8ea2c9829e5a",
+          "bytes": 41068
         },
         {
           "level": 2,
-          "triangles": 134,
+          "triangles": 372,
           "file": "Assets/Export/Environment/SM_bullet_round_LOD2.fbx",
-          "sha256": "28cf4de46ae197b0180340e82a41c4a4e9f67871096845b430ca869cf19e3077",
-          "bytes": 24284
+          "sha256": "55fdab5f3625b7c33d0b665ab4b962ad52d182d95079e0e12dbf0dc6825cbe92",
+          "bytes": 30972
         }
       ]
     },
     "tower_rubble": {
       "name": "tower_rubble",
       "file": "Assets/Export/Environment/SM_tower_rubble.fbx",
-      "sha256": "5c1a288321f0f32bdd7f48bfd0bb45633cae6c8dc2be251584edf6af3c554244",
+      "sha256": "03c02bb1dd54b5d20be07537ee07b9a1a44b5cc0678776fd552be27441e5cb13",
       "bytes": 72284,
       "triangles": 2256,
       "boundsMeters": [
@@ -3423,14 +3534,14 @@
           "level": 1,
           "triangles": 1128,
           "file": "Assets/Export/Environment/SM_tower_rubble_LOD1.fbx",
-          "sha256": "7a4d52d53362ec11c1560884f5561401c311b3acdafe7346ab5d17bd96283fdc",
+          "sha256": "92204d929770def08dc771203a55653b522b414d3e6493ad950989644bcb7f40",
           "bytes": 54252
         },
         {
           "level": 2,
           "triangles": 496,
           "file": "Assets/Export/Environment/SM_tower_rubble_LOD2.fbx",
-          "sha256": "e8cb1d758203d8abc9761ba9d20b7d5c25508664016fd0dcdea43c190483b478",
+          "sha256": "8018385a04d0ddbb4bc50fd40675b8d9bf0bde5b72f6c50c94bf6dbeecefe26c",
           "bytes": 35516
         }
       ]
@@ -3438,8 +3549,8 @@
     "arrow_projectile": {
       "name": "arrow_projectile",
       "file": "Assets/Export/Environment/SM_arrow_projectile.fbx",
-      "sha256": "5aa38a817077f25aaa87cd74cae7f2472bfc220f122a178406e94da29b463854",
-      "bytes": 40380,
+      "sha256": "92d3d12e307b3737c611ad829d6f7c9f17bec9b49828ff567346d8e6d75a2947",
+      "bytes": 40428,
       "triangles": 818,
       "boundsMeters": [
         0.09700000286102295,
@@ -3455,14 +3566,14 @@
           "level": 1,
           "triangles": 408,
           "file": "Assets/Export/Environment/SM_arrow_projectile_LOD1.fbx",
-          "sha256": "904331ebdcf21b118225bf9db1cc25404df1197a0c2c3535fc6d8acade349db9",
+          "sha256": "5e8f8b8c9ea9caaf72dfc922456fdc3bee0560083fa285d6f799a5152098eb10",
           "bytes": 35212
         },
         {
           "level": 2,
           "triangles": 178,
           "file": "Assets/Export/Environment/SM_arrow_projectile_LOD2.fbx",
-          "sha256": "f9911034d4c4468d7c855fb5cafe650b903cc96172e4203edeb4fe37a4172c17",
+          "sha256": "04b35d64a18ee9649305f94f529904ef5b78900e3467a16387896240dcd311b3",
           "bytes": 29788
         }
       ]
@@ -3470,7 +3581,7 @@
     "arc_projectile": {
       "name": "arc_projectile",
       "file": "Assets/Export/Environment/SM_arc_projectile.fbx",
-      "sha256": "70f8960190aaafec244b808389b7f19006ec34d14ee1ca9b21fb0f63ea56df26",
+      "sha256": "a8ce3e80fa0114d13922e9fa684218d919a010bc3a34460314c782e2906d2e93",
       "bytes": 26652,
       "triangles": 138,
       "boundsMeters": [
@@ -3487,14 +3598,14 @@
           "level": 1,
           "triangles": 68,
           "file": "Assets/Export/Environment/SM_arc_projectile_LOD1.fbx",
-          "sha256": "07bb1c5899dbe6de628fa72cd47d50ddb44717815372acfcd686cd2e75318c34",
+          "sha256": "34195a5ae669813e412cd57a8cf659f5331bbd8a744b302e38c7f1dc83e38313",
           "bytes": 25532
         },
         {
           "level": 2,
           "triangles": 30,
           "file": "Assets/Export/Environment/SM_arc_projectile_LOD2.fbx",
-          "sha256": "a7e85eadd7b87fd7213430b7d5afba9e79ee03f173a7a4272d9e5b6f879a99de",
+          "sha256": "117c12e3535914e01c270463c257b17f6b6c6be4845b906162a08bc56179f5bb",
           "bytes": 24796
         }
       ]
@@ -3502,7 +3613,7 @@
     "manta_projectile": {
       "name": "manta_projectile",
       "file": "Assets/Export/Environment/SM_manta_projectile.fbx",
-      "sha256": "468a396d505c643d5d6c4e22601539efb54869bef109150f9f9bbba81fbfd679",
+      "sha256": "c37e02a8866dc290378b07cb46bf6c572fb33e0108e93a2eabf5f5870fd47767",
       "bytes": 24124,
       "triangles": 138,
       "boundsMeters": [
@@ -3518,14 +3629,14 @@
           "level": 1,
           "triangles": 68,
           "file": "Assets/Export/Environment/SM_manta_projectile_LOD1.fbx",
-          "sha256": "6917f3dc7d9b730a7b185644404b8e9645528de69d64f0619ff23e1fbb06c3fb",
+          "sha256": "978283604a21cfa3b5936bdf11ffa2a7ad644fcc47e80d20e923663b7ed8bcc0",
           "bytes": 23020
         },
         {
           "level": 2,
           "triangles": 30,
           "file": "Assets/Export/Environment/SM_manta_projectile_LOD2.fbx",
-          "sha256": "d28f55073b6a66dbe3ce0bfe87632068b4d71a2b4a6664446b97e5b450dcb51a",
+          "sha256": "5154d598743b72bebeaf8b4bbcbb78e103e62ef0d24ef026908e36d85bee73f6",
           "bytes": 22204
         }
       ]
@@ -3533,7 +3644,7 @@
     "storm_projectile": {
       "name": "storm_projectile",
       "file": "Assets/Export/Environment/SM_storm_projectile.fbx",
-      "sha256": "83104ecb1cda48daee7cb6d57383606d886d4bba17430b58e079ca1dc2efd6ba",
+      "sha256": "f08c3ff38baa8632dac895ec60e256a48e7eb962ad8dedf4cce4779ce5994b4c",
       "bytes": 26444,
       "triangles": 210,
       "boundsMeters": [
@@ -3549,14 +3660,14 @@
           "level": 1,
           "triangles": 104,
           "file": "Assets/Export/Environment/SM_storm_projectile_LOD1.fbx",
-          "sha256": "d323db18a1e63c8fe433356aea658be8b69f3dd011a1f5452662cdca921448ff",
+          "sha256": "036a61a86bafd3432997a0cf5980daa985247a34399ea46e97dcdca5a59f610d",
           "bytes": 24428
         },
         {
           "level": 2,
           "triangles": 46,
           "file": "Assets/Export/Environment/SM_storm_projectile_LOD2.fbx",
-          "sha256": "5ab4a0832987fefea0bba737e4c43e50000552ad4703e51a69ae79c114660033",
+          "sha256": "53abc65222974c6833b8e0b3296e703193f2c80d4b8323c3aba4e2f0f9a88f6d",
           "bytes": 22860
         }
       ]
@@ -3564,7 +3675,7 @@
     "projectile_trail": {
       "name": "projectile_trail",
       "file": "Assets/Export/Environment/SM_projectile_trail.fbx",
-      "sha256": "f32cb4970f4e940ae8701614de038202a4760d335c7cf9afe4bd5c152dbfec07",
+      "sha256": "d7c2b97a0557bb2046398d0887486b748ef1f0fd11217c53ddb59830232d101e",
       "bytes": 21788,
       "triangles": 44,
       "boundsMeters": [
@@ -3580,139 +3691,273 @@
           "level": 1,
           "triangles": 22,
           "file": "Assets/Export/Environment/SM_projectile_trail_LOD1.fbx",
-          "sha256": "3f11168af8ff71e23fe321c364b30f7aabefa15debe3a43b15f4e88138f653b7",
+          "sha256": "78ca77910f13ab583d0a1f3b5e672259c38e5de04de1fa38541703e34b1b1b23",
           "bytes": 21548
         },
         {
           "level": 2,
           "triangles": 8,
           "file": "Assets/Export/Environment/SM_projectile_trail_LOD2.fbx",
-          "sha256": "e0aee560f92e19d0bf686a54a0c1d1d5179b323d76b2259e04623576ae46cfa4",
+          "sha256": "688f7deeed29b6badca53ac794a40f104cdbb13e73d6b3c724800aac0c1b7a48",
           "bytes": 21164
         }
       ]
-    },
-    "guard_cannon": {
-      "name": "guard_cannon",
-      "triangles": 2956,
-      "boundsMeters": [
-        1.4470000267028809,
-        0.8399996161460876,
-        0.5299999713897705
-      ],
-      "materials": [
-        "M_RiftSurface",
-        "M_RiftGlow"
-      ],
-      "lods": [
-        {
-          "level": 1,
-          "triangles": 1478,
-          "file": "Assets/Export/Environment/SM_guard_cannon_LOD1.fbx",
-          "sha256": "e994dbf2f7cc85d7851b27d12e81723f6b2cf160ff6c4f4425b437043bbfce8f",
-          "bytes": 65612
-        },
-        {
-          "level": 2,
-          "triangles": 650,
-          "file": "Assets/Export/Environment/SM_guard_cannon_LOD2.fbx",
-          "sha256": "c914e0c539e8b471265c42e3c34ef5af680396d1b4e4983f02978e7342e36a81",
-          "bytes": 45772
-        }
-      ],
-      "file": "Assets/Export/Environment/SM_guard_cannon.fbx",
-      "sha256": "d4d111f1b52cb956983df4bfd8ed2fadb5b3f0ab2260a6858ac605f263cfe65e",
-      "bytes": 83100,
-      "sockets": {
-        "muzzle": {
-          "positionMeters": [
-            0,
-            -0.99,
-            2.63
-          ]
-        }
-      },
-      "pivotMeters": [
-        0,
-        0,
-        0
-      ],
-      "originalPartCount": 7
     }
   },
   "illustrations": {
     "ironclad": {
       "file": "Assets/Source/CardArt/ironclad.png",
-      "sha256": "ea83c37b9d18fde54b922f4214e36f5ea2102dfb0cbc3f7d601f20def9c1f9ac",
-      "bytes": 980703
+      "sha256": "c1bd9c2da9d5aa83687f6d851bd1332642e6507a1c495b0f951c0517b84c5e13",
+      "bytes": 917694
     },
     "ember_archer": {
       "file": "Assets/Source/CardArt/ember_archer.png",
-      "sha256": "9abf7777f1d86a4ff5ca39d9924e557771faa8244cb4e30f2b7394c59840ce37",
-      "bytes": 956585
+      "sha256": "7fdc64d129ba4d0ef7cb7e450756fbe96943552a4c3f5d11dc591260e675dca8",
+      "bytes": 894940
     },
     "twin_blades": {
       "file": "Assets/Source/CardArt/twin_blades.png",
-      "sha256": "b9dcc94bde35f1695700d82626d7995c6e924d4c8e5a80d0de6b0e7ae3cd2c69",
-      "bytes": 1063880
+      "sha256": "8313fdbb24c7f0eabb7752afa4668a317b57956fbbad7861b8b2440efb46b684",
+      "bytes": 896963
     },
     "boulderback": {
       "file": "Assets/Source/CardArt/boulderback.png",
-      "sha256": "d9a231ecc859aa33f053aa396063e85b8dc258508d07eb3f0566b543504c51b1",
-      "bytes": 948962
+      "sha256": "54ae114f6d661ee4fbde6133bfbba203d6843e1e6f3ec8d0555a356ff410fda0",
+      "bytes": 839739
     },
     "arc_mage": {
       "file": "Assets/Source/CardArt/arc_mage.png",
-      "sha256": "2932704e0678428b35581f37e4205097e144892351fd0147e71cb4294f74d18a",
-      "bytes": 933599
+      "sha256": "e54505a8c115fdf227203b05556b0fac578ae836cc855db6c8ce382f8099faba",
+      "bytes": 883278
     },
     "rambeast": {
       "file": "Assets/Source/CardArt/rambeast.png",
-      "sha256": "5d4d46ff0b72dcd79cf36526de6bbcbb03d42e422ed4f3cb08b2c21ed4f2b744",
-      "bytes": 945632
+      "sha256": "bcf41684a2686cb94c40dd1810ef79cf6a079f52367cc02d4859828a9c8bcc98",
+      "bytes": 851774
     },
     "sky_manta": {
       "file": "Assets/Source/CardArt/sky_manta.png",
-      "sha256": "199378c249a27f7a301e6dea5949fcf2791b026c271f8c3460467ea1efa20587",
-      "bytes": 808112
+      "sha256": "620b7d3df503da37fd6ce6d8c2937b552965d45b852b4ced622fd203cc7eb586",
+      "bytes": 747605
     },
     "vampire_bats": {
       "file": "Assets/Source/CardArt/vampire_bats.png",
-      "sha256": "98fa7cf136567267653a1626c46e8eec4a5266ff5f6133ff32aaed994587a29c",
-      "bytes": 835923
+      "sha256": "8bad90fec5aba4c8a6ced4479a803bc1b74bcecc1adcc348261d5bfea9642516",
+      "bytes": 777120
     },
     "frost_fang": {
       "file": "Assets/Source/CardArt/frost_fang.png",
-      "sha256": "07b25a949aa5941d70b20981e1984bdac7332d9e8265fdb02a7d6f177c08261f",
-      "bytes": 976064
+      "sha256": "7f7b6ffd1e45a7ff8cff7852f5d7c3fb4feb64656775d6f3dc9625714f1d59b9",
+      "bytes": 866184
     },
     "storm_raven": {
       "file": "Assets/Source/CardArt/storm_raven.png",
-      "sha256": "90213e96c03ea3ac6733bf99d3b7f49e13c99a1fbd6f7cdeda0d671db791ff29",
-      "bytes": 827566
+      "sha256": "836b49b0180799a61272d755d5e23c24005c7e9d4f1ca4f9e5db9f6f44b3ca01",
+      "bytes": 772993
     },
     "archer_tower": {
       "file": "Assets/Source/CardArt/archer_tower.png",
-      "sha256": "bb8a2ba790170cde2844bd29c985b7b6e15fcdbf6e9bb58f78d6a77ca04a186a",
-      "bytes": 971273
+      "sha256": "4e90cba543bcd33910b9c5f2c04d1c4e78dcc828c7d8db35496f6b47e5a3db82",
+      "bytes": 887872
     },
     "bullet_burst": {
       "file": "Assets/Source/CardArt/bullet_burst.png",
-      "sha256": "ed21a63ba5d15886b4315ebed41cd3d89ddcef21583b301a86349871897dd46d",
-      "bytes": 869936
+      "sha256": "4a7e6bad04f930e3e2f2a1fc5ec4427694b62199d96c419cf0c1b1bc2ecb2523",
+      "bytes": 817457
     },
     "nova_flask": {
       "file": "Assets/Source/CardArt/nova_flask.png",
-      "sha256": "fb99554480fc4900f107537f42d36423a239f82df3b4e99c51940707e034ced3",
-      "bytes": 1026589
+      "sha256": "c0f971569900f01cdc4942ed8fc951fca26d18f802f5dae9bbfc283fe21250f5",
+      "bytes": 901538
     },
     "meteor_shards": {
       "file": "Assets/Source/CardArt/meteor_shards.png",
-      "sha256": "2099ab8a68d1c7873027087d190f7e41603000c49b55d5b7b0887f252a78eca2",
-      "bytes": 838179
+      "sha256": "78ec9f92da69b0757053357911fecc98b412fd51a3aeee2d5f824acd4229befd",
+      "bytes": 807391
     }
   },
-  "renders": [],
+  "renders": [
+    {
+      "file": "Assets/Renders/ironclad.png",
+      "sha256": "e2d9b1d4c57156abf65a6cd9360bd3aaf35bf10da6f4b9314befe5d8ba50c3d6",
+      "bytes": 1172910
+    },
+    {
+      "file": "Assets/Renders/ember_archer.png",
+      "sha256": "dbc0c0a158010e6d715d546589269d20eb66d6e547aa1fa646d17d65014bc8b1",
+      "bytes": 1180471
+    },
+    {
+      "file": "Assets/Renders/twin_blades.png",
+      "sha256": "f9ae651c79dbbe92018b8fc41d1e78afa1c5d3e550f554b057a12026228cf89b",
+      "bytes": 1169118
+    },
+    {
+      "file": "Assets/Renders/arc_mage.png",
+      "sha256": "57ad1c576dce6488f3fe777b12f74365ef52121ef94d9c5cb8b4021bf946b1ed",
+      "bytes": 1154399
+    },
+    {
+      "file": "Assets/Renders/tower_archer.png",
+      "sha256": "d9bd9144aaf62459af3e14b8974e7a239ae655ef09895dd3e5c2fe6bdebcce8a",
+      "bytes": 1180484
+    },
+    {
+      "file": "Assets/Renders/boulderback.png",
+      "sha256": "68627cd59b62934971d962a830c8b29a561002dc17c78405d3cd3c144448fe41",
+      "bytes": 1216866
+    },
+    {
+      "file": "Assets/Renders/rambeast.png",
+      "sha256": "517d7e540fba9f2fa5544d788f662d451151ef68037e95b2d5e3c55c9e2ef757",
+      "bytes": 1186043
+    },
+    {
+      "file": "Assets/Renders/frost_fang.png",
+      "sha256": "1a1a25804d7bcbc7de80736f3ec7463e372034fc6afc5e7012d01ff272d649c7",
+      "bytes": 1179387
+    },
+    {
+      "file": "Assets/Renders/sky_manta.png",
+      "sha256": "74ec660330f024120c8e7cecf23671ee4639b3bb0bf5b1550418fb090fe39735",
+      "bytes": 1080400
+    },
+    {
+      "file": "Assets/Renders/vampire_bats.png",
+      "sha256": "16a2cd5b9aa4dcff2b8c233b5691c8a5d71d4574f1b270becccaddae4c75f32d",
+      "bytes": 1094666
+    },
+    {
+      "file": "Assets/Renders/storm_raven.png",
+      "sha256": "eb1b6f06724204b73bb89d8884e96056506906e39553cefedfe77404e0dd6984",
+      "bytes": 1117533
+    },
+    {
+      "file": "Assets/Renders/tower_guard.png",
+      "sha256": "d00096237149fe469196fcdaefdb8ab07001d34f9095e6b39c389b9901abfd68",
+      "bytes": 1406419
+    },
+    {
+      "file": "Assets/Renders/guard_cannon.png",
+      "sha256": "f2868f4742ce917a31385fee750657ea0ada124f5d8e31d8d46d7f8a149935b7",
+      "bytes": 1111659
+    },
+    {
+      "file": "Assets/Renders/tower_core.png",
+      "sha256": "6d1462ad22aac4211efb327058933fe74351c00e0b12b8128b52329caf00595a",
+      "bytes": 1300210
+    },
+    {
+      "file": "Assets/Renders/archer_tower.png",
+      "sha256": "a6483e24fae90a2a26727fc2434c979d8925bdf880cddbf6818c6935099dfe5c",
+      "bytes": 1336143
+    },
+    {
+      "file": "Assets/Renders/nova_flask.png",
+      "sha256": "6a2ef9046c227093ec40a0ca428fa89f006848bcefa08312d58fd3f8a20caf49",
+      "bytes": 1241586
+    },
+    {
+      "file": "Assets/Renders/bridge.png",
+      "sha256": "65ad4842706b34780e54e31c05dcf08ade1fe7f5ba1113a3d28e2be354e93e3d",
+      "bytes": 1207667
+    },
+    {
+      "file": "Assets/Renders/floor_tile.png",
+      "sha256": "a5f3618717ec3390b4310ffa1c60f26465096080c132fe211078b2289afb0a1b",
+      "bytes": 1025445
+    },
+    {
+      "file": "Assets/Renders/lane_paver.png",
+      "sha256": "08bf55fb11566c07059692d63a08228587d671d885878570deab1fe48cbc0d25",
+      "bytes": 1020183
+    },
+    {
+      "file": "Assets/Renders/bank_segment.png",
+      "sha256": "7dc62088bbe23a1221d34337525eb7f3307a801e1312f6717d70e4b7c4924ac2",
+      "bytes": 1095309
+    },
+    {
+      "file": "Assets/Renders/boundary_stone.png",
+      "sha256": "52781599d8b2f67f9b53640dee8ed95042dc521b9c7b5db5a18325105984926e",
+      "bytes": 1067480
+    },
+    {
+      "file": "Assets/Renders/grass_tuft.png",
+      "sha256": "29e511002f680d06d7e11d487423cb9f05c40f5fe26a2422542653790f8c607d",
+      "bytes": 1030196
+    },
+    {
+      "file": "Assets/Renders/shrub.png",
+      "sha256": "b50c2da779f17e676a9db8c1236d23f3eded3e9e24b21ba9822fe8abf5faf0a2",
+      "bytes": 1079645
+    },
+    {
+      "file": "Assets/Renders/tree.png",
+      "sha256": "b9392fa79e171cb23a38b6e3ea148202f0b788c1b7f77f72509b7c24fc8269a2",
+      "bytes": 1126607
+    },
+    {
+      "file": "Assets/Renders/crystal_plinth.png",
+      "sha256": "0e4643a75e4b777d8e1db639024306de8772846e661bd5b8f4f7f305f1d5b7a9",
+      "bytes": 1137025
+    },
+    {
+      "file": "Assets/Renders/banner.png",
+      "sha256": "70a170fd32dcc1e9296875c34ad6bf6bf0d410489014d682d66bf763dd95c1f2",
+      "bytes": 1050677
+    },
+    {
+      "file": "Assets/Renders/ruin.png",
+      "sha256": "7c4d7daab0a6b55f1174e68c34aa4792a9b9c7432d34c194d11675f11ce738c9",
+      "bytes": 1206470
+    },
+    {
+      "file": "Assets/Renders/distant_island.png",
+      "sha256": "a00b735abfaa98b48ecc1023ff592a98a3d32481efeb30baa0294bba1eac9d56",
+      "bytes": 1063564
+    },
+    {
+      "file": "Assets/Renders/meteor_shard.png",
+      "sha256": "5ad03327291d544b43fee584e2bb9d1baa847dd96a31032b6d2d35a1741de4a0",
+      "bytes": 1011020
+    },
+    {
+      "file": "Assets/Renders/bullet_round.png",
+      "sha256": "bdaf3ba84df1b940d70f4382f35906e2518f9ce67a3dc6fa8e19d3f27f4a836a",
+      "bytes": 988782
+    },
+    {
+      "file": "Assets/Renders/tower_rubble.png",
+      "sha256": "cf7d82038569d4b5e2f57733fdd61a1b047d2eb44a5a7be8dd5c0be1edcac10c",
+      "bytes": 1109878
+    },
+    {
+      "file": "Assets/Renders/arrow_projectile.png",
+      "sha256": "f5b46882a6018338ef61d496433a41df081de98d2366a952f7bfbf8648a81654",
+      "bytes": 1002766
+    },
+    {
+      "file": "Assets/Renders/arc_projectile.png",
+      "sha256": "3f7fea2b3606a5d9e53158136e363e160399a66ebfacd784ed5b80d2bc7c7af7",
+      "bytes": 1001288
+    },
+    {
+      "file": "Assets/Renders/manta_projectile.png",
+      "sha256": "efb57f403b23e0fef35e66fb7b71fd5816167814e95c2386fbf498e9db4c3148",
+      "bytes": 995399
+    },
+    {
+      "file": "Assets/Renders/storm_projectile.png",
+      "sha256": "7684c849d7c5eb2daf5a6bc2137a9e87a5eef7441496caadf645a761cec80847",
+      "bytes": 997549
+    },
+    {
+      "file": "Assets/Renders/projectile_trail.png",
+      "sha256": "aba5a692ee48efb5236d62a08a02921de54a68fbbf514ff8fa071405768e2b74",
+      "bytes": 1007411
+    }
+  ],
   "cards": {
     "ironclad": {
       "skeletal": "ironclad"
@@ -3763,5 +4008,10 @@
     "meteor_shards": {
       "static": "meteor_shard"
     }
-  }
+  },
+  "contactSheets": [
+    "Assets/Renders/characters_contact.png",
+    "Assets/Renders/environment_contact.png",
+    "Assets/Renders/model_cards_contact.png"
+  ]
 }

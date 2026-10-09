@@ -31,6 +31,7 @@ $riftRequiredTests = @('Rift.Integration.CardData','Rift.Integration.ConnectedUI
 if ([version]$Version -ge [version]'1.1.0') { $riftRequiredTests += @('Rift.Integration.BattleInputRouting','Rift.Integration.Presentation') }
 if ([version]$Version -ge [version]'1.2.0') { $riftRequiredTests += @('Rift.Integration.UnitMotion','Rift.Integration.ProjectilePresentation') }
 if ([version]$Version -ge [version]'1.2.1') { $riftRequiredTests += 'Rift.Integration.SpellCastReplay' }
+if ([version]$Version -ge [version]'1.3.0') { $riftRequiredTests += 'Rift.Integration.Typography' }
 $riftTests = @($riftReport.tests)
 $riftNames = @($riftTests.fullTestPath)
 if ($riftReport.failed -ne 0 -or $riftReport.notRun -ne 0 -or $riftReport.inProcess -ne 0 -or

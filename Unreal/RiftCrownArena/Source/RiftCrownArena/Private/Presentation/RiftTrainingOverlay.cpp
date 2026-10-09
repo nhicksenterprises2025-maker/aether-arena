@@ -7,6 +7,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Rendering/DrawElements.h"
 #include "Styling/CoreStyle.h"
+#include "RiftTypography.h"
 
 int32 URiftBattleOverlay::PaintTrainingOverlay(const FGeometry& Geometry,FSlateWindowElementList& Elements,int32 Layer)const
 {
@@ -42,7 +43,7 @@ int32 URiftBattleOverlay::PaintTrainingOverlay(const FGeometry& Geometry,FSlateW
         const FLinearColor Grid(.63f,.77f,.88f,.30f);
         for(int32 X=-14;X<=14;++X)Line(FVector(X*100,-2100,12),FVector(X*100,2100,12),Grid,.7f);
         for(int32 Z=-21;Z<=21;++Z)Line(FVector(-1400,Z*100,12),FVector(1400,Z*100,12),Grid,.7f);
-        const auto Font=FCoreStyle::GetDefaultFontStyle(TEXT("Regular"),9);
+        const auto Font=RiftTypography::Font(TEXT("Regular"),9);
         const FSlateBrush* White=FCoreStyle::Get().GetBrush(TEXT("WhiteBrush"));
         for(double X=-12.5;X<14;X+=4)for(double Z=-18.5;Z<21;Z+=4)
         {

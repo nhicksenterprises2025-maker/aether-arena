@@ -5,14 +5,22 @@ Run with UnrealEditor-Cmd RiftCrownArena.uproject -run=pythonscript
 """
 import os
 import json
+import sys
 from pathlib import Path
+from datetime import datetime, timezone
 import unreal
 
 ROOT = Path(os.environ.get("RIFT_REPO_ROOT", Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(ROOT / "Build"))
+import asset_import_provenance as source_provenance
 MANIFEST = json.loads((ROOT / "Assets/asset_manifest.json").read_text(encoding="utf-8"))
 TOOLS = unreal.AssetToolsHelpers.get_asset_tools()
 LIB = unreal.EditorAssetLibrary
 REPORT = {"imported": [], "errors": [], "skeletal": {}, "animations": {}, "statics": {}, "cards": {}}
+REPORT.update({"schema": 2, "generatedUTC": datetime.now(timezone.utc).isoformat(),
+               "passed": False, "sourceImports": [],
+               "mode": "ModelsOnly" if "-RiftModelsOnly" in unreal.SystemLibrary.get_command_line() else "Full"})
+REPORT["provenance"] = source_provenance.freeze(ROOT, MANIFEST, __file__)
 
 def save(asset):
     if not LIB.save_loaded_asset(asset, False):
@@ -20,6 +28,7 @@ def save(asset):
     return asset
 
 def import_file(source, destination, name, options=None):
+    source_pin = source_provenance.pin(ROOT, source)
     task = unreal.AssetImportTask()
     task.set_editor_property("filename", str(source))
     task.set_editor_property("destination_path", destination)
@@ -36,6 +45,7 @@ def import_file(source, destination, name, options=None):
     paths = task.get_editor_property("imported_object_paths")
     if not paths:
         raise RuntimeError(f"Importer returned no assets for {source}")
+    REPORT["sourceImports"].append({"source": source_pin, "assets": list(paths), "method": "AssetImportTask", "succeeded": True})
     REPORT["imported"].extend(paths)
     for path in paths:
         asset = LIB.load_asset(path)
@@ -407,6 +417,7 @@ def main():
         for lod in card["lods"]:
             if skeletal_editor.import_lod(mesh, lod["level"], str(ROOT / lod["file"])) < 0:
                 raise RuntimeError(f"Failed skeletal LOD {card_id} {lod['level']}")
+            REPORT["sourceImports"].append({"source": source_provenance.pin(ROOT, lod["file"]), "assets": [mesh.get_path_name()], "method": "SkeletalMeshEditorSubsystem.import_lod", "level": lod["level"], "succeeded": True})
         for socket_name, socket in card["sockets"].items():
             # The dedicated socket bone is imported and usable directly at runtime.
             if socket["bone"] not in card["bones"]:
@@ -423,6 +434,7 @@ def main():
         for lod in prop["lods"]:
             if static_editor.import_lod(mesh, lod["level"], str(ROOT / lod["file"])) < 0:
                 raise RuntimeError(f"Failed static LOD {name} {lod['level']}")
+            REPORT["sourceImports"].append({"source": source_provenance.pin(ROOT, lod["file"]), "assets": [mesh.get_path_name()], "method": "StaticMeshEditorSubsystem.import_lod", "level": lod["level"], "succeeded": True})
         REPORT["statics"][name] = mesh.get_path_name()
         save(mesh)
     for file in sorted((ROOT / "Assets/Source/CardArt").glob("*.png")):
@@ -475,6 +487,8 @@ def main():
 
 try:
     main()
+    source_provenance.verify_frozen(ROOT, REPORT["provenance"], [entry["source"] for entry in REPORT["sourceImports"]])
+    REPORT["passed"] = not REPORT["errors"]
 except Exception as error:
     REPORT["errors"].append(str(error))
     unreal.log_error(str(error))

@@ -5,16 +5,21 @@ The evidence report has its own filename and cannot overwrite import results.
 """
 import collections
 import json
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 import unreal
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "Build"))
+import asset_import_provenance as source_provenance
+manifest = json.loads((ROOT / "Assets/asset_manifest.json").read_text(encoding="utf-8"))
+provenance = source_provenance.freeze(ROOT, manifest, __file__)
 REGISTRY = unreal.AssetRegistryHelpers.get_asset_registry()
 REGISTRY.scan_paths_synchronous(["/Game/Rift"], True)
 records = REGISTRY.get_assets_by_path("/Game/Rift", True, True)
-report = {"schema": 1, "generatedUTC": datetime.now(timezone.utc).isoformat(),
+report = {"schema": 2, "generatedUTC": datetime.now(timezone.utc).isoformat(), "passed": False, "provenance": provenance,
           "method": "Read actual on-disk AssetRegistry records and load existing objects; no import/save",
           "assets": [], "classCounts": {}, "nativeValidation": {}, "errors": []}
 counts = collections.Counter()
@@ -57,6 +62,13 @@ report["nativeValidation"] = json.loads(unreal.RiftEditorAssetLibrary.inspect_im
 report["errors"].extend(report["nativeValidation"].get("errors", []))
 if len(report["nativeValidation"].get("cards", [])) != 14:
     report["errors"].append("Native card validation did not inspect all 14 original cards")
+report["sourceReadback"] = source_provenance.readback(unreal, ROOT, manifest, records)
+report["errors"].extend(report["sourceReadback"]["errors"])
+try:
+    source_provenance.verify_frozen(ROOT, provenance)
+except Exception as error:
+    report["errors"].append(str(error))
+report["passed"] = not report["errors"]
 output = ROOT / "Artifacts/QA/unreal_asset_audit.json"
 output.parent.mkdir(parents=True, exist_ok=True)
 output.write_text(json.dumps(report, indent=2), encoding="utf-8")
