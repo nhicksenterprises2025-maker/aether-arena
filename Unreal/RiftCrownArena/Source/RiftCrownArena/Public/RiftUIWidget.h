@@ -57,6 +57,7 @@ public:
     UFUNCTION(BlueprintCallable) void Navigate(const FString& Destination);
     UFUNCTION(BlueprintCallable) bool IsBattleView()const{return Page==TEXT("Battle")||Page==TEXT("ReplayView");}
     UFUNCTION(BlueprintCallable) bool IsLiveBattleView()const{return Page==TEXT("Battle");}
+    bool IsBattleDeveloperVisible()const{return IsLiveBattleView()&&bDev;}
     UFUNCTION(BlueprintCallable) bool CanAcceptBattleInput()const;
     UFUNCTION(BlueprintCallable) void ToggleBattleMenu();
     UFUNCTION(BlueprintCallable) int32 SelectedHand()const{return HandIndex;}

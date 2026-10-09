@@ -16,8 +16,8 @@
       "passed": true,
       "detail": [
         1.3939998149871826,
-        0.622150182723999,
-        2.1486120223999023
+        0.6705851554870605,
+        2.1924731731414795
       ]
     },
     {
@@ -49,7 +49,7 @@
       "name": "ironclad every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 9320,
+        "vertices": 10248,
         "unweighted": 0
       }
     },
@@ -137,9 +137,9 @@
       "name": "ironclad three ordered LODs",
       "passed": true,
       "detail": [
-        9080,
-        4536,
-        2178
+        9986,
+        4990,
+        2390
       ]
     },
     {
@@ -426,9 +426,9 @@
       "name": "ember_archer dimension manifest",
       "passed": true,
       "detail": [
-        1.0430771112442017,
+        1.049999713897705,
         1.1230882406234741,
-        1.867777705192566
+        1.8914785385131836
       ]
     },
     {
@@ -460,7 +460,7 @@
       "name": "ember_archer every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 6338,
+        "vertices": 8054,
         "unweighted": 0
       }
     },
@@ -548,9 +548,9 @@
       "name": "ember_archer three ordered LODs",
       "passed": true,
       "detail": [
-        6186,
-        3088,
-        1480
+        7866,
+        3930,
+        1880
       ]
     },
     {
@@ -869,7 +869,7 @@
       "detail": [
         1.1400001049041748,
         0.5415657162666321,
-        1.7857271432876587
+        1.8011819124221802
       ]
     },
     {
@@ -901,7 +901,7 @@
       "name": "twin_blades every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 5018,
+        "vertices": 5814,
         "unweighted": 0
       }
     },
@@ -989,9 +989,9 @@
       "name": "twin_blades three ordered LODs",
       "passed": true,
       "detail": [
-        4886,
-        2440,
-        1170
+        5666,
+        2830,
+        1356
       ]
     },
     {
@@ -1309,8 +1309,8 @@
       "passed": true,
       "detail": [
         1.2630000114440918,
-        0.6600000262260437,
-        2.2596166133880615
+        0.7260000705718994,
+        2.3225269317626953
       ]
     },
     {
@@ -1342,7 +1342,7 @@
       "name": "arc_mage every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 7188,
+        "vertices": 8998,
         "unweighted": 0
       }
     },
@@ -1430,9 +1430,9 @@
       "name": "arc_mage three ordered LODs",
       "passed": true,
       "detail": [
-        6936,
-        3467,
-        1660
+        8712,
+        4355,
+        2088
       ]
     },
     {
@@ -1749,9 +1749,9 @@
       "name": "tower_archer dimension manifest",
       "passed": true,
       "detail": [
-        1.0430771112442017,
+        1.049999713897705,
         1.1230882406234741,
-        1.867777705192566
+        1.8914785385131836
       ]
     },
     {
@@ -1783,7 +1783,7 @@
       "name": "tower_archer every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 6338,
+        "vertices": 8054,
         "unweighted": 0
       }
     },
@@ -1871,9 +1871,9 @@
       "name": "tower_archer three ordered LODs",
       "passed": true,
       "detail": [
-        6186,
-        3088,
-        1480
+        7866,
+        3930,
+        1880
       ]
     },
     {
@@ -2224,7 +2224,7 @@
       "name": "boulderback every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 19832,
+        "vertices": 19907,
         "unweighted": 0
       }
     },
@@ -2312,9 +2312,9 @@
       "name": "boulderback three ordered LODs",
       "passed": true,
       "detail": [
-        19766,
-        9882,
-        4742
+        19830,
+        9914,
+        4758
       ]
     },
     {
@@ -2665,7 +2665,7 @@
       "name": "rambeast every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 23302,
+        "vertices": 23422,
         "unweighted": 0
       }
     },
@@ -2753,9 +2753,9 @@
       "name": "rambeast three ordered LODs",
       "passed": true,
       "detail": [
-        23176,
-        11588,
-        5562
+        23290,
+        11644,
+        5586
       ]
     },
     {
@@ -3106,7 +3106,7 @@
       "name": "frost_fang every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 22974,
+        "vertices": 23004,
         "unweighted": 0
       }
     },
@@ -3194,9 +3194,9 @@
       "name": "frost_fang three ordered LODs",
       "passed": true,
       "detail": [
-        22716,
-        11358,
-        5450
+        22742,
+        11370,
+        5458
       ]
     },
     {
@@ -3577,7 +3577,7 @@
       "name": "sky_manta every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 3950,
+        "vertices": 3998,
         "unweighted": 0
       }
     },
@@ -3665,9 +3665,9 @@
       "name": "sky_manta three ordered LODs",
       "passed": true,
       "detail": [
-        3894,
-        1946,
-        934
+        3938,
+        1968,
+        944
       ]
     },
     {
@@ -4018,7 +4018,7 @@
       "name": "vampire_bats every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 3300,
+        "vertices": 3348,
         "unweighted": 0
       }
     },
@@ -4106,9 +4106,9 @@
       "name": "vampire_bats three ordered LODs",
       "passed": true,
       "detail": [
-        3222,
-        1610,
-        772
+        3266,
+        1632,
+        782
       ]
     },
     {
@@ -4459,7 +4459,7 @@
       "name": "storm_raven every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 6934,
+        "vertices": 6982,
         "unweighted": 0
       }
     },
@@ -4547,9 +4547,9 @@
       "name": "storm_raven three ordered LODs",
       "passed": true,
       "detail": [
-        6308,
-        3164,
-        1518
+        6352,
+        3186,
+        1528
       ]
     },
     {
@@ -5703,6 +5703,246 @@
       "detail": ""
     },
     {
+      "name": "arrow_projectile static FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "arrow_projectile static FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "arrow_projectile static FBX units",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "arrow_projectile static materials",
+      "passed": true,
+      "detail": 2
+    },
+    {
+      "name": "arrow_projectile static LOD1 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "arrow_projectile static LOD1 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "arrow_projectile static LOD2 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "arrow_projectile static LOD2 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "arc_projectile static FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "arc_projectile static FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "arc_projectile static FBX units",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "arc_projectile static materials",
+      "passed": true,
+      "detail": 2
+    },
+    {
+      "name": "arc_projectile static LOD1 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "arc_projectile static LOD1 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "arc_projectile static LOD2 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "arc_projectile static LOD2 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "manta_projectile static FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "manta_projectile static FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "manta_projectile static FBX units",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "manta_projectile static materials",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "manta_projectile static LOD1 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "manta_projectile static LOD1 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "manta_projectile static LOD2 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "manta_projectile static LOD2 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "storm_projectile static FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "storm_projectile static FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "storm_projectile static FBX units",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "storm_projectile static materials",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "storm_projectile static LOD1 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "storm_projectile static LOD1 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "storm_projectile static LOD2 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "storm_projectile static LOD2 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "projectile_trail static FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "projectile_trail static FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "projectile_trail static FBX units",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "projectile_trail static materials",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "projectile_trail static LOD1 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "projectile_trail static LOD1 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "projectile_trail static LOD2 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "projectile_trail static LOD2 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "guard_cannon static FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "guard_cannon static FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "guard_cannon static FBX units",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "guard_cannon static materials",
+      "passed": true,
+      "detail": 2
+    },
+    {
+      "name": "guard_cannon static LOD1 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "guard_cannon static LOD1 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "guard_cannon static LOD2 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "guard_cannon static LOD2 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
       "name": "BaseColor texture source",
       "passed": true,
       "detail": ""
@@ -5738,13 +5978,13 @@
       "detail": {
         "sourceMeters": [
           1.3939998149871826,
-          0.622150182723999,
-          2.1486120223999023
+          0.6705851554870605,
+          2.1924731731414795
         ],
         "importMeters": [
           1.3939998149871826,
-          0.6221497058868408,
-          2.148611545562744
+          0.6705849170684814,
+          2.1924726963043213
         ],
         "fbxUnitScaleFactor": 100
       }
@@ -5752,14 +5992,14 @@
   ],
   "characters": {
     "ironclad": {
-      "vertices": 9320,
-      "triangles": 18160,
+      "vertices": 10248,
+      "triangles": 19972,
       "boneCount": 25,
       "materialSlots": 2,
       "boundsMeters": [
         1.3939998149871826,
-        0.622150182723999,
-        2.1486120223999023
+        0.6705851554870605,
+        2.1924731731414795
       ],
       "actions": [
         {
@@ -5818,20 +6058,20 @@
         }
       ],
       "lodTriangles": [
-        9080,
-        4536,
-        2178
+        9986,
+        4990,
+        2390
       ]
     },
     "ember_archer": {
-      "vertices": 6338,
-      "triangles": 12372,
+      "vertices": 8054,
+      "triangles": 15732,
       "boneCount": 25,
       "materialSlots": 2,
       "boundsMeters": [
-        1.0430771112442017,
+        1.049999713897705,
         1.1230882406234741,
-        1.867777705192566
+        1.8914785385131836
       ],
       "actions": [
         {
@@ -5896,20 +6136,20 @@
         }
       ],
       "lodTriangles": [
-        6186,
-        3088,
-        1480
+        7866,
+        3930,
+        1880
       ]
     },
     "twin_blades": {
-      "vertices": 5018,
-      "triangles": 9772,
+      "vertices": 5814,
+      "triangles": 11332,
       "boneCount": 25,
       "materialSlots": 2,
       "boundsMeters": [
         1.1400001049041748,
         0.5415657162666321,
-        1.7857271432876587
+        1.8011819124221802
       ],
       "actions": [
         {
@@ -5974,20 +6214,20 @@
         }
       ],
       "lodTriangles": [
-        4886,
-        2440,
-        1170
+        5666,
+        2830,
+        1356
       ]
     },
     "arc_mage": {
-      "vertices": 7188,
-      "triangles": 13872,
+      "vertices": 8998,
+      "triangles": 17424,
       "boneCount": 25,
       "materialSlots": 2,
       "boundsMeters": [
         1.2630000114440918,
-        0.6600000262260437,
-        2.2596166133880615
+        0.7260000705718994,
+        2.3225269317626953
       ],
       "actions": [
         {
@@ -6052,20 +6292,20 @@
         }
       ],
       "lodTriangles": [
-        6936,
-        3467,
-        1660
+        8712,
+        4355,
+        2088
       ]
     },
     "tower_archer": {
-      "vertices": 6338,
-      "triangles": 12372,
+      "vertices": 8054,
+      "triangles": 15732,
       "boneCount": 25,
       "materialSlots": 2,
       "boundsMeters": [
-        1.0430771112442017,
+        1.049999713897705,
         1.1230882406234741,
-        1.867777705192566
+        1.8914785385131836
       ],
       "actions": [
         {
@@ -6130,14 +6370,14 @@
         }
       ],
       "lodTriangles": [
-        6186,
-        3088,
-        1480
+        7866,
+        3930,
+        1880
       ]
     },
     "boulderback": {
-      "vertices": 19832,
-      "triangles": 39532,
+      "vertices": 19907,
+      "triangles": 39662,
       "boneCount": 27,
       "materialSlots": 2,
       "boundsMeters": [
@@ -6208,14 +6448,14 @@
         }
       ],
       "lodTriangles": [
-        19766,
-        9882,
-        4742
+        19830,
+        9914,
+        4758
       ]
     },
     "rambeast": {
-      "vertices": 23302,
-      "triangles": 46352,
+      "vertices": 23422,
+      "triangles": 46580,
       "boneCount": 27,
       "materialSlots": 2,
       "boundsMeters": [
@@ -6286,14 +6526,14 @@
         }
       ],
       "lodTriangles": [
-        23176,
-        11588,
-        5562
+        23290,
+        11644,
+        5586
       ]
     },
     "frost_fang": {
-      "vertices": 22974,
-      "triangles": 45432,
+      "vertices": 23004,
+      "triangles": 45484,
       "boneCount": 27,
       "materialSlots": 2,
       "boundsMeters": [
@@ -6370,14 +6610,14 @@
         }
       ],
       "lodTriangles": [
-        22716,
-        11358,
-        5450
+        22742,
+        11370,
+        5458
       ]
     },
     "sky_manta": {
-      "vertices": 3950,
-      "triangles": 7788,
+      "vertices": 3998,
+      "triangles": 7876,
       "boneCount": 20,
       "materialSlots": 2,
       "boundsMeters": [
@@ -6448,14 +6688,14 @@
         }
       ],
       "lodTriangles": [
-        3894,
-        1946,
-        934
+        3938,
+        1968,
+        944
       ]
     },
     "vampire_bats": {
-      "vertices": 3300,
-      "triangles": 6444,
+      "vertices": 3348,
+      "triangles": 6532,
       "boneCount": 20,
       "materialSlots": 2,
       "boundsMeters": [
@@ -6526,14 +6766,14 @@
         }
       ],
       "lodTriangles": [
-        3222,
-        1610,
-        772
+        3266,
+        1632,
+        782
       ]
     },
     "storm_raven": {
-      "vertices": 6934,
-      "triangles": 12656,
+      "vertices": 6982,
+      "triangles": 12744,
       "boneCount": 20,
       "materialSlots": 2,
       "boundsMeters": [
@@ -6622,20 +6862,20 @@
         }
       ],
       "lodTriangles": [
-        6308,
-        3164,
-        1518
+        6352,
+        3186,
+        1528
       ]
     }
   },
   "statics": {
     "tower_guard": {
-      "triangles": 19916,
+      "triangles": 16960,
       "materialSlots": 2,
       "boundsMeters": [
         2.2800002098083496,
         2.2799999713897705,
-        2.8499999046325684
+        2.6500000953674316
       ]
     },
     "tower_core": {
@@ -6799,6 +7039,60 @@
         1.7404589653015137,
         0.4576186537742615
       ]
+    },
+    "arrow_projectile": {
+      "triangles": 818,
+      "materialSlots": 2,
+      "boundsMeters": [
+        0.09700000286102295,
+        0.6200000047683716,
+        0.0952627956867218
+      ]
+    },
+    "arc_projectile": {
+      "triangles": 138,
+      "materialSlots": 2,
+      "boundsMeters": [
+        0.20178350806236267,
+        0.3100000023841858,
+        0.22816716134548187
+      ]
+    },
+    "manta_projectile": {
+      "triangles": 138,
+      "materialSlots": 1,
+      "boundsMeters": [
+        0.20178350806236267,
+        0.3100000023841858,
+        0.22816716134548187
+      ]
+    },
+    "storm_projectile": {
+      "triangles": 210,
+      "materialSlots": 1,
+      "boundsMeters": [
+        0.22285372018814087,
+        0.31051480770111084,
+        0.22816716134548187
+      ]
+    },
+    "projectile_trail": {
+      "triangles": 44,
+      "materialSlots": 1,
+      "boundsMeters": [
+        0.03999999910593033,
+        1.0,
+        0.03999999910593033
+      ]
+    },
+    "guard_cannon": {
+      "triangles": 2956,
+      "materialSlots": 2,
+      "boundsMeters": [
+        1.4470000267028809,
+        0.8399996161460876,
+        0.5299999713897705
+      ]
     }
   },
   "errors": [],
@@ -6806,5 +7100,5 @@
   "unrealImportUnitConversion": true,
   "visualReview": "Actual rendered contact sheets reviewed separately; numerical checks do not establish production art quality.",
   "passed": true,
-  "checkCount": 1123
+  "checkCount": 1171
 }

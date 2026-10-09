@@ -27,6 +27,7 @@ public:
     bool IsDraggingCard()const;
     void ReleaseCardAtCursor();
     FString CameraFramingDiagnosticsJSON()const;
+    FBox2D BattleSafeScreenBounds()const;
 private:
     UPROPERTY() TObjectPtr<AActor> CameraActor;
     UPROPERTY() TObjectPtr<UCameraComponent> ArenaCamera;
@@ -38,7 +39,8 @@ private:
     float CameraZoom=1;
     float PendingCaptureZoom=-1;
     float MinCameraZoom=.85f,MaxCameraZoom=1.2f;
-    float CameraSafeTop=0,CameraSafeBottom=0,CameraUIScale=1;
+    float CameraSafeTop=0,CameraSafeBottom=0,CameraSafeLeft=0,CameraSafeRight=0,CameraUIScale=1;
+    bool bBattleCameraInitialized=false;
     void UpdateArenaCamera();
     void Press();void Release();void Cancel();void EscapeMenu();void Developer();
     void Hand0();void Hand1();void Hand2();void Hand3();

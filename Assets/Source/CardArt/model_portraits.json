@@ -1,0 +1,855 @@
+{
+  "schema": 1,
+  "cards": {
+    "ironclad": {
+      "file": "Assets/Source/CardArt/ironclad.png",
+      "sha256": "ea83c37b9d18fde54b922f4214e36f5ea2102dfb0cbc3f7d601f20def9c1f9ac",
+      "bytes": 980703,
+      "sources": [
+        {
+          "model": {
+            "file": "Assets/Export/Characters/ironclad/SK_ironclad.fbx",
+            "sha256": "99a64e041110b442df211c03fbf3f67bc2aace2837d54b8bda347ef0de34f7f4",
+            "bytes": 498428
+          },
+          "action": "Idle",
+          "phase": 0.16
+        }
+      ],
+      "boundsMeters": [
+        [
+          -0.7739998698234558,
+          -0.33011654019355774,
+          0.009999983012676239
+        ],
+        [
+          0.6199999451637268,
+          0.3300986886024475,
+          2.2030763626098633
+        ]
+      ],
+      "poseFrame": 10,
+      "cameraOrthoScale": 2.584315538406372
+    },
+    "ember_archer": {
+      "file": "Assets/Source/CardArt/ember_archer.png",
+      "sha256": "9abf7777f1d86a4ff5ca39d9924e557771faa8244cb4e30f2b7394c59840ce37",
+      "bytes": 956585,
+      "sources": [
+        {
+          "model": {
+            "file": "Assets/Export/Characters/ember_archer/SK_ember_archer.fbx",
+            "sha256": "7c38e6874592aad1cfe5f9a324bfe057ca224ff815c92e02c6bfe470581cad81",
+            "bytes": 425804
+          },
+          "action": "Idle",
+          "phase": 0.16
+        }
+      ],
+      "boundsMeters": [
+        [
+          -0.5249998569488525,
+          -0.8332523703575134,
+          0.009230736643075943
+        ],
+        [
+          0.5249998569488525,
+          0.32508420944213867,
+          1.9011657238006592
+        ]
+      ],
+      "poseFrame": 10,
+      "cameraOrthoScale": 2.210273265838623
+    },
+    "archer_tower": {
+      "file": "Assets/Source/CardArt/archer_tower.png",
+      "sha256": "bb8a2ba790170cde2844bd29c985b7b6e15fcdbf6e9bb58f78d6a77ca04a186a",
+      "bytes": 971273,
+      "sources": [
+        {
+          "model": {
+            "name": "archer_tower",
+            "file": "Assets/Export/Environment/SM_archer_tower.fbx",
+            "sha256": "bcab30f7647de4f5596c47798ef8bdd556c918bab164beff04ef094c1b960dfa",
+            "bytes": 318108,
+            "triangles": 17044,
+            "boundsMeters": [
+              2.1619999408721924,
+              2.161850690841675,
+              2.2800002098083496
+            ],
+            "materials": [
+              "M_RiftSurface",
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 8522,
+                "file": "Assets/Export/Environment/SM_archer_tower_LOD1.fbx",
+                "sha256": "5dbad0d498c518975cc12e04d8b6e60d0c7143ea05138405b87b5acb53b4bf40",
+                "bytes": 250012
+              },
+              {
+                "level": 2,
+                "triangles": 3748,
+                "file": "Assets/Export/Environment/SM_archer_tower_LOD2.fbx",
+                "sha256": "a1fd6399e90c678ca01df345d2a2ae1a33a9d199e61a5b117669aa659e5a9424",
+                "bytes": 133660
+              }
+            ],
+            "sockets": {
+              "archer_base": {
+                "positionMeters": [
+                  0,
+                  0,
+                  1.94
+                ]
+              },
+              "hp_anchor": {
+                "positionMeters": [
+                  0,
+                  0,
+                  2.9
+                ]
+              }
+            }
+          }
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/tower_archer/SK_tower_archer.fbx",
+            "sha256": "7f0b8ecfd2eb0466e71cca153742318fb15adc3965c37956261754ba250032fc",
+            "bytes": 425692
+          },
+          "action": "DrawRelease",
+          "phase": 0.37
+        }
+      ],
+      "boundsMeters": [
+        [
+          -0.9487500190734863,
+          -0.94861900806427,
+          0.09760002046823502
+        ],
+        [
+          0.9487500190734863,
+          0.9487500190734863,
+          3.677065134048462
+        ]
+      ],
+      "poseFrame": 13,
+      "cameraOrthoScale": 4.202631950378418
+    },
+    "vampire_bats": {
+      "file": "Assets/Source/CardArt/vampire_bats.png",
+      "sha256": "98fa7cf136567267653a1626c46e8eec4a5266ff5f6133ff32aaed994587a29c",
+      "bytes": 835923,
+      "sources": [
+        {
+          "model": {
+            "file": "Assets/Export/Characters/vampire_bats/SK_vampire_bats.fbx",
+            "sha256": "9824ebc3ae8926bcca3e904368b499652b26eb7d143348a66e6efe831740096c",
+            "bytes": 197612
+          },
+          "action": "WingCycle",
+          "phase": 0.16
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/vampire_bats/SK_vampire_bats.fbx",
+            "sha256": "9824ebc3ae8926bcca3e904368b499652b26eb7d143348a66e6efe831740096c",
+            "bytes": 197612
+          },
+          "action": "WingCycle",
+          "phase": 0.16
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/vampire_bats/SK_vampire_bats.fbx",
+            "sha256": "9824ebc3ae8926bcca3e904368b499652b26eb7d143348a66e6efe831740096c",
+            "bytes": 197612
+          },
+          "action": "WingCycle",
+          "phase": 0.16
+        }
+      ],
+      "boundsMeters": [
+        [
+          -1.0999542474746704,
+          -0.785710334777832,
+          0.27314436435699463
+        ],
+        [
+          1.0772780179977417,
+          0.575106143951416,
+          1.0840150117874146
+        ]
+      ],
+      "poseFrame": 3,
+      "cameraOrthoScale": 2.6905932426452637
+    },
+    "twin_blades": {
+      "file": "Assets/Source/CardArt/twin_blades.png",
+      "sha256": "b9dcc94bde35f1695700d82626d7995c6e924d4c8e5a80d0de6b0e7ae3cd2c69",
+      "bytes": 1063880,
+      "sources": [
+        {
+          "model": {
+            "file": "Assets/Export/Characters/twin_blades/SK_twin_blades.fbx",
+            "sha256": "06d6a34fa1141eb5b5d451f69dae34ebf73e01e7cb5741535d29884b51f27017",
+            "bytes": 331308
+          },
+          "action": "Idle",
+          "phase": 0.12
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/twin_blades/SK_twin_blades.fbx",
+            "sha256": "06d6a34fa1141eb5b5d451f69dae34ebf73e01e7cb5741535d29884b51f27017",
+            "bytes": 331308
+          },
+          "action": "Idle",
+          "phase": 0.12
+        }
+      ],
+      "boundsMeters": [
+        [
+          -0.964647114276886,
+          -0.3475213348865509,
+          0.008291306905448437
+        ],
+        [
+          0.979411780834198,
+          0.4851672947406769,
+          1.810408115386963
+        ]
+      ],
+      "poseFrame": 8,
+      "cameraOrthoScale": 2.29032301902771
+    },
+    "boulderback": {
+      "file": "Assets/Source/CardArt/boulderback.png",
+      "sha256": "d9a231ecc859aa33f053aa396063e85b8dc258508d07eb3f0566b543504c51b1",
+      "bytes": 948962,
+      "sources": [
+        {
+          "model": {
+            "file": "Assets/Export/Characters/boulderback/SK_boulderback.fbx",
+            "sha256": "4fd171c09918f500ba59eb6cef56e9a3f0084feb8d12dd29c92d97dd763840da",
+            "bytes": 1392124
+          },
+          "action": "Idle",
+          "phase": 0.16
+        }
+      ],
+      "boundsMeters": [
+        [
+          -0.658517062664032,
+          -1.352780818939209,
+          -0.006000041961669922
+        ],
+        [
+          0.6764246821403503,
+          0.8762227892875671,
+          2.340117931365967
+        ]
+      ],
+      "poseFrame": 10,
+      "cameraOrthoScale": 2.9802231788635254
+    },
+    "arc_mage": {
+      "file": "Assets/Source/CardArt/arc_mage.png",
+      "sha256": "2932704e0678428b35581f37e4205097e144892351fd0147e71cb4294f74d18a",
+      "bytes": 933599,
+      "sources": [
+        {
+          "model": {
+            "file": "Assets/Export/Characters/arc_mage/SK_arc_mage.fbx",
+            "sha256": "6814819a5b29123f58e0f6fb4168339b28028e9b10d11c0b467fd0ab90abb1b7",
+            "bytes": 477996
+          },
+          "action": "Idle",
+          "phase": 0.16
+        }
+      ],
+      "boundsMeters": [
+        [
+          -0.5699999928474426,
+          -0.37502169609069824,
+          0.00948713906109333
+        ],
+        [
+          0.6930000185966492,
+          0.3490855395793915,
+          2.3356826305389404
+        ]
+      ],
+      "poseFrame": 10,
+      "cameraOrthoScale": 2.6460373401641846
+    },
+    "rambeast": {
+      "file": "Assets/Source/CardArt/rambeast.png",
+      "sha256": "5d4d46ff0b72dcd79cf36526de6bbcbb03d42e422ed4f3cb08b2c21ed4f2b744",
+      "bytes": 945632,
+      "sources": [
+        {
+          "model": {
+            "file": "Assets/Export/Characters/rambeast/SK_rambeast.fbx",
+            "sha256": "d01677c9273ad2dcdbc65fd2a604f49e02f37e2ce2f5420777242136c911ebd6",
+            "bytes": 1547596
+          },
+          "action": "Idle",
+          "phase": 0.16
+        }
+      ],
+      "boundsMeters": [
+        [
+          -0.6841537952423096,
+          -1.352780818939209,
+          -0.006000041961669922
+        ],
+        [
+          0.6841537952423096,
+          1.2137930393218994,
+          1.599194884300232
+        ]
+      ],
+      "poseFrame": 10,
+      "cameraOrthoScale": 2.683962821960449
+    },
+    "sky_manta": {
+      "file": "Assets/Source/CardArt/sky_manta.png",
+      "sha256": "199378c249a27f7a301e6dea5949fcf2791b026c271f8c3460467ea1efa20587",
+      "bytes": 808112,
+      "sources": [
+        {
+          "model": {
+            "file": "Assets/Export/Characters/sky_manta/SK_sky_manta.fbx",
+            "sha256": "c4092730d5b632f859fb1908f44beb28a1f835c8e0a87e8d5739c2773ee8be4b",
+            "bytes": 224668
+          },
+          "action": "WingCycle",
+          "phase": 0.16
+        }
+      ],
+      "boundsMeters": [
+        [
+          -1.5599441528320312,
+          -0.6762501001358032,
+          0.9120656251907349
+        ],
+        [
+          1.5657697916030884,
+          1.4696545600891113,
+          1.3423172235488892
+        ]
+      ],
+      "poseFrame": 8,
+      "cameraOrthoScale": 3.6695237159729004
+    },
+    "frost_fang": {
+      "file": "Assets/Source/CardArt/frost_fang.png",
+      "sha256": "07b25a949aa5941d70b20981e1984bdac7332d9e8265fdb02a7d6f177c08261f",
+      "bytes": 976064,
+      "sources": [
+        {
+          "model": {
+            "file": "Assets/Export/Characters/frost_fang/SK_frost_fang.fbx",
+            "sha256": "99ab846e708ac9ffb2f5e366fa960f3c52713deeee7f3e47b79ab5b23b576a14",
+            "bytes": 1505340
+          },
+          "action": "Idle",
+          "phase": 0.16
+        }
+      ],
+      "boundsMeters": [
+        [
+          -0.6099998950958252,
+          -1.3336482048034668,
+          -0.009999997913837433
+        ],
+        [
+          0.6099998950958252,
+          1.2137930393218994,
+          1.9504722356796265
+        ]
+      ],
+      "poseFrame": 10,
+      "cameraOrthoScale": 2.6622695922851562
+    },
+    "storm_raven": {
+      "file": "Assets/Source/CardArt/storm_raven.png",
+      "sha256": "90213e96c03ea3ac6733bf99d3b7f49e13c99a1fbd6f7cdeda0d671db791ff29",
+      "bytes": 827566,
+      "sources": [
+        {
+          "model": {
+            "file": "Assets/Export/Characters/storm_raven/SK_storm_raven.fbx",
+            "sha256": "fddb0aac19872e26cfa1bcfe2fdffad13152e5dc0bf86b232ac13b2ac50545e1",
+            "bytes": 359532
+          },
+          "action": "WingCycle",
+          "phase": 0.16
+        }
+      ],
+      "boundsMeters": [
+        [
+          -1.6618818044662476,
+          -0.8705053925514221,
+          0.7063721418380737
+        ],
+        [
+          1.6618818044662476,
+          0.974871039390564,
+          1.5285365581512451
+        ]
+      ],
+      "poseFrame": 7,
+      "cameraOrthoScale": 3.974254608154297
+    },
+    "bullet_burst": {
+      "file": "Assets/Source/CardArt/bullet_burst.png",
+      "sha256": "ed21a63ba5d15886b4315ebed41cd3d89ddcef21583b301a86349871897dd46d",
+      "bytes": 869936,
+      "sources": [
+        {
+          "model": {
+            "name": "bullet_round",
+            "file": "Assets/Export/Environment/SM_bullet_round.fbx",
+            "sha256": "c38f1b4b54e7f80a4afcc13c06f84111c7e336392974f70324190c6fc578c3e5",
+            "bytes": 30908,
+            "triangles": 616,
+            "boundsMeters": [
+              0.06997592747211456,
+              0.07000000029802322,
+              0.23499999940395355
+            ],
+            "materials": [
+              "M_RiftSurface"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 308,
+                "file": "Assets/Export/Environment/SM_bullet_round_LOD1.fbx",
+                "sha256": "8a6688089c720f5d40ea059b54c6d73e85053785ccb0732ab07b326c686c8449",
+                "bytes": 28060
+              },
+              {
+                "level": 2,
+                "triangles": 134,
+                "file": "Assets/Export/Environment/SM_bullet_round_LOD2.fbx",
+                "sha256": "28cf4de46ae197b0180340e82a41c4a4e9f67871096845b430ca869cf19e3077",
+                "bytes": 24284
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "bullet_round",
+            "file": "Assets/Export/Environment/SM_bullet_round.fbx",
+            "sha256": "c38f1b4b54e7f80a4afcc13c06f84111c7e336392974f70324190c6fc578c3e5",
+            "bytes": 30908,
+            "triangles": 616,
+            "boundsMeters": [
+              0.06997592747211456,
+              0.07000000029802322,
+              0.23499999940395355
+            ],
+            "materials": [
+              "M_RiftSurface"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 308,
+                "file": "Assets/Export/Environment/SM_bullet_round_LOD1.fbx",
+                "sha256": "8a6688089c720f5d40ea059b54c6d73e85053785ccb0732ab07b326c686c8449",
+                "bytes": 28060
+              },
+              {
+                "level": 2,
+                "triangles": 134,
+                "file": "Assets/Export/Environment/SM_bullet_round_LOD2.fbx",
+                "sha256": "28cf4de46ae197b0180340e82a41c4a4e9f67871096845b430ca869cf19e3077",
+                "bytes": 24284
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "bullet_round",
+            "file": "Assets/Export/Environment/SM_bullet_round.fbx",
+            "sha256": "c38f1b4b54e7f80a4afcc13c06f84111c7e336392974f70324190c6fc578c3e5",
+            "bytes": 30908,
+            "triangles": 616,
+            "boundsMeters": [
+              0.06997592747211456,
+              0.07000000029802322,
+              0.23499999940395355
+            ],
+            "materials": [
+              "M_RiftSurface"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 308,
+                "file": "Assets/Export/Environment/SM_bullet_round_LOD1.fbx",
+                "sha256": "8a6688089c720f5d40ea059b54c6d73e85053785ccb0732ab07b326c686c8449",
+                "bytes": 28060
+              },
+              {
+                "level": 2,
+                "triangles": 134,
+                "file": "Assets/Export/Environment/SM_bullet_round_LOD2.fbx",
+                "sha256": "28cf4de46ae197b0180340e82a41c4a4e9f67871096845b430ca869cf19e3077",
+                "bytes": 24284
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "bullet_round",
+            "file": "Assets/Export/Environment/SM_bullet_round.fbx",
+            "sha256": "c38f1b4b54e7f80a4afcc13c06f84111c7e336392974f70324190c6fc578c3e5",
+            "bytes": 30908,
+            "triangles": 616,
+            "boundsMeters": [
+              0.06997592747211456,
+              0.07000000029802322,
+              0.23499999940395355
+            ],
+            "materials": [
+              "M_RiftSurface"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 308,
+                "file": "Assets/Export/Environment/SM_bullet_round_LOD1.fbx",
+                "sha256": "8a6688089c720f5d40ea059b54c6d73e85053785ccb0732ab07b326c686c8449",
+                "bytes": 28060
+              },
+              {
+                "level": 2,
+                "triangles": 134,
+                "file": "Assets/Export/Environment/SM_bullet_round_LOD2.fbx",
+                "sha256": "28cf4de46ae197b0180340e82a41c4a4e9f67871096845b430ca869cf19e3077",
+                "bytes": 24284
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "bullet_round",
+            "file": "Assets/Export/Environment/SM_bullet_round.fbx",
+            "sha256": "c38f1b4b54e7f80a4afcc13c06f84111c7e336392974f70324190c6fc578c3e5",
+            "bytes": 30908,
+            "triangles": 616,
+            "boundsMeters": [
+              0.06997592747211456,
+              0.07000000029802322,
+              0.23499999940395355
+            ],
+            "materials": [
+              "M_RiftSurface"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 308,
+                "file": "Assets/Export/Environment/SM_bullet_round_LOD1.fbx",
+                "sha256": "8a6688089c720f5d40ea059b54c6d73e85053785ccb0732ab07b326c686c8449",
+                "bytes": 28060
+              },
+              {
+                "level": 2,
+                "triangles": 134,
+                "file": "Assets/Export/Environment/SM_bullet_round_LOD2.fbx",
+                "sha256": "28cf4de46ae197b0180340e82a41c4a4e9f67871096845b430ca869cf19e3077",
+                "bytes": 24284
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "bullet_round",
+            "file": "Assets/Export/Environment/SM_bullet_round.fbx",
+            "sha256": "c38f1b4b54e7f80a4afcc13c06f84111c7e336392974f70324190c6fc578c3e5",
+            "bytes": 30908,
+            "triangles": 616,
+            "boundsMeters": [
+              0.06997592747211456,
+              0.07000000029802322,
+              0.23499999940395355
+            ],
+            "materials": [
+              "M_RiftSurface"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 308,
+                "file": "Assets/Export/Environment/SM_bullet_round_LOD1.fbx",
+                "sha256": "8a6688089c720f5d40ea059b54c6d73e85053785ccb0732ab07b326c686c8449",
+                "bytes": 28060
+              },
+              {
+                "level": 2,
+                "triangles": 134,
+                "file": "Assets/Export/Environment/SM_bullet_round_LOD2.fbx",
+                "sha256": "28cf4de46ae197b0180340e82a41c4a4e9f67871096845b430ca869cf19e3077",
+                "bytes": 24284
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "bullet_round",
+            "file": "Assets/Export/Environment/SM_bullet_round.fbx",
+            "sha256": "c38f1b4b54e7f80a4afcc13c06f84111c7e336392974f70324190c6fc578c3e5",
+            "bytes": 30908,
+            "triangles": 616,
+            "boundsMeters": [
+              0.06997592747211456,
+              0.07000000029802322,
+              0.23499999940395355
+            ],
+            "materials": [
+              "M_RiftSurface"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 308,
+                "file": "Assets/Export/Environment/SM_bullet_round_LOD1.fbx",
+                "sha256": "8a6688089c720f5d40ea059b54c6d73e85053785ccb0732ab07b326c686c8449",
+                "bytes": 28060
+              },
+              {
+                "level": 2,
+                "triangles": 134,
+                "file": "Assets/Export/Environment/SM_bullet_round_LOD2.fbx",
+                "sha256": "28cf4de46ae197b0180340e82a41c4a4e9f67871096845b430ca869cf19e3077",
+                "bytes": 24284
+              }
+            ]
+          }
+        }
+      ],
+      "boundsMeters": [
+        [
+          -0.3356119394302368,
+          -0.21283672749996185,
+          0.02653086930513382
+        ],
+        [
+          0.3356119394302368,
+          0.2728309631347656,
+          0.4255239963531494
+        ]
+      ],
+      "poseFrame": 1,
+      "cameraOrthoScale": 0.9378057718276978
+    },
+    "nova_flask": {
+      "file": "Assets/Source/CardArt/nova_flask.png",
+      "sha256": "fb99554480fc4900f107537f42d36423a239f82df3b4e99c51940707e034ced3",
+      "bytes": 1026589,
+      "sources": [
+        {
+          "model": {
+            "name": "nova_flask",
+            "file": "Assets/Export/Environment/SM_nova_flask.fbx",
+            "sha256": "131a3291b3be28e32cb3c37be9a857f9bef0fa8396f5475268c1cc15ff9e50b6",
+            "bytes": 108876,
+            "triangles": 4588,
+            "boundsMeters": [
+              0.6485106348991394,
+              0.6200001239776611,
+              0.9699999690055847
+            ],
+            "materials": [
+              "M_RiftGlass",
+              "M_RiftSurface",
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 2294,
+                "file": "Assets/Export/Environment/SM_nova_flask_LOD1.fbx",
+                "sha256": "df8d4614e0d936892b9d58226da8d578b1821b4617109ded7afa03910b05bae7",
+                "bytes": 86748
+              },
+              {
+                "level": 2,
+                "triangles": 1008,
+                "file": "Assets/Export/Environment/SM_nova_flask_LOD2.fbx",
+                "sha256": "1112cb1a621e0a6a7065a845dbf03bd4ef633a7022249a89bf7fe922eb1932ba",
+                "bytes": 57340
+              }
+            ]
+          }
+        }
+      ],
+      "boundsMeters": [
+        [
+          -0.3242553174495697,
+          -0.31000012159347534,
+          0.17000001668930054
+        ],
+        [
+          0.3242553174495697,
+          0.3100000023841858,
+          1.1399999856948853
+        ]
+      ],
+      "poseFrame": 1,
+      "cameraOrthoScale": 1.1232620477676392
+    },
+    "meteor_shards": {
+      "file": "Assets/Source/CardArt/meteor_shards.png",
+      "sha256": "2099ab8a68d1c7873027087d190f7e41603000c49b55d5b7b0887f252a78eca2",
+      "bytes": 838179,
+      "sources": [
+        {
+          "model": {
+            "name": "meteor_shard",
+            "file": "Assets/Export/Environment/SM_meteor_shard.fbx",
+            "sha256": "16118a5e178ae67e238eb4a06ff97810750f3c5c9068848e17207e3b96462231",
+            "bytes": 25900,
+            "triangles": 84,
+            "boundsMeters": [
+              0.38475123047828674,
+              0.3667214512825012,
+              0.841834306716919
+            ],
+            "materials": [
+              "M_RiftSurface",
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 42,
+                "file": "Assets/Export/Environment/SM_meteor_shard_LOD1.fbx",
+                "sha256": "db4e2b801c31a61bb4632d055a3b24c235e639704cc1d7beff92d2fb8e47c79d",
+                "bytes": 25052
+              },
+              {
+                "level": 2,
+                "triangles": 18,
+                "file": "Assets/Export/Environment/SM_meteor_shard_LOD2.fbx",
+                "sha256": "1119ef7bba14b6523100c419a7473db26eb6a329400974f9cc8a789659705852",
+                "bytes": 24236
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "meteor_shard",
+            "file": "Assets/Export/Environment/SM_meteor_shard.fbx",
+            "sha256": "16118a5e178ae67e238eb4a06ff97810750f3c5c9068848e17207e3b96462231",
+            "bytes": 25900,
+            "triangles": 84,
+            "boundsMeters": [
+              0.38475123047828674,
+              0.3667214512825012,
+              0.841834306716919
+            ],
+            "materials": [
+              "M_RiftSurface",
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 42,
+                "file": "Assets/Export/Environment/SM_meteor_shard_LOD1.fbx",
+                "sha256": "db4e2b801c31a61bb4632d055a3b24c235e639704cc1d7beff92d2fb8e47c79d",
+                "bytes": 25052
+              },
+              {
+                "level": 2,
+                "triangles": 18,
+                "file": "Assets/Export/Environment/SM_meteor_shard_LOD2.fbx",
+                "sha256": "1119ef7bba14b6523100c419a7473db26eb6a329400974f9cc8a789659705852",
+                "bytes": 24236
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "meteor_shard",
+            "file": "Assets/Export/Environment/SM_meteor_shard.fbx",
+            "sha256": "16118a5e178ae67e238eb4a06ff97810750f3c5c9068848e17207e3b96462231",
+            "bytes": 25900,
+            "triangles": 84,
+            "boundsMeters": [
+              0.38475123047828674,
+              0.3667214512825012,
+              0.841834306716919
+            ],
+            "materials": [
+              "M_RiftSurface",
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 42,
+                "file": "Assets/Export/Environment/SM_meteor_shard_LOD1.fbx",
+                "sha256": "db4e2b801c31a61bb4632d055a3b24c235e639704cc1d7beff92d2fb8e47c79d",
+                "bytes": 25052
+              },
+              {
+                "level": 2,
+                "triangles": 18,
+                "file": "Assets/Export/Environment/SM_meteor_shard_LOD2.fbx",
+                "sha256": "1119ef7bba14b6523100c419a7473db26eb6a329400974f9cc8a789659705852",
+                "bytes": 24236
+              }
+            ]
+          }
+        }
+      ],
+      "boundsMeters": [
+        [
+          -0.4734782874584198,
+          -0.3508373498916626,
+          -0.10693919658660889
+        ],
+        [
+          0.5647510886192322,
+          0.30295446515083313,
+          1.1670608520507812
+        ]
+      ],
+      "poseFrame": 1,
+      "cameraOrthoScale": 1.4323101043701172
+    }
+  },
+  "method": "Actual production Blender mesh/rig render, exported to the native game",
+  "sourceBlend": {
+    "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
+    "sha256": "d763b953357faca66184c3612fc66c338e3f715c42b4cfab5f49ca2470cc1fd6",
+    "bytes": 9426457
+  },
+  "resolution": [
+    768,
+    960
+  ],
+  "camera": "Orthographic three-quarter; per-card bounds fit",
+  "aiGeneratedRasterArtwork": false
+}

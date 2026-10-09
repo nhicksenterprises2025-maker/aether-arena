@@ -10,6 +10,8 @@
 #include "Serialization/JsonWriter.h"
 #include "RiftMetaSimulationSubsystem.h"
 #include "Presentation/RiftArenaPresentation.h"
+#include "Presentation/RiftBattleLayout.h"
+#include "Presentation/RiftUnitVisual.h"
 #include "EngineUtils.h"
 #include "Camera/CameraComponent.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
@@ -181,8 +183,71 @@ void ARiftGameMode::BeginPlay()
                             {*NextSpell+=2.0;Combat->Spawn(rift::Team::Player,"meteor_shards",{0,3});Combat->Spawn(rift::Team::Enemy,"bullet_burst",{-8,3});Combat->Spawn(rift::Team::Player,"nova_flask",{0,0});Current->FlushEvents();}
                     },.02f,true);
                 }
+                else if(Scenario==TEXT("projectiles"))
+                {
+                    // Capture only: ordinary sandbox deployments and fixed
+                    // simulation steps produce all five card missiles plus
+                    // live core/guard shots. Never insert a projectile or edit
+                    // an entity snapshot to manufacture renderer coverage.
+                    Match->SetSpeed(0);Sim->ClearField();
+                    uint64 WakeGuard=0;
+                    for(const auto& Entity:Sim->State().entities)
+                        if(Entity.team==rift::Team::Enemy&&Entity.kind==rift::EntityKind::Guard&&Entity.lane==-1)WakeGuard=Entity.id;
+                    bool Deployed=WakeGuard&&Sim->SetTowerHP(WakeGuard,0);
+                    Deployed&=Sim->Spawn(rift::Team::Player,"archer_tower",{5.5,8.5});
+                    // Finish the real tower deployment/cooldown before any
+                    // opponents arrive; its normal first shot then joins the
+                    // troop releases without changing attack cooldowns.
+                    Sim->Step(.35);Match->FlushEvents();
+                    for(TActorIterator<ARiftArenaPresentation> It(GetWorld());It;++It)It->Tick(0.f);
+                    for(double X:{-10.5,-5.5,.5,5.5})
+                        Deployed&=Sim->Spawn(rift::Team::Enemy,"boulderback",{X,2.5});
+                    Deployed&=Sim->Spawn(rift::Team::Enemy,"archer_tower",{10.5,-3.5});
+                    Deployed&=Sim->Spawn(rift::Team::Player,"boulderback",{.5,-10.5});
+                    Deployed&=Sim->Spawn(rift::Team::Player,"boulderback",{8.5,-6.5});
+                    // Troop casters arrive after all opponents. Ordinary
+                    // nearest-target acquisition picks their adjacent lanes,
+                    // rather than an earlier DEV deployment pulling several
+                    // already-walking casters onto the first shared target.
+                    Deployed&=Sim->Spawn(rift::Team::Player,"ember_archer",{-10.5,8.5});
+                    Deployed&=Sim->Spawn(rift::Team::Player,"arc_mage",{-5.5,8.5});
+                    Deployed&=Sim->Spawn(rift::Team::Player,"sky_manta",{.5,6.5});
+                    Deployed&=Sim->Spawn(rift::Team::Player,"storm_raven",{10.5,1.5});
+                    Match->FlushEvents();
+                    bool Ready=false;int32 Steps=0;
+                    for(;Deployed&&Steps<45;++Steps)
+                    {
+                        Sim->Step(1./60.);Match->FlushEvents();
+                        for(TActorIterator<ARiftArenaPresentation> It(GetWorld());It;++It)It->Tick(0.f);
+                        TSet<FString> Coverage;double Minimum=1.,Maximum=0.;
+                        const auto& State=Sim->State();
+                        for(const auto& Projectile:State.projectiles)
+                        {
+                            FString Role=UTF8_TO_TCHAR(Projectile.cardId.c_str());
+                            if(Role.IsEmpty())for(const auto& Entity:State.entities)if(Entity.id==Projectile.source)
+                            {Role=Entity.kind==rift::EntityKind::Core?TEXT("crown_core"):Entity.kind==rift::EntityKind::Guard?TEXT("crown_guard"):TEXT("unknown");break;}
+                            Coverage.Add(Role);
+                            const double Progress=FMath::Clamp(1.-Projectile.remaining/FMath::Max(.001,Projectile.duration),0.,1.);
+                            Minimum=FMath::Min(Minimum,Progress);Maximum=FMath::Max(Maximum,Progress);
+                        }
+                        Ready=Coverage.Contains(TEXT("ember_archer"))&&Coverage.Contains(TEXT("arc_mage"))&&Coverage.Contains(TEXT("sky_manta"))&&
+                            Coverage.Contains(TEXT("archer_tower"))&&Coverage.Contains(TEXT("storm_raven"))&&Coverage.Contains(TEXT("crown_core"))&&
+                            Coverage.Contains(TEXT("crown_guard"))&&Minimum>=.12&&Maximum<=.45;
+                        if(Ready)break;
+                    }
+                    Match->SetSpeed(0);
+                    for(TActorIterator<ARiftArenaPresentation> It(GetWorld());It;++It)It->Tick(0.f);
+                    if(!Ready)
+                    {
+                        RIFT_LOG(LogRift,Error,TEXT("Actual projectile capture fixture failed within 45 fixed steps: deployed=%d live=%d elapsed=%.6f"),
+                            Deployed,int32(Sim->State().projectiles.size()),Sim->State().elapsed);
+                        FPlatformMisc::RequestExitWithStatus(false,2);return;
+                    }
+                    RIFT_LOG(LogRift,Log,TEXT("Actual projectile capture fixture reached all seven source roles: %d live shots, %d fixed steps, elapsed=%.6f"),
+                        int32(Sim->State().projectiles.size()),Steps+1,Sim->State().elapsed);
+                }
                 else if(Scenario==TEXT("placement")||Scenario==TEXT("effects17"))Match->SetSpeed(0);
-                if(Scenario!=TEXT("roster")&&Scenario!=TEXT("placement")&&Scenario!=TEXT("effects17"))
+                if(Scenario!=TEXT("roster")&&Scenario!=TEXT("placement")&&Scenario!=TEXT("effects17")&&Scenario!=TEXT("projectiles"))
                 {float CaptureSpeed=1;FParse::Value(FCommandLine::Get(),TEXT("RiftCaptureSpeed="),CaptureSpeed);Match->SetSpeed(FMath::Clamp(CaptureSpeed,.25f,4.f));}
                 Match->FlushEvents();
             }
@@ -251,7 +316,22 @@ void ARiftGameMode::BeginPlay()
             // closure should be read again after that timer-array growth.
             GetWorld()->GetTimerManager().SetTimer(BreathStopTimer,FTimerDelegate::CreateWeakLambda(this,[this](){GetWorld()->GetSubsystem<URiftMatchSubsystem>()->SetSpeed(0);}),Delay-.2f,false);
         }
-        FTimerHandle CaptureTimer;GetWorld()->GetTimerManager().SetTimer(CaptureTimer,FTimerDelegate::CreateWeakLambda(this,[this,CapturePath,Quit,CapturedEvents,RecordedCapture,RecordedDuration,Scenario]()
+        if(Scenario==TEXT("effects17"))
+        {
+            // Freeze the genuine graph sample before capture so its scene
+            // proxies and asynchronously precached PSOs get real render frames.
+            // Creating them in the screenshot callback can yield an empty PNG
+            // even while the CPU particle data is already available.
+            FTimerHandle EffectWarmTimer;
+            GetWorld()->GetTimerManager().SetTimer(EffectWarmTimer,FTimerDelegate::CreateWeakLambda(this,[this]()
+            {
+                float Age=.12f;FParse::Value(FCommandLine::Get(),TEXT("RiftEffectAge="),Age);
+                Age=FMath::IsFinite(Age)?FMath::Clamp(Age,0.f,2.f):.12f;
+                for(TActorIterator<ARiftArenaPresentation> It(GetWorld());It;++It)
+                {It->ShowcaseNiagaraAtAge(Age);break;}
+            }),FMath::Max(1.f,Delay)-.5f,false);
+        }
+        FTimerHandle CaptureTimer;GetWorld()->GetTimerManager().SetTimer(CaptureTimer,FTimerDelegate::CreateWeakLambda(this,[this,CapturePath,Quit,CapturedEvents,RecordedCapture,RecordedDuration]()
         {
             IFileManager::Get().MakeDirectory(*FPaths::GetPath(CapturePath),true);
             auto Snapshot=MakeShared<FJsonObject>();auto EventCounts=MakeShared<FJsonObject>();
@@ -294,12 +374,6 @@ void ARiftGameMode::BeginPlay()
             }
             for(TActorIterator<ARiftArenaPresentation> It(GetWorld());It;++It)
             {
-                if(Scenario==TEXT("effects17"))
-                {
-                    float Age=.12f;FParse::Value(FCommandLine::Get(),TEXT("RiftEffectAge="),Age);
-                    Age=FMath::IsFinite(Age)?FMath::Clamp(Age,0.f,2.f):.12f;
-                    It->ShowcaseNiagaraAtAge(Age);
-                }
                 Snapshot->SetNumberField(TEXT("trainingOverlayLines"),It->TrainingOverlayLineCount());Snapshot->SetNumberField(TEXT("trainingOverlayLabels"),It->TrainingOverlayLabelCount());
                 TSharedPtr<FJsonObject> Niagara;
                 if(FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(It->NiagaraDiagnosticsJSON()),Niagara))Snapshot->SetObjectField(TEXT("niagara"),Niagara);
@@ -364,7 +438,7 @@ void ARiftPlayerController::BeginPlay()
             GetMutableDefault<UUserInterfaceSettings>()->ApplicationScale=UIScale;
         }
         float CaptureZoom=1;
-        if(FParse::Value(FCommandLine::Get(),TEXT("RiftCaptureZoom="),CaptureZoom)&&FMath::IsFinite(CaptureZoom))PendingCaptureZoom=FMath::Clamp(CaptureZoom,.85f,2.f);
+        if(FParse::Value(FCommandLine::Get(),TEXT("RiftCaptureZoom="),CaptureZoom)&&FMath::IsFinite(CaptureZoom))PendingCaptureZoom=FMath::Clamp(CaptureZoom,.1f,2.f);
     }
     Interface=CreateWidget<URiftUIWidget>(this,URiftUIWidget::StaticClass());Interface->AddToViewport(10);
     FInputModeGameAndUI Mode;Mode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);Mode.SetHideCursorDuringCapture(false);SetInputMode(Mode);
@@ -480,48 +554,88 @@ void ARiftPlayerController::Hand0(){if(Interface&&Interface->CanAcceptBattleInpu
 void ARiftPlayerController::Hand1(){if(Interface&&Interface->CanAcceptBattleInput())Interface->SelectHand(1);bConfirmed=false;}
 void ARiftPlayerController::Hand2(){if(Interface&&Interface->CanAcceptBattleInput())Interface->SelectHand(2);bConfirmed=false;}
 void ARiftPlayerController::Hand3(){if(Interface&&Interface->CanAcceptBattleInput())Interface->SelectHand(3);bConfirmed=false;}
+
+namespace
+{
+    // The legal field is 28 x 42 tiles. Include wing/body reach and the tallest
+    // enlarged troop/health anchor at its edges. The full-model contract includes
+    // Raven wing reach and the raised anchors on flyers and crown structures.
+    void ForEachBattleEnvelopePoint(TFunctionRef<void(const FVector&)> Visit)
+    {
+        for(float X:{-1750.f,1750.f})for(float Y:{-2450.f,2450.f})for(float Z:{0.f,620.f})Visit(FVector(X,Y,Z));
+        for(float X:{-350.f,350.f})for(float Y:{-2000.f,2000.f})for(float Z:{0.f,620.f})Visit(FVector(X,Y,Z));
+    }
+}
+
 void ARiftPlayerController::UpdateArenaCamera()
 {
     int32 Width=0,Height=0;GetViewportSize(Width,Height);if(!ArenaCamera||!CameraActor||Width<=0||Height<=0)return;
     constexpr float BaselineHeight=5350.f;
-    const FVector BaselineLocation(0,3600,5400);
-    const FVector Up=ArenaCamera->GetUpVector(),Right=ArenaCamera->GetRightVector();
     const bool BattleView=Interface&&Interface->IsBattleView();
-    // Apply after capture navigation; Home's smaller zoom ceiling must not
-    // discard a requested battle/replay zoom before its HUD bounds are known.
-    if(BattleView&&PendingCaptureZoom>=0){CameraZoom=PendingCaptureZoom;PendingCaptureZoom=-1;}
+    const bool LiveBattle=BattleView&&Interface->IsLiveBattleView();
+    // A 35-degree battle angle expands the field and vertical model silhouettes
+    // while fitting the complete field above the hand dock behind the Core.
+    constexpr float BattleElevationDegrees=35.f;
+    const FVector BaselineLocation=BattleView
+        ?FVector(0,500.f+5400.f/FMath::Tan(FMath::DegreesToRadians(BattleElevationDegrees)),5400)
+        :FVector(0,3600,5400);
+    CameraActor->SetActorRotation(UKismetMathLibrary::FindLookAtRotation(BaselineLocation,FVector(0,500,0)));
+    const FVector Up=ArenaCamera->GetUpVector(),Right=ArenaCamera->GetRightVector();
     CameraUIScale=UWidgetLayoutLibrary::GetViewportScale(this);
-    // Match the real canvas dock/header extents, then leave a small gutter so
-    // rear tiles and their placement markers remain clear at either zoom limit.
-    CameraSafeTop=BattleView?(Interface->IsLiveBattleView()?80.f:84.f)+12.f:0.f;
-    CameraSafeBottom=BattleView?(Interface->IsLiveBattleView()?202.f:158.f)+12.f:0.f;
-    CameraSafeTop*=CameraUIScale;CameraSafeBottom*=CameraUIScale;
-    MinCameraZoom=.85f;MaxCameraZoom=1.2f;
+    CameraSafeTop=BattleView?(LiveBattle?RiftBattleLayout::HeaderBottom:RiftBattleLayout::ReplayHeaderBottom)+RiftBattleLayout::WorldGutter:0.f;
+    CameraSafeBottom=BattleView?(LiveBattle?RiftBattleLayout::HandTop:RiftBattleLayout::ReplayDockTop)+RiftBattleLayout::WorldGutter:0.f;
+    CameraSafeLeft=BattleView?(LiveBattle?RiftBattleLayout::NormalLeftSidebar+RiftBattleLayout::WorldGutter:RiftBattleLayout::SideGutter):0.f;
+    CameraSafeRight=BattleView?(LiveBattle?(Interface->IsBattleDeveloperVisible()?RiftBattleLayout::DeveloperRightSidebar:RiftBattleLayout::NormalRightSidebar)+RiftBattleLayout::WorldGutter:RiftBattleLayout::SideGutter):0.f;
+    CameraSafeTop*=CameraUIScale;CameraSafeBottom*=CameraUIScale;CameraSafeLeft*=CameraUIScale;CameraSafeRight*=CameraUIScale;
+    MinCameraZoom=BattleView?.1f:.85f;MaxCameraZoom=1.2f;
+    double MinUp=0,MaxUp=0,MinRight=0,MaxRight=0;
     if(BattleView)
     {
-        const float VerticalSpan=2800.f*FMath::Abs(Up.X)+4200.f*FMath::Abs(Up.Y);
-        const float HorizontalSpan=2800.f*FMath::Abs(Right.X)+4200.f*FMath::Abs(Right.Y);
+        MinUp=TNumericLimits<double>::Max();MaxUp=TNumericLimits<double>::Lowest();
+        MinRight=MinUp;MaxRight=MaxUp;
+        ForEachBattleEnvelopePoint([&](const FVector& Point)
+        {
+            const double Vertical=FVector::DotProduct(Point,Up),Horizontal=FVector::DotProduct(Point,Right);
+            MinUp=FMath::Min(MinUp,Vertical);MaxUp=FMath::Max(MaxUp,Vertical);
+            MinRight=FMath::Min(MinRight,Horizontal);MaxRight=FMath::Max(MaxRight,Horizontal);
+        });
+        const double VerticalSpan=MaxUp-MinUp,HorizontalSpan=MaxRight-MinRight;
         const float AvailableHeight=FMath::Max(1.f,Height-CameraSafeTop-CameraSafeBottom);
-        const float AvailableWidth=FMath::Max(1.f,Width-24.f*CameraUIScale);
-        const float MinimumHeight=FMath::Max(VerticalSpan*Height/AvailableHeight,HorizontalSpan*Height/AvailableWidth);
+        const float AvailableWidth=FMath::Max(1.f,Width-CameraSafeLeft-CameraSafeRight);
+        const float MinimumHeight=float(FMath::Max(VerticalSpan*Height/AvailableHeight,HorizontalSpan*Height/AvailableWidth));
         MinCameraZoom=FMath::Max(MinCameraZoom,MinimumHeight/BaselineHeight);
         // Large UI and smaller windows can need a wider view than the original
         // zoom ceiling. Retain useful wheel movement above that safe minimum.
         MaxCameraZoom=FMath::Max(MaxCameraZoom,MinCameraZoom*1.2f);
     }
+    // Fit the entire field and its tallest models as closely as possible on the
+    // first battle frame. Later wheel choices retain the same safety envelope.
+    if(BattleView&&!bBattleCameraInitialized){CameraZoom=MinCameraZoom;bBattleCameraInitialized=true;}
+    if(!BattleView)bBattleCameraInitialized=false;
+    // Apply after capture navigation; Home's zoom ceiling must not discard a
+    // requested battle/replay zoom before the actual HUD bounds are known.
+    if(BattleView&&PendingCaptureZoom>=0){CameraZoom=PendingCaptureZoom;PendingCaptureZoom=-1;}
     CameraZoom=FMath::Clamp(CameraZoom,MinCameraZoom,MaxCameraZoom);
     const float ViewHeight=BaselineHeight*CameraZoom;
     ArenaCamera->OrthoWidth=ViewHeight*float(Width)/Height;
     FVector Location=BaselineLocation;
     if(BattleView)
     {
-        const double CurrentCenter=FVector::DotProduct(-BaselineLocation,Up);
-        const double DesiredCenter=(CameraSafeBottom-CameraSafeTop)*ViewHeight/(2.f*Height);
-        Location+=Up*(CurrentCenter-DesiredCenter);
+        const double EnvelopeCenter=(MinUp+MaxUp)*.5;
+        const double DesiredCenter=EnvelopeCenter+(CameraSafeTop-CameraSafeBottom)*ViewHeight/(2.f*Height);
+        Location+=Up*(DesiredCenter-FVector::DotProduct(BaselineLocation,Up));
+        const double DesiredRight=(MinRight+MaxRight)*.5+(CameraSafeRight-CameraSafeLeft)*ArenaCamera->OrthoWidth/(2.f*Width);
+        Location+=Right*(DesiredRight-FVector::DotProduct(Location,Right));
     }
-    // Translating along the unchanged camera up axis keeps the arena's original
-    // angle, lighting, proportions and geometry while centering the usable field.
+    // Translate in camera space to centre the full field in the remaining
+    // canvas, leaving both sidebars and all model-height allowances clear.
     CameraActor->SetActorLocation(Location);
+}
+
+FBox2D ARiftPlayerController::BattleSafeScreenBounds()const
+{
+    int32 Width=0,Height=0;GetViewportSize(Width,Height);
+    return FBox2D(FVector2D(CameraSafeLeft,CameraSafeTop),FVector2D(FMath::Max(CameraSafeLeft,float(Width)-CameraSafeRight),FMath::Max(CameraSafeTop,float(Height)-CameraSafeBottom)));
 }
 FString ARiftPlayerController::CameraFramingDiagnosticsJSON()const
 {
@@ -532,19 +646,100 @@ FString ARiftPlayerController::CameraFramingDiagnosticsJSON()const
     Report->SetNumberField(TEXT("uiScale"),CameraUIScale);Report->SetNumberField(TEXT("zoom"),CameraZoom);
     Report->SetNumberField(TEXT("minimumZoom"),MinCameraZoom);Report->SetNumberField(TEXT("maximumZoom"),MaxCameraZoom);
     Report->SetNumberField(TEXT("orthoWidth"),ArenaCamera?ArenaCamera->OrthoWidth:0.f);
+    Report->SetNumberField(TEXT("cameraElevationDegrees"),CameraActor?-CameraActor->GetActorRotation().Pitch:0.f);
     Report->SetNumberField(TEXT("safeTop"),Height>0?CameraSafeTop/Height:0.f);
     Report->SetNumberField(TEXT("safeBottom"),Height>0?(Height-CameraSafeBottom)/Height:0.f);
+    Report->SetNumberField(TEXT("safeLeft"),Width>0?CameraSafeLeft/Width:0.f);
+    Report->SetNumberField(TEXT("safeRight"),Width>0?(Width-CameraSafeRight)/Width:0.f);
+    Report->SetNumberField(TEXT("usableWidthPixels"),FMath::Max(0.f,Width-CameraSafeLeft-CameraSafeRight));
+    Report->SetNumberField(TEXT("usableHeightPixels"),FMath::Max(0.f,Height-CameraSafeTop-CameraSafeBottom));
+    const FBox2D Safe=BattleSafeScreenBounds();
+    auto InsideSafe=[&](FVector2D Screen){return Screen.X>=Safe.Min.X-1&&Screen.X<=Safe.Max.X+1&&Screen.Y>=Safe.Min.Y-1&&Screen.Y<=Safe.Max.Y+1;};
+    FVector2D OriginScreen,RightScreen,DepthScreen,HeightScreen;
+    const bool PitchProjected=ArenaCamera&&ProjectWorldLocationToScreen(FVector::ZeroVector,OriginScreen,false)
+        &&ProjectWorldLocationToScreen(ArenaCamera->GetRightVector()*100.,RightScreen,false)
+        &&ProjectWorldLocationToScreen(FVector(0,100,0),DepthScreen,false)
+        &&ProjectWorldLocationToScreen(FVector(0,0,100),HeightScreen,false);
+    Report->SetBoolField(TEXT("tilePitchProjected"),PitchProjected);
+    if(PitchProjected)
+    {
+        Report->SetNumberField(TEXT("tilePitchPixels"),(RightScreen-OriginScreen).Size());
+        Report->SetNumberField(TEXT("tileDepthPixels"),(DepthScreen-OriginScreen).Size());
+        Report->SetNumberField(TEXT("modelHeightPixelsPerMeter"),(HeightScreen-OriginScreen).Size());
+        Report->SetNumberField(TEXT("legalFieldWidthPixels"),(RightScreen-OriginScreen).Size()*28.);
+        Report->SetNumberField(TEXT("arenaGroundWidthPixels"),(RightScreen-OriginScreen).Size()*38.);
+    }
     bool Passed=ArenaCamera&&Width>0&&Height>0;TArray<TSharedPtr<FJsonValue>> Corners;
     for(float X:{-14.f,14.f})for(float Y:{-21.f,21.f})
     {
         FVector2D Screen=FVector2D::ZeroVector;
         const bool Projected=ProjectWorldLocationToScreen(URiftMatchSubsystem::WorldPoint({X,Y}),Screen,false);
-        const bool Inside=Projected&&Screen.X>=-1&&Screen.X<=Width+1&&Screen.Y>=CameraSafeTop-1&&Screen.Y<=Height-CameraSafeBottom+1;
+        const bool Inside=Projected&&InsideSafe(Screen);
         Passed=Passed&&Inside;auto Corner=MakeShared<FJsonObject>();Corner->SetNumberField(TEXT("tileX"),X);Corner->SetNumberField(TEXT("tileY"),Y);
         Corner->SetNumberField(TEXT("screenX"),Width>0?Screen.X/Width:0.);Corner->SetNumberField(TEXT("screenY"),Height>0?Screen.Y/Height:0.);
         Corner->SetBoolField(TEXT("projected"),Projected);Corner->SetBoolField(TEXT("insideSafeArea"),Inside);Corners.Add(MakeShared<FJsonValueObject>(Corner));
     }
-    Report->SetArrayField(TEXT("legalFieldCorners"),Corners);Report->SetBoolField(TEXT("passed"),Passed);
+    Report->SetArrayField(TEXT("legalFieldCorners"),Corners);
+    TArray<TSharedPtr<FJsonValue>> Envelope;bool EnvelopePassed=ArenaCamera&&Width>0&&Height>0;
+    ForEachBattleEnvelopePoint([&](const FVector& Point)
+    {
+        FVector2D Screen=FVector2D::ZeroVector;const bool Projected=ProjectWorldLocationToScreen(Point,Screen,false);
+        const bool Inside=Projected&&InsideSafe(Screen);
+        EnvelopePassed=EnvelopePassed&&Inside;auto Sample=MakeShared<FJsonObject>();
+        Sample->SetNumberField(TEXT("worldX"),Point.X);Sample->SetNumberField(TEXT("worldY"),Point.Y);Sample->SetNumberField(TEXT("worldZ"),Point.Z);
+        Sample->SetNumberField(TEXT("screenX"),Width>0?Screen.X/Width:0.);Sample->SetNumberField(TEXT("screenY"),Height>0?Screen.Y/Height:0.);
+        Sample->SetBoolField(TEXT("projected"),Projected);Sample->SetBoolField(TEXT("insideSafeArea"),Inside);Envelope.Add(MakeShared<FJsonValueObject>(Sample));
+    });
+    Report->SetArrayField(TEXT("modelEnvelope"),Envelope);Report->SetBoolField(TEXT("modelEnvelopePassed"),EnvelopePassed);
+    // Capture the actual production component bounds as well as the conservative
+    // edge envelope. These are projection measurements, not gameplay extents.
+    TArray<TSharedPtr<FJsonValue>> Models;bool ModelsPassed=true;int32 TroopCount=0;
+    double TroopWidthSum=0,TroopHeightSum=0,TroopMinHeight=TNumericLimits<double>::Max(),TroopMaxHeight=0;
+    if(const auto* State=Arena?Arena->ViewState():nullptr)
+    {
+        for(const auto& Entity:State->entities)
+        {
+            auto* Visual=Arena->Visual(Entity.id);if(Entity.dead||!Visual||Visual->IsHidden())continue;
+            const FBox Bounds=Visual->GetComponentsBoundingBox(true);if(!Bounds.IsValid)continue;
+            FBox2D ScreenBounds(ForceInit);bool Projected=true;
+            for(int32 X=0;X<2;++X)for(int32 Y=0;Y<2;++Y)for(int32 Z=0;Z<2;++Z)
+            {
+                const FVector Point(X?Bounds.Max.X:Bounds.Min.X,Y?Bounds.Max.Y:Bounds.Min.Y,Z?Bounds.Max.Z:Bounds.Min.Z);
+                FVector2D Screen;const bool CornerProjected=ProjectWorldLocationToScreen(Point,Screen,false);
+                Projected=Projected&&CornerProjected;if(CornerProjected)ScreenBounds+=Screen;
+            }
+            FVector2D HealthScreen;const bool HealthProjected=ProjectWorldLocationToScreen(Visual->HealthLocation(),HealthScreen,false);
+            const bool Inside=Projected&&ScreenBounds.bIsValid&&InsideSafe(ScreenBounds.Min)&&InsideSafe(ScreenBounds.Max);
+            const bool HealthInside=HealthProjected&&InsideSafe(HealthScreen);ModelsPassed=ModelsPassed&&Inside&&HealthInside;
+            auto Sample=MakeShared<FJsonObject>();Sample->SetStringField(TEXT("entityId"),LexToString(Entity.id));
+            Sample->SetStringField(TEXT("cardId"),UTF8_TO_TCHAR(Entity.cardId.c_str()));
+            Sample->SetStringField(TEXT("kind"),Entity.kind==rift::EntityKind::Troop?TEXT("troop"):Entity.kind==rift::EntityKind::Building?TEXT("building"):Entity.kind==rift::EntityKind::Guard?TEXT("guard"):TEXT("core"));
+            Sample->SetNumberField(TEXT("team"),int32(Entity.team));Sample->SetBoolField(TEXT("projected"),Projected);
+            Sample->SetNumberField(TEXT("widthPixels"),ScreenBounds.bIsValid?ScreenBounds.GetSize().X:0.);
+            Sample->SetNumberField(TEXT("heightPixels"),ScreenBounds.bIsValid?ScreenBounds.GetSize().Y:0.);
+            Sample->SetNumberField(TEXT("minXPixels"),ScreenBounds.bIsValid?ScreenBounds.Min.X:0.);
+            Sample->SetNumberField(TEXT("minYPixels"),ScreenBounds.bIsValid?ScreenBounds.Min.Y:0.);
+            Sample->SetNumberField(TEXT("maxXPixels"),ScreenBounds.bIsValid?ScreenBounds.Max.X:0.);
+            Sample->SetNumberField(TEXT("maxYPixels"),ScreenBounds.bIsValid?ScreenBounds.Max.Y:0.);
+            Sample->SetBoolField(TEXT("insideSafeArea"),Inside);Sample->SetBoolField(TEXT("healthAnchorInsideSafeArea"),HealthInside);
+            Models.Add(MakeShared<FJsonValueObject>(Sample));
+            if(Entity.kind==rift::EntityKind::Troop&&Projected&&ScreenBounds.bIsValid)
+            {
+                ++TroopCount;TroopWidthSum+=ScreenBounds.GetSize().X;TroopHeightSum+=ScreenBounds.GetSize().Y;
+                TroopMinHeight=FMath::Min(TroopMinHeight,ScreenBounds.GetSize().Y);TroopMaxHeight=FMath::Max(TroopMaxHeight,ScreenBounds.GetSize().Y);
+            }
+        }
+    }
+    Report->SetArrayField(TEXT("projectedModelBounds"),Models);Report->SetBoolField(TEXT("projectedModelBoundsPassed"),ModelsPassed);
+    Report->SetNumberField(TEXT("troopModelCount"),TroopCount);
+    if(TroopCount>0)
+    {
+        Report->SetNumberField(TEXT("averageTroopWidthPixels"),TroopWidthSum/TroopCount);
+        Report->SetNumberField(TEXT("averageTroopHeightPixels"),TroopHeightSum/TroopCount);
+        Report->SetNumberField(TEXT("minimumTroopHeightPixels"),TroopMinHeight);
+        Report->SetNumberField(TEXT("maximumTroopHeightPixels"),TroopMaxHeight);
+    }
+    Report->SetBoolField(TEXT("passed"),Passed&&(!BattleView||EnvelopePassed));
     FString Result;FJsonSerializer::Serialize(Report,TJsonWriterFactory<>::Create(&Result));return Result;
 }
 void ARiftPlayerController::ZoomIn(){UpdateArenaCamera();CameraZoom=FMath::Clamp(CameraZoom-.025f*GetGameInstance()->GetSubsystem<URiftProfileSubsystem>()->Settings.CameraSpeed,MinCameraZoom,MaxCameraZoom);UpdateArenaCamera();}

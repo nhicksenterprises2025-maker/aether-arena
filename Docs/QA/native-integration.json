@@ -2,7 +2,7 @@
   "devices": [
     {
       "deviceName": "QA workstation",
-      "instance": "B59FE5A64454788FE9B456B032D9E10A",
+      "instance": "01BA3BE047536E1FD6DBA0A7B4297CB1",
       "instanceName": "QA workstation instance",
       "platform": "WindowsEditor",
       "oSVersion": "Windows 11 (25H2) [10.0.26200.9457] ",
@@ -15,13 +15,13 @@
       "appInstanceLog": ""
     }
   ],
-  "reportCreatedOn": "2026.10.09-03.22.12",
-  "succeeded": 10,
-  "succeededWithWarnings": 1,
+  "reportCreatedOn": "2026.10.09-15.50.18",
+  "succeeded": 11,
+  "succeededWithWarnings": 2,
   "failed": 0,
   "notRun": 0,
   "inProcess": 0,
-  "totalDuration": 51.67399597167969,
+  "totalDuration": 75.49966430664062,
   "comparisonExported": false,
   "comparisonExportDirectory": "",
   "tests": [
@@ -31,10 +31,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "B59FE5A64454788FE9B456B032D9E10A"
+        "01BA3BE047536E1FD6DBA0A7B4297CB1"
       ],
-      "duration": 4.058460235595703,
-      "dateTime": "2026.10.09-03.21.20",
+      "duration": 6.545176029205322,
+      "dateTime": "2026.10.09-15.49.02",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -46,10 +46,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "B59FE5A64454788FE9B456B032D9E10A"
+        "01BA3BE047536E1FD6DBA0A7B4297CB1"
       ],
-      "duration": 0.005231998860836029,
-      "dateTime": "2026.10.09-03.21.24",
+      "duration": 0.005162801593542099,
+      "dateTime": "2026.10.09-15.49.09",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -61,10 +61,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "B59FE5A64454788FE9B456B032D9E10A"
+        "01BA3BE047536E1FD6DBA0A7B4297CB1"
       ],
-      "duration": 0.22395530343055725,
-      "dateTime": "2026.10.09-03.21.24",
+      "duration": 0.350324809551239,
+      "dateTime": "2026.10.09-15.49.09",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -76,54 +76,54 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "B59FE5A64454788FE9B456B032D9E10A"
+        "01BA3BE047536E1FD6DBA0A7B4297CB1"
       ],
-      "duration": 42.121585845947266,
-      "dateTime": "2026.10.09-03.21.24",
+      "duration": 60.64763641357422,
+      "dateTime": "2026.10.09-15.49.09",
       "entries": [
         {
           "event": {
             "type": "Info",
-            "message": "Full native replay: 34324 events, 1256 samples, 662343 stored bytes, 43866750 decoded bytes, 313.350 seconds.",
+            "message": "Full native replay: 34324 events, 1256 samples, 662345 stored bytes, 43866750 decoded bytes, 313.350 seconds.",
             "context": "",
             "artifact": "00000000000000000000000000000000"
           },
           "filename": "",
           "lineNumber": -1,
-          "timestamp": "2026.10.09-03.21.33"
+          "timestamp": "2026.10.09-15.49.21"
         },
         {
           "event": {
             "type": "Info",
-            "message": "Long replay game-thread finalization queue time 1.901 ms.",
+            "message": "Long replay game-thread finalization queue time 2.489 ms.",
             "context": "",
             "artifact": "00000000000000000000000000000000"
           },
           "filename": "",
           "lineNumber": -1,
-          "timestamp": "2026.10.09-03.21.33"
+          "timestamp": "2026.10.09-15.49.21"
         },
         {
           "event": {
             "type": "Info",
-            "message": "Paid control/counter AI replay: 242.750s, peak 24, 2155 events, 973 samples, 1082068 stored, 0 exported JSON, 0.860ms queue.",
+            "message": "Paid control/counter AI replay: 242.750s, peak 24, 2155 events, 973 samples, 1082068 stored, 0 exported JSON, 1.361ms queue.",
             "context": "",
             "artifact": "00000000000000000000000000000000"
           },
           "filename": "",
           "lineNumber": -1,
-          "timestamp": "2026.10.09-03.21.37"
+          "timestamp": "2026.10.09-15.49.28"
         },
         {
           "event": {
             "type": "Info",
-            "message": "Congested Developer/paid AI replay: 313.350s, peak 80, 23922 events, 1256 samples, 8572011 stored, 88247587 exported JSON, 2.286ms queue.",
+            "message": "Congested Developer/paid AI replay: 313.350s, peak 80, 23922 events, 1256 samples, 8572005 stored, 88247587 exported JSON, 2.771ms queue.",
             "context": "",
             "artifact": "00000000000000000000000000000000"
           },
           "filename": "",
           "lineNumber": -1,
-          "timestamp": "2026.10.09-03.22.06"
+          "timestamp": "2026.10.09-15.50.09"
         }
       ],
       "warnings": 0,
@@ -136,12 +136,24 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "B59FE5A64454788FE9B456B032D9E10A"
+        "01BA3BE047536E1FD6DBA0A7B4297CB1"
       ],
-      "duration": 2.3667194843292236,
-      "dateTime": "2026.10.09-03.22.06",
-      "entries": [],
-      "warnings": 0,
+      "duration": 3.518761396408081,
+      "dateTime": "2026.10.09-15.50.10",
+      "entries": [
+        {
+          "event": {
+            "type": "Warning",
+            "message": "LogHttp: HTTP request timed out after 3.00 seconds URL=https://www.google.com/generate_204",
+            "context": "log",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-15.50.13"
+        }
+      ],
+      "warnings": 1,
       "errors": 0,
       "artifacts": []
     },
@@ -151,10 +163,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "B59FE5A64454788FE9B456B032D9E10A"
+        "01BA3BE047536E1FD6DBA0A7B4297CB1"
       ],
-      "duration": 0.9837508201599121,
-      "dateTime": "2026.10.09-03.22.09",
+      "duration": 1.4572076797485352,
+      "dateTime": "2026.10.09-15.50.13",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -166,10 +178,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "B59FE5A64454788FE9B456B032D9E10A"
+        "01BA3BE047536E1FD6DBA0A7B4297CB1"
       ],
-      "duration": 0.07118749618530273,
-      "dateTime": "2026.10.09-03.22.10",
+      "duration": 0.06430970132350922,
+      "dateTime": "2026.10.09-15.50.15",
       "entries": [
         {
           "event": {
@@ -180,10 +192,25 @@
           },
           "filename": "",
           "lineNumber": -1,
-          "timestamp": "2026.10.09-03.22.10"
+          "timestamp": "2026.10.09-15.50.15"
         }
       ],
       "warnings": 1,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "ProjectilePresentation",
+      "fullTestPath": "Rift.Integration.ProjectilePresentation",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "01BA3BE047536E1FD6DBA0A7B4297CB1"
+      ],
+      "duration": 0.033901602029800415,
+      "dateTime": "2026.10.09-15.50.15",
+      "entries": [],
+      "warnings": 0,
       "errors": 0,
       "artifacts": []
     },
@@ -193,10 +220,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "B59FE5A64454788FE9B456B032D9E10A"
+        "01BA3BE047536E1FD6DBA0A7B4297CB1"
       ],
-      "duration": 0.16901390254497528,
-      "dateTime": "2026.10.09-03.22.10",
+      "duration": 0.2454608976840973,
+      "dateTime": "2026.10.09-15.50.15",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -208,11 +235,38 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "B59FE5A64454788FE9B456B032D9E10A"
+        "01BA3BE047536E1FD6DBA0A7B4297CB1"
       ],
-      "duration": 0.026889201253652573,
-      "dateTime": "2026.10.09-03.22.10",
+      "duration": 0.04368999972939491,
+      "dateTime": "2026.10.09-15.50.15",
       "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "UnitMotion",
+      "fullTestPath": "Rift.Integration.UnitMotion",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "01BA3BE047536E1FD6DBA0A7B4297CB1"
+      ],
+      "duration": 0.26688098907470703,
+      "dateTime": "2026.10.09-15.50.15",
+      "entries": [
+        {
+          "event": {
+            "type": "Info",
+            "message": "Flying death altitude before 89.683446072746 cm; at start 89.683446072746 cm; displacement 0.000000000000 cm.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-15.50.15"
+        }
+      ],
       "warnings": 0,
       "errors": 0,
       "artifacts": []
@@ -223,10 +277,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "B59FE5A64454788FE9B456B032D9E10A"
+        "01BA3BE047536E1FD6DBA0A7B4297CB1"
       ],
-      "duration": 0.2653234004974365,
-      "dateTime": "2026.10.09-03.22.10",
+      "duration": 0.5367577075958252,
+      "dateTime": "2026.10.09-15.50.15",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -238,10 +292,10 @@
       "tags": [],
       "state": "Success",
       "deviceInstance": [
-        "B59FE5A64454788FE9B456B032D9E10A"
+        "01BA3BE047536E1FD6DBA0A7B4297CB1"
       ],
-      "duration": 1.3818819522857666,
-      "dateTime": "2026.10.09-03.22.11",
+      "duration": 1.784386396408081,
+      "dateTime": "2026.10.09-15.50.16",
       "entries": [],
       "warnings": 0,
       "errors": 0,
@@ -250,16 +304,16 @@
   ],
   "curatedEvidence": {
     "schema": 2,
-    "version": "1.1.0",
-    "sourceReport": "Build/Automation/20261008-232104/Report/index.json",
-    "sourceReportSha256": "f98e5802f888cf2aa67d58417bbf0a8ebd0871b3f380cb6550a8aae8e0277477",
-    "context": "Build/Automation/20261008-232104/context.json",
-    "contextSha256": "1193400fd19313deb198bd1be22361f3804f97f386ab201e787c75f8c928f475",
-    "commandletLog": "Build/Automation/20261008-232104/UnrealIntegration.log",
+    "version": "1.2.0",
+    "sourceReport": "Build/Automation/20261009-114843/Report/index.json",
+    "sourceReportSha256": "993d070a6266cf38f072c4d5449145ef31f3466e8e615658dea8551831846e70",
+    "context": "Build/Automation/20261009-114843/context.json",
+    "contextSha256": "f2a9a009cce280ac7f5c8e0df606ee5da779d42ce75555c444f7bd3ebdff0616",
+    "commandletLog": "Build/Automation/20261009-114843/UnrealIntegration.log",
     "wrapperExitCode": 0,
     "commandletExitCode": 0,
     "allScenariosObserved": true,
-    "observedTestCount": 11,
+    "observedTestCount": 13,
     "requiredTests": [
       "Rift.Integration.CardData",
       "Rift.Integration.ConnectedUI",
@@ -271,14 +325,16 @@
       "Rift.Meta.AggregationEconomy",
       "Rift.Meta.WorkerPauseAndRecovery",
       "Rift.Integration.BattleInputRouting",
-      "Rift.Integration.Presentation"
+      "Rift.Integration.Presentation",
+      "Rift.Integration.UnitMotion",
+      "Rift.Integration.ProjectilePresentation"
     ],
     "runtimeModule": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArena.dll",
-    "runtimeModuleSha256": "3a0a786f28358e0944628b627ae60e5351a513495a7fdff8f05f904cac319734",
+    "runtimeModuleSha256": "76ce27d9b98afd7249f1b0f813faa2a836968ded149fdd5a0c0285d13ed26e16",
     "runtimeModules": [
       {
         "path": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArena.dll",
-        "sha256": "3a0a786f28358e0944628b627ae60e5351a513495a7fdff8f05f904cac319734"
+        "sha256": "76ce27d9b98afd7249f1b0f813faa2a836968ded149fdd5a0c0285d13ed26e16"
       },
       {
         "path": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArenaEditor.dll",
@@ -554,7 +610,7 @@
       },
       {
         "path": "Unreal/RiftCrownArena/Config/DefaultGame.ini",
-        "sha256": "94ba4b3a1e452633ea925797161e603f290706927ffd484ab118d3995cb7456c"
+        "sha256": "61e4016525a52c79c885d3bd81e5c7cb5502bfa848a9088d36015b320a54ae2a"
       },
       {
         "path": "Unreal/RiftCrownArena/Config/DefaultInput.ini",
@@ -570,7 +626,7 @@
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftArenaPresentation.cpp",
-        "sha256": "46f907ccec7f95ebbde194db30d7526ca70a5a08ba753438058fa21c628ed0a6"
+        "sha256": "afa4be86b1f947a58b3457a8b7371deb36f027808bdc5e06ae3309f6cc6d7bc8"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftBattleAudioSubsystem.cpp",
@@ -578,7 +634,7 @@
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftBattleOverlay.cpp",
-        "sha256": "955286728e89022c6cad5441bff34204cc09a61e67c59a9ce0f2a28c30b34263"
+        "sha256": "20c90a4aa978826f11d66ff91687b139d7adde3d3be1808bb37a218a0d8d2426"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftTrainingOverlay.cpp",
@@ -586,7 +642,7 @@
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftUnitVisual.cpp",
-        "sha256": "0a8eb996538a54d5d3c4c996245139f3fb1e3fc3b8c6880e8769b0dee0cc1cb3"
+        "sha256": "7066f3c77e4c43b74574f201c6417919db54ead28be92a74308788315156daa4"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftAssetLibrary.cpp",
@@ -594,7 +650,7 @@
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftBattleHUD.cpp",
-        "sha256": "0952f470acee762424edda23c2bca3c2cc0b348efeb31071c4082f25bf2a4a1a"
+        "sha256": "45aaf8a1db392556857a552b8ea8ddfdf71b90fb2601fabe0030437f16fcc0b5"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftCollectionUI.cpp",
@@ -614,7 +670,7 @@
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftGameMode.cpp",
-        "sha256": "612a2a49d242bb3f04478d833e54473493bd5463a3d7003da62b794433b81366"
+        "sha256": "5eae2c0f88906bfe7544a757a0bf1c40d8dd7ef12f3c8fd719d80a7739f8f915"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftMatchSubsystem.cpp",
@@ -634,7 +690,7 @@
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftReplaySubsystem.cpp",
-        "sha256": "1f773768cb3d0bb0a999046738e7cab2dc5c7edfb58f929fac339a23368b0055"
+        "sha256": "10a62bf9ebd75ca6e18b5edbe31d0f51f5b9a179d70c6f899d9f9eb600c0d343"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftReplayUI.cpp",
@@ -650,7 +706,7 @@
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftUIWidget.cpp",
-        "sha256": "3514ba13b0365d406c21b9ff08a929e2c0d377280ea7ae329fefab63789f88cc"
+        "sha256": "0744b137844af8fdbb003620ba8f34fa3108f08e7656522da95c86203b711fac"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftAI.cpp",
@@ -685,12 +741,24 @@
         "sha256": "d027b77d9a0bf3269930a15b101fba78703221d65eb23ca730e5391994507913"
       },
       {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftProjectilePresentationTests.cpp",
+        "sha256": "4768c7e3a0cd25cc7d13a8781c15fc0f5c72cde625d0d25c871601f5564c0018"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftUnitMotionTests.cpp",
+        "sha256": "0d7a64b34e82ef082eedd1074473f59293c0db4e8f6838847e2a8f7fda764d24"
+      },
+      {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftArenaPresentation.h",
-        "sha256": "405a4b12d45582d01a22528cafb7cc6637088c10f7a4c2e8bfabcea4ae3c7b74"
+        "sha256": "21062e5affc5c4b7090255b7e37edf96623a0324675255b63e1560df589d3277"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleAudioSubsystem.h",
         "sha256": "c1fb344a9334157e34a439931bc8594d40d02720b5f27d14cb1c3b086269e1c6"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleLayout.h",
+        "sha256": "0d953944dccba5ffdd20cea601240a157769de54c929ba804fcef12f0ec4dd27"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleOverlay.h",
@@ -698,7 +766,7 @@
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftUnitVisual.h",
-        "sha256": "25ad4661d4fee92a75fc44aac8c9acd9cdbb443f7329da0aac6fe3cf3bbc6c57"
+        "sha256": "c8099aa871bdeb1f5ee9768360759f53031654d3070b0cccfda2acd62ec3a4ff"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftAssetLibrary.h",
@@ -714,7 +782,7 @@
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftGameMode.h",
-        "sha256": "43a9c3900d21cc3308af8328c92045fdc60d68a501590d598da2e986c7d456bd"
+        "sha256": "ed5cfba939cd023b0cfde50b2167e17f353109566ec77f416742fae7af2c5704"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftMatchSubsystem.h",
@@ -734,7 +802,7 @@
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftReplaySubsystem.h",
-        "sha256": "beb929e0111cf1b72c6c8cbe1d12b686e45d165e9de9b4dcf503f69938f3e163"
+        "sha256": "f06ad40bdc661c4d31776edd30ec3aff246198f9033fa9e820b1afe25c73f9aa"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftUIPrimitives.h",
@@ -742,7 +810,7 @@
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftUIWidget.h",
-        "sha256": "755f0fedf9608a60297f073f3ac1a2adbdbecc7ff59ff571b4bfd071e37c9ed6"
+        "sha256": "098bc7e869a82943578bb2b4dd38fab3fea486d4a33fbd67425af191f4d08cc6"
       },
       {
         "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Simulation/RiftSimulation.h",

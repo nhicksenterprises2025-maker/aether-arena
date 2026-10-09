@@ -364,7 +364,12 @@ void URiftUIWidget::ExportMeta()
 }
 void URiftUIWidget::PatchNotes()
 {
-    Add(Body,Text(TEXT("PRESENTATION UPDATE · 1.1.0"),25,Brass));
+    Add(Body,Text(TEXT("MODEL & MOTION UPDATE · 1.2.0"),25,Brass));
+    Add(Body,Text(TEXT("Every collection and hand card now shows its actual arena model. Units have larger silhouettes, clearer faces and equipment, smoother movement and turns, stronger attack anticipation and recovery, and animated flight and defeat."),16));
+    Add(Body,Text(TEXT("Archers, mages, flying attackers and Crown Towers fire visible projectiles with trails and impact effects. Tower weapons aim while their foundations stay planted. The battlefield camera and compact health bars keep the larger models clear of the battle interface."),16));
+    Add(Body,Text(TEXT("The four hand cards, next card and Aether meter sit together behind your Core Tower. Health bars remain hidden until a unit or tower first takes damage, then stay visible if it heals. Recorded replays preserve the same behavior."),16));
+    Add(Body,Text(TEXT("All fourteen cards, game modes, training tools, replay features and numerical battle rules are preserved."),15,Cyan));
+    Add(Body,Text(TEXT("PRESENTATION UPDATE · 1.1.0"),22,Brass),12);
     Add(Body,Text(TEXT("A rebuilt battle interface with framed hand cards, an illustrated next card, a ten-segment Aether meter, separate crown scores and clear phase announcements. Escape opens a pause menu with settings, restart, loadout and the field manual."),16));
     Add(Body,Text(TEXT("The lobby, collection, card details, replay viewer and match reports share a new interface. Training tools now show live speed, AI and tower information, and their overlays work in the Windows release. Combat, spell, UI and music audio has been remade and mixed to keep crowded battles clear."),16));
     Add(Body,Text(TEXT("The arena graphics, fourteen cards and numerical battle rules are preserved."),15,Cyan));

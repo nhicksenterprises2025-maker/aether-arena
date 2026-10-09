@@ -1,12 +1,13 @@
 param(
     [string]$EngineRoot = 'C:\Program Files\Epic Games\UE_5.8',
     [ValidateSet('Development','Shipping')][string]$Configuration = 'Development',
-    [switch]$Package
+    [switch]$Package,
+    [string]$ArchiveDirectory = ''
 )
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $projectPath = Join-Path $repoRoot 'Unreal\RiftCrownArena\RiftCrownArena.uproject'
-$outputRoot = Join-Path $repoRoot 'Artifacts\Game'
+$outputRoot = if ($ArchiveDirectory) { [IO.Path]::GetFullPath($ArchiveDirectory) } else { Join-Path $repoRoot 'Artifacts\Game' }
 if (!(Test-Path -LiteralPath $projectPath)) { throw "Project not found: $projectPath" }
 if ($Package) {
     $riftDebugStageArgs = @()

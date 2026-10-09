@@ -11,6 +11,8 @@ class URiftBattleAudioSubsystem;
 class UNiagaraComponent;
 class UNiagaraSystem;
 class UHierarchicalInstancedStaticMeshComponent;
+class UInstancedStaticMeshComponent;
+class UStaticMeshComponent;
 class UMaterialInterface;
 class UMaterialInstanceDynamic;
 class UStaticMesh;
@@ -42,6 +44,9 @@ public:
     int32 TrainingOverlayLabelCount()const;
     void ShowcaseNiagara();
     void ShowcaseNiagaraAtAge(float Age);
+    // Presentation paths use authoritative progress, including paused playback
+    // and seeking. Neither trajectory nor roll feeds back into simulation.
+    static FVector ProjectilePathPoint(const std::string& Card, FVector Source, FVector Target, double Progress);
 private:
     void ConstructArena();
     UHierarchicalInstancedStaticMeshComponent* Instances(FName Mesh, int32 Team=-1);
@@ -49,6 +54,11 @@ private:
         FVector Scale=FVector::OneVector, int32 Team=-1);
     void Synchronize(float DeltaSeconds);
     void SynchronizeProjectiles(const rift::Snapshot& State);
+    UStaticMeshComponent* MakeProjectileBody(const std::string& Card, rift::Team Team);
+    UInstancedStaticMeshComponent* ProjectileTrail(const std::string& Card, rift::Team Team);
+    void RemoveProjectile(uint64 Id);
+    void SpawnSpellDebris(const rift::Event& Event);
+    void SynchronizeSpellDebris(const rift::Snapshot& State);
     void SynchronizeHazards(const rift::Snapshot& State);
     void SynchronizeStatuses(const rift::Snapshot& State);
     void OnSimulationEvent(const rift::Event& Event);
@@ -70,11 +80,24 @@ private:
     UPROPERTY() TMap<FName,TObjectPtr<UHierarchicalInstancedStaticMeshComponent>> Environment;
     UPROPERTY() TMap<FName,TObjectPtr<UNiagaraSystem>> Effects;
     UPROPERTY() TMap<uint64,TObjectPtr<UNiagaraComponent>> Projectiles;
+    UPROPERTY() TMap<uint64,TObjectPtr<UStaticMeshComponent>> ProjectileBodies;
+    UPROPERTY() TMap<FName,TObjectPtr<UInstancedStaticMeshComponent>> ProjectileTrails;
+    UPROPERTY() TMap<FName,TObjectPtr<UStaticMesh>> ProjectileAssets;
+    UPROPERTY() TArray<TObjectPtr<UStaticMeshComponent>> SpellDebrisBodies;
     UPROPERTY() TMap<uint64,TObjectPtr<UNiagaraComponent>> Hazards;
     UPROPERTY() TMap<uint64,TObjectPtr<UNiagaraComponent>> SlowEffects;
     UPROPERTY() TMap<uint64,TObjectPtr<UNiagaraComponent>> StunEffects;
-    UPROPERTY() TMap<uint32,TObjectPtr<UMaterialInstanceDynamic>> ParticleMaterials;
+    UPROPERTY() TMap<uint64,TObjectPtr<UMaterialInstanceDynamic>> ParticleMaterials;
     TMap<uint64,FVector> ProjectileOrigins;
+    uint64 ProjectileBodiesCreated=0, ProjectileBodiesReleased=0;
+    struct FSpellDebris
+    {
+        FVector Origin=FVector::ZeroVector,Velocity=FVector::ZeroVector;
+        double Born=0.,Duration=.25;
+        float Scale=1.f,Gravity=0.f,Spin=0.f;
+        bool Meteor=false;
+    };
+    TArray<FSpellDebris> SpellDebris;
     TMap<uint64,double> NextFrostBreath;
     TArray<TWeakObjectPtr<UNiagaraComponent>> TransientEffects;
     TArray<TWeakObjectPtr<UNiagaraComponent>> ShowcaseEffects;

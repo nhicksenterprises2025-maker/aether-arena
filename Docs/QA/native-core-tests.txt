@@ -1,10 +1,4 @@
-RiftSimulation.cpp
-RiftCombat.cpp
-RiftPathfinding.cpp
-RiftDeckAnalysis.cpp
-RiftAI.cpp
-RiftSimulationTests.cpp
-Generating Code...
+Version1.2.0 portable production-core regression. Executed UTC 2026-10-09T14:20:09.5707410Z
 PASS complete exact roster and swarm DPS
 PASS deck validation rejects duplicates and unknown
 PASS half-integer snapping and finite bounds
@@ -40,6 +34,6 @@ PASS AI never reads hidden opponent deck hand or bank
 PASS charged Ram hit and actual projectile splash attribution
 PASS mixed specials and bridge congestion stress
 PASS placement means count paid casts rather than swarm members
-SOAK 21 complete matches wall seconds 3.90502
+SOAK 21 complete matches wall seconds 4.06665
 PASS twenty-one full seeded AI-v-AI matches all styles
 Native authoritative simulation: 36 scenarios passed.
