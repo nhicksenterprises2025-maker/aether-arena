@@ -1,7 +1,7 @@
 param(
     [string]$Executable = '',
     [string]$Name = 'card-drag-native',
-    [string]$ExpectedVersion = '1.3.0',
+    [string]$ExpectedVersion = '1.3.1',
     [ValidateRange(1280,7680)][int]$Width = 1920,
     [ValidateRange(720,4320)][int]$Height = 1080,
     [ValidateRange(30,600)][int]$TimeoutSeconds = 180
@@ -10,6 +10,7 @@ $ErrorActionPreference = 'Stop'
 $riftDragRepo = [IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot))
 if ($Name -notmatch '^[a-z0-9][a-z0-9_-]*$') { throw 'Use a lowercase QA report name.' }
 if ($ExpectedVersion -notmatch '^\d+\.\d+\.\d+$') { throw 'Use a three-part release version.' }
+$riftDragExpectedChecks = if ($ExpectedVersion -eq '1.3.0') { 29 } else { 32 }
 if (!$Executable) { $Executable = Join-Path $riftDragRepo ('Artifacts/Game-' + $ExpectedVersion + '/Windows/RiftCrownArena/Binaries/Win64/RiftCrownArena-Win64-Shipping.exe') }
 $Executable = (Resolve-Path -LiteralPath $Executable).Path
 $riftDragExecutableHash = (Get-FileHash -LiteralPath $Executable -Algorithm SHA256).Hash.ToLowerInvariant()
@@ -128,12 +129,12 @@ if ($riftDragIsEditor) {
     }
     if (!$riftDragDiagnosticFresh) { $riftDragErrors += 'Shipping game diagnostic records are missing fresh timestamps from this run.' }
     $riftDragRoutePasses = @($riftDragDiagnosticRecords | Where-Object { $_.level -eq 'Log' -and $_.message -like 'Card drag route: PASS *' })
-    $riftDragRouteRecordsMatch = $null -ne $riftDragResult -and $riftDragRoutePasses.Count -eq 29
+    $riftDragRouteRecordsMatch = $null -ne $riftDragResult -and $riftDragRoutePasses.Count -eq $riftDragExpectedChecks
     foreach ($riftDragCheck in @($riftDragResult.checks)) {
         if (@($riftDragRoutePasses | Where-Object message -eq ('Card drag route: PASS ' + $riftDragCheck.name)).Count -ne 1) { $riftDragRouteRecordsMatch = $false }
     }
     $riftDragCompletionMatches = @($riftDragDiagnosticRecords | Where-Object { $_.level -eq 'Log' -and $_.message -eq ('Native card drag smoke passed: ' + $riftDragNativeReport) }).Count -eq 1
-    if (!$riftDragRouteRecordsMatch) { $riftDragErrors += 'Shipping game diagnostics do not contain each of the exact 29 native PASS assertions once.' }
+    if (!$riftDragRouteRecordsMatch) { $riftDragErrors += ('Shipping game diagnostics do not contain each of the exact '+$riftDragExpectedChecks+' native PASS assertions once.') }
     if (!$riftDragCompletionMatches) { $riftDragErrors += 'Shipping game diagnostics do not contain the exact fresh smoke-passed completion record.' }
     $riftDragDiagnosticVerification = [ordered]@{passed=@($riftDragErrors).Count -eq 0;processId=$riftDragProcess.Id;startedUTC=$riftDragStarted.ToString('o');finishedUTC=$riftDragFinished.ToString('o');saveRoot=$riftDragSave;gameVersion=$(if ($riftDragContexts.Count -gt 0) { $riftDragContexts[0].gameVersion } else { $null });build=$(if ($riftDragContexts.Count -gt 0) { $riftDragContexts[0].build } else { $null });freshLog=[bool]$riftDragDiagnosticFresh;contextMatches=[bool]$riftDragContextMatches;passCount=$riftDragRoutePasses.Count;routeRecordsMatch=[bool]$riftDragRouteRecordsMatch;finalPass=[bool]$riftDragCompletionMatches;errorCount=@($riftDragErrors).Count;recordCount=$riftDragDiagnosticRecords.Count}
     # Legacy evidence readers use engineLog as the selected runtime-log path; logSource identifies its actual format.
@@ -148,7 +149,7 @@ foreach ($riftDragPin in $riftDragPins) {
     }
 }
 $riftDragExecutableUnchanged = (Get-FileHash -LiteralPath $Executable -Algorithm SHA256).Hash.ToLowerInvariant() -eq $riftDragExecutableHash
-$riftDragPassed = !$riftDragTimedOut -and $riftDragProcess.ExitCode -eq 0 -and $riftDragFresh -and $riftDragSourcesUnchanged -and $riftDragExecutableUnchanged -and $null -ne $riftDragResult -and $riftDragResult.passed -eq $true -and $riftDragResult.version -eq $ExpectedVersion -and $riftDragResult.width -eq $Width -and $riftDragResult.height -eq $Height -and $riftDragResult.checkCount -eq 29 -and @($riftDragResult.checks).Count -eq 29 -and @($riftDragResult.checks | Where-Object { $_.passed -ne $true }).Count -eq 0 -and @($riftDragErrors).Count -eq 0
+$riftDragPassed = !$riftDragTimedOut -and $riftDragProcess.ExitCode -eq 0 -and $riftDragFresh -and $riftDragSourcesUnchanged -and $riftDragExecutableUnchanged -and $null -ne $riftDragResult -and $riftDragResult.passed -eq $true -and $riftDragResult.version -eq $ExpectedVersion -and $riftDragResult.width -eq $Width -and $riftDragResult.height -eq $Height -and $riftDragResult.checkCount -eq $riftDragExpectedChecks -and @($riftDragResult.checks).Count -eq $riftDragExpectedChecks -and @($riftDragResult.checks | Where-Object { $_.passed -ne $true }).Count -eq 0 -and @($riftDragErrors).Count -eq 0
 function Get-RiftDragRelative([string]$Path) {
     if ($Path.StartsWith($riftDragRepo + [IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)) { return [IO.Path]::GetRelativePath($riftDragRepo,$Path).Replace('\','/') }
     return 'external-runtime/' + [IO.Path]::GetFileName($Path)
