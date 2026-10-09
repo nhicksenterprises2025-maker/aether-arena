@@ -12,6 +12,8 @@ All eleven physical cards and six Crown Towers collide within their ground or ai
 
 [unit-collision-1.3.5.json](unit-collision-1.3.5.json) binds the six physically reviewed final Shipping frames, raw all-member far-bank/relative-sweep audits, 30-second stress measurement with peak 137 entities, actual WPF Play and 51 MSI upgrade/repair/uninstall checks. The immutable [147-entry QA packet](https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.3.5/RiftCrownArena-UnitCollision-QAEvidence-1.3.5.zip) was reopened and verified. Its pending public-delivery marker remains frozen; separate anonymous-download and default-latest launcher checks follow publication.
 
+[public-download-verification.json](public-download-verification.json) and [published-update-check.json](published-update-check.json) verify the complete public 1.3.5 ZIP/MSI and the actual released launcher's default-latest update button. Downloads match the tested bytes/hashes; the update command matches all 49 files and displayed notes while preserving isolated saves. All nine uploaded asset sizes and server SHA-256 digests agree. These separate proofs supersede the immutable packet's pending marker.
+
 ## Historical version 1.3.4 expanded arena and lane routing checks
 
 The board is 30×44, with one new tile on every edge and all six Crown Towers one tile rearward (Core depth ±17.3, Guard depth ±13.4). Ground troops retain their current-side bridge and advance toward the Core after their lane's Guard falls, while still responding to nearby troops and buildings. The in-game Meta Stats Guide explains the actual table formulas and sample/metric denominators.
