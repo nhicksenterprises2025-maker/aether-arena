@@ -1,28 +1,28 @@
 {
   "schema": 1,
-  "version": "1.2.0",
+  "version": "1.2.1",
   "passed": true,
-  "utc": "2026-10-09T16:23:48.0482833Z",
+  "utc": "2026-10-09T17:27:20.9286409Z",
   "files": [
     {
-      "file": "RiftCrownArena-Windows-x64-1.2.0.zip",
-      "url": "https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.2.0/RiftCrownArena-Windows-x64-1.2.0.zip",
-      "bytes": 396373442,
-      "sha256": "63d02e6f3de1a535e9563691724c1e0ccf0dfacc6eaf86472b569c2326431e0b",
+      "file": "RiftCrownArena-Windows-x64-1.2.1.zip",
+      "url": "https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.2.1/RiftCrownArena-Windows-x64-1.2.1.zip",
+      "bytes": 396393616,
+      "sha256": "1c89f74925c197364a7acbcfe8ec260bd02b32491f85d7ab307c46dcd5d51357",
       "matchesTestedPayload": true,
       "anonymousHttpsDownload": true
     },
     {
       "file": "RiftCrownArena-Setup.msi",
-      "url": "https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.2.0/RiftCrownArena-Setup.msi",
-      "bytes": 382181376,
-      "sha256": "77efc44db0ca00ce9ad874437baabb833fdfeb4be815c707d60f7b2099f8e768",
+      "url": "https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.2.1/RiftCrownArena-Setup.msi",
+      "bytes": 382246912,
+      "sha256": "2fb2eca115656fff1a6d3a36b4f27738e06e8fe2e81bf2487bd97da55327a85a",
       "matchesTestedPayload": true,
       "anonymousHttpsDownload": true
     }
   ],
-  "localManifestSha256": "8a41cb77687d5d16ceba668e1166e12d05f33cb35711a23dc952685720600693",
-  "localReleaseVerificationSha256": "86db4abee18467e439879eb5fc9f230afd966dd8b315bc0520182ec58e48534b",
-  "rawPublishedUpdateCheckSha256": "76c2ad5dd8de9e20fbbf18509be32e8da080d24d7624b4956f31e26651be776a",
+  "localManifestSha256": "a4385772b79d5c1f01850e27a0de992b35931638abbceef7d631a4084b42d439",
+  "localReleaseVerificationSha256": "80f830494ec1cdac175e5575f28f3a164b7183408b1d28f704fe66a30a3cc5aa",
+  "rawPublishedUpdateCheckSha256": "c8e8b0bd4ee833f44eb3b19fa703a24b78ec5273f62c404e557ef7e046c0e3e6",
   "scope": "Fresh anonymous downloads of the complete public game ZIP and MSI, compared by byte count and SHA-256 to the exact locally tested release; actual final WPF CheckButton.Click separately matched the default latest HTTPS manifest without installing or downloading the game."
 }
