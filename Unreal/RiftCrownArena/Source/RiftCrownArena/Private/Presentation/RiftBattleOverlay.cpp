@@ -19,6 +19,7 @@ int32 URiftBattleOverlay::NativePaint(const FPaintArgs& Args,const FGeometry& Ge
     const auto* RiftPlayer=Cast<ARiftPlayerController>(Player);
     if (!RiftPlayer || !RiftPlayer->Interface || !RiftPlayer->Interface->IsBattleView()) return Top;
     const auto* State=Presentation->ViewState();if (!State) return Top;
+    Top=PaintTrainingOverlay(Geometry,Elements,Top);
     const float ViewScale=FMath::Max(.1f,UWidgetLayoutLibrary::GetViewportScale(this));
     const FVector2D Extent=Geometry.GetLocalSize();
     const FSlateBrush* White=FCoreStyle::Get().GetBrush(TEXT("WhiteBrush"));

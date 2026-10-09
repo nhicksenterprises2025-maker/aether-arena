@@ -13,7 +13,6 @@
 #include "Components/PostProcessComponent.h"
 #include "Components/SkyAtmosphereComponent.h"
 #include "Components/SkyLightComponent.h"
-#include "DrawDebugHelpers.h"
 #include "Engine/GameInstance.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
@@ -287,7 +286,7 @@ void ARiftArenaPresentation::Synchronize(float DeltaSeconds)
         }
     }
     for (uint64 Id:Removed) {Units[Id]->Destroy();Units.Remove(Id);NextFrostBreath.Remove(Id);}
-    SynchronizeProjectiles(*State);SynchronizeHazards(*State);SynchronizeStatuses(*State);DrawDeveloperOverlay(*State);
+    SynchronizeProjectiles(*State);SynchronizeHazards(*State);SynchronizeStatuses(*State);
     TransientEffects.RemoveAllSwap([](const auto& Effect){return !Effect.IsValid();});
     const int32 Stage=State->phase==rift::Phase::Regulation?(State->elapsed>=120?2:1):State->phaseElapsed>=60?3:2;
     if (Stage>AetherStage && State->phase!=rift::Phase::Finished)
@@ -307,6 +306,7 @@ void ARiftArenaPresentation::ShowcaseNiagara()
     {
         const FName Name(Names[Index]);const bool Persistent=Name.ToString().EndsWith(TEXT("Flight"))||Name==TEXT("Slow")||Name==TEXT("Stun");
         auto* Component=SpawnEffect(Name,FVector((-10+5*(Index%5))*100,(-12+7*(Index/5))*100,75),rift::Team::Player,150,Persistent);
+        if(Component)ShowcaseEffects.Add(Component);
         if(Component&&Persistent)
         {
             // This explicit capture fixture holds loop components long enough
@@ -316,9 +316,38 @@ void ARiftArenaPresentation::ShowcaseNiagara()
         }
     }
 }
+void ARiftArenaPresentation::ShowcaseNiagaraAtAge(float Age)
+{
+    // Explicit QA only. World-frame hitches must not replace the requested
+    // short-lived-particle age with the first wall-clock frame's delta.
+    if(!FMath::IsFinite(Age)||Age<0.f||Age>5.f)
+    {RIFT_LOG(LogRift,Error,TEXT("Invalid Niagara showcase sample age: %g"),Age);return;}
+    for(const auto& Component:ShowcaseEffects)if(Component.IsValid())Component->DestroyComponent();
+    ShowcaseEffects.Reset();ShowcaseSampleAge=Age;
+    ShowcaseNiagara();
+    const int32 Steps=FMath::Max(1,FMath::CeilToInt(Age*100.f));
+    for(const auto& WeakComponent:ShowcaseEffects)if(auto* Component=WeakComponent.Get())
+    {
+        // These components alone keep completed systems available for native
+        // lifecycle inspection. The existing bounded QA cleanup still runs.
+        Component->SetAutoDestroy(false);
+        Component->SetForceSolo(true);
+        Component->SetAgeUpdateMode(ENiagaraAgeUpdateMode::DesiredAge);
+        Component->SetDesiredAge(Age);
+        Component->SetComponentTickEnabled(false);
+        // AdvanceSimulation synchronously executes the authored system graph,
+        // including normal spawn, update and death scripts on every substep.
+        // Do not use AdvanceSimulationByTime: it rounds to whole lower ticks.
+        if(Age>0.f)Component->AdvanceSimulation(Steps,Age/Steps);
+        if(auto Controller=Component->GetSystemInstanceController())Controller->WaitForConcurrentTickAndFinalize();
+        Component->SetComponentTickEnabled(false);
+    }
+}
 FString ARiftArenaPresentation::NiagaraDiagnosticsJSON()
 {
     auto Report=MakeShared<FJsonObject>();TArray<TSharedPtr<FJsonValue>> Entries;
+    Report->SetBoolField(TEXT("showcaseAgeSampling"),ShowcaseSampleAge>=0.f);
+    if(ShowcaseSampleAge>=0.f)Report->SetNumberField(TEXT("requestedShowcaseAge"),ShowcaseSampleAge);
     TArray<TSharedPtr<FJsonValue>> Animations;
     for(const auto& Pair:Units)if(auto* Unit=Pair.Value.Get())
     {
@@ -536,10 +565,19 @@ void ARiftArenaPresentation::OnSimulationEvent(const rift::Event& Event)
         SetEffectParameters(Impact,Event.team,Event.damageKind=="splash"?120:45,Position,Position,EffectColor(FlightFor(Event.cardId),Event.team));
         if (Event.damageKind!="initial" && Event.damageKind!="aura" && Event.damageKind!="dot")
         {
-            const FName Sound=Event.cardId=="ember_archer"||Event.cardId=="archer_tower"?TEXT("arrow_hit"):
+            // Contact has a material identity. Structures keep their stone/wood
+            // impact; teeth, blunt strikes and elemental hits use matching cues.
+            // Shared attack/contact cues are aggregated within the same tick
+            // so one authoritative strike cannot produce duplicate loud sounds.
+            const FName Sound=Event.targetKind==rift::EntityKind::Guard||Event.targetKind==rift::EntityKind::Core?TEXT("tower_hit"):
+                Event.targetKind==rift::EntityKind::Building?TEXT("building_hit"):
+                Event.cardId=="vampire_bats"?TEXT("bat_bite"):
+                Event.cardId=="rambeast"||Event.cardId=="boulderback"?TEXT("heavy_slam"):
+                Event.cardId=="frost_fang"?TEXT("frost_attack"):
+                Event.cardId=="storm_raven"?TEXT("storm_bolt"):
+                Event.cardId=="ember_archer"||Event.cardId=="archer_tower"?TEXT("arrow_hit"):
                 Event.cardId=="arc_mage"?TEXT("arc_impact"):Event.cardId=="sky_manta"?TEXT("manta_impact"):
-                Event.targetKind==rift::EntityKind::Guard||Event.targetKind==rift::EntityKind::Core?TEXT("tower_hit"):
-                Event.targetKind==rift::EntityKind::Building?TEXT("building_hit"):TEXT("sword_hit");
+                TEXT("sword_hit");
             PlayEventSound(Sound,Position,Event.count>=5?.14f:.3f);
         }
     }
@@ -588,42 +626,5 @@ void ARiftArenaPresentation::SetPlacementPreview(FVector2D Tile,bool Valid,float
     }
 }
 void ARiftArenaPresentation::ClearPlacementPreview(){bPreview=false;if (PlacementDecal) PlacementDecal->SetVisibility(false);}
-void ARiftArenaPresentation::DrawDeveloperOverlay(const rift::Snapshot& State)
-{
-    const auto* Developer=GetWorld()->GetSubsystem<URiftDeveloperSubsystem>();if (!Developer) return;
-    if (!(Developer->ShowPaths||Developer->ShowSight||Developer->ShowRanges||Developer->ShowTargets||Developer->ShowTiles||Developer->ShowHardLocks)) return;
-    if (Developer->ShowTiles)
-    {
-        for (int32 X=-14;X<=14;++X) DrawDebugLine(GetWorld(),FVector(X*100,-2100,5),FVector(X*100,2100,5),FColor(120,147,155),false,0,0,.6f);
-        for (int32 Y=-21;Y<=21;++Y) DrawDebugLine(GetWorld(),FVector(-1400,Y*100,5),FVector(1400,Y*100,5),FColor(120,147,155),false,0,0,.6f);
-    }
-    for (const auto& Entity:State.entities)
-    {
-        if (Entity.dead) continue;const FVector Origin=URiftMatchSubsystem::WorldPoint(Entity.position,16);
-        const FColor Color=ARiftUnitVisual::TeamColor(Entity.team).ToFColor(true);
-        if (Developer->ShowPaths)
-        {
-            FVector Previous=Origin;for (const auto& Point:Entity.path) {const FVector Next=URiftMatchSubsystem::WorldPoint(Point,16);DrawDebugLine(GetWorld(),Previous,Next,Color,false,0,0,2);Previous=Next;}
-        }
-        if (Developer->ShowRanges)
-        {
-            const auto* Card=rift::FindCard(Entity.cardId);const float Range=Card?Card->range:Entity.kind==rift::EntityKind::Core?8.9:10;
-            DrawDebugCircle(GetWorld(),Origin,Range*100,48,Color,false,0,0,1,FVector::ForwardVector,FVector::RightVector,false);
-        }
-        if (Developer->ShowSight && Entity.kind==rift::EntityKind::Troop)
-        {
-            const FVector Forward(Entity.facing.x,Entity.facing.z,0),Side(-Entity.facing.z,Entity.facing.x,0);
-            FVector Previous;bool First=true;
-            for (int32 Index=0;Index<=48;++Index)
-            {
-                const float Angle=Index*UE_TWO_PI/48;const float Radius=FMath::Cos(Angle)>=0?800:500;
-                const FVector Point=Origin+(Forward*FMath::Cos(Angle)+Side*FMath::Sin(Angle))*Radius;
-                if (!First) DrawDebugLine(GetWorld(),Previous,Point,FColor(120,180,140),false,0,0,1);Previous=Point;First=false;
-            }
-        }
-        if (Developer->ShowTargets && Entity.target)
-            if (const auto* Target=FindEntity(State,Entity.target)) DrawDebugDirectionalArrow(GetWorld(),Origin,URiftMatchSubsystem::WorldPoint(Target->position,25),25,Color,false,0,0,1.5);
-        if (Developer->ShowHardLocks && Entity.hardLock)
-            if (const auto* Target=FindEntity(State,Entity.hardLock)) DrawDebugLine(GetWorld(),Origin+FVector(0,0,30),URiftMatchSubsystem::WorldPoint(Target->position,55),FColor::Yellow,false,0,0,3);
-    }
-}
+int32 ARiftArenaPresentation::TrainingOverlayLineCount()const{return Overlay?Overlay->TrainingLineCount():0;}
+int32 ARiftArenaPresentation::TrainingOverlayLabelCount()const{return Overlay?Overlay->TrainingLabelCount():0;}

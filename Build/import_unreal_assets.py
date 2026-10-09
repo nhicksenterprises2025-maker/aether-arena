@@ -387,7 +387,11 @@ def main():
     audio_manifest = json.loads((audio_dir / "audio_manifest.json").read_text(encoding="utf-8"))
     for wav in sorted(audio_dir.glob("*.wav")):
         sound = import_file(wav, "/Game/Rift/Audio", "SFX_" + wav.stem)
-        sound.set_editor_property("looping", audio_manifest["sounds"][wav.stem]["loop"])
+        audio_spec = audio_manifest["sounds"][wav.stem]
+        sound.set_editor_property("looping", audio_spec["loop"])
+        sound.set_editor_property("compression_quality", 90)
+        sound.set_editor_property("priority", 100.0 if audio_spec["loop"] else 65.0 if audio_spec.get("role") in ("announcement", "interface") else 40.0)
+        sound.set_editor_property("loading_behavior", unreal.SoundWaveLoadingBehavior.RETAIN_ON_LOAD if audio_spec["loop"] else unreal.SoundWaveLoadingBehavior.FORCE_INLINE)
         save(sound)
     if not LIB.save_directory("/Game/Rift", False, True):
         raise RuntimeError("Could not save authored imports before presentation binding")

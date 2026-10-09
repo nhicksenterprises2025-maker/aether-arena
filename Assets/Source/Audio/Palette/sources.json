@@ -1,0 +1,421 @@
+{
+  "schemaVersion": 1,
+  "license": "CC0-1.0",
+  "files": [
+    {
+      "file": "Kenney_impactMetal_medium_002.ogg",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "page": "https://kenney.nl/assets/impact-sounds",
+      "url": "https://kenney.nl/media/pages/assets/impact-sounds/87b4ddecda-1677589768/kenney_impact-sounds.zip",
+      "archiveMember": "Audio/impactMetal_medium_002.ogg",
+      "sha256": "7e89ce2ca0dbda95ea2b78d4b50791cab35c10d20e9f5ccd45dd0b00e99ff548"
+    },
+    {
+      "file": "Kenney_impactPlate_light_000.ogg",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "page": "https://kenney.nl/assets/impact-sounds",
+      "url": "https://kenney.nl/media/pages/assets/impact-sounds/87b4ddecda-1677589768/kenney_impact-sounds.zip",
+      "archiveMember": "Audio/impactPlate_light_000.ogg",
+      "sha256": "6e797cf8a5bfc52d7ed5eb47c227974c1cf2a674954fec5b539cea7d62c7282c"
+    },
+    {
+      "file": "Kenney_impactPlate_light_002.ogg",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "page": "https://kenney.nl/assets/impact-sounds",
+      "url": "https://kenney.nl/media/pages/assets/impact-sounds/87b4ddecda-1677589768/kenney_impact-sounds.zip",
+      "archiveMember": "Audio/impactPlate_light_002.ogg",
+      "sha256": "8ac5869ea434cf0d364872774efe70b2d666a4f02ba35ddfc1e051d336721be8"
+    },
+    {
+      "file": "Kenney_impactMining_000.ogg",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "page": "https://kenney.nl/assets/impact-sounds",
+      "url": "https://kenney.nl/media/pages/assets/impact-sounds/87b4ddecda-1677589768/kenney_impact-sounds.zip",
+      "archiveMember": "Audio/impactMining_000.ogg",
+      "sha256": "36b4ea107222d073c67ca64dde26944975609202d5090b2f2021213c1a7e35cd"
+    },
+    {
+      "file": "Kenney_impactMining_002.ogg",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "page": "https://kenney.nl/assets/impact-sounds",
+      "url": "https://kenney.nl/media/pages/assets/impact-sounds/87b4ddecda-1677589768/kenney_impact-sounds.zip",
+      "archiveMember": "Audio/impactMining_002.ogg",
+      "sha256": "059558ec751115ca6b1441e00f0adc837c1a3eeb0a066b109e0fd879fc5d0b0c"
+    },
+    {
+      "file": "Kenney_impactMining_004.ogg",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "page": "https://kenney.nl/assets/impact-sounds",
+      "url": "https://kenney.nl/media/pages/assets/impact-sounds/87b4ddecda-1677589768/kenney_impact-sounds.zip",
+      "archiveMember": "Audio/impactMining_004.ogg",
+      "sha256": "8ca3a99d85d845751ad8ce7b40509da58263a62e48cde70e5a30b5ccef4c9a3b"
+    },
+    {
+      "file": "Kenney_impactWood_medium_000.ogg",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "page": "https://kenney.nl/assets/impact-sounds",
+      "url": "https://kenney.nl/media/pages/assets/impact-sounds/87b4ddecda-1677589768/kenney_impact-sounds.zip",
+      "archiveMember": "Audio/impactWood_medium_000.ogg",
+      "sha256": "1723a9fd25103ed41af06054814e84e65f4a772bac86ab2dc927da93d9592ff5"
+    },
+    {
+      "file": "Kenney_impactWood_medium_002.ogg",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "page": "https://kenney.nl/assets/impact-sounds",
+      "url": "https://kenney.nl/media/pages/assets/impact-sounds/87b4ddecda-1677589768/kenney_impact-sounds.zip",
+      "archiveMember": "Audio/impactWood_medium_002.ogg",
+      "sha256": "3f3f1917428b828f733a963167833c707bf88296ff158e1559c57c5cb813d799"
+    },
+    {
+      "file": "Kenney_impactWood_medium_004.ogg",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "page": "https://kenney.nl/assets/impact-sounds",
+      "url": "https://kenney.nl/media/pages/assets/impact-sounds/87b4ddecda-1677589768/kenney_impact-sounds.zip",
+      "archiveMember": "Audio/impactWood_medium_004.ogg",
+      "sha256": "7ba48f2f99c91c71be420841a91f1e69c0cbc4fe887fcd7213144d67bb87b13a"
+    },
+    {
+      "file": "Kenney_impactGlass_light_000.ogg",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "page": "https://kenney.nl/assets/impact-sounds",
+      "url": "https://kenney.nl/media/pages/assets/impact-sounds/87b4ddecda-1677589768/kenney_impact-sounds.zip",
+      "archiveMember": "Audio/impactGlass_light_000.ogg",
+      "sha256": "d750cf88097d0c3e69920e6e14496e1444e1a9da01aa4cca8f5ec8cb44c57b4f"
+    },
+    {
+      "file": "Kenney_impactGlass_light_002.ogg",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "page": "https://kenney.nl/assets/impact-sounds",
+      "url": "https://kenney.nl/media/pages/assets/impact-sounds/87b4ddecda-1677589768/kenney_impact-sounds.zip",
+      "archiveMember": "Audio/impactGlass_light_002.ogg",
+      "sha256": "710db7451bb7857b9140dfe6afe4621ea2188ad65eda3919c569d1bb285b933d"
+    },
+    {
+      "file": "Kenney_impactGlass_heavy_000.ogg",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "page": "https://kenney.nl/assets/impact-sounds",
+      "url": "https://kenney.nl/media/pages/assets/impact-sounds/87b4ddecda-1677589768/kenney_impact-sounds.zip",
+      "archiveMember": "Audio/impactGlass_heavy_000.ogg",
+      "sha256": "b44b39a940e8948e74b9bd3776bff980df43cf220abdaf0d467dc4c43c0244a5"
+    },
+    {
+      "file": "Kenney_impactSoft_heavy_000.ogg",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "page": "https://kenney.nl/assets/impact-sounds",
+      "url": "https://kenney.nl/media/pages/assets/impact-sounds/87b4ddecda-1677589768/kenney_impact-sounds.zip",
+      "archiveMember": "Audio/impactSoft_heavy_000.ogg",
+      "sha256": "49e7ca88743fca974bb8676ea138b751cfd8f9033b5e7af8736c2a215d6edbc1"
+    },
+    {
+      "file": "Tinysized_sword-clash-01.wav",
+      "author": "Tinysized",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/fantasy-sound-effects-tinysized-sfx",
+      "url": "https://opengameart.org/sites/default/files/tinysized.zip",
+      "archiveMember": "sfx-cc0/sword-clash-01.wav",
+      "sha256": "58072bf9c80d84a37c4cfaeb694659dad3b5c4ecd24e2f7fc1e7c2fcdc7fc325"
+    },
+    {
+      "file": "Tinysized_sword-clash-03.wav",
+      "author": "Tinysized",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/fantasy-sound-effects-tinysized-sfx",
+      "url": "https://opengameart.org/sites/default/files/tinysized.zip",
+      "archiveMember": "sfx-cc0/sword-clash-03.wav",
+      "sha256": "2fb00a674fc987ef8aeca008c6b3987e0df9b0c11a81fc892ade97c59534b188"
+    },
+    {
+      "file": "Tinysized_sword-clash-05.wav",
+      "author": "Tinysized",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/fantasy-sound-effects-tinysized-sfx",
+      "url": "https://opengameart.org/sites/default/files/tinysized.zip",
+      "archiveMember": "sfx-cc0/sword-clash-05.wav",
+      "sha256": "3eb34d29cbc2f16d9a385ebebe36eb33fde2ffcab5c8fcf72429434b35df97e9"
+    },
+    {
+      "file": "Tinysized_tin-whistle-whoosh-01.wav",
+      "author": "Tinysized",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/fantasy-sound-effects-tinysized-sfx",
+      "url": "https://opengameart.org/sites/default/files/tinysized.zip",
+      "archiveMember": "sfx-cc0/tin-whistle-whoosh-01.wav",
+      "sha256": "8ac3354d54c8f3bfce39810a9ef821490eabba77d4fe10da504b2e0a61ab569d"
+    },
+    {
+      "file": "Tinysized_tube-plastic-whoosh-01.wav",
+      "author": "Tinysized",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/fantasy-sound-effects-tinysized-sfx",
+      "url": "https://opengameart.org/sites/default/files/tinysized.zip",
+      "archiveMember": "sfx-cc0/tube-plastic-whoosh-01.wav",
+      "sha256": "6bf539745db12b4b546bb8bb1ab2f75ccf403db80c07fc8f473fa288d0d428b9"
+    },
+    {
+      "file": "Tinysized_tube-plastic-whoosh-02.wav",
+      "author": "Tinysized",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/fantasy-sound-effects-tinysized-sfx",
+      "url": "https://opengameart.org/sites/default/files/tinysized.zip",
+      "archiveMember": "sfx-cc0/tube-plastic-whoosh-02.wav",
+      "sha256": "2ba001b889f1465d949b5531e7c9f61425a0f81d2a40febe3bdb4e449e99c190"
+    },
+    {
+      "file": "Tinysized_book-page-01.wav",
+      "author": "Tinysized",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/fantasy-sound-effects-tinysized-sfx",
+      "url": "https://opengameart.org/sites/default/files/tinysized.zip",
+      "archiveMember": "sfx-cc0/book-page-01.wav",
+      "sha256": "d279158a5da1689941add3d5e148d827c38eb6b12f22834f499f72ddc47f0b44"
+    },
+    {
+      "file": "Tinysized_book-page-02.wav",
+      "author": "Tinysized",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/fantasy-sound-effects-tinysized-sfx",
+      "url": "https://opengameart.org/sites/default/files/tinysized.zip",
+      "archiveMember": "sfx-cc0/book-page-02.wav",
+      "sha256": "b14e15141984eb84bcbe8841139d3f1d4715eac4e64cf52091acffd8fe440331"
+    },
+    {
+      "file": "Tinysized_handcuffs-metal-lock-01.wav",
+      "author": "Tinysized",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/fantasy-sound-effects-tinysized-sfx",
+      "url": "https://opengameart.org/sites/default/files/tinysized.zip",
+      "archiveMember": "sfx-cc0/handcuffs-metal-lock-01.wav",
+      "sha256": "5f2b35490e8e5976cd460f496fc6784f8ab7446706172c19ab7e18c7ef8b68cd"
+    },
+    {
+      "file": "Tinysized_handcuffs-metal-lock-02.wav",
+      "author": "Tinysized",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/fantasy-sound-effects-tinysized-sfx",
+      "url": "https://opengameart.org/sites/default/files/tinysized.zip",
+      "archiveMember": "sfx-cc0/handcuffs-metal-lock-02.wav",
+      "sha256": "42ebc1c0759cf75f006c2b55f061b91c57d81f02d3f93d62411972cb5584b44e"
+    },
+    {
+      "file": "Tinysized_arrow-feathers-01.wav",
+      "author": "Tinysized",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/fantasy-sound-effects-tinysized-sfx",
+      "url": "https://opengameart.org/sites/default/files/tinysized.zip",
+      "archiveMember": "sfx-cc0/arrow-feathers-01.wav",
+      "sha256": "15493cd9a472a426602ab46fa27b5f012aa0b678dbf07fae0c1f68967ce96f5c"
+    },
+    {
+      "file": "Tinysized_quiver-leather-squeeze-01.wav",
+      "author": "Tinysized",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/fantasy-sound-effects-tinysized-sfx",
+      "url": "https://opengameart.org/sites/default/files/tinysized.zip",
+      "archiveMember": "sfx-cc0/quiver-leather-squeeze-01.wav",
+      "sha256": "e6c1f778db402d02aa20cbbb904fe4f7192fddda91d89ff70d818444a91bdc58"
+    },
+    {
+      "file": "Tinysized_wood-twigs-break-01.wav",
+      "author": "Tinysized",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/fantasy-sound-effects-tinysized-sfx",
+      "url": "https://opengameart.org/sites/default/files/tinysized.zip",
+      "archiveMember": "sfx-cc0/wood-twigs-break-01.wav",
+      "sha256": "383c87c96cf30a207a9922f16768b1bd5138d7fd66bb7f4c2ff4e15e058b1803"
+    },
+    {
+      "file": "Tinysized_wood-twigs-break-02.wav",
+      "author": "Tinysized",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/fantasy-sound-effects-tinysized-sfx",
+      "url": "https://opengameart.org/sites/default/files/tinysized.zip",
+      "archiveMember": "sfx-cc0/wood-twigs-break-02.wav",
+      "sha256": "444587434b25e876f34a585154f5bc339f120aee5edcc9c6605aca415995b354"
+    },
+    {
+      "file": "Tinysized_apple-cut-01.wav",
+      "author": "Tinysized",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/fantasy-sound-effects-tinysized-sfx",
+      "url": "https://opengameart.org/sites/default/files/tinysized.zip",
+      "archiveMember": "sfx-cc0/apple-cut-01.wav",
+      "sha256": "ffe06f3cf2f4404b0ba0ef615607291a3e641bfe1a4f8322217a81873d4da154"
+    },
+    {
+      "file": "Tinysized_water-pour-01.wav",
+      "author": "Tinysized",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/fantasy-sound-effects-tinysized-sfx",
+      "url": "https://opengameart.org/sites/default/files/tinysized.zip",
+      "archiveMember": "sfx-cc0/water-pour-01.wav",
+      "sha256": "c2c1ad4d138873a803feade2d5e080ae169ba24edc2d9c388cdfc002f766d9f6"
+    },
+    {
+      "file": "Tinysized_compressed-air-spray-01.wav",
+      "author": "Tinysized",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/fantasy-sound-effects-tinysized-sfx",
+      "url": "https://opengameart.org/sites/default/files/tinysized.zip",
+      "archiveMember": "sfx-cc0/compressed-air-spray-01.wav",
+      "sha256": "24439d722c11958197d39a351d6e26ba34c10df438f91e9c811e1e58b15f1135"
+    },
+    {
+      "file": "Tinysized_metal-knife-scrape-01.wav",
+      "author": "Tinysized",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/fantasy-sound-effects-tinysized-sfx",
+      "url": "https://opengameart.org/sites/default/files/tinysized.zip",
+      "archiveMember": "sfx-cc0/metal-knife-scrape-01.wav",
+      "sha256": "80a8a2647f9ac8dfa5709b75563cda48a8c815725094de6107201d65815c9e7a"
+    },
+    {
+      "file": "VSCO_VlnEns_Spic_A3_v1_rr1.wav",
+      "author": "Versilian Studios / Sam Gossner / Simon Dalzell",
+      "license": "CC0-1.0",
+      "page": "https://versilian-studios.com/vsco-community/",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Violin%20Section/Spic/VlnEns_Spic_A3_v1_rr1.wav",
+      "sha256": "63ac2de6113b1f12822ea84a30a49c4a326e89027139b8a5e0369542ce6f74ad"
+    },
+    {
+      "file": "VSCO_VlnEns_Spic_A3_v1_rr2.wav",
+      "author": "Versilian Studios / Sam Gossner / Simon Dalzell",
+      "license": "CC0-1.0",
+      "page": "https://versilian-studios.com/vsco-community/",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Violin%20Section/Spic/VlnEns_Spic_A3_v1_rr2.wav",
+      "sha256": "bbbd7d67ea45c17958828efe4c3a5059d85e67be80bbdb637031bcce01bc412c"
+    },
+    {
+      "file": "VSCO_VlnEns_Spic_C4_v1_rr1.wav",
+      "author": "Versilian Studios / Sam Gossner / Simon Dalzell",
+      "license": "CC0-1.0",
+      "page": "https://versilian-studios.com/vsco-community/",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Violin%20Section/Spic/VlnEns_Spic_C4_v1_rr1.wav",
+      "sha256": "b734950875dff1dd7cda7c4721901516560b99f5655c3ffd40b6dc43c16e9c2f"
+    },
+    {
+      "file": "VSCO_VlnEns_Spic_D3_v1_rr1.wav",
+      "author": "Versilian Studios / Sam Gossner / Simon Dalzell",
+      "license": "CC0-1.0",
+      "page": "https://versilian-studios.com/vsco-community/",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Violin%20Section/Spic/VlnEns_Spic_D3_v1_rr1.wav",
+      "sha256": "d94e088560784d6ecd6a927e8101d7e460e6d79168ab9eb52842c58891fae8da"
+    },
+    {
+      "file": "VSCO_VlnEns_Spic_F#3_v1_rr1.wav",
+      "author": "Versilian Studios / Sam Gossner / Simon Dalzell",
+      "license": "CC0-1.0",
+      "page": "https://versilian-studios.com/vsco-community/",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Violin%20Section/Spic/VlnEns_Spic_F%233_v1_rr1.wav",
+      "sha256": "ea4dca06c96de2c0f5fd88c4dcd75ecc505898b648b2847810bf1a0817333de8"
+    },
+    {
+      "file": "VSCO_VlnEns_susVib_A3_v1.wav",
+      "author": "Versilian Studios / Sam Gossner / Simon Dalzell",
+      "license": "CC0-1.0",
+      "page": "https://versilian-studios.com/vsco-community/",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Violin%20Section/susVib/VlnEns_susVib_A3_v1.wav",
+      "sha256": "72817a53dfd2eb61eca94658c14e1cab6017629ca2f27bab8e394c6675bfaad7"
+    },
+    {
+      "file": "VSCO_susvib_D2_v1_1.wav",
+      "author": "Versilian Studios / Sam Gossner / Simon Dalzell",
+      "license": "CC0-1.0",
+      "page": "https://versilian-studios.com/vsco-community/",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Cello%20Section/susvib/susvib_D2_v1_1.wav",
+      "sha256": "e8640dec9febc6e39fcf06b19d2c95a85d5ff8c38f13c9879e69f551eaf38ab8"
+    },
+    {
+      "file": "VSCO_MOHorn_sus_D2_v1_1.wav",
+      "author": "Versilian Studios / Sam Gossner / Simon Dalzell",
+      "license": "CC0-1.0",
+      "page": "https://versilian-studios.com/vsco-community/",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Brass/F%20Horn/sus/MOHorn_sus_D2_v1_1.wav",
+      "sha256": "c8a320cff7c6d19f7089c374e3041b1cbbc73718ba9de37149a82a1117866015"
+    },
+    {
+      "file": "VSCO_MOHorn_sus_A2_v1_1.wav",
+      "author": "Versilian Studios / Sam Gossner / Simon Dalzell",
+      "license": "CC0-1.0",
+      "page": "https://versilian-studios.com/vsco-community/",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Brass/F%20Horn/sus/MOHorn_sus_A2_v1_1.wav",
+      "sha256": "897ffa7cfdf4e0413e4c80e7fa935f28e0a0971691e112f1516c6102da61809f"
+    },
+    {
+      "file": "VSCO_KSHarp_D4_mf.wav",
+      "author": "Versilian Studios / Sam Gossner / Simon Dalzell",
+      "license": "CC0-1.0",
+      "page": "https://versilian-studios.com/vsco-community/",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Harp/KSHarp_D4_mf.wav",
+      "sha256": "ebfde8aab4411019e37e3426f4dd88d6a52a38c2d0261d7f10ec63d8ff584dc7"
+    },
+    {
+      "file": "VSCO_KSHarp_A4_mf.wav",
+      "author": "Versilian Studios / Sam Gossner / Simon Dalzell",
+      "license": "CC0-1.0",
+      "page": "https://versilian-studios.com/vsco-community/",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Harp/KSHarp_A4_mf.wav",
+      "sha256": "3665f3975cad4a33f46784aa4f896f4b4319ba2b7831e892d975bc38c9f09f23"
+    },
+    {
+      "file": "VSCO_KSHarp_C5_mf.wav",
+      "author": "Versilian Studios / Sam Gossner / Simon Dalzell",
+      "license": "CC0-1.0",
+      "page": "https://versilian-studios.com/vsco-community/",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Harp/KSHarp_C5_mf.wav",
+      "sha256": "7c8b862f6fd3f1442ed87537af976d84bda8c05a5b4900e8907d570b5202a517"
+    },
+    {
+      "file": "VSCO_KSHarp_F4_mf.wav",
+      "author": "Versilian Studios / Sam Gossner / Simon Dalzell",
+      "license": "CC0-1.0",
+      "page": "https://versilian-studios.com/vsco-community/",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Harp/KSHarp_F4_mf.wav",
+      "sha256": "db27ebbb37334c10e06f2ae63f4d9ff555e4d11704fcc6f0bcf503863867e577"
+    },
+    {
+      "file": "VSCO_glock_medium_C5.wav",
+      "author": "Versilian Studios / Sam Gossner / Simon Dalzell",
+      "license": "CC0-1.0",
+      "page": "https://versilian-studios.com/vsco-community/",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Percussion/Glock/glock_medium_C5.wav",
+      "sha256": "635f898e0bcb6975b96b18efd9c896f6f1b97ff12174a339ada4814e49675660"
+    },
+    {
+      "file": "VSCO_Timpani3_Hit_v3_rr1_Sum.wav",
+      "author": "Versilian Studios / Sam Gossner / Simon Dalzell",
+      "license": "CC0-1.0",
+      "page": "https://versilian-studios.com/vsco-community/",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Percussion/Timpani/Timpani3_Hit_v3_rr1_Sum.wav",
+      "sha256": "46cd2ba3798f9e3a6be515b13dbc37d2ef65c82afb0d0e9e34121e4524bfcd3a"
+    },
+    {
+      "file": "VSCO_Timpani3_Hit_v1_rr1_Sum.wav",
+      "author": "Versilian Studios / Sam Gossner / Simon Dalzell",
+      "license": "CC0-1.0",
+      "page": "https://versilian-studios.com/vsco-community/",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Percussion/Timpani/Timpani3_Hit_v1_rr1_Sum.wav",
+      "sha256": "00319863ade67b49ec64566eecc801ac7c95e101860b7bb3263f25c7d6757392"
+    },
+    {
+      "file": "VSCO_Snare2-HitSN_v3_rr1_Sum.wav",
+      "author": "Versilian Studios / Sam Gossner / Simon Dalzell",
+      "license": "CC0-1.0",
+      "page": "https://versilian-studios.com/vsco-community/",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Percussion/Snare2-HitSN_v3_rr1_Sum.wav",
+      "sha256": "3df96009d655dd4fe43c635bd3c20314a1e0cbdf9f571ee8a66207f9ef917d08"
+    }
+  ]
+}

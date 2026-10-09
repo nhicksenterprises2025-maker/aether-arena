@@ -1,4 +1,4 @@
-param([string]$Version='1.0.0',[string]$Distribution)
+param([string]$Version='1.1.0',[string]$Distribution)
 $ErrorActionPreference='Stop'
 $repoRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 if(-not $Distribution){$Distribution=Join-Path $repoRoot 'Artifacts/Distribution'}

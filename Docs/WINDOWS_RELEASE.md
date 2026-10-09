@@ -48,11 +48,11 @@ Run these scripts from PowerShell 7 with the repository as the working directory
 ```powershell
 ./Build/Build-Launcher.ps1
 # Run the repository's Unreal Shipping build/cook/stage procedure first.
-./Build/Package-WindowsRelease.ps1 -Version 1.0.0 -GamePackage ./Artifacts/Game/Windows
+./Build/Package-WindowsRelease.ps1 -Version 1.1.0 -GamePackage ./Artifacts/Game/Windows
 ./Build/Test-LauncherPlay.ps1
-./Installer/Build-Installer.ps1 -Version 1.0.0
+./Installer/Build-Installer.ps1 -Version 1.1.0
 ./Installer/Test-Installer.ps1 -Msi $PreviousSameFamilyMsi -UpgradeMsi ./Artifacts/Installer/RiftCrownArena-Setup.msi
-./Build/Finalize-WindowsRelease.ps1 -Version 1.0.0
+./Build/Finalize-WindowsRelease.ps1 -Version 1.1.0
 ```
 
 `Build-Launcher.ps1` publishes the real self-contained launcher, runs the isolated update integration suite and launches the published executable's noninteractive WPF smoke check. The smoke check requires explicit isolated install and save paths and renders an actual WPF preview.

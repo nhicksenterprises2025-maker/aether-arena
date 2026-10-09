@@ -9,7 +9,7 @@ public class RiftCrownArena : ModuleRules
         PublicDependencyModuleNames.AddRange(new string[] {
             "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput",
             "UMG", "CommonUI", "Slate", "SlateCore", "Niagara", "Json",
-            "JsonUtilities", "RenderCore", "RHI", "DeveloperSettings", "Projects"
+            "JsonUtilities", "RenderCore", "RHI", "DeveloperSettings", "Projects", "AudioMixer"
         });
     }
 }
