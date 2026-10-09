@@ -14,6 +14,8 @@ The normal 90-second Shipping performance run records 5,401 frames at 16.667726 
 
 The six authoritative simulation files retain their 1.2.1 bytes. The earlier 100-match spell cohort keeps its exact original runtime and is inherited rule evidence, not a new 1.3.0 balance cohort. Historical native/public reports are preserved under explicitly versioned filenames. The frozen acceptance snapshot keeps its prepublication pending marker; separate public-download and launcher-update reports supersede it after verification.
 
+[Version 1.3.0](https://github.com/nhicksenterprises2025-maker/aether-arena/releases/tag/v1.3.0) is published and verified. [public-download-verification.json](public-download-verification.json) records complete fresh anonymous ZIP/MSI downloads matching the tested bytes/hashes. [published-update-check.json](published-update-check.json) records actual released WPF `CheckButton.Click` against default latest HTTPS: version 1.3.0, all 49 files, archive identity and displayed notes matched in 0.5798398 seconds, Install enabled and separate fixtures preserved. Neither immutable QA archive was changed after publication; the separate reports supersede the original pending marker. All ten public asset sizes and server digests match the finalized local files.
+
 ## Historical version 1.2.1 spell timing checks
 
 Meteor Shards lands after 0.75 seconds and Bullet Burst after 0.30 seconds. Both mark a fixed target area and resolve damage against enemies' positions when the animation finishes. Meteor's five damage ticks start from impact; Bullet's seven visible rounds still apply damage once per target. Nova Flask remains instant. Costs, damage values, radii and the fourteen-card roster remain intact.
