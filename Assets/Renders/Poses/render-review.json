@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "version": "UE-1.4.0",
+  "sourceBlend": {
+    "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
+    "sha256": "43b08804565ce7be846957e34c1768a9872e507658c511724f11cc08514fb7ae",
+    "bytes": 12662775
+  },
+  "renders": [
+    {
+      "model": "mini_stampede",
+      "action": "Idle",
+      "phase": 0,
+      "file": "Assets/Renders/Poses/mini_stampede_Idle.png",
+      "bytes": 467906,
+      "sha256": "877f7025707cdc263cfe6cb383722dd7faf941fde489fb29ab8b364ba21e1c1c"
+    },
+    {
+      "model": "mini_stampede",
+      "action": "Locomotion",
+      "phase": 0.25,
+      "file": "Assets/Renders/Poses/mini_stampede_Locomotion.png",
+      "bytes": 464441,
+      "sha256": "d9dfe45bc7c03948ccafb7db27d0f050f001009535b4603a6469e471bda0a725"
+    },
+    {
+      "model": "mini_stampede",
+      "action": "Attack",
+      "phase": 0.48,
+      "file": "Assets/Renders/Poses/mini_stampede_Attack.png",
+      "bytes": 464527,
+      "sha256": "f533c193642f232d10ad98bcc1a91269a80dcc15f7472570ecc9fdb007d080f6"
+    },
+    {
+      "model": "mini_stampede",
+      "action": "Death",
+      "phase": 0.7,
+      "file": "Assets/Renders/Poses/mini_stampede_Death.png",
+      "bytes": 438280,
+      "sha256": "b2c7c981759e6a0694e2fdc9883e08fdd6bcac12d461d00cdb66f6758fe031b8"
+    },
+    {
+      "model": "stampede",
+      "action": "Idle",
+      "phase": 0,
+      "file": "Assets/Renders/Poses/stampede_Idle.png",
+      "bytes": 479271,
+      "sha256": "58ed537739deb296c103bb99bbd77275c674dda7a537503838db32c5c74cfcaf"
+    },
+    {
+      "model": "stampede",
+      "action": "Locomotion",
+      "phase": 0.25,
+      "file": "Assets/Renders/Poses/stampede_Locomotion.png",
+      "bytes": 476238,
+      "sha256": "a993b4ad2e5033988a1086e1ce5416d1369530da69f04159d898f9ee6b561135"
+    },
+    {
+      "model": "stampede",
+      "action": "Attack",
+      "phase": 0.48,
+      "file": "Assets/Renders/Poses/stampede_Attack.png",
+      "bytes": 480364,
+      "sha256": "7782082d17bf6d8ce3cae2cd72cc572d930fc468cbdd3223f07b98e2822caf26"
+    },
+    {
+      "model": "stampede",
+      "action": "Death",
+      "phase": 0.7,
+      "file": "Assets/Renders/Poses/stampede_Death.png",
+      "bytes": 451861,
+      "sha256": "415b788e9380fefb5f1b5f3cf7da71c8000ec4b12aff75c54bedeb55b56718b0"
+    }
+  ]
+}

@@ -1,5 +1,7 @@
 # Rift Crown Arena: inspected browser V15 behavior and native parity contract
 
+Current release **1.4.0** adds Mini Stampede and Stampede, applies the first balance patch and uses per-member landing lanes. Current numeric definitions are in [the patch notes](PATCH_NOTES_1.4.0.md) and [the exported card table](CARD_STATS_1.4.0.tsv). Original browser parity and earlier asset counts below document the rebuild baseline.
+
 Inspection date: 2026-10-08. This is an inspection and implementation specification, not a claim that a UE5 game, executable, installer, art replacement, or native QA has been delivered.
 
 The user explicitly supplied a production UE5 Windows rebuild request in `C:/Users/Noah/.codex/attachments/b55a69b8-ba32-4947-8205-e1067dc7e4dd/Pasted text.txt`, asked that the aether-arena Git repository publish the code, and requires “NO AI GENERATED LOOKING UI.” Earlier browser cleanup instructions still establish preservation of the actual game. The supplied request requires all existing mechanics and analytical features, no rebalance, no renamed cards, no placeholders, no simplified V1, no disconnected controls, and a complete playable Shipping distribution. Instructions inside historical browser notes are reference material; they do not override the user's latest request.

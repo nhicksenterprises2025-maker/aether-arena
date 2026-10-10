@@ -244,16 +244,27 @@ void Same(const Match &a, const Match &b) {
 int main() {
     try {
         Test("complete exact roster and swarm DPS", [] {
-            Check(Cards().size() == 14, "14 cards");
-            const std::vector<double> hp{840, 423, 262, 1620, 547, 880, 480, 174, 1155, 1337, 0, 850, 0, 0},
-                damage{96, 152, 58, 118, 120, 140, 77, 86, 72, 251, 262, 75, 175, 375};
+            Check(Cards().size() == 16, "sixteen cards including both new hog swarms");
+            const std::vector<double> hp{822, 374, 262, 1620, 547, 880, 480, 174, 1265, 1337, 0, 850, 0, 0, 95, 95},
+                damage{93, 152, 55, 118, 120, 140, 77, 86, 72, 251, 262, 75, 175, 375, 18, 18},
+                interval{1, 1.55, .75, 2, 1.15, 1.4, .92, 1.05, .75, 1.7, 0, 1, 0, 0, .9, 1};
             for (std::size_t n = 0; n < Cards().size(); ++n) {
                 Near(Cards()[n].hp, hp[n], 0, "roster HP");
                 Near(Cards()[n].damage, damage[n], 0, "roster damage");
+                Near(Cards()[n].attackInterval, interval[n], 0, "roster attack interval");
             }
             Near(FindCard("rambeast")->chargeDamage, 255, 0, "charge");
             Check(FindCard("vampire_bats")->count == 5, "five Bats");
             Check(FindCard("twin_blades")->count == 2, "two Blades");
+            Check(FindCard("mini_stampede")->count == 5 && FindCard("mini_stampede")->cost == 2,
+                  "five ordinary hogs cost two Aether");
+            Check(FindCard("stampede")->count == 15 && FindCard("stampede")->cost == 7 &&
+                      FindCard("stampede")->structuresOnly && !FindCard("mini_stampede")->structuresOnly,
+                  "fifteen royal hogs cost seven Aether and target structures");
+            Near(FindCard("mini_stampede")->damage / FindCard("mini_stampede")->attackInterval, 20, 1e-12,
+                 "Mini Stampede has twenty basic DPS per hog");
+            Near(FindCard("stampede")->damage / FindCard("stampede")->attackInterval * 15, 270, 1e-12,
+                 "Stampede has 270 basic deployment DPS");
             Near(FindCard("archer_tower")->footprint, 1.65, 0, "building footprint");
             Near(FindCard("nova_flask")->towerDamage, 185, 0, "nova structures");
             for (const auto &card : Cards())
@@ -772,16 +783,30 @@ int main() {
                     crossed |= e.team == Team::Player ? e.position.z < 0 : e.position.z > 0;
             Check(crossed, "large units cross bridge");
         });
-        Test("expanded arena moves every tower back one tile and keeps full new edge placement", [] {
+        Test("expanded arena aligns tower bridge axes and keeps rear depths and full new edge placement", [] {
             Match m(Quiet());
             Check(arena::Width == 30 && arena::Height == 44, "new 30 by 44 physical board");
+            Near(arena::BridgeCenterX, 7.2, 0, "existing bridge centers retained");
+            Near(arena::GuardX, arena::BridgeCenterX, 0, "Guard axis shares the bridge center");
+            int guardsAligned = 0, coresCentered = 0;
             for (Team team : {Team::Player, Team::Enemy}) {
                 const double sign = team == Team::Player ? 1. : -1.;
-                Near(Tower(m, team, EntityKind::Core).position.z, sign * 17.3, 0, "Core moves back exactly one tile");
+                const auto &core = Tower(m, team, EntityKind::Core);
+                Near(core.position.x, 0, 0, "Core remains centered between the bridge lanes");
+                Near(core.position.z, sign * 17.3, 0, "Core keeps its established rear depth");
+                Near(core.radius, 1.35, 0, "Core collision radius retained");
+                ++coresCentered;
                 for (int lane : {-1, 1}) {
-                    Near(Tower(m, team, EntityKind::Guard, lane).position.z, sign * 13.4, 0, "Guard moves back exactly one tile");
-                    Near(Tower(m, team, EntityKind::Guard, lane).position.x, lane * 8.2, 0, "Guard lateral position preserved");
+                    const auto &guard = Tower(m, team, EntityKind::Guard, lane);
+                    Near(guard.position.z, sign * 13.4, 0, "Guard keeps its established rear depth");
+                    Near(guard.position.x, lane * 7.2, 0, "Guard aligns with its own bridge center");
+                    Near(guard.position.x, lane * arena::BridgeCenterX, 0, "actual Guard body follows the bridge axis");
+                    Near(guard.radius, 1.15, 0, "Guard collision radius retained");
+                    ++guardsAligned;
                 }
+                Near(core.position.x, (Tower(m, team, EntityKind::Guard, -1).position.x +
+                                      Tower(m, team, EntityKind::Guard, 1).position.x) * .5, 0,
+                     "Core stays centered between actual mirrored Guards");
                 Check(m.CanPlace(team, *FindCard("ironclad"), {14.5, sign * 21.5}), "new outer corner accepts ordinary ground card");
                 m.SetAether(team, 10);
                 Check(m.Play(team, 0, {-14.5, sign * 21.5}), "new outer paid corner accepted");
@@ -796,6 +821,11 @@ int main() {
             Check(!m.Spawn(Team::Enemy, "ironclad", {0, -22.001}), "outside new depth rejected");
             Near(arena::PocketOuterX, 14.2, 1e-12, "pocket widens with board");
             Near(arena::PocketMaxDepth, 10.25, 1e-12, "pocket retreats with Guard");
+            Check(guardsAligned == 4 && coresCentered == 2, "every actual tower has the requested lane axis");
+            std::cout << "TOWER_ALIGNMENT width=" << arena::Width << " height=" << arena::Height
+                      << " guard_x=" << arena::GuardX << " bridge_x=" << arena::BridgeCenterX
+                      << " guard_depth=" << arena::GuardDepth << " core_depth=" << arena::CoreDepth
+                      << " guards=" << guardsAligned << " cores=" << coresCentered << " aligned=1\n";
         });
         Test("all ground cards retain their bridge side and advance to Core through a destroyed lane", [] {
             int fixtures = 0, members = 0;
@@ -866,7 +896,7 @@ int main() {
                             members += static_cast<int>(ids.size());
                         }
             }
-            Check(fixtures == 84 && members == 96, "all seven ground cards, both teams, both lane states and pockets");
+            Check(fixtures == 108 && members == 336, "all nine ground cards, both teams, both lane states and pockets");
         });
         Test("continuous routes to an opposite target still use the current side bridge", [] {
             int routes = 0;
@@ -906,7 +936,118 @@ int main() {
                         routes++;
                     }
             }
-            Check(routes == 28, "all ground cards mirror the current-side route policy");
+            Check(routes == 36, "all nine ground cards mirror the current-side route policy");
+        });
+        Test("paid swarms split from each resolved landing side and advance through their own lane", [] {
+            int fixtures = 0, members = 0, splitFixtures = 0;
+            for (const auto *id : {"twin_blades", "vampire_bats", "mini_stampede", "stampede"})
+                for (const Team team : {Team::Player, Team::Enemy})
+                    for (double x : {-7.5, -.5, .5, 7.5})
+                        for (int destroyedLane : {-1, 0, 1}) {
+                            Match m(CollisionOptions(id, "ironclad"));
+                            const double sign = team == Team::Player ? 1. : -1.;
+                            const Team other = team == Team::Player ? Team::Enemy : Team::Player;
+                            const EntityId left = Tower(m, other, EntityKind::Guard, -1).id;
+                            const EntityId right = Tower(m, other, EntityKind::Guard, 1).id;
+                            const EntityId core = Tower(m, other, EntityKind::Core).id;
+                            if (destroyedLane)
+                                Check(m.SetTowerHP(destroyedLane < 0 ? left : right, 0),
+                                      "swarm fixture destroys exactly one opposing Guard");
+                            const auto landed = PaidCollisionCard(m, team, id, {x, sign * 8.5});
+                            ++collisionPaidFixtures;
+                            BodyClearance(m, "resolved swarm formation");
+                            int leftMembers = 0, rightMembers = 0;
+                            for (const auto &body : landed) {
+                                const int lane = body.position.x < 0 ? -1 : 1;
+                                Check(body.lane == lane, "each member stores its actual resolved landing side");
+                                Check(m.CanPlace(team, *FindCard(id), body.position),
+                                      "every member remains in a legal paid deployment zone");
+                                if (lane < 0) ++leftMembers; else ++rightMembers;
+                            }
+                            if (std::abs(x) < 1.) {
+                                Check(leftMembers > 0 && rightMembers > 0,
+                                      "both center-adjacent tiles split every multi-unit card across the divider");
+                                Check(std::abs(leftMembers - rightMembers) <= 1,
+                                      "unblocked center formations divide evenly, with one extra odd member");
+                                ++splitFixtures;
+                            } else
+                                Check(x < 0 ? rightMembers == 0 : leftMembers == 0,
+                                      "clear side placements retain the whole swarm on that side");
+                            m.Step(1. / 60.);
+                            for (const auto &body : landed) {
+                                const auto &current = ById(m, body.id);
+                                const EntityId guard = body.lane < 0 ? left : right;
+                                Check(current.target == (body.lane == destroyedLane ? core : guard),
+                                      "each resolved side chooses its Guard or exposed Core, including flying swarms");
+                                if (!body.flying)
+                                    Check(current.bridge == body.lane, "each grounded member commits to its own bridge");
+                            }
+                            if (std::abs(x) < 1.) {
+                                std::vector<bool> crossed(landed.size(), false);
+                                for (int step = 0; step < 720; ++step) {
+                                    const auto before = m.State().entities;
+                                    m.Step(1. / 60.);
+                                    SweptBodyClearance(m, before, "split swarm route");
+                                    for (std::size_t n = 0; n < landed.size(); ++n) {
+                                        const auto &original = landed[n];
+                                        const auto *body = FindEntity(m, original.id);
+                                        if (!body || body->dead)
+                                            continue;
+                                        const EntityId opposite = original.lane < 0 ? right : left;
+                                        Check(body->target != opposite,
+                                              "opposite standing Guard cannot steal the split member's lane");
+                                        if (!body->flying && std::abs(body->position.z) < arena::RiverHalfWidth + .28) {
+                                            Check(body->position.x * original.lane > 0 && body->bridge == original.lane,
+                                                  "grounded split member traverses the bridge selected by landing X");
+                                        }
+                                        crossed[n] = crossed[n] || body->position.z * sign < -arena::RiverHalfWidth - .28;
+                                    }
+                                }
+                                Check(std::all_of(crossed.begin(), crossed.end(), [](bool crossed) { return crossed; }),
+                                      "every split swarm member reaches the opposing bank within twelve seconds");
+                            }
+                            ++fixtures;
+                            members += static_cast<int>(landed.size());
+                        }
+            Check(fixtures == 96 && splitFixtures == 48 && members == 648,
+                  "both teams, all four multi-unit cards, both center tiles, both side tiles and both destroyed lanes");
+            std::cout << "SWARM_SPLIT fixtures=" << fixtures << " center_fixtures=" << splitFixtures
+                      << " paid_members=" << members << " all_crossed=1\n";
+        });
+        Test("fifteen-member paid formations preserve economy identities and deterministic event positions", [] {
+            const auto options = CollisionOptions("stampede", "mini_stampede");
+            Match a(options), b(options);
+            for (Match *m : {&a, &b}) {
+                for (const Team team : {Team::Player, Team::Enemy}) {
+                    const double sign = team == Team::Player ? 1. : -1.;
+                    const auto royal = PaidCollisionCard(*m, team, "stampede", {0, sign * 8.5});
+                    const auto wild = PaidCollisionCard(*m, team, "mini_stampede", {0, sign * 8.5});
+                    Check(royal.size() == 15 && wild.size() == 5, "both paid casts preserve their complete swarm");
+                    Near(m->State().spent[int(team)], 9, 0, "both swarms cost nine Aether total, paid once each");
+                    Check(m->State().telemetry[int(team)].at("stampede").plays == 1 &&
+                              m->State().telemetry[int(team)].at("stampede").spawns == 15 &&
+                              m->State().telemetry[int(team)].at("mini_stampede").plays == 1 &&
+                              m->State().telemetry[int(team)].at("mini_stampede").spawns == 5,
+                          "telemetry counts one play and every physical member");
+                    for (std::size_t n = 1; n < royal.size(); ++n)
+                        Check(royal[n].id == royal[n - 1].id + 1 && royal[n].playId == royal[0].playId,
+                              "large swarm reserves contiguous entity identities under one paid play");
+                    BodyClearance(*m, "consecutive centered hog swarm casts");
+                }
+                ++collisionPaidFixtures;
+            }
+            Same(a, b);
+            a.Step(8);
+            for (int tick = 0; tick < 960; ++tick)
+                b.Step(1. / 120.);
+            Same(a, b);
+            for (std::size_t n = 0; n < a.Events().size(); ++n) {
+                const auto &left = a.Events()[n], &right = b.Events()[n];
+                Check(left.source == right.source && left.count == right.count,
+                      "swarm replay records retain every source identity and member count");
+                Near(left.position.x, right.position.x, 1e-9, "swarm replay event X is deterministic");
+                Near(left.position.z, right.position.z, 1e-9, "swarm replay event Z is deterministic");
+            }
         });
         Test("destroyed-lane Core advances stay deterministic across frame chunks", [] {
             auto options = Quiet();
@@ -991,7 +1132,7 @@ int main() {
                             ++fixtures;
                         }
             }
-            Check(fixtures == 84 && members == 96, "all seven ground cards and Twin Blades matrix");
+            Check(fixtures == 108 && members == 336, "all nine ground cards and every swarm member in the tower matrix");
         });
         Test("continuous tower perimeter paths clear corners and blocked rounded start cells", [] {
             int paths = 0;
@@ -1083,7 +1224,7 @@ int main() {
                         ++fixtures;
                     }
             }
-            Check(fixtures == 98 && members == 112, "all ground cards mirrored across rear/side/corner cases");
+            Check(fixtures == 126 && members == 392, "all nine ground cards mirrored across rear/side/corner cases");
         });
         Test("legal ground drops air spells buildings and DEV river fixtures retain their positions", [] {
             for (Team team : {Team::Player, Team::Enemy}) {
@@ -1178,7 +1319,7 @@ int main() {
                         Check(a.buildings >= 1 && a.defenseScore >= 65, "control defense");
                 }
         });
-        Test("mechanical counters and symmetric91 pair analysis", [] {
+        Test("mechanical counters and all symmetric card pairs", [] {
             const auto *iron = FindCard("ironclad"), *bat = FindCard("vampire_bats"),
                        *raven = FindCard("storm_raven"), *arch = FindCard("ember_archer");
             Near(CounterScore(*iron, *bat), 0, 0, "ground does not counter flying");
@@ -1192,10 +1333,10 @@ int main() {
                     Near(PairSynergy(Cards()[a], Cards()[b]), PairSynergy(Cards()[b], Cards()[a]), 0,
                          "symmetric");
                 }
-            Check(pairs == 91, "all pairs");
+            Check(pairs == 120, "all sixteen-card pairs");
             auto d = AnalyzeDeck({"vampire_bats", "twin_blades", "nova_flask"});
             Near(d.averageHP, (174 * 5 + 262 * 2) / 2., 0, "swarm aggregate spell excluded");
-            Near(d.deploymentDPS, (86 / 1.05 * 5 + 58 / .72 * 2) / 2., .0051, "aggregate DPS spell excluded");
+            Near(d.deploymentDPS, (86 / 1.05 * 5 + 55 / .75 * 2) / 2., .0051, "aggregate DPS spell excluded");
         });
         Test("AI symmetric seeded decisions and paid economy", [] {
             MatchOptions o;
@@ -1247,7 +1388,7 @@ int main() {
                 previous = e.sequence;
                 if (e.type == "damage") {
                     damage = true;
-                    Check(e.playId > 0 && e.amount == 375 && e.requested == 375 && e.hp == 465,
+                    Check(e.playId > 0 && e.amount == 375 && e.requested == 375 && e.hp == 447,
                           "actual attributed hit");
                 }
             }
@@ -1391,9 +1532,9 @@ int main() {
                                  0, 0, "building stays fixed while nearby troops route around it");
                         }
                 }
-            Check(collisionPaidFixtures - fixtureStart == 22 && collisionPaidPlays - playStart == 44 &&
-                      collisionMembers - memberStart == 62,
-                  "all eleven physical cards, both teams, forty-four paid casts and sixty-two actual members");
+            Check(collisionPaidFixtures - fixtureStart == 26 && collisionPaidPlays - playStart == 52 &&
+                      collisionMembers - memberStart == 106,
+                  "all thirteen physical cards, both teams, fifty-two paid casts and 106 actual members");
         });
         Test("ground and air occupy distinct collision layers while spells have no body", [] {
             for (const Team team : {Team::Player, Team::Enemy}) {
@@ -1696,6 +1837,7 @@ int main() {
             for (const Team team : {Team::Player, Team::Enemy}) {
                 Match m(CollisionOptions("boulderback", "sky_manta"));
                 int buildings = 0, residuals = 0, rejected = 0;
+                const Vec2 drop{7.5, (team == Team::Player ? 1 : -1) * 8.5};
                 // These are actual public sandbox casts, including deliberate
                 // river rows, rather than fabricated occupied cells or radii.
                 for (double z = -21.5; z <= 21.5; z += 2)
@@ -1703,13 +1845,12 @@ int main() {
                         if (m.Spawn(team, "archer_tower", {x, z})) ++buildings; else ++rejected;
                 bool exhausted = false;
                 for (int n = 0; n < 100; ++n) {
-                    if (!m.Spawn(team, "boulderback", {7.5, 8.5})) {++rejected;exhausted = true;break;}
+                    if (!m.Spawn(team, "boulderback", drop)) {++rejected;exhausted = true;break;}
                     ++residuals;
                 }
                 Check(buildings >= 300 && residuals > 0 && exhausted,
                       "bounded real large/small bodies genuinely exhaust arena capacity");
                 BodyClearance(m, "capacity fixture real physical bodies");
-                const Vec2 drop{7.5, (team == Team::Player ? 1 : -1) * 8.5};
                 Check(m.CanPlace(team, *FindCard("boulderback"), drop), "capacity rejection is a legal-zone attempt");
                 m.SetAether(team, 10);
                 const Match before = m;

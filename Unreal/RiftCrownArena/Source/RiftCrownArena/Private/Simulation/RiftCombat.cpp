@@ -96,7 +96,10 @@ void Match::Acquire(Entity &s) {
         }
     }
     const Entity *advanceCrown = nullptr;
-    if (!s.flying) {
+    // Flying members take a direct route, but share the same landing-side
+    // Guard/Core advance as grounded members instead of crossing to the
+    // surviving opposite Guard when their own lane opens.
+    {
         const int lane = s.bridge ? s.bridge : s.lane ? s.lane : s.position.x < 0 ? -1 : 1;
         for (const auto &t : state_.entities)
             if (!t.dead && t.team != s.team && t.kind == EntityKind::Guard && t.lane == lane) {
@@ -114,7 +117,7 @@ void Match::Acquire(Entity &s) {
     EntityId nearest = 0;
     for (const auto &t : state_.entities)
         if (Structure(t) && CanTarget(s, t)) {
-            if (!s.flying && Crown(t) && (!advanceCrown || t.id != advanceCrown->id))
+            if (Crown(t) && (!advanceCrown || t.id != advanceCrown->id))
                 continue;
             if (!c->structuresOnly && t.kind != EntityKind::Building)
                 continue;

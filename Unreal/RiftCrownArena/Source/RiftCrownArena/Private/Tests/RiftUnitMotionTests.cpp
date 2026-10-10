@@ -92,6 +92,44 @@ bool FRiftUnitMotionIntegrationTest::RunTest(const FString& Parameters)
     TestTrue(TEXT("Attack and impact anchors follow the actual enlarged mesh sockets"),Actor->AttackLocation().Equals(Mesh->GetSocketLocation(TEXT("attack_origin")),.001f) && Actor->ImpactLocation().Equals(Mesh->GetSocketLocation(TEXT("impact_origin")),.001f));
     TestTrue(TEXT("Enlarged Ironclad health and status markers clear its actual animated model"),Actor->HealthLocation().Z>=Mesh->Bounds.GetBox().Max.Z+29.999 && Actor->StatusLocation().Z>=Actor->HealthLocation().Z+15.999);
 
+    // Exercise every actual walking card, including both herd meshes. A clip
+    // path alone is insufficient: foot bones must move in the cooked skeleton,
+    // and their cycle must follow real traveled distance through slows/queues.
+    uint64 WalkingNumber=800;
+    for(const auto& WalkingCard:rift::Cards())
+    {
+        if(WalkingCard.spell || WalkingCard.building || WalkingCard.flying)continue;
+        const FString WalkingId=UTF8_TO_TCHAR(WalkingCard.id.c_str());
+        auto Walker=MotionEntity(WalkingCard.id.c_str(),WalkingNumber++);Walker.born=0.;
+        auto* WalkingActor=World->SpawnActor<ARiftUnitVisual>();State.elapsed=20.;State.entities={Walker};
+        if(!TestTrue(WalkingId+TEXT(" actual ground model initializes"),WalkingActor->InitializeEntity(Walker,MotionCard(*WalkingId),State.elapsed)))return false;
+        auto* WalkingMesh=WalkingActor->FindComponentByClass<USkeletalMeshComponent>();
+        WalkingActor->Synchronize(Walker,State,0);
+        const bool Quadruped=WalkingId==TEXT("boulderback") || WalkingId==TEXT("rambeast") || WalkingId==TEXT("frost_fang") || WalkingId==TEXT("mini_stampede") || WalkingId==TEXT("stampede");
+        const double SourceStride=(WalkingId==TEXT("mini_stampede") || WalkingId==TEXT("stampede"))?78.:Quadruped?90.:105.;
+        const double WorldStride=SourceStride*WalkingActor->PresentationScale();
+        Walker.position.x+=WorldStride*.25/100.;State.elapsed=20.25;State.entities={Walker};WalkingActor->Synchronize(Walker,State,.25f);
+        Walker.position.x+=WorldStride*.25/100.;State.elapsed=20.5;State.entities={Walker};WalkingActor->Synchronize(Walker,State,.25f);
+        const FName LeftFoot=Quadruped?FName(TEXT("front_l_contact")):FName(TEXT("foot_l_contact"));
+        const FVector FirstFoot=WalkingMesh->GetSocketTransform(LeftFoot,RTS_Component).GetLocation();
+        const auto FirstWalkingPose=WalkingMesh->GetBoneSpaceTransforms();
+        Walker.position.x+=WorldStride*.25/100.;State.elapsed=20.75;State.entities={Walker};WalkingActor->Synchronize(Walker,State,.25f);
+        const FVector SecondFoot=WalkingMesh->GetSocketTransform(LeftFoot,RTS_Component).GetLocation();
+        TestTrue(WalkingId+TEXT(" locomotion evaluates an actual visible leg swing"),WalkingActor->CurrentAnimation()==TEXT("Locomotion") && !SameMotionPose(FirstWalkingPose,WalkingMesh->GetBoneSpaceTransforms()) && FVector::Distance(FirstFoot,SecondFoot)>3.);
+        TestTrue(WalkingId+TEXT(" three quarter-stride movements advance exactly three quarter cycles"),FMath::IsNearlyEqual(WalkingActor->LocomotionPhase(),.75,.00001));
+        const auto ParkedPose=WalkingMesh->GetBoneSpaceTransforms();const double ParkedPhase=WalkingActor->LocomotionPhase();
+        const FName ParkedClip=WalkingActor->CurrentAnimation();const FString ParkedAsset=WalkingActor->AnimationAssetPath();
+        const float ParkedFraction=WalkingActor->AnimationCycleFraction();
+        for(int32 Tick=0;Tick<12;++Tick)WalkingActor->Synchronize(Walker,State,.1f);
+        TestTrue(WalkingId+TEXT(" paused walking retains exact bones and cadence"),SameMotionPose(ParkedPose,WalkingMesh->GetBoneSpaceTransforms()) && WalkingActor->LocomotionPhase()==ParkedPhase);
+        TestTrue(WalkingId+TEXT(" repeated paused renderer ticks retain the walking clip and seek fraction"),WalkingActor->CurrentAnimation()==ParkedClip && WalkingActor->AnimationAssetPath()==ParkedAsset && WalkingActor->AnimationCycleFraction()==ParkedFraction);
+        WalkingActor->AttackAt(State.elapsed,WalkingCard.damage);
+        TestTrue(WalkingId+TEXT(" a real same-time release replaces the frozen walking pose immediately"),WalkingActor->CurrentAnimation()!=ParkedClip && FMath::IsNearlyEqual(WalkingActor->AnimationCycleFraction(),.48f,.00001f) && WalkingActor->AnimationBlendAlpha()==1.f);
+        State.elapsed=21.;WalkingActor->Synchronize(Walker,State,.25f);
+        TestEqual(WalkingId+TEXT(" waiting for a clear route does not run its feet in place"),WalkingActor->LocomotionPhase(),ParkedPhase);
+        WalkingActor->Destroy();
+    }
+
     auto Boulder=MotionEntity("boulderback",707);auto* BoulderActor=World->SpawnActor<ARiftUnitVisual>();State.elapsed=2.5;State.entities={Boulder};
     if(!TestTrue(TEXT("Actual larger Boulderback model initializes"),BoulderActor->InitializeEntity(Boulder,MotionCard(TEXT("boulderback")),State.elapsed)))return false;
     BoulderActor->Synchronize(Boulder,State,0);auto* BoulderMesh=BoulderActor->FindComponentByClass<USkeletalMeshComponent>();

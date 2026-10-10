@@ -1,21 +1,21 @@
 {
   "schema": 1,
-  "version": "1.3.0",
+  "version": "1.4.0",
   "provenance": {
     "assetManifest": {
       "file": "Assets/asset_manifest.json",
-      "bytes": 126881,
-      "sha256": "9a22575ae1356d7ae787c646d05d83f97920db6645846f319a982cf725309a7a"
+      "bytes": 147758,
+      "sha256": "a24f3f106772bd60474dabf84a3fa2a5ebf45292faa1936539541448c960e11f"
     },
     "sourceBlend": {
       "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
-      "bytes": 12048439,
-      "sha256": "e05ec2783365cef7543c600bfbf236f7a96e457a2424ca2b2d809540be290cd6"
+      "bytes": 12662775,
+      "sha256": "43b08804565ce7be846957e34c1768a9872e507658c511724f11cc08514fb7ae"
     },
     "validatorScript": {
       "file": "Build/validate_assets.py",
-      "bytes": 8049,
-      "sha256": "f8a0f2519b3c089980433c961bab3a304844a30175a9881a3a3dddb3d265008d"
+      "bytes": 8180,
+      "sha256": "2258fca27a41bd2212eec8d92e80271c1e36196225c232e1138535973e9259b0"
     }
   },
   "checks": [
@@ -4971,6 +4971,828 @@
       "detail": 19
     },
     {
+      "name": "mini_stampede source mesh",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede source skeleton",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede dimension manifest",
+      "passed": true,
+      "detail": [
+        0.7041628360748291,
+        1.712011456489563,
+        1.0356413125991821
+      ]
+    },
+    {
+      "name": "mini_stampede finite vertices",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede UV layer",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede finite UVs",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede consolidated material slots",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "mini_stampede armature modifier",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede every vertex skinned",
+      "passed": true,
+      "detail": {
+        "vertices": 5442,
+        "unweighted": 0
+      }
+    },
+    {
+      "name": "mini_stampede declared bones present",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede required sockets",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede required actions",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede mesh FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede mesh FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede FBX explicit units",
+      "passed": true,
+      "detail": 100.0
+    },
+    {
+      "name": "mini_stampede FBX skin exported",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "mini_stampede LOD1 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede LOD1 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede LOD1 smaller",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede LOD2 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede LOD2 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede LOD2 smaller",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede LOD3 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede LOD3 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede LOD3 smaller",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede three ordered LODs",
+      "passed": true,
+      "detail": [
+        5338,
+        2668,
+        1280
+      ]
+    },
+    {
+      "name": "mini_stampede Idle FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Idle FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Idle one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "mini_stampede Idle bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "mini_stampede Idle source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Idle animated pose",
+      "passed": true,
+      "detail": 6
+    },
+    {
+      "name": "mini_stampede Locomotion FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Locomotion FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Locomotion one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "mini_stampede Locomotion bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "mini_stampede Locomotion source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Locomotion animated pose",
+      "passed": true,
+      "detail": 25
+    },
+    {
+      "name": "mini_stampede Attack FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Attack FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Attack one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "mini_stampede Attack bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "mini_stampede Attack source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Attack animated pose",
+      "passed": true,
+      "detail": 17
+    },
+    {
+      "name": "mini_stampede Hit FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Hit FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Hit one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "mini_stampede Hit bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "mini_stampede Hit source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Hit animated pose",
+      "passed": true,
+      "detail": 17
+    },
+    {
+      "name": "mini_stampede Death FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Death FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Death one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "mini_stampede Death bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "mini_stampede Death source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Death animated pose",
+      "passed": true,
+      "detail": 17
+    },
+    {
+      "name": "mini_stampede Deploy FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Deploy FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Deploy one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "mini_stampede Deploy bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "mini_stampede Deploy source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Deploy animated pose",
+      "passed": true,
+      "detail": 17
+    },
+    {
+      "name": "mini_stampede Status FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Status FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Status one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "mini_stampede Status bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "mini_stampede Status source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Status animated pose",
+      "passed": true,
+      "detail": 6
+    },
+    {
+      "name": "mini_stampede Turn FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Turn FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Turn one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "mini_stampede Turn bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "mini_stampede Turn source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Turn animated pose",
+      "passed": true,
+      "detail": 17
+    },
+    {
+      "name": "mini_stampede Acquire FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Acquire FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Acquire one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "mini_stampede Acquire bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "mini_stampede Acquire source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mini_stampede Acquire animated pose",
+      "passed": true,
+      "detail": 6
+    },
+    {
+      "name": "stampede source mesh",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede source skeleton",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede dimension manifest",
+      "passed": true,
+      "detail": [
+        0.7460000514984131,
+        1.712011456489563,
+        1.0664186477661133
+      ]
+    },
+    {
+      "name": "stampede finite vertices",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede UV layer",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede finite UVs",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede consolidated material slots",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "stampede armature modifier",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede every vertex skinned",
+      "passed": true,
+      "detail": {
+        "vertices": 6768,
+        "unweighted": 0
+      }
+    },
+    {
+      "name": "stampede declared bones present",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede required sockets",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede required actions",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede mesh FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede mesh FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede FBX explicit units",
+      "passed": true,
+      "detail": 100.0
+    },
+    {
+      "name": "stampede FBX skin exported",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "stampede LOD1 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede LOD1 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede LOD1 smaller",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede LOD2 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede LOD2 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede LOD2 smaller",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede LOD3 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede LOD3 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede LOD3 smaller",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede three ordered LODs",
+      "passed": true,
+      "detail": [
+        6630,
+        3314,
+        1586
+      ]
+    },
+    {
+      "name": "stampede Idle FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Idle FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Idle one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "stampede Idle bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "stampede Idle source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Idle animated pose",
+      "passed": true,
+      "detail": 6
+    },
+    {
+      "name": "stampede Locomotion FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Locomotion FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Locomotion one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "stampede Locomotion bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "stampede Locomotion source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Locomotion animated pose",
+      "passed": true,
+      "detail": 25
+    },
+    {
+      "name": "stampede Attack FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Attack FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Attack one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "stampede Attack bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "stampede Attack source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Attack animated pose",
+      "passed": true,
+      "detail": 17
+    },
+    {
+      "name": "stampede Hit FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Hit FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Hit one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "stampede Hit bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "stampede Hit source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Hit animated pose",
+      "passed": true,
+      "detail": 17
+    },
+    {
+      "name": "stampede Death FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Death FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Death one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "stampede Death bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "stampede Death source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Death animated pose",
+      "passed": true,
+      "detail": 17
+    },
+    {
+      "name": "stampede Deploy FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Deploy FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Deploy one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "stampede Deploy bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "stampede Deploy source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Deploy animated pose",
+      "passed": true,
+      "detail": 17
+    },
+    {
+      "name": "stampede Status FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Status FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Status one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "stampede Status bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "stampede Status source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Status animated pose",
+      "passed": true,
+      "detail": 6
+    },
+    {
+      "name": "stampede Turn FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Turn FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Turn one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "stampede Turn bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "stampede Turn source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Turn animated pose",
+      "passed": true,
+      "detail": 17
+    },
+    {
+      "name": "stampede Acquire FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Acquire FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Acquire one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "stampede Acquire bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "stampede Acquire source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stampede Acquire animated pose",
+      "passed": true,
+      "detail": 6
+    },
+    {
       "name": "tower_guard static FBX exists",
       "passed": true,
       "detail": ""
@@ -6909,6 +7731,150 @@
         5820,
         2800
       ]
+    },
+    "mini_stampede": {
+      "vertices": 5442,
+      "triangles": 10676,
+      "boneCount": 27,
+      "materialSlots": 1,
+      "boundsMeters": [
+        0.7041628360748291,
+        1.712011456489563,
+        1.0356413125991821
+      ],
+      "actions": [
+        {
+          "action": "Idle",
+          "movingBones": 6,
+          "fbxCurves": 252,
+          "durationSeconds": 1.9666666666666666
+        },
+        {
+          "action": "Locomotion",
+          "movingBones": 25,
+          "fbxCurves": 252,
+          "durationSeconds": 0.9666666666666667
+        },
+        {
+          "action": "Attack",
+          "movingBones": 17,
+          "fbxCurves": 252,
+          "durationSeconds": 0.9666666666666667
+        },
+        {
+          "action": "Hit",
+          "movingBones": 17,
+          "fbxCurves": 252,
+          "durationSeconds": 0.5
+        },
+        {
+          "action": "Death",
+          "movingBones": 17,
+          "fbxCurves": 252,
+          "durationSeconds": 1.4666666666666666
+        },
+        {
+          "action": "Deploy",
+          "movingBones": 17,
+          "fbxCurves": 252,
+          "durationSeconds": 0.7666666666666667
+        },
+        {
+          "action": "Status",
+          "movingBones": 6,
+          "fbxCurves": 252,
+          "durationSeconds": 0.9666666666666667
+        },
+        {
+          "action": "Turn",
+          "movingBones": 17,
+          "fbxCurves": 252,
+          "durationSeconds": 0.7666666666666667
+        },
+        {
+          "action": "Acquire",
+          "movingBones": 6,
+          "fbxCurves": 252,
+          "durationSeconds": 0.5666666666666667
+        }
+      ],
+      "lodTriangles": [
+        5338,
+        2668,
+        1280
+      ]
+    },
+    "stampede": {
+      "vertices": 6768,
+      "triangles": 13260,
+      "boneCount": 27,
+      "materialSlots": 1,
+      "boundsMeters": [
+        0.7460000514984131,
+        1.712011456489563,
+        1.0664186477661133
+      ],
+      "actions": [
+        {
+          "action": "Idle",
+          "movingBones": 6,
+          "fbxCurves": 252,
+          "durationSeconds": 1.9666666666666666
+        },
+        {
+          "action": "Locomotion",
+          "movingBones": 25,
+          "fbxCurves": 252,
+          "durationSeconds": 0.9666666666666667
+        },
+        {
+          "action": "Attack",
+          "movingBones": 17,
+          "fbxCurves": 252,
+          "durationSeconds": 0.9666666666666667
+        },
+        {
+          "action": "Hit",
+          "movingBones": 17,
+          "fbxCurves": 252,
+          "durationSeconds": 0.5
+        },
+        {
+          "action": "Death",
+          "movingBones": 17,
+          "fbxCurves": 252,
+          "durationSeconds": 1.4666666666666666
+        },
+        {
+          "action": "Deploy",
+          "movingBones": 17,
+          "fbxCurves": 252,
+          "durationSeconds": 0.7666666666666667
+        },
+        {
+          "action": "Status",
+          "movingBones": 6,
+          "fbxCurves": 252,
+          "durationSeconds": 0.9666666666666667
+        },
+        {
+          "action": "Turn",
+          "movingBones": 17,
+          "fbxCurves": 252,
+          "durationSeconds": 0.7666666666666667
+        },
+        {
+          "action": "Acquire",
+          "movingBones": 6,
+          "fbxCurves": 252,
+          "durationSeconds": 0.5666666666666667
+        }
+      ],
+      "lodTriangles": [
+        6630,
+        3314,
+        1586
+      ]
     }
   },
   "statics": {
@@ -7143,5 +8109,5 @@
   "unrealImportUnitConversion": true,
   "visualReview": "Actual rendered contact sheets reviewed separately; numerical checks do not establish production art quality.",
   "passed": true,
-  "checkCount": 1176
+  "checkCount": 1336
 }

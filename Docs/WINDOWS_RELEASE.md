@@ -1,5 +1,7 @@
 # Windows launcher and release operations
 
+Current player release: **1.4.0**. Download the [installer](https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.4.0/RiftCrownArena-Setup.msi) or [complete portable game](https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.4.0/RiftCrownArena-Windows-x64-1.4.0.zip). Run `RiftCrownArena.exe` from the extracted folder, or use Play in the installed launcher. The versioned sections below preserve earlier executed build evidence.
+
 The Windows distribution contains the native Unreal game and a self-contained .NET 8 WPF launcher. The launcher does not require an end-user .NET installation. Its controls are connected to the same verified update library used by the isolated integration suite.
 
 ## Player controls

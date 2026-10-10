@@ -573,7 +573,7 @@ bool URiftReplaySubsystem::SnapshotFromJSON(const TSharedPtr<FJsonObject> &O, ri
         T.CardList(TEXT("observedCycle"), AI.observedCycle, -1, 12);
         if (T.O && T.O->HasField(TEXT("telemetry"))) {
             const TSharedPtr<FJsonObject> *Metrics = nullptr;
-            if (!T.O->TryGetObjectField(TEXT("telemetry"), Metrics) || (*Metrics)->Values.Num() > 14)
+            if (!T.O->TryGetObjectField(TEXT("telemetry"), Metrics) || (*Metrics)->Values.Num() > int32(rift::Cards().size()))
                 T.Valid = false;
             else
                 for (const auto &Pair : (*Metrics)->Values) {

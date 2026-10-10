@@ -642,6 +642,10 @@ def humanoid_costume(f, k):
 
 
 def clean_creature_details(f):
+    # Hogs are fully authored by their own compact builder. The legacy final
+    # quadruped branch is Frost Fang's species pass, not a generic equipment
+    # pass; applying it here creates floating frost armor on short hog rigs.
+    if f.name in ('mini_stampede','stampede'):return
     if f.family == 'quadruped':
         remove(f, 'team_collar_band')
         if f.name == 'boulderback':
@@ -1085,8 +1089,10 @@ def archer_tower(f):
 
 
 def model_design_metadata(f):
-    return {'revision': '1.3.0', 'equipmentFit': 'rest-pose hand center; same-bone equipment and glove' if f.family == 'humanoid' else None,
-            'detailPasses': 1, 'wingWeights': 'continuous shared span gradient' if f.family == 'flyer' else None}
+    return {'revision': '1.4.0', 'equipmentFit': 'rest-pose hand center; same-bone equipment and glove' if f.family == 'humanoid' else None,
+            'detailPasses': 1, 'wingWeights': 'continuous shared span gradient' if f.family == 'flyer' else None,
+            'locomotion': 'Model-space two-bone IK with planted stance, lifted recovery and flat soles' if f.family in ('humanoid','quadruped') else None,
+            'hogStyle': 'Fitted crown, blue saddlecloth and shoulder plates' if f.name=='stampede' else 'Wild bristles, cloven hooves and plain team collar' if f.name=='mini_stampede' else None}
 
 
 def fitted_attack_socket(f, k):

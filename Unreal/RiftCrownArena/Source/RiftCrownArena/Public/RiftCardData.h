@@ -26,6 +26,7 @@ public:
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float AttackSpeed=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float MoveSpeed=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float AttackRange=0;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) float BaseModelScale=1;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float FrontSight=8;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float RearSight=5;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float ProjectileSpeed=0;

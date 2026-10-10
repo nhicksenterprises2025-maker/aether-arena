@@ -1,5 +1,7 @@
 # Rift Crown Arena — Unreal production asset specification
 
+Current release **1.4.0** adds Mini Stampede and Stampede, applies the first balance patch and uses per-member landing lanes. Current numeric definitions are in [the patch notes](PATCH_NOTES_1.4.0.md) and [the exported card table](CARD_STATS_1.4.0.tsv). Original browser parity and earlier asset counts below document the rebuild baseline.
+
 This is an audited design and import contract, not a statement that production assets already exist. The current V15 browser game is the identity and gameplay reference. All card names, balance, placement, footprints and combat timings are preserved. Meshes, illustration, rigging, audio and presentation are rebuilt with original authored designs. No Supercell material is used.
 
 ## Inspected reference

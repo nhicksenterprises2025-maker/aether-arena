@@ -1382,9 +1382,9 @@ bool FRiftFullReplayIntegrationTest::RunTest(const FString &Parameters) {
     auto RecordAIMatch = [&](bool Congestion) {
         rift::MatchOptions AIOptions;
         // Ordinary paid fixture preserves zero-crown overtime and >=20 live bodies
-        // under the final crowd routing.
+        // under the balance patch and aligned towers, using the measured seed25 workload.
         // The separate Developer congestion fixture retains its known >=40 load.
-        AIOptions.seed = Congestion ? 32 : 76;
+        AIOptions.seed = Congestion ? 32 : 25;
         AIOptions.aiEnabled = {true, true};
         AIOptions.aiStyles = {"control", "counter"};
         const std::vector<std::string> SwarmDeck{"ironclad",    "twin_blades",  "archer_tower",

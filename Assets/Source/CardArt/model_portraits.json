@@ -3,13 +3,13 @@
   "cards": {
     "ironclad": {
       "file": "Assets/Source/CardArt/ironclad.png",
-      "sha256": "c1bd9c2da9d5aa83687f6d851bd1332642e6507a1c495b0f951c0517b84c5e13",
-      "bytes": 917694,
+      "sha256": "6bbcffa3edff0a3b333480804dbeeba6803885d47b19fe12fd06fb334f35da8a",
+      "bytes": 917641,
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/ironclad/SK_ironclad.fbx",
-            "sha256": "0cc389218b3ee59ed171cf8c18bcba860196e95c4ecbdb2af1a363f99812caf1",
+            "sha256": "b6443334658ea634575bdcb650bfdc4d2857131eea521699d96c092b3a4e65cc",
             "bytes": 635180
           },
           "action": "Idle",
@@ -51,14 +51,14 @@
     },
     "ember_archer": {
       "file": "Assets/Source/CardArt/ember_archer.png",
-      "sha256": "7fdc64d129ba4d0ef7cb7e450756fbe96943552a4c3f5d11dc591260e675dca8",
-      "bytes": 894940,
+      "sha256": "8d88d53ca765ab61e91c6de70407b7e865f6cf5bbd1fce86f133002c548c38c4",
+      "bytes": 894994,
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/ember_archer/SK_ember_archer.fbx",
-            "sha256": "3df2997dd6f3ca74b33f26264e7a585dd0e97d635cd4249695d7d901610dffd0",
-            "bytes": 670588
+            "sha256": "f144d2d2bdeb123cc89379ee0da7593d4fad35c116a984b288c9df93e73652fe",
+            "bytes": 670364
           },
           "action": "Idle",
           "phase": 0.16
@@ -99,8 +99,8 @@
     },
     "archer_tower": {
       "file": "Assets/Source/CardArt/archer_tower.png",
-      "sha256": "4e90cba543bcd33910b9c5f2c04d1c4e78dcc828c7d8db35496f6b47e5a3db82",
-      "bytes": 887872,
+      "sha256": "6745f290fd3860e23edeac2f45514ae1a2f1322031f41af3832d2a47bc975125",
+      "bytes": 887774,
       "sources": [
         {
           "model": {
@@ -197,8 +197,8 @@
     },
     "vampire_bats": {
       "file": "Assets/Source/CardArt/vampire_bats.png",
-      "sha256": "8bad90fec5aba4c8a6ced4479a803bc1b74bcecc1adcc348261d5bfea9642516",
-      "bytes": 777120,
+      "sha256": "3d08b045a3b7fcb986d01cbbda38bbf9bd51a50ad1871459af8cda2f6a4c4b48",
+      "bytes": 777242,
       "sources": [
         {
           "model": {
@@ -263,14 +263,14 @@
     },
     "twin_blades": {
       "file": "Assets/Source/CardArt/twin_blades.png",
-      "sha256": "8313fdbb24c7f0eabb7752afa4668a317b57956fbbad7861b8b2440efb46b684",
-      "bytes": 896963,
+      "sha256": "09ab98e5a34a00b54f038cb1959d0f497911dd1385da6a6fdf2c179ed2c42595",
+      "bytes": 897026,
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/twin_blades/SK_twin_blades.fbx",
-            "sha256": "3a14017174407b9740ed1294f4e38f418d241e1e58ce4731bbdb42dc4b4ae339",
-            "bytes": 726892
+            "sha256": "48499afbc90f1fab3b4d57dcc33919db042f13636cc3dd243d70a5e51b3731c4",
+            "bytes": 727212
           },
           "action": "Idle",
           "phase": 0.12
@@ -278,8 +278,8 @@
         {
           "model": {
             "file": "Assets/Export/Characters/twin_blades/SK_twin_blades.fbx",
-            "sha256": "3a14017174407b9740ed1294f4e38f418d241e1e58ce4731bbdb42dc4b4ae339",
-            "bytes": 726892
+            "sha256": "48499afbc90f1fab3b4d57dcc33919db042f13636cc3dd243d70a5e51b3731c4",
+            "bytes": 727212
           },
           "action": "Idle",
           "phase": 0.12
@@ -320,14 +320,14 @@
     },
     "boulderback": {
       "file": "Assets/Source/CardArt/boulderback.png",
-      "sha256": "54ae114f6d661ee4fbde6133bfbba203d6843e1e6f3ec8d0555a356ff410fda0",
-      "bytes": 839739,
+      "sha256": "d06879f73c2ac0800a428326b4aa380831efb164eb068791bb3b84d3fd078042",
+      "bytes": 839783,
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/boulderback/SK_boulderback.fbx",
-            "sha256": "92fc85ffee512a1e156c2f770c3a76f7fde9f154de7d86681f37c5f55cc8026b",
-            "bytes": 1435420
+            "sha256": "a3397f445724b456c750f31cdb8d2e335247e783146ea0ce40a9f3b47390fccd",
+            "bytes": 1435708
           },
           "action": "Idle",
           "phase": 0.16
@@ -368,14 +368,14 @@
     },
     "arc_mage": {
       "file": "Assets/Source/CardArt/arc_mage.png",
-      "sha256": "e54505a8c115fdf227203b05556b0fac578ae836cc855db6c8ce382f8099faba",
-      "bytes": 883278,
+      "sha256": "fed55e4f8b3724caad7de392bc41ed138e45389c4a6ae528f6e2be95c34f7d87",
+      "bytes": 882794,
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/arc_mage/SK_arc_mage.fbx",
-            "sha256": "21628aad857c30217a7df1bb1570d49d726a16de0a964c22e636a387b5a656de",
-            "bytes": 745628
+            "sha256": "d20edec89d0f0beeb304745839fddc6e0a8f2ad26a148869b29cde25b3c57d9d",
+            "bytes": 745484
           },
           "action": "Idle",
           "phase": 0.16
@@ -416,14 +416,14 @@
     },
     "rambeast": {
       "file": "Assets/Source/CardArt/rambeast.png",
-      "sha256": "bcf41684a2686cb94c40dd1810ef79cf6a079f52367cc02d4859828a9c8bcc98",
-      "bytes": 851774,
+      "sha256": "5d77a3c34fefbdc4226ad0371016207536085a9e69c723591b0773402209b1a5",
+      "bytes": 851695,
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/rambeast/SK_rambeast.fbx",
-            "sha256": "72f251be12d58de1d46a32d651fe5ad4f99d05781c382141343e72fbd6cf0327",
-            "bytes": 2030348
+            "sha256": "cdff0e4e84b79f50906440162c2f8964194341a1f284a0517119d30e74e24ac1",
+            "bytes": 2030428
           },
           "action": "Idle",
           "phase": 0.16
@@ -464,8 +464,8 @@
     },
     "sky_manta": {
       "file": "Assets/Source/CardArt/sky_manta.png",
-      "sha256": "620b7d3df503da37fd6ce6d8c2937b552965d45b852b4ced622fd203cc7eb586",
-      "bytes": 747605,
+      "sha256": "da1011f807db1260b5833b033c4f07fa6678b6efd36f09b0b1ee2210fc52c1fa",
+      "bytes": 747753,
       "sources": [
         {
           "model": {
@@ -512,14 +512,14 @@
     },
     "frost_fang": {
       "file": "Assets/Source/CardArt/frost_fang.png",
-      "sha256": "7f7b6ffd1e45a7ff8cff7852f5d7c3fb4feb64656775d6f3dc9625714f1d59b9",
-      "bytes": 866184,
+      "sha256": "bbc46a78fbd6e53bfe3bec94a89de6bb15f32968b19513bf99f8456ce7607234",
+      "bytes": 865979,
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/frost_fang/SK_frost_fang.fbx",
-            "sha256": "e9c53d0b9ef1a9d0033415e5a5748a4c36c7c2f08d609a843b63a967f17ed510",
-            "bytes": 1370396
+            "sha256": "51be149a1573df37a10ce6d92e2dede3c9c0d4dbdae9ba4fa2d22cf60d9329d5",
+            "bytes": 1370620
           },
           "action": "Idle",
           "phase": 0.16
@@ -560,8 +560,8 @@
     },
     "storm_raven": {
       "file": "Assets/Source/CardArt/storm_raven.png",
-      "sha256": "836b49b0180799a61272d755d5e23c24005c7e9d4f1ca4f9e5db9f6f44b3ca01",
-      "bytes": 772993,
+      "sha256": "7ecc180deaf8773a4ca190dd9b86c27e3ae4a619fb652813afbfb97f8415119a",
+      "bytes": 772785,
       "sources": [
         {
           "model": {
@@ -608,8 +608,8 @@
     },
     "bullet_burst": {
       "file": "Assets/Source/CardArt/bullet_burst.png",
-      "sha256": "4a7e6bad04f930e3e2f2a1fc5ec4427694b62199d96c419cf0c1b1bc2ecb2523",
-      "bytes": 817457,
+      "sha256": "c8d3986c433132a88af69c7e08702aea113955244122147c2dd7abe5b00d2672",
+      "bytes": 817363,
       "sources": [
         {
           "model": {
@@ -878,8 +878,8 @@
     },
     "nova_flask": {
       "file": "Assets/Source/CardArt/nova_flask.png",
-      "sha256": "c0f971569900f01cdc4942ed8fc951fca26d18f802f5dae9bbfc283fe21250f5",
-      "bytes": 901538,
+      "sha256": "e76f174f150e39ea41b3791533fc9ea5a9c27679d922600e9a21ee51d5297957",
+      "bytes": 901997,
       "sources": [
         {
           "model": {
@@ -952,8 +952,8 @@
     },
     "meteor_shards": {
       "file": "Assets/Source/CardArt/meteor_shards.png",
-      "sha256": "78ec9f92da69b0757053357911fecc98b412fd51a3aeee2d5f824acd4229befd",
-      "bytes": 807391,
+      "sha256": "7d0e89cfd570c592619963d3b8d9fa3ff177894b0dbd4b5928c41d4b9a56e584",
+      "bytes": 807339,
       "sources": [
         {
           "model": {
@@ -1090,13 +1090,145 @@
           0.13
         ]
       }
+    },
+    "mini_stampede": {
+      "file": "Assets/Source/CardArt/mini_stampede.png",
+      "sha256": "ad2f98b0c4d518eba946ddc2c5fa99f8acb2985b671de082fe102fce5a584af7",
+      "bytes": 827453,
+      "sources": [
+        {
+          "model": {
+            "file": "Assets/Export/Characters/mini_stampede/SK_mini_stampede.fbx",
+            "sha256": "31895088434b572166ce749dd3a32ed8d942d73cc473a1d8194cf426f4adf24e",
+            "bytes": 287532
+          },
+          "action": "Idle",
+          "phase": 0.16
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/mini_stampede/SK_mini_stampede.fbx",
+            "sha256": "31895088434b572166ce749dd3a32ed8d942d73cc473a1d8194cf426f4adf24e",
+            "bytes": 287532
+          },
+          "action": "Idle",
+          "phase": 0.16
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/mini_stampede/SK_mini_stampede.fbx",
+            "sha256": "31895088434b572166ce749dd3a32ed8d942d73cc473a1d8194cf426f4adf24e",
+            "bytes": 287532
+          },
+          "action": "Idle",
+          "phase": 0.16
+        }
+      ],
+      "boundsMeters": [
+        [
+          -0.9677131772041321,
+          -1.2887665033340454,
+          0.0
+        ],
+        [
+          0.8915684819221497,
+          0.9251494407653809,
+          1.0308347940444946
+        ]
+      ],
+      "poseFrame": 10,
+      "cameraOrthoScale": 3.0302605628967285,
+      "composition": "Model-rendered herd trio",
+      "lighting": {
+        "backdrop": [
+          0.042,
+          0.033,
+          0.022
+        ],
+        "key": [
+          1,
+          0.87,
+          0.69
+        ],
+        "rim": [
+          0.6,
+          0.69,
+          0.43
+        ]
+      }
+    },
+    "stampede": {
+      "file": "Assets/Source/CardArt/stampede.png",
+      "sha256": "6df06a83c83ce9c6a0aee9fc20ae10a2a90b4470bd2813233ef854895b20d42f",
+      "bytes": 862759,
+      "sources": [
+        {
+          "model": {
+            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
+            "sha256": "e93a1ecb4693c4a1056600697dad0afeb329cbdda719d5bed1ee2a6e9af37524",
+            "bytes": 373644
+          },
+          "action": "Idle",
+          "phase": 0.16
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
+            "sha256": "e93a1ecb4693c4a1056600697dad0afeb329cbdda719d5bed1ee2a6e9af37524",
+            "bytes": 373644
+          },
+          "action": "Idle",
+          "phase": 0.16
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
+            "sha256": "e93a1ecb4693c4a1056600697dad0afeb329cbdda719d5bed1ee2a6e9af37524",
+            "bytes": 373644
+          },
+          "action": "Idle",
+          "phase": 0.16
+        }
+      ],
+      "boundsMeters": [
+        [
+          -0.9862215518951416,
+          -1.2887665033340454,
+          0.0
+        ],
+        [
+          0.9095085263252258,
+          0.9251494407653809,
+          1.0626823902130127
+        ]
+      ],
+      "poseFrame": 10,
+      "cameraOrthoScale": 3.051866054534912,
+      "composition": "Model-rendered herd trio",
+      "lighting": {
+        "backdrop": [
+          0.027,
+          0.037,
+          0.056
+        ],
+        "key": [
+          1,
+          0.91,
+          0.73
+        ],
+        "rim": [
+          0.38,
+          0.63,
+          0.88
+        ]
+      }
     }
   },
   "method": "Actual production Blender mesh/rig render, exported to the native game",
   "sourceBlend": {
     "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
-    "sha256": "e05ec2783365cef7543c600bfbf236f7a96e457a2424ca2b2d809540be290cd6",
-    "bytes": 12048439
+    "sha256": "43b08804565ce7be846957e34c1768a9872e507658c511724f11cc08514fb7ae",
+    "bytes": 12662775
   },
   "resolution": [
     768,
@@ -1111,7 +1243,7 @@
   },
   "rendererScript": {
     "file": "Build/render_card_portraits.py",
-    "sha256": "efa82b14bb55809cb50ef3fbf34ebc56270fe1ec90bacab374604fab8c243801",
-    "bytes": 12040
+    "sha256": "4ae486b55056ab32343fc5282f656df5cf3892798b7f425b0c44dba14afb702a",
+    "bytes": 12629
   }
 }
