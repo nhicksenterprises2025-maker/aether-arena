@@ -67,6 +67,8 @@ PORTRAIT_MOODS = {
     'bullet_burst': ((.046,.034,.024), (1,.89,.67), (.50,.57,.66)),
     'nova_flask': ((.035,.024,.057), (.94,.88,1), (.58,.31,.94)),
     'meteor_shards': ((.052,.029,.022), (1,.83,.64), (.84,.34,.13)),
+    'mini_stampede': ((.042,.033,.022), (1,.87,.69), (.60,.69,.43)),
+    'stampede': ((.027,.037,.056), (1,.91,.73), (.38,.63,.88)),
 }
 
 studio = bpy.data.collections.new('CardPortraitStudio')
@@ -169,6 +171,12 @@ for card in selected:
         frame = character(card, (-.49, .28, .12), .56, action='WingCycle', phase=.16, rotation=-.15)
         character(card, (.50, .23, .22), .53, action='WingCycle', phase=.16, rotation=.15)
         character(card, (0, -.33, -.20), .67, action='WingCycle', phase=.16)
+    elif card in ('mini_stampede','stampede'):
+        # The herd card shows the same individual hog mesh as the live units;
+        # a slightly staggered trio makes the multi-unit identity readable.
+        frame=character(card, (-.65,.28,0),.82,phase=.16,rotation=-.14)
+        character(card,(.59,.36,0),.79,phase=.16,rotation=.12)
+        character(card,(0,-.30,0),1.,phase=.16)
     elif 'skeletal' in binding:
         name = binding['skeletal']
         action = 'WingCycle' if name in ('sky_manta', 'storm_raven') else 'Idle'
@@ -221,7 +229,7 @@ for card in selected:
     manifest['illustrations'][card] = info
     report['cards'][card] = {**info, 'sources': sources, 'boundsMeters': [list(lo), list(hi)],
                            'poseFrame': frame, 'cameraOrthoScale': camera.data.ortho_scale,
-                           'composition': 'Upper-body hero portrait' if hero_crop else 'Full silhouette',
+                           'composition': 'Upper-body hero portrait' if hero_crop else 'Model-rendered herd trio' if card in ('mini_stampede','stampede') else 'Full silhouette',
                            'lighting': {'backdrop': mood, 'key': key_color, 'rim': rim_color}}
     for obj in temporary: bpy.data.objects.remove(obj, do_unlink=True)
     print('RIFT_CARD_PORTRAIT', card, info['sha256'], flush=True)

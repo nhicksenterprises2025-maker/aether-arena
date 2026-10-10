@@ -1,0 +1,587 @@
+{
+  "schema": 1,
+  "version": "UE-1.4.0",
+  "sourceBlend": {
+    "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
+    "sha256": "43b08804565ce7be846957e34c1768a9872e507658c511724f11cc08514fb7ae",
+    "bytes": 12662775
+  },
+  "renders": [
+    {
+      "model": "ironclad",
+      "action": "Locomotion",
+      "phase": 0.0,
+      "file": "Assets/Renders/Walking/ironclad_Locomotion_000.png",
+      "bytes": 473080,
+      "sha256": "ad65029659f3d5589840fd3cb1c3f4db14b00aed07e98cc2d737c2203b1f3789"
+    },
+    {
+      "model": "ironclad",
+      "action": "Locomotion",
+      "phase": 0.125,
+      "file": "Assets/Renders/Walking/ironclad_Locomotion_125.png",
+      "bytes": 474385,
+      "sha256": "104058d8cc1e8033f0750bc4e913319d269d2b60dc5fa03b635d0955248289b7"
+    },
+    {
+      "model": "ironclad",
+      "action": "Locomotion",
+      "phase": 0.25,
+      "file": "Assets/Renders/Walking/ironclad_Locomotion_250.png",
+      "bytes": 475452,
+      "sha256": "c787e6ca242b8e75b09ece7ec6880898b486a1d677adb5cfb3446419192039a4"
+    },
+    {
+      "model": "ironclad",
+      "action": "Locomotion",
+      "phase": 0.375,
+      "file": "Assets/Renders/Walking/ironclad_Locomotion_375.png",
+      "bytes": 473159,
+      "sha256": "b30e346b190407c1a11df1b5dc9d0aae369caa80f471653503743184d6f1a66a"
+    },
+    {
+      "model": "ironclad",
+      "action": "Locomotion",
+      "phase": 0.5,
+      "file": "Assets/Renders/Walking/ironclad_Locomotion_500.png",
+      "bytes": 471351,
+      "sha256": "a28ce8c0e735a34b6390a3f65174e43b72ff0eedaed07a9627a25c8283a4639c"
+    },
+    {
+      "model": "ironclad",
+      "action": "Locomotion",
+      "phase": 0.625,
+      "file": "Assets/Renders/Walking/ironclad_Locomotion_625.png",
+      "bytes": 469882,
+      "sha256": "b3c44cc3d7300badba0513aabf05122ad6d213969235f4a36bdc5684acad2254"
+    },
+    {
+      "model": "ironclad",
+      "action": "Locomotion",
+      "phase": 0.75,
+      "file": "Assets/Renders/Walking/ironclad_Locomotion_750.png",
+      "bytes": 471570,
+      "sha256": "5e2517e3d8e82813f657310c5bea8b7f401e53d91ab7af794eed6afea5719b09"
+    },
+    {
+      "model": "ironclad",
+      "action": "Locomotion",
+      "phase": 0.875,
+      "file": "Assets/Renders/Walking/ironclad_Locomotion_875.png",
+      "bytes": 472014,
+      "sha256": "399b7f4c73b3687a700742b1c2696a01ae1b92922393c7c447fdc5d533c74ccd"
+    },
+    {
+      "model": "ember_archer",
+      "action": "Locomotion",
+      "phase": 0.0,
+      "file": "Assets/Renders/Walking/ember_archer_Locomotion_000.png",
+      "bytes": 476531,
+      "sha256": "4c3bd8d6bd31249d7afa433b4eaddb63b2b3f783d8a00285230ffd02a8c88566"
+    },
+    {
+      "model": "ember_archer",
+      "action": "Locomotion",
+      "phase": 0.125,
+      "file": "Assets/Renders/Walking/ember_archer_Locomotion_125.png",
+      "bytes": 477584,
+      "sha256": "929b0678d05d4379620b1ed834cf113ef1a62ec2a61c6abaa4818e095668a241"
+    },
+    {
+      "model": "ember_archer",
+      "action": "Locomotion",
+      "phase": 0.25,
+      "file": "Assets/Renders/Walking/ember_archer_Locomotion_250.png",
+      "bytes": 478346,
+      "sha256": "8841eb5207d2b023b6ee1b0731b582338b3b07e47a9ad799159483a3ac75fd59"
+    },
+    {
+      "model": "ember_archer",
+      "action": "Locomotion",
+      "phase": 0.375,
+      "file": "Assets/Renders/Walking/ember_archer_Locomotion_375.png",
+      "bytes": 476895,
+      "sha256": "25f3d007f2c289d8eb10418f832f5e7db179eb03c4cb29a1eca3df406d8273bc"
+    },
+    {
+      "model": "ember_archer",
+      "action": "Locomotion",
+      "phase": 0.5,
+      "file": "Assets/Renders/Walking/ember_archer_Locomotion_500.png",
+      "bytes": 475716,
+      "sha256": "33f379b4a47e691e5a2e9da02edd0f5eb048574df59207e66c8d1cecf9ff645b"
+    },
+    {
+      "model": "ember_archer",
+      "action": "Locomotion",
+      "phase": 0.625,
+      "file": "Assets/Renders/Walking/ember_archer_Locomotion_625.png",
+      "bytes": 473284,
+      "sha256": "1a0c3931ab1f8c19b6668413582473447690fac3380052069815540952ce6a59"
+    },
+    {
+      "model": "ember_archer",
+      "action": "Locomotion",
+      "phase": 0.75,
+      "file": "Assets/Renders/Walking/ember_archer_Locomotion_750.png",
+      "bytes": 474991,
+      "sha256": "9719a5dfd5f030fa2998c72b34b0dc08857c4fffc0063a7e24dd25895cd70879"
+    },
+    {
+      "model": "ember_archer",
+      "action": "Locomotion",
+      "phase": 0.875,
+      "file": "Assets/Renders/Walking/ember_archer_Locomotion_875.png",
+      "bytes": 474686,
+      "sha256": "1d6424fecdab696771244033027f2e1613453e09b41a2cb874479b66f0572180"
+    },
+    {
+      "model": "twin_blades",
+      "action": "Locomotion",
+      "phase": 0.0,
+      "file": "Assets/Renders/Walking/twin_blades_Locomotion_000.png",
+      "bytes": 470653,
+      "sha256": "94140654028bf950b11a6b480d8799eea8cae92defb1de334010f02ff915f1eb"
+    },
+    {
+      "model": "twin_blades",
+      "action": "Locomotion",
+      "phase": 0.125,
+      "file": "Assets/Renders/Walking/twin_blades_Locomotion_125.png",
+      "bytes": 470370,
+      "sha256": "4ff7df0265f1bc78c35175a863652d051a5e76bed33ab8afce96ab285bcba3d9"
+    },
+    {
+      "model": "twin_blades",
+      "action": "Locomotion",
+      "phase": 0.25,
+      "file": "Assets/Renders/Walking/twin_blades_Locomotion_250.png",
+      "bytes": 471603,
+      "sha256": "859f0dfc38eec7d6d30f9a50068d98bd3173ed89f1119e23c67cf4ce39fbe6e2"
+    },
+    {
+      "model": "twin_blades",
+      "action": "Locomotion",
+      "phase": 0.375,
+      "file": "Assets/Renders/Walking/twin_blades_Locomotion_375.png",
+      "bytes": 469084,
+      "sha256": "3d455e28f1f143a5b652b80f21eeae634aa3638a6ddf6e2a362c1f931663fdd6"
+    },
+    {
+      "model": "twin_blades",
+      "action": "Locomotion",
+      "phase": 0.5,
+      "file": "Assets/Renders/Walking/twin_blades_Locomotion_500.png",
+      "bytes": 469417,
+      "sha256": "b1436fd6b03300452e8256ec2f49f618f3845d95d27771ddbdd7873e7bed4007"
+    },
+    {
+      "model": "twin_blades",
+      "action": "Locomotion",
+      "phase": 0.625,
+      "file": "Assets/Renders/Walking/twin_blades_Locomotion_625.png",
+      "bytes": 468057,
+      "sha256": "d29eaa88d6aeb118317b2a18d58b4c9e17e6dac337924bb20b8bb4dcf965a65f"
+    },
+    {
+      "model": "twin_blades",
+      "action": "Locomotion",
+      "phase": 0.75,
+      "file": "Assets/Renders/Walking/twin_blades_Locomotion_750.png",
+      "bytes": 470067,
+      "sha256": "954fe4b26fe3c8c73d8d4e7c28fcc4fba18dca7ffb8e4bafc2cf138b020f6812"
+    },
+    {
+      "model": "twin_blades",
+      "action": "Locomotion",
+      "phase": 0.875,
+      "file": "Assets/Renders/Walking/twin_blades_Locomotion_875.png",
+      "bytes": 469447,
+      "sha256": "d97c05c241ccb56223d545b810bf4adbb48a062a340e0a5c10ac44ca1bee10b7"
+    },
+    {
+      "model": "arc_mage",
+      "action": "Locomotion",
+      "phase": 0.0,
+      "file": "Assets/Renders/Walking/arc_mage_Locomotion_000.png",
+      "bytes": 465170,
+      "sha256": "022226808ff29fccdc77c07638b353d09d8f7aea9c50a8e834814b03a783cd08"
+    },
+    {
+      "model": "arc_mage",
+      "action": "Locomotion",
+      "phase": 0.125,
+      "file": "Assets/Renders/Walking/arc_mage_Locomotion_125.png",
+      "bytes": 468094,
+      "sha256": "5bda3346dac35e2d05c7b0d043a07210d21ebcfc6cd20614bc3b3eb7c13f6490"
+    },
+    {
+      "model": "arc_mage",
+      "action": "Locomotion",
+      "phase": 0.25,
+      "file": "Assets/Renders/Walking/arc_mage_Locomotion_250.png",
+      "bytes": 468372,
+      "sha256": "56dc8a1ed647d90913ffa65b24c07881f2d2657d560d998854e92380b75a7183"
+    },
+    {
+      "model": "arc_mage",
+      "action": "Locomotion",
+      "phase": 0.375,
+      "file": "Assets/Renders/Walking/arc_mage_Locomotion_375.png",
+      "bytes": 469717,
+      "sha256": "81f1648b38a65368d94aa45ce259a0686d8d2b69721f8b5116bd28fd254662bb"
+    },
+    {
+      "model": "arc_mage",
+      "action": "Locomotion",
+      "phase": 0.5,
+      "file": "Assets/Renders/Walking/arc_mage_Locomotion_500.png",
+      "bytes": 467899,
+      "sha256": "cc1737d9f51f364ee9ca00f8dfac0cf2e553267047816315c2e0f41cd9a80d04"
+    },
+    {
+      "model": "arc_mage",
+      "action": "Locomotion",
+      "phase": 0.625,
+      "file": "Assets/Renders/Walking/arc_mage_Locomotion_625.png",
+      "bytes": 468251,
+      "sha256": "be5dce3a0adf308bdffa278959a66d02fc9adaabab9d1cca0ef4a2e0c7145755"
+    },
+    {
+      "model": "arc_mage",
+      "action": "Locomotion",
+      "phase": 0.75,
+      "file": "Assets/Renders/Walking/arc_mage_Locomotion_750.png",
+      "bytes": 468455,
+      "sha256": "f4300c15d080ab67e2566dcaabd026601755ac5b38feebcbea3970a5fec00e98"
+    },
+    {
+      "model": "arc_mage",
+      "action": "Locomotion",
+      "phase": 0.875,
+      "file": "Assets/Renders/Walking/arc_mage_Locomotion_875.png",
+      "bytes": 467608,
+      "sha256": "5fecd9ae0abd19c9a821eda9c5814da8509c0e73f4d40a11677482a57851b387"
+    },
+    {
+      "model": "boulderback",
+      "action": "Locomotion",
+      "phase": 0.0,
+      "file": "Assets/Renders/Walking/boulderback_Locomotion_000.png",
+      "bytes": 488528,
+      "sha256": "dc3a2f48d12fc6dbc26ffcdc7349a7359c1e88d714a1c1f172521b80178c161d"
+    },
+    {
+      "model": "boulderback",
+      "action": "Locomotion",
+      "phase": 0.125,
+      "file": "Assets/Renders/Walking/boulderback_Locomotion_125.png",
+      "bytes": 490028,
+      "sha256": "e4639dd0f2d4a43421030e8c014ad57d3bc4bb54a151a6f6c72dc8bd2d941617"
+    },
+    {
+      "model": "boulderback",
+      "action": "Locomotion",
+      "phase": 0.25,
+      "file": "Assets/Renders/Walking/boulderback_Locomotion_250.png",
+      "bytes": 490595,
+      "sha256": "fe859558f24e52da9821e28a3bcdbdb1337cec8277db53617fa5112ba719669d"
+    },
+    {
+      "model": "boulderback",
+      "action": "Locomotion",
+      "phase": 0.375,
+      "file": "Assets/Renders/Walking/boulderback_Locomotion_375.png",
+      "bytes": 489591,
+      "sha256": "e7264f802320c11658923f5ad19ce3e89f2306c0164c14af62fe449df7152d8b"
+    },
+    {
+      "model": "boulderback",
+      "action": "Locomotion",
+      "phase": 0.5,
+      "file": "Assets/Renders/Walking/boulderback_Locomotion_500.png",
+      "bytes": 490365,
+      "sha256": "1d47131675aec090d5744d041129cf6f2ec8bf6badabccae59f02c012cc821d1"
+    },
+    {
+      "model": "boulderback",
+      "action": "Locomotion",
+      "phase": 0.625,
+      "file": "Assets/Renders/Walking/boulderback_Locomotion_625.png",
+      "bytes": 491185,
+      "sha256": "29c056f91026a924331ee88f5ec512143a6ae9569eb8656b07690169206e91bf"
+    },
+    {
+      "model": "boulderback",
+      "action": "Locomotion",
+      "phase": 0.75,
+      "file": "Assets/Renders/Walking/boulderback_Locomotion_750.png",
+      "bytes": 492057,
+      "sha256": "120c5d6d1b460f643d224101512378b559f22a9920d4ee899f67e862faa1e8d9"
+    },
+    {
+      "model": "boulderback",
+      "action": "Locomotion",
+      "phase": 0.875,
+      "file": "Assets/Renders/Walking/boulderback_Locomotion_875.png",
+      "bytes": 491211,
+      "sha256": "a4debbc984d24a231c9599a78f8ce4a4a8e1072d0c1dda64d89920562ef70af4"
+    },
+    {
+      "model": "rambeast",
+      "action": "Locomotion",
+      "phase": 0.0,
+      "file": "Assets/Renders/Walking/rambeast_Locomotion_000.png",
+      "bytes": 474637,
+      "sha256": "448a86763e65b773a7486993fa8ea50f801fb9c9534741292a6d89c86cd7b2db"
+    },
+    {
+      "model": "rambeast",
+      "action": "Locomotion",
+      "phase": 0.125,
+      "file": "Assets/Renders/Walking/rambeast_Locomotion_125.png",
+      "bytes": 475179,
+      "sha256": "dbc42b7d827275818ded53b0120fce90303942d0e7e905799111f85eb35d71e3"
+    },
+    {
+      "model": "rambeast",
+      "action": "Locomotion",
+      "phase": 0.25,
+      "file": "Assets/Renders/Walking/rambeast_Locomotion_250.png",
+      "bytes": 475385,
+      "sha256": "924e0f505842eaae3c2e618eaa32f591be0183c53511367970f362cda0da488e"
+    },
+    {
+      "model": "rambeast",
+      "action": "Locomotion",
+      "phase": 0.375,
+      "file": "Assets/Renders/Walking/rambeast_Locomotion_375.png",
+      "bytes": 475662,
+      "sha256": "4760dce825b535cf3512ed0d4ca08c8ed97d84739849f970b43d7d7d6b60826c"
+    },
+    {
+      "model": "rambeast",
+      "action": "Locomotion",
+      "phase": 0.5,
+      "file": "Assets/Renders/Walking/rambeast_Locomotion_500.png",
+      "bytes": 476115,
+      "sha256": "d7ae58c3ba041dd5fad414a81d7921bc5b67a55bb5dbd69e1352aeb81b02ee9d"
+    },
+    {
+      "model": "rambeast",
+      "action": "Locomotion",
+      "phase": 0.625,
+      "file": "Assets/Renders/Walking/rambeast_Locomotion_625.png",
+      "bytes": 476179,
+      "sha256": "4de5cef78cd32bdc4082c29e09790ff8d9ad134c314ac163315efa0f306c125c"
+    },
+    {
+      "model": "rambeast",
+      "action": "Locomotion",
+      "phase": 0.75,
+      "file": "Assets/Renders/Walking/rambeast_Locomotion_750.png",
+      "bytes": 476469,
+      "sha256": "439ea9aacb39c407a18f6857a57f527b1a070dadf3cfd21b39a3893f7ada8c6f"
+    },
+    {
+      "model": "rambeast",
+      "action": "Locomotion",
+      "phase": 0.875,
+      "file": "Assets/Renders/Walking/rambeast_Locomotion_875.png",
+      "bytes": 475470,
+      "sha256": "4e8d2f56fcc566f0ae822c2cc945b087b33e89ca0d67e0503671e79789e49deb"
+    },
+    {
+      "model": "frost_fang",
+      "action": "Locomotion",
+      "phase": 0.0,
+      "file": "Assets/Renders/Walking/frost_fang_Locomotion_000.png",
+      "bytes": 471723,
+      "sha256": "584c14d83b0d81c68dc6bd0c0fd189ea9bc0c23b312d293de9ad4f6fd559c001"
+    },
+    {
+      "model": "frost_fang",
+      "action": "Locomotion",
+      "phase": 0.125,
+      "file": "Assets/Renders/Walking/frost_fang_Locomotion_125.png",
+      "bytes": 472198,
+      "sha256": "5199d848305c4d73d660eedb8d594057362fde8a01b7df216597f424baa2f062"
+    },
+    {
+      "model": "frost_fang",
+      "action": "Locomotion",
+      "phase": 0.25,
+      "file": "Assets/Renders/Walking/frost_fang_Locomotion_250.png",
+      "bytes": 472863,
+      "sha256": "3515132d55919827833fa1d457f82beb97d7121a4eeaa8d44808cebefcef4bac"
+    },
+    {
+      "model": "frost_fang",
+      "action": "Locomotion",
+      "phase": 0.375,
+      "file": "Assets/Renders/Walking/frost_fang_Locomotion_375.png",
+      "bytes": 473481,
+      "sha256": "c332cde3e68ccb472c7eec0a05ca414be74193f005740639767bbfd8a1290911"
+    },
+    {
+      "model": "frost_fang",
+      "action": "Locomotion",
+      "phase": 0.5,
+      "file": "Assets/Renders/Walking/frost_fang_Locomotion_500.png",
+      "bytes": 472699,
+      "sha256": "379c8a2916d5e695bda7cfbb70b1fc8afb0d9ca0588c97bceb396fc14ad6f957"
+    },
+    {
+      "model": "frost_fang",
+      "action": "Locomotion",
+      "phase": 0.625,
+      "file": "Assets/Renders/Walking/frost_fang_Locomotion_625.png",
+      "bytes": 473337,
+      "sha256": "a0579a6e3d8b9211a205999da607ddeb63ccf7ea52ce62ef7e54875d7a8a6cb3"
+    },
+    {
+      "model": "frost_fang",
+      "action": "Locomotion",
+      "phase": 0.75,
+      "file": "Assets/Renders/Walking/frost_fang_Locomotion_750.png",
+      "bytes": 474038,
+      "sha256": "1c4d1d08e9c2cb0f7345603b38538b8952cd0559b58fd5f3bfb7e958b8d653fa"
+    },
+    {
+      "model": "frost_fang",
+      "action": "Locomotion",
+      "phase": 0.875,
+      "file": "Assets/Renders/Walking/frost_fang_Locomotion_875.png",
+      "bytes": 474297,
+      "sha256": "e41133e95862470824b2c7b25d197799346ce9d9a5e85f2192d41c0858f8f16c"
+    },
+    {
+      "model": "mini_stampede",
+      "action": "Locomotion",
+      "phase": 0.0,
+      "file": "Assets/Renders/Walking/mini_stampede_Locomotion_000.png",
+      "bytes": 463912,
+      "sha256": "73c951bd976302f823c99ab506f43fcca26e55bff8f16524e64ad85071921c81"
+    },
+    {
+      "model": "mini_stampede",
+      "action": "Locomotion",
+      "phase": 0.125,
+      "file": "Assets/Renders/Walking/mini_stampede_Locomotion_125.png",
+      "bytes": 464454,
+      "sha256": "f3ad4ae6b289a02d8e02c64343e295243e55c7782567690bb5f234d7180b0838"
+    },
+    {
+      "model": "mini_stampede",
+      "action": "Locomotion",
+      "phase": 0.25,
+      "file": "Assets/Renders/Walking/mini_stampede_Locomotion_250.png",
+      "bytes": 464441,
+      "sha256": "9d76f87b8afc1171fff3f15ff8ed9b179d41da8a9055352614936906a8cbeede"
+    },
+    {
+      "model": "mini_stampede",
+      "action": "Locomotion",
+      "phase": 0.375,
+      "file": "Assets/Renders/Walking/mini_stampede_Locomotion_375.png",
+      "bytes": 464909,
+      "sha256": "a4a567a0c8cb72e1ff79f15c4588b3f39aba61f0278890c4e713c8f53d1dfb22"
+    },
+    {
+      "model": "mini_stampede",
+      "action": "Locomotion",
+      "phase": 0.5,
+      "file": "Assets/Renders/Walking/mini_stampede_Locomotion_500.png",
+      "bytes": 465468,
+      "sha256": "92e6182beb051ab2dfc3c16c14bf78ad6c91cd04a6b834cd3abd151f2105e69d"
+    },
+    {
+      "model": "mini_stampede",
+      "action": "Locomotion",
+      "phase": 0.625,
+      "file": "Assets/Renders/Walking/mini_stampede_Locomotion_625.png",
+      "bytes": 465583,
+      "sha256": "d505a7b4f2a0aa8232c3c5fcea8d1e0ae8650ad4294e086f68ccf5aaba5cb654"
+    },
+    {
+      "model": "mini_stampede",
+      "action": "Locomotion",
+      "phase": 0.75,
+      "file": "Assets/Renders/Walking/mini_stampede_Locomotion_750.png",
+      "bytes": 464939,
+      "sha256": "5e4c20a2290972665575f84aac7aafb45df79d54e7ad8527dcf6823ee33c0b9f"
+    },
+    {
+      "model": "mini_stampede",
+      "action": "Locomotion",
+      "phase": 0.875,
+      "file": "Assets/Renders/Walking/mini_stampede_Locomotion_875.png",
+      "bytes": 464594,
+      "sha256": "062df0ba58c6e9e294d6a443e96c260fb6384989f8631f539dbad225df3a614d"
+    },
+    {
+      "model": "stampede",
+      "action": "Locomotion",
+      "phase": 0.0,
+      "file": "Assets/Renders/Walking/stampede_Locomotion_000.png",
+      "bytes": 475438,
+      "sha256": "1e520ba5e54caeb054fd28e00364b61ffd6b4fbba9892dbec08379f2c2276aa5"
+    },
+    {
+      "model": "stampede",
+      "action": "Locomotion",
+      "phase": 0.125,
+      "file": "Assets/Renders/Walking/stampede_Locomotion_125.png",
+      "bytes": 475977,
+      "sha256": "ab028ff9ee76bd41532419afc91a09b9a4287905be1d93d97e41ea47d450ec65"
+    },
+    {
+      "model": "stampede",
+      "action": "Locomotion",
+      "phase": 0.25,
+      "file": "Assets/Renders/Walking/stampede_Locomotion_250.png",
+      "bytes": 476238,
+      "sha256": "fa8d4fcf648ad1ebee14f0060b875c69c4d1ee79239e62f94f224b2394f9bfd1"
+    },
+    {
+      "model": "stampede",
+      "action": "Locomotion",
+      "phase": 0.375,
+      "file": "Assets/Renders/Walking/stampede_Locomotion_375.png",
+      "bytes": 476426,
+      "sha256": "8ac7c82025b11c8a8ff6946ce6eeb0681437e64b9e1d12dd8234eabcf799a511"
+    },
+    {
+      "model": "stampede",
+      "action": "Locomotion",
+      "phase": 0.5,
+      "file": "Assets/Renders/Walking/stampede_Locomotion_500.png",
+      "bytes": 477036,
+      "sha256": "a488f0362065d424e0938f3b8bf01cf279d591ab66379ec5fdbba6d3f798b971"
+    },
+    {
+      "model": "stampede",
+      "action": "Locomotion",
+      "phase": 0.625,
+      "file": "Assets/Renders/Walking/stampede_Locomotion_625.png",
+      "bytes": 477047,
+      "sha256": "6eddc7334ab7e42647e71ed285b3b79e28d054bb88f0f49ecd813ba804fb4361"
+    },
+    {
+      "model": "stampede",
+      "action": "Locomotion",
+      "phase": 0.75,
+      "file": "Assets/Renders/Walking/stampede_Locomotion_750.png",
+      "bytes": 476641,
+      "sha256": "da9165a3f4e35968d65522dfd84a9b804c10e9baa7e7eddfd825d674ebf9bd55"
+    },
+    {
+      "model": "stampede",
+      "action": "Locomotion",
+      "phase": 0.875,
+      "file": "Assets/Renders/Walking/stampede_Locomotion_875.png",
+      "bytes": 476094,
+      "sha256": "171e0318f554a11319b909952062a8a31f9beca91e8b459a10d58092ddcc85b0"
+    }
+  ]
+}

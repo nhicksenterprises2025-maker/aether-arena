@@ -137,6 +137,8 @@ void URiftUIWidget::CardDetail()
     if(!Card->spell)
     {
         Stat(TEXT("HP / MEMBER"),FString::Printf(TEXT("%.0f"),Card->hp));Stat(TEXT("DAMAGE / HIT"),FString::Printf(TEXT("%.0f"),Card->damage));Stat(TEXT("HIT INTERVAL"),FString::Printf(TEXT("%.2f s"),Card->attackInterval));
+        Stat(TEXT("BASIC DPS / MEMBER"),FString::Printf(TEXT("%.2f"),Card->damage/Card->attackInterval));
+        if(Card->count>1){Stat(TEXT("FULL SWARM HP"),FString::Printf(TEXT("%.0f"),Card->hp*Card->count));Stat(TEXT("FULL SWARM BASIC DPS"),FString::Printf(TEXT("%.2f"),Card->damage*Card->count/Card->attackInterval));}
         Stat(TEXT("ATTACK RANGE"),FString::Printf(TEXT("%.2f tiles"),Card->range));Stat(TEXT("MOVEMENT"),FString::Printf(TEXT("%.2f tiles/s"),Card->moveSpeed));Stat(TEXT("FRONT / REAR SIGHT"),TEXT("8 / 5 tiles"));
         if(Card->projectileSpeed>0)Stat(TEXT("PROJECTILE SPEED"),FString::Printf(TEXT("%.1f tiles/s"),Card->projectileSpeed));if(Card->splash>0)Stat(TEXT("SPLASH RADIUS"),FString::Printf(TEXT("%.2f tiles"),Card->splash));
     }
@@ -149,6 +151,7 @@ void URiftUIWidget::CardDetail()
 
     auto* Special=WidgetTree->ConstructWidget<UVerticalBox>();bool HasSpecial=false;
     auto Ability=[&](const FString& Title,const FString& Copy){HasSpecial=true;Add(Special,Text(Title,17,Gold),3);Add(Special,Text(Copy,15,Paper),3);};
+    if(Card->count>1)Ability(TEXT("SPLIT DEPLOYMENT"),TEXT("Each member chooses a lane from where it lands. Place the formation across the arena center to send members down both sides. Ground members use their side's bridge; after that Guard Tower falls, they advance toward the Core."));
     if(Card->building)Ability(TEXT("DEFENSIVE BUILDING"),FString::Printf(TEXT("Remains for %.1f seconds. Its %.2f-tile footprint must fit the legal deployment area."),Card->lifetime,Card->footprint));
     if(Card->castDelay>0)Ability(TEXT("LEAD YOUR CAST"),FString::Printf(TEXT("Hits %.2f seconds after casting. Aim where enemies will be when the animation finishes. The marked area stays fixed; enemies can enter or leave it before impact."),Card->castDelay));
     if(Card->chargeDamage)Ability(TEXT("CHARGED IMPACT"),FString::Printf(TEXT("Builds charge by moving for more than 1.65 seconds. A charged impact deals %.0f damage."),Card->chargeDamage));

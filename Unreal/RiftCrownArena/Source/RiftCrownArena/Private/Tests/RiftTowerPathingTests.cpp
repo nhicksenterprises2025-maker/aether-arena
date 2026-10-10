@@ -113,8 +113,8 @@ bool FRiftTowerPathingIntegrationTest::RunTest(const FString& Parameters)
             }
             TestEqual(Label+TEXT(" emits one paid play"),Plays,1);TestEqual(Label+TEXT(" emits one spawn per member"),Spawns,Card.count);
         }
-    TestEqual(TEXT("Both teams' three towers and rear-edge tiles cover all seven ground cards"),PaidCases,84);
-    TestEqual(TEXT("All paid single and twin ground members are exercised"),Members,96);
+    TestEqual(TEXT("Both teams' three towers and rear-edge tiles cover all nine ground cards"),PaidCases,108);
+    TestEqual(TEXT("All paid single, twin and swarm ground members are exercised"),Members,336);
 
     // Legal hand drops on the outer rows must also begin inside the movement
     // envelope. Continuous segment checks cannot rescue an invalid origin.
@@ -162,13 +162,25 @@ bool FRiftTowerPathingIntegrationTest::RunTest(const FString& Parameters)
                     (Start.position.z-Entity->position.z)*(Team==rift::Team::Player?1.:-1.)>.25);
             }
         }
-    TestEqual(TEXT("Both teams' rear rows, side rows and extreme corners cover every ground card"),BoundaryCases,98);
-    TestEqual(TEXT("Rear/side/corner paid deployments retain all single and twin members"),BoundaryMembers,112);
+    TestEqual(TEXT("Both teams' rear rows, side rows and extreme corners cover all nine ground cards"),BoundaryCases,126);
+    TestEqual(TEXT("Rear/side/corner paid deployments retain all single, twin and swarm members"),BoundaryMembers,392);
 
     TestEqual(TEXT("The requested larger arena is thirty tiles wide"),rift::arena::Width,30);
     TestEqual(TEXT("The requested larger arena is forty-four tiles deep"),rift::arena::Height,44);
     TestEqual(TEXT("Core towers move one tile toward the rear"),rift::arena::CoreDepth,17.3);
     TestEqual(TEXT("Guard towers move one tile toward the rear"),rift::arena::GuardDepth,13.4);
+    TestEqual(TEXT("Guard centers share the unchanged bridge axis"),rift::arena::GuardX,rift::arena::BridgeCenterX);
+    rift::Match AlignedTowers(TowerOptions());int32 AlignedGuards=0,CenteredCores=0;
+    for(const auto& Tower:AlignedTowers.State().entities)
+    {
+        const bool Core=Tower.kind==rift::EntityKind::Core;const double Sign=Tower.team==rift::Team::Player?1.:-1.;
+        TestEqual(TEXT("Every actual tower retains its rear depth"),Tower.position.z,Sign*(Core?17.3:13.4));
+        TestEqual(TEXT("Every actual tower retains its original body radius"),Tower.radius,Core?1.35:1.15);
+        TestEqual(TEXT("Every actual Guard follows its bridge and every Core stays centered"),Tower.position.x,Core?0.:Tower.lane*7.2);
+        if(Core)++CenteredCores;else ++AlignedGuards;
+    }
+    TestEqual(TEXT("All four actual Guard bodies align with their stone-path and bridge axes"),AlignedGuards,4);
+    TestEqual(TEXT("Both Core bodies remain centered between the lanes"),CenteredCores,2);
     rift::Match Geometry(TowerOptions());
     for(const auto& Tower:Geometry.State().entities)
         TestTrue(TEXT("All six actual towers use the shifted symmetric depths"),
@@ -218,8 +230,8 @@ bool FRiftTowerPathingIntegrationTest::RunTest(const FString& Parameters)
             for(const auto& Start:Starts)if(const auto* Unit=TowerEntity(Match.State(),Start.id))
                 TestTrue(Label+TEXT(" actually advances toward the Core"),TowerDistance(Start.position,Unit->position)>.5);
         }
-    TestEqual(TEXT("Every ground card covers both teams, both lanes, own-half and enemy pocket deployments"),RouteCases,56);
-    TestEqual(TEXT("Destroyed-Guard routing retains every single and twin member"),RouteMembers,64);
+    TestEqual(TEXT("All nine ground cards cover both teams, both lanes, own-half and enemy pocket deployments"),RouteCases,72);
+    TestEqual(TEXT("Destroyed-Guard routing retains every single, twin and swarm member"),RouteMembers,224);
 
     auto* GI=NewObject<UGameInstance>(GEngine);GI->InitializeStandalone(FName(*FGuid::NewGuid().ToString(EGuidFormats::Digits)));
     auto* World=GI->GetWorld();auto* Replay=GI->GetSubsystem<URiftReplaySubsystem>();

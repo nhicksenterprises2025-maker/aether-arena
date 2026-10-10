@@ -87,7 +87,7 @@ for name,record in M['statics'].items():
     report['statics'][name]={'triangles':record['triangles'],'materialSlots':len(record['materials']),'boundsMeters':record['boundsMeters']}
 for channel in ('BaseColor','Normal','ORM','TeamMask'):
     p=ROOT/'Assets/Source/Textures'/('T_RiftAtlas_'+channel+'.png');check(channel+' texture source',p.exists())
-check('All troop identities',set(('ironclad','ember_archer','twin_blades','boulderback','arc_mage','rambeast','sky_manta','vampire_bats','frost_fang','storm_raven'))<=set(M['characters']))
+check('All troop identities',set(('ironclad','ember_archer','twin_blades','boulderback','arc_mage','rambeast','sky_manta','vampire_bats','frost_fang','storm_raven','mini_stampede','stampede'))<=set(M['characters']))
 check('All crown/building/spell identities',set(('tower_guard','tower_core','archer_tower','nova_flask','meteor_shard','bullet_round'))<=set(M['statics']))
 # Empirical FBX roundtrip in Blender is independent of source manifests and confirms unit handling.
 expected=M['characters']['ironclad']['boundsMeters']

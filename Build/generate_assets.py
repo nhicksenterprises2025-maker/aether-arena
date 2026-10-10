@@ -18,12 +18,15 @@ from upgrade_card_models import (PALETTE_ADDITIONS, humanoid_costume, clean_crea
 EXPORT_WORK = Path(tempfile.mkdtemp(prefix='RiftCrown-FBX-'))
 ARGS=argparse.ArgumentParser()
 ARGS.add_argument('--no-renders',action='store_true')
+ARGS.add_argument('--update-models', help='Comma-separated character IDs to rebuild in the existing production scene')
 ARGS.add_argument('--preview-models', help='Comma-separated model IDs; renders only, with isolated output')
 ARGS.add_argument('--preview-output', type=Path, default=ROOT/'Artifacts/QA/model-upgrade-preview')
 ARGS.add_argument('--preview-action', help='Optional existing animation name for isolated pose review')
 ARGS.add_argument('--preview-frame', type=int, default=16)
 opts=ARGS.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
 PREVIEW = set(opts.preview_models.split(',')) if opts.preview_models else None
+UPDATE = set(opts.update_models.split(',')) if opts.update_models else None
+if PREVIEW and UPDATE: ARGS.error('--preview-models and --update-models are mutually exclusive')
 if opts.preview_action and not PREVIEW: ARGS.error('--preview-action requires --preview-models')
 if PREVIEW:
     preview_root=opts.preview_output.resolve()
@@ -33,9 +36,24 @@ else:
     SRC, OUT, RENDER = ROOT/'Assets/Source', ROOT/'Assets/Export', ROOT/'Assets/Renders'
 for d in (SRC, OUT, RENDER, SRC/'Textures'): d.mkdir(parents=True, exist_ok=True)
 random.seed(15082026)
-bpy.ops.object.select_all(action='SELECT'); bpy.ops.object.delete(use_global=False)
-for c in list(bpy.data.collections):
-    if c.name!='Collection': bpy.data.collections.remove(c)
+previous_manifest=None
+if UPDATE:
+    previous_manifest=json.loads((ROOT/'Assets/asset_manifest.json').read_text(encoding='utf-8'))
+    bpy.ops.wm.open_mainfile(filepath=str(ROOT/previous_manifest['source']['file']))
+    # Preserve unchanged models, atlas, architectural meshes and named actions.
+    # Rebuilding the selected collection also prevents .001 suffixes from
+    # silently binding a new export to an old source rig.
+    for name in UPDATE:
+        collection=bpy.data.collections.get(name)
+        if collection:
+            for obj in list(collection.objects): bpy.data.objects.remove(obj,do_unlink=True)
+            bpy.data.collections.remove(collection)
+        for action in list(bpy.data.actions):
+            if action.name.startswith('AN_'+name+'_'): bpy.data.actions.remove(action)
+else:
+    bpy.ops.object.select_all(action='SELECT'); bpy.ops.object.delete(use_global=False)
+    for c in list(bpy.data.collections):
+        if c.name!='Collection': bpy.data.collections.remove(c)
 scene=bpy.context.scene; scene.unit_settings.system='METRIC'; scene.unit_settings.scale_length=1
 bpy.context.preferences.filepaths.save_version=0
 scene.render.engine='BLENDER_EEVEE'; scene.render.resolution_x=1024; scene.render.resolution_y=1024
@@ -106,7 +124,13 @@ def textures():
         images[channel]=im
     return images
 
-TEX=textures()
+if UPDATE:
+    TEX={}
+    for channel in ('BaseColor','ORM','Normal','TeamMask'):
+        name='T_RiftAtlas_'+channel
+        image=bpy.data.images.get(name) or bpy.data.images.load(str(SRC/'Textures'/(name+'.png')))
+        image.name=name;TEX[channel]=image
+else:TEX=textures()
 def make_material(name,glow=False,glass=False):
     m=bpy.data.materials.new(name); m.use_nodes=True
     nodes=m.node_tree.nodes; links=m.node_tree.links; p=nodes.get('Principled BSDF')
@@ -124,8 +148,10 @@ def make_material(name,glow=False,glass=False):
         p.inputs['Transmission Weight'].default_value=.22; p.inputs['IOR'].default_value=1.46
         p.inputs['Roughness'].default_value=.16
     return m
-SURFACE=make_material('M_RiftSurface'); GLOW=make_material('M_RiftGlow',glow=True); GLASS=make_material('M_RiftGlass',glass=True)
-manifest={'schema':1,'build':'UE-1.3.0','source':'original procedural sculpt and rig authored for Rift Crown Arena',
+SURFACE=bpy.data.materials['M_RiftSurface'] if UPDATE else make_material('M_RiftSurface')
+GLOW=bpy.data.materials['M_RiftGlow'] if UPDATE else make_material('M_RiftGlow',glow=True)
+GLASS=bpy.data.materials['M_RiftGlass'] if UPDATE else make_material('M_RiftGlass',glass=True)
+manifest=previous_manifest or {'schema':1,'source':'original procedural sculpt and rig authored for Rift Crown Arena',
  'units':{'blender':'meter','fbx':'meter','fbxCentimetersPerUnit':100,'unrealImportUniformScale':1,'convertSceneUnit':True,
           'exportAxisForward':'-Y','exportAxisUp':'Z','unrealForceFrontXAxis':True,'designForward':'-Y in Blender; +X in Unreal'},
  'materials':[{'name':m.name,'baseColor':Path(TEX['BaseColor'].filepath_raw).relative_to(ROOT).as_posix(),
@@ -133,6 +159,7 @@ manifest={'schema':1,'build':'UE-1.3.0','source':'original procedural sculpt and
                'normal':Path(TEX['Normal'].filepath_raw).relative_to(ROOT).as_posix(),
                'teamMask':Path(TEX['TeamMask'].filepath_raw).relative_to(ROOT).as_posix()} for m in (SURFACE,GLOW,GLASS)],
  'characters':{},'statics':{},'illustrations':{},'renders':[]}
+manifest['build']='UE-1.4.0'
 
 class Forge:
     def __init__(self,name):
@@ -342,6 +369,84 @@ def quadruped(name):
     refine_quadruped(f,key)
     return f.finish(True)
 
+def hog(name):
+    """Two recognizable wild boars, with fitted royal tack on the premium herd."""
+    f=Forge(name);f.family='quadruped';royal=name=='stampede'
+    f.bone('root',(0,0,0),(0,0,.10))
+    f.bone('pelvis',(0,.24,.56),(0,.04,.63),'root')
+    f.bone('spine',(0,.04,.63),(0,-.30,.68),'pelvis')
+    f.bone('neck',(0,-.30,.68),(0,-.49,.70),'spine')
+    f.bone('head',(0,-.49,.70),(0,-.70,.65),'neck')
+    f.bone('jaw',(0,-.61,.57),(0,-.88,.54),'head')
+    f.bone('tail',(0,.52,.60),(0,.75,.66),'pelvis')
+    for s,side in ((-1,'l'),(1,'r')):
+        for y,leg in ((-.27,'front'),(.28,'back')):
+            bn=leg+'_'+side
+            f.bone(bn+'_upper',(s*.23,y,.54),(s*.25,y+.025,.30),'spine' if leg=='front' else 'pelvis')
+            f.bone(bn+'_lower',(s*.25,y+.025,.30),(s*.26,y-.01,.075),bn+'_upper')
+            f.bone(bn+'_foot',(s*.26,y-.01,.075),(s*.26,y-.10,.05),bn+'_lower')
+            f.socket(bn+'_contact',(s*.26,y-.045,.012),bn+'_foot')
+            f.tube('powerful_upper_leg',[(s*.23,y,.54),(s*.25,y+.025,.40),(s*.25,y+.025,.30)],
+                   [.115,.105,.070],'fur',bn+'_upper',14)
+            f.tube('tapered_lower_leg',[(s*.25,y+.025,.30),(s*.26,y-.01,.18),(s*.26,y-.01,.075)],
+                   [.071,.058,.055],'fur_dark',bn+'_lower',12)
+            # The hoof cleft is a real separation between its two keratin toes.
+            for toe in (-1,1):
+                f.ellipsoid('cloven_hoof',(s*.26+toe*.041,y-.045,.052),(.038,.087,.052),'black',bn+'_foot',16)
+    f.ellipsoid('barrel_body',(0,.06,.62),(.34,.53,.255),'fur','spine',32)
+    f.ellipsoid('shoulder_muscle',(0,-.27,.66),(.315,.29,.28),'fur','spine',28)
+    f.ellipsoid('round_haunches',(0,.36,.59),(.31,.27,.23),'fur','pelvis',28)
+    f.ellipsoid('powerful_neck',(0,-.41,.70),(.24,.255,.22),'fur','neck',24)
+    f.ellipsoid('wedge_head',(0,-.59,.69),(.23,.26,.21),'fur','head',28)
+    f.ellipsoid('long_boar_snout',(0,-.80,.565),(.176,.185,.125),'leather','jaw',24)
+    f.ellipsoid('broad_snout_disk',(0,-.960,.565),(.142,.026,.091),'skin_shade','jaw',24)
+    for s in (-1,1):
+        f.ellipsoid('nostril',(s*.055,-.983,.577),(.025,.009,.017),'black','jaw',16)
+        f.ellipsoid('recessed_eye_socket',(s*.177,-.728,.759),(.052,.040,.045),'fur_dark','head',20)
+        f.ellipsoid('eye_white',(s*.195,-.752,.765),(.031,.020,.023),'ivory','head',16)
+        f.ellipsoid('watchful_eye',(s*.199,-.770,.765),(.016,.007,.018),'black','head',16)
+        f.tube('heavy_brow',[(s*.144,-.735,.803),(s*.188,-.746,.817),(s*.224,-.705,.796)],
+               [.035,.038,.014],'fur_dark','head',10)
+        f.tube('outer_ear',[(s*.169,-.51,.842),(s*.272,-.477,.988),(s*.299,-.560,.958)],
+               [.085,.062,.004],'fur','head',12)
+        f.tube('inner_ear',[(s*.201,-.539,.872),(s*.267,-.513,.955)], [.037,.004],'skin_shade','head',10)
+        f.tube('curved_boar_tusk',[(s*.148,-.847,.528),(s*.208,-.905,.515),(s*.238,-.926,.586),(s*.229,-.933,.671)],
+               [.043,.035,.024,.002],'ivory','jaw',12)
+    # Sculpted bristle ridge follows the silhouette; it never crosses the tack.
+    for j in range(10):
+        y=-.36+j*.086;z=.85+.045*math.cos(j*.30)
+        f.tube('bristle_crest',[(0,y,z),(0,y+.025,z+.096),(0,y+.064,z+.125)],
+               [.052,.037,.001],'fur_dark','spine',8)
+    points=[(0,.55,.63)]
+    for j in range(13):
+        a=j*math.pi/6;points.append((math.sin(a)*.055,.64+j*.006,.675+math.cos(a)*.054))
+    f.tube('curled_tail',points,[.031]+[.025-j*.0014 for j in range(13)],'fur','tail',10)
+    if royal:
+        # No rider: a tailored saddlecloth, raised shoulder plates and a small
+        # open crown distinguish the seven-Aether herd at the game camera.
+        for s in (-1,1):
+            f.panel('royal_side_cloth',(s*.329,.13,.68),(.024,.48,.205),'cloth_blue','spine',bevel=.018)
+            f.panel('cloth_gold_edge',(s*.346,.13,.589),(.018,.49,.024),'brass','spine',bevel=.006)
+            f.ellipsoid('fitted_shoulder_plate',(s*.263,-.275,.735),(.110,.177,.124),'steel_edge','spine',20)
+            f.rivet((s*.333,-.276,.765),'spine','brass',.027)
+            f.tube('fitted_royal_harness',[(s*.21,-.37,.847),(s*.331,-.329,.710),(s*.272,-.308,.448)],
+                   [.022,.026,.018],'leather','spine',10)
+            f.tube('team_harness_trim',[(s*.221,-.38,.854),(s*.344,-.339,.711)],.012,'team','spine',8)
+        f.ring('open_crown_band',(0,-.548,.914),.151,.024,'brass','head')
+        for j in range(5):
+            a=j*2*math.pi/5;x=math.cos(a)*.147;y=-.548+math.sin(a)*.147
+            f.tube('crown_point',[(x,y,.92),(x*.86,-.548+(y+.548)*.86,1.066)], [.025,.003],'brass','head',8)
+        f.ellipsoid('royal_team_crest',(0,-.723,.924),(.043,.019,.047),'team','head',16)
+    else:
+        f.tube('plain_team_collar',[(-.217,-.455,.70),(0,-.554,.791),(.217,-.455,.70)],
+               .024,'team','neck',10)
+        f.ellipsoid('small_iron_collar_tag',(0,-.573,.783),(.035,.012,.033),'iron','neck',16)
+    f.socket('attack_origin',(0,-.97,.57),'jaw')
+    f.socket('impact_origin',(0,-.38,.66),'spine')
+    f.socket('hp_anchor',(0,0,1.18 if royal else 1.05),'spine')
+    f.socket('status_anchor',(0,-.30,1.10),'neck')
+    return f.finish(True)
+
 def flyer_rig(f):
     f.family='flyer'; f.bone('root',(0,0,0),(0,0,.10)); f.bone('body',(0,0,1),(0,-.27,1.09),'root')
     f.bone('neck',(0,-.27,1.09),(0,-.48,1.23),'body');f.bone('head',(0,-.48,1.23),(0,-.70,1.27),'neck')
@@ -470,10 +575,9 @@ def actions(f):
             if f.family=='humanoid':
                 rot('spine',.018*math.sin(cycle));rot('head',0,0,.024*math.sin(cycle+.7));rot('cape',.04*math.sin(cycle+.4))
                 if name=='Locomotion':
-                    for s,side in ((1,'l'),(-1,'r')):
-                        rot('thigh_'+side,.42*math.sin(cycle)*s);rot('shin_'+side,max(0,-math.sin(cycle)*s)*.48)
-                        rot('foot_'+side,-.14*math.sin(cycle)*s);rot('upperarm_'+side,-.24*math.sin(cycle)*s)
-                    move('pelvis',z=.019*abs(math.sin(cycle)));rot('cape',.10+.065*math.sin(cycle-.35))
+                    k=f.bones['head']['head'][2]/1.6
+                    move('pelvis',z=-.080*k+.010*k*(1-math.cos(cycle*2)))
+                    rot('cape',.10+.065*math.sin(cycle-.35))
                     rot('chest',0,.025*math.sin(cycle),-.045*math.sin(cycle))
                     rot('head',0,0,.025*math.sin(cycle))
                 if attack:
@@ -493,11 +597,9 @@ def actions(f):
                 rot('neck',.035*math.sin(cycle));rot('tail',0,.10*math.sin(cycle))
                 if name in ('Locomotion','Charge'):
                     charge=name=='Charge'
-                    for i,(leg,side) in enumerate((('front','l'),('front','r'),('back','l'),('back','r'))):
-                        phase=cycle+(math.pi if i in (1,2) else 0);p=math.sin(phase)
-                        rot(leg+'_'+side+'_upper',p*(.46 if charge else .30));rot(leg+'_'+side+'_lower',max(0,-p)*.46)
-                        rot(leg+'_'+side+'_foot',-p*.12)
-                    move('spine',z=.024*abs(math.sin(cycle)));rot('neck',.20 if charge else -.025*math.sin(cycle))
+                    move('pelvis',z=-.052 if f.name in ('mini_stampede','stampede') else -.045)
+                    move('spine',z=.009*(1-math.cos(cycle*2)))
+                    rot('neck',.20 if charge else -.025*math.sin(cycle))
                     if charge:rot('head',.16);rot('tail',-.20,.1*math.sin(cycle))
                 if attack:
                     rot('neck',-.30*wind+.58*strike);rot('head',-.16*wind+.35*strike);rot('jaw',.30*wind-.40*strike)
@@ -546,6 +648,8 @@ def actions(f):
                     if f.name=='twin_blades':
                         alternate=smooth((t-.62)/.13) if t<.75 else 1-smooth((t-.75)/.22);aim_arm(f,'l',Vector((-.30,-.45,1.18)),alternate)
                         hand=f.rig.pose.bones['hand_l'];q=hand.bone.matrix_local.to_quaternion();set_world_rotation(hand,q.slerp(turn@q,alternate))
+            if name in ('Locomotion','Charge') and f.family in ('humanoid','quadruped'):
+                contact_gait(f,t,name=='Charge')
             for pb in f.rig.pose.bones:
                 pb.keyframe_insert('rotation_euler',frame=frame,group=pb.name)
                 pb.keyframe_insert('location',frame=frame,group=pb.name)
@@ -553,6 +657,7 @@ def actions(f):
         act.use_fake_user=True
         made.append({'name':name,'action':act.name,'frames':length,'seconds':(length-1)/30,
                      'releaseNormalized':.48 if attack else None,'loop':name in ('Idle','Locomotion','Charge','WingCycle','Breath','Status'),
+                     'strideMeters':gait_stride(f,name=='Charge') if name in ('Locomotion','Charge') and f.family in ('humanoid','quadruped') else None,
                      'object':act})
     f.rig.animation_data.action=None;scene.frame_set(1)
     for pb in f.rig.pose.bones:pb.rotation_euler=(0,0,0);pb.location=(0,0,0);pb.scale=(1,1,1)
@@ -759,6 +864,8 @@ def export_static(f):
     manifest['statics'][f.name]=rec;return f
 
 def render_rig():
+    if UPDATE:
+        return bpy.data.collections['RenderStage'],scene.camera
     collection=bpy.data.collections.new('RenderStage');scene.collection.children.link(collection)
     def stage(o):
         for c in list(o.users_collection):c.objects.unlink(o)
@@ -782,7 +889,9 @@ def render_asset(f,stage,camera):
     target=Vector((0,0,sum(corner[2] for corner in f.mesh.bound_box)/8 if f.name=='guard_cannon' else height*.48));camera.location=target+Vector((4.5,-7.0,4.0))
     camera.rotation_euler=(target-camera.location).to_track_quat('-Z','Y').to_euler();camera.data.ortho_scale=max(height*1.5,width*1.38)
     path=RENDER/(f.name+'.png');scene.render.filepath=str(path);bpy.ops.render.render(write_still=True)
-    manifest['renders'].append(file_info(path));return path
+    info=file_info(path)
+    manifest['renders']=[entry for entry in manifest['renders'] if entry['file']!=info['file']]
+    manifest['renders'].append(info);return path
 
 def remove_parts(f,names):
     for ob in list(f.parts):
@@ -927,14 +1036,62 @@ def round_archer_tower(f):
     archer_tower(f)
     return f.finish()
 
+def gait_stride(f,charge=False):
+    if f.family=='humanoid':return 1.05
+    if f.name in ('mini_stampede','stampede'):return .78
+    return 1.10 if charge else .90
+
+def aim_leg(f,upper_name,lower_name,foot_name,target,pole):
+    """Analytical two-bone IK, in model space, with an explicit knee direction."""
+    upper=f.rig.pose.bones[upper_name];lower=f.rig.pose.bones[lower_name]
+    bpy.context.view_layer.update();hip=upper.matrix.translation
+    direction=target-hip;l1=upper.bone.length;l2=lower.bone.length
+    distance=max(abs(l1-l2)+.001,min(direction.length,l1+l2-.001))
+    direction.normalize();target=hip+direction*distance
+    along=(l1*l1-l2*l2+distance*distance)/(2*distance)
+    perp=pole-direction*pole.dot(direction)
+    if perp.length<.01:perp=Vector((1,0,0)).cross(direction)
+    perp.normalize();knee=hip+direction*along+perp*math.sqrt(max(0,l1*l1-along*along))
+    for bone,vector in ((upper,knee-hip),(lower,target-knee)):
+        rest=bone.bone.tail_local-bone.bone.head_local
+        desired=rest.normalized().rotation_difference(vector.normalized())@bone.bone.matrix_local.to_quaternion()
+        set_world_rotation(bone,desired)
+    # Keep the sole flat rather than inheriting the knee's shin rotation.
+    foot=f.rig.pose.bones[foot_name];set_world_rotation(foot,foot.bone.matrix_local.to_quaternion())
+
+def contact_gait(f,phase,charge=False):
+    stride=gait_stride(f,charge);stance=.60 if f.family=='humanoid' else .50
+    lift=.12 if f.family=='humanoid' else .10 if f.name in ('mini_stampede','stampede') else .14
+    legs=[('thigh_l','shin_l','foot_l',0.,-1.),('thigh_r','shin_r','foot_r',.5,-1.)] if f.family=='humanoid' else [
+        (leg+'_'+side+'_upper',leg+'_'+side+'_lower',leg+'_'+side+'_foot',offset,1. if leg=='front' else -1.)
+        for leg,side,offset in (('front','l',0.),('front','r',.5),('back','l',.5),('back','r',0.))]
+    half=stride*stance*.5
+    for upper,lower,foot,offset,knee in legs:
+        u=(phase+offset)%1.
+        if u<stance:
+            y=-half+stride*u;z=0.
+        else:
+            v=(u-stance)/(1-stance);e=v*v*(3-2*v)
+            y=half-2*half*e;z=lift*math.sin(math.pi*v)
+        target=f.rig.pose.bones[lower].bone.tail_local+Vector((0,y,z))
+        aim_leg(f,upper,lower,foot,target,Vector((0,knee,0)))
+    if f.family=='humanoid':
+        for side,offset in (('l',0.),('r',math.pi)):
+            arm=f.rig.pose.bones['upperarm_'+side]
+            desired=Quaternion(Vector((1,0,0)),-.22*math.sin(phase*2*math.pi+offset))@arm.bone.matrix_local.to_quaternion()
+            set_world_rotation(arm,desired)
+
 forges=[]
-knownModels={'ironclad','ember_archer','twin_blades','arc_mage','tower_archer','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven',
+knownModels={'ironclad','ember_archer','twin_blades','arc_mage','tower_archer','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven','mini_stampede','stampede',
              'tower_guard','tower_core','archer_tower','nova_flask','bridge','floor_tile','lane_paver','bank_segment','boundary_stone','grass_tuft','shrub','tree','crystal_plinth','banner','ruin','distant_island','meteor_shard','bullet_round','tower_rubble','arrow_projectile','arc_projectile','manta_projectile','storm_projectile','projectile_trail'}
 if PREVIEW and PREVIEW-knownModels:raise ValueError('Unknown preview models: '+', '.join(sorted(PREVIEW-knownModels)))
-for name in ('ironclad','ember_archer','twin_blades','arc_mage','tower_archer','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven'):
+characterIds=('ironclad','ember_archer','twin_blades','arc_mage','tower_archer','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven','mini_stampede','stampede')
+if UPDATE and UPDATE-set(characterIds):raise ValueError('Unknown update characters: '+', '.join(sorted(UPDATE-set(characterIds))))
+for name in characterIds:
     if PREVIEW and name not in PREVIEW:continue
+    if UPDATE and name not in UPDATE:continue
     print('RIFT_ASSET_BEGIN',name,flush=True)
-    f=humanoid(name) if name in ('ironclad','ember_archer','twin_blades','arc_mage','tower_archer') else quadruped(name) if name in ('boulderback','rambeast','frost_fang') else flyer(name)
+    f=humanoid(name) if name in ('ironclad','ember_archer','twin_blades','arc_mage','tower_archer') else hog(name) if name in ('mini_stampede','stampede') else quadruped(name) if name in ('boulderback','rambeast','frost_fang') else flyer(name)
     if PREVIEW:
         if opts.preview_action:
             clips=actions(f)
@@ -946,6 +1103,7 @@ for name in ('ironclad','ember_archer','twin_blades','arc_mage','tower_archer','
     forges.append(f);print('RIFT_ASSET_COMPLETE',name,flush=True)
 for name in ('tower_guard','tower_core','archer_tower','nova_flask','bridge','floor_tile','lane_paver','bank_segment','boundary_stone','grass_tuft','shrub','tree','crystal_plinth','banner','ruin','distant_island','meteor_shard','bullet_round','tower_rubble','arrow_projectile','arc_projectile','manta_projectile','storm_projectile','projectile_trail'):
     if PREVIEW and name not in PREVIEW:continue
+    if UPDATE:continue
     print('RIFT_ASSET_BEGIN',name,flush=True)
     f=tower(name) if name in ('tower_guard','tower_core','archer_tower') else nova() if name=='nova_flask' else environment(name)
     cannon=None
@@ -979,6 +1137,7 @@ card_bindings={
  'arc_mage':{'skeletal':'arc_mage'},'rambeast':{'skeletal':'rambeast'},
  'sky_manta':{'skeletal':'sky_manta'},'vampire_bats':{'skeletal':'vampire_bats'},
  'frost_fang':{'skeletal':'frost_fang'},'storm_raven':{'skeletal':'storm_raven'},
+ 'mini_stampede':{'skeletal':'mini_stampede'},'stampede':{'skeletal':'stampede'},
  'archer_tower':{'static':'archer_tower','skeletalDecoration':'tower_archer',
                  'decorationBaseMeters':[0,0,1.94],'decorationScale':.40},
  'bullet_burst':{'static':'bullet_round'},'nova_flask':{'static':'nova_flask'},

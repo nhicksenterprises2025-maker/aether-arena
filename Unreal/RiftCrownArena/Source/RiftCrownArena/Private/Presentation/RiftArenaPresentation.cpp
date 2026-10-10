@@ -256,6 +256,7 @@ void ARiftArenaPresentation::ConstructArena()
     constexpr float Tile=RiftArenaGeometry::UnitsPerTile;
     constexpr float HalfWidth=rift::arena::HalfWidth*Tile,HalfHeight=rift::arena::HalfHeight*Tile;
     constexpr float RiverHalfWidth=rift::arena::RiverHalfWidth*Tile,BridgeX=rift::arena::BridgeCenterX*Tile;
+    const float PaverAxisShift=BridgeX-FMath::RoundToFloat(BridgeX/Tile)*Tile;
     // The playable extent, tile centers, river and bridge openings are identical
     // to the simulation. Decoration stays outside deployment and navigation.
     for (int32 X=0;X<rift::arena::Width;++X) for (int32 Y=0;Y<rift::arena::Height;++Y)
@@ -264,7 +265,9 @@ void ARiftArenaPresentation::ConstructArena()
         if (FMath::Abs(PY)<RiverHalfWidth) continue;
         Place(TEXT("floor_tile"),FVector(PX,PY,0),FRotator(0,90*(X%4),0));
         if ((FMath::Abs(PX-BridgeX)<130 || FMath::Abs(PX+BridgeX)<130) && FMath::Abs(PY)<1150 && Y%2==0)
-            Place(TEXT("lane_paver"),FVector(PX,PY,1),FRotator(0,Random.FRandRange(-8,8),0));
+            // Keep the existing rows and two columns; move their midpoint
+            // 0.2 tile outward to share the bridge and Guard Tower axis.
+            Place(TEXT("lane_paver"),FVector(PX+(PX<0?-PaverAxisShift:PaverAxisShift),PY,1),FRotator(0,Random.FRandRange(-8,8),0));
     }
     for (int32 X=-RiftArenaGeometry::GroundHalfWidth;X<RiftArenaGeometry::GroundHalfWidth;++X)
         for (int32 Y=-RiftArenaGeometry::GroundHalfHeight;Y<RiftArenaGeometry::GroundHalfHeight;++Y)
@@ -333,6 +336,7 @@ FString ARiftArenaPresentation::GeometryDiagnosticsJSON() const
     const auto* Water=Component(TEXT("floor_tile_9"));
     const auto* Bridges=Component(TEXT("bridge_-1"));
     const auto* Border=Component(TEXT("boundary_stone_-1"));
+    const auto* Pavers=Component(TEXT("lane_paver_-1"));
     bool FloorPassed=Floor&&Floor->GetCollisionEnabled()==ECollisionEnabled::NoCollision;
     int32 PlayableCount=0,DecorativeCount=0,ExpectedCount=0;TSet<FIntPoint> Cells;
     FBox2D PlayableCenters(ForceInit),GroundCenters(ForceInit);
@@ -398,6 +402,62 @@ FString ARiftArenaPresentation::GeometryDiagnosticsJSON() const
             &&FMath::IsNearlyZero(Position.Y,.01);Sides.Add(Side);
     }
     Report->SetArrayField(TEXT("bridges"),BridgeRows);Report->SetBoolField(TEXT("bridgesPassed"),BridgesPassed);
+    // Inspect the actual stone instances separately on all four approaches.
+    // Their two-column midpoint must agree with each bridge and Guard body.
+    TMap<FIntPoint,int32> ExpectedPaverGroups;int32 ExpectedPaverCount=0;
+    for(int32 X=0;X<rift::arena::Width;++X)for(int32 Z=0;Z<rift::arena::Height;++Z)
+    {
+        const float PX=(X-rift::arena::LastTileX)*Tile,PZ=(Z-rift::arena::LastTileZ)*Tile,BridgeX=rift::arena::BridgeCenterX*Tile;
+        if(FMath::Abs(PZ)>=rift::arena::RiverHalfWidth*Tile&&FMath::Abs(PZ)<1150&&Z%2==0&&
+            (FMath::Abs(PX-BridgeX)<130||FMath::Abs(PX+BridgeX)<130))
+        {++ExpectedPaverCount;++ExpectedPaverGroups.FindOrAdd(FIntPoint(PX<0?-1:1,PZ<0?-1:1));}
+    }
+    TMap<FIntPoint,TMap<int32,TArray<double>>> PaverGroups;TArray<TSharedPtr<FJsonValue>> PaverRows,PathRows;
+    bool PathsPassed=Pavers&&Pavers->GetCollisionEnabled()==ECollisionEnabled::NoCollision&&Pavers->GetInstanceCount()==ExpectedPaverCount;
+    if(Pavers)for(int32 Index=0;Index<Pavers->GetInstanceCount();++Index)
+    {
+        FTransform Transform;if(!Pavers->GetInstanceTransform(Index,Transform,true)){PathsPassed=false;continue;}
+        const FVector Position=Transform.GetLocation();const double X=Position.X/Tile,Z=Position.Y/Tile;
+        auto Row=MakeShared<FJsonObject>();Row->SetNumberField(TEXT("x"),X);Row->SetNumberField(TEXT("z"),Z);PaverRows.Add(MakeShared<FJsonValueObject>(Row));
+        PathsPassed=PathsPassed&&FMath::IsNearlyEqual(Position.Z,1.,.01);
+        PaverGroups.FindOrAdd(FIntPoint(X<0?-1:1,Z<0?-1:1)).FindOrAdd(FMath::RoundToInt(Z*1000.)).Add(X);
+    }
+    for(int32 Lane:{-1,1})for(int32 Home:{-1,1})
+    {
+        const FIntPoint Key(Lane,Home);const auto* Rows=PaverGroups.Find(Key);int32 Count=0;double Min=1.e9,Max=-1.e9;
+        bool Aligned=Rows&&Rows->Num()>0;if(Rows)for(const auto& Entry:*Rows)
+        {
+            double RowMin=1.e9,RowMax=-1.e9;for(double X:Entry.Value){RowMin=FMath::Min(RowMin,X);RowMax=FMath::Max(RowMax,X);}
+            Aligned=Aligned&&Entry.Value.Num()==2&&FMath::IsNearlyEqual((RowMin+RowMax)*.5,Lane*rift::arena::BridgeCenterX,1.e-6)
+                &&FMath::IsNearlyEqual(RowMax-RowMin,1.,1.e-6);
+            Count+=Entry.Value.Num();Min=FMath::Min(Min,RowMin);Max=FMath::Max(Max,RowMax);
+        }
+        Aligned=Aligned&&Count==ExpectedPaverGroups.FindRef(Key);PathsPassed=PathsPassed&&Aligned;
+        auto Row=MakeShared<FJsonObject>();Row->SetNumberField(TEXT("lane"),Lane);Row->SetStringField(TEXT("team"),Home>0?TEXT("player"):TEXT("enemy"));
+        Row->SetNumberField(TEXT("centerX"),Count?(Min+Max)*.5:0);Row->SetNumberField(TEXT("minimumX"),Count?Min:0);Row->SetNumberField(TEXT("maximumX"),Count?Max:0);
+        Row->SetNumberField(TEXT("pavers"),Count);Row->SetNumberField(TEXT("rows"),Rows?Rows->Num():0);Row->SetBoolField(TEXT("alignmentPassed"),Aligned);PathRows.Add(MakeShared<FJsonValueObject>(Row));
+    }
+    Report->SetArrayField(TEXT("lanePavers"),PaverRows);Report->SetArrayField(TEXT("lanePaths"),PathRows);Report->SetBoolField(TEXT("lanePathsPassed"),PathsPassed);
+    Report->SetNumberField(TEXT("lanePaverCount"),PaverRows.Num());Report->SetNumberField(TEXT("expectedLanePaverCount"),ExpectedPaverCount);
+    TArray<TSharedPtr<FJsonValue>> TowerRows;TSet<FIntPoint> TowerSlots;int32 GuardsAligned=0,CoresCentered=0;
+    const auto* State=ViewState();bool TowersPassed=State!=nullptr;
+    if(State)for(const auto& Tower:State->entities)if(Tower.kind==rift::EntityKind::Guard||Tower.kind==rift::EntityKind::Core)
+    {
+        const bool Core=Tower.kind==rift::EntityKind::Core;const int32 Home=Tower.team==rift::Team::Player?1:-1;
+        const double ExpectedX=Core?0.:Tower.lane*rift::arena::BridgeCenterX,ExpectedZ=Home*(Core?rift::arena::CoreDepth:rift::arena::GuardDepth);
+        const auto* Actor=Visual(Tower.id);const FVector Position=Actor?Actor->GetActorLocation():FVector::ZeroVector;
+        const FIntPoint Slot(int32(Tower.team),Tower.lane);
+        const bool VisualAligned=Actor?(FMath::IsNearlyEqual(Position.X/Tile,ExpectedX,1.e-6)&&FMath::IsNearlyEqual(Position.Y/Tile,ExpectedZ,1.e-6)):Tower.dead;
+        const bool Aligned=VisualAligned&&!TowerSlots.Contains(Slot)&&FMath::IsNearlyEqual(Tower.position.x,ExpectedX,1.e-9)
+            &&FMath::IsNearlyEqual(Tower.position.z,ExpectedZ,1.e-9)&&(Core?Tower.lane==0:FMath::Abs(Tower.lane)==1);
+        TowerSlots.Add(Slot);TowersPassed=TowersPassed&&Aligned;if(Aligned){if(Core)++CoresCentered;else ++GuardsAligned;}
+        auto Row=MakeShared<FJsonObject>();Row->SetNumberField(TEXT("id"),Tower.id);Row->SetStringField(TEXT("team"),Home>0?TEXT("player"):TEXT("enemy"));
+        Row->SetStringField(TEXT("kind"),Core?TEXT("core"):TEXT("guard"));Row->SetBoolField(TEXT("dead"),Tower.dead);Row->SetNumberField(TEXT("lane"),Tower.lane);Row->SetNumberField(TEXT("x"),Tower.position.x);Row->SetNumberField(TEXT("z"),Tower.position.z);
+        Row->SetNumberField(TEXT("visualX"),Position.X/Tile);Row->SetNumberField(TEXT("visualZ"),Position.Y/Tile);Row->SetBoolField(TEXT("visualAvailable"),Actor!=nullptr);Row->SetBoolField(TEXT("alignmentPassed"),Aligned);TowerRows.Add(MakeShared<FJsonValueObject>(Row));
+    }
+    TowersPassed=TowersPassed&&GuardsAligned==4&&CoresCentered==2&&TowerSlots.Num()==6;
+    Report->SetArrayField(TEXT("towers"),TowerRows);Report->SetBoolField(TEXT("towerSnapshotAvailable"),State!=nullptr);Report->SetBoolField(TEXT("towerAlignmentPassed"),TowersPassed);
+    Report->SetNumberField(TEXT("guardsAligned"),GuardsAligned);Report->SetNumberField(TEXT("coresCentered"),CoresCentered);
     const int32 ExpectedBorderCount=2*(FMath::CeilToInt(rift::arena::Height*Tile/140.)+FMath::CeilToInt(rift::arena::Width*Tile/150.));
     bool BorderPassed=Border&&Border->GetInstanceCount()==ExpectedBorderCount&&Border->GetCollisionEnabled()==ECollisionEnabled::NoCollision;
     if(Border)for(int32 Index=0;Index<Border->GetInstanceCount();++Index)
@@ -407,7 +467,7 @@ FString ARiftArenaPresentation::GeometryDiagnosticsJSON() const
         BorderPassed=BorderPassed&&(FMath::Abs(Position.X)>=rift::arena::HalfWidth*Tile||FMath::Abs(Position.Y)>=rift::arena::HalfHeight*Tile);
     }
     Report->SetNumberField(TEXT("borderStones"),Border?Border->GetInstanceCount():0);Report->SetBoolField(TEXT("borderPassed"),BorderPassed);
-    Report->SetBoolField(TEXT("passed"),FloorPassed&&WaterPassed&&BridgesPassed&&BorderPassed);
+    Report->SetBoolField(TEXT("passed"),FloorPassed&&WaterPassed&&BridgesPassed&&BorderPassed&&PathsPassed&&(!State||TowersPassed));
     FString Text;FJsonSerializer::Serialize(Report,TJsonWriterFactory<>::Create(&Text));return Text;
 }
 void ARiftArenaPresentation::ClearVisuals()

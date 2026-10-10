@@ -1,5 +1,7 @@
 # Authoritative native simulation
 
+Current release **1.4.0** adds Mini Stampede and Stampede, applies the first balance patch and uses per-member landing lanes. Current numeric definitions are in [the patch notes](PATCH_NOTES_1.4.0.md) and [the exported card table](CARD_STATS_1.4.0.tsv). Original browser parity and earlier asset counts below document the rebuild baseline.
+
 `RiftSimulation.h` and five files in `Private/Simulation` implement portable C++20 gameplay shared by the UE game, Meta worker and native regression executable. They include no Unreal/render dependencies. UE owns presentation, input mapping, profile/replay persistence, dataset aggregation and UI. The inspection contract is `UE5_PARITY_SPEC.md` in the repository root.
 
 Construct `rift::Match` with `MatchOptions` containing seed, optional validated eight-card decks, each team's AI enable flag and seven-style names. Empty decks select a coherent AI deck or the player default. `State()` returns a serialization-friendly snapshot. Call `Step(simulationSeconds)`; it accumulates exact 1/60-second steps, so host pause passes zero and host speed multiplies elapsed input. Rendering must interpolate snapshots without mutating the state. The same seed and timestamped actions produce the same match regardless of frame subdivision. No per-frame RNG enters authoritative state.

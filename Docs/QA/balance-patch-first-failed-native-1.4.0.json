@@ -1,0 +1,38 @@
+{
+  "version": "1.4.0",
+  "accepted": false,
+  "sourceReport": "Build/Automation/20261009-193758/Report/index.json",
+  "sourceReportSHA256": "e99dc58267a647065f940c3b58177d87dd673212123141ea1cef857b2596ec1b",
+  "sourceContext": "Build/Automation/20261009-193758/context.json",
+  "sourceContextSHA256": "2d2926362eebe1d5740c57fda7786d717d1e8e5f8697bdfd7e51cbccda06a584",
+  "succeeded": 16,
+  "succeededWithWarnings": 1,
+  "failed": 1,
+  "notRun": 0,
+  "duration": 85.2984848022461,
+  "runtimeModules": [
+    {
+      "path": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArena.dll",
+      "sha256": "38f1a13a7ba34da7bfa735fbe0125a8877482fa6195c502c4c3157478a63d051"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArenaEditor.dll",
+      "sha256": "9d1807d8634f17aea1769845c481874160bf0cd3b674aadbdf74971cefa6bac6"
+    }
+  ],
+  "failures": [
+    {
+      "test": "Rift.Integration.TowerPathing",
+      "errors": 6,
+      "messages": [
+        "Expected 'Both teams' three towers and rear-edge tiles cover all seven ground cards' to be 84, but it was 108.",
+        "Expected 'All paid single and twin ground members are exercised' to be 96, but it was 336.",
+        "Expected 'Both teams' rear rows, side rows and extreme corners cover every ground card' to be 98, but it was 126.",
+        "Expected 'Rear/side/corner paid deployments retain all single and twin members' to be 112, but it was 392.",
+        "Expected 'Every ground card covers both teams, both lanes, own-half and enemy pocket deployments' to be 56, but it was 72.",
+        "Expected 'Destroyed-Guard routing retains every single and twin member' to be 64, but it was 224."
+      ]
+    }
+  ],
+  "correction": "Six roster cardinality assertions updated for nine ground cards including both hog swarms. Movement, clearance, paid economy and progress requirements remain unchanged. This failed run is development history; final acceptance requires a fresh complete suite."
+}

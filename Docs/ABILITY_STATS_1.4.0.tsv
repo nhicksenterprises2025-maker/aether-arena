@@ -1,0 +1,14 @@
+Card	Ability	Values	Behavior
+Twin Blades	Split formation	2 members	Lane comes from each member's resolved landing X; ground members use that side's bridge; a destroyed lane Guard opens the route to the Core
+Rambeast	Charged impact	255 damage; >1.65 s movement	Replaces basic hit damage on a charged impact
+Vampire Bats	Split formation	5 members	Lane comes from each member's resolved landing X; ground members use that side's bridge; a destroyed lane Guard opens the route to the Core
+Frost Fang	Movement slow	30%; 2 s	Each melee hit refreshes the slow; no stacking
+Storm Raven	Electric aura	82 damage; 3 s interval; 2 tile radius; 0.4 s stun	Hits ground and air troops; basic attack remains structures-only
+Meteor Shards	Lingering damage zone	40 damage/tick; 1 s interval; 5 s duration	5 ticks after initial impact; troop-only; 262 initial + 200 lingering = 462 maximum before mitigation/HP limits
+Meteor Shards	Area spell	262 troop damage; 0 structure damage; 4.5 tile radius; 0.75 s cast delay	Fixed target area; current enemy positions at impact
+Archer Tower	Defensive building	25 s lifetime; 1.65 tile footprint	Ground and air troops only; expires after lifetime
+Bullet Burst	Area spell	175 troop damage; 55 structure damage; 2.2 tile radius; 0.3 s cast delay	Fixed target area; current enemy positions at impact
+Bullet Burst	Visual burst	7 rounds	Listed damage is applied once per eligible target, not once per visual round
+Nova Flask	Area spell	375 troop damage; 185 structure damage; 3.25 tile radius; 0 s cast delay	Instant area impact
+Mini Stampede	Split formation	5 members	Lane comes from each member's resolved landing X; ground members use that side's bridge; a destroyed lane Guard opens the route to the Core
+Stampede	Split formation	15 members	Lane comes from each member's resolved landing X; ground members use that side's bridge; a destroyed lane Guard opens the route to the Core

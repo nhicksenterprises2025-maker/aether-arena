@@ -1,0 +1,17 @@
+Card	Type	Aether cost	Units	HP per unit	Damage per hit	Attack interval (s)	Basic DPS per unit	Full swarm basic DPS	Full swarm HP	Movement speed (tiles/s)	Attack range (tiles)	Projectile speed (tiles/s)	Movement	Basic attack targets	Splash radius (tiles)	Lifetime (s)	Building footprint (tiles)	Base model scale
+Ironclad	Troop	3	1	822	93	1	93.00	93.00	822	2.25	1.35	0	Ground	Ground troops and structures	0	N/A	N/A	1
+Ember Archer	Troop	3	1	374	152	1.55	98.06	98.06	374	2.35	6	16	Ground	Ground/air troops and structures	0	N/A	N/A	0.95
+Twin Blades	Troop	2	2	262	55	0.75	73.33	146.67	524	3.35	1.2	0	Ground	Ground troops and structures	0	N/A	N/A	0.82
+Boulderback	Troop	5	1	1620	118	2	59.00	59.00	1620	1.3	1.5	0	Ground	Structures only	0	N/A	N/A	1.22
+Arc Mage	Troop	4	1	547	120	1.15	104.35	104.35	547	1.7	6	17	Ground	Ground/air troops and structures	2.25	N/A	N/A	0.96
+Rambeast	Troop	4	1	880	140	1.4	100.00	100.00	880	2.6	1.45	0	Ground	Structures only	0	N/A	N/A	1.06
+Sky Manta	Troop	3	1	480	77	0.92	83.70	83.70	480	3.05	3.4	15	Flying	Ground/air troops and structures	0	N/A	N/A	1.05
+Vampire Bats	Troop	5	5	174	86	1.05	81.90	409.52	870	1.95	2	0	Flying	Ground/air troops and structures	0	N/A	N/A	0.68
+Frost Fang	Troop	5	1	1265	72	0.75	96.00	96.00	1265	2.5	1.1	0	Ground	Ground troops and structures	0	N/A	N/A	1.02
+Storm Raven	Troop	6	1	1337	251	1.7	147.65	147.65	1337	1.18	4.3	18	Flying	Structures only	0	N/A	N/A	1.2
+Meteor Shards	Spell	5	0	N/A	262	N/A	N/A	N/A	N/A	0	N/A	0	Spell	Troops only	0	N/A	N/A	1
+Archer Tower	Building	4	1	850	75	1	75.00	75.00	850	0	7	18	Stationary	Ground/air troops only	0	25	1.65	1
+Bullet Burst	Spell	2	0	N/A	175	N/A	N/A	N/A	N/A	0	N/A	0	Spell	Troops and structures	0	N/A	N/A	1
+Nova Flask	Spell	4	0	N/A	375	N/A	N/A	N/A	N/A	0	N/A	0	Spell	Troops and structures	0	N/A	N/A	1
+Mini Stampede	Troop	2	5	95	18	0.9	20.00	100.00	475	3.5	1	0	Ground	Ground troops and structures	0	N/A	N/A	0.85
+Stampede	Troop	7	15	95	18	1	18.00	270.00	1425	3	0.9	0	Ground	Structures only	0	N/A	N/A	1.3

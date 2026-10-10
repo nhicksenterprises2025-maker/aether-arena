@@ -23,8 +23,8 @@ From the repository root:
 ./Build/Build-Launcher.ps1
 
 # Matching CRTs, inventory, verified ZIP, manifest and installer.
-./Build/Package-WindowsRelease.ps1 -Version 1.2.0
-./Installer/Build-Installer.ps1 -Version 1.2.0
+./Build/Package-WindowsRelease.ps1 -Version 1.4.0
+./Installer/Build-Installer.ps1 -Version 1.4.0
 ./Installer/Test-Installer.ps1
 ```
 
@@ -51,7 +51,7 @@ Presentation never applies damage or changes card timing. Mesh collision does no
 
 ## Regenerating original assets
 
-`Build/generate_assets.py` is the Blender source pipeline for models, rigs, clips, LODs and material atlases. It writes `Assets/Source/RiftCrown_ProductionAssets.blend`, the exported FBX assets, and `Assets/asset_manifest.json`. `Build/render_card_portraits.py` opens that production scene and renders all fourteen card portraits from its meshes and rigs at 768 × 960. It updates the illustration bindings in the asset manifest and writes `Assets/Source/CardArt/model_portraits.json`, which records source/export hashes, poses, bounds, camera framing and PNG hashes. Rerender the portraits after the final model export so their provenance identifies the same source revision as the imported models. `Build/validate_card_portraits.py` checks those bindings and raw source/export/image hashes with standard-library Python, writing `Artifacts/QA/model-card-portraits.json`. Earlier illustration prompts are retained separately in `Assets/Source/CardArt/Historical/illustration-prompts.json`.
+`Build/generate_assets.py` is the Blender source pipeline for models, rigs, clips, LODs and material atlases. It writes `Assets/Source/RiftCrown_ProductionAssets.blend`, the exported FBX assets, and `Assets/asset_manifest.json`. `Build/render_card_portraits.py` opens that production scene and renders all sixteen card portraits from its meshes and rigs at 768 × 960. It updates the illustration bindings in the asset manifest and writes `Assets/Source/CardArt/model_portraits.json`, which records source/export hashes, poses, bounds, camera framing and PNG hashes. Rerender the portraits after the final model export so their provenance identifies the same source revision as the imported models. `Build/validate_card_portraits.py` checks those bindings and raw source/export/image hashes with standard-library Python, writing `Artifacts/QA/model-card-portraits.json` by default; release 1.4.0 records its run as `Artifacts/QA/balance140-model-card-portraits.json`. Earlier illustration prompts are retained separately in `Assets/Source/CardArt/Historical/illustration-prompts.json`.
 
 `Build/generate_audio.py` assembles the recorded effects and original music; its sources and licenses are documented in `AUDIO_DESIGN.md`. `Build/validate_assets.py` audits the exported asset inventory. The native import pipeline is `Build/import_unreal_assets.py`, with inspection in `Build/inspect_unreal_physics.py`.
 
@@ -70,7 +70,7 @@ $riftImport = Join-Path (Get-Location) 'Build/import_unreal_assets.py'
 & $riftEditor $riftProject -run=pythonscript "-script=$riftImport" -RiftModelsOnly -unattended -NullRHI
 ```
 
-`-RiftModelsOnly` imports models, animation clips, material textures and card portraits, finalizes skeleton/physics dependencies, then binds and validates the fourteen native card DataAssets. It preserves the existing audio and Niagara graph packages. In-game card images bind to `/Game/Rift/CardArt/T_Card_<id>`; character meshes and clips bind under `/Game/Rift/Characters/<id>`, with static structures and projectile meshes under `/Game/Rift/Environment`. The same production source supplies the portrait subjects and the imported game assets. See `MODEL_PRESENTATION_1.2.0.md` for the runtime scale, animation and projectile responsibilities.
+`-RiftModelsOnly` imports models, animation clips, material textures and card portraits, finalizes skeleton/physics dependencies, then binds and validates the sixteen native card DataAssets. It preserves the existing audio and Niagara graph packages. In-game card images bind to `/Game/Rift/CardArt/T_Card_<id>`; character meshes and clips bind under `/Game/Rift/Characters/<id>`, with static structures and projectile meshes under `/Game/Rift/Environment`. The same production source supplies the portrait subjects and the imported game assets. See `MODEL_PRESENTATION_1.2.0.md` for the original runtime scale, animation and projectile responsibilities, and [PATCH_NOTES_1.4.0.md](PATCH_NOTES_1.4.0.md) for the current roster, walking and per-member landing-lane changes.
 
 For a portrait-only revision after the production models have already been imported, use the same import command with `-RiftPortraitsOnly` in place of `-RiftModelsOnly`. It imports the portrait textures and refreshes/validates their existing card bindings without reimporting models, clips, audio or Niagara graphs.
 

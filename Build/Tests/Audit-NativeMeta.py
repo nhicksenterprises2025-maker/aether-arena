@@ -73,14 +73,24 @@ legacy_exposure = []
 check(data["schemaVersion"] == 1 and data["model"] == "rift-native-1" and
       data["deckPolicy"] == "native-observed-2" and revision in (2, 3),
       "Unexpected dataset identity")
-check(len(definitions) == 14 and data["aiStyles"] == styles, "Roster/style identity mismatch")
 canonical = ("rift-native-1|native-observed-2|ai-v15-port-2|nav-grid-a-star-1|telemetry-2|"
              "arena28x42|river1.65|bridges7.2,4.2|sight8,5|phase180,120|aether2.8,120,240|"
              "drain180|coreGuardOnly|hardlockAtRange|pocket2,13.2,2.25,9.25")
 canonical = canonical.replace("telemetry-2", f"telemetry-{revision}")
 navigation_revision = data["rulesSnapshot"].get("navigationRevision", 1)
-check(not isinstance(navigation_revision, bool) and navigation_revision in (1, 2, 3, 4, 5),
+check(not isinstance(navigation_revision, bool) and navigation_revision in (1, 2, 3, 4, 5, 6),
       "Unsupported captured navigation revision")
+alignment_rule = "guard centers at bridge centers; cores at arena center"
+alignment_present = "guardBridgeAlignment" in data["rulesSnapshot"]
+aligned_guards = alignment_present and data["rulesSnapshot"]["guardBridgeAlignment"] == alignment_rule
+check(not alignment_present or (navigation_revision == 6 and aligned_guards),
+      "Unsupported captured tower/bridge alignment rule")
+historical_roster = {"ironclad", "ember_archer", "twin_blades", "boulderback", "arc_mage",
+                     "rambeast", "sky_manta", "vampire_bats", "frost_fang", "storm_raven",
+                     "meteor_shards", "archer_tower", "bullet_burst", "nova_flask"}
+expected_roster = historical_roster | {"mini_stampede", "stampede"} if navigation_revision >= 6 else historical_roster
+check(set(definitions) == expected_roster and len(data["cardSnapshot"]) == len(expected_roster) and
+      data["aiStyles"] == styles, "Captured revision roster/style identity mismatch")
 canonical = canonical.replace("nav-grid-a-star-1", f"nav-grid-a-star-{navigation_revision}")
 if navigation_revision >= 3:
     canonical = canonical.replace("arena28x42", "arena30x44").replace(
@@ -89,6 +99,11 @@ if navigation_revision >= 4:
     canonical += "|layered-swept-disc-1|crowd-steering-1"
 if navigation_revision >= 5:
     canonical += "|visible-pocket-connectors-1"
+if navigation_revision >= 6:
+    canonical += "|per-member-landing-lane-1"
+    if aligned_guards:
+        canonical = canonical.replace("|towers8.2,13.4,17.3|", "|towers7.2,13.4,17.3|")
+        canonical += "|tower-bridge-alignment-1"
 timed_spells = any("castDelay" in card for card in data["cardSnapshot"])
 if timed_spells:
     check(all("castDelay" in card for card in data["cardSnapshot"]),
@@ -131,6 +146,11 @@ if navigation_revision >= 4:
                           collision="ground troops and structures share a layer; flying troops share an air layer; both teams collide; spells have no body")
 if navigation_revision >= 5:
     expected_rules["navigation"] += "; visible continuous pocket connectors"
+if navigation_revision >= 6:
+    expected_rules["navigation"] += "; per-member landing lanes and radius-aware swarm formations"
+    if aligned_guards:
+        expected_rules.update(guardX=7.2, guardBridgeAlignment=alignment_rule)
+        expected_rules["navigation"] += "; Guard Towers aligned with bridge centers"
 for key, value in expected_rules.items():
     if isinstance(value, (int, float)):
         near(data["rulesSnapshot"].get(key, -1), value, f"Captured rule mismatch: {key}")
@@ -197,8 +217,9 @@ for bucket_id, bucket in buckets.items():
               f"{prefix}: opening denominator range")
         check(number(stats, "firstPlays") <= ap and number(stats, "overtimePlays") <= plays and
               number(stats, "connected") <= plays, f"{prefix}: per-cast event bounds")
-        check(abs(number(stats, "placementX")) <= (14.5 if navigation_revision == 3 else 13.5) * plays + 1e-5 and
-              abs(number(stats, "placementZ")) <= (21.5 if navigation_revision == 3 else 20.5) * plays + 1e-5, f"{prefix}: paid placement bounds")
+        expanded_placement = navigation_revision == 3 or navigation_revision >= 6
+        check(abs(number(stats, "placementX")) <= (14.5 if expanded_placement else 13.5) * plays + 1e-5 and
+              abs(number(stats, "placementZ")) <= (21.5 if expanded_placement else 20.5) * plays + 1e-5, f"{prefix}: paid placement bounds")
         check(number(stats, "slowTime") <= number(stats, "slowTrackedSeconds") + 1e-5 and
               number(stats, "stunTime") <= number(stats, "stunTrackedSeconds") + 1e-5,
               f"{prefix}: credited status exceeds affected exposure")
@@ -259,7 +280,8 @@ for bucket_id, bucket in buckets.items():
 
 
 def audit_rows(rows, observations, raw=None, prefix="rows"):
-    check(len(rows) == 14 and len({row["id"] for row in rows}) == 14, f"{prefix}: complete canonical roster")
+    check(len(rows) == len(expected_roster) and {row["id"] for row in rows} == expected_roster,
+          f"{prefix}: complete captured revision roster")
     near(sum(row["pickRate"] for row in rows), 800, f"{prefix}: deck pick percentages")
     for row in rows:
         card_id, count = row["id"], row["cleanN"]
@@ -418,6 +440,8 @@ summary_cards.sort(key=lambda row: row["adjustedWinRate"], reverse=True)
 report = {
     "auditedAtUtc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
     "dataset": str(args.dataset.resolve()), "fingerprint": fingerprint, "telemetryRevision": revision,
+    "navigationRevision": navigation_revision, "capturedCardCount": len(definitions),
+    "alignedGuards": aligned_guards,
     "initialSeed": args.initial_seed,
     "observedGames": games, "target": args.target,
     "completeObserved": games == args.target and log_completed and export_validated,

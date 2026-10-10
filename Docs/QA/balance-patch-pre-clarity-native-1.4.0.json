@@ -1,0 +1,1263 @@
+{
+  "devices": [
+    {
+      "deviceName": "QA workstation",
+      "instance": "4C6CAC2A4BDED84216B3D0AEBB536540",
+      "instanceName": "QA workstation instance",
+      "platform": "WindowsEditor",
+      "oSVersion": "Windows 11 (25H2) [10.0.26200.9457] ",
+      "model": "Default",
+      "gPU": "NVIDIA GeForce RTX 5060",
+      "cPUModel": "AMD Ryzen 7 5700                               ",
+      "rAMInGB": 32,
+      "renderMode": "SM6",
+      "rHI": "",
+      "appInstanceLog": ""
+    }
+  ],
+  "reportCreatedOn": "2026.10.09-23.44.56",
+  "succeeded": 17,
+  "succeededWithWarnings": 1,
+  "failed": 0,
+  "notRun": 0,
+  "inProcess": 0,
+  "totalDuration": 83.73231506347656,
+  "comparisonExported": false,
+  "comparisonExportDirectory": "",
+  "tests": [
+    {
+      "testDisplayName": "BalancePatch",
+      "fullTestPath": "Rift.Integration.BalancePatch",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "4C6CAC2A4BDED84216B3D0AEBB536540"
+      ],
+      "duration": 3.1749329566955566,
+      "dateTime": "2026.10.09-23.43.32",
+      "entries": [
+        {
+          "event": {
+            "type": "Info",
+            "message": "Balance AI deck pool beatdown: 256 generated decks, Mini Stampede 47 appearances, Stampede 0 appearances.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.43.34"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Balance AI deck pool aggro: 256 generated decks, Mini Stampede 227 appearances, Stampede 256 appearances.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.43.34"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Balance AI deck pool control: 256 generated decks, Mini Stampede 40 appearances, Stampede 0 appearances.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.43.34"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Balance AI deck pool cycle: 256 generated decks, Mini Stampede 256 appearances, Stampede 0 appearances.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.43.35"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Balance AI deck pool split: 256 generated decks, Mini Stampede 241 appearances, Stampede 248 appearances.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.43.35"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Balance AI deck pool spell_cycle: 256 generated decks, Mini Stampede 183 appearances, Stampede 0 appearances.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.43.35"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Balance AI deck pool counter: 256 generated decks, Mini Stampede 28 appearances, Stampede 0 appearances.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.43.35"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Balance contract: all sixteen cards, unchanged spell/ability parameters, imported stats, per-member and swarm DPS, paid hog counts/costs/targets, and sixteen-key replay telemetry verified.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.43.35"
+        }
+      ],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "BattleInputRouting",
+      "fullTestPath": "Rift.Integration.BattleInputRouting",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "4C6CAC2A4BDED84216B3D0AEBB536540"
+      ],
+      "duration": 2.930922508239746,
+      "dateTime": "2026.10.09-23.43.35",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "CardData",
+      "fullTestPath": "Rift.Integration.CardData",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "4C6CAC2A4BDED84216B3D0AEBB536540"
+      ],
+      "duration": 0.016578298062086105,
+      "dateTime": "2026.10.09-23.43.38",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "ConnectedUI",
+      "fullTestPath": "Rift.Integration.ConnectedUI",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "4C6CAC2A4BDED84216B3D0AEBB536540"
+      ],
+      "duration": 0.2777344882488251,
+      "dateTime": "2026.10.09-23.43.38",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "FullLengthReplay",
+      "fullTestPath": "Rift.Integration.FullLengthReplay",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "4C6CAC2A4BDED84216B3D0AEBB536540"
+      ],
+      "duration": 56.84621047973633,
+      "dateTime": "2026.10.09-23.43.39",
+      "entries": [
+        {
+          "event": {
+            "type": "Info",
+            "message": "Full native replay: 34324 events, 1256 samples, 688216 stored bytes, 46881036 decoded bytes, 313.350 seconds.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.43.49"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Long replay game-thread finalization queue time 2.304 ms.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.43.49"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Paid control/counter AI replay: 239.633s, peak 21, 2078 events, 961 samples, 1234984 stored, 0 exported JSON, 0.886ms queue.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.43.53"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Congested Developer/paid AI replay: 313.350s, peak 81, 24198 events, 1256 samples, 10891485 stored, 96000081 exported JSON, 3.307ms queue.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.44.35"
+        }
+      ],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "PausedResultAndReplayEvents",
+      "fullTestPath": "Rift.Integration.PausedResultAndReplayEvents",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "4C6CAC2A4BDED84216B3D0AEBB536540"
+      ],
+      "duration": 2.426835536956787,
+      "dateTime": "2026.10.09-23.44.35",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "Presentation",
+      "fullTestPath": "Rift.Integration.Presentation",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "4C6CAC2A4BDED84216B3D0AEBB536540"
+      ],
+      "duration": 1.0059518814086914,
+      "dateTime": "2026.10.09-23.44.38",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "ProfilePersistence",
+      "fullTestPath": "Rift.Integration.ProfilePersistence",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "4C6CAC2A4BDED84216B3D0AEBB536540"
+      ],
+      "duration": 0.21432390809059143,
+      "dateTime": "2026.10.09-23.44.39",
+      "entries": [
+        {
+          "event": {
+            "type": "Info",
+            "message": "Real Windows backup-rename released-lock save: saved=1, 17.857ms, recovered",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.44.39"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Real Windows backup-rename persistent-lock save: saved=0, 37.078ms, Unable to preserve the previous save. stage=backup-rename; file=1D6A4AC74B6400D0156FD49181CC9A20-locked-atomic.json.bak; Win32=5; sharingWin32=32; attempts=4; accessibleRename=0; deleteAccessProbed=1; sourceDeleteWin32=0; destinationDeleteWin32=32; destinationAttributes=32",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.44.39"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Real Windows backup-copy released-lock save: saved=1, 17.315ms, recovered",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.44.39"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Real Windows backup-copy persistent-lock save: saved=0, 35.856ms, Unable to preserve the previous save. stage=backup-copy; file=DFEDE954496EF91EBF0B70816555240D-locked-atomic.json; Win32=32; sharingWin32=32; attempts=4; accessibleRename=0; deleteAccessProbed=0; sourceDeleteWin32=0; destinationDeleteWin32=0; destinationAttributes=4294967295",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.44.39"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Real Windows permanent read-only save: 2.315ms, Unable to preserve the previous save. stage=backup-rename; file=CF72E9DF464D4D953B03629241172285-readonly-atomic.json.bak; Win32=5; sharingWin32=0; attempts=1; accessibleRename=0; deleteAccessProbed=1; sourceDeleteWin32=0; destinationDeleteWin32=0; destinationAttributes=33",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.44.39"
+        },
+        {
+          "event": {
+            "type": "Warning",
+            "message": "LogRift: Recovered native save backup",
+            "context": "log",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.44.39"
+        }
+      ],
+      "warnings": 1,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "ProjectilePresentation",
+      "fullTestPath": "Rift.Integration.ProjectilePresentation",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "4C6CAC2A4BDED84216B3D0AEBB536540"
+      ],
+      "duration": 0.04414200037717819,
+      "dateTime": "2026.10.09-23.44.39",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "ReplayTimeline",
+      "fullTestPath": "Rift.Integration.ReplayTimeline",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "4C6CAC2A4BDED84216B3D0AEBB536540"
+      ],
+      "duration": 0.1975896954536438,
+      "dateTime": "2026.10.09-23.44.39",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "SnapshotRoundtrip",
+      "fullTestPath": "Rift.Integration.SnapshotRoundtrip",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "4C6CAC2A4BDED84216B3D0AEBB536540"
+      ],
+      "duration": 0.05600300058722496,
+      "dateTime": "2026.10.09-23.44.39",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "SpellCastReplay",
+      "fullTestPath": "Rift.Integration.SpellCastReplay",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "4C6CAC2A4BDED84216B3D0AEBB536540"
+      ],
+      "duration": 0.23312419652938843,
+      "dateTime": "2026.10.09-23.44.40",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "TowerPathing",
+      "fullTestPath": "Rift.Integration.TowerPathing",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "4C6CAC2A4BDED84216B3D0AEBB536540"
+      ],
+      "duration": 6.860106468200684,
+      "dateTime": "2026.10.09-23.44.40",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "Typography",
+      "fullTestPath": "Rift.Integration.Typography",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "4C6CAC2A4BDED84216B3D0AEBB536540"
+      ],
+      "duration": 0.09643830358982086,
+      "dateTime": "2026.10.09-23.44.47",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "UnitCollision",
+      "fullTestPath": "Rift.Integration.UnitCollision",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "4C6CAC2A4BDED84216B3D0AEBB536540"
+      ],
+      "duration": 6.916261196136475,
+      "dateTime": "2026.10.09-23.44.47",
+      "entries": [
+        {
+          "event": {
+            "type": "Info",
+            "message": "Collision paid building pocket team 0 lane -1: 11 of 11 ground crossed, 11 crossed at 12s; 16 paid casts, 31 members, 3 live fixed buildings, deadline 12s, 0 adjusted building requests.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.44.48"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Collision paid building pocket team 0 lane 1: 11 of 11 ground crossed, 11 crossed at 12s; 16 paid casts, 31 members, 3 live fixed buildings, deadline 12s, 0 adjusted building requests.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.44.48"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Collision building requested tile team 1 lane -1 play 9: -6.5,-7.5 -> -4.5,-7.5.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.44.48"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Collision building requested tile team 1 lane -1 play 15: -8.5,-7.5 -> -9.5,-6.5.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.44.48"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Collision paid building pocket team 1 lane -1: 11 of 11 ground crossed, 9 crossed at 12s; 16 paid casts, 31 members, 3 live fixed buildings, deadline 15s, 2 adjusted building requests.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.44.49"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Collision building requested tile team 1 lane 1 play 9: 6.5,-7.5 -> 5.5,-6.5.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.44.49"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Collision building requested tile team 1 lane 1 play 15: 8.5,-7.5 -> 10.5,-7.5.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.44.49"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Collision paid building pocket team 1 lane 1: 11 of 11 ground crossed, 10 crossed at 12s; 16 paid casts, 31 members, 3 live fixed buildings, deadline 15s, 2 adjusted building requests.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.44.50"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Collision paid queue team 0 lane -1: 24 of 24 crossed.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.44.51"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Collision paid queue team 0 lane 1: 24 of 24 crossed.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.44.51"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Collision paid queue team 1 lane -1: 24 of 24 crossed.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.44.52"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Collision paid queue team 1 lane 1: 24 of 24 crossed.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.44.53"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Collision capacity team 0: 312 actual buildings, 6 residual troops, 19 rejected sandbox requests; paid rejection and air follow-up checked.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.44.54"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Collision capacity team 1: 312 actual buildings, 6 residual troops, 19 rejected sandbox requests; paid rejection and air follow-up checked.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.44.54"
+        },
+        {
+          "event": {
+            "type": "Info",
+            "message": "Independent native collision checks: 2998155 endpoint pairs, 2759465 relative sweeps; minimum gaps 0.020000001 / 0.020000000 tiles.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.44.54"
+        }
+      ],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "UnitMotion",
+      "fullTestPath": "Rift.Integration.UnitMotion",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "4C6CAC2A4BDED84216B3D0AEBB536540"
+      ],
+      "duration": 0.16880840063095093,
+      "dateTime": "2026.10.09-23.44.54",
+      "entries": [
+        {
+          "event": {
+            "type": "Info",
+            "message": "Flying death altitude before 89.683446072746 cm; at start 89.683446072746 cm; displacement 0.000000000000 cm.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.09-23.44.54"
+        }
+      ],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "AggregationEconomy",
+      "fullTestPath": "Rift.Meta.AggregationEconomy",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "4C6CAC2A4BDED84216B3D0AEBB536540"
+      ],
+      "duration": 0.38312938809394836,
+      "dateTime": "2026.10.09-23.44.54",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "WorkerPauseAndRecovery",
+      "fullTestPath": "Rift.Meta.WorkerPauseAndRecovery",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "4C6CAC2A4BDED84216B3D0AEBB536540"
+      ],
+      "duration": 1.8832281827926636,
+      "dateTime": "2026.10.09-23.44.54",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    }
+  ],
+  "curatedEvidence": {
+    "schema": 2,
+    "version": "1.4.0",
+    "sourceReport": "Build/Automation/20261009-194314/Report/index.json",
+    "sourceReportSha256": "4de6b9d75eb23025dcb5366d8c435c63010c71ed0ab93fe507ea13701b45cb15",
+    "context": "Build/Automation/20261009-194314/context.json",
+    "contextSha256": "a45d3b689ac430de2d36d245b4963cb820cd5059c3057b722713f980ae723868",
+    "commandletLog": "Build/Automation/20261009-194314/UnrealIntegration.log",
+    "wrapperExitCode": 0,
+    "commandletExitCode": 0,
+    "allScenariosObserved": true,
+    "observedTestCount": 18,
+    "requiredTests": [
+      "Rift.Integration.CardData",
+      "Rift.Integration.ConnectedUI",
+      "Rift.Integration.FullLengthReplay",
+      "Rift.Integration.PausedResultAndReplayEvents",
+      "Rift.Integration.ProfilePersistence",
+      "Rift.Integration.ReplayTimeline",
+      "Rift.Integration.SnapshotRoundtrip",
+      "Rift.Meta.AggregationEconomy",
+      "Rift.Meta.WorkerPauseAndRecovery",
+      "Rift.Integration.BattleInputRouting",
+      "Rift.Integration.Presentation",
+      "Rift.Integration.UnitMotion",
+      "Rift.Integration.ProjectilePresentation",
+      "Rift.Integration.SpellCastReplay",
+      "Rift.Integration.Typography",
+      "Rift.Integration.TowerPathing",
+      "Rift.Integration.UnitCollision",
+      "Rift.Integration.BalancePatch"
+    ],
+    "runtimeModule": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArena.dll",
+    "runtimeModuleSha256": "ae0bfe1dceaa7eaf8e1037b6d39b016edef6cbc08b04de56043b0abaf7be3ae9",
+    "runtimeModules": [
+      {
+        "path": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArena.dll",
+        "sha256": "ae0bfe1dceaa7eaf8e1037b6d39b016edef6cbc08b04de56043b0abaf7be3ae9"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArenaEditor.dll",
+        "sha256": "9d1807d8634f17aea1769845c481874160bf0cd3b674aadbdf74971cefa6bac6"
+      }
+    ],
+    "isolation": "Separate RiftSaveRoot and engine UserDir with RiftAutomationSandbox; source/module hashes frozen before launch and verified after exit.",
+    "expectedWarning": "ProfilePersistence intentionally corrupts its isolated primary save and observes recovery from backup.",
+    "sourceHashes": [
+      {
+        "path": "Assets/Source/Audio/aether_three.wav",
+        "sha256": "080062afc13b579ece470e524e456f14f2c4bcc9f64b7a6e3da9aa1c88202251"
+      },
+      {
+        "path": "Assets/Source/Audio/aether_two.wav",
+        "sha256": "f35fae823b57c3e43503511f84b09df4a41e3bd90998f638dd8476f63b62a688"
+      },
+      {
+        "path": "Assets/Source/Audio/arc_cast.wav",
+        "sha256": "ee7e7f433cb1228e21e444f76e8937ff8caf070d9079b472df8fa63aceb0bf39"
+      },
+      {
+        "path": "Assets/Source/Audio/arc_impact.wav",
+        "sha256": "b53b3d5064c5a0d5a434ca22ae3df60c0c5f97a3bd15da29bc2ba223cfde854b"
+      },
+      {
+        "path": "Assets/Source/Audio/arrow_flight.wav",
+        "sha256": "935a12cdbfa633a7a8455bdba99333eb17c5f6fd580c390c68e7de7c24d2b4ad"
+      },
+      {
+        "path": "Assets/Source/Audio/arrow_hit_v2.wav",
+        "sha256": "2d4cc5d8825bec4dc94e303d551d809128cffb2a68b62b3bd1fabfab30cac715"
+      },
+      {
+        "path": "Assets/Source/Audio/arrow_hit_v3.wav",
+        "sha256": "5d8dd9f512281a44daba0cc4f0d5999f4385d4578a0cf76b37afb3cf65e78dcd"
+      },
+      {
+        "path": "Assets/Source/Audio/arrow_hit.wav",
+        "sha256": "cde5932b8bd4a1f324e98a1ac2ecba9ce2f05fcd6baea6d6871fd62b374c0ce3"
+      },
+      {
+        "path": "Assets/Source/Audio/audio_manifest.json",
+        "sha256": "ef9955a5129b05465e313f263edbcfb20646c59a7d4ebc8d3d393a869bacd87c"
+      },
+      {
+        "path": "Assets/Source/Audio/bat_bite_v2.wav",
+        "sha256": "de22f0acc57c50c12b34a3726d1acdd59002d436617e7d3dd3a00d7c94bb0afd"
+      },
+      {
+        "path": "Assets/Source/Audio/bat_bite_v3.wav",
+        "sha256": "4076733907c885d44d8823ce799381f721feadd27970aa10608400083be734a5"
+      },
+      {
+        "path": "Assets/Source/Audio/bat_bite.wav",
+        "sha256": "c0b3813ef7bed22b5146a6c252dc6aab944b7660a0a123cd1995f1383011522d"
+      },
+      {
+        "path": "Assets/Source/Audio/bow_release_v2.wav",
+        "sha256": "d3c250c8fb97e2597c5cde3a86c82630820d2989a79130b9ba46fa61aa36e7be"
+      },
+      {
+        "path": "Assets/Source/Audio/bow_release_v3.wav",
+        "sha256": "e30951c03ad7fcef8d59d1aee0d5eb2bbd1e60ec2fd81b0afa83e1780b32cbe0"
+      },
+      {
+        "path": "Assets/Source/Audio/bow_release.wav",
+        "sha256": "ad0c16024926d4282048df69b417d19d00136a134647a585ada0478c68956108"
+      },
+      {
+        "path": "Assets/Source/Audio/building_hit_v2.wav",
+        "sha256": "48a95537eb13ade5afd03242940d91384a04c47b9dd4e849369bd92311f92fd9"
+      },
+      {
+        "path": "Assets/Source/Audio/building_hit_v3.wav",
+        "sha256": "e3df4f9ebeff344a9e7c0c755481fdaaa02340c76afb07b3f8b2a01a82745086"
+      },
+      {
+        "path": "Assets/Source/Audio/building_hit.wav",
+        "sha256": "54e26e90326358566468a33d0255960e1a0d857530cad19bdae0cafa2489592c"
+      },
+      {
+        "path": "Assets/Source/Audio/bullet_burst.wav",
+        "sha256": "42555ce27bf83669b6f10ff3761a29238c0e5dc8824078d9d1dd13f6faba353d"
+      },
+      {
+        "path": "Assets/Source/Audio/charge.wav",
+        "sha256": "8a49e8784170eb0550087b460c53f9c60ffec58d8ff1376bfbd3beea604f73a9"
+      },
+      {
+        "path": "Assets/Source/Audio/core_awaken.wav",
+        "sha256": "a2991d1e5780332315f69fa14dff9d12efa5945473cf104be34895093f6f7d4b"
+      },
+      {
+        "path": "Assets/Source/Audio/defeat.wav",
+        "sha256": "7e117cabc92228e0d409fced53e63dc7794fe1167480efadc7a54b991697a846"
+      },
+      {
+        "path": "Assets/Source/Audio/deploy.wav",
+        "sha256": "5b83f01159a1f265e532f87e0d7fa4ff89c76963c5909b06c58e9fb657ca8387"
+      },
+      {
+        "path": "Assets/Source/Audio/dual_attack_v2.wav",
+        "sha256": "3234b2003c8094a0ab887097d5c62345b709683753257fa22f5a93cc4455d0a8"
+      },
+      {
+        "path": "Assets/Source/Audio/dual_attack_v3.wav",
+        "sha256": "d2b8b33374b87e861195e5df81cca162b2084a88e42e0a31faebd20c41a88284"
+      },
+      {
+        "path": "Assets/Source/Audio/dual_attack.wav",
+        "sha256": "ce5b4e44c64d6610ae180146a7f9699237ddfd7163b67a72d518b0b6a4290b5f"
+      },
+      {
+        "path": "Assets/Source/Audio/frost_attack.wav",
+        "sha256": "8dfe488388754fd4ad189a1d09817c80bac620ca430e28513b7b731349819d23"
+      },
+      {
+        "path": "Assets/Source/Audio/frost_slow.wav",
+        "sha256": "be7079aefa9340473d3aaa231fc62bb8872f337ffffeb1fbae5490e35e4a17d0"
+      },
+      {
+        "path": "Assets/Source/Audio/heavy_slam_v2.wav",
+        "sha256": "2d14279b7e4e1e46c6c62b19b572abbb6a394768c94487f61399a30a9aecbd33"
+      },
+      {
+        "path": "Assets/Source/Audio/heavy_slam_v3.wav",
+        "sha256": "d63face91ab79bd63fd350c56ed363b793814a85541b67864876c613f52d30c6"
+      },
+      {
+        "path": "Assets/Source/Audio/heavy_slam.wav",
+        "sha256": "8af5d95b97602b526f9b4463ccd45e4d511cc51cd051ea5fd27711756bc1575d"
+      },
+      {
+        "path": "Assets/Source/Audio/manta_cast.wav",
+        "sha256": "8220243deb1c9e886001fa8aafdfc7aedfde3ff70779497079c5fe8838ad88c7"
+      },
+      {
+        "path": "Assets/Source/Audio/manta_impact.wav",
+        "sha256": "827f884cc6714e6881cc4cb0078928d86f769505f0868f291dd1ef829a4d40f3"
+      },
+      {
+        "path": "Assets/Source/Audio/meteor_impact.wav",
+        "sha256": "a9f74f0311e88881da3c24412cdd044c4d8721cca72bc099e2f12e3bdc03d5d9"
+      },
+      {
+        "path": "Assets/Source/Audio/meteor_tick.wav",
+        "sha256": "f547c915369f78365f1396330125ac73e31b999cb487a88fbe6b18796249f645"
+      },
+      {
+        "path": "Assets/Source/Audio/music_rift.wav",
+        "sha256": "972b3a720f78452e143e81e675e12da8d799b78fb2ebf6dc9aea174ece96e891"
+      },
+      {
+        "path": "Assets/Source/Audio/nova_impact.wav",
+        "sha256": "604b556c44a933c237cba80da87bd67da5e5ce504a7b7fb7c55c8225d264c085"
+      },
+      {
+        "path": "Assets/Source/Audio/overtime.wav",
+        "sha256": "e827a69366871045cf295693c1cd36b7d403ddb473eb702193ee2af3a5877366"
+      },
+      {
+        "path": "Assets/Source/Audio/Palette/sources.json",
+        "sha256": "6be6acdef54bd147ff89d36bd346cea54c3baa530e7427ef196ab7689407b682"
+      },
+      {
+        "path": "Assets/Source/Audio/river_ambience.wav",
+        "sha256": "5a19fae69fe50ca052db0fd2ceda207fa81d6338b74a06a107aaf9a51104d028"
+      },
+      {
+        "path": "Assets/Source/Audio/shield_hit_v2.wav",
+        "sha256": "250ed830d01a38dbbe6660e4172bde26ac8efb64daeaea222c9cac705142c5fa"
+      },
+      {
+        "path": "Assets/Source/Audio/shield_hit_v3.wav",
+        "sha256": "e2afc027f074b2b2b983758bd6435e5934d1c9f2d7a62214e8518ebaac6804f6"
+      },
+      {
+        "path": "Assets/Source/Audio/shield_hit.wav",
+        "sha256": "deed0e6abbd020d189607825a65abd6c9e0f9ece66f3567b80ab95a7841ed315"
+      },
+      {
+        "path": "Assets/Source/Audio/storm_bolt.wav",
+        "sha256": "368e1342399c3a231bb2bab547bb7a9e102b9dd565913a4ac33d65c93ae75c35"
+      },
+      {
+        "path": "Assets/Source/Audio/storm_pulse.wav",
+        "sha256": "336c2d30bfa6115610811fafec283aa2c347c72f3506add9e94dbf9c492fa80f"
+      },
+      {
+        "path": "Assets/Source/Audio/stun.wav",
+        "sha256": "8571e723906b257243924deb31e7bd35707214d7afb509443b2a1e269420fcaf"
+      },
+      {
+        "path": "Assets/Source/Audio/sword_attack_v2.wav",
+        "sha256": "8a939b658cefd4dae46c873511824ab38ee00062b55eb86a5ce0fa213a42e142"
+      },
+      {
+        "path": "Assets/Source/Audio/sword_attack_v3.wav",
+        "sha256": "af62f384598d0de87f578576bd135e421b01742e16e357e4fa0fd502b204357f"
+      },
+      {
+        "path": "Assets/Source/Audio/sword_attack.wav",
+        "sha256": "191055bad1e9597533a6cde1938d0e2f99ce5afd117f8434ca4525191dd9cdd3"
+      },
+      {
+        "path": "Assets/Source/Audio/sword_hit_v2.wav",
+        "sha256": "dfb25e25c35859d77d837c17cede4547c6cb2515600cb4d8af1263110fcb89f1"
+      },
+      {
+        "path": "Assets/Source/Audio/sword_hit_v3.wav",
+        "sha256": "af3385ae75bf5248b42da6fc9b9fcbdf6c746b4560cf3e2a66c124c838038f29"
+      },
+      {
+        "path": "Assets/Source/Audio/sword_hit.wav",
+        "sha256": "2316a030683163813cae493b0df89bc7a6f915f0d67754aac0e50282b62ddc49"
+      },
+      {
+        "path": "Assets/Source/Audio/tiebreaker.wav",
+        "sha256": "c5cac3f54b153a4963fcb399267dbbd5211de96f3be379939ddcc6096b3d0f00"
+      },
+      {
+        "path": "Assets/Source/Audio/tower_destroy.wav",
+        "sha256": "3587d924dc5e791c299c0c2501d6ec5293832b1d9ec651bad196dd2ed092bf0d"
+      },
+      {
+        "path": "Assets/Source/Audio/tower_hit_v2.wav",
+        "sha256": "7e51e5a63a2bef2616acde0fa89f0e7c22dddab6223103e0abcd6f468f38b3b7"
+      },
+      {
+        "path": "Assets/Source/Audio/tower_hit_v3.wav",
+        "sha256": "827e1588cba9bf1063110fd483a7bd57d458ac083cd5865abda81e6640ebbc25"
+      },
+      {
+        "path": "Assets/Source/Audio/tower_hit.wav",
+        "sha256": "21668eb3d7ad42c1ccf4a83d2e039bfde5433bd8a7b982921075d985c329a6bd"
+      },
+      {
+        "path": "Assets/Source/Audio/ui_click.wav",
+        "sha256": "81f2e738bc40a6a6be271b6ce2ebdf1e46bb7225cdee1e9aedc661ffe51c1f87"
+      },
+      {
+        "path": "Assets/Source/Audio/ui_error.wav",
+        "sha256": "d1f203f31fc5ee10366f0f1eeb2b704effb6e01f91b68f36a3f666541b1604ba"
+      },
+      {
+        "path": "Assets/Source/Audio/ui_hover.wav",
+        "sha256": "121635860ae54e4e9003ad2035b8a554b2c0109fdd53b83a00ba3b6dce156357"
+      },
+      {
+        "path": "Assets/Source/Audio/ui_save.wav",
+        "sha256": "5b7f5e807c9f1033892dec2268377dd5c2f4f7cfa1953b91adfca62212af84b9"
+      },
+      {
+        "path": "Assets/Source/Audio/victory.wav",
+        "sha256": "54f1f98712552c7ecd12b5b6ab8dbf090037d894385fb5bcce8a9496ab3ab316"
+      },
+      {
+        "path": "Assets/Source/Audio/wing_air.wav",
+        "sha256": "73d849e2dd33a4cb17cff165446c43db8cd180be224a79e2b5babcd093e0ca64"
+      },
+      {
+        "path": "Build/generate_audio.py",
+        "sha256": "4c63fb8247ad348081ec1e8faf9a6de394eecfc58747ecc4e58d84322ec2bdb0"
+      },
+      {
+        "path": "Build/Test-Unreal.ps1",
+        "sha256": "435ba4c25486b49f0ac164f8cb49f857f1a8cf2c3985a5081a23afab4da57ec6"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Config/DefaultEngine.ini",
+        "sha256": "d203dc05bd1a8d857f7773eb44529ce45637647a5d5638f52b4e9ee21ffec885"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Config/DefaultGame.ini",
+        "sha256": "bd686b36908a760dd3e1c39583501e993d47ea420b18aaf9d7fe447242a53808"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Config/DefaultInput.ini",
+        "sha256": "40f9320c2416a85aa30c765ce1d9c62b45c6a9ad52ef998d102f05b8819679fd"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/RiftCrownArena.uproject",
+        "sha256": "39fc040329e6d46e5087c74c0765c626ac16940daee8e662f67b7b2033acda4b"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena.Target.cs",
+        "sha256": "283ee32c736fcdae9c0bf3f9c5fe8f26f5261a827db4db5a12a740a8138d5e17"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftArenaPresentation.cpp",
+        "sha256": "4c1673c1797b04a8e1fa426f65c4f3f941ddacbc5351a02d3bb76e54cc96afd6"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftBattleAudioSubsystem.cpp",
+        "sha256": "a8fbfc90918a98c64ad16731236422a7194d530d034cd0201eeb7c32b135093b"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftBattleOverlay.cpp",
+        "sha256": "fedfb7b1c4ed6c559a5256f83d517a4278a21739ae964f05f9bcf50e63e8230e"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftTrainingOverlay.cpp",
+        "sha256": "f2f25d5c13f5bfffddf84deacf2a03bdec837f1cc55f6f868fdd65a625947b2e"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftUnitVisual.cpp",
+        "sha256": "21ffad596c7ad02e8bcb354e02161792bac7753134129f60fab47e89030a116e"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftAssetLibrary.cpp",
+        "sha256": "1b98c34b5bd50124b55651094b56e55055f68b600f0204cdca43f47349fab0db"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftBattleHUD.cpp",
+        "sha256": "709890574f78de35cd9a736be0ddf72b75a5a65bd7f2afc7f7cfce47fdba5c18"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftCollectionUI.cpp",
+        "sha256": "3488fb71e661034ba399f16db82445774fc5527783d0fc4789598b287da9e153"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftCrownArena.cpp",
+        "sha256": "b3cecae7f7bcb962f9e9729951b2c79b56aad833b7fde79dba1a6e209188e90e"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftDiagnostics.cpp",
+        "sha256": "bdfd03a5c9b8f31098ebf73f62a81f12bffcbd6a05ccfd559461585d85b851d4"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftFieldManual.cpp",
+        "sha256": "1cbe10cabedf5825118d9d0f7dffdb07ebdf62eb9bc0d4606f9246fc7b7c2bde"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftGameMode.cpp",
+        "sha256": "9c8f3021e7b6f5846ee4c34fe7d08cf508989c133f6794544ae1a7d863eab923"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftHandButton.cpp",
+        "sha256": "b4f6815780b662b5a8950c7831c5e709d92862622f5276b6d1d35480959c059a"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftMatchSubsystem.cpp",
+        "sha256": "c0b89ba7cf16641b546078d86a6fb9ec90ac478ad7ce23898ce29282a182bc44"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftMetaSimulationSubsystem.cpp",
+        "sha256": "28b977058396eb2a96f0069a15622776d4288d6a5dcec181e16a65f5c59580d0"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftPerformanceCapture.cpp",
+        "sha256": "9e287a28260f6ae5a7cbca3995a2e28e12181b0fd4747c1707038e5628b19e33"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftProfileSubsystem.cpp",
+        "sha256": "db04e6c38e05a95c51a969ecc2dfd042c95490739cec4c54926a3b739edd49d3"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftReplaySubsystem.cpp",
+        "sha256": "8a37781553805556e0ea81bdce1da85bcd3329fc99809f2830d4088d5d56b9fd"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftReplayUI.cpp",
+        "sha256": "77199b01e7db0e8108f94347d4a7b39a7b257cec9c7dc719b59f20e0616812d6"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftTrainingPanel.cpp",
+        "sha256": "f24527c664a3108d500fed5cf4722845f37e0cd1bbdb31009f6aa2bf9d88d49c"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftTypography.cpp",
+        "sha256": "8d6f45373e0991955576bace26dad66a19ffabd1aa6090da76aa2ff6f52215d2"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftUIPrimitives.cpp",
+        "sha256": "cb653a1e9de5ede6bedf1ce4834f65d29df84e328afb11ba9d35aa8750e32179"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftUIWidget.cpp",
+        "sha256": "9684405e77f35812d01d0dd080f627624f5da22945aa904e77ee02ec5e3d9e39"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftAI.cpp",
+        "sha256": "883f20513632eab99711bb22f42f995c181331e6d5f0c42a2ad6469817493bfc"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftCombat.cpp",
+        "sha256": "8c952ebb1bf44eaf6ba3553baf1a6f98f390dc65d47fd2f53413130495659075"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftDeckAnalysis.cpp",
+        "sha256": "07d7063f15a66338892ccc65e603caa859cccd2b3d22fcd4257719bd059e21b2"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftPathfinding.cpp",
+        "sha256": "cbce12f7e32f3d4f17367b678703ef2582959b8cf201d129cdac7dcabf96a3b7"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftSimulation.cpp",
+        "sha256": "4705c925e31c1e4a921f2199da1e1864d35b19af7254f81626f86fef31d7586a"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftBalancePatchTests.cpp",
+        "sha256": "3261ec41e141f8d98bceb8030f70d1c68225b7f86bcf6338027623d1f6fb2add"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftBattleInputTests.cpp",
+        "sha256": "57fd645398ee636206439355eb6da150b5c1f4372443c3bdcb8e35e6a8b65732"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftCardDragSmoke.cpp",
+        "sha256": "c7566d8e47c5f5cde97c4bbcc7f1b071d12307da91665e81f4273a19be3edaba"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftIntegrationTests.cpp",
+        "sha256": "e6c26de654224d9268745ddc519f36a104ad596c6a863a638fb5f35c62eb31d6"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftPresentationTests.cpp",
+        "sha256": "d027b77d9a0bf3269930a15b101fba78703221d65eb23ca730e5391994507913"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftProjectilePresentationTests.cpp",
+        "sha256": "4768c7e3a0cd25cc7d13a8781c15fc0f5c72cde625d0d25c871601f5564c0018"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftTowerPathingTests.cpp",
+        "sha256": "f68ff24d105251ed5a0d1b2696bf666624a0b6129b57577cc7af50f2cf4d44dd"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftTypographyTests.cpp",
+        "sha256": "cfe1166bf1f92b5bc198078c316c7c741ce831fc0449d45b982beba0530921de"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftUnitCollisionTests.cpp",
+        "sha256": "1ffdadbd04b208ad5237a85c1775daf6c58fb29e43a8d5ffe5717da08341c881"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftUnitMotionTests.cpp",
+        "sha256": "968c380b7eb81e282df5dea7113d4ddf546b6d45fd9bd31fab597051816d30a8"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftArenaGeometry.h",
+        "sha256": "f050dd6450c163aa593309ec81198612d443ba91add7baf25047e0ea6158bd1a"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftArenaPresentation.h",
+        "sha256": "e0408bb6348f8f02281f147d6bc71eabd9c2b3b13d7c5762d88c0961ac41b441"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleAudioSubsystem.h",
+        "sha256": "bf05929b4797a3dc30f2a9fabb3aa5b84416c5ad2d52a509ddd6e48e2e761588"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleLayout.h",
+        "sha256": "0d953944dccba5ffdd20cea601240a157769de54c929ba804fcef12f0ec4dd27"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleOverlay.h",
+        "sha256": "ecc4bbd6d9a9a9e2729e51eaaa4fb64f5ea1ab712d6c44a389686876bb57187d"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftUnitVisual.h",
+        "sha256": "d27c9317d14b2b4e5783b95068e2062103c87f01f5741f54f1c0d1f5d44109f2"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftAssetLibrary.h",
+        "sha256": "8cfcb77f51d477773e87d37cff482542072825be38c95ea6ab43118dfc50e80b"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftCardData.h",
+        "sha256": "acaa52f65fb0076884e26ba228aa239eb345ca529880d1ca771c26653f431e0a"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftDiagnostics.h",
+        "sha256": "93d91726c726127c03b310972a8482906dc45ec9936cc48adab01599f7750b42"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftGameMode.h",
+        "sha256": "f66c2caef75a5d1f138d1c33f49c845fa77f76bbaa33bdd42bc8c1b5a5a1268e"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftHandButton.h",
+        "sha256": "4ba3b6c2c352b8ebdc399cab258bdd26f0cecc8bfb2421edbfd2866a22e4488d"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftMatchSubsystem.h",
+        "sha256": "bd67f6f1dba4ab9199407a938258cd611748b8c97db898f2429d13fb93ac0c44"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftMetaSimulationSubsystem.h",
+        "sha256": "cd73661b90be8b789f9318c3242f1bdaf97325b87641578eda88d8ced62f0293"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftPerformanceCapture.h",
+        "sha256": "7962fa18d55571a6ac0b94c07eb17ff4b225472af687a898dd93ebe28879ec3c"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftProfileSubsystem.h",
+        "sha256": "9a94ff3fb118194b4c296187b47e0f42bc1fae2d8d4187c58e1fb38ee9f22af6"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftReplaySubsystem.h",
+        "sha256": "35c7fa47599a4b132d58b4cdc619af1bdf818a86e1ec81806c866cb2c816e7ff"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftTypography.h",
+        "sha256": "7cac7b91d1224aea7555b932c24635ba369c3aae1209782e05f2c13f6119f840"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftUIPrimitives.h",
+        "sha256": "93e9c0253a03efd8b64ccbf3bb8003c19cfb94e83edc660e56a844c6dcb101e4"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftUIWidget.h",
+        "sha256": "f4e0ad5ddfdede41af7d04143a8916b5f2a32ac599f6a16a03af338ee71652bf"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Simulation/RiftSimulation.h",
+        "sha256": "2ea2d10082e19efcb463f53f7cc94266ba805657c4bca3b703cddd8419f67a6e"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/RiftCrownArena.Build.cs",
+        "sha256": "2f629214df393aa0a385784eb9a752d1e47c9803f471ed69d7107f8a4e7866a3"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor.Target.cs",
+        "sha256": "d8cad02a8fb12c7d19cb31a6da6ef8b7aa872415bf9860e7146541238b277e95"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Private/RiftCrownArenaEditor.cpp",
+        "sha256": "487f1f731292b9b76e5e77d85ba045cac11b2045579faa5c421f57f682125e28"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Private/RiftEditorAssetLibrary.cpp",
+        "sha256": "740c5da1eb52a3cb8a2829265b4bea4075674258d4b0a638d1d66ded22eedb4f"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Public/RiftEditorAssetLibrary.h",
+        "sha256": "3ed46978d15e2f9b279601a6e5339f1e89e983cb75dfa173e6410c75dfb5c372"
+      },
+      {
+        "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/RiftCrownArenaEditor.Build.cs",
+        "sha256": "7f5d7d8cc4cda35f3d38ddce7d82e00f4d28cfac4c42d6c44be1eb146b954a2f"
+      }
+    ]
+  }
+}

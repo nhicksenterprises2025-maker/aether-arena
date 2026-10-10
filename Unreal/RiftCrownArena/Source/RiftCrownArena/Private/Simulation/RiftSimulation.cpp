@@ -68,22 +68,22 @@ Card Spell(const char *id, const char *name, int cost, double damage, double tow
 const std::vector<Card> &Cards() {
     static const std::vector<Card> cards = []() {
         std::vector<Card> v;
-        auto c = Troop("ironclad", "Ironclad", 3, 840, 96, 1, 2.25, 1.35, 1);
+        auto c = Troop("ironclad", "Ironclad", 3, 822, 93, 1, 2.25, 1.35, 1);
         v.push_back(c);
-        c = Troop("ember_archer", "Ember Archer", 3, 423, 152, 1.55, 2.35, 6, .95);
+        c = Troop("ember_archer", "Ember Archer", 3, 374, 152, 1.55, 2.35, 6, .95);
         c.projectileSpeed = 16;
         c.canHitAir = true;
         v.push_back(c);
-        c = Troop("twin_blades", "Twin Blades", 2, 262, 58, .72, 3.35, 1.2, .82);
+        c = Troop("twin_blades", "Twin Blades", 2, 262, 55, .75, 3.35, 1.2, .82);
         c.count = 2;
         v.push_back(c);
         c = Troop("boulderback", "Boulderback", 5, 1620, 118, 2, 1.3, 1.5, 1.22);
         c.structuresOnly = true;
         v.push_back(c);
-        c = Troop("arc_mage", "Arc Mage", 4, 547, 120, 1, 2, 6.5, .96);
+        c = Troop("arc_mage", "Arc Mage", 4, 547, 120, 1.15, 1.7, 6, .96);
         c.projectileSpeed = 17;
         c.canHitAir = true;
-        c.splash = 2.5;
+        c.splash = 2.25;
         v.push_back(c);
         c = Troop("rambeast", "Rambeast", 4, 880, 140, 1.4, 2.6, 1.45, 1.06);
         c.structuresOnly = true;
@@ -99,7 +99,7 @@ const std::vector<Card> &Cards() {
         c.flying = true;
         c.canHitAir = true;
         v.push_back(c);
-        c = Troop("frost_fang", "Frost Fang", 5, 1155, 72, .8, 2.5, 1.1, 1.02);
+        c = Troop("frost_fang", "Frost Fang", 5, 1265, 72, .75, 2.5, 1.1, 1.02);
         c.slowPct = .3;
         c.slowDuration = 2;
         v.push_back(c);
@@ -118,7 +118,7 @@ const std::vector<Card> &Cards() {
         c.dotDuration = 5;
         c.dotInterval = 1;
         v.push_back(c);
-        c = Troop("archer_tower", "Archer Tower", 4, 850, 75, 1.1, 0, 7, 1);
+        c = Troop("archer_tower", "Archer Tower", 4, 850, 75, 1, 0, 7, 1);
         c.building = true;
         c.projectileSpeed = 18;
         c.canHitAir = true;
@@ -130,6 +130,13 @@ const std::vector<Card> &Cards() {
         c.rounds = 7;
         v.push_back(c);
         c = Spell("nova_flask", "Nova Flask", 4, 375, 185, 3.25);
+        v.push_back(c);
+        c = Troop("mini_stampede", "Mini Stampede", 2, 95, 18, .9, 3.5, 1, .85);
+        c.count = 5;
+        v.push_back(c);
+        c = Troop("stampede", "Stampede", 7, 95, 18, 1, 3, .9, 1.3);
+        c.count = 15;
+        c.structuresOnly = true;
         v.push_back(c);
         return v;
     }();
@@ -664,22 +671,57 @@ bool Match::PlanDeployment(Team team, const Card &c, Vec2 p, bool sandbox,
     positions.clear();
     if (c.spell)
         return true;
-    const std::vector<Vec2> offsets =
-        c.count == 2   ? std::vector<Vec2>{{-.42, .12}, {.42, -.12}}
-        : c.count == 5 ? std::vector<Vec2>{{-.86, -.18}, {0, -.42}, {.86, -.18}, {-.43, .38}, {.43, .38}}
-                       : std::vector<Vec2>{{0, 0}};
+    if (c.count < 1)
+        return false;
+    const double radius = c.building ? c.footprint * .52 : .44 * c.scale;
+    const double spacing = std::max(1.12, radius * 2 + .06);
+    const bool centerSplit = std::abs(p.x) <= .5 + Epsilon;
+    const bool establishedSideFormation = !centerSplit && (c.count == 2 || (c.count == 5 && c.flying));
+    std::vector<Vec2> offsets;
+    offsets.reserve(static_cast<std::size_t>(c.count));
+    if (c.count == 1)
+        offsets.push_back({0, 0});
+    else if (c.count == 2) {
+        // Tile centers nearest the divider are +/- .5. Give two-unit cards
+        // enough lateral spread for one member to land on either side.
+        const double half = std::max(radius + .03, centerSplit ? .6 : .42);
+        offsets = {{-half, .12}, {half, -.12}};
+    } else if (c.count == 5 && establishedSideFormation) {
+        // Keep existing side-lane flying formations stable; only a placement
+        // at the divider needs the wider balanced split formation.
+        offsets = {{-.86, -.18}, {0, -.42}, {.86, -.18}, {-.43, .38}, {.43, .38}};
+    } else if (c.count == 5) {
+        // A staggered, radius-aware formation keeps all five bodies clear
+        // before reservation and naturally splits a center placement 2/3.
+        offsets = {{-spacing, -.38 * spacing}, {0, -.38 * spacing}, {spacing, -.38 * spacing},
+                   {-.5 * spacing, .486 * spacing}, {.5 * spacing, .486 * spacing}};
+    } else {
+        // Every member gets its own offset, including large swarms. Short
+        // final rows are centered instead of biasing the swarm to one lane.
+        const int columns = static_cast<int>(std::ceil(std::sqrt(static_cast<double>(c.count))));
+        const int rows = (c.count + columns - 1) / columns;
+        for (int row = 0; row < rows; ++row) {
+            const int width = std::min(columns, c.count - row * columns);
+            for (int column = 0; column < width; ++column)
+                offsets.push_back({(column - (width - 1) * .5) * spacing,
+                                   (row - (rows - 1) * .5) * spacing});
+        }
+    }
+    positions.reserve(static_cast<std::size_t>(c.count));
     std::vector<Entity> planned;
+    planned.reserve(static_cast<std::size_t>(c.count));
     for (int i = 0; i < c.count; ++i) {
         Entity body;
         body.id = nextEntity_ + static_cast<EntityId>(i);
         body.team = team;
         body.kind = c.building ? EntityKind::Building : EntityKind::Troop;
         body.cardId = c.id;
-        body.radius = c.building ? c.footprint * .52 : .44 * c.scale;
+        body.radius = radius;
         body.flying = c.flying;
         body.facing = {0, -Sign(team)};
         const Vec2 requested{Clamp(p.x + offsets[i].x, -arena::DeploymentMaxX, arena::DeploymentMaxX),
-                             p.z + offsets[i].z};
+                             p.z + offsets[static_cast<std::size_t>(i)].z *
+                                       (establishedSideFormation ? 1. : Sign(team))};
         if (!ResolveBodyPlacement(requested, body, sandbox, planned, body.position)) {
             positions.clear();
             return false;

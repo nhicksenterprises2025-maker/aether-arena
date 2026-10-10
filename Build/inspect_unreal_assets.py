@@ -60,8 +60,8 @@ report["classCounts"] = dict(sorted(counts.items()))
 report["assetCount"] = len(report["assets"])
 report["nativeValidation"] = json.loads(unreal.RiftEditorAssetLibrary.inspect_imported_assets_json())
 report["errors"].extend(report["nativeValidation"].get("errors", []))
-if len(report["nativeValidation"].get("cards", [])) != 14:
-    report["errors"].append("Native card validation did not inspect all 14 original cards")
+if len(report["nativeValidation"].get("cards", [])) != len(json.loads(unreal.RiftAssetLibrary.card_definitions_json())):
+    report["errors"].append("Native card validation did not inspect the complete current roster")
 report["sourceReadback"] = source_provenance.readback(unreal, ROOT, manifest, records)
 report["errors"].extend(report["sourceReadback"]["errors"])
 try:

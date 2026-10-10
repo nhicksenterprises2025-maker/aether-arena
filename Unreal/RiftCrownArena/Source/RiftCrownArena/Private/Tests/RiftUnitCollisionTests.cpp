@@ -107,7 +107,7 @@ bool FRiftUnitCollisionIntegrationTest::RunTest(const FString& Parameters)
             TestTrue(Label+TEXT(" has real movement or a stable fixed building"),Start.kind==rift::EntityKind::Troop?(!End->dead&&CollisionDistance(Start.position,End->position)>.5):CollisionDistance(Start.position,End->position)<1.e-9);
         Total.PairChecks+=Observed.PairChecks;Total.SweepChecks+=Observed.SweepChecks;Total.MinimumGap=std::min(Total.MinimumGap,Observed.MinimumGap);Total.MinimumSweep=std::min(Total.MinimumSweep,Observed.MinimumSweep);
     }
-    TestEqual(TEXT("Every physical card covers both teams"),Cases,22);TestEqual(TEXT("Paid physical card casts"),PaidPlays,44);TestEqual(TEXT("Every actual paid physical member retained"),Members,62);
+    TestEqual(TEXT("Every physical card covers both teams"),Cases,26);TestEqual(TEXT("Paid physical card casts"),PaidPlays,52);TestEqual(TEXT("Every actual paid physical member retained"),Members,106);
     const std::vector<std::string> PocketDeck{"ironclad","twin_blades","boulderback","archer_tower","sky_manta","vampire_bats","storm_raven","frost_fang"};
     const int PocketSlots[]{1,2,2,3,0,1,0,1,0,1,2,3,2,3,2,3};
     for(const auto Team:{rift::Team::Player,rift::Team::Enemy})for(const int Lane:{-1,1})
@@ -265,13 +265,14 @@ bool FRiftUnitCollisionIntegrationTest::RunTest(const FString& Parameters)
     for(const auto Team:{rift::Team::Player,rift::Team::Enemy})
     {
         rift::Match Full(CollisionDeck("boulderback","sky_manta"));int Buildings=0,Residuals=0,Rejected=0;bool Exhausted=false;
+        const rift::Vec2 Drop{7.5,(Team==rift::Team::Player?1.:-1.)*8.5};
         for(double Z=-21.5;Z<=21.5;Z+=2.)for(double X=-13.5;X<=14.5;X+=2.)
             if(Full.Spawn(Team,"archer_tower",{X,Z}))++Buildings;else ++Rejected;
-        for(int N=0;N<100;++N){if(!Full.Spawn(Team,"boulderback",{7.5,8.5})){++Rejected;Exhausted=true;break;}++Residuals;}
+        for(int N=0;N<100;++N){if(!Full.Spawn(Team,"boulderback",Drop)){++Rejected;Exhausted=true;break;}++Residuals;}
         TestTrue(TEXT("Actual large and small sandbox bodies exhaust bounded physical capacity"),Buildings>=300&&Residuals>0&&Exhausted);
         FCollisionObservation Capacity;ObserveCollision(Full.State(),Capacity);
         TestTrue(TEXT("Full-capacity fixture uses genuinely separated unmodified bodies"),Capacity.Clear);
-        const rift::Vec2 Drop{7.5,(Team==rift::Team::Player?1.:-1.)*8.5};Full.SetAether(Team,10);
+        Full.SetAether(Team,10);
         const auto Before=Full.State();const auto EventCount=Full.Events().size();const uint64 LastSequence=Full.Events().back().sequence;
         uint64 LastEntity=0,LastPlay=0;for(const auto& Entity:Full.State().entities)LastEntity=std::max(LastEntity,Entity.id);
         for(const auto& Event:Full.Events())LastPlay=std::max(LastPlay,Event.playId);

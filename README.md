@@ -1,7 +1,16 @@
 # Rift Crown Arena / Aether Arena
 
-Original Windows card battler: fourteen cards, two lanes, deterministic combat,
+Original Windows card battler: sixteen cards, two lanes, deterministic combat,
 seven AI personalities, deck workshop, Meta Lab, replays and developer training.
+
+Version 1.4.0 introduces Mini Stampede (five wild hogs, 2 Aether) and Stampede
+(fifteen royal hogs, 7 Aether), applies the first balance patch, and adds planted
+walking strides. Swarm members choose their lane from their actual landing
+position, allowing center formations to split. All four Guard Towers and stone
+paths now line up with their bridge centers; Core Towers stay centered between
+the lanes. Card details, asset data and Meta Lab use the updated sixteen-card
+rules. See [the numeric patch notes](Docs/PATCH_NOTES_1.4.0.md)
+and [the spreadsheet-ready stats](Docs/CARD_STATS_1.4.0.tsv).
 
 Version 1.3.5 adds collision bodies to every troop and building, including flying
 swarms on their own layer. Troops steer around crowds and queue at narrow
@@ -56,7 +65,7 @@ specification. Run its `start_game.bat` or follow its README.
 The native Windows implementation uses Unreal Engine 5.8.2 under
 `Unreal/RiftCrownArena`, original asset sources in `Assets`, a self-contained
 .NET 8 WPF launcher in `Launcher`, and packaging tools in `Build` and `Installer`.
-The fourteen-card balance and gameplay rules remain authoritative in the
+The sixteen-card balance and gameplay rules remain authoritative in the
 deterministic C++ simulation. The browser reference remains intact.
 
 Download the Windows installer, portable game ZIP, standalone launcher and

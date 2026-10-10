@@ -196,7 +196,7 @@ FString URiftEditorAssetLibrary::InspectImportedAssetsJSON()
 FString URiftEditorAssetLibrary::FinalizeImportedPhysicsAssetsJSON()
 {
     auto Report=MakeShared<FJsonObject>();TArray<TSharedPtr<FJsonValue>> Entries,Errors;
-    const TCHAR* Ids[]={TEXT("ironclad"),TEXT("ember_archer"),TEXT("twin_blades"),TEXT("boulderback"),TEXT("arc_mage"),TEXT("rambeast"),TEXT("sky_manta"),TEXT("vampire_bats"),TEXT("frost_fang"),TEXT("storm_raven"),TEXT("tower_archer")};
+    const TCHAR* Ids[]={TEXT("ironclad"),TEXT("ember_archer"),TEXT("twin_blades"),TEXT("boulderback"),TEXT("arc_mage"),TEXT("rambeast"),TEXT("sky_manta"),TEXT("vampire_bats"),TEXT("frost_fang"),TEXT("storm_raven"),TEXT("mini_stampede"),TEXT("stampede"),TEXT("tower_archer")};
     for(const auto* Id:Ids)
     {
         auto* Mesh=LoadObject<USkeletalMesh>(nullptr,*FString::Printf(TEXT("/Game/Rift/Characters/%s/SK_%s.SK_%s"),Id,Id,Id));

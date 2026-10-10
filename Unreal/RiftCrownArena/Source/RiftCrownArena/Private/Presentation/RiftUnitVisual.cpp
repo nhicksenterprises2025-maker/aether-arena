@@ -62,7 +62,15 @@ namespace
         if(Id==TEXT("boulderback"))return 1.65f;
         if(Id==TEXT("rambeast") || Id==TEXT("frost_fang") || Id==TEXT("sky_manta"))return 1.60f;
         if(Id==TEXT("storm_raven"))return 1.55f;
+        if(Id==TEXT("mini_stampede"))return 1.60f;
+        if(Id==TEXT("stampede"))return 1.50f;
         return 1.80f;
+    }
+    double AuthoredGaitStrideCm(const FString& Id,bool Charging)
+    {
+        if(Id==TEXT("mini_stampede") || Id==TEXT("stampede"))return 78.;
+        if(Id==TEXT("boulderback") || Id==TEXT("rambeast") || Id==TEXT("frost_fang"))return Charging?110.:90.;
+        return 105.;
     }
 }
 FAnimInstanceProxy* URiftUnitAnimInstance::CreateAnimInstanceProxy()
@@ -111,6 +119,7 @@ bool ARiftUnitVisual::InitializeEntity(const rift::Entity& Entity,URiftCardData*
     bFlying=Entity.flying; bCoreActive=Entity.active; bDead=false;bHasBeenDamaged=false;
     UpdateDamageHistory(Entity,Time);
     AssetId=UTF8_TO_TCHAR(Entity.cardId.c_str());AnimationPhase=float(Entity.id%17)/17.f;AnimationTime=VisualTime=Time;
+    LastSynchronizedCooldown=Entity.cooldown;
     const rift::Card* Definition=rift::FindCard(Entity.cardId);
     Scale=Definition?float(Definition->scale):1.f;
     AttackInterval=Definition?Definition->attackInterval:Kind==rift::EntityKind::Core?.92:1.02;
@@ -334,7 +343,14 @@ void ARiftUnitVisual::Synchronize(const rift::Entity& Entity,const rift::Snapsho
         PreviousPosition=Position;return;
     }
     const double Travel=(Position-PreviousPosition).Size2D();PreviousPosition=Position;
-    if (Entity.target!=LastTarget && Entity.target) AcquireTime=Time;LastTarget=Entity.target;
+    const bool TargetChanged=Entity.target!=LastTarget;
+    if (TargetChanged && Entity.target) AcquireTime=Time;LastTarget=Entity.target;
+    const bool CooldownChanged=Entity.cooldown!=LastSynchronizedCooldown;LastSynchronizedCooldown=Entity.cooldown;
+    // A renderer tick with no new simulation input must retain the exact
+    // walking state. Zero distance on a paused tick is not a stop command.
+    // Real same-time target/cooldown and combat events still choose new poses.
+    const bool FrozenMovingPose=AnimationDelta<=0 && Travel<=.005 && !TargetChanged && !CooldownChanged &&
+        (CurrentClip==TEXT("Locomotion") || CurrentClip==TEXT("Charge"));
     const bool Stunned=Entity.stunUntil>Time;
     const bool Slowed=Entity.slowUntil>Time && Entity.slowPct>0;
     const bool Charging=AssetId==TEXT("rambeast") && Entity.charged;
@@ -343,7 +359,7 @@ void ARiftUnitVisual::Synchronize(const rift::Entity& Entity,const rift::Snapsho
         // One authored gait cycle covers two steps. Tying it to distance keeps
         // feet in cadence with slow effects and charged running, and prevents
         // movement clips from running in place between simulation updates.
-        const double Stride=FMath::Max(45.,double(Scale)*(Charging?135.:105.));
+        const double Stride=FMath::Max(45.,double(Scale)*AuthoredGaitStrideCm(AssetId,Charging));
         GaitClock+=Travel/Stride;
     }
     FlightBank=FMath::Lerp(FlightBank,bFlying?FMath::Clamp(-Delta*.12f,-9.f,9.f):0.f,1.f-FMath::Exp(-float(AnimationDelta)*8.f));
@@ -375,17 +391,18 @@ void ARiftUnitVisual::Synchronize(const rift::Entity& Entity,const rift::Snapsho
         // bounded second half ends in the authored neutral recovery pose.
         SetClip(AttackClip(),.48+.52*SinceAttack/RecoveryDuration);return;
     }
-    if(TargetInRange && Travel<.5 && Entity.cooldown>0 && Entity.cooldown<=WindupDuration)
+    if(TargetInRange && Travel<.5 && !FrozenMovingPose && Entity.cooldown>0 && Entity.cooldown<=WindupDuration)
     {SetClip(AttackClip(),.48*(1.-Entity.cooldown/WindupDuration));return;}
     if (Time-LastHit<.16 && Time-LastAttack>.22) {SetClip(TEXT("Hit"),(Time-LastHit)/.16);return;}
-    if (Time-AcquireTime<.1 && Travel<.5) {SetClip(TEXT("Acquire"),(Time-AcquireTime)/.1);return;}
-    if (Time-TurnTime<.12 && Travel<.5) {SetClip(TEXT("Turn"),(Time-TurnTime)/.12);return;}
+    if (Time-AcquireTime<.1 && Travel<.5 && !FrozenMovingPose) {SetClip(TEXT("Acquire"),(Time-AcquireTime)/.1);return;}
+    if (Time-TurnTime<.12 && Travel<.5 && !FrozenMovingPose) {SetClip(TEXT("Turn"),(Time-TurnTime)/.12);return;}
     if (AssetId==TEXT("storm_raven") && Entity.auraClock>2.4)
     {SetClip(TEXT("AuraCharge"),(Entity.auraClock-2.4)/.6);return;}
-    if (Travel>.05)
+    if (Travel>.005)
     {
         SetClip(Charging?TEXT("Charge"):TEXT("Locomotion"),GaitClock+AnimationPhase,true);
     }
+    else if(FrozenMovingPose)return;
     else SetClip(bFlying?TEXT("WingCycle"):AssetId==TEXT("frost_fang")?TEXT("Breath"):TEXT("Idle"),Time*.7+AnimationPhase,true);
 }
 FVector ARiftUnitVisual::HealthLocation()const

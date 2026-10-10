@@ -21,7 +21,7 @@ CARD_IDS = frozenset((
     "ironclad", "ember_archer", "archer_tower", "vampire_bats",
     "twin_blades", "boulderback", "arc_mage", "rambeast", "sky_manta",
     "frost_fang", "storm_raven", "bullet_burst", "nova_flask",
-    "meteor_shards",
+    "meteor_shards", "mini_stampede", "stampede",
 ))
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 
@@ -118,13 +118,13 @@ class PortraitAudit:
         ):
             self.report["provenance"][label] = self.file_info(relative)
 
-        self.check("Manifest contains exactly the fourteen canonical cards",
+        self.check("Manifest contains exactly the sixteen canonical cards",
                    set(manifest.get("cards", {})) == CARD_IDS)
-        self.check("Manifest illustrations contain exactly the fourteen cards",
+        self.check("Manifest illustrations contain exactly the sixteen cards",
                    set(manifest.get("illustrations", {})) == CARD_IDS)
-        self.check("Portrait report contains exactly the fourteen cards",
+        self.check("Portrait report contains exactly the sixteen cards",
                    set(portraits.get("cards", {})) == CARD_IDS)
-        self.check("Portrait PNG inventory contains exactly the fourteen cards",
+        self.check("Portrait PNG inventory contains exactly the sixteen cards",
                    {p.stem for p in (self.root / "Assets/Source/CardArt").glob("*.png")} == CARD_IDS)
         self.check("Portrait resolution is 768 by 960", portraits.get("resolution") == [768, 960])
         self.check("Portrait sourceBlend equals final export source",

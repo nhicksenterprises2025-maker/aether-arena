@@ -85,6 +85,7 @@ private:
     double TurnTime=-100, AcquireTime=-100;
     double SpecialTime=-100;
     double AnimationTime=-1, VisualTime=0, GaitClock=0, DeathFlightHeight=0;
+    double LastSynchronizedCooldown=-1;
     float SpecialDuration=.5f;
     uint64 LastTarget=0;
     float Scale=1.f, StructureHeightScale=1.f, AnimationPhase=0.f, CurrentFraction=0.f;
