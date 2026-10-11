@@ -1,0 +1,236 @@
+{
+  "schema": "rift.pulverizer.safe-resume-correction.v1",
+  "version": "1.5.0",
+  "passed": true,
+  "utc": "2026-10-11T15:36:35.1647021Z",
+  "checks": 9,
+  "originalExecution": {
+    "requestedValidateOnly": true,
+    "effectiveValidateOnly": false,
+    "published": true,
+    "readOnly": false,
+    "outcome": "Previously authorized intended version1.5.0 published as latest on exact existing release409751861 after all source/local/draft/seven-server-asset gates. No different release or payload was created.",
+    "cause": "Dot-sourced publisher parameter initialization replaced the same-scope ValidateOnly switch; this is an execution bug, not a passed read-only preflight.",
+    "executedHelper": {
+      "path": "Artifacts/QA/Resume-Pulverizer150.ps1",
+      "bytes": 3314,
+      "sha256": "aedcb18e64267e9bdc12412578118d304559b4fee1d1a0f3f04f29fd9e4039ae"
+    },
+    "originalReport": {
+      "path": "Artifacts/QA/pulverizer150-publication-resume.json",
+      "bytes": 1440,
+      "sha256": "3612b96e99098015a10d30435c8c61215230455c25257203ee4d7d0d38cffc25"
+    }
+  },
+  "safeSuccessor": {
+    "path": "Artifacts/QA/Resume-Pulverizer150-Safe.ps1",
+    "bytes": 3673,
+    "sha256": "c8ac40c04461a3558137c3948c4ca68451bac6b45a2307c0e4779f35b15bc1a4"
+  },
+  "publisher": {
+    "path": "Artifacts/QA/Publish-Pulverizer150.ps1",
+    "bytes": 22381,
+    "sha256": "5572f483e9f999c502849bb67db54306ee2e267eb55f123813fbf4b6e4fd6d3f"
+  },
+  "protectedBefore": [
+    {
+      "path": "Artifacts/QA/Resume-Pulverizer150.ps1",
+      "bytes": 3314,
+      "sha256": "aedcb18e64267e9bdc12412578118d304559b4fee1d1a0f3f04f29fd9e4039ae"
+    },
+    {
+      "path": "Artifacts/QA/pulverizer150-publication-resume.json",
+      "bytes": 1440,
+      "sha256": "3612b96e99098015a10d30435c8c61215230455c25257203ee4d7d0d38cffc25"
+    },
+    {
+      "path": "Artifacts/QA/pulverizer150-release-asset-pins.json",
+      "bytes": 1127,
+      "sha256": "42316d29fd239a7bba6fc22e820c638308cb5b6009250a3a3ecfebbb5dce3fa8"
+    },
+    {
+      "path": "Artifacts/QA/pulverizer150-draft-release.json",
+      "bytes": 19098,
+      "sha256": "a3950380d6fe871e16fecf5adf1ea43d637ba4805caae05ea3adb7c4a4d06242"
+    },
+    {
+      "path": "Artifacts/QA/pulverizer150-initial-public-release.json",
+      "bytes": 19097,
+      "sha256": "e492baaa3b5b9c18e05cc6ae67e583105d3f189a524a3b7605557f15f9bbbf81"
+    },
+    {
+      "path": "Artifacts/QA/Publish-Pulverizer150.ps1",
+      "bytes": 22381,
+      "sha256": "5572f483e9f999c502849bb67db54306ee2e267eb55f123813fbf4b6e4fd6d3f"
+    },
+    {
+      "path": "Docs/QA/pulverizer-1.5.0.json",
+      "bytes": 252819,
+      "sha256": "a15025b603fb8e6395fb05e01e5deb22fc819ecf35b6a78331af6aa11c9d4ed2"
+    },
+    {
+      "path": "Artifacts/Release/RiftCrownArena-Pulverizer-QAEvidence-1.5.0.zip",
+      "bytes": 32412006,
+      "sha256": "f0663d49a08e410b01b4aec3871a3824c466f4253c1d11d20a0c1482fb72121e"
+    }
+  ],
+  "protectedAfter": [
+    {
+      "path": "Artifacts/QA/Resume-Pulverizer150.ps1",
+      "bytes": 3314,
+      "sha256": "aedcb18e64267e9bdc12412578118d304559b4fee1d1a0f3f04f29fd9e4039ae"
+    },
+    {
+      "path": "Artifacts/QA/pulverizer150-publication-resume.json",
+      "bytes": 1440,
+      "sha256": "3612b96e99098015a10d30435c8c61215230455c25257203ee4d7d0d38cffc25"
+    },
+    {
+      "path": "Artifacts/QA/pulverizer150-release-asset-pins.json",
+      "bytes": 1127,
+      "sha256": "42316d29fd239a7bba6fc22e820c638308cb5b6009250a3a3ecfebbb5dce3fa8"
+    },
+    {
+      "path": "Artifacts/QA/pulverizer150-draft-release.json",
+      "bytes": 19098,
+      "sha256": "a3950380d6fe871e16fecf5adf1ea43d637ba4805caae05ea3adb7c4a4d06242"
+    },
+    {
+      "path": "Artifacts/QA/pulverizer150-initial-public-release.json",
+      "bytes": 19097,
+      "sha256": "e492baaa3b5b9c18e05cc6ae67e583105d3f189a524a3b7605557f15f9bbbf81"
+    },
+    {
+      "path": "Artifacts/QA/Publish-Pulverizer150.ps1",
+      "bytes": 22381,
+      "sha256": "5572f483e9f999c502849bb67db54306ee2e267eb55f123813fbf4b6e4fd6d3f"
+    },
+    {
+      "path": "Docs/QA/pulverizer-1.5.0.json",
+      "bytes": 252819,
+      "sha256": "a15025b603fb8e6395fb05e01e5deb22fc819ecf35b6a78331af6aa11c9d4ed2"
+    },
+    {
+      "path": "Artifacts/Release/RiftCrownArena-Pulverizer-QAEvidence-1.5.0.zip",
+      "bytes": 32412006,
+      "sha256": "f0663d49a08e410b01b4aec3871a3824c466f4253c1d11d20a0c1482fb72121e"
+    }
+  ],
+  "testScript": {
+    "path": "Artifacts/QA/Test-Pulverizer150ResumeSafe.ps1",
+    "bytes": 13949,
+    "sha256": "80ec919ce2ab0cbb325d43ad612deb3304a40668398eb068b7783e775a6a87be"
+  },
+  "results": [
+    {
+      "name": "exact copied safe/original scripts preserve production bytes",
+      "passed": true
+    },
+    {
+      "name": "original flag-reset bug reproduced offline without publication",
+      "passed": true
+    },
+    {
+      "name": "safe check-only survives actual dot-source flag reset with zero PATCH or writes",
+      "passed": true
+    },
+    {
+      "name": "safe authorized publication still patches only exact existing ID after gates",
+      "passed": true
+    },
+    {
+      "name": "wrong existing release ID rejects without API",
+      "passed": true
+    },
+    {
+      "name": "wrong seven-asset inventory rejects before gates or API",
+      "passed": true
+    },
+    {
+      "name": "wrong server digest rejects before PATCH in check-only and publish modes",
+      "passed": true
+    },
+    {
+      "name": "changed local payload rejects before PATCH in check-only and publish modes",
+      "passed": true
+    },
+    {
+      "name": "executed helper report snapshots publisher and sealed QA remain unchanged",
+      "passed": true
+    }
+  ],
+  "scope": "Offline exact-script fixture with real publisher function import and same-scope switch reset, followed by controlled mocks. No actual API, publication, Git write, game launch, or protected evidence modification. This proof does not relabel the original execution as read-only.",
+  "curatedFrom": {
+    "path": "Artifacts/QA/PulverizerResumeSafeReview/7715805f8cc444ec934ab5d0a3233bca/verification.json",
+    "bytes": 6127,
+    "sha256": "759641b011d7323ad0c9c463f8f6557846ebf92ae0f44feb357ff94048e0fc7b"
+  },
+  "independentDerivedDiffReview": {
+    "schema": "rift.pulverizer.derived-release-review.v1",
+    "version": "1.5.0",
+    "passed": true,
+    "utc": "2026-10-11T15:27:52.0118265Z",
+    "checks": 9,
+    "helper": {
+      "path": "Artifacts/QA/Publish-Pulverizer150.ps1",
+      "bytes": 22381,
+      "sha256": "5572f483e9f999c502849bb67db54306ee2e267eb55f123813fbf4b6e4fd6d3f"
+    },
+    "summary": {
+      "path": "Docs/QA/pulverizer-1.5.0.json",
+      "bytes": 252819,
+      "sha256": "a15025b603fb8e6395fb05e01e5deb22fc819ecf35b6a78331af6aa11c9d4ed2"
+    },
+    "archive": {
+      "path": "Artifacts/Release/RiftCrownArena-Pulverizer-QAEvidence-1.5.0.zip",
+      "bytes": 32412006,
+      "sha256": "f0663d49a08e410b01b4aec3871a3824c466f4253c1d11d20a0c1482fb72121e"
+    },
+    "results": [
+      {
+        "name": "actual sealed archive accepted without caller QA variable",
+        "passed": true
+      },
+      {
+        "name": "changed derived raw SHA rejected",
+        "passed": true,
+        "rejection": "The derived source diff does not match its exact accepted source context and stored bytes."
+      },
+      {
+        "name": "changed derived raw length rejected",
+        "passed": true,
+        "rejection": "The derived source diff does not match its exact accepted source context and stored bytes."
+      },
+      {
+        "name": "numeric string raw length rejected",
+        "passed": true,
+        "rejection": "The derived source diff does not match its exact accepted source context and stored bytes."
+      },
+      {
+        "name": "fractional raw length rejected",
+        "passed": true,
+        "rejection": "The derived source diff does not match its exact accepted source context and stored bytes."
+      },
+      {
+        "name": "wrong derived entry name rejected",
+        "passed": true,
+        "rejection": "The derived source diff does not match its exact accepted source context and stored bytes."
+      },
+      {
+        "name": "missing derived context rejected",
+        "passed": true,
+        "rejection": "The derived source diff does not match its exact accepted source context and stored bytes."
+      },
+      {
+        "name": "malformed raw SHA rejected",
+        "passed": true,
+        "rejection": "The derived source diff does not match its exact accepted source context and stored bytes."
+      },
+      {
+        "name": "frozen summary and archive unchanged",
+        "passed": true
+      }
+    ],
+    "scope": "Actual immutable QA archive function plus in-memory negative source-context cases only; no network, publication, game execution, sealed evidence or Git mutation."
+  }
+}
