@@ -3,8 +3,8 @@
   "build": "UE-1.4.0",
   "source": {
     "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
-    "sha256": "43b08804565ce7be846957e34c1768a9872e507658c511724f11cc08514fb7ae",
-    "bytes": 12662775
+    "sha256": "3cdab15e9f945aa6cd72b00e3d28be0b4c3e30ecc64a51c3cda214ba6ed57c18",
+    "bytes": 12869429
   },
   "units": {
     "blender": "meter",
@@ -3475,6 +3475,226 @@
         "simulationCollisionAuthoritative": false,
         "autoCreatePhysicsAsset": true
       }
+    },
+    "pulverizer": {
+      "id": "pulverizer",
+      "rigFamily": "mechanism",
+      "mesh": {
+        "file": "Assets/Export/Characters/pulverizer/SK_pulverizer.fbx",
+        "sha256": "77c3c8ceb2abd9508c84dfd79886433f7098d19e3a8d8774e3765a8d3a356e10",
+        "bytes": 298780
+      },
+      "bones": [
+        "root",
+        "hammer",
+        "crystal",
+        "piston_0",
+        "piston_1",
+        "piston_2",
+        "attack_origin",
+        "impact_origin",
+        "hp_anchor",
+        "status_anchor"
+      ],
+      "boneCount": 10,
+      "sockets": {
+        "attack_origin": {
+          "bone": "attack_origin",
+          "parent": "root",
+          "positionMeters": [
+            0,
+            0,
+            0.15
+          ]
+        },
+        "impact_origin": {
+          "bone": "impact_origin",
+          "parent": "root",
+          "positionMeters": [
+            0,
+            0,
+            0.15
+          ]
+        },
+        "hp_anchor": {
+          "bone": "hp_anchor",
+          "parent": "root",
+          "positionMeters": [
+            0,
+            0,
+            2.28
+          ]
+        },
+        "status_anchor": {
+          "bone": "status_anchor",
+          "parent": "root",
+          "positionMeters": [
+            0,
+            0,
+            2.1
+          ]
+        }
+      },
+      "triangles": 12832,
+      "materials": [
+        "M_RiftSurface",
+        "M_RiftGlow"
+      ],
+      "boundsMeters": [
+        1.649999976158142,
+        1.649999976158142,
+        2.119999885559082
+      ],
+      "lods": [
+        {
+          "level": 1,
+          "triangles": 6416,
+          "file": "Assets/Export/Characters/pulverizer/SK_pulverizer_LOD1.fbx",
+          "sha256": "887a7b4893568aef7d8d80f3351f704859995d58bbdf0f703641a331b1b647fd",
+          "bytes": 227276
+        },
+        {
+          "level": 2,
+          "triangles": 3208,
+          "file": "Assets/Export/Characters/pulverizer/SK_pulverizer_LOD2.fbx",
+          "sha256": "0cdabee42463a51b6f0e5edcb9418fd5ed9f6a556ae27546c64b3220fe40ba51",
+          "bytes": 151740
+        },
+        {
+          "level": 3,
+          "triangles": 1532,
+          "file": "Assets/Export/Characters/pulverizer/SK_pulverizer_LOD3.fbx",
+          "sha256": "8ca7dc95ad3961ad01f53ba79ac47a545d128c8ca92817256c105545fe9274a9",
+          "bytes": 100508
+        }
+      ],
+      "animations": [
+        {
+          "name": "Idle",
+          "action": "AN_pulverizer_Idle",
+          "frames": 60,
+          "seconds": 1.9666666666666666,
+          "releaseNormalized": null,
+          "loop": true,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/pulverizer/AN_pulverizer_Idle.fbx",
+          "sha256": "dd09c2f416de6ec37206b3a15b753d8b689f626fb324871f15ad09b2d5b6e605",
+          "bytes": 110652
+        },
+        {
+          "name": "Locomotion",
+          "action": "AN_pulverizer_Locomotion",
+          "frames": 60,
+          "seconds": 1.9666666666666666,
+          "releaseNormalized": null,
+          "loop": true,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/pulverizer/AN_pulverizer_Locomotion.fbx",
+          "sha256": "3bea39c31c7abeb619c05828573931ac345591c37d4863ecdd915e0c30956354",
+          "bytes": 110652
+        },
+        {
+          "name": "Attack",
+          "action": "AN_pulverizer_Attack",
+          "frames": 28,
+          "seconds": 0.9,
+          "releaseNormalized": 0.48,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/pulverizer/AN_pulverizer_Attack.fbx",
+          "sha256": "074a588dbe64527f0ef92f16cc27f82c21cfece2cbcbdefa84bd7d4e7fd769e5",
+          "bytes": 101644
+        },
+        {
+          "name": "Hit",
+          "action": "AN_pulverizer_Hit",
+          "frames": 16,
+          "seconds": 0.5,
+          "releaseNormalized": null,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/pulverizer/AN_pulverizer_Hit.fbx",
+          "sha256": "ea4e2d61ced6f9cbeba7def296849e7adb2fa2b53331ffb0c0029d520e61bdec",
+          "bytes": 91436
+        },
+        {
+          "name": "Death",
+          "action": "AN_pulverizer_Death",
+          "frames": 45,
+          "seconds": 1.4666666666666666,
+          "releaseNormalized": null,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/pulverizer/AN_pulverizer_Death.fbx",
+          "sha256": "128f3e3f148a0c33b25d5accbf75d7a2510688e5abb91c4a94753a2114ad273e",
+          "bytes": 104076
+        },
+        {
+          "name": "Deploy",
+          "action": "AN_pulverizer_Deploy",
+          "frames": 24,
+          "seconds": 0.7666666666666667,
+          "releaseNormalized": null,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/pulverizer/AN_pulverizer_Deploy.fbx",
+          "sha256": "63f5c2cd20f429869342631c0bab930859fd8f63b003435a4483ff56d9247118",
+          "bytes": 97484
+        },
+        {
+          "name": "Status",
+          "action": "AN_pulverizer_Status",
+          "frames": 30,
+          "seconds": 0.9666666666666667,
+          "releaseNormalized": null,
+          "loop": true,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/pulverizer/AN_pulverizer_Status.fbx",
+          "sha256": "068452eb965d3fc24ba16ff3ad90e679b45959dffefa4927080c401c9867b9b3",
+          "bytes": 103516
+        },
+        {
+          "name": "Turn",
+          "action": "AN_pulverizer_Turn",
+          "frames": 24,
+          "seconds": 0.7666666666666667,
+          "releaseNormalized": null,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/pulverizer/AN_pulverizer_Turn.fbx",
+          "sha256": "7fca8d119f7a9004e0e608d2259001da79f598cd0744b0d79d33cd44961a296d",
+          "bytes": 97484
+        },
+        {
+          "name": "Acquire",
+          "action": "AN_pulverizer_Acquire",
+          "frames": 18,
+          "seconds": 0.5666666666666667,
+          "releaseNormalized": null,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/pulverizer/AN_pulverizer_Acquire.fbx",
+          "sha256": "a5ba2b91373c8f04b26a47fa465e7f782a79324e83be39021b0d6a59da06d3a0",
+          "bytes": 91436
+        }
+      ],
+      "modelDesign": {
+        "revision": "pulverizer-1",
+        "detailPasses": 1,
+        "architecture": "Chamfered stone foundation; steel compression head; three fitted brass hydraulic cylinders; amethyst pressure crystal",
+        "equipmentFit": "Rigid root foundation; individually weighted telescoping rods follow compression head inside fixed cylinder housings",
+        "groundedFootprintMeters": 1.65,
+        "baseModelScale": 0.95,
+        "attackContactNormalized": 0.48,
+        "compressionStrokeMeters": 0.28,
+        "pulseEmitter": "Ground-centered attack_origin and impact_origin, 0.15 meters above foundation",
+        "locomotion": "Stationary building; diagnostic Locomotion uses the same idle hydraulic cycle"
+      },
+      "physics": {
+        "type": "capsule",
+        "simulationCollisionAuthoritative": false,
+        "autoCreatePhysicsAsset": true
+      }
     }
   },
   "statics": {
@@ -4328,82 +4548,104 @@
     "ironclad": {
       "file": "Assets/Source/CardArt/ironclad.png",
       "sha256": "6bbcffa3edff0a3b333480804dbeeba6803885d47b19fe12fd06fb334f35da8a",
-      "bytes": 917641
+      "bytes": 917641,
+      "sourceSceneSHA256": "43b08804565ce7be846957e34c1768a9872e507658c511724f11cc08514fb7ae"
     },
     "ember_archer": {
       "file": "Assets/Source/CardArt/ember_archer.png",
       "sha256": "8d88d53ca765ab61e91c6de70407b7e865f6cf5bbd1fce86f133002c548c38c4",
-      "bytes": 894994
+      "bytes": 894994,
+      "sourceSceneSHA256": "43b08804565ce7be846957e34c1768a9872e507658c511724f11cc08514fb7ae"
     },
     "twin_blades": {
       "file": "Assets/Source/CardArt/twin_blades.png",
       "sha256": "09ab98e5a34a00b54f038cb1959d0f497911dd1385da6a6fdf2c179ed2c42595",
-      "bytes": 897026
+      "bytes": 897026,
+      "sourceSceneSHA256": "43b08804565ce7be846957e34c1768a9872e507658c511724f11cc08514fb7ae"
     },
     "boulderback": {
       "file": "Assets/Source/CardArt/boulderback.png",
       "sha256": "d06879f73c2ac0800a428326b4aa380831efb164eb068791bb3b84d3fd078042",
-      "bytes": 839783
+      "bytes": 839783,
+      "sourceSceneSHA256": "43b08804565ce7be846957e34c1768a9872e507658c511724f11cc08514fb7ae"
     },
     "arc_mage": {
       "file": "Assets/Source/CardArt/arc_mage.png",
       "sha256": "fed55e4f8b3724caad7de392bc41ed138e45389c4a6ae528f6e2be95c34f7d87",
-      "bytes": 882794
+      "bytes": 882794,
+      "sourceSceneSHA256": "43b08804565ce7be846957e34c1768a9872e507658c511724f11cc08514fb7ae"
     },
     "rambeast": {
       "file": "Assets/Source/CardArt/rambeast.png",
       "sha256": "5d77a3c34fefbdc4226ad0371016207536085a9e69c723591b0773402209b1a5",
-      "bytes": 851695
+      "bytes": 851695,
+      "sourceSceneSHA256": "43b08804565ce7be846957e34c1768a9872e507658c511724f11cc08514fb7ae"
     },
     "sky_manta": {
       "file": "Assets/Source/CardArt/sky_manta.png",
       "sha256": "da1011f807db1260b5833b033c4f07fa6678b6efd36f09b0b1ee2210fc52c1fa",
-      "bytes": 747753
+      "bytes": 747753,
+      "sourceSceneSHA256": "43b08804565ce7be846957e34c1768a9872e507658c511724f11cc08514fb7ae"
     },
     "vampire_bats": {
       "file": "Assets/Source/CardArt/vampire_bats.png",
       "sha256": "3d08b045a3b7fcb986d01cbbda38bbf9bd51a50ad1871459af8cda2f6a4c4b48",
-      "bytes": 777242
+      "bytes": 777242,
+      "sourceSceneSHA256": "43b08804565ce7be846957e34c1768a9872e507658c511724f11cc08514fb7ae"
     },
     "frost_fang": {
       "file": "Assets/Source/CardArt/frost_fang.png",
       "sha256": "bbc46a78fbd6e53bfe3bec94a89de6bb15f32968b19513bf99f8456ce7607234",
-      "bytes": 865979
+      "bytes": 865979,
+      "sourceSceneSHA256": "43b08804565ce7be846957e34c1768a9872e507658c511724f11cc08514fb7ae"
     },
     "storm_raven": {
       "file": "Assets/Source/CardArt/storm_raven.png",
       "sha256": "7ecc180deaf8773a4ca190dd9b86c27e3ae4a619fb652813afbfb97f8415119a",
-      "bytes": 772785
+      "bytes": 772785,
+      "sourceSceneSHA256": "43b08804565ce7be846957e34c1768a9872e507658c511724f11cc08514fb7ae"
     },
     "archer_tower": {
       "file": "Assets/Source/CardArt/archer_tower.png",
       "sha256": "6745f290fd3860e23edeac2f45514ae1a2f1322031f41af3832d2a47bc975125",
-      "bytes": 887774
+      "bytes": 887774,
+      "sourceSceneSHA256": "43b08804565ce7be846957e34c1768a9872e507658c511724f11cc08514fb7ae"
     },
     "bullet_burst": {
       "file": "Assets/Source/CardArt/bullet_burst.png",
       "sha256": "c8d3986c433132a88af69c7e08702aea113955244122147c2dd7abe5b00d2672",
-      "bytes": 817363
+      "bytes": 817363,
+      "sourceSceneSHA256": "43b08804565ce7be846957e34c1768a9872e507658c511724f11cc08514fb7ae"
     },
     "nova_flask": {
       "file": "Assets/Source/CardArt/nova_flask.png",
       "sha256": "e76f174f150e39ea41b3791533fc9ea5a9c27679d922600e9a21ee51d5297957",
-      "bytes": 901997
+      "bytes": 901997,
+      "sourceSceneSHA256": "43b08804565ce7be846957e34c1768a9872e507658c511724f11cc08514fb7ae"
     },
     "meteor_shards": {
       "file": "Assets/Source/CardArt/meteor_shards.png",
       "sha256": "7d0e89cfd570c592619963d3b8d9fa3ff177894b0dbd4b5928c41d4b9a56e584",
-      "bytes": 807339
+      "bytes": 807339,
+      "sourceSceneSHA256": "43b08804565ce7be846957e34c1768a9872e507658c511724f11cc08514fb7ae"
     },
     "mini_stampede": {
       "file": "Assets/Source/CardArt/mini_stampede.png",
       "sha256": "ad2f98b0c4d518eba946ddc2c5fa99f8acb2985b671de082fe102fce5a584af7",
-      "bytes": 827453
+      "bytes": 827453,
+      "sourceSceneSHA256": "43b08804565ce7be846957e34c1768a9872e507658c511724f11cc08514fb7ae"
     },
     "stampede": {
       "file": "Assets/Source/CardArt/stampede.png",
       "sha256": "6df06a83c83ce9c6a0aee9fc20ae10a2a90b4470bd2813233ef854895b20d42f",
-      "bytes": 862759
+      "bytes": 862759,
+      "sourceSceneSHA256": "43b08804565ce7be846957e34c1768a9872e507658c511724f11cc08514fb7ae"
+    },
+    "pulverizer": {
+      "file": "Assets/Source/CardArt/pulverizer.png",
+      "sha256": "5a5fbda05c64c38b2f4a878ddc8c8a205676a8f2bb8b5276174ebc1fd7a91e53",
+      "bytes": 941268,
+      "sourceSceneSHA256": "3cdab15e9f945aa6cd72b00e3d28be0b4c3e30ecc64a51c3cda214ba6ed57c18"
     }
   },
   "renders": [
@@ -4596,6 +4838,11 @@
       "file": "Assets/Renders/stampede.png",
       "sha256": "b6b6fc6c25d72d10148126bc9d0bda9a8473d0295fdb7997d481a835988042f0",
       "bytes": 1191818
+    },
+    {
+      "file": "Assets/Renders/pulverizer.png",
+      "sha256": "a73eaafee566a27d87def8dad14bebca5f96ef0bbde3b329530b4fe3fde84b00",
+      "bytes": 1286402
     }
   ],
   "cards": {
@@ -4634,6 +4881,9 @@
     },
     "stampede": {
       "skeletal": "stampede"
+    },
+    "pulverizer": {
+      "skeletal": "pulverizer"
     },
     "archer_tower": {
       "static": "archer_tower",

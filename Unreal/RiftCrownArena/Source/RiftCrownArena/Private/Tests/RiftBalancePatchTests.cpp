@@ -47,7 +47,8 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
 {
     if(!FParse::Param(FCommandLine::Get(),TEXT("RiftAutomationSandbox")))
     {AddError(TEXT("Balance patch fixture requires isolated RiftSaveRoot/UserDir and RiftAutomationSandbox."));return false;}
-    TestEqual(TEXT("The first balance patch retains all fourteen cards and adds two hog swarms"),int32(rift::Cards().size()),int32(UE_ARRAY_COUNT(ExpectedCards)));
+    TestEqual(TEXT("All sixteen first-patch cards remain alongside the single new Pulverizer"),int32(rift::Cards().size()),int32(UE_ARRAY_COUNT(ExpectedCards))+1);
+    TestNotNull(TEXT("Pulverizer is the only added card outside the preserved balance contract"),rift::FindCard("pulverizer"));
     // The requested visual alignment also moves the actual collision/target
     // bodies. Keep tower depths, body radii and the expanded arena unchanged.
     TestEqual(TEXT("Tower alignment retains the thirty-tile arena width"),rift::arena::Width,30);
@@ -111,7 +112,7 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
         TestEqual(*(Id+TEXT(" imported cost")),A->Cost,C->cost);TestEqual(*(Id+TEXT(" imported member count")),A->Count,C->count);
 #define CHECK_IMPORTED(AssetField,CoreField) Imported(TEXT(#AssetField),A->AssetField,C->CoreField)
         CHECK_IMPORTED(HP,hp);CHECK_IMPORTED(Damage,damage);CHECK_IMPORTED(AttackSpeed,attackInterval);
-        CHECK_IMPORTED(MoveSpeed,moveSpeed);CHECK_IMPORTED(AttackRange,range);CHECK_IMPORTED(BaseModelScale,scale);CHECK_IMPORTED(ProjectileSpeed,projectileSpeed);
+        CHECK_IMPORTED(MoveSpeed,moveSpeed);CHECK_IMPORTED(AttackRange,range);CHECK_IMPORTED(BaseModelScale,scale);CHECK_IMPORTED(ProjectileSpeed,projectileSpeed);CHECK_IMPORTED(ShockwaveSpeed,shockwaveSpeed);
         CHECK_IMPORTED(SplashRadius,splash);CHECK_IMPORTED(Lifetime,lifetime);CHECK_IMPORTED(Footprint,footprint);
         CHECK_IMPORTED(TowerDamage,towerDamage);CHECK_IMPORTED(SpellRadius,spellRadius);CHECK_IMPORTED(CastDelay,castDelay);
         CHECK_IMPORTED(ChargeDamage,chargeDamage);CHECK_IMPORTED(SlowPct,slowPct);CHECK_IMPORTED(SlowDuration,slowDuration);
@@ -130,7 +131,9 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
     }
     for(const auto& C:rift::Cards())
     {
-        TestTrue(TEXT("No existing card disappears from the balance contract"),IDs.count(C.id)==1);
+        TestTrue(TEXT("Every card is an exact retained balance card or the one new Pulverizer"),IDs.count(C.id)==1||C.id=="pulverizer");
+        if(C.id=="pulverizer")continue; // Its independent full contract is tested by Pulverizer.
+        TestEqual(TEXT("Existing cards gain no shockwave attack"),C.shockwaveSpeed,0.);
         const FString Id=UTF8_TO_TCHAR(C.id.c_str());
         auto Ability=[&](const TCHAR* Field,double Actual,double Expected)
         {TestTrue(*(Id+TEXT(" preserved ")+Field),std::abs(Actual-Expected)<.000001);};
@@ -187,8 +190,8 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
         Victim.kind=rift::EntityKind::Building;TestTrue(*(Id+TEXT(" can attack player buildings")),M.CanTarget(Source,Victim));
     }
 
-    // A legal sixteen-key snapshot is a real replay parser regression: the
-    // previous fourteen-key limit rejected current-roster telemetry outright.
+    // A complete current-roster snapshot must remain accepted as new cards are
+    // added; unknown keys and telemetry beyond that exact roster still fail.
     rift::MatchOptions Quiet;Quiet.aiEnabled={false,false};rift::Match ReplayFixture(Quiet);
     auto Original=ReplayFixture.State();
     for(int Team=0;Team<2;++Team)for(const auto& C:rift::Cards())Original.telemetry[Team][C.id]={};
@@ -196,8 +199,8 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
     const auto JSON=URiftReplaySubsystem::SnapshotJSON(Original);rift::Snapshot Restored;
     if(TestTrue(TEXT("Production replay parser accepts every current card's telemetry"),URiftReplaySubsystem::SnapshotFromJSON(JSON,Restored)))
     {
-        TestEqual(TEXT("Replay retains all sixteen player telemetry keys"),int32(Restored.telemetry[0].size()),16);
-        TestEqual(TEXT("Replay retains all sixteen enemy telemetry keys"),int32(Restored.telemetry[1].size()),16);
+        TestEqual(TEXT("Replay retains every current player telemetry key"),int32(Restored.telemetry[0].size()),int32(rift::Cards().size()));
+        TestEqual(TEXT("Replay retains every current enemy telemetry key"),int32(Restored.telemetry[1].size()),int32(rift::Cards().size()));
         TestEqual(TEXT("Replay preserves the fifteen-hog member counter"),Restored.telemetry[0]["stampede"].spawns,uint64(15));
     }
     auto PlayerMetrics=JSON->GetArrayField(TEXT("teams"))[0]->AsObject()->GetObjectField(TEXT("telemetry"));
@@ -224,7 +227,7 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
     }
     TestTrue(TEXT("Mini Stampede is actually selected by AI and Meta generated-deck policy"),MiniAppearances>0);
     TestTrue(TEXT("Stampede is actually selected by AI and Meta generated-deck policy"),StampedeAppearances>0);
-    AddInfo(TEXT("Balance contract: six aligned tower bodies with retained depths/radii, all sixteen cards, unchanged spell/ability parameters, imported stats, per-member and swarm DPS, paid hog counts/costs/targets, and sixteen-key replay telemetry verified."));
+    AddInfo(TEXT("Retained balance contract: six aligned tower bodies, exact stats/abilities/imports for all sixteen existing cards, zero new wave attacks on existing cards, paid hog counts/costs/targets, derived DPS and current-roster replay telemetry verified. Pulverizer has a separate focused contract."));
     return !HasAnyErrors();
 }
 #endif

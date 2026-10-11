@@ -4,12 +4,16 @@ import bpy,json,math,argparse,sys,hashlib
 from mathutils import Vector
 ROOT=Path(__file__).resolve().parents[1]
 parser=argparse.ArgumentParser();parser.add_argument('--models',nargs='*');parser.add_argument('--walk-only',action='store_true')
+parser.add_argument('--output',type=Path,help='Separate pose-review folder, preserving existing accepted render reports')
 opts=parser.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
 M=json.loads((ROOT/'Assets/asset_manifest.json').read_text(encoding='utf-8'))
 bpy.ops.wm.open_mainfile(filepath=str(ROOT/M['source']['file']))
 scene=bpy.context.scene;scene.render.resolution_x=640;scene.render.resolution_y=640;scene.render.resolution_percentage=100
 stage=bpy.data.collections['RenderStage'];camera=scene.camera
-R=ROOT/'Assets/Renders'/('Walking' if opts.walk_only else 'Poses');R.mkdir(parents=True,exist_ok=True)
+R=(opts.output if opts.output.is_absolute() else ROOT/opts.output) if opts.output else ROOT/'Assets/Renders'/('Walking' if opts.walk_only else 'Poses')
+R=R.resolve()
+if not R.is_relative_to(ROOT.resolve()):raise ValueError('Pose-review output escaped the repository')
+R.mkdir(parents=True,exist_ok=True)
 report={'schema':1,'version':M['build'],'sourceBlend':M['source'],'renders':[]}
 for name in opts.models or M['characters']:
     for col in bpy.data.collections:col.hide_render=col!=stage and col.name!=name
@@ -21,6 +25,8 @@ for name in opts.models or M['characters']:
     if opts.walk_only:poses=[('Locomotion',phase/8) for phase in range(8)]
     elif M['characters'][name]['rigFamily']=='humanoid':
         poses += [('Attack',.25),('Attack',.80)]
+    elif M['characters'][name]['rigFamily']=='mechanism':
+        poses += [('Attack',.25),('Attack',.75),('Attack',1),('Deploy',0),('Deploy',.50)]
     for action,phase in poses:
         clip=next(x for x in M['characters'][name]['animations'] if x['name']==action)
         rig.animation_data.action=bpy.data.actions[clip['action']];scene.frame_set(1+round((clip['frames']-1)*phase))

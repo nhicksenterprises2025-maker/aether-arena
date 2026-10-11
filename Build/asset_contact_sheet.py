@@ -17,7 +17,7 @@ def sheet(names,name,columns=4,source=None):
         canvas.paste(im,(x+(width-im.width)//2,y))
         d.text((x+18,y+height-34),n.replace('_',' ').title(),font=font,fill=(220,231,241))
     canvas.save(R/(name+'.png'))
-sheet(['ironclad','ember_archer','twin_blades','arc_mage','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven','archer_tower','tower_archer','tower_guard','tower_core','nova_flask','meteor_shard'],'characters_contact')
+sheet(['ironclad','ember_archer','twin_blades','arc_mage','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven','archer_tower','tower_archer','tower_guard','tower_core','nova_flask','meteor_shard','pulverizer'],'characters_contact')
 sheet(['bridge','floor_tile','lane_paver','bank_segment','boundary_stone','grass_tuft','shrub','tree','crystal_plinth','banner','ruin','distant_island','meteor_shard','bullet_round','tower_rubble'],'environment_contact')
 card_ids=list(json.loads((ROOT/'Assets/asset_manifest.json').read_text())['cards'])
 sheet(card_ids,'model_cards_contact',4,ROOT/'Assets/Source/CardArt')

@@ -634,6 +634,14 @@ void ARiftGameMode::BeginPlay()
         {
             auto* PC=Cast<ARiftPlayerController>(GetWorld()->GetFirstPlayerController());if(!PC||!PC->Interface)return;
             auto* Match=GetWorld()->GetSubsystem<URiftMatchSubsystem>();
+            if(Scenario==TEXT("pulverizer"))
+            {
+                auto* Profile=GetGameInstance()->GetSubsystem<URiftProfileSubsystem>();
+                if(Profile->Presets.IsEmpty()){FPlatformMisc::RequestExitWithStatus(false,2);return;}
+                const auto Original=Profile->Presets[0].Cards;const auto Active=Profile->ActivePreset;
+                Profile->Presets[0].Cards={TEXT("pulverizer"),TEXT("mini_stampede"),TEXT("stampede"),TEXT("ironclad"),TEXT("ember_archer"),TEXT("arc_mage"),TEXT("frost_fang"),TEXT("meteor_shards")};
+                Profile->ActivePreset=Profile->Presets[0].Id;Match->StartMatch(true);Profile->Presets[0].Cards=Original;Profile->ActivePreset=Active;
+            }
             if(Scenario==TEXT("swarm_split"))
             {
                 auto* Profile=GetGameInstance()->GetSubsystem<URiftProfileSubsystem>();
@@ -793,6 +801,19 @@ void ARiftGameMode::BeginPlay()
                     }
                     Sim->Step(.35);Match->FlushEvents();
                 }
+                else if(Scenario==TEXT("pulverizer"))
+                {
+                    Sim->SetAIEnabled(rift::Team::Player,false);Sim->SetAIEnabled(rift::Team::Enemy,false);Sim->ClearField();
+                    Sim->SetAether(rift::Team::Player,10);
+                    int32 Hand=-1;for(int32 I=0;I<4;++I)if(Sim->State().hands[0][I]=="pulverizer")Hand=I;
+                    if(Hand<0||!Sim->Play(rift::Team::Player,Hand,{-6.5,8.5},"pulverizer-visual-qa")||
+                        !Sim->Spawn(rift::Team::Enemy,"ironclad",{-6.5,5.5})||
+                        !Sim->Spawn(rift::Team::Enemy,"mini_stampede",{-3.5,8.5})||
+                        !Sim->Spawn(rift::Team::Enemy,"sky_manta",{-6.5,6.5}))
+                    {RIFT_LOG(LogRift,Error,TEXT("Pulverizer capture deployment failed"));FPlatformMisc::RequestExitWithStatus(false,2);return;}
+                    float Age=.35f;FParse::Value(FCommandLine::Get(),TEXT("RiftPulverizerAge="),Age);
+                    Sim->Step(FMath::Clamp(double(Age),0.,8.));Match->FlushEvents();Match->SetSpeed(0);
+                }
                 else if(Scenario==TEXT("tower_pathing"))
                 {
                     if(!BuildTowerPathingCapture(Match,TowerPathingCapture))
@@ -809,7 +830,7 @@ void ARiftGameMode::BeginPlay()
                     {RIFT_LOG(LogRift,Error,TEXT("Swarm split capture failed paid formation/landing-lane/body/speed/progress checks"));FPlatformMisc::RequestExitWithStatus(false,2);return;}
                 }
                 else if(Scenario==TEXT("placement")||Scenario==TEXT("effects17"))Match->SetSpeed(0);
-                if(Scenario!=TEXT("roster")&&Scenario!=TEXT("placement")&&Scenario!=TEXT("effects17")&&Scenario!=TEXT("projectiles")&&Scenario!=TEXT("spells")&&Scenario!=TEXT("tower_pathing")&&Scenario!=TEXT("unit_collision")&&Scenario!=TEXT("swarm_split"))
+                if(Scenario!=TEXT("roster")&&Scenario!=TEXT("placement")&&Scenario!=TEXT("effects17")&&Scenario!=TEXT("projectiles")&&Scenario!=TEXT("spells")&&Scenario!=TEXT("tower_pathing")&&Scenario!=TEXT("unit_collision")&&Scenario!=TEXT("swarm_split")&&Scenario!=TEXT("pulverizer"))
                 {float CaptureSpeed=1;FParse::Value(FCommandLine::Get(),TEXT("RiftCaptureSpeed="),CaptureSpeed);Match->SetSpeed(FMath::Clamp(CaptureSpeed,.25f,4.f));}
                 Match->FlushEvents();
             }

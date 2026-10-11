@@ -16,6 +16,8 @@
 #include "PhysicsEngine/PhysicsAsset.h"
 #include "UObject/SavePackage.h"
 #include "Misc/PackageName.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
 #include "Serialization/JsonSerializer.h"
 #include "RiftAssetLibrary.h"
 #include "RiftCardData.h"
@@ -196,9 +198,10 @@ FString URiftEditorAssetLibrary::InspectImportedAssetsJSON()
 FString URiftEditorAssetLibrary::FinalizeImportedPhysicsAssetsJSON()
 {
     auto Report=MakeShared<FJsonObject>();TArray<TSharedPtr<FJsonValue>> Entries,Errors;
-    const TCHAR* Ids[]={TEXT("ironclad"),TEXT("ember_archer"),TEXT("twin_blades"),TEXT("boulderback"),TEXT("arc_mage"),TEXT("rambeast"),TEXT("sky_manta"),TEXT("vampire_bats"),TEXT("frost_fang"),TEXT("storm_raven"),TEXT("mini_stampede"),TEXT("stampede"),TEXT("tower_archer")};
+    const TCHAR* Ids[]={TEXT("ironclad"),TEXT("ember_archer"),TEXT("twin_blades"),TEXT("boulderback"),TEXT("arc_mage"),TEXT("rambeast"),TEXT("sky_manta"),TEXT("vampire_bats"),TEXT("frost_fang"),TEXT("storm_raven"),TEXT("mini_stampede"),TEXT("stampede"),TEXT("tower_archer"),TEXT("pulverizer")};
     for(const auto* Id:Ids)
     {
+        if(FParse::Param(FCommandLine::Get(),TEXT("RiftPulverizerOnly")) && FString(Id)!=TEXT("pulverizer"))continue;
         auto* Mesh=LoadObject<USkeletalMesh>(nullptr,*FString::Printf(TEXT("/Game/Rift/Characters/%s/SK_%s.SK_%s"),Id,Id,Id));
         auto* Physics=Mesh?Mesh->GetPhysicsAsset():nullptr;
         if(!Physics||Physics->SkeletalBodySetups.IsEmpty()){Errors.Add(MakeShared<FJsonValueString>(FString(TEXT("Missing generated physics bodies: "))+Id));continue;}

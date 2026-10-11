@@ -47,6 +47,7 @@ FName FlightFor(const std::string& Card)
     if (Card=="arc_mage") return TEXT("ArcFlight");
     if (Card=="sky_manta") return TEXT("MantaFlight");
     if (Card=="storm_raven") return TEXT("StormFlight");
+    if (Card=="pulverizer") return TEXT("Nova");
     return TEXT("TowerFlight");
 }
 FName MissileFor(const std::string& Card)
@@ -483,6 +484,7 @@ void ARiftArenaPresentation::ClearVisuals()
     SpellImpactEffects.Reset();RecentSpellImpacts.Reset();SpellImpactEvents=0;
     ProjectileBodiesCreated=0;ProjectileBodiesReleased=0;
     for (auto& Entry:Hazards) if (Entry.Value) Entry.Value->DestroyComponent();Hazards.Reset();
+    for (auto& Entry:ShockwaveRings) if (Entry.Value) Entry.Value->DestroyComponent();ShockwaveRings.Reset();
     for (auto& Entry:SlowEffects) if (Entry.Value) Entry.Value->DestroyComponent();SlowEffects.Reset();
     for (auto& Entry:StunEffects) if (Entry.Value) Entry.Value->DestroyComponent();StunEffects.Reset();
     for (auto& Effect:TransientEffects) if (Effect.IsValid()) Effect->DestroyComponent();TransientEffects.Reset();
@@ -540,7 +542,7 @@ void ARiftArenaPresentation::Synchronize(float DeltaSeconds)
         }
     }
     for (uint64 Id:Removed) {Units[Id]->Destroy();Units.Remove(Id);NextFrostBreath.Remove(Id);}
-    SynchronizeProjectiles(*State);SynchronizeSpellCasts(*State);SynchronizeSpellDebris(*State);SynchronizeHazards(*State);SynchronizeStatuses(*State);
+    SynchronizeProjectiles(*State);SynchronizeShockwaves(*State);SynchronizeSpellCasts(*State);SynchronizeSpellDebris(*State);SynchronizeHazards(*State);SynchronizeStatuses(*State);
     TransientEffects.RemoveAllSwap([](const auto& Effect){return !Effect.IsValid();});
     SpellImpactEffects.RemoveAllSwap([](const auto& Effect){return !Effect.Component.IsValid();});
     const int32 Stage=State->phase==rift::Phase::Regulation?(State->elapsed>=120?2:1):State->phaseElapsed>=60?3:2;
@@ -619,6 +621,20 @@ FString ARiftArenaPresentation::NiagaraDiagnosticsJSON()
         Animations.Add(MakeShared<FJsonValueObject>(Entry));
     }
     Report->SetArrayField(TEXT("unitAnimations"),Animations);
+    TArray<TSharedPtr<FJsonValue>> Waves;
+    if (const auto* State=ViewState()) for (const auto& Wave:State->shockwaves)
+    {
+        auto V=MakeShared<FJsonObject>();V->SetNumberField(TEXT("id"),double(Wave.id));
+        V->SetNumberField(TEXT("source"),double(Wave.source));V->SetNumberField(TEXT("playId"),double(Wave.playId));
+        V->SetNumberField(TEXT("radius"),FMath::Clamp((State->elapsed-Wave.born)*Wave.speed,0.,Wave.radius));
+        V->SetNumberField(TEXT("maximumRadius"),Wave.radius);V->SetNumberField(TEXT("speed"),Wave.speed);
+        V->SetNumberField(TEXT("born"),Wave.born);V->SetNumberField(TEXT("expires"),Wave.expires);
+        auto* Ring=ShockwaveRings.FindRef(Wave.id).Get();V->SetBoolField(TEXT("ringPresent"),Ring!=nullptr);
+        V->SetBoolField(TEXT("ringVisible"),Ring&&Ring->IsVisible());
+        if (Ring) V->SetNumberField(TEXT("decalRadiusCm"),Ring->DecalSize.Y);
+        Waves.Add(MakeShared<FJsonValueObject>(V));
+    }
+    Report->SetArrayField(TEXT("shockwaveVisuals"),Waves);
     TArray<TSharedPtr<FJsonValue>> Missiles,Trails;
     if (const auto* State=ViewState()) for (const auto& Projectile:State->projectiles)
     {
@@ -1140,6 +1156,37 @@ void ARiftArenaPresentation::SynchronizeSpellDebris(const rift::Snapshot& State)
         Body->SetWorldTransform(FTransform(Rotation,Position,FVector(Piece.Scale*Fade)));
     }
 }
+void ARiftArenaPresentation::SynchronizeShockwaves(const rift::Snapshot& State)
+{
+    TSet<uint64> Present;
+    for (const auto& Wave:State.shockwaves)
+    {
+        if (State.phase==rift::Phase::Finished || State.elapsed>=Wave.expires) continue;
+        Present.Add(Wave.id);
+        auto* Ring=ShockwaveRings.FindRef(Wave.id).Get();
+        if (!Ring)
+        {
+            Ring=NewObject<UDecalComponent>(this);Ring->SetupAttachment(Scene);Ring->SetMobility(EComponentMobility::Movable);
+            Ring->SetWorldLocation(URiftMatchSubsystem::WorldPoint(Wave.origin,12));Ring->SetWorldRotation(FRotator(-90,0,0));
+            Ring->SortOrder=4;
+            if (auto* Base=LoadObject<UMaterialInterface>(nullptr,TEXT("/Game/Rift/Materials/M_RiftShockwave.M_RiftShockwave")))
+            {
+                auto* Material=UMaterialInstanceDynamic::Create(Base,this);
+                Material->SetVectorParameterValue(TEXT("RingColor"),FLinearColor(.64f,.12f,1.f,1.f));
+                Ring->SetDecalMaterial(Material);
+            }
+            Ring->RegisterComponent();AddInstanceComponent(Ring);ShockwaveRings.Add(Wave.id,Ring);
+        }
+        // Radius comes exclusively from simulation time: pause and replay seek
+        // reconstruct the same traveling front that owns each damage event.
+        const double Radius=FMath::Clamp((State.elapsed-Wave.born)*Wave.speed,0.,Wave.radius);
+        Ring->DecalSize=FVector(28,FMath::Max(1.,Radius*100),FMath::Max(1.,Radius*100));
+        Ring->SetVisibility(Radius>0.);
+    }
+    TArray<uint64> Removed;
+    for (const auto& Entry:ShockwaveRings) if (!Present.Contains(Entry.Key)) Removed.Add(Entry.Key);
+    for (uint64 Id:Removed) {if (ShockwaveRings[Id]) ShockwaveRings[Id]->DestroyComponent();ShockwaveRings.Remove(Id);}
+}
 void ARiftArenaPresentation::SynchronizeHazards(const rift::Snapshot& State)
 {
     TSet<uint64> Present;
@@ -1233,7 +1280,7 @@ void ARiftArenaPresentation::OnSimulationEvent(const rift::Event& Event)
     {
         if (Target && Event.amount>0) Target->HitAt(Event.time,Event.amount);
         const bool ArcPrimary=Event.cardId=="arc_mage" && Event.damageKind=="attack";
-        const FName FX=Event.damageKind=="dot"?TEXT("MeteorTick"):Event.cardId=="frost_fang"?TEXT("Frost"):ArcPrimary?TEXT("Nova"):TEXT("Impact");
+        const FName FX=Event.damageKind=="dot"?TEXT("MeteorTick"):Event.cardId=="frost_fang"?TEXT("Frost"):ArcPrimary||Event.cardId=="pulverizer"?TEXT("Nova"):TEXT("Impact");
         const float Radius=ArcPrimary?155.f:Event.damageKind=="splash"?85.f:Event.cardId=="storm_raven"?80.f:Event.cardId=="sky_manta"?62.f:55.f;
         auto* Impact=SpawnEffect(FX,Position,Event.team,Radius);
         SetEffectParameters(Impact,Event.team,Radius,Position,Position,EffectColor(FlightFor(Event.cardId),Event.team));
@@ -1250,7 +1297,7 @@ void ARiftArenaPresentation::OnSimulationEvent(const rift::Event& Event)
                 Event.cardId=="frost_fang"?TEXT("frost_attack"):
                 Event.cardId=="storm_raven"?TEXT("storm_bolt"):
                 Event.cardId=="ember_archer"||Event.cardId=="archer_tower"?TEXT("arrow_hit"):
-                Event.cardId=="arc_mage"?TEXT("arc_impact"):Event.cardId=="sky_manta"?TEXT("manta_impact"):
+                Event.cardId=="arc_mage"||Event.cardId=="pulverizer"?TEXT("arc_impact"):Event.cardId=="sky_manta"?TEXT("manta_impact"):
                 TEXT("sword_hit");
             PlayEventSound(Sound,Position,Event.count>=5?.14f:.3f);
         }
@@ -1266,7 +1313,7 @@ void ARiftArenaPresentation::OnSimulationEvent(const rift::Event& Event)
     {if (Target) Target->ActivateCore();SpawnEffect(TEXT("CoreAwaken"),Position,Event.team,180);PlayEventSound(TEXT("core_awaken"),Position,.6f);}
     else if (Event.type=="slow" || Event.type=="stun")
     {if (State) SynchronizeStatuses(*State);if (Event.type=="stun" && Source) Source->SpecialAt(TEXT("StunDischarge"),Event.time,.3f);
-        PlayEventSound(Event.type=="slow"?TEXT("frost_slow"):TEXT("stun"),Position,.25f);}
+        if (Event.cardId!="pulverizer") PlayEventSound(Event.type=="slow"?TEXT("frost_slow"):TEXT("stun"),Position,.25f);}
     else if (Event.type=="aura")
     {if (Source) Source->SpecialAt(TEXT("Pulse"),Event.time);SpawnEffect(TEXT("Aura"),Source?Source->GetActorLocation():Position,Event.team,Event.amount*100);PlayEventSound(TEXT("storm_pulse"),Position,.55f);}
     else if (Event.type=="hazard_tick" && State)

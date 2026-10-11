@@ -48,6 +48,7 @@ public:
     void SampleSpellImpactEffectsForQA();
     int32 SpellCastVisualCount() const { return SpellCastRings.Num(); }
     int32 SpellCastMeshCount() const { return SpellCastBodies.Num(); }
+    int32 ShockwaveVisualCount() const { return ShockwaveRings.Num(); }
     // Presentation paths use authoritative progress, including paused playback
     // and seeking. Neither trajectory nor roll feeds back into simulation.
     static FVector ProjectilePathPoint(const std::string& Card, FVector Source, FVector Target, double Progress);
@@ -59,6 +60,7 @@ private:
         FVector Scale=FVector::OneVector, int32 Team=-1);
     void Synchronize(float DeltaSeconds);
     void SynchronizeProjectiles(const rift::Snapshot& State);
+    void SynchronizeShockwaves(const rift::Snapshot& State);
     UStaticMeshComponent* MakeProjectileBody(const std::string& Card, rift::Team Team);
     UInstancedStaticMeshComponent* ProjectileTrail(const std::string& Card, rift::Team Team);
     void RemoveProjectile(uint64 Id);
@@ -96,6 +98,7 @@ private:
     UPROPERTY() TArray<TObjectPtr<UStaticMeshComponent>> SpellCastBodies;
     UPROPERTY() TArray<TObjectPtr<UNiagaraComponent>> SpellCastGlows;
     UPROPERTY() TMap<uint64,TObjectPtr<UNiagaraComponent>> Hazards;
+    UPROPERTY() TMap<uint64,TObjectPtr<UDecalComponent>> ShockwaveRings;
     UPROPERTY() TMap<uint64,TObjectPtr<UNiagaraComponent>> SlowEffects;
     UPROPERTY() TMap<uint64,TObjectPtr<UNiagaraComponent>> StunEffects;
     UPROPERTY() TMap<uint64,TObjectPtr<UMaterialInstanceDynamic>> ParticleMaterials;

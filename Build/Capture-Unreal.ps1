@@ -2,13 +2,14 @@ param(
     [string]$EngineRoot = 'C:\Program Files\Epic Games\UE_5.8',
     [string]$Executable = '',
     [string]$Page = 'Battle',
-    [ValidateSet('','roster','congestion','effects','effects17','placement','projectiles','spells','tower_pathing','unit_collision','swarm_split')][string]$Scenario = '',
+    [ValidateSet('','roster','congestion','effects','effects17','placement','projectiles','spells','tower_pathing','unit_collision','swarm_split','pulverizer')][string]$Scenario = '',
+    [ValidateRange(0,8)][float]$PulverizerAge = .35,
     [ValidateSet('crowd','contact','layers')][string]$CollisionCase = 'crowd',
     [ValidateRange(0,12)][float]$CollisionAge = 3,
     [ValidateSet('mini_stampede','stampede','twin_blades','vampire_bats')][string]$SwarmCard = 'stampede',
     [ValidateRange(0,12)][float]$SwarmAge = 3,
     [ValidateScript({ [math]::Abs($_) -eq .5 })][float]$SwarmX = .5,
-    [ValidateRange(8.5,11.5)][float]$SwarmZ = 8.5,
+    [ValidateRange(2.5,11.5)][float]$SwarmZ = 8.5,
     [switch]$SwarmLeftGuardDown,
     [ValidateRange(0,6)][float]$PathingAge = 0,
     [ValidateSet('clearance','left_pocket','right_pocket')][string]$RouteCase = 'clearance',
@@ -89,6 +90,7 @@ if ($Scenario -eq 'swarm_split') {
     if ($SwarmLeftGuardDown) { $arguments += '-RiftSwarmLeftGuardDown' }
 }
 if ($BreathSmoke) { $arguments += '-RiftBreathSmoke' }
+if ($Scenario -eq 'pulverizer') { $arguments += '-RiftPulverizerAge=' + $PulverizerAge.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
 if ($Hand -ge 0) { $arguments += "-RiftCaptureHand=$Hand" }
 if ($Developer) { $arguments += '-RiftCaptureDeveloper' }
 if ($BattleMenu) { $arguments += '-RiftCaptureBattleMenu' }

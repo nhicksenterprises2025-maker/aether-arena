@@ -138,6 +138,15 @@ const std::vector<Card> &Cards() {
         c.count = 15;
         c.structuresOnly = true;
         v.push_back(c);
+        c = Troop("pulverizer", "Pulverizer", 3, 700, 65, .9, 0, 4, .95);
+        c.building = true;
+        c.splash = 4;
+        c.lifetime = 45;
+        c.footprint = 1.65;
+        c.shockwaveSpeed = 8;
+        c.slowPct = .10;
+        c.slowDuration = 1.5;
+        v.push_back(c);
         return v;
     }();
     return cards;
@@ -365,6 +374,9 @@ void Match::FixedStep(double dt) {
     }
     if (!Running(state_.phase))
         return;
+    UpdateShockwaves();
+    if (!Running(state_.phase))
+        return;
     for (std::size_t i = 0; i < state_.projectiles.size();) {
         auto &p = state_.projectiles[i];
         const auto *target = Get(p.target);
@@ -480,6 +492,7 @@ void Match::Finish(int winner, const std::string &reason) {
     state_.resultReason = reason;
     state_.timeRemaining = 0;
     state_.projectiles.clear();
+    state_.shockwaves.clear();
     state_.spellCasts.clear();
     for (auto &team : state_.telemetry)
         for (auto &[id, t] : team)
@@ -500,6 +513,7 @@ void Match::BeginTiebreaker() {
     state_.phaseElapsed = 0;
     state_.timeRemaining = 0;
     state_.projectiles.clear();
+    state_.shockwaves.clear();
     state_.hazards.clear();
     state_.spellCasts.clear();
     tieMin_.fill(std::numeric_limits<double>::max());
@@ -706,6 +720,21 @@ bool Match::PlanDeployment(Team team, const Card &c, Vec2 p, bool sandbox,
                 offsets.push_back({(column - (width - 1) * .5) * spacing,
                                    (row - (rows - 1) * .5) * spacing});
         }
+    }
+    if (c.id == "mini_stampede" && !sandbox) {
+        // At the first legal tile, the three forward hogs otherwise request
+        // the forbidden river strip and can be independently sent to distant
+        // free contacts. Keep the whole formation anchored to the hand drop.
+        double minimum = 1e9, maximum = -1e9;
+        for (const auto &offset : offsets) {
+            minimum = std::min(minimum, p.z * Sign(team) + offset.z);
+            maximum = std::max(maximum, p.z * Sign(team) + offset.z);
+        }
+        const double low = p.z * Sign(team) > 0 ? 2.15 : -arena::PocketMaxDepth;
+        const double high = p.z * Sign(team) > 0 ? arena::HalfHeight - .40 - radius * .72 : -2.25;
+        const double shift = minimum < low ? low - minimum : maximum > high ? high - maximum : 0;
+        for (auto &offset : offsets)
+            offset.z += shift;
     }
     positions.reserve(static_cast<std::size_t>(c.count));
     std::vector<Entity> planned;
@@ -980,6 +1009,7 @@ void Match::ClearField() {
                                          [](const Entity &e) { return !Crown(e); }),
                           state_.entities.end());
     state_.projectiles.clear();
+    state_.shockwaves.clear();
     state_.hazards.clear();
     state_.spellCasts.clear();
     for (auto &ai : state_.ai) {
@@ -1025,11 +1055,11 @@ bool Match::CanTarget(const Entity &s, const Entity &t) const {
         return Structure(t);
     return !t.flying || c->canHitAir;
 }
-bool Match::InSight(const Entity &s, const Entity &t, double bonus) const {
+bool Match::InSight(const Entity &s, const Entity &t) const {
     const Vec2 delta = Difference(t.position, s.position);
     const double length = std::hypot(delta.x, delta.z);
     const double dot = delta.x * s.facing.x + delta.z * s.facing.z;
-    return length <= (dot >= 0 ? 8. : 5.) + bonus + s.radius * .2 + t.radius + Epsilon;
+    return length <= (dot >= 0 ? detection::Front : detection::Rear) + Epsilon;
 }
 double Match::CombatDistance(const Entity &s, const Entity &t) const {
     const double direct = Distance(s.position, t.position);

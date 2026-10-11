@@ -132,7 +132,9 @@ def readback(unreal, root, manifest, records):
                 raise RuntimeError("Card data is unavailable")
             source = str(unreal.EditorAssetLibrary.get_metadata_tag(obj, "SourceManifest"))
             art = str(unreal.EditorAssetLibrary.get_metadata_tag(obj, "PortraitSHA256"))
-            matches = source == manifest["source"]["sha256"] and art == portrait["sha256"]
+            # Incremental additions preserve accepted DataAssets and portraits;
+            # each portrait names the scene revision that actually authored it.
+            matches = source == portrait.get("sourceSceneSHA256", manifest["source"]["sha256"]) and art == portrait["sha256"]
             result["cards"].append({"cardId": name, "sourceManifest": source,
                                     "portraitSha256": art, "matches": matches})
             if not matches:

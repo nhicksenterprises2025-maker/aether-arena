@@ -126,7 +126,7 @@ void URiftUIWidget::CardDetail()
     Add(Details,Text(FS(Card->name),32,Gold),3);Add(Details,Text(FS(Intelligence.role),18,Paper),3);
     auto* Tags=WidgetTree->ConstructWidget<UWrapBox>();Tags->SetInnerSlotPadding(FVector2D(7,7));Add(Details,Tags,5);
     Tags->AddChildToWrapBox(Badge(FString::Printf(TEXT("%d AETHER"),Card->cost),Purple,14));Tags->AddChildToWrapBox(Badge(CardType(*Card),FLinearColor(.045f,.14f,.20f,1),12));if(!Card->spell)Tags->AddChildToWrapBox(Badge(FString::Printf(TEXT("%d %s"),Card->count,Card->count==1?TEXT("MEMBER"):TEXT("MEMBERS")),FLinearColor(.08f,.115f,.16f,1),12));
-    const FString Targets=Card->spell?(Card->towerDamage>0?TEXT("Ground, air and structures"):TEXT("Ground and air troops")):Card->structuresOnly?TEXT("Towers and buildings"):Card->building?TEXT("Ground and air troops"):Card->canHitAir?TEXT("Ground, air and structures"):TEXT("Ground and structures");
+    const FString Targets=Card->spell?(Card->towerDamage>0?TEXT("Ground, air and structures"):TEXT("Ground and air troops")):Card->structuresOnly?TEXT("Towers and buildings"):Card->building?(Card->canHitAir?TEXT("Ground and air troops"):TEXT("Ground troops")):Card->canHitAir?TEXT("Ground, air and structures"):TEXT("Ground and structures");
     Add(Details,Text(TEXT("TARGETS  ")+Targets,15,Blue),6);
     auto* Stats=WidgetTree->ConstructWidget<UWrapBox>();Stats->SetInnerSlotPadding(FVector2D(8,8));Add(Details,Stats,3);
     auto Stat=[&](const FString& Label,const FString& Value)
@@ -140,7 +140,7 @@ void URiftUIWidget::CardDetail()
         Stat(TEXT("BASIC DPS / MEMBER"),FString::Printf(TEXT("%.2f"),Card->damage/Card->attackInterval));
         if(Card->count>1){Stat(TEXT("FULL SWARM HP"),FString::Printf(TEXT("%.0f"),Card->hp*Card->count));Stat(TEXT("FULL SWARM BASIC DPS"),FString::Printf(TEXT("%.2f"),Card->damage*Card->count/Card->attackInterval));}
         Stat(TEXT("ATTACK RANGE"),FString::Printf(TEXT("%.2f tiles"),Card->range));Stat(TEXT("MOVEMENT"),FString::Printf(TEXT("%.2f tiles/s"),Card->moveSpeed));Stat(TEXT("FRONT / REAR SIGHT"),TEXT("8 / 5 tiles"));
-        if(Card->projectileSpeed>0)Stat(TEXT("PROJECTILE SPEED"),FString::Printf(TEXT("%.1f tiles/s"),Card->projectileSpeed));if(Card->splash>0)Stat(TEXT("SPLASH RADIUS"),FString::Printf(TEXT("%.2f tiles"),Card->splash));
+        if(Card->projectileSpeed>0)Stat(TEXT("PROJECTILE SPEED"),FString::Printf(TEXT("%.1f tiles/s"),Card->projectileSpeed));if(Card->shockwaveSpeed>0)Stat(TEXT("SHOCKWAVE SPEED"),FString::Printf(TEXT("%.1f tiles/s"),Card->shockwaveSpeed));if(Card->splash>0)Stat(Card->shockwaveSpeed>0?TEXT("SHOCKWAVE RADIUS"):TEXT("SPLASH RADIUS"),FString::Printf(TEXT("%.2f tiles"),Card->splash));
     }
     else
     {
@@ -155,7 +155,8 @@ void URiftUIWidget::CardDetail()
     if(Card->building)Ability(TEXT("DEFENSIVE BUILDING"),FString::Printf(TEXT("Remains for %.1f seconds. Its %.2f-tile footprint must fit the legal deployment area."),Card->lifetime,Card->footprint));
     if(Card->castDelay>0)Ability(TEXT("LEAD YOUR CAST"),FString::Printf(TEXT("Hits %.2f seconds after casting. Aim where enemies will be when the animation finishes. The marked area stays fixed; enemies can enter or leave it before impact."),Card->castDelay));
     if(Card->chargeDamage)Ability(TEXT("CHARGED IMPACT"),FString::Printf(TEXT("Builds charge by moving for more than 1.65 seconds. A charged impact deals %.0f damage."),Card->chargeDamage));
-    if(Card->slowPct)Ability(TEXT("MOVEMENT SLOW"),FString::Printf(TEXT("Each melee hit slows movement by %.0f%% for %.1f seconds. Repeat hits refresh the effect; slows do not stack."),Card->slowPct*100,Card->slowDuration));
+    if(Card->shockwaveSpeed>0)Ability(TEXT("EXPANDING GROUND SHOCKWAVE"),FString::Printf(TEXT("When an enemy ground troop is within %.1f tiles, releases a shockwave every %.2f seconds. It expands at %.1f tiles per second to a %.1f-tile radius, reaching its edge after %.2f seconds. Each enemy ground troop takes %.0f damage once when the wave reaches it. Flying units, buildings and towers are unaffected."),Card->range,Card->attackInterval,Card->shockwaveSpeed,Card->splash,Card->splash/Card->shockwaveSpeed,Card->damage));
+    if(Card->slowPct)Ability(TEXT("MOVEMENT SLOW"),Card->shockwaveSpeed>0?FString::Printf(TEXT("Shockwave contact slows movement by %.0f%% for %.1f seconds. Later hits refresh this card's slow; slows do not stack. A stronger slow retains its own duration."),Card->slowPct*100,Card->slowDuration):FString::Printf(TEXT("Each melee hit slows movement by %.0f%% for %.1f seconds. Repeat hits refresh the effect; slows do not stack."),Card->slowPct*100,Card->slowDuration));
     if(Card->auraDamage)Ability(TEXT("ELECTRIC AURA"),FString::Printf(TEXT("Deals %.0f damage to nearby ground and air troops every %.1f seconds within %.1f tiles. Each pulse stuns for %.1f seconds. Direct attacks remain structure-only."),Card->auraDamage,Card->auraInterval,Card->auraRadius,Card->stunDuration));
     if(Card->dotDamage)Ability(TEXT("LINGERING DAMAGE ZONE"),FString::Printf(TEXT("The initial hit deals %.0f damage. The zone then deals %.0f troop damage once per second for %.0f ticks. Troops entering the zone can be hit by later ticks. Towers and buildings take no damage."),Card->damage,Card->dotDamage,Card->dotDuration));
     if(Card->spell&&Card->rounds>1)Ability(TEXT("ONE DAMAGE APPLICATION"),FString::Printf(TEXT("The burst shows %d rounds, but applies the listed damage once to each eligible target."),Card->rounds));
