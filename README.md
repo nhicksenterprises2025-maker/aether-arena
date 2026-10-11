@@ -1,7 +1,16 @@
 # Rift Crown Arena / Aether Arena
 
-Original Windows card battler: sixteen cards, two lanes, deterministic combat,
+Original Windows card battler: seventeen cards, two lanes, deterministic combat,
 seven AI personalities, deck workshop, Meta Lab, replays and developer training.
+
+Version 1.5.0 adds Pulverizer, a 3-Aether building with an animated compression
+mechanism and traveling purple shockwaves. Its 65-damage waves expand at
+8 tiles/s to a 4-tile radius and refresh a 10% movement slow for 1.5 seconds.
+Every deployable card uses 8-tile forward and 5-tile rear enemy detection,
+while keeping its attack range. Mini Stampede's river-edge formation stays
+compact. Existing card balance, models, art, arena and menus are preserved.
+See [the update notes](Docs/PATCH_NOTES_1.5.0.md) and
+[spreadsheet-ready stats](Docs/CARD_STATS_1.5.0.tsv).
 
 Version 1.4.0 introduces Mini Stampede (five wild hogs, 2 Aether) and Stampede
 (fifteen royal hogs, 7 Aether), applies the first balance patch, and adds planted

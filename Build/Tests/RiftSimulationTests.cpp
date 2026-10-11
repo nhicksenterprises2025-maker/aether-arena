@@ -11,6 +11,7 @@
 using namespace rift;
 namespace {
 int passed = 0;
+std::string scenarioFilter;
 std::uint64_t collisionPairChecks = 0, collisionSweepChecks = 0;
 int collisionPaidFixtures = 0, collisionPaidPlays = 0, collisionMembers = 0;
 double collisionMinimumGap = 1e9, collisionMinimumSweepGap = 1e9;
@@ -56,6 +57,17 @@ const Entity &ById(const Match &m, EntityId id) {
     if (const auto *entity = FindEntity(m, id))
         return *entity;
     throw std::runtime_error("entity missing " + std::to_string(id));
+}
+Entity &MutableEntity(Match &m, EntityId id) {
+    for (auto &entity : const_cast<Snapshot &>(m.State()).entities)
+        if (entity.id == id)
+            return entity;
+    throw std::runtime_error("fixture entity missing");
+}
+void FreezeCrowns(Match &m) {
+    for (auto &entity : const_cast<Snapshot &>(m.State()).entities)
+        if (entity.kind == EntityKind::Guard || entity.kind == EntityKind::Core)
+            entity.stunUntil = 100;
 }
 double SegmentDistance(Vec2 from, Vec2 to, Vec2 point) {
     const double x = to.x - from.x, z = to.z - from.z, length = x * x + z * z;
@@ -193,6 +205,8 @@ std::vector<Entity> PaidCollisionCard(Match &m, Team team, const std::string &id
     return members;
 }
 void Test(const char *name, const std::function<void()> &fn) {
+    if (!scenarioFilter.empty() && std::string(name).find(scenarioFilter) == std::string::npos)
+        return;
     fn();
     ++passed;
     std::cout << "PASS " << name << '\n';
@@ -215,6 +229,17 @@ void Same(const Match &a, const Match &b) {
         Near(c.impactAt, d.impactAt, 1e-9, "deterministic cast deadline");
     }
     Check(x.entities.size() == y.entities.size(), "deterministic entity count");
+    Check(x.shockwaves.size() == y.shockwaves.size(), "deterministic shockwave count");
+    for (std::size_t n = 0; n < x.shockwaves.size(); ++n) {
+        const auto &a = x.shockwaves[n], &b = y.shockwaves[n];
+        Check(a.id == b.id && a.source == b.source && a.playId == b.playId && a.team == b.team &&
+                  a.cardId == b.cardId && a.hitTargets == b.hitTargets, "deterministic wave identity/hit membership");
+        Near(a.origin.x, b.origin.x, 0, "deterministic wave originX");
+        Near(a.origin.z, b.origin.z, 0, "deterministic wave originZ");
+        Near(a.progress, b.progress, 1e-9, "deterministic wave progress");
+        Near(a.born, b.born, 1e-9, "deterministic wave launch");
+        Near(a.expires, b.expires, 1e-9, "deterministic wave expiry");
+    }
     for (std::size_t n = 0; n < x.entities.size(); ++n) {
         const auto &e = x.entities[n];
         const auto &f = y.entities[n];
@@ -223,6 +248,15 @@ void Same(const Match &a, const Match &b) {
         Near(e.hp, f.hp, 1e-8, "deterministic HP");
         Near(e.position.x, f.position.x, 1e-8, "deterministic X");
         Near(e.position.z, f.position.z, 1e-8, "deterministic Z");
+        Check(e.slows.size() == f.slows.size(), "deterministic independent slow components");
+        for (std::size_t k = 0; k < e.slows.size(); ++k) {
+            const auto &a = e.slows[k], &b = f.slows[k];
+            Check(a.source == b.source && a.playId == b.playId && a.team == b.team && a.cardId == b.cardId,
+                  "deterministic slow component identity");
+            Near(a.pct, b.pct, 0, "deterministic slow component potency");
+            Near(a.born, b.born, 1e-9, "deterministic slow component refresh");
+            Near(a.until, b.until, 1e-9, "deterministic slow component expiry");
+        }
     }
     for (int i = 0; i < 2; ++i) {
         Near(x.aether[i], y.aether[i], 1e-8, "deterministic Aether");
@@ -241,13 +275,15 @@ void Same(const Match &a, const Match &b) {
     }
 }
 } // namespace
-int main() {
+int main(int argc, char **argv) {
+    if (argc > 1)
+        scenarioFilter = argv[1];
     try {
         Test("complete exact roster and swarm DPS", [] {
-            Check(Cards().size() == 16, "sixteen cards including both new hog swarms");
-            const std::vector<double> hp{822, 374, 262, 1620, 547, 880, 480, 174, 1265, 1337, 0, 850, 0, 0, 95, 95},
-                damage{93, 152, 55, 118, 120, 140, 77, 86, 72, 251, 262, 75, 175, 375, 18, 18},
-                interval{1, 1.55, .75, 2, 1.15, 1.4, .92, 1.05, .75, 1.7, 0, 1, 0, 0, .9, 1};
+            Check(Cards().size() == 17, "seventeen cards including Pulverizer and both hog swarms");
+            const std::vector<double> hp{822, 374, 262, 1620, 547, 880, 480, 174, 1265, 1337, 0, 850, 0, 0, 95, 95, 700},
+                damage{93, 152, 55, 118, 120, 140, 77, 86, 72, 251, 262, 75, 175, 375, 18, 18, 65},
+                interval{1, 1.55, .75, 2, 1.15, 1.4, .92, 1.05, .75, 1.7, 0, 1, 0, 0, .9, 1, .9};
             for (std::size_t n = 0; n < Cards().size(); ++n) {
                 Near(Cards()[n].hp, hp[n], 0, "roster HP");
                 Near(Cards()[n].damage, damage[n], 0, "roster damage");
@@ -271,6 +307,209 @@ int main() {
                 Near(card.castDelay,
                      card.id == "meteor_shards" ? .75 : card.id == "bullet_burst" ? .30 : 0,
                      0, "only Meteor and Bullet have a cast delay");
+        });
+        Test("current patch Pulverizer exact paid stats footprint lifetime", [] {
+            const auto *card = FindCard("pulverizer");
+            Check(card && card->building && card->count == 1 && card->cost == 3 && !card->canHitAir &&
+                      !card->structuresOnly && !card->spell, "ground-only defensive building definition");
+            Near(card->hp, 700, 0, "Pulverizer HP");Near(card->damage, 65, 0, "wave hit damage");
+            Near(card->attackInterval, .9, 0, "wave attack cadence");Near(card->range, 4, 0, "unchanged attack range");
+            Near(card->splash, 4, 0, "radial reach");Near(card->shockwaveSpeed, 8, 0, "radial travel speed");
+            Near(card->slowPct, .10, 0, "nonstacking slow potency");Near(card->slowDuration, 1.5, 0, "slow refresh duration");
+            Near(card->footprint, 1.65, 0, "building footprint");Near(card->scale, .95, 0, "model scale");
+            Near(card->lifetime, 45, 0, "natural expiry");Near(card->moveSpeed, 0, 0, "stationary");
+            Near(card->projectileSpeed, 0, 0, "shockwave is independent of ordinary projectiles");
+            for (Team team : {Team::Player, Team::Enemy}) {
+                Match m(CollisionOptions("pulverizer", "ironclad"));
+                const double sign = team == Team::Player ? 1 : -1;
+                const auto before = m.State().hands[int(team)];
+                m.SetAether(team, 10);
+                Check(!m.Play(team, 0, {.5, sign * 2.5}), "whole building footprint must be deployable");
+                Near(m.State().aether[int(team)], 10, 0, "invalid footprint does not pay");
+                Check(m.State().hands[int(team)] == before, "invalid footprint does not cycle");
+                auto units = PaidCollisionCard(m, team, "pulverizer", {.5, sign * 8.5});
+                Check(units.size() == 1, "one paid building");Near(units[0].radius, 1.65*.52, 1e-12, "real collision radius");
+                m.Step(44.95);Check(!ById(m, units[0].id).dead, "alive before45seconds");
+                Near(ById(m, units[0].id).position.x, .5, 0, "building fixedX");
+                m.Step(.1);Check(ById(m, units[0].id).dead, "expires at45seconds");
+                Near(m.State().telemetry[int(team)].at("pulverizer").buildingLifetime, 45, 1e-7,
+                     "actual full lifetime telemetry");
+            }
+        });
+        Test("current patch traveling ground-only wave hits once and survives source death", [] {
+            Match m(CollisionOptions("pulverizer", "ironclad"));
+            FreezeCrowns(m);
+            const auto source = PaidCollisionCard(m, Team::Player, "pulverizer", {.5, 8.5})[0];
+            Check(m.Spawn(Team::Enemy, "boulderback", {.5, 5.5}), "controlled ground victim");
+            const auto victim = Unit(m, "boulderback", Team::Enemy).id;
+            MutableEntity(m, victim).stunUntil = 20;
+            Check(m.Spawn(Team::Enemy, "sky_manta", {2.5, 8.5}), "air victim in radial area");
+            MutableEntity(m, Unit(m, "sky_manta", Team::Enemy).id).stunUntil = 20;
+            Check(m.Spawn(Team::Enemy, "archer_tower", {-2.5, 8.5}), "enemy structure in radial area");
+            Check(m.Spawn(Team::Player, "ironclad", {3.5, 8.5}), "friendly ground body");
+            MutableEntity(m, Unit(m, "ironclad", Team::Player).id).stunUntil = 20;
+            while(m.State().shockwaves.empty() && m.State().elapsed<1)
+                m.Step(1./60.);
+            Check(m.State().shockwaves.size() == 1 && std::none_of(m.State().projectiles.begin(),m.State().projectiles.end(),
+                [](const Projectile &projectile){return projectile.cardId=="pulverizer";}), "attack launches one independent wave");
+            const auto wave = m.State().shockwaves[0];
+            Check(wave.source == source.id && wave.playId == source.playId && wave.cardId == "pulverizer" &&
+                      wave.hitTargets.empty(), "wave preserves paid attribution and initial hit set");
+            Near(wave.progress, 0, 0, "launch tick has no instant radial movement or damage");
+            Near(wave.expires-wave.born, .5, 1e-12, "four tiles at eight tiles per second");
+            Check(std::any_of(m.Events().begin(), m.Events().end(), [&](const Event &event) {
+                return event.sequence == wave.id && event.type == "shockwave_launch";
+            }), "wave identity comes from replayable launch sequence");
+            m.Step(.1);Near(ById(m, victim).hp, 1620, 0, "distant enemy is not hit during travel");
+            Near(m.State().shockwaves[0].progress, .8, 1e-9, "actual radial speed");
+            MutableEntity(m, source.id).hp = 1;
+            Check(m.Spawn(Team::Enemy, "nova_flask", {.5, 8.5}), "real spell destroys source after launch");
+            Check(ById(m, source.id).dead && m.State().shockwaves.size() == 1, "source death leaves wave alive");
+            double damageTime = -1;
+            for (int step = 0; step < 25; ++step) {
+                m.Step(1./60.);
+                for (const auto &event : m.Events())
+                    if (event.type == "damage" && event.cardId == "pulverizer" && event.target == victim)
+                        damageTime = event.time;
+            }
+            const double contact = wave.born + (3-ById(m,victim).radius)/8;
+            Check(damageTime >= contact-1e-9 && damageTime <= contact+1./60.+1e-9,
+                  "wave contacts body at distance divided by travel speed");
+            int hits=0, forbidden=0;
+            for (const auto &event : m.Events())
+                if (event.type == "damage" && event.cardId == "pulverizer") {
+                    hits += event.target == victim;
+                    forbidden += event.target != victim;
+                    Check(event.damageKind == "shockwave" && event.requested == 65 && event.source == source.id &&
+                              event.playId == source.playId, "post-death hit retains exact damage/source/play attribution");
+                }
+            Check(hits == 1 && forbidden == 0, "one hit per wave, no ally/air/structure damage");
+            Check(m.State().shockwaves.empty(), "wave expires after four-tile travel");
+            Near(ById(m,victim).slowPct, .10, 0, "travel hit applies ten percent slow");
+            Near(m.State().telemetry[0].at("pulverizer").troopDamage, 65, 0, "post-death actual damage telemetry");
+            m.Step(1.5);Near(ById(m,victim).slowPct, 0, 0, "slow expires without source or another wave");
+            Check(m.State().telemetry[0].at("pulverizer").slowTime > 1.4, "credited realized slow uptime");
+        });
+        Test("current patch repeated waves refresh without stacking and preserve Frost expiry", [] {
+            Match m(CollisionOptions("pulverizer", "frost_fang"));
+            FreezeCrowns(m);
+            PaidCollisionCard(m, Team::Player, "pulverizer", {.5, 8.5});
+            m.Spawn(Team::Enemy, "boulderback", {.5, 5.5});
+            const auto id=Unit(m,"boulderback",Team::Enemy).id;MutableEntity(m,id).stunUntil=20;
+            m.Step(.8);const double firstUntil=ById(m,id).slowUntil;
+            m.Step(.9);Near(ById(m,id).slowPct,.10,0,"two waves stay at ten percent");
+            Check(ById(m,id).slowUntil > firstUntil+.85 && ById(m,id).slows.size()==1,
+                  "same-card wave refresh extends one independent component");
+            m.Spawn(Team::Player,"frost_fang",{1.5,5.5});m.Step(.05);
+            const auto frost=Unit(m,"frost_fang",Team::Player).id;
+            Near(ById(m,id).slowPct,.3,0,"stronger Frost remains thirty percent");
+            const double frostUntil=ById(m,id).slowUntil;
+            MutableEntity(m,frost).stunUntil=20;
+            m.Step(1.1);Near(ById(m,id).slowPct,.3,0,"weak refresh cannot reduce stronger Frost");
+            Near(ById(m,id).slowUntil,frostUntil,1e-9,"weak refresh cannot prolong stronger Frost expiry");
+            Check(ById(m,id).slows.size()==2,"separate serializable weak and strong expiries");
+            m.Step(1.);Near(ById(m,id).slowPct,.10,0,"live refreshed weaker effect resumes after Frost expires");
+            Check(ById(m,id).slows.size()==1 && ById(m,id).slows[0].cardId=="pulverizer",
+                  "expired Frost component is removed independently");
+            bool refreshed=false;
+            for(const auto&e:m.Events())if(e.type=="slow"&&e.cardId=="pulverizer"){
+                Near(e.amount,.1,0,"slow event declares incoming weak potency honestly");
+                Near(e.until-e.time,1.5,1e-9,"every weak refresh has exact1.5second duration");
+                refreshed |= e.reason=="refresh";
+            }
+            Check(refreshed,"refresh event is explicit");
+        });
+        Test("current patch strict detection applies to every deployable card and retention", [] {
+            Match m(Quiet());Entity target;target.id=900;target.team=Team::Enemy;target.radius=10;
+            int cards=0;
+            for(const auto &card:Cards())if(!card.spell){
+                Entity source;source.id=901;source.cardId=card.id;source.facing={0,-1};source.radius=10;
+                for(const double boundary:{detection::Front,detection::Rear}){
+                    const double sign=boundary==detection::Front?-1:1;
+                    target.position={0,sign*boundary};Check(m.InSight(source,target),"exact shared boundary inclusive");
+                    target.position={0,sign*(boundary+.00001)};Check(!m.InSight(source,target),"no radius or pursuit bonus");
+                }
+                ++cards;
+            }
+            Check(cards==14,"all fourteen physical cards share strict8/5");
+            for(const auto&id:std::vector<std::string>{"ironclad","ember_archer","archer_tower","pulverizer","stampede"}){
+                Match a(Quiet());a.Spawn(Team::Player,id,{.5,8.5});
+                a.Spawn(Team::Enemy,id=="stampede"?"archer_tower":"ironclad",{.5,4.5});
+                const auto source=Unit(a,id,Team::Player).id;
+                const auto foe=Unit(a,id=="stampede"?"archer_tower":"ironclad",Team::Enemy).id;
+                auto &s=MutableEntity(a,source);s.target=s.forcedTarget=foe;s.forcedUntil=20;s.hardLock=0;
+                s.scanClock=20;s.cooldown=20;s.facing={0,-1};
+                MutableEntity(a,foe).position={s.position.x,s.position.z-8.001};
+                MutableEntity(a,foe).stunUntil=20;a.Step(1./60.);
+                Check(ById(a,source).target!=foe && ById(a,source).forcedTarget==0,
+                      "current and forced pursuit drop immediately outside strict front boundary");
+            }
+            Match building(Quiet());building.Spawn(Team::Player,"archer_tower",{.5,8.5});
+            building.Spawn(Team::Enemy,"ironclad",{.5,14.5});
+            building.Step(.03);Check(Unit(building,"archer_tower",Team::Player).target==0,
+                                      "rear enemy within seven attack tiles remains outside five detection tiles");
+            int pulls=0;
+            for(Team team:{Team::Player,Team::Enemy})for(const auto&id:std::vector<std::string>{"ironclad","stampede"})
+                for(bool structure:{false,true})for(bool front:{false,true})for(bool inside:{false,true}){
+                    Match fresh(Quiet());FreezeCrowns(fresh);
+                    const double home=team==Team::Player?1:-1;
+                    fresh.Spawn(team,id,{.5,home*8.5});
+                    const auto source=Unit(fresh,id,team).id;
+                    auto&s=MutableEntity(fresh,source);s.position={.5,home*8.5};s.facing={0,-home};
+                    s.target=Tower(fresh,team==Team::Player?Team::Enemy:Team::Player,EntityKind::Guard,1).id;
+                    s.hardLock=s.forcedTarget=0;
+                    const double boundary=front?8:5;
+                    const double distance=boundary+(inside?-1:1);
+                    const Team foeTeam=team==Team::Player?Team::Enemy:Team::Player;
+                    const std::string foeCard=structure?"archer_tower":"ironclad";
+                    Check(fresh.Spawn(foeTeam,foeCard,{.5,home*8.5+(front?-home:home)*distance}),
+                          "fresh deployed enemy fixture is physically accepted");
+                    const auto&foe=Unit(fresh,foeCard,foeTeam);
+                    const auto&after=ById(fresh,source);
+                    const bool legalTarget=fresh.CanTarget(after,foe);
+                    const bool detectable=fresh.InSight(after,foe);
+                    Check(detectable==inside,"fresh fixture actually lands on intended side of detection boundary");
+                    Check((after.target==foe.id)==(legalTarget&&detectable),
+                          "fresh troop/building pulls obey the same actual8/5 gate for both teams");
+                    ++pulls;
+                }
+            Check(pulls==32,"mirrored ordinary/structure-only fresh troop and building pull matrix");
+        });
+        Test("current patch Mini Stampede stays compact at legal boundaries and obstacles", [] {
+            int fixtures=0,members=0;
+            for(Team team:{Team::Player,Team::Enemy}){
+                const double sign=team==Team::Player?1:-1;
+                for(Vec2 drop:std::vector<Vec2>{{-.5,2.5},{.5,2.5},{7.5,2.5},{.5,8.5},{7.5,8.5},{7.5,11.5},{.5,16.5},{.5,8.5}}){
+                    Match m(CollisionOptions("mini_stampede","archer_tower"));
+                    const bool obstacle=fixtures%8==7;
+                    if(obstacle)PaidCollisionCard(m,team,"archer_tower",{drop.x,sign*drop.z});
+                    const auto units=PaidCollisionCard(m,team,"mini_stampede",{drop.x,sign*drop.z});
+                    Check(units.size()==5,"compact paid formation retains all five hogs");
+                    double x=0,z=0,maximum=0;int left=0;
+                    for(const auto&unit:units){
+                        x+=unit.position.x/5;z+=unit.position.z/5;
+                        maximum=std::max(maximum,std::hypot(unit.position.x-drop.x,unit.position.z-sign*drop.z));
+                        left+=unit.position.x<0;
+                        Check(unit.lane==(unit.position.x<0?-1:1),"actual resolved landing side determines lane");
+                    }
+                    const bool clear=!obstacle&&drop.z<=8.5;
+                    Check(maximum<=(clear?1.30:3.25),"no independent four-tile scattering from clear compact drop");
+                    Check(std::hypot(x-drop.x,z-sign*drop.z)<=(clear?.20:2.0),"formation centroid remains anchored to hand drop");
+                    if(clear&&std::abs(drop.x)<=.5)Check(left==2||left==3,"center placement still splits five hogs2/3");
+                    ++fixtures;members+=int(units.size());
+                }
+            }
+            Check(fixtures==16&&members==80,"mirrored river/center/side/tower/core/building compactness fixtures");
+            std::cout<<"MINI_COMPACT fixtures="<<fixtures<<" paid_members="<<members<<" clear_max_radius=1.30 clear_centroid=0.20\n";
+        });
+        Test("current patch shockwave and independent status determinism across frame partitions", [] {
+            Match a(Quiet()),b(Quiet());
+            for(auto*m:{&a,&b}){
+                FreezeCrowns(*m);
+                m->Spawn(Team::Player,"pulverizer",{.5,8.5});m->Spawn(Team::Enemy,"boulderback",{.5,5.5});
+                MutableEntity(*m,Unit(*m,"boulderback",Team::Enemy).id).stunUntil=20;
+            }
+            for(int step=0;step<180;++step){a.Step(1./60.);b.Step(1./120.);b.Step(1./120.);Same(a,b);}
         });
         Test("deck validation rejects duplicates and unknown", [] {
             Check(ValidateDeck(DefaultDeck()), "valid default");
@@ -1333,7 +1572,7 @@ int main() {
                     Near(PairSynergy(Cards()[a], Cards()[b]), PairSynergy(Cards()[b], Cards()[a]), 0,
                          "symmetric");
                 }
-            Check(pairs == 120, "all sixteen-card pairs");
+            Check(pairs == 136, "all seventeen-card pairs");
             auto d = AnalyzeDeck({"vampire_bats", "twin_blades", "nova_flask"});
             Near(d.averageHP, (174 * 5 + 262 * 2) / 2., 0, "swarm aggregate spell excluded");
             Near(d.deploymentDPS, (86 / 1.05 * 5 + 55 / .75 * 2) / 2., .0051, "aggregate DPS spell excluded");
@@ -1532,9 +1771,9 @@ int main() {
                                  0, 0, "building stays fixed while nearby troops route around it");
                         }
                 }
-            Check(collisionPaidFixtures - fixtureStart == 26 && collisionPaidPlays - playStart == 52 &&
-                      collisionMembers - memberStart == 106,
-                  "all thirteen physical cards, both teams, fifty-two paid casts and 106 actual members");
+            Check(collisionPaidFixtures - fixtureStart == 28 && collisionPaidPlays - playStart == 56 &&
+                      collisionMembers - memberStart == 110,
+                  "all fourteen physical cards, both teams, fifty-six paid casts and 110 actual members");
         });
         Test("ground and air occupy distinct collision layers while spells have no body", [] {
             for (const Team team : {Team::Player, Team::Enemy}) {
@@ -1921,6 +2160,7 @@ int main() {
                 std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
             std::cout << "SOAK 21 complete matches wall seconds " << wall << '\n';
         });
+        Check(passed > 0, "requested scenario filter selected actual tests");
         std::cout.precision(12);
         std::cout << "COLLISION_SUMMARY paid_fixtures=" << collisionPaidFixtures << " paid_plays=" << collisionPaidPlays
                   << " members=" << collisionMembers << " endpoint_pair_checks=" << collisionPairChecks

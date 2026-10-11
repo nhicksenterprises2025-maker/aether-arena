@@ -123,14 +123,25 @@ bool ARiftUnitVisual::InitializeEntity(const rift::Entity& Entity,URiftCardData*
     const rift::Card* Definition=rift::FindCard(Entity.cardId);
     Scale=Definition?float(Definition->scale):1.f;
     AttackInterval=Definition?Definition->attackInterval:Kind==rift::EntityKind::Core?.92:1.02;
-    if (Kind==rift::EntityKind::Troop)
+    if (Kind==rift::EntityKind::Troop || (Kind==rift::EntityKind::Building && Card && Card->CharacterMesh))
     {
         if (!Card || !Card->CharacterMesh) {RIFT_LOG(LogRift,Error,TEXT("Missing character for entity %llu"),EntityId);return false;}
         Character->SetSkeletalMeshAsset(Card->CharacterMesh);
         // This multiplier affects only the visual replica. The authoritative
         // radius, tile footprint, range, speed and deck scale remain unchanged.
-        Scale*=ModelReadabilityScale(AssetId);
-        Character->SetRelativeScale3D(FVector(Scale));Clips=Card->Animations;
+        if (Kind==rift::EntityKind::Building && Definition && Definition->footprint>0)
+        {
+            StructureHeightScale=Scale;
+            const FVector Bounds=Card->CharacterMesh->GetBounds().BoxExtent*2;
+            const float PlanScale=Definition->footprint*100/FMath::Max(Bounds.X,Bounds.Y);
+            Character->SetRelativeScale3D(FVector(PlanScale,PlanScale,Scale));
+        }
+        else
+        {
+            Scale*=ModelReadabilityScale(AssetId);
+            Character->SetRelativeScale3D(FVector(Scale));
+        }
+        Clips=Card->Animations;
         const float Radius=FMath::Max(44.f,float(Entity.radius*100*1.18));
         GroundRing->DecalSize=FVector(32,Radius,Radius);
     }
@@ -436,6 +447,8 @@ FVector ARiftUnitVisual::AttackLocation()const
 }
 FVector ARiftUnitVisual::ImpactLocation()const
 {
+    if (Kind==rift::EntityKind::Building && Character->DoesSocketExist(TEXT("impact_origin")))
+        return Character->GetSocketLocation(TEXT("impact_origin"));
     if (IsTower()) return GetActorLocation()+FVector(0,0,135*StructureHeightScale);
     return Character->DoesSocketExist(TEXT("impact_origin"))?Character->GetSocketLocation(TEXT("impact_origin")):
         GetActorLocation()+FVector(0,0,85*Scale);

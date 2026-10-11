@@ -88,7 +88,12 @@ check(not alignment_present or (navigation_revision == 6 and aligned_guards),
 historical_roster = {"ironclad", "ember_archer", "twin_blades", "boulderback", "arc_mage",
                      "rambeast", "sky_manta", "vampire_bats", "frost_fang", "storm_raven",
                      "meteor_shards", "archer_tower", "bullet_burst", "nova_flask"}
+combat_revision = data["rulesSnapshot"].get("combatRevision", 0)
+check(not isinstance(combat_revision, bool) and combat_revision in (0, 1), "Unsupported combat revision")
 expected_roster = historical_roster | {"mini_stampede", "stampede"} if navigation_revision >= 6 else historical_roster
+if combat_revision == 1:
+    check(navigation_revision == 6 and aligned_guards, "Unsupported shockwave/navigation combination")
+    expected_roster |= {"pulverizer"}
 check(set(definitions) == expected_roster and len(data["cardSnapshot"]) == len(expected_roster) and
       data["aiStyles"] == styles, "Captured revision roster/style identity mismatch")
 canonical = canonical.replace("nav-grid-a-star-1", f"nav-grid-a-star-{navigation_revision}")
@@ -109,10 +114,16 @@ if timed_spells:
     check(all("castDelay" in card for card in data["cardSnapshot"]),
           "Incomplete immutable spell timing snapshot")
     canonical += "|spell-impact-fixed-point-1"
+if combat_revision == 1:
+    canonical += "|combat-1|strict-card-detection-1|traveling-ground-shockwave-1"
 fingerprint_fields = ("cost count hp damage attackInterval moveSpeed range scale projectileSpeed splash lifetime "
                       "footprint towerDamage spellRadius chargeDamage slowPct slowDuration auraDamage "
                       "auraInterval auraRadius stunDuration dotDamage dotDuration dotInterval rounds "
                       "flying canHitAir structuresOnly spell building").split()
+if combat_revision == 1:
+    fingerprint_fields.insert(fingerprint_fields.index("projectileSpeed") + 1, "shockwaveSpeed")
+    for card in data["cardSnapshot"]:
+        near(card.get("shockwaveSpeed", -1), 8 if card["id"] == "pulverizer" else 0, f"Captured shockwave speed: {card['id']}")
 if timed_spells:
     fingerprint_fields.insert(fingerprint_fields.index("spellRadius") + 1, "castDelay")
     for card in data["cardSnapshot"]:
@@ -151,6 +162,10 @@ if navigation_revision >= 6:
     if aligned_guards:
         expected_rules.update(guardX=7.2, guardBridgeAlignment=alignment_rule)
         expected_rules["navigation"] += "; Guard Towers aligned with bridge centers"
+if combat_revision == 1:
+    expected_rules.update(combatRevision=1,
+        detection="strict center distance: 8 tiles forward, 5 rear; eligible targets only; Crown advance and engaged Crown hard locks preserved",
+        shockwave="expanding ground troop-only front; one hit per wave; source death does not cancel; per-card slow refresh, strongest active effect wins")
 for key, value in expected_rules.items():
     if isinstance(value, (int, float)):
         near(data["rulesSnapshot"].get(key, -1), value, f"Captured rule mismatch: {key}")
@@ -250,8 +265,10 @@ for bucket_id, bucket in buckets.items():
         else:
             for key in ("dotDamage", "dotTicks", "zoneSeconds", "zoneOccupancy"):
                 near(number(stats, key), 0, f"{prefix}: no DOT/zone {key}")
-        if card_id != "frost_fang":
+        if definition["slowPct"] <= 0:
             near(number(stats, "slowTime") + number(stats, "slowTrackedSeconds"), 0, f"{prefix}: no slow source")
+        if card_id == "pulverizer":
+            near(number(stats, "towerDamage") + number(stats, "buildingDamage"), 0, f"{prefix}: ground troop-only shockwave")
         if card_id != "storm_raven":
             near(number(stats, "stunTime") + number(stats, "stunTrackedSeconds") +
                  number(stats, "auraDamage") + number(stats, "stunned"), 0, f"{prefix}: no aura/stun source")
@@ -460,7 +477,7 @@ report = {
     "styleObservations": dict(expected_styles), "cards": summary_cards,
     "specialTelemetry": {key: {field: number(overall["cards"][key], field)
                                 for field in status_fields + special_fields + ["plays", "spawns", "pulls", "dotTicks"]}
-                         for key in ("frost_fang", "storm_raven", "meteor_shards", "archer_tower")},
+                         for key in ("frost_fang", "storm_raven", "meteor_shards", "archer_tower", "pulverizer") if key in overall["cards"]},
     "legacyExposureLimitations": legacy_exposure,
     "gameplayAggregateComparison": comparison,
     "limits": ["Aggregate dataset retains no complete per-match snapshots/events; per-match economy checks are worker evidence.",

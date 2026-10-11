@@ -1089,6 +1089,14 @@ def archer_tower(f):
 
 
 def model_design_metadata(f):
+    if f.family=='mechanism':
+        return {'revision':'pulverizer-1','detailPasses':1,
+                'architecture':'Chamfered stone foundation; steel compression head; three fitted brass hydraulic cylinders; amethyst pressure crystal',
+                'equipmentFit':'Rigid root foundation; individually weighted telescoping rods follow compression head inside fixed cylinder housings',
+                'groundedFootprintMeters':1.65,'baseModelScale':.95,
+                'attackContactNormalized':.48,'compressionStrokeMeters':.28,
+                'pulseEmitter':'Ground-centered attack_origin and impact_origin, 0.15 meters above foundation',
+                'locomotion':'Stationary building; diagnostic Locomotion uses the same idle hydraulic cycle'}
     return {'revision': '1.4.0', 'equipmentFit': 'rest-pose hand center; same-bone equipment and glove' if f.family == 'humanoid' else None,
             'detailPasses': 1, 'wingWeights': 'continuous shared span gradient' if f.family == 'flyer' else None,
             'locomotion': 'Model-space two-bone IK with planted stance, lifted recovery and flat soles' if f.family in ('humanoid','quadruped') else None,

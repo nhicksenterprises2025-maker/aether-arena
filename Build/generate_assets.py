@@ -39,6 +39,10 @@ random.seed(15082026)
 previous_manifest=None
 if UPDATE:
     previous_manifest=json.loads((ROOT/'Assets/asset_manifest.json').read_text(encoding='utf-8'))
+    # Existing card renders/data assets belong to their actual authored scene.
+    # Adding another model to the shared blend must not rewrite that history.
+    for illustration in previous_manifest.get('illustrations',{}).values():
+        illustration.setdefault('sourceSceneSHA256',previous_manifest['source']['sha256'])
     bpy.ops.wm.open_mainfile(filepath=str(ROOT/previous_manifest['source']['file']))
     # Preserve unchanged models, atlas, architectural meshes and named actions.
     # Rebuilding the selected collection also prevents .001 suffixes from
@@ -235,7 +239,7 @@ class Forge:
         for sign in (-1,1):
             self.tube('rift_rune',[(x-sign*size*.48,y,z-size*.64),(x+sign*size*.48,y,z+size*.64)],[.012,.012],key,bone,6,True)
     def finish(self,skinned=False):
-        if skinned and self.family!='humanoid': clean_creature_details(self)
+        if skinned and self.family not in ('humanoid','mechanism'): clean_creature_details(self)
         bpy.ops.object.select_all(action='DESELECT')
         for o in self.parts:o.select_set(True)
         bpy.context.view_layer.objects.active=self.parts[0]; bpy.ops.object.join()
@@ -545,7 +549,119 @@ def flyer(name):
     refine_flyer(f)
     return f.finish(True)
 
+def pulverizer():
+    """A stationary hydraulic press; all moving parts stay on their own drivers."""
+    f=Forge('pulverizer');f.family='mechanism'
+    f.bone('root',(0,0,0),(0,0,.12))
+    f.bone('hammer',(0,0,1.62),(0,0,1.91),'root')
+    f.bone('crystal',(0,0,.73),(0,0,1.27),'root')
+    for i in range(3):
+        a=math.tau*i/3+math.pi/6;x,y=.54*math.cos(a),.54*math.sin(a)
+        f.bone('piston_'+str(i),(x,y,1.03),(x,y,1.60),'hammer')
+    f.socket('attack_origin',(0,0,.15),'root')
+    f.socket('impact_origin',(0,0,.15),'root')
+    f.socket('hp_anchor',(0,0,2.28),'root')
+    f.socket('status_anchor',(0,0,2.10),'root')
+    def plinth(name,rings,key,bone='root'):
+        # Broad square foundation with clipped corners and authored bevels.
+        verts=[]
+        for z,size in rings:
+            c=size*.27
+            verts.extend((x,y,z) for x,y in ((-size+c,-size),(size-c,-size),(size,-size+c),(size,size-c),
+                                           (size-c,size),(-size+c,size),(-size,size-c),(-size,-size+c)))
+        faces=[tuple(reversed(range(8))),tuple((len(rings)-1)*8+i for i in range(8))]
+        for row in range(len(rings)-1):
+            for i in range(8):faces.append((row*8+i,row*8+(i+1)%8,(row+1)*8+(i+1)%8,(row+1)*8+i))
+        return f.mesh_data(name,verts,faces,key,bone,smooth=False)
+    plinth('chamfered_stone_foundation',[(0,.765),(.035,.825),(.18,.825),(.235,.77)],'stone_dark')
+    plinth('limestone_cap_course',[(.235,.765),(.25,.785),(.33,.785),(.355,.735)],'limestone')
+    plinth('steel_pulse_dais',[(.355,.69),(.38,.715),(.43,.715),(.46,.65)],'steel_shadow')
+    # Four fitted stone shoulders support the press rather than floating gear.
+    for x,y in ((-.63,-.63),(.63,-.63),(.63,.63),(-.63,.63)):
+        f.panel('anchored_stone_shoulder',(x,y,.40),(.21,.21,.22),'stone', 'root',bevel=.027)
+        f.panel('steel_corner_clamp',(x,y,.52),(.19,.19,.05),'steel_edge','root',bevel=.018)
+        f.rivet((x,y,.552),'root','brass',.025)
+    f.tube('fixed_crystal_socket',[(0,0,.46),(0,0,.58)],[.35,.35],'iron','root',32)
+    f.ring('socket_brass_lip',(0,0,.58),.345,.025,'brass','root')
+    # Faceted crystal chamber is restrained and readable against the steel.
+    f.tube('amethyst_pressure_crystal',[(0,0,.61),(0,0,.76),(0,0,1.18),(0,0,1.38)],
+           [.19,.285,.24,.075],'violet','crystal',8,True)
+    for z,r in ((.71,.294),(1.18,.25)):
+        f.ring('crystal_retaining_band',(0,0,z),r,.022,'brass','crystal')
+    f.ring('purple_pulse_emitter',(0,0,.455),.49,.022,'violet','root',glow=True)
+    for i in range(3):
+        a=math.tau*i/3+math.pi/6;x,y=.54*math.cos(a),.54*math.sin(a);bone='piston_'+str(i)
+        f.tube('bolted_piston_foot',[(x,y,.44),(x,y,.55)],[.14,.14],'steel_shadow','root',16)
+        f.ring('piston_foot_rim',(x,y,.51),.138,.016,'brass','root')
+        f.tube('fixed_hydraulic_cylinder',[(x,y,.55),(x,y,1.08)],[.097,.097],'steel','root',20)
+        f.ring('cylinder_upper_gland',(x,y,1.065),.103,.018,'brass','root')
+        f.tube('telescoping_polished_rod',[(x,y,1.00),(x,y,1.66)],[.044,.044],'silver',bone,16)
+        f.tube('moving_hammer_coupler',[(x,y,1.57),(x,y,1.71)],[.08,.08],'steel_shadow',bone,16)
+        f.ring('coupler_brass_edge',(x,y,1.60),.078,.012,'brass',bone)
+        # A fixed bent hydraulic line ends at the gland, never crosses the core.
+        outer=Vector((math.cos(a),math.sin(a),0))
+        points=[Vector((x,y,.51))+outer*.08,Vector((x,y,.69))+outer*.15,
+                Vector((x,y,.96))+outer*.15,Vector((x,y,1.035))+outer*.08]
+        f.tube('fitted_hydraulic_hose',points,.022,'black','root',10)
+    f.tube('compression_head',[(0,0,1.59),(0,0,1.74),(0,0,1.82)],
+           [.65,.65,.57],'steel_shadow','hammer',32)
+    f.ring('compression_head_lower_lip',(0,0,1.615),.647,.024,'steel_edge','hammer')
+    f.ring('compression_head_brass_trim',(0,0,1.77),.60,.023,'brass','hammer')
+    f.tube('stone_press_crown',[(0,0,1.82),(0,0,1.99),(0,0,2.055)],
+           [.49,.49,.425],'stone','hammer',12)
+    f.tube('upper_pressure_cap',[(0,0,2.055),(0,0,2.10)],[.285,.245],'steel','hammer',24)
+    f.ring('crown_crystal_lens',(0,0,2.102),.17,.018,'violet','hammer',glow=True)
+    # Modest team panels are fitted to three flat sectors on the fixed base.
+    for a in (0,math.tau/3,math.tau*2/3):
+        x,y=.666*math.sin(a),-.666*math.cos(a)
+        f.panel('fitted_team_inlay',(x,y,.40),(.20,.016,.035),'team','root',rotation=(0,0,a),bevel=.004)
+    return f.finish(True)
+
+def mechanism_actions(f):
+    """Compression anticipation, fast pulse contact and hydraulic recovery."""
+    made=[]
+    clips={'Idle':60,'Locomotion':60,'Attack':28,'Hit':16,'Death':45,
+           'Deploy':24,'Status':30,'Turn':24,'Acquire':18}
+    def smooth(v):
+        v=max(0,min(1,v));return v*v*(3-2*v)
+    for name,length in clips.items():
+        act=bpy.data.actions.new('AN_'+f.name+'_'+name)
+        f.rig.animation_data_create();f.rig.animation_data.action=act
+        for frame in range(1,length+1):
+            scene.frame_set(frame);t=(frame-1)/(length-1);cycle=t*math.tau
+            for pb in f.rig.pose.bones:
+                pb.rotation_mode='XYZ';pb.rotation_euler=(0,0,0);pb.location=(0,0,0);pb.scale=(1,1,1)
+            hammer=f.rig.pose.bones['hammer'];crystal=f.rig.pose.bones['crystal']
+            stroke=.012*math.sin(cycle);crystal.rotation_euler.y=.018*math.sin(cycle)
+            if name=='Attack':
+                anticipation=smooth(t/.34)
+                contact=smooth((t-.34)/.14)
+                recovery=smooth((t-.52)/.48)
+                stroke=.10*anticipation-.38*contact+.28*recovery
+                crystal.scale=(1+.085*contact*(1-recovery),)*3
+            elif name=='Deploy':stroke=-.24*(1-smooth(t/.72))+.035*math.sin(t*math.pi)*math.exp(-t*3)
+            elif name=='Hit':
+                stroke=-.065*math.sin(t*math.pi);hammer.rotation_euler.x=.035*math.sin(t*math.pi)
+            elif name=='Death':
+                e=smooth(t/.8);stroke=-.38*e;hammer.rotation_euler.x=.08*e
+                crystal.scale=(1-.40*e,)*3;crystal.rotation_euler.z=.18*e
+            elif name=='Status':crystal.scale=(1+.045*math.sin(cycle*2),)*3
+            elif name in ('Turn','Acquire'):crystal.rotation_euler.y=.07*math.sin(t*math.pi)
+            hammer.location=hammer.bone.matrix_local.to_3x3().inverted()@Vector((0,0,stroke))
+            for pb in f.rig.pose.bones:
+                pb.keyframe_insert('rotation_euler',frame=frame,group=pb.name)
+                pb.keyframe_insert('location',frame=frame,group=pb.name)
+                pb.keyframe_insert('scale',frame=frame,group=pb.name)
+        act.use_fake_user=True
+        made.append({'name':name,'action':act.name,'frames':length,'seconds':(length-1)/30,
+                     'releaseNormalized':.48 if name=='Attack' else None,
+                     'loop':name in ('Idle','Locomotion','Status'),'strideMeters':None,'object':act})
+    f.rig.animation_data.action=None;scene.frame_set(1)
+    for pb in f.rig.pose.bones:pb.rotation_euler=(0,0,0);pb.location=(0,0,0);pb.scale=(1,1,1)
+    return made
+
 def actions(f):
+    if f.family=='mechanism':return mechanism_actions(f)
     standard={'Idle':60,'Locomotion':30,'Attack':30,'Hit':16,'Death':45,'Deploy':24,'Status':30,'Turn':24,'Acquire':18}
     special={'rambeast':{'Charge':30},'frost_fang':{'FrostAttack':24,'Breath':60},
              'storm_raven':{'AuraCharge':45,'Pulse':18,'StunDischarge':18,'WingCycle':36},
@@ -1082,16 +1198,16 @@ def contact_gait(f,phase,charge=False):
             set_world_rotation(arm,desired)
 
 forges=[]
-knownModels={'ironclad','ember_archer','twin_blades','arc_mage','tower_archer','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven','mini_stampede','stampede',
+knownModels={'ironclad','ember_archer','twin_blades','arc_mage','tower_archer','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven','mini_stampede','stampede','pulverizer',
              'tower_guard','tower_core','archer_tower','nova_flask','bridge','floor_tile','lane_paver','bank_segment','boundary_stone','grass_tuft','shrub','tree','crystal_plinth','banner','ruin','distant_island','meteor_shard','bullet_round','tower_rubble','arrow_projectile','arc_projectile','manta_projectile','storm_projectile','projectile_trail'}
 if PREVIEW and PREVIEW-knownModels:raise ValueError('Unknown preview models: '+', '.join(sorted(PREVIEW-knownModels)))
-characterIds=('ironclad','ember_archer','twin_blades','arc_mage','tower_archer','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven','mini_stampede','stampede')
+characterIds=('ironclad','ember_archer','twin_blades','arc_mage','tower_archer','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven','mini_stampede','stampede','pulverizer')
 if UPDATE and UPDATE-set(characterIds):raise ValueError('Unknown update characters: '+', '.join(sorted(UPDATE-set(characterIds))))
 for name in characterIds:
     if PREVIEW and name not in PREVIEW:continue
     if UPDATE and name not in UPDATE:continue
     print('RIFT_ASSET_BEGIN',name,flush=True)
-    f=humanoid(name) if name in ('ironclad','ember_archer','twin_blades','arc_mage','tower_archer') else hog(name) if name in ('mini_stampede','stampede') else quadruped(name) if name in ('boulderback','rambeast','frost_fang') else flyer(name)
+    f=pulverizer() if name=='pulverizer' else humanoid(name) if name in ('ironclad','ember_archer','twin_blades','arc_mage','tower_archer') else hog(name) if name in ('mini_stampede','stampede') else quadruped(name) if name in ('boulderback','rambeast','frost_fang') else flyer(name)
     if PREVIEW:
         if opts.preview_action:
             clips=actions(f)
@@ -1138,6 +1254,7 @@ card_bindings={
  'sky_manta':{'skeletal':'sky_manta'},'vampire_bats':{'skeletal':'vampire_bats'},
  'frost_fang':{'skeletal':'frost_fang'},'storm_raven':{'skeletal':'storm_raven'},
  'mini_stampede':{'skeletal':'mini_stampede'},'stampede':{'skeletal':'stampede'},
+ 'pulverizer':{'skeletal':'pulverizer'},
  'archer_tower':{'static':'archer_tower','skeletalDecoration':'tower_archer',
                  'decorationBaseMeters':[0,0,1.94],'decorationScale':.40},
  'bullet_burst':{'static':'bullet_round'},'nova_flask':{'static':'nova_flask'},
@@ -1145,7 +1262,11 @@ card_bindings={
 manifest['cards']=card_bindings
 for card in card_bindings:
     illustration=SRC/'CardArt'/(card+'.png')
-    if illustration.exists():manifest['illustrations'][card]=file_info(illustration)
+    if illustration.exists():
+        prior=manifest['illustrations'].get(card,{})
+        info=file_info(illustration)
+        info['sourceSceneSHA256']=prior.get('sourceSceneSHA256',manifest['source']['sha256'])
+        manifest['illustrations'][card]=info
 guard_socket_metadata(manifest['statics'])
 manifest['statics'].get('tower_core',{}).update({'sockets':{'muzzle':{'positionMeters':[0,0,3.88]},'hp_anchor':{'positionMeters':[0,0,4.55]}}})
 manifest['statics'].get('archer_tower',{}).update({'sockets':{'archer_base':{'positionMeters':[0,0,1.94]},'hp_anchor':{'positionMeters':[0,0,2.9]}}})

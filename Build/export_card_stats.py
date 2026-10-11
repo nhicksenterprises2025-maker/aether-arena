@@ -37,7 +37,7 @@ stats, abilities = [], []
 for c in cards:
     spell, building = c["spell"], c["building"]
     targets = ("Troops only" if c["towerDamage"] == 0 else "Troops and structures") if spell else (
-        "Ground/air troops only" if building else "Structures only" if c["structuresOnly"] else
+        ("Ground/air troops only" if c["canHitAir"] else "Ground troops only") if building else "Structures only" if c["structuresOnly"] else
         "Ground/air troops and structures" if c["canHitAir"] else "Ground troops and structures")
     dps = c["damage"] / c["attackInterval"] if not spell else None
     stats.append([c["name"], "Spell" if spell else "Building" if building else "Troop", c["cost"],
@@ -54,8 +54,10 @@ for c in cards:
         ability("Split formation", f"{c['count']} members", "Lane comes from each member's resolved landing X; ground members use that side's bridge; a destroyed lane Guard opens the route to the Core")
     if c["chargeDamage"]:
         ability("Charged impact", f"{numeric(c['chargeDamage'])} damage; >1.65 s movement", "Replaces basic hit damage on a charged impact")
+    if c.get("shockwaveSpeed",0):
+        ability("Expanding shockwave", f"{numeric(c['damage'])} damage/target; {numeric(c['attackInterval'])} s interval; {numeric(c['range'])} tile radius; {numeric(c['shockwaveSpeed'])} tiles/s; {numeric(c['range']/c['shockwaveSpeed'])} s to outer edge", "Ground enemy troops only; one hit per wave as the front reaches each target")
     if c["slowPct"]:
-        ability("Movement slow", f"{numeric(c['slowPct']*100)}%; {numeric(c['slowDuration'])} s", "Each melee hit refreshes the slow; no stacking")
+        ability("Movement slow", f"{numeric(c['slowPct']*100)}%; {numeric(c['slowDuration'])} s", "Each shockwave hit refreshes the slow; no stacking; stronger slows retain their own expiry" if c.get("shockwaveSpeed",0) else "Each melee hit refreshes the slow; no stacking")
     if c["auraDamage"]:
         ability("Electric aura", f"{numeric(c['auraDamage'])} damage; {numeric(c['auraInterval'])} s interval; {numeric(c['auraRadius'])} tile radius; {numeric(c['stunDuration'])} s stun", "Hits ground and air troops; basic attack remains structures-only")
     if c["dotDamage"]:
@@ -67,7 +69,7 @@ for c in cards:
     if c["rounds"]:
         ability("Visual burst", f"{c['rounds']} rounds", "Listed damage is applied once per eligible target, not once per visual round")
     if building:
-        ability("Defensive building", f"{numeric(c['lifetime'])} s lifetime; {numeric(c['footprint'])} tile footprint", "Ground and air troops only; expires after lifetime")
+        ability("Defensive building", f"{numeric(c['lifetime'])} s lifetime; {numeric(c['footprint'])} tile footprint", ("Ground and air troops only; expires after lifetime" if c["canHitAir"] else "Ground troops only; expires after lifetime"))
 
 args.output_directory.mkdir(parents=True, exist_ok=True)
 outputs = [emit("CARD_STATS", ["Card", "Type", "Aether cost", "Units", "HP per unit", "Damage per hit", "Attack interval (s)", "Basic DPS per unit", "Full swarm basic DPS", "Full swarm HP", "Movement speed (tiles/s)", "Attack range (tiles)", "Projectile speed (tiles/s)", "Movement", "Basic attack targets", "Splash radius (tiles)", "Lifetime (s)", "Building footprint (tiles)", "Base model scale"], stats),

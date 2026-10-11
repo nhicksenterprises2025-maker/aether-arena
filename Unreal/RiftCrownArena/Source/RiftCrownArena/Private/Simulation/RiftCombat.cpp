@@ -35,14 +35,14 @@ void Match::Acquire(Entity &s) {
     s.hardLock = 0;
     const Entity *forced = Get(s.forcedTarget);
     if (forced && !forced->dead && state_.elapsed < s.forcedUntil && CanTarget(s, *forced) &&
-        InSight(s, *forced, 2.25)) {
+        InSight(s, *forced)) {
         s.target = forced->id;
         return;
     }
     s.forcedTarget = 0;
     const Entity *current = Get(s.target);
     if (!Crown(s) && c && !c->structuresOnly && current && current->kind == EntityKind::Troop &&
-        CanTarget(s, *current) && InSight(s, *current, 2.25))
+        CanTarget(s, *current) && InSight(s, *current))
         return;
     if (Crown(s)) {
         double best = std::numeric_limits<double>::max();
@@ -67,7 +67,7 @@ void Match::Acquire(Entity &s) {
         double best = std::numeric_limits<double>::max();
         EntityId id = 0;
         for (const auto &t : state_.entities)
-            if (CanTarget(s, t) && InSight(s, t) && D(s.position, t.position) <= c->range + t.radius + .35) {
+            if (CanTarget(s, t) && InSight(s, t)) {
                 double distance = D(s.position, t.position);
                 if (distance < best) {
                     best = distance;
@@ -121,7 +121,7 @@ void Match::Acquire(Entity &s) {
                 continue;
             if (!c->structuresOnly && t.kind != EntityKind::Building)
                 continue;
-            if (!c->structuresOnly && !InSight(s, t))
+            if (t.kind == EntityKind::Building && !InSight(s, t))
                 continue;
             const double distance = CombatDistance(s, t);
             if (distance < best) {
@@ -146,7 +146,7 @@ void Match::Acquire(Entity &s) {
     best = std::numeric_limits<double>::max();
     nearest = 0;
     for (const auto &t : state_.entities)
-        if (Structure(t) && CanTarget(s, t)) {
+        if (Structure(t) && CanTarget(s, t) && (Crown(t) || InSight(s, t))) {
             const double distance = CombatDistance(s, t);
             if (distance < best) {
                 best = distance;
@@ -170,10 +170,7 @@ void Match::PullDeployment(EntityId id) {
         if (deployed.kind == EntityKind::Troop) {
             if (c->structuresOnly || !CanTarget(s, deployed))
                 continue;
-            const double dot = (deployed.position.x - s.position.x) * s.facing.x +
-                               (deployed.position.z - s.position.z) * s.facing.z;
-            const double pull = (dot >= 0 ? 8. : 5.) + 1.75 + deployed.radius + s.radius * .35;
-            if (CombatDistance(s, deployed) > pull)
+            if (!InSight(s, deployed))
                 continue;
             s.target = s.forcedTarget = deployed.id;
             s.forcedUntil = state_.elapsed + 1.2;
@@ -190,8 +187,8 @@ void Match::PullDeployment(EntityId id) {
             e.until = s.forcedUntil;
         } else if (deployed.kind == EntityKind::Building && CanTarget(s, deployed)) {
             const double distance = CombatDistance(s, deployed);
-            bool pull =
-                c->structuresOnly ? distance <= CombatDistance(s, *target) + .35 : InSight(s, deployed, 1.75);
+            const bool pull = InSight(s, deployed) &&
+                (!c->structuresOnly || distance <= CombatDistance(s, *target) + .35);
             if (pull) {
                 s.target = deployed.id;
                 s.cooldown = std::min(s.cooldown, c->attackInterval * .35);
@@ -234,7 +231,28 @@ void Match::Attack(Entity &s, const Entity &t) {
     e.playId = play;
     e.amount = damage;
     e.position = s.position;
-    if (speed > 0) {
+    if (c && c->shockwaveSpeed > 0) {
+        Shockwave wave;
+        wave.source = source;
+        wave.playId = play;
+        wave.team = team;
+        wave.cardId = card;
+        wave.origin = s.position;
+        wave.radius = c->splash;
+        wave.speed = c->shockwaveSpeed;
+        wave.born = state_.elapsed;
+        wave.expires = wave.born + wave.radius / wave.speed;
+        auto &event = Emit("shockwave_launch", team);
+        wave.id = event.sequence;
+        event.source = source;
+        event.target = target;
+        event.playId = play;
+        event.cardId = card;
+        event.amount = damage;
+        event.until = wave.expires;
+        event.position = wave.origin;
+        state_.shockwaves.push_back(wave);
+    } else if (speed > 0) {
         Projectile p;
         p.id = nextProjectile_++;
         p.source = source;
@@ -265,20 +283,98 @@ void Match::Attack(Entity &s, const Entity &t) {
         auto *victim = Get(target);
         if (c && c->slowPct > 0 && victim && !victim->dead && victim->kind == EntityKind::Troop &&
             Running(state_.phase)) {
-            victim->slowPct = std::max(victim->slowPct, c->slowPct);
-            victim->slowUntil = std::max(victim->slowUntil, state_.elapsed + c->slowDuration);
-            victim->slowSource = play;
-            if (victim->slowTrackedFrom < 0)
-                victim->slowTrackedFrom = state_.elapsed;
-            statusCredits_[play] = {team, card};
-            auto &event = Emit("slow", team);
-            event.source = source;
-            event.target = target;
-            event.playId = play;
-            event.cardId = card;
-            event.amount = victim->slowPct;
-            event.until = victim->slowUntil;
+            ApplySlow(*victim, *c, play, source, team);
         }
+    }
+}
+void Match::RefreshSlows(Entity &victim) {
+    const bool hadComponents = !victim.slows.empty();
+    victim.slows.erase(std::remove_if(victim.slows.begin(), victim.slows.end(), [&](const SlowEffect &effect) {
+        return effect.until <= state_.elapsed + 1e-9;
+    }), victim.slows.end());
+    const SlowEffect *dominant = nullptr;
+    for (const auto &effect : victim.slows)
+        if (!dominant || effect.pct > dominant->pct ||
+            (effect.pct == dominant->pct && effect.born > dominant->born))
+            dominant = &effect;
+    if (dominant) {
+        if (victim.slowSource != dominant->playId || victim.slowTrackedFrom < 0)
+            victim.slowTrackedFrom = state_.elapsed;
+        victim.slowPct = dominant->pct;
+        victim.slowUntil = dominant->until;
+        victim.slowSource = dominant->playId;
+    } else if (hadComponents || state_.elapsed >= victim.slowUntil)
+        victim.slowPct = 0;
+}
+void Match::ApplySlow(Entity &victim, const Card &card, PlayId play, EntityId source, Team team) {
+    RefreshSlows(victim);
+    auto effect = std::find_if(victim.slows.begin(), victim.slows.end(), [&](const SlowEffect &entry) {
+        return entry.cardId == card.id;
+    });
+    const bool refreshed = effect != victim.slows.end();
+    SlowEffect application;
+    application.source = source;
+    application.playId = play;
+    application.team = team;
+    application.cardId = card.id;
+    application.pct = card.slowPct;
+    application.born = state_.elapsed;
+    application.until = state_.elapsed + card.slowDuration;
+    if (refreshed)
+        *effect = application;
+    else
+        victim.slows.push_back(application);
+    statusCredits_[play] = {team, card.id};
+    RefreshSlows(victim);
+    auto &event = Emit("slow", team);
+    event.source = source;
+    event.target = victim.id;
+    event.playId = play;
+    event.cardId = card.id;
+    event.amount = application.pct;
+    event.until = application.until;
+    event.reason = refreshed ? "refresh" : "apply";
+}
+void Match::UpdateShockwaves() {
+    for (std::size_t index = 0; index < state_.shockwaves.size();) {
+        auto &wave = state_.shockwaves[index];
+        const double previous = wave.progress;
+        wave.progress = std::min(wave.radius, wave.speed * std::max(0., state_.elapsed - wave.born));
+        const Card *card = FindCard(wave.cardId);
+        if (!card) {
+            state_.shockwaves.erase(state_.shockwaves.begin() + index);
+            continue;
+        }
+        std::vector<EntityId> victims;
+        if (wave.progress > previous + 1e-9)
+            for (const auto &target : state_.entities) {
+                if (target.dead || target.team == wave.team || target.kind != EntityKind::Troop || target.flying ||
+                    std::find(wave.hitTargets.begin(), wave.hitTargets.end(), target.id) != wave.hitTargets.end())
+                    continue;
+                const auto start = bodyStepStarts_.find(target.id);
+                const Vec2 from = start == bodyStepStarts_.end() ? target.position : start->second;
+                // The authored wave outruns every troop. Intersect its moving
+                // front with the body's swept radial interval, rather than
+                // turning the already-passed interior into a lingering aura.
+                if (D(target.position, wave.origin) <= wave.progress + target.radius + 1e-9 &&
+                    D(from, wave.origin) + target.radius >= previous - 1e-9) {
+                    wave.hitTargets.push_back(target.id);
+                    victims.push_back(target.id);
+                }
+            }
+        const Shockwave copy = wave;
+        for (EntityId target : victims) {
+            Damage(target, card->damage, copy.team, copy.cardId, copy.playId, copy.source, "shockwave");
+            if (!Running(state_.phase))
+                return;
+            auto *victim = Get(target);
+            if (victim && !victim->dead)
+                ApplySlow(*victim, *card, copy.playId, copy.source, copy.team);
+        }
+        if (state_.elapsed + 1e-9 >= copy.expires)
+            state_.shockwaves.erase(state_.shockwaves.begin() + index);
+        else
+            ++index;
     }
 }
 void Match::UpdateEntity(EntityId id, double dt) {
@@ -344,10 +440,9 @@ void Match::UpdateEntity(EntityId id, double dt) {
             }
         }
     }
+    RefreshSlows(*s);
     if (state_.elapsed + 1e-9 < s->stunUntil)
         return;
-    if (state_.elapsed >= s->slowUntil)
-        s->slowPct = 0;
     const Entity *target = Get(s->target);
     if (target && target->dead) {
         s->target = 0;
@@ -355,6 +450,14 @@ void Match::UpdateEntity(EntityId id, double dt) {
         s->path.clear();
         if (std::abs(s->position.z) > 2.69)
             s->bridge = 0;
+        target = nullptr;
+    }
+    // Crown advance is navigation, and an established melee structure lock
+    // remains engaged. Every other deployable-card pursuit uses the same
+    // strict detection boundary on every tick, not a relaxed scan interval.
+    if (!Crown(*s) && target && !Crown(*target) && !s->hardLock && !InSight(*s, *target)) {
+        s->target = s->forcedTarget = 0;
+        s->path.clear();
         target = nullptr;
     }
     const bool approachTroops = c && !c->structuresOnly && !s->hardLock && target && Structure(*target);

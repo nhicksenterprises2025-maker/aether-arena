@@ -18,6 +18,9 @@ inline constexpr double CoreDepth = 17.3, GuardDepth = 13.4, GuardX = BridgeCent
 inline constexpr double DeploymentMaxX = HalfWidth - 1.8;
 inline constexpr double PocketOuterX = HalfWidth - .8, PocketMaxDepth = GuardDepth - 3.15;
 } // namespace arena
+namespace detection {
+inline constexpr double Front = 8, Rear = 5;
+} // namespace detection
 using EntityId = std::uint64_t;
 using PlayId = std::uint64_t;
 enum class Team : std::uint8_t { Player, Enemy };
@@ -30,7 +33,7 @@ struct Card {
     std::string id, name;
     int cost = 0, count = 1;
     double hp = 0, damage = 0, attackInterval = 0, moveSpeed = 0, range = 0, scale = 1;
-    double projectileSpeed = 0, splash = 0, lifetime = 0, footprint = 0;
+    double projectileSpeed = 0, splash = 0, lifetime = 0, footprint = 0, shockwaveSpeed = 0;
     double towerDamage = 0, spellRadius = 0, chargeDamage = 0, castDelay = 0;
     double slowPct = 0, slowDuration = 0, auraDamage = 0, auraInterval = 0, auraRadius = 0, stunDuration = 0;
     double dotDamage = 0, dotDuration = 0, dotInterval = 0;
@@ -45,6 +48,13 @@ std::string PhaseName(Phase phase);
 Vec2 SnapToTile(Vec2 point);
 bool ValidateDeck(const std::vector<std::string> &deck);
 
+struct SlowEffect {
+    EntityId source = 0;
+    PlayId playId = 0;
+    Team team = Team::Player;
+    std::string cardId;
+    double pct = 0, born = 0, until = 0;
+};
 struct Entity {
     EntityId id = 0, target = 0, hardLock = 0, forcedTarget = 0;
     PlayId playId = 0, slowSource = 0, stunSource = 0;
@@ -60,6 +70,7 @@ struct Entity {
     int lane = 0, bridge = 0, memberCount = 1;
     bool active = true, dead = false, flying = false, charged = false;
     std::vector<Vec2> path;
+    std::vector<SlowEffect> slows;
 };
 struct Projectile {
     std::uint64_t id = 0;
@@ -69,6 +80,16 @@ struct Projectile {
     std::string cardId;
     Vec2 origin;
     double damage = 0, splash = 0, remaining = 0, duration = 0;
+};
+struct Shockwave {
+    std::uint64_t id = 0;
+    EntityId source = 0;
+    PlayId playId = 0;
+    Team team = Team::Player;
+    std::string cardId;
+    Vec2 origin;
+    double radius = 0, speed = 0, progress = 0, born = 0, expires = 0;
+    std::vector<EntityId> hitTargets;
 };
 struct Hazard {
     PlayId playId = 0;
@@ -131,6 +152,7 @@ struct Snapshot {
     std::array<AIState, 2> ai;
     std::vector<Entity> entities;
     std::vector<Projectile> projectiles;
+    std::vector<Shockwave> shockwaves;
     std::vector<Hazard> hazards;
     std::vector<SpellCast> spellCasts;
     std::array<std::map<std::string, CardTelemetry>, 2> telemetry;
@@ -190,7 +212,7 @@ class Match {
     bool SetAIStyle(Team team, const std::string &style);
     // Testable public mechanics use the identical validation as attack execution.
     bool CanTarget(const Entity &source, const Entity &target) const;
-    bool InSight(const Entity &source, const Entity &target, double bonus = 0) const;
+    bool InSight(const Entity &source, const Entity &target) const;
     double CombatDistance(const Entity &source, const Entity &target) const;
     std::vector<Vec2> FindPath(const Entity &source, const Entity &target, int bridge = 0) const;
     static double AetherGenerated(double from, double to);
@@ -248,6 +270,9 @@ class Match {
     void UpdateEntity(EntityId id, double dt);
     void Acquire(Entity &source);
     void Attack(Entity &source, const Entity &target);
+    void ApplySlow(Entity &victim, const Card &card, PlayId play, EntityId source, Team team);
+    void RefreshSlows(Entity &victim);
+    void UpdateShockwaves();
     void Move(Entity &source, const Entity &target, double dt);
     bool NavValid(Vec2 point, const Entity &source, EntityId goal, int bridge = 0) const;
     bool NavSegmentValid(Vec2 from, Vec2 to, const Entity &source, EntityId goal, int bridge = 0) const;

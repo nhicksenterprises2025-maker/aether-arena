@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 import hashlib
 import json
 import math
+import re
 from pathlib import Path
 import struct
 import sys
@@ -21,7 +22,7 @@ CARD_IDS = frozenset((
     "ironclad", "ember_archer", "archer_tower", "vampire_bats",
     "twin_blades", "boulderback", "arc_mage", "rambeast", "sky_manta",
     "frost_fang", "storm_raven", "bullet_burst", "nova_flask",
-    "meteor_shards", "mini_stampede", "stampede",
+    "meteor_shards", "mini_stampede", "stampede", "pulverizer",
 ))
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 
@@ -118,13 +119,13 @@ class PortraitAudit:
         ):
             self.report["provenance"][label] = self.file_info(relative)
 
-        self.check("Manifest contains exactly the sixteen canonical cards",
+        self.check("Manifest contains exactly the seventeen canonical cards",
                    set(manifest.get("cards", {})) == CARD_IDS)
-        self.check("Manifest illustrations contain exactly the sixteen cards",
+        self.check("Manifest illustrations contain exactly the seventeen cards",
                    set(manifest.get("illustrations", {})) == CARD_IDS)
-        self.check("Portrait report contains exactly the sixteen cards",
+        self.check("Portrait report contains exactly the seventeen cards",
                    set(portraits.get("cards", {})) == CARD_IDS)
-        self.check("Portrait PNG inventory contains exactly the sixteen cards",
+        self.check("Portrait PNG inventory contains exactly the seventeen cards",
                    {p.stem for p in (self.root / "Assets/Source/CardArt").glob("*.png")} == CARD_IDS)
         self.check("Portrait resolution is 768 by 960", portraits.get("resolution") == [768, 960])
         self.check("Portrait sourceBlend equals final export source",
@@ -157,6 +158,10 @@ class PortraitAudit:
             image_info = self.verify_file(record, card_id + " PNG")
             self.check(card_id + " illustration binding matches portrait", all(
                 record.get(key) == illustration.get(key) for key in ("file", "bytes", "sha256")))
+            scene_hash=record.get('sourceSceneSHA256')
+            self.check(card_id + " historical authored scene pin",
+                       isinstance(scene_hash,str) and re.fullmatch(r'[a-f0-9]{64}',scene_hash) is not None
+                       and scene_hash == illustration.get('sourceSceneSHA256'))
             self.check(card_id + " canonical PNG path",
                        record.get("file") == f"Assets/Source/CardArt/{card_id}.png")
             if image_info:

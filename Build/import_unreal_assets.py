@@ -19,7 +19,7 @@ LIB = unreal.EditorAssetLibrary
 REPORT = {"imported": [], "errors": [], "skeletal": {}, "animations": {}, "statics": {}, "cards": {}}
 REPORT.update({"schema": 2, "generatedUTC": datetime.now(timezone.utc).isoformat(),
                "passed": False, "sourceImports": [],
-               "mode": "ModelsOnly" if "-RiftModelsOnly" in unreal.SystemLibrary.get_command_line() else "Full"})
+               "mode": "PulverizerOnly" if "-RiftPulverizerOnly" in unreal.SystemLibrary.get_command_line() else "ModelsOnly" if "-RiftModelsOnly" in unreal.SystemLibrary.get_command_line() else "Full"})
 REPORT["provenance"] = source_provenance.freeze(ROOT, MANIFEST, __file__)
 
 def save(asset):
@@ -243,6 +243,8 @@ def presentation_material(name, domain=None, shader="particle"):
         unreal.MaterialEditingLibrary.connect_material_expressions(shape, "", custom, "Shape")
         if shader == "particle":
             code="float2 p=UV*2-1; float r=length(p); return pow(saturate(1-r),2);"
+        elif shader == "shockwave":
+            code="float r=length(UV*2-1); return saturate((1-r)*95)*saturate((r-.945)*65);"
         else:
             code="float2 p=abs(UV*2-1); float r=Shape>.5?max(p.x,p.y):length(p); float edge=saturate((1-r)*80)*saturate((r-.87)*45); return saturate(edge*.75+(r<.95?.12:0));"
         custom.set_editor_property("code", code)
@@ -273,13 +275,15 @@ def presentation_material(name, domain=None, shader="particle"):
     unreal.MaterialEditingLibrary.recompile_material(m)
     return save(m)
 
-def card_data():
+def card_data(only=None):
     definitions = json.loads(unreal.RiftAssetLibrary.card_definitions_json())
     REPORT["cardDefinitions"] = definitions
-    properties = {"cost":"Cost", "count":"Count", "hp":"HP", "damage":"Damage", "attackInterval":"AttackSpeed", "moveSpeed":"MoveSpeed", "range":"AttackRange", "scale":"BaseModelScale", "projectileSpeed":"ProjectileSpeed", "splash":"SplashRadius", "lifetime":"Lifetime", "footprint":"Footprint", "towerDamage":"TowerDamage", "spellRadius":"SpellRadius", "castDelay":"CastDelay", "chargeDamage":"ChargeDamage", "slowPct":"SlowPct", "slowDuration":"SlowDuration", "auraDamage":"AuraDamage", "auraRadius":"AuraRadius", "auraInterval":"AuraInterval", "stunDuration":"StunDuration", "dotDamage":"DotDamage", "dotDuration":"DotDuration", "dotInterval":"DotInterval", "rounds":"Rounds", "flying":"Flying", "canHitAir":"GroundAndAir", "structuresOnly":"StructuresOnly", "spell":"Spell", "building":"Building"}
-    attacks = {"ironclad":"sword_attack", "ember_archer":"bow_release", "twin_blades":"dual_attack", "boulderback":"heavy_slam", "arc_mage":"arc_cast", "rambeast":"charge", "sky_manta":"manta_cast", "archer_tower":"arrow_flight", "bullet_burst":"bullet_burst", "nova_flask":"nova_impact", "vampire_bats":"bat_bite", "frost_fang":"frost_attack", "storm_raven":"storm_bolt", "meteor_shards":"meteor_impact", "mini_stampede":"heavy_slam", "stampede":"heavy_slam"}
+    properties = {"cost":"Cost", "count":"Count", "hp":"HP", "damage":"Damage", "attackInterval":"AttackSpeed", "moveSpeed":"MoveSpeed", "range":"AttackRange", "scale":"BaseModelScale", "projectileSpeed":"ProjectileSpeed", "shockwaveSpeed":"ShockwaveSpeed", "splash":"SplashRadius", "lifetime":"Lifetime", "footprint":"Footprint", "towerDamage":"TowerDamage", "spellRadius":"SpellRadius", "castDelay":"CastDelay", "chargeDamage":"ChargeDamage", "slowPct":"SlowPct", "slowDuration":"SlowDuration", "auraDamage":"AuraDamage", "auraRadius":"AuraRadius", "auraInterval":"AuraInterval", "stunDuration":"StunDuration", "dotDamage":"DotDamage", "dotDuration":"DotDuration", "dotInterval":"DotInterval", "rounds":"Rounds", "flying":"Flying", "canHitAir":"GroundAndAir", "structuresOnly":"StructuresOnly", "spell":"Spell", "building":"Building"}
+    attacks = {"ironclad":"sword_attack", "ember_archer":"bow_release", "twin_blades":"dual_attack", "boulderback":"heavy_slam", "arc_mage":"arc_cast", "rambeast":"charge", "sky_manta":"manta_cast", "archer_tower":"arrow_flight", "bullet_burst":"bullet_burst", "nova_flask":"nova_impact", "vampire_bats":"bat_bite", "frost_fang":"frost_attack", "storm_raven":"storm_bolt", "meteor_shards":"meteor_impact", "mini_stampede":"heavy_slam", "stampede":"heavy_slam", "pulverizer":"heavy_slam"}
     effects = ["Deploy","Impact","ArrowFlight","ArcFlight","MantaFlight","StormFlight","TowerFlight","BulletBurst","Nova","Meteor","MeteorTick","Frost","Slow","Stun","Aura","TowerDestroy","CoreAwaken"]
     for c in definitions:
+        if only is not None and c["id"] not in only:
+            continue
         unreal.log("Building Rift CardData: " + c["id"])
         name = "DA_" + c["id"]
         path = "/Game/Rift/Cards/" + name
@@ -297,20 +301,62 @@ def card_data():
         if c["id"] in REPORT["skeletal"]:
             data.set_editor_property("CharacterMesh", LIB.load_asset(REPORT["skeletal"][c["id"]]))
             data.set_editor_property("Animations", {key:LIB.load_asset(path) for key,path in REPORT["animations"][c["id"]].items()})
-        if c["building"]:
+        if c["building"] and c["id"] in REPORT["statics"]:
             data.set_editor_property("StructureMesh", LIB.load_asset(REPORT["statics"][c["id"]]))
         data.set_editor_property("Effects", {key:LIB.load_asset("/Game/Rift/VFX/NS_Rift"+key) for key in effects})
-        sounds = {"Attack": LIB.load_asset("/Game/Rift/Audio/SFX_" + attacks[c["id"]]), "Deploy":LIB.load_asset("/Game/Rift/Audio/SFX_deploy"), "Hit":LIB.load_asset("/Game/Rift/Audio/SFX_sword_hit")}
+        sounds = {"Attack": LIB.load_asset("/Game/Rift/Audio/SFX_" + attacks[c["id"]]), "Deploy":LIB.load_asset("/Game/Rift/Audio/SFX_deploy"), "Hit":LIB.load_asset("/Game/Rift/Audio/SFX_building_hit" if c["id"] == "pulverizer" else "/Game/Rift/Audio/SFX_sword_hit")}
         if any(v is None for v in sounds.values()):
             raise RuntimeError("Missing sound binding for " + c["id"])
         data.set_editor_property("Sounds", sounds)
-        LIB.set_metadata_tag(data, "SourceManifest", MANIFEST["source"]["sha256"])
+        LIB.set_metadata_tag(data, "SourceManifest", MANIFEST.get("illustrations", {}).get(c["id"], {}).get("sourceSceneSHA256", MANIFEST["source"]["sha256"]))
         if c["id"] in MANIFEST.get("illustrations", {}):
             LIB.set_metadata_tag(data,"PortraitSHA256",MANIFEST["illustrations"][c["id"]]["sha256"])
             LIB.set_metadata_tag(data,"PortraitSource", "Production model render" if (ROOT/"Assets/Source/CardArt/model_portraits.json").exists() else "Original illustration")
         save(data)
 
 def main():
+    if "-RiftPulverizerOnly" in unreal.SystemLibrary.get_command_line():
+        # Add one card without importing or resaving any accepted roster asset.
+        card_id = "pulverizer"
+        card = MANIFEST["characters"][card_id]
+        mats = {name: LIB.load_asset("/Game/Rift/Materials/" + name)
+                for name in ("M_RiftSurface", "M_RiftGlow", "M_RiftGlass")}
+        if any(value is None for value in mats.values()):
+            raise RuntimeError("Existing production materials are missing")
+        dest = "/Game/Rift/Characters/" + card_id
+        mesh = import_file(ROOT / card["mesh"]["file"], dest, "SK_" + card_id, mesh_options(skeletal=True))
+        assign_materials(mesh, card["materials"], mats)
+        skeleton = mesh.get_editor_property("skeleton")
+        if skeleton is None or mesh.get_editor_property("physics_asset") is None:
+            raise RuntimeError("Pulverizer lacks its skeleton or generated physics")
+        save(skeleton)
+        save(mesh.get_editor_property("physics_asset"))
+        REPORT["skeletal"][card_id] = mesh.get_path_name()
+        skeletal_editor = unreal.get_editor_subsystem(unreal.SkeletalMeshEditorSubsystem)
+        for lod in card["lods"]:
+            if skeletal_editor.import_lod(mesh, lod["level"], str(ROOT / lod["file"])) < 0:
+                raise RuntimeError("Failed Pulverizer skeletal LOD")
+            REPORT["sourceImports"].append({"source": source_provenance.pin(ROOT, lod["file"]),
+                "assets": [mesh.get_path_name()], "method": "SkeletalMeshEditorSubsystem.import_lod",
+                "level": lod["level"], "succeeded": True})
+        clips = {}
+        for clip in card["animations"]:
+            anim = import_file(ROOT / clip["file"], dest + "/Animations", clip["action"], mesh_options(animation=True, skeleton=skeleton))
+            clips[clip["name"]] = anim.get_path_name()
+        REPORT["animations"][card_id] = clips
+        save(mesh)
+        REPORT["cards"][card_id] = texture(ROOT / "Assets/Source/CardArt/pulverizer.png", "T_Card_pulverizer", ui=True).get_path_name()
+        REPORT["materials"] = [presentation_material("M_RiftShockwave", unreal.MaterialDomain.MD_DEFERRED_DECAL, "shockwave").get_path_name()]
+        REPORT["physicsFinalization"] = json.loads(unreal.RiftEditorAssetLibrary.finalize_imported_physics_assets_json())
+        if REPORT["physicsFinalization"]["errors"]:
+            raise RuntimeError(REPORT["physicsFinalization"]["errors"])
+        unreal.AssetRegistryHelpers.get_asset_registry().scan_files_synchronous([
+            str(ROOT / "Unreal/RiftCrownArena/Content/Rift/Characters/pulverizer/SK_pulverizer_PhysicsAsset.uasset")], True)
+        card_data({card_id})
+        REPORT["validation"] = json.loads(unreal.RiftEditorAssetLibrary.inspect_imported_assets_json())
+        if REPORT["validation"]["errors"]:
+            raise RuntimeError(REPORT["validation"]["errors"])
+        return
     if "-RiftParticleOnly" in unreal.SystemLibrary.get_command_line():
         REPORT["materials"] = [presentation_material("M_RiftParticle").get_path_name()]
         REPORT["particleSpriteScaling"] = {"parameter": "RiftSpriteScale", "default": 1.0,

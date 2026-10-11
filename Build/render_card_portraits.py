@@ -69,6 +69,7 @@ PORTRAIT_MOODS = {
     'meteor_shards': ((.052,.029,.022), (1,.83,.64), (.84,.34,.13)),
     'mini_stampede': ((.042,.033,.022), (1,.87,.69), (.60,.69,.43)),
     'stampede': ((.027,.037,.056), (1,.91,.73), (.38,.63,.88)),
+    'pulverizer': ((.032,.026,.048), (.95,.90,1), (.62,.32,.96)),
 }
 
 studio = bpy.data.collections.new('CardPortraitStudio')
@@ -225,7 +226,8 @@ for card in selected:
     scene.render.filepath = str(path)
     bpy.ops.render.render(write_still=True)
     info = {'file': str(path.relative_to(ROOT)).replace('\\', '/'),
-            'sha256': hashlib.sha256(path.read_bytes()).hexdigest(), 'bytes': path.stat().st_size}
+            'sha256': hashlib.sha256(path.read_bytes()).hexdigest(), 'bytes': path.stat().st_size,
+            'sourceSceneSHA256': manifest['source']['sha256']}
     manifest['illustrations'][card] = info
     report['cards'][card] = {**info, 'sources': sources, 'boundsMeters': [list(lo), list(hi)],
                            'poseFrame': frame, 'cameraOrthoScale': camera.data.ortho_scale,

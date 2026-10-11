@@ -332,6 +332,21 @@ bool ReadEvent(const TSharedPtr<FJsonObject> &O, rift::Event &E) {
              FMath::Abs(E.until - E.time - Card->castDelay) > 1e-6))
             R.Valid = false;
     }
+    if (E.type == "shockwave_launch") {
+        // New wave events must describe the same traveling attack as the core.
+        // Older event types retain their existing optional-field contracts.
+        R.Number(TEXT("time"),E.time,0,MaxTime,true);
+        R.Number(TEXT("source"),E.source,1,1e12,true);
+        R.Number(TEXT("target"),E.target,1,1e12,true);
+        R.Number(TEXT("playId"),E.playId,1,1e12,true);
+        R.Number(TEXT("amount"),E.amount,0,1e12,true);
+        R.Number(TEXT("until"),E.until,0,MaxTime+10,true);
+        R.Vec(TEXT("position"),E.position,true);
+        if (!Card || Card->shockwaveSpeed<=0 || Card->splash<=0 || E.until<=E.time ||
+            FMath::Abs(E.amount-Card->damage)>1e-6 ||
+            FMath::Abs(E.until-E.time-Card->splash/Card->shockwaveSpeed)>1e-6)
+            R.Valid=false;
+    }
     return R.Valid && !E.type.empty() && E.sequence > 0 && E.time >= 0 && E.time <= MaxTime &&
            (E.cardId.empty() || E.type == "ai_decision" || rift::FindCard(E.cardId));
 }
@@ -460,6 +475,16 @@ TSharedRef<FJsonObject> URiftReplaySubsystem::SnapshotJSON(const rift::Snapshot 
         R->SetBoolField(TEXT("dead"), E.dead);
         R->SetBoolField(TEXT("flying"), E.flying);
         R->SetBoolField(TEXT("charged"), E.charged);
+        TArray<TSharedPtr<FJsonValue>> Slows;
+        for (const auto& Slow:E.slows)
+        {
+            auto V=MakeShared<FJsonObject>();
+            V->SetNumberField(TEXT("source"),double(Slow.source));V->SetNumberField(TEXT("playId"),double(Slow.playId));
+            V->SetNumberField(TEXT("team"),double(Slow.team));V->SetStringField(TEXT("cardId"),FS(Slow.cardId));
+            V->SetNumberField(TEXT("pct"),Slow.pct);V->SetNumberField(TEXT("born"),Slow.born);V->SetNumberField(TEXT("until"),Slow.until);
+            Slows.Add(MakeShared<FJsonValueObject>(V));
+        }
+        R->SetArrayField(TEXT("slows"),Slows);
         TArray<TSharedPtr<FJsonValue>> Path;
         for (auto P : E.path) {
             auto V = MakeShared<FJsonObject>();
@@ -489,6 +514,20 @@ TSharedRef<FJsonObject> URiftReplaySubsystem::SnapshotJSON(const rift::Snapshot 
         Projectiles.Add(MakeShared<FJsonValueObject>(R));
     }
     O->SetArrayField(TEXT("projectiles"), Projectiles);
+    TArray<TSharedPtr<FJsonValue>> Shockwaves;
+    for (const auto& Wave:State.shockwaves)
+    {
+        auto V=MakeShared<FJsonObject>();
+#define WAVE_FIELD(K) V->SetNumberField(TEXT(#K),double(Wave.K));
+        WAVE_FIELD(id) WAVE_FIELD(source) WAVE_FIELD(playId) WAVE_FIELD(team)
+        WAVE_FIELD(radius) WAVE_FIELD(speed) WAVE_FIELD(progress) WAVE_FIELD(born) WAVE_FIELD(expires)
+#undef WAVE_FIELD
+        V->SetStringField(TEXT("cardId"),FS(Wave.cardId));Point(V,TEXT("origin"),Wave.origin);
+        TArray<TSharedPtr<FJsonValue>> Hits;
+        for (auto Id:Wave.hitTargets) Hits.Add(MakeShared<FJsonValueNumber>(double(Id)));
+        V->SetArrayField(TEXT("hitTargets"),Hits);Shockwaves.Add(MakeShared<FJsonValueObject>(V));
+    }
+    O->SetArrayField(TEXT("shockwaves"),Shockwaves);
     TArray<TSharedPtr<FJsonValue>> SpellCasts;
     for (const auto &C : State.spellCasts) {
         auto R = MakeShared<FJsonObject>();
@@ -607,6 +646,22 @@ bool URiftReplaySubsystem::SnapshotFromJSON(const TSharedPtr<FJsonObject> &O, ri
         T.Flag(TEXT("dead"), E.dead);
         T.Flag(TEXT("flying"), E.flying);
         T.Flag(TEXT("charged"), E.charged);
+        const TArray<TSharedPtr<FJsonValue>>* Slows=nullptr;
+        TSet<FString> SlowCards;
+        if (T.List(TEXT("slows"),Slows,100)) for (const auto& SV:*Slows)
+        {
+            rift::SlowEffect Slow;Reader SR(Obj(SV));
+            SR.Number(TEXT("source"),Slow.source,0,1e12,true);SR.Number(TEXT("playId"),Slow.playId,1,1e12,true);
+            SR.Number(TEXT("team"),Slow.team,0,1,true);SR.Text(TEXT("cardId"),Slow.cardId,true);
+            SR.Number(TEXT("pct"),Slow.pct,0,1,true);SR.Number(TEXT("born"),Slow.born,0,MaxTime,true);
+            SR.Number(TEXT("until"),Slow.until,0,MaxTime+10,true);
+            const FString CardId=FS(Slow.cardId);
+            const auto* SlowCard=rift::FindCard(Slow.cardId);
+            if (!SlowCard||SlowCards.Contains(CardId)||Slow.until<Slow.born||
+                (SlowCard&&(SlowCard->slowPct<=0||FMath::Abs(Slow.pct-SlowCard->slowPct)>1e-6||
+                    FMath::Abs(Slow.until-Slow.born-SlowCard->slowDuration)>1e-6))) SR.Valid=false;
+            SlowCards.Add(CardId);T.Valid &= SR.Valid;E.slows.push_back(Slow);
+        }
         const TArray<TSharedPtr<FJsonValue>> *Path = nullptr;
         if (T.List(TEXT("path"), Path, 2000))
             for (const auto &PV : *Path) {
@@ -649,6 +704,33 @@ bool URiftReplaySubsystem::SnapshotFromJSON(const TSharedPtr<FJsonObject> &O, ri
             R.Valid &= T.Valid;
             Parsed.projectiles.push_back(P);
         }
+    // Optional for recordings made before Pulverizer was introduced.
+    TSet<uint64> WaveIds;
+    if (R.List(TEXT("shockwaves"),A,10000)) for (const auto& WV:*A)
+    {
+        rift::Shockwave Wave;Reader W(Obj(WV));
+        W.Number(TEXT("id"),Wave.id,1,1e12,true);W.Number(TEXT("source"),Wave.source,1,1e12,true);
+        W.Number(TEXT("playId"),Wave.playId,1,1e12,true);W.Number(TEXT("team"),Wave.team,0,1,true);
+        W.Text(TEXT("cardId"),Wave.cardId,true);W.Vec(TEXT("origin"),Wave.origin,true);
+        W.Number(TEXT("radius"),Wave.radius,0,100,true);W.Number(TEXT("speed"),Wave.speed,0,100,true);
+        W.Number(TEXT("progress"),Wave.progress,0,100,true);W.Number(TEXT("born"),Wave.born,0,MaxTime,true);
+        W.Number(TEXT("expires"),Wave.expires,0,MaxTime+10,true);
+        const auto* Card=rift::FindCard(Wave.cardId);
+        if (!Card||Card->shockwaveSpeed<=0||WaveIds.Contains(Wave.id)||Wave.speed<=0||Wave.radius<=0||
+            Wave.progress>Wave.radius+1e-7||Wave.born>Parsed.elapsed+1e-7||Wave.expires<Parsed.elapsed-1e-7||
+            FMath::Abs(Wave.expires-Wave.born-Wave.radius/FMath::Max(.001,Wave.speed))>1e-6||
+            FMath::Abs(Wave.progress-FMath::Clamp((Parsed.elapsed-Wave.born)*Wave.speed,0.,Wave.radius))>1e-6||
+            (Card&&(FMath::Abs(Wave.speed-Card->shockwaveSpeed)>1e-6||FMath::Abs(Wave.radius-Card->splash)>1e-6))||
+            Parsed.phase==rift::Phase::Tiebreaker||Parsed.phase==rift::Phase::Finished) W.Valid=false;
+        const TArray<TSharedPtr<FJsonValue>>* Hits=nullptr;TSet<uint64> HitIds;
+        if (W.List(TEXT("hitTargets"),Hits,5000,true)) for (const auto& Hit:*Hits)
+        {
+            double Id=0;
+            if (!Hit||!Hit->TryGetNumber(Id)||!FMath::IsFinite(Id)||Id<1||Id>1e12||FMath::FloorToDouble(Id)!=Id||HitIds.Contains(uint64(Id))) W.Valid=false;
+            else {HitIds.Add(uint64(Id));Wave.hitTargets.push_back(uint64(Id));}
+        }
+        WaveIds.Add(Wave.id);R.Valid &= W.Valid;Parsed.shockwaves.push_back(Wave);
+    }
     // Optional for recordings made before delayed spell impacts were introduced.
     TSet<uint64> CastIds;
     if (R.List(TEXT("spellCasts"), A, 5000))
@@ -779,6 +861,20 @@ rift::Entity *EntityById(rift::Snapshot &State, rift::EntityId Id) {
             return &E;
     return nullptr;
 }
+void RefreshReplaySlow(rift::Entity& Entity,double Time)
+{
+    Entity.slows.erase(std::remove_if(Entity.slows.begin(),Entity.slows.end(),
+        [&](const auto& Slow){return Slow.until<=Time;}),Entity.slows.end());
+    Entity.slowPct=0;
+    const rift::SlowEffect* Dominant=nullptr;
+    for (const auto& Slow:Entity.slows)
+        if (!Dominant||Slow.pct>Dominant->pct || (Slow.pct==Dominant->pct&&Slow.born>Dominant->born)) Dominant=&Slow;
+    if (Dominant)
+    {
+        if (Entity.slowSource!=Dominant->playId||Entity.slowTrackedFrom<0) Entity.slowTrackedFrom=Time;
+        Entity.slowPct=Dominant->pct;Entity.slowUntil=Dominant->until;Entity.slowSource=Dominant->playId;
+    }
+}
 void AdvanceSnapshot(rift::Snapshot &State, double To) {
     const double Dt = FMath::Max(0.0, To - State.elapsed);
     if (State.phase == rift::Phase::Regulation || State.phase == rift::Phase::Overtime) {
@@ -790,7 +886,8 @@ void AdvanceSnapshot(rift::Snapshot &State, double To) {
         }
         for (auto &E : State.entities)
             if (!E.dead && E.kind == rift::EntityKind::Building)
-                E.hp = FMath::Max(0.0, E.hp - 34 * Dt);
+                if (const auto* Card=rift::FindCard(E.cardId);Card&&Card->lifetime>0)
+                    E.hp = FMath::Max(0.0, E.hp - E.maxHp/Card->lifetime * Dt);
         State.timeRemaining = FMath::Max(0.0, State.timeRemaining - Dt);
     } else if (State.phase == rift::Phase::Tiebreaker) {
         const double Drain = 180 * (FMath::Max(0.0, State.phaseElapsed + Dt - .85) -
@@ -809,7 +906,11 @@ void AdvanceSnapshot(rift::Snapshot &State, double To) {
     State.hazards.erase(std::remove_if(State.hazards.begin(), State.hazards.end(),
                                        [&](const auto &H) { return H.expires < To; }),
                         State.hazards.end());
+    for (auto& Wave:State.shockwaves) Wave.progress=FMath::Clamp((To-Wave.born)*Wave.speed,0.,Wave.radius);
+    State.shockwaves.erase(std::remove_if(State.shockwaves.begin(),State.shockwaves.end(),
+        [&](const auto& Wave){return To>=Wave.expires;}),State.shockwaves.end());
     State.elapsed = To;
+    for (auto& Entity:State.entities) if (!Entity.slows.empty()) RefreshReplaySlow(Entity,To);
 }
 void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E) {
     const int Team = int(E.team);
@@ -892,6 +993,10 @@ void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E) {
         ++State.telemetry[Team][E.cardId].spawns;
     } else if (E.type == "damage" && Target) {
         Target->hp = E.hp;
+        if (E.damageKind=="shockwave") for (auto& Wave:State.shockwaves)
+            if (Wave.source==E.source&&Wave.playId==E.playId&&Wave.cardId==E.cardId&&
+                std::find(Wave.hitTargets.begin(),Wave.hitTargets.end(),E.target)==Wave.hitTargets.end())
+                Wave.hitTargets.push_back(E.target);
         if (Card) {
             auto &T = State.telemetry[Team][E.cardId];
             if (E.targetKind >= rift::EntityKind::Guard)
@@ -930,12 +1035,15 @@ void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E) {
                                             [](const auto &R) { return R.kind < rift::EntityKind::Guard; }),
                              State.entities.end());
         State.projectiles.clear();
+        State.shockwaves.clear();
         State.spellCasts.clear();
         State.hazards.clear();
     } else if (E.type == "slow" && Target) {
-        Target->slowPct = E.amount;
-        Target->slowUntil = E.until;
-        Target->slowSource = E.playId;
+        auto Existing=std::find_if(Target->slows.begin(),Target->slows.end(),[&](const auto& Slow){return Slow.cardId==E.cardId;});
+        rift::SlowEffect Slow;Slow.source=E.source;Slow.playId=E.playId;Slow.team=E.team;
+        Slow.cardId=E.cardId;Slow.pct=E.amount;Slow.born=E.time;Slow.until=E.until;
+        if (Existing==Target->slows.end()) Target->slows.push_back(Slow); else *Existing=Slow;
+        RefreshReplaySlow(*Target,E.time);
     } else if (E.type == "stun" && Target) {
         Target->stunUntil = E.until;
         Target->stunSource = E.playId;
@@ -966,6 +1074,11 @@ void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E) {
         P.splash = Card ? Card->splash : 0;
         P.duration = P.remaining = FMath::Max(0.0, E.until - E.time);
         State.projectiles.push_back(P);
+    } else if (E.type == "shockwave_launch" && Card) {
+        rift::Shockwave Wave;Wave.id=E.sequence;Wave.source=E.source;Wave.playId=E.playId;
+        Wave.team=E.team;Wave.cardId=E.cardId;Wave.origin=E.position;
+        Wave.radius=Card->splash;Wave.speed=Card->shockwaveSpeed;Wave.born=E.time;Wave.expires=E.until;
+        State.shockwaves.push_back(Wave);
     } else if (E.type == "hazard_tick") {
         for (auto &H : State.hazards)
             if (H.playId == E.playId) {
@@ -979,10 +1092,12 @@ void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E) {
         State.timeRemaining = State.phase == rift::Phase::Overtime ? 120 : 0;
         if (State.phase == rift::Phase::Tiebreaker) {
             State.projectiles.clear();
+            State.shockwaves.clear();
             State.spellCasts.clear();
             State.hazards.clear();
         }
     } else if (E.type == "match_end") {
+        State.shockwaves.clear();
         State.spellCasts.clear();
         State.phase = rift::Phase::Finished;
         State.winner = int(E.amount);

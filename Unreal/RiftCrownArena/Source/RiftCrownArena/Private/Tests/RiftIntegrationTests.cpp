@@ -1382,9 +1382,9 @@ bool FRiftFullReplayIntegrationTest::RunTest(const FString &Parameters) {
     auto RecordAIMatch = [&](bool Congestion) {
         rift::MatchOptions AIOptions;
         // Ordinary paid fixture preserves zero-crown overtime and >=20 live bodies
-        // under the balance patch and aligned towers, using the measured seed25 workload.
+        // under strict detection and aligned towers, using the measured seed11 workload.
         // The separate Developer congestion fixture retains its known >=40 load.
-        AIOptions.seed = Congestion ? 32 : 25;
+        AIOptions.seed = Congestion ? 32 : 11;
         AIOptions.aiEnabled = {true, true};
         AIOptions.aiStyles = {"control", "counter"};
         const std::vector<std::string> SwarmDeck{"ironclad",    "twin_blades",  "archer_tower",
@@ -1630,6 +1630,7 @@ bool FRiftCardDataIntegrationTest::RunTest(const FString &Parameters) {
         METRIC(MoveSpeed, moveSpeed)
         METRIC(AttackRange, range)
         METRIC(ProjectileSpeed, projectileSpeed)
+        METRIC(ShockwaveSpeed, shockwaveSpeed)
         METRIC(SplashRadius, splash)
         METRIC(Lifetime, lifetime)
         METRIC(Footprint, footprint)
@@ -1647,7 +1648,7 @@ bool FRiftCardDataIntegrationTest::RunTest(const FString &Parameters) {
         TestEqual(Id + TEXT(" spell type"), D->Spell, C.spell);
         TestEqual(Id + TEXT(" building type"), D->Building, C.building);
         TestNotNull(Id + TEXT(" card illustration"), D->Illustration.Get());
-        if (!C.spell && !C.building) {
+        if ((!C.spell && !C.building)||C.shockwaveSpeed>0) {
             TestNotNull(Id + TEXT(" skeletal mesh"), D->CharacterMesh.Get());
             if (const auto *Mesh = D->CharacterMesh.Get()) {
                 const double Height = Mesh->GetBounds().BoxExtent.Z * 2;
@@ -1660,7 +1661,7 @@ bool FRiftCardDataIntegrationTest::RunTest(const FString &Parameters) {
             for (const auto &A : D->Animations)
                 TestNotNull(Id + TEXT(" animation ") + A.Key.ToString(), A.Value.Get());
         }
-        if (C.building)
+        if (C.building&&C.shockwaveSpeed<=0)
             TestNotNull(Id + TEXT(" structure mesh"), D->StructureMesh.Get());
         TestTrue(Id + TEXT(" effects bound"), D->Effects.Num() >= 10);
         for (const auto &E : D->Effects)

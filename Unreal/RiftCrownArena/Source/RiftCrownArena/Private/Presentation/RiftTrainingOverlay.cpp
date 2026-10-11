@@ -73,7 +73,7 @@ int32 URiftBattleOverlay::PaintTrainingOverlay(const FGeometry& Geometry,FSlateW
             const double Range=Card?Card->range:Current.kind==rift::EntityKind::Core?8.9:10.;
             FLinearColor Color=Team;Color.A=.46f;Circle(Origin,Range*100,Color);
         }
-        if(Dev->ShowSight&&Current.kind==rift::EntityKind::Troop)
+        if(Dev->ShowSight&&(Current.kind==rift::EntityKind::Troop||Current.kind==rift::EntityKind::Building))
         {
             const FVector Forward(Current.facing.x,Current.facing.z,0),Side(-Current.facing.z,Current.facing.x,0);
             for(int32 Half=0;Half<2;++Half)

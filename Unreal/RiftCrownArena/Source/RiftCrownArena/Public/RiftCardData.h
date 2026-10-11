@@ -30,6 +30,7 @@ public:
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float FrontSight=8;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float RearSight=5;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float ProjectileSpeed=0;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) float ShockwaveSpeed=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float SplashRadius=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float Lifetime=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float Footprint=0;

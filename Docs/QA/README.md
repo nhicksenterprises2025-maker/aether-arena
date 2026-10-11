@@ -2,7 +2,15 @@
 
 These reports contain executed results and repository-relative evidence paths. Complete generated datasets, binaries, traces and commandlet logs remain ignored under `Artifacts/QA`, `Build/NativeTests` and `Build/Automation`. Current acceptance and historical releases are listed separately. Each gameplay fingerprint keeps its own captured roster and rules; earlier 10,000-match cohorts remain historical evidence.
 
-## Current version 1.4.0 balance, hog swarms, walking and tower alignment
+## Current version 1.5.0 Pulverizer, detection and Mini Stampede placement
+
+[pulverizer-1.5.0.json](pulverizer-1.5.0.json) binds the new card's authored/imported assets, traveling shockwaves, independently expiring slows, strict 8-front/5-rear detection and compact paid Mini Stampede formation. All sixteen prior numerical definitions and 586 source/322 imported assets remain unchanged. [Patch notes](../PATCH_NOTES_1.5.0.md) and [card](../CARD_STATS_1.5.0.tsv)/[ability](../ABILITY_STATS_1.5.0.tsv) tables document the seventeen-card roster and calculated DPS.
+
+[pulverizer-native-1.5.0.json](pulverizer-native-1.5.0.json) records nineteen complete native successes, zero failures/unrun tests, unchanged source/module pins and 104.1774673461914 seconds. All 69 portable scenarios and 21 seeded AI matches pass. The final native Meta cohort completes 100 matches with 173,122 audit checks and zero invalid matches/economies or audit failures under mechanics fingerprint `4afddc0cd63a0d399817ecaf8530b399`. Nine actual animation-pose renders and five final Shipping captures were physically reviewed, including purple waves at 1080p/720p and five compact river-edge hogs.
+
+Fresh paired old/new Shipping stress observations both average about 59 FPS at 1080p with 135/132 peak entities. The earlier slower observation remains archived, its cause unproven, and both versions retain brief mass-spawn hitches. Actual WPF Play and all 51 MSI upgrade/repair/uninstall checks pass for the exact 49-file payload with isolated saves preserved. [RELEASE_QA.md](../RELEASE_QA.md) records measured counts, hashes, rejected development fixtures and limits. The immutable packet contains the actual reports, metric inputs and separate raw/sanitized identity ledger; public delivery is verified after publication.
+
+## Historical version 1.4.0 balance, hog swarms, walking and tower alignment
 
 The [first balance patch](../PATCH_NOTES_1.4.0.md) has sixteen cards, including Mini Stampede and Stampede. All thirteen physical cards use the retained ground/air collision rules; spells have no body. Card, collection, ability and deck-analysis values use the same native definitions, with DPS calculated from damage divided by attack interval. The [card](../CARD_STATS_1.4.0.tsv) and [ability](../ABILITY_STATS_1.4.0.tsv) tables retain per-member and full-swarm figures.
 

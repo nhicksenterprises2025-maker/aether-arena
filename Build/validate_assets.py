@@ -1,8 +1,14 @@
 """Run in Blender after generate_assets.py. Audits authored source AND exported FBX files."""
 from pathlib import Path
-import bpy, json, math, hashlib
+import bpy, json, math, hashlib, argparse, sys
 from io_scene_fbx import parse_fbx
 ROOT=Path(__file__).resolve().parents[1]
+args=argparse.ArgumentParser()
+args.add_argument('--report',type=Path,default=ROOT/'Assets/asset_qa_report.json')
+opts=args.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
+report_path=opts.report if opts.report.is_absolute() else ROOT/opts.report
+report_path=report_path.resolve()
+if not report_path.is_relative_to(ROOT.resolve()):raise ValueError('Asset QA report escaped the repository')
 M=json.loads((ROOT/'Assets/asset_manifest.json').read_text())
 def source_pin(path):
     raw=path.read_bytes()
@@ -89,6 +95,7 @@ for channel in ('BaseColor','Normal','ORM','TeamMask'):
     p=ROOT/'Assets/Source/Textures'/('T_RiftAtlas_'+channel+'.png');check(channel+' texture source',p.exists())
 check('All troop identities',set(('ironclad','ember_archer','twin_blades','boulderback','arc_mage','rambeast','sky_manta','vampire_bats','frost_fang','storm_raven','mini_stampede','stampede'))<=set(M['characters']))
 check('All crown/building/spell identities',set(('tower_guard','tower_core','archer_tower','nova_flask','meteor_shard','bullet_round'))<=set(M['statics']))
+check('Pulverizer skeletal building identity','pulverizer' in M['characters'] and M.get('cards',{}).get('pulverizer')=={'skeletal':'pulverizer'})
 # Empirical FBX roundtrip in Blender is independent of source manifests and confirms unit handling.
 expected=M['characters']['ironclad']['boundsMeters']
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
@@ -98,7 +105,8 @@ check('Ironclad FBX unit roundtrip',max(abs(a-b) for a,b in zip(expected,actual)
 for name,pin in report['provenance'].items():
     check(name+' unchanged through validation',source_pin(ROOT/pin['file'])==pin)
 report['passed']=not report['errors'];report['checkCount']=len(report['checks'])
-(ROOT/'Assets/asset_qa_report.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
+report_path.parent.mkdir(parents=True,exist_ok=True)
+report_path.write_text(json.dumps(report,indent=2),encoding='utf-8')
 print('RIFT_ASSET_QA',report['checkCount'],'checks;',len(report['errors']),'errors')
 for err in report['errors']:print('RIFT_ASSET_ERROR',err)
 if report['errors']:raise RuntimeError('Asset QA failed')
