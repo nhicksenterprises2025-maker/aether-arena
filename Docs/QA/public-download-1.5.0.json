@@ -1,0 +1,91 @@
+{
+  "schema": "rift.pulverizer.public-download.v1",
+  "version": "1.5.0",
+  "passed": true,
+  "utc": "2026-10-11T15:33:46.9241615Z",
+  "sourceCommit": "eca99053a4f6dc4ab2e5280f39658bc851169971",
+  "testedTree": "d9d0db3a1a47d68ba86f2250d43c4433ebe5833b",
+  "publicReleaseId": 409751861,
+  "observedAssetCount": 7,
+  "files": [
+    {
+      "file": "RiftCrownArena-Windows-x64-1.5.0.zip",
+      "url": "https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.5.0/RiftCrownArena-Windows-x64-1.5.0.zip",
+      "bytes": 401422078,
+      "sha256": "84d8d3bf84b78fd715b4f22f87037b1066981a93439aec9e0aa50a583edd485b",
+      "anonymousHttpsDownload": true,
+      "matchesServerDigest": true,
+      "rawDownload": {
+        "path": "Artifacts/QA/PulverizerPublic/1.5.0/70ac69f0a42c4901abc323376b28b555/RiftCrownArena-Windows-x64-1.5.0.zip",
+        "bytes": 401422078,
+        "sha256": "84d8d3bf84b78fd715b4f22f87037b1066981a93439aec9e0aa50a583edd485b"
+      },
+      "matchesTestedPayload": true
+    },
+    {
+      "file": "RiftCrownArena-Setup.msi",
+      "url": "https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.5.0/RiftCrownArena-Setup.msi",
+      "bytes": 386920448,
+      "sha256": "a741dde40f91e86a2931877fad1ad4e3ea0a12ae5f37c0acda8dfa7eb4a7378c",
+      "anonymousHttpsDownload": true,
+      "matchesServerDigest": true,
+      "rawDownload": {
+        "path": "Artifacts/QA/PulverizerPublic/1.5.0/70ac69f0a42c4901abc323376b28b555/RiftCrownArena-Setup.msi",
+        "bytes": 386920448,
+        "sha256": "a741dde40f91e86a2931877fad1ad4e3ea0a12ae5f37c0acda8dfa7eb4a7378c"
+      },
+      "matchesTestedPayload": true
+    }
+  ],
+  "localManifestSha256": "cf8c6194e33888bf9e1da1e0c32d127433bd7603f172a02d832f2b07942763f0",
+  "localWindowsVerificationSha256": "b8e3a9bf50bad86e9d81faef3873007f4550ea198d4a5ecc2709b886fb313b49",
+  "acceptedPulverizerQA": {
+    "path": "Docs/QA/pulverizer-1.5.0.json",
+    "bytes": 252819,
+    "sha256": "a15025b603fb8e6395fb05e01e5deb22fc819ecf35b6a78331af6aa11c9d4ed2"
+  },
+  "rawPublishedUpdateCheck": {
+    "path": "Artifacts/QA/PulverizerPublic/1.5.0/70ac69f0a42c4901abc323376b28b555/published-update-raw.json",
+    "bytes": 1349,
+    "sha256": "580fcd3d0de48117f706cfed99f4380da2da18898b164b4168fa10acf8276805"
+  },
+  "publicChecksumDownload": {
+    "file": "SHA256SUMS.txt",
+    "url": "https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.5.0/SHA256SUMS.txt",
+    "bytes": 582,
+    "sha256": "05fef2222ef2428715d584a59b3b906dc5c6b4b16c1657506bb74deeb24ba04c",
+    "anonymousHttpsDownload": true,
+    "matchesServerDigest": true,
+    "rawDownload": {
+      "path": "Artifacts/QA/PulverizerPublic/1.5.0/70ac69f0a42c4901abc323376b28b555/SHA256SUMS.txt",
+      "bytes": 582,
+      "sha256": "05fef2222ef2428715d584a59b3b906dc5c6b4b16c1657506bb74deeb24ba04c"
+    }
+  },
+  "initialPublicationPins": {
+    "path": "Artifacts/QA/pulverizer150-release-asset-pins.json",
+    "bytes": 1127,
+    "sha256": "42316d29fd239a7bba6fc22e820c638308cb5b6009250a3a3ecfebbb5dce3fa8"
+  },
+  "publisher": {
+    "path": "Artifacts/QA/Publish-Pulverizer150.ps1",
+    "bytes": 22381,
+    "sha256": "5572f483e9f999c502849bb67db54306ee2e267eb55f123813fbf4b6e4fd6d3f"
+  },
+  "verifier": {
+    "path": "Artifacts/QA/Verify-PublicPulverizer150.ps1",
+    "bytes": 17626,
+    "sha256": "d64d1a27d86fa5dd92fee88f54486f91521bdd062bc0b99202b185e05f356514"
+  },
+  "scope": "Fresh complete anonymous HTTPS game ZIP and MSI downloads match the accepted local payload and server SHA-256; the actual WPF CheckButton.Click fetched the default latest manifest without downloading/installing the game or changing the isolated legacy save.",
+  "publicationResume": {
+    "path": "Artifacts/QA/pulverizer150-publication-resume.json",
+    "bytes": 1440,
+    "sha256": "3612b96e99098015a10d30435c8c61215230455c25257203ee4d7d0d38cffc25"
+  },
+  "publicationResumeHelper": {
+    "path": "Artifacts/QA/Resume-Pulverizer150.ps1",
+    "bytes": 3314,
+    "sha256": "aedcb18e64267e9bdc12412578118d304559b4fee1d1a0f3f04f29fd9e4039ae"
+  }
+}
