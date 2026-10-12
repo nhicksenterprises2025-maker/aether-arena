@@ -16,7 +16,7 @@ CONTRACTS = {
                                 cycle=.55, speed=2., death=.45),
     'aether_reaper': dict(scale=1.10, windup=.22, recoil=.20, recover=.38,
                           cycle=1.20, speed=1.85, death=.75),
-    'iron_giant': dict(scale=1., windup=.22, recoil=.20, recover=.38,
+    'iron_giant': dict(scale=1.65, windup=.22, recoil=.20, recover=.38,
                        cycle=.90, speed=1.55, death=.80),
 }
 STATIC_IDS = ('iron_shield_fragment', 'shadow_surge_wisp', 'shadow_surge_ribbon')
@@ -577,6 +577,23 @@ def giant(Forge):
     f=Forge('iron_giant');h=biped_rig(f,giant=True)
     semantic(barrel(f,'forged_barrel_torso',[(.630,.248,.180,0,.030),(.735,.373,.243,0,.017),
              (.910,.413,.251,0,.010),(1.068,.376,.224,0,.020),(1.140,.244,.170,0,.020)],'iron','chest',32),'QA_giant_body')
+    # The armor is a built machine: broad forged shapes, recessed service
+    # panels and restrained copper fittings, with dark gaps at moving joints.
+    # Torso detailing remains chest-owned after the six shield shells break.
+    barrel(f,'stepped_collar_bearing',[(1.090,.165,.125,0,.012),(1.114,.173,.132,0,.012),
+                 (1.125,.155,.115,0,.012)],'steel_shadow','chest',24)
+    f.ring('collar_copper_seal',(0,.012,1.116),.133,.007,'copper','chest')
+    for sign in (-1,1):
+        f.tube('furnace_side_service_pipe',[(sign*.214,-.167,.742),(sign*.246,-.171,.812),
+                    (sign*.238,-.169,.999)],[.016,.018,.014],'steel_shadow','chest',12)
+        for z in (.797,.965):
+            f.panel('service_pipe_clamp',(sign*.243,-.193,z),(.050,.015,.021),'copper','chest',bevel=.004)
+    # Exposed rear louvers give the unshielded body a finished reverse view.
+    plate(f,'rear_furnace_access_plate',[(-.127,.277,.796),(-.142,.277,.870),(-.120,.277,1.005),
+               (.120,.277,1.005),(.142,.277,.870),(.127,.277,.796)],.022,'steel_shadow','chest',.008)
+    for j in range(4):
+        z=.841+j*.039
+        f.tube('rear_heat_exchanger_louver',[(-.102,.296,z),(0,.302,z+.006),(.102,.296,z)],.009,'steel','chest',10)
     # A recessed furnace door has a lip, inner chamber and curved grate.
     plate(f,'copper_furnace_door',[( -.157,-.252,.790),(-.185,-.259,.835),(-.175,-.261,1.014),(-.114,-.250,1.049),
               (.114,-.250,1.049),(.175,-.261,1.014),(.185,-.259,.835),(.157,-.252,.790)],.025,'copper','chest',.009)
@@ -587,19 +604,36 @@ def giant(Forge):
         f.tube('arched_furnace_grate',[(x,-.306,.839),(x,-.316,.919),(x,-.305,1.003)],.009,'steel_shadow','chest',12)
     for side in (-1,1):
         f.tube('door_rolled_border',[(side*.142,-.293,.803),(side*.160,-.296,.838),(side*.154,-.296,1.010),(side*.115,-.278,1.029)],.010,'brass','chest',12)
-    # Rounded helmet and a distinct brow/jaw leave the eyes readable.
+        for z in (.830,.993):f.rivet((side*.153,-.308,z),'chest','steel',.009)
+    f.panel('furnace_door_latch',(.158,-.321,.914),(.025,.016,.049),'steel','chest',bevel=.005)
+    # A narrow recessed visor, forged cheek guards and a fitted center ridge
+    # replace the blank round cap without covering either amber eye.
     semantic(barrel(f,'forged_helmet',[(1.123,.135,.124,0,-.024),(1.155,.182,.160,0,-.025),
                      (1.300,.180,.153,0,-.015),(1.373,.120,.106,0,.007)],'iron','head',28),'QA_face')
+    plate(f,'recessed_visored_eye_slot',[(-.137,-.185,1.283),(-.149,-.185,1.263),(-.129,-.185,1.241),
+                   (.129,-.185,1.241),(.149,-.185,1.263),(.137,-.185,1.283)],.008,'black','head',.004)
     plate(f,'angled_helmet_brow',[(-.164,-.154,1.300),(-.125,-.183,1.324),(.125,-.183,1.324),(.164,-.154,1.300),
                    (.147,-.177,1.277),(-.147,-.177,1.277)],.021,'steel','head',.006)
+    plate(f,'helmet_center_forging_ridge',[(-.017,-.149,1.323),(-.019,-.108,1.361),(-.014,-.061,1.378),
+                   (.014,-.061,1.378),(.019,-.108,1.361),(.017,-.149,1.323)],.015,'steel_shadow','head',.003)
+    plate(f,'visor_center_bridge',[(-.010,-.207,1.290),(-.014,-.215,1.239),(0,-.222,1.220),
+                   (.014,-.215,1.239),(.010,-.207,1.290)],.010,'steel_shadow','head',.003)
     for side in (-1,1):
-        semantic(f.ellipsoid('small_amber_eye',(side*.073,-.189,1.260),(.046,.008,.017),'ember','head',20,True),'QA_eyes')
+        semantic(f.ellipsoid('small_amber_eye',(side*.073,-.203,1.260),(.046,.008,.013),'ember','head',20,True),'QA_eyes')
+        plate(f,'fitted_helmet_cheek_guard',[(side*.146,-.162,1.250),(side*.151,-.158,1.218),
+                   (side*.107,-.185,1.182),(side*.066,-.197,1.188),(side*.107,-.187,1.225)],
+                   .013,'steel','head',.004)
+        f.rivet((side*.152,-.175,1.234),'head','copper',.008)
+        f.tube('helmet_side_forged_seam',[(side*.170,-.027,1.320),(side*.182,-.037,1.242),
+                   (side*.159,-.035,1.184)],.006,'steel_shadow','head',10)
     plate(f,'rounded_jaw_guard',[(-.139,-.155,1.205),(-.119,-.185,1.162),(0,-.194,1.145),(.119,-.185,1.162),(.139,-.155,1.205)],
               .040,'steel_shadow','jaw',.009)
     for j in range(3):f.tube('jaw_vent',( ( (j-1)*.038,-.219,1.166),((j-1)*.038,-.215,1.190)),.004,'black','jaw',8)
     # Exposed waist spindle and separated hip drives make the body mechanical.
     barrel(f,'waist_rotation_spindle',[(.505,.132,.110,0,0),(.549,.166,.140,0,0),(.602,.143,.119,0,0)],'steel_shadow','pelvis',24)
     f.ring('copper_waist_bearing',(0,0,.548),.147,.012,'copper','pelvis')
+    plate(f,'waist_lock_cover',[(-.065,-.141,.582),(-.080,-.142,.544),(-.048,-.139,.518),
+                 (.048,-.139,.518),(.080,-.142,.544),(.065,-.141,.582)],.019,'steel','pelvis',.006)
     for sign,side in ((-1,'l'),(1,'r')):
         hip=f.bones['thigh_'+side]['head'];knee=f.bones['shin_'+side]['head'];ankle=f.bones['foot_'+side]['head']
         f.ellipsoid('hip_drive_housing',hip,(.118,.122,.100),'steel_shadow','pelvis',24)
@@ -613,6 +647,13 @@ def giant(Forge):
             f.tube('steel_'+bn+'_spindle',[a,a+d*.22,end-d*.14,end],.045,'steel_shadow',bn+'_'+side,16)
             rail=[a+d*.26+Vector((0,-r*1.07,0)),a+d*.67+Vector((0,-r*1.02,0))]
             f.tube('copper_'+bn+'_service_inlay',rail,.009,'copper',bn+'_'+side,10)
+            # Two fitted end bands delimit the sleeve; the center remains a
+            # readable broad face instead of noisy jewelry across every edge.
+            for t in (.27,.70):
+                p=a+d*t
+                f.tube('rolled_'+bn+'_front_seam',[p+Vector((-r*.64,-r*.92,0)),
+                           p+Vector((0,-r*1.11,0)),p+Vector((r*.64,-r*.92,0))],
+                           .006,'steel',bn+'_'+side,10)
         shoulder=f.bones['upperarm_'+side]['head'];elbow=f.bones['forearm_'+side]['head']
         for name,pos,bn,r in (('shoulder',shoulder,'upperarm_'+side,.118),('elbow',elbow,'forearm_'+side,.093),('knee',knee,'shin_'+side,.092)):
             f.ellipsoid(name+'_axle_hub',pos,(r,r*.90,r),'steel_shadow',bn,24)
@@ -623,12 +664,29 @@ def giant(Forge):
                    (x-.083,y,z+.110),(x+.095,y,z+.110),(x+.129,y,z+.074),(x+.130,y,z-.049),(x+.089,y,z-.085)],.225,'iron','hand_'+side,.014)
         for j in range(4):
             xx=x+(j-1.5)*.047
-            f.tube('separate_knuckle_ridge',[(xx,y-.128,z-.030),(xx,y-.137,z+.056)],[.017,.020],'steel','hand_'+side,12)
+            # Four separate capped knuckles show the punching direction. Each
+            # finger gets a dark flexion groove and its own second phalanx.
+            f.panel('upper_finger_armor',(xx,y-.134,z+.035),(.039,.039,.071),'steel','hand_'+side,bevel=.007)
+            f.panel('lower_finger_armor',(xx,y-.131,z-.039),(.035,.033,.059),'steel_shadow','hand_'+side,bevel=.006)
+            f.panel('finger_flexion_gap',(xx,y-.119,z-.005),(.036,.010,.006),'black','hand_'+side,bevel=.001)
+        plate(f,'fist_back_armor',[(x-.088,y+.119,z-.054),(x-.111,y+.119,z+.051),
+                   (x-.077,y+.119,z+.081),(x+.081,y+.119,z+.081),(x+.110,y+.119,z+.049),(x+.084,y+.119,z-.054)],
+                   .014,'steel','hand_'+side,.005)
         f.tube('copper_thumb_hinge',[(x-sign*.097,y-.090,z-.055),(x-sign*.121,y-.108,z+.014)],.022,'copper','hand_'+side,12)
+        kx,ky,kz=knee
+        plate(f,'forged_knee_guard',[(kx-.068,ky-.085,kz+.054),(kx,ky-.102,kz+.086),
+                   (kx+.068,ky-.085,kz+.054),(kx+.060,ky-.092,kz-.044),
+                   (kx,ky-.106,kz-.063),(kx-.060,ky-.092,kz-.044)],.018,'steel','shin_'+side,.006)
+        f.tube('knee_center_reinforcing_rib',[(kx,ky-.120,kz+.066),(kx,ky-.125,kz-.040)],.007,'steel_shadow','shin_'+side,10)
         footx=ankle[0]
+        barrel(f,'fitted_boot_sole',[(.010,.121,.183,footx,-.055),(.027,.138,.202,footx,-.055),
+                   (.035,.136,.199,footx,-.055)],'steel_shadow','foot_'+side,24)
         barrel(f,'rounded_heel_toe_boot',[(.014,.120,.181,footx,-.055),(.048,.139,.203,footx,-.055),
                    (.115,.112,.165,footx,-.040),(.145,.070,.091,footx,.000)],'iron','foot_'+side,24)
         f.tube('boot_steel_toecap',[(footx-.087,-.227,.060),(footx,-.244,.060),(footx+.087,-.227,.060)],.013,'steel','foot_'+side,12)
+        for xx in (-.052,.052):
+            f.tube('toe_section_seam',[(footx+xx,-.228,.051),(footx+xx,-.208,.086),
+                       (footx+xx,-.145,.111)],.005,'steel_shadow','foot_'+side,10)
         f.bone('leg_piston_'+side,(sign*.243,.116,.495),(sign*.243,.116,.220),'shin_'+side)
         f.tube('telescopic_piston_cylinder',[(sign*.243,.116,.270),(sign*.243,.116,.455)],.034,'steel_shadow','leg_piston_'+side,16)
         f.tube('polished_piston_rod',[(sign*.243,.116,.218),(sign*.243,.116,.330)],.017,'silver','leg_piston_'+side,16)
@@ -653,18 +711,47 @@ def giant(Forge):
         source['exportedToGameplay']=False;source['owningBone']=bn
         # Meaningful folded edge and central embossed rail, not scattered bolts.
         first,last=Vector(outline[1]),Vector(outline[2]);front=Vector((0,-.025 if i<4 else .025,0))
-        f.tube('rolled_shield_top_edge_'+str(i),[first+front,(first+last)*.5+front,last+front],.010,'steel_shadow',bn,12)
-        f.tube('shield_embossed_copper_rail_'+str(i),[Vector(outline[0])+front,Vector(outline[1])+front],.007,'copper',bn,10)
+        group='QA_shield_panel_'+str(i)
+        semantic(f.tube('rolled_shield_top_edge_'+str(i),[first+front,(first+last)*.5+front,last+front],.010,'steel_shadow',bn,12),group)
+        semantic(f.tube('shield_embossed_copper_rail_'+str(i),[Vector(outline[0])+front,Vector(outline[1])+front],.007,'copper',bn,10),group)
+        middle=sum((Vector(p) for p in outline),Vector())/len(outline)
+        inset=[tuple(middle+(Vector(p)-middle)*.78+front*1.04) for p in outline]
+        semantic(plate(f,'raised_forged_shield_face_'+str(i),inset,.014,'iron',bn,.006),group)
+        # A coherent border and chamfered center rib make the large shield
+        # readable from the battle camera without relying on tiny rivets.
+        for edge in ((2,3),(3,4),(4,5)):
+            semantic(f.tube('shield_lower_edge_channel_'+str(i),
+                     [Vector(outline[edge[0]])+front,Vector(outline[edge[1]])+front],.006,'steel_shadow',bn,10),group)
+        if i in (0,1,4,5):
+            top=middle+Vector((sign*.029,0,.105))+front*1.58
+            bottom=middle+Vector((-sign*.020,0,-.112))+front*1.58
+            semantic(f.tube('shield_center_reinforcing_rib_'+str(i),[top,(top+bottom)*.5,bottom],
+                      [(.012,.011),(.021,.016),(.012,.011)],'steel',bn,12),group)
+        else:
+            # The shoulder's second stepped shell belongs to the same shield
+            # bone, so the entire pauldron retires on shield break.
+            crown=[tuple(middle+(Vector(p)-middle)*.67+Vector((0,-.014,.013))) for p in outline]
+            semantic(plate(f,'stepped_shoulder_shield_'+str(i),crown,.012,'steel_shadow',bn,.004),group)
         hinge=(first+last)*.5
-        f.tube('functional_shield_hinge_'+str(i),[hinge-Vector((.042,0,0)),hinge+Vector((.042,0,0))],.018,'copper',bn,12)
+        semantic(f.tube('functional_shield_hinge_'+str(i),[hinge-Vector((.042,0,0)),hinge+Vector((.042,0,0))],.018,'copper',bn,12),group)
+        for endpoint in (first,last):
+            semantic(f.rivet(endpoint+front*1.3,bn,'steel_shadow',.007),group)
         panels.append({'bone':bn,'sourceMesh':source.name,'centerMeters':list(center),'parent':'chest'})
     f.socket('attack_origin',tuple(Vector(f.bones['hand_r']['head'])+Vector((0,-.17,0))),'hand_r')
     f.expansion_design=metadata(f.name)
+    f.expansion_design['revision']='forged-iron-giant-detail-2'
+    f.expansion_design['detailPasses']=4
+    f.expansion_design['armorConstruction']={'visor':'Recessed amber eye slit with separate brow, cheek guards and center bridge',
+        'body':'Chest-owned furnace door, rear louvers and service fittings remain after shield break',
+        'shield':'Six independent shield shells with fitted relief, edge channels and reinforcing ribs',
+        'hands':'Four separated plated fingers with dark flexion grooves and a fitted back plate',
+        'limbs':'Readable joint gaps, knee guards, sleeve seams and fitted boot soles',
+        'unchangedRigAndGameplay':True}
     f.expansion_design['shieldPanels']=panels
     f.expansion_design['shieldPresentation']={'bodyRemainsVisible':True,'fragmentStatic':'iron_shield_fragment',
                                              'fragmentLifetimeSeconds':.50,'maximumTravelTiles':.70}
-    art_quality(f,[{'name':'left_eye','bone':'head','positionMeters':[-.073,-.197,1.260],'group':'QA_eyes'},
-                   {'name':'right_eye','bone':'head','positionMeters':[.073,-.197,1.260],'group':'QA_eyes'}])
+    art_quality(f,[{'name':'left_eye','bone':'head','positionMeters':[-.073,-.211,1.260],'group':'QA_eyes'},
+                   {'name':'right_eye','bone':'head','positionMeters':[.073,-.211,1.260],'group':'QA_eyes'}])
     f.finish(True)
     for panel in panels:
         source=bpy.data.objects[panel['sourceMesh']];transform=source.matrix_world.copy()

@@ -405,6 +405,8 @@ CardIntelligence IntelligenceFor(const std::string &id) {
                                   ? "Time the friendly cloak to drop enemy target locks; launched attacks and spells still resolve."
                                   : "Cast around friendly troops within the spell area to hide them and drop enemy target locks; launched attacks and spells still resolve.");
     } else {
+        if (c.healthCloakThreshold > 0)
+            uses.emplace_back("The first surviving hit at half health gives one second of invisibility. Launched attacks and spells still hit; this is a one-time lock break, not damage immunity.");
         if (c.structuresOnly)
             uses.emplace_back("Stage a push with troop support and spell coverage for defenders.");
         if (c.building)

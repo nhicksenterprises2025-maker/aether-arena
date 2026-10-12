@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "scope": "Exact accepted 1.6.0 Source, manifest, Iron Giant exports and card; preserved before selected replacement",
+  "files": [
+    {
+      "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeIronGiant/asset_manifest.json",
+      "bytes": 363875,
+      "sha256": "68333849b6484108ce96217859b19b869a169bc0cd647307f4eb4742bd762cf4"
+    },
+    {
+      "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeIronGiant/expansion_new_models.py",
+      "bytes": 65863,
+      "sha256": "04e5b62b84baf712acadbfa0acae7aa738f86a2d65c480673e815776fe15064a"
+    },
+    {
+      "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeIronGiant/Exports/AN_iron_giant_Acquire.fbx",
+      "bytes": 254444,
+      "sha256": "6c17956b8f637d72dad8005394013b3839c9752abdfe426abdb1c57f0f9e11c3"
+    },
+    {
+      "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeIronGiant/Exports/AN_iron_giant_Attack.fbx",
+      "bytes": 356060,
+      "sha256": "6bb07f3a10d2b6d5ee86e4ce5334e4898d10f6743e8b41993b843a60f595d393"
+    },
+    {
+      "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeIronGiant/Exports/AN_iron_giant_Death.fbx",
+      "bytes": 392236,
+      "sha256": "f6ce1bd3e0cb7449262d5e604d07f58fff521c18ef065a4524ff8fc123317a2a"
+    },
+    {
+      "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeIronGiant/Exports/AN_iron_giant_Deploy.fbx",
+      "bytes": 305164,
+      "sha256": "3d3b50fc00f7beb3c8964ab4a40e033ecd8cad3e8abfbc8887761995100613a7"
+    },
+    {
+      "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeIronGiant/Exports/AN_iron_giant_Hit.fbx",
+      "bytes": 261068,
+      "sha256": "5172318c6ccdd13e7fd58cbb231391b79695bdcde9a22473a2c55829677444d8"
+    },
+    {
+      "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeIronGiant/Exports/AN_iron_giant_Idle.fbx",
+      "bytes": 569772,
+      "sha256": "fe969329f586eeb092082a4cb421c4c98baf28c1aa779f112d7f22c8059b480c"
+    },
+    {
+      "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeIronGiant/Exports/AN_iron_giant_Locomotion.fbx",
+      "bytes": 412124,
+      "sha256": "fc013722438d680b68ed30feb6d66d98a5f0d2b423ba0276ea22e733252e3134"
+    },
+    {
+      "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeIronGiant/Exports/AN_iron_giant_Status.fbx",
+      "bytes": 394268,
+      "sha256": "f47357bb89a8ac5f5715fc3e7fa2b285ab20aaa22a6caae5dbb5ddc5167f86f5"
+    },
+    {
+      "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeIronGiant/Exports/AN_iron_giant_Turn.fbx",
+      "bytes": 267676,
+      "sha256": "755b70b01d4589e1c66703eb125e0c2b8dd4c3d448fc2fde702c78d701e61c2b"
+    },
+    {
+      "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeIronGiant/Exports/SK_iron_giant.fbx",
+      "bytes": 609020,
+      "sha256": "01ab97dca9f185ac4b53af467e502dcf1ca9ad5cb17d28760ec0df0a323ff737"
+    },
+    {
+      "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeIronGiant/Exports/SK_iron_giant_LOD1.fbx",
+      "bytes": 423788,
+      "sha256": "c9065314a460d39d20c8402ca186a2c9351f82fb28cfa1d4441a03ca12b7a04b"
+    },
+    {
+      "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeIronGiant/Exports/SK_iron_giant_LOD2.fbx",
+      "bytes": 283884,
+      "sha256": "c0e0fdebb991c53a488ce7658f66482f8a1f0a46f2c640d6c928fbcb01a8e69c"
+    },
+    {
+      "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeIronGiant/Exports/SK_iron_giant_LOD3.fbx",
+      "bytes": 194524,
+      "sha256": "bb5d8e1ce7fa459fa8b2290bbd1eb2f05e0ba293802a2610245eaedcb65e6c04"
+    },
+    {
+      "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeIronGiant/iron_giant-card.png",
+      "bytes": 891447,
+      "sha256": "59d2131bc48dbb4f2dd9d6f08360a94520284aa07bc8d491158a2339134c1c57"
+    },
+    {
+      "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeIronGiant/RiftCrown_ProductionAssets.blend",
+      "bytes": 22079995,
+      "sha256": "b7c215a00681328298919bb147900285a00335729934d08c28d9b7c608296929"
+    }
+  ]
+}

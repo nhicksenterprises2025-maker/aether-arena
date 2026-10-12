@@ -83,7 +83,6 @@ int32 URiftBattleOverlay::NativePaint(const FPaintArgs& Args,const FGeometry& Ge
         if(Entity.team==rift::Team::Enemy && Entity.invisibleUntil>State->elapsed)continue;
         const bool ShowHealth=Visual->HasBeenDamaged();
         if(!ShowHealth)++UndamagedCount;
-        const bool Dormant=Entity.kind==rift::EntityKind::Core && !Entity.active;
         const FString StatusText=Entity.stunUntil>State->elapsed?TEXT("STUN"):
             Entity.slowUntil>State->elapsed&&Entity.slowPct>0?FString::Printf(TEXT("-%d%%"),FMath::RoundToInt(Entity.slowPct*100)):
             Entity.charged?TEXT("CHARGE"):Entity.invisibleUntil>State->elapsed?TEXT("VEIL"):TEXT("");
@@ -91,7 +90,7 @@ int32 URiftBattleOverlay::NativePaint(const FPaintArgs& Args,const FGeometry& Ge
         const bool ShowLifetime=LifetimeCard && LifetimeCard->lifetime>0;
         // First-damage visibility applies only to HP, not independent state
         // labels or the defensive building's remaining lifetime indicator.
-        if(!ShowHealth && !Dormant && StatusText.IsEmpty() && !ShowLifetime)continue;
+        if(!ShowHealth && StatusText.IsEmpty() && !ShowLifetime)continue;
         FVector2D Position;if (!Project(Visual->HealthLocation(),Position)) continue;
         if (Position.X<0 || Position.Y<0 || Position.X>Extent.X || Position.Y>Extent.Y) continue;
         const bool Tower=Entity.kind!=rift::EntityKind::Troop;
@@ -104,14 +103,12 @@ int32 URiftBattleOverlay::NativePaint(const FPaintArgs& Args,const FGeometry& Ge
         const FString Value=Tower && ShowHealth?FString::Printf(TEXT("%d"),FMath::CeilToInt(Entity.hp)):FString();
         const FVector2D ValueSize=Value.IsEmpty()?FVector2D::ZeroVector:FVector2D(FontMeasure->Measure(Value,TowerFont));
         const FVector2D StatusSize=StatusText.IsEmpty()?FVector2D::ZeroVector:FVector2D(FontMeasure->Measure(StatusText,Small));
-        const FVector2D DormantSize=Dormant?FVector2D(FontMeasure->Measure(FStringView(TEXT("DORMANT")),Small)):FVector2D::ZeroVector;
         const FVector2D ValueOffset(Width*.5f-ValueSize.X*.5f,-ValueSize.Y-3.f*Pixel);
-        const FVector2D DormantOffset(Width*.5f-DormantSize.X*.5f,Height+4.f*Pixel);
-        const FVector2D StatusOffset(Width*.5f-StatusSize.X*.5f,Height+4.f*Pixel+(Dormant?DormantSize.Y+3.f*Pixel:0.f));
-        const float Left=FMath::Min(0.f,float(FMath::Min3(ValueOffset.X,StatusOffset.X,DormantOffset.X)));
-        const float Right=FMath::Max(Width,float(FMath::Max3(ValueOffset.X+ValueSize.X,StatusOffset.X+StatusSize.X,DormantOffset.X+DormantSize.X)));
+        const FVector2D StatusOffset(Width*.5f-StatusSize.X*.5f,Height+4.f*Pixel);
+        const float Left=FMath::Min(0.f,float(FMath::Min(ValueOffset.X,StatusOffset.X)));
+        const float Right=FMath::Max(Width,float(FMath::Max(ValueOffset.X+ValueSize.X,StatusOffset.X+StatusSize.X)));
         const float Above=Tower && ShowHealth?float(ValueOffset.Y):0.f;
-        const float Below=!StatusText.IsEmpty()?float(StatusOffset.Y+StatusSize.Y):Dormant?float(DormantOffset.Y+DormantSize.Y):Height+3.f*Pixel;
+        const float Below=!StatusText.IsEmpty()?float(StatusOffset.Y+StatusSize.Y):Height+3.f*Pixel;
         // Reserve measured glyph bounds, including overhang on a short swarm
         // bar. Placement remains a bounded search for the visible annotations.
         auto LabelArea=[&](FVector2D Point)
@@ -199,7 +196,6 @@ int32 URiftBattleOverlay::NativePaint(const FPaintArgs& Args,const FGeometry& Ge
             Text(Position+StatusOffset,StatusText,Entity.stunUntil>State->elapsed?FLinearColor(.95f,.86f,.42f):
                 Entity.slowUntil>State->elapsed&&Entity.slowPct>0?FLinearColor(.48f,.86f,1.f):
                 FLinearColor(.98f,.75f,.36f));
-        if(Dormant)Text(Position+DormantOffset,TEXT("DORMANT"),FLinearColor(.58f,.65f,.68f));
     }
     FString CapturePath;
     if(GetWorld()->GetTimeSeconds()>2.f&&FParse::Value(FCommandLine::Get(),TEXT("RiftCapture="),CapturePath))
@@ -215,7 +211,9 @@ int32 URiftBattleOverlay::NativePaint(const FPaintArgs& Args,const FGeometry& Ge
     }
     if (Presentation->HasPlacementPreview())
     {
-        const FVector2D Tile=Presentation->PreviewTile();const FVector Center(Tile.X*RiftArenaGeometry::UnitsPerTile,Tile.Y*RiftArenaGeometry::UnitsPerTile,12);
+        // This is a screen overlay: project the actual deployment plane so its
+        // center agrees with the cursor ray, independently of the decal height.
+        const FVector2D Tile=Presentation->PreviewTile();const FVector Center(Tile.X*RiftArenaGeometry::UnitsPerTile,Tile.Y*RiftArenaGeometry::UnitsPerTile,0);
         const FLinearColor Color=Presentation->PreviewIsValid()?FLinearColor(.22f,.8f,.96f,.9f):FLinearColor(.98f,.3f,.2f,.95f);
         TArray<FVector2D> Points;
         if (Presentation->PreviewIsSpell())
@@ -235,7 +233,8 @@ int32 URiftBattleOverlay::NativePaint(const FPaintArgs& Args,const FGeometry& Ge
         if (Points.Num()>1) FSlateDrawElement::MakeLines(Elements,Top+5,Geometry.ToPaintGeometry(),Points,ESlateDrawEffect::None,Color,true,1.5f);
         FVector2D PreviewCenter;if (Project(Center,PreviewCenter))
         {
-            Box(PreviewCenter-FVector2D(2,2),FVector2D(4,4),Color,4);
+            Box(PreviewCenter-FVector2D(6.f*Pixel,Pixel),FVector2D(12.f*Pixel,2.f*Pixel),Color,4);
+            Box(PreviewCenter-FVector2D(Pixel,6.f*Pixel),FVector2D(2.f*Pixel,12.f*Pixel),Color,4);
             if (!Presentation->PreviewIsValid()) Text(PreviewCenter+FVector2D(10,6),TEXT("UNAVAILABLE"),Color);
         }
     }

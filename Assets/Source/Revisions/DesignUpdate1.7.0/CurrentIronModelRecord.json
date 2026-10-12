@@ -1,0 +1,438 @@
+{
+  "id": "iron_giant",
+  "rigFamily": "humanoid",
+  "mesh": {
+    "file": "Assets/Export/Characters/iron_giant/SK_iron_giant.fbx",
+    "sha256": "d58978c0a003fa1ce8e7f76d99ed027fef79b015aa33ab83fe4d5974b5a01eef",
+    "bytes": 962396
+  },
+  "bones": [
+    "root",
+    "pelvis",
+    "spine",
+    "spine_2",
+    "chest",
+    "neck",
+    "head",
+    "jaw",
+    "upperarm_l",
+    "forearm_l",
+    "hand_l",
+    "thigh_l",
+    "shin_l",
+    "foot_l",
+    "foot_l_contact",
+    "upperarm_r",
+    "forearm_r",
+    "hand_r",
+    "thigh_r",
+    "shin_r",
+    "foot_r",
+    "foot_r_contact",
+    "hp_anchor",
+    "status_anchor",
+    "impact_origin",
+    "leg_piston_l",
+    "leg_piston_r",
+    "shield_panel_0",
+    "shield_panel_1",
+    "shield_panel_2",
+    "shield_panel_3",
+    "shield_panel_4",
+    "shield_panel_5",
+    "attack_origin"
+  ],
+  "boneCount": 34,
+  "sockets": {
+    "foot_l_contact": {
+      "bone": "foot_l_contact",
+      "parent": "foot_l",
+      "positionMeters": [
+        -0.22605000000000003,
+        -0.08905,
+        0.004
+      ]
+    },
+    "foot_r_contact": {
+      "bone": "foot_r_contact",
+      "parent": "foot_r",
+      "positionMeters": [
+        0.22605000000000003,
+        -0.08905,
+        0.004
+      ]
+    },
+    "hp_anchor": {
+      "bone": "hp_anchor",
+      "parent": "head",
+      "positionMeters": [
+        0,
+        0,
+        1.5344000000000002
+      ]
+    },
+    "status_anchor": {
+      "bone": "status_anchor",
+      "parent": "head",
+      "positionMeters": [
+        0,
+        0,
+        1.5892
+      ]
+    },
+    "impact_origin": {
+      "bone": "impact_origin",
+      "parent": "chest",
+      "positionMeters": [
+        0,
+        -0.16440000000000002,
+        0.7809
+      ]
+    },
+    "attack_origin": {
+      "bone": "attack_origin",
+      "parent": "hand_r",
+      "positionMeters": [
+        0.5753999948501587,
+        -0.37550002336502075,
+        0.5891000032424927
+      ]
+    }
+  },
+  "triangles": 38740,
+  "materials": [
+    "M_RiftExpansionAscensionSurface",
+    "M_RiftExpansionAscensionGlow"
+  ],
+  "boundsMeters": [
+    1.4144186973571777,
+    0.7233999967575073,
+    1.3680000305175781
+  ],
+  "lods": [
+    {
+      "level": 1,
+      "triangles": 19370,
+      "file": "Assets/Export/Characters/iron_giant/SK_iron_giant_LOD1.fbx",
+      "sha256": "4d4f24307239a8deeebe6a4a61a5a4715a12fa4d0d28664244f00c036d2db3a1",
+      "bytes": 646492
+    },
+    {
+      "level": 2,
+      "triangles": 9684,
+      "file": "Assets/Export/Characters/iron_giant/SK_iron_giant_LOD2.fbx",
+      "sha256": "d87a321ef90894bbe184f8fb3c9061fb30c4c300027f28d14b50dcff967cadc0",
+      "bytes": 415516
+    },
+    {
+      "level": 3,
+      "triangles": 4628,
+      "file": "Assets/Export/Characters/iron_giant/SK_iron_giant_LOD3.fbx",
+      "sha256": "d7f41c69870d327148f0a07c44e7297312bcb251360b05705de8e9aa612bace4",
+      "bytes": 264620
+    }
+  ],
+  "animations": [
+    {
+      "name": "Idle",
+      "action": "AN_iron_giant_Idle",
+      "frames": 201,
+      "fps": 100,
+      "seconds": 2.0,
+      "releaseNormalized": null,
+      "loop": true,
+      "strideMeters": null,
+      "file": "Assets/Export/Characters/iron_giant/AN_iron_giant_Idle.fbx",
+      "sha256": "46f7037df011ef0b616b86fa9318abe6e8e94bbbbb1a7595222971b3028274c5",
+      "bytes": 569772
+    },
+    {
+      "name": "Locomotion",
+      "action": "AN_iron_giant_Locomotion",
+      "frames": 91,
+      "fps": 100,
+      "seconds": 0.9,
+      "releaseNormalized": null,
+      "loop": true,
+      "strideMeters": 0.8454545454545455,
+      "file": "Assets/Export/Characters/iron_giant/AN_iron_giant_Locomotion.fbx",
+      "sha256": "e48c1cfca06a9d0862029b93958bac614afd94fadd3ced01592a86904f32a67d",
+      "bytes": 412140
+    },
+    {
+      "name": "Attack",
+      "action": "AN_iron_giant_Attack",
+      "frames": 61,
+      "fps": 100,
+      "seconds": 0.6,
+      "releaseNormalized": 0.3666666666666667,
+      "loop": false,
+      "strideMeters": null,
+      "file": "Assets/Export/Characters/iron_giant/AN_iron_giant_Attack.fbx",
+      "sha256": "57d23d424135c54bcff9d47e4c62dbceffa34ab93748d587e2c3aca4f80a2a27",
+      "bytes": 356060
+    },
+    {
+      "name": "Hit",
+      "action": "AN_iron_giant_Hit",
+      "frames": 17,
+      "fps": 100,
+      "seconds": 0.16,
+      "releaseNormalized": null,
+      "loop": false,
+      "strideMeters": null,
+      "file": "Assets/Export/Characters/iron_giant/AN_iron_giant_Hit.fbx",
+      "sha256": "0c9d9578dc9381e9ac223c22bb6d3bb5ddc84525ff969221e59e634297e8fb58",
+      "bytes": 261068
+    },
+    {
+      "name": "Death",
+      "action": "AN_iron_giant_Death",
+      "frames": 81,
+      "fps": 100,
+      "seconds": 0.8,
+      "releaseNormalized": null,
+      "loop": false,
+      "strideMeters": null,
+      "file": "Assets/Export/Characters/iron_giant/AN_iron_giant_Death.fbx",
+      "sha256": "02e60a4cd6fb7cd2d1b9a007c27613144b9aca434305986e2e8a4f390f0d0372",
+      "bytes": 392236
+    },
+    {
+      "name": "Deploy",
+      "action": "AN_iron_giant_Deploy",
+      "frames": 31,
+      "fps": 100,
+      "seconds": 0.3,
+      "releaseNormalized": null,
+      "loop": false,
+      "strideMeters": null,
+      "file": "Assets/Export/Characters/iron_giant/AN_iron_giant_Deploy.fbx",
+      "sha256": "3fff12450089887ec5ee926d5891cedb651f14d857e7ed94891021a1421a2f89",
+      "bytes": 305164
+    },
+    {
+      "name": "Status",
+      "action": "AN_iron_giant_Status",
+      "frames": 101,
+      "fps": 100,
+      "seconds": 1.0,
+      "releaseNormalized": null,
+      "loop": true,
+      "strideMeters": null,
+      "file": "Assets/Export/Characters/iron_giant/AN_iron_giant_Status.fbx",
+      "sha256": "db9fb6739052b400163852d9ab986d1f2a145010d115bb923bb03f8c7cef566c",
+      "bytes": 394268
+    },
+    {
+      "name": "Turn",
+      "action": "AN_iron_giant_Turn",
+      "frames": 19,
+      "fps": 100,
+      "seconds": 0.18,
+      "releaseNormalized": null,
+      "loop": false,
+      "strideMeters": null,
+      "file": "Assets/Export/Characters/iron_giant/AN_iron_giant_Turn.fbx",
+      "sha256": "1d6024a5e35d9e063dcf112cdb6674c118ad2a17c5e18aa27902a9b35eb0bc8e",
+      "bytes": 267676
+    },
+    {
+      "name": "Acquire",
+      "action": "AN_iron_giant_Acquire",
+      "frames": 13,
+      "fps": 100,
+      "seconds": 0.12,
+      "releaseNormalized": null,
+      "loop": false,
+      "strideMeters": null,
+      "file": "Assets/Export/Characters/iron_giant/AN_iron_giant_Acquire.fbx",
+      "sha256": "8ecf16d8ecfd9349428a0dcbb4522c63c3a4cc6a0ae5a2793280c110d3145644",
+      "bytes": 254444
+    }
+  ],
+  "modelDesign": {
+    "revision": "forged-iron-giant-detail-2",
+    "detailPasses": 4,
+    "baseModelScale": 1.65,
+    "attackContactNormalized": 0.3666666666666667,
+    "species": "Squat furnace-gray iron automaton; warm body beneath six independent steel shield panels",
+    "rootMotion": false,
+    "collisionIndependent": true,
+    "attachmentPolicy": "Rigid fitted weapon/armor attachments; Reaper cloak rows blend chest/gore/tip joints; weapon palms follow one socket; no cloth physics",
+    "animationContract": {
+      "schema": 1,
+      "attack": {
+        "contactNormalized": 0.3666666666666667,
+        "anticipationSeconds": 0.22,
+        "recoilSeconds": 0.2,
+        "recoverySeconds": 0.38
+      },
+      "locomotion": {
+        "referenceCycleSeconds": 0.9,
+        "referenceSpeedTilesPerSecond": 1.55,
+        "strideMeters": 0.8454545454545455,
+        "phaseOffsets": true
+      },
+      "death": {
+        "cleanupSeconds": 0.8
+      },
+      "forward": {
+        "blender": "-Y",
+        "unreal": "+X"
+      },
+      "visual": {
+        "baseModelScale": 1.65,
+        "readabilityMultiplier": 1.0
+      }
+    },
+    "armorConstruction": {
+      "visor": "Recessed amber eye slit with separate brow, cheek guards and center bridge",
+      "body": "Chest-owned furnace door, rear louvers and service fittings remain after shield break",
+      "shield": "Six independent shield shells with fitted relief, edge channels and reinforcing ribs",
+      "hands": "Four separated plated fingers with dark flexion grooves and a fitted back plate",
+      "limbs": "Readable joint gaps, knee guards, sleeve seams and fitted boot soles",
+      "unchangedRigAndGameplay": true
+    },
+    "shieldPanels": [
+      {
+        "bone": "shield_panel_0",
+        "sourceMesh": "SOURCE_iron_giant_shield_panel_0",
+        "centerMeters": [
+          -0.31,
+          -0.22,
+          0.86
+        ],
+        "parent": "chest"
+      },
+      {
+        "bone": "shield_panel_1",
+        "sourceMesh": "SOURCE_iron_giant_shield_panel_1",
+        "centerMeters": [
+          0.31,
+          -0.22,
+          0.86
+        ],
+        "parent": "chest"
+      },
+      {
+        "bone": "shield_panel_2",
+        "sourceMesh": "SOURCE_iron_giant_shield_panel_2",
+        "centerMeters": [
+          -0.5,
+          -0.05,
+          1.07
+        ],
+        "parent": "chest"
+      },
+      {
+        "bone": "shield_panel_3",
+        "sourceMesh": "SOURCE_iron_giant_shield_panel_3",
+        "centerMeters": [
+          0.5,
+          -0.05,
+          1.07
+        ],
+        "parent": "chest"
+      },
+      {
+        "bone": "shield_panel_4",
+        "sourceMesh": "SOURCE_iron_giant_shield_panel_4",
+        "centerMeters": [
+          -0.28,
+          0.22,
+          0.92
+        ],
+        "parent": "chest"
+      },
+      {
+        "bone": "shield_panel_5",
+        "sourceMesh": "SOURCE_iron_giant_shield_panel_5",
+        "centerMeters": [
+          0.28,
+          0.22,
+          0.92
+        ],
+        "parent": "chest"
+      }
+    ],
+    "shieldPresentation": {
+      "bodyRemainsVisible": true,
+      "fragmentStatic": "iron_shield_fragment",
+      "fragmentLifetimeSeconds": 0.5,
+      "maximumTravelTiles": 0.7
+    },
+    "artQuality": {
+      "schema": 1,
+      "authoringIntent": "Fitted anatomy and separate weapon/face silhouettes; acceptance requires evaluated surfaces and rendered review",
+      "faceLandmarks": [
+        {
+          "name": "left_eye",
+          "bone": "head",
+          "positionMeters": [
+            -0.073,
+            -0.211,
+            1.26
+          ],
+          "group": "QA_eyes"
+        },
+        {
+          "name": "right_eye",
+          "bone": "head",
+          "positionMeters": [
+            0.073,
+            -0.211,
+            1.26
+          ],
+          "group": "QA_eyes"
+        }
+      ],
+      "clearances": [],
+      "semanticGroupsPreserved": true,
+      "animationIntent": "Foot plants, body-led anticipation/contact/recovery and bounded secondary joint lag"
+    },
+    "sourceCollisionProxy": "PROXY_iron_giant"
+  },
+  "physics": {
+    "type": "capsule",
+    "simulationCollisionAuthoritative": false,
+    "autoCreatePhysicsAsset": true
+  },
+  "identityViews": [
+    {
+      "view": "front",
+      "file": "Assets/Renders/Expansion/Identity/iron_giant_front.png",
+      "bytes": 319668,
+      "sha256": "59ce7c6fdbb52d4bb6416affccf43c1392e70730df953fd3b7a98c3cdb4a21d2"
+    },
+    {
+      "view": "rear",
+      "file": "Assets/Renders/Expansion/Identity/iron_giant_rear.png",
+      "bytes": 307359,
+      "sha256": "559cb7012620252291524144593fedc7cf3cbd114c1e5d673fb9f98c57f5ccb3"
+    },
+    {
+      "view": "side",
+      "file": "Assets/Renders/Expansion/Identity/iron_giant_side.png",
+      "bytes": 295085,
+      "sha256": "2c20fbb4dffa7eeaad87bb8adbb1b0bebef1420f77c50d667c9ab61fb42457b2"
+    },
+    {
+      "view": "threequarter",
+      "file": "Assets/Renders/Expansion/Identity/iron_giant_threequarter.png",
+      "bytes": 327229,
+      "sha256": "97e9bbd034fe28fc921b0b205f3bea960cb66f75cd1e69b2d51987d55a646fe3"
+    },
+    {
+      "view": "silhouette",
+      "file": "Assets/Renders/Expansion/Identity/iron_giant_silhouette.png",
+      "bytes": 303166,
+      "sha256": "4dea13f513ec32b12e5bf7bb962bbff9d5ba8f1851180ded4626fb1c6c607495"
+    }
+  ],
+  "identitySheet": {
+    "file": "Assets/Renders/Expansion/Identity/iron_giant_IdentitySheet.png",
+    "bytes": 691092,
+    "sha256": "406c668f0ebc97b90f4975e980b4fa01e08c16140ed77352f18a48b52f4e171f"
+  }
+}

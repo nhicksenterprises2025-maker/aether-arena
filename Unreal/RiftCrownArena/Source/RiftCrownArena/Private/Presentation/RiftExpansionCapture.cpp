@@ -1,6 +1,7 @@
 #include "Presentation/RiftExpansionCapture.h"
 #include "Presentation/RiftArenaPresentation.h"
 #include "Presentation/RiftUnitVisual.h"
+#include "Presentation/RiftArenaGeometry.h"
 #include "RiftMatchSubsystem.h"
 #include "RiftProfileSubsystem.h"
 #include "RiftAssetLibrary.h"
@@ -32,7 +33,7 @@ bool IsIsolatedCapture()
     FString Capture,SaveRoot,Scenario;
     if(!FParse::Value(FCommandLine::Get(),TEXT("RiftCapture="),Capture)||Capture.IsEmpty()||FPaths::IsRelative(Capture)||
        !FParse::Value(FCommandLine::Get(),TEXT("RiftSaveRoot="),SaveRoot)||SaveRoot.IsEmpty()||FPaths::IsRelative(SaveRoot)||
-       !FParse::Value(FCommandLine::Get(),TEXT("RiftVisualScenario="),Scenario)||(Scenario!=TEXT("expansion_roster")&&Scenario!=TEXT("expansion_new_roster")&&Scenario!=TEXT("expansion_effects")&&Scenario!=TEXT("expansion_warden_death")))return false;
+       !FParse::Value(FCommandLine::Get(),TEXT("RiftVisualScenario="),Scenario)||(Scenario!=TEXT("expansion_roster")&&Scenario!=TEXT("expansion_new_roster")&&Scenario!=TEXT("expansion_effects")&&Scenario!=TEXT("expansion_warden_death")&&Scenario!=TEXT("reaper_design")))return false;
     const FString CaptureRoot=FPaths::GetPath(Capture);
     if(!FPaths::IsUnderDirectory(SaveRoot,CaptureRoot))return false;
     TArray<FString> LiveRoots;
@@ -124,6 +125,8 @@ bool ARiftExpansionCapture::Build(URiftMatchSubsystem* Match,const TSharedRef<FJ
     FString Scenario;FParse::Value(FCommandLine::Get(),TEXT("RiftVisualScenario="),Scenario);
     WardenDeathCapture=Scenario==TEXT("expansion_warden_death");
     if(WardenDeathCapture)return BuildWardenDeath(Match,Report);
+    ReaperDesignCapture=Scenario==TEXT("reaper_design");
+    if(ReaperDesignCapture)return BuildReaperDesign(Match,Report);
     EffectsCapture=Scenario==TEXT("expansion_effects");
     if(EffectsCapture)
     {
@@ -223,6 +226,7 @@ bool ARiftExpansionCapture::Build(URiftMatchSubsystem* Match,const TSharedRef<FJ
 bool ARiftExpansionCapture::SampleReport(const TSharedRef<FJsonObject>& Report) const
 {
     if(WardenDeathCapture)return SampleWardenDeath(Report);
+    if(ReaperDesignCapture)return SampleReaperDesign(Report);
     if(!Fixture||!View.IsValid())return false;
     const auto& State=Fixture->State();bool Models=true,Facing=true,Walking=true,Materials=true;int32 TeamCounts[2]={0,0};TSet<uint64> Observed;
     TArray<TSharedPtr<FJsonValue>> Members,Cards;
@@ -551,6 +555,180 @@ bool ARiftExpansionCapture::SampleWardenDeath(const TSharedRef<FJsonObject>& Rep
     Report->SetBoolField(TEXT("actualLifecyclePassed"),Lifecycle);Report->SetBoolField(TEXT("setupPassed"),SetupPassed);Report->SetBoolField(TEXT("paused"),Paused);
     Report->SetBoolField(TEXT("actualDeathAnimationObservedAtLethalStep"),WardenDeathAnimationObserved);
     const bool Passed=SetupPassed&&Births&&ChildBindings&&Lifecycle&&Attribution&&Paused&&(Before||WardenDeathAnimationObserved);Report->SetBoolField(TEXT("passed"),Passed);return Passed;
+}
+
+bool ARiftExpansionCapture::BuildReaperDesign(URiftMatchSubsystem* Match,const TSharedRef<FJsonObject>& Report)
+{
+    FParse::Value(FCommandLine::Get(),TEXT("RiftReaperStage="),ReaperStage);
+    if(ReaperStage!=TEXT("idle")&&ReaperStage!=TEXT("walk")&&ReaperStage!=TEXT("cleave")&&ReaperStage!=TEXT("cloak")&&ReaperStage!=TEXT("expired"))return false;
+    rift::MatchOptions Options;Options.seed=74021;Options.aiEnabled={false,false};
+    Options.decks[0]={"aether_reaper","ironclad","ember_archer","twin_blades","arc_mage","mini_stampede","pulverizer","nova_flask"};
+    Options.decks[1]={"sky_manta","bullet_burst","ironclad","ember_archer","arc_mage","mini_stampede","pulverizer","nova_flask"};
+    if(!rift::ValidateDeck(Options.decks[0])||!rift::ValidateDeck(Options.decks[1]))return false;
+    const auto* Definition=rift::FindCard("aether_reaper");
+    if(!Definition||Definition->hp!=445||Definition->damage!=95||Definition->scale!=1.35||Definition->healthCloakThreshold!=.5||Definition->invisibilityDuration!=1.)return false;
+    Fixture=std::make_unique<rift::Match>(Options);View=Match;Match->SetSpeed(0);Match->SetReplayView(&Fixture->State());
+    const auto OldHand=Fixture->State().hands[0];const auto OldQueue=Fixture->State().queues[0];const double Grant=10-Fixture->State().aether[0];
+    Fixture->SetAether(rift::Team::Player,10);const double Before=Fixture->State().spent[0];
+    const bool Paid=Fixture->Play(rift::Team::Player,0,{.5,8.5},"reaper_design_paid_capture");bool Sandbox=true;
+    for(const auto& Event:Fixture->Events())if(Event.type=="card_play"&&Event.cardId=="aether_reaper")
+    {ReaperPlayId=Event.playId;Sandbox=Event.sandbox;}
+    for(const auto& Body:Fixture->State().entities)if(Body.cardId=="aether_reaper"){ReaperId=Body.id;ReaperInitialPosition=Body.position;}
+    bool Cycle=Paid&&!OldQueue.empty()&&Fixture->State().hands[0][0]==OldQueue.front()&&Fixture->State().queues[0].back()=="aether_reaper";
+    for(int32 Index=1;Index<4;++Index)Cycle&=OldHand[Index]==Fixture->State().hands[0][Index];
+    const bool ExactPaid=Paid&&!Sandbox&&Cycle&&ReaperId>0&&ReaperPlayId>0&&Fixture->State().aether[0]==6&&Fixture->State().spent[0]-Before==4;
+    Report->SetNumberField(TEXT("schema"),1);Report->SetStringField(TEXT("profile"),TEXT("reaper_design"));Report->SetStringField(TEXT("stage"),ReaperStage);
+    Report->SetStringField(TEXT("route"),TEXT("QA-owned real Match / paid Reaper hand deployment / explicit sandbox targets and spell casts / genuine fixed-step combat events / production snapshot renderer"));
+    Report->SetStringField(TEXT("fixtureControls"),TEXT("AI disabled; Crown and enemy Manta cooldowns held at1000s; Reaper cooldown held only for idle/cloak/expired; no HP, damage, movement, position, animation or event overrides"));
+    Report->SetNumberField(TEXT("fixtureAetherGrant"),Grant);Report->SetBoolField(TEXT("paidCostAndCyclePassed"),ExactPaid);
+    auto Body=[&]()->const rift::Entity*{for(const auto& Entity:Fixture->State().entities)if(Entity.id==ReaperId)return &Entity;return nullptr;};
+    auto Visual=[&]()->ARiftUnitVisual*{for(TActorIterator<ARiftArenaPresentation> It(GetWorld());It;++It)if(auto* Unit=It->Visual(ReaperId))return Unit;return nullptr;};
+    TArray<TSharedPtr<FJsonValue>> SandboxSpawns;
+    auto Spawn=[&](const std::string& Id,rift::Vec2 Position)
+    {
+        const bool Accepted=Fixture->Spawn(rift::Team::Enemy,Id,Position);auto Row=MakeShared<FJsonObject>();
+        Row->SetStringField(TEXT("cardId"),UTF8_TO_TCHAR(Id.c_str()));Row->SetBoolField(TEXT("accepted"),Accepted);
+        Row->SetBoolField(TEXT("sandbox"),true);Row->SetNumberField(TEXT("x"),Position.x);Row->SetNumberField(TEXT("z"),Position.z);
+        SandboxSpawns.Add(MakeShared<FJsonValueObject>(Row));return Accepted;
+    };
+    auto QuietCooldowns=[&]()
+    {
+        for(auto& Entity:const_cast<rift::Snapshot&>(Fixture->State()).entities)
+            if(Entity.kind==rift::EntityKind::Core||Entity.kind==rift::EntityKind::Guard||Entity.cardId=="sky_manta"||
+               (Entity.id==ReaperId&&(ReaperStage==TEXT("idle")||ReaperStage==TEXT("cloak")||ReaperStage==TEXT("expired"))))Entity.cooldown=1000;
+    };
+    auto ForwardEvents=[&]()
+    {
+        for(const auto& Event:Fixture->DrainEvents())
+        {
+            if(Event.type=="melee_cleave"&&Event.source==ReaperId)
+            {++ReaperCleaveEvents;ReaperCleaveVictims=Event.count;ReaperCleaveAt=Event.time;ReaperEventAttributionPassed&=Event.cardId=="aether_reaper"&&Event.playId==ReaperPlayId&&Event.count==2;}
+            if(Event.type=="damage"&&Event.target==ReaperId&&Event.cardId=="bullet_burst")
+            {
+                ++ReaperDamagePackets;if(ReaperDamagePackets==1)ReaperFirstPacketHP=Event.hp;
+                auto Packet=MakeShared<FJsonObject>();Packet->SetNumberField(TEXT("time"),Event.time);Packet->SetNumberField(TEXT("amount"),Event.amount);
+                Packet->SetNumberField(TEXT("requested"),Event.requested);Packet->SetNumberField(TEXT("hpAfter"),Event.hp);
+                Packet->SetNumberField(TEXT("playId"),double(Event.playId));Packet->SetStringField(TEXT("cardId"),UTF8_TO_TCHAR(Event.cardId.c_str()));
+                ReaperIncomingPackets.Add(MakeShared<FJsonValueObject>(Packet));
+            }
+            if(Event.type=="invisibility_apply"&&Event.target==ReaperId&&Event.cardId=="aether_reaper")
+            {++ReaperCloakEvents;ReaperCloakAt=Event.time;ReaperEventAttributionPassed&=Event.source==ReaperId&&Event.playId==ReaperPlayId&&Event.reason=="health_threshold"&&Event.amount==1.;}
+            if(Event.type=="invisibility_expire"&&Event.target==ReaperId&&Event.cardId=="aether_reaper")++ReaperExpireEvents;
+            Match->OnEvent.Broadcast(Event);
+        }
+        RenderState(GetWorld());
+        if(auto* Unit=Visual())
+        {
+            TArray<UInstancedStaticMeshComponent*> Batches;Unit->GetComponents(Batches);
+            for(auto* Batch:Batches)if(Batch->GetFName()==TEXT("ReaperVioletAuraRibbons")&&Batch->GetInstanceCount()>0)
+            {
+                FTransform Current;if(Batch->GetInstanceTransform(0,Current,true))
+                {
+                    // Measure the aura relative to its real owner, so movement
+                    // or flight bob alone cannot satisfy the animation check.
+                    Current=Current.GetRelativeTransform(Unit->GetActorTransform());
+                    if(!ReaperAuraSampled){ReaperFirstAuraTransform=Current;ReaperAuraSampled=true;}else ReaperAuraMotionObserved|=!Current.Equals(ReaperFirstAuraTransform,.001);
+                }
+            }
+        }
+    };
+    auto Step=[&](){QuietCooldowns();Fixture->Step(1./60.);++ReaperFixedSteps;ForwardEvents();};
+    bool Targets=true;
+    if(ReaperStage==TEXT("idle")||ReaperStage==TEXT("cleave"))Targets&=Spawn("sky_manta",{.5,6.5});
+    if(ReaperStage==TEXT("cleave"))Targets&=Spawn("sky_manta",{1.5,6.5});
+    if(ReaperStage==TEXT("walk"))Targets&=Spawn("sky_manta",{.5,1.5});
+    QuietCooldowns();ForwardEvents();
+    if(ReaperStage==TEXT("cleave"))
+    {
+        for(int32 Count=0;Count<180&&ReaperCleaveEvents==0;++Count)Step();
+        for(int32 Count=0;Count<5;++Count)Step();
+    }
+    else if(ReaperStage==TEXT("cloak")||ReaperStage==TEXT("expired"))
+    {
+        if(const auto* Current=Body())Targets&=Spawn("bullet_burst",Current->position);else Targets=false;
+        ForwardEvents();for(int32 Count=0;Count<120&&ReaperDamagePackets<1;++Count)Step();
+        if(const auto* Current=Body())Targets&=Spawn("bullet_burst",Current->position);else Targets=false;
+        ForwardEvents();for(int32 Count=0;Count<120&&ReaperDamagePackets<2;++Count)Step();
+        const double End=Fixture->State().elapsed+(ReaperStage==TEXT("expired")?1.05:.20);
+        while(Fixture->State().elapsed+1e-9<End&&ReaperFixedSteps<360)Step();
+    }
+    else
+    {
+        const int32 Steps=ReaperStage==TEXT("walk")?36:90;
+        for(int32 Count=0;Count<Steps;++Count)Step();
+    }
+    Report->SetArrayField(TEXT("sandboxSpawns"),SandboxSpawns);Report->SetBoolField(TEXT("sandboxTargetAndPacketSetupPassed"),Targets);
+    SetupPassed=ExactPaid&&Targets&&ReaperAuraMotionObserved&&ReaperEventAttributionPassed;return SampleReaperDesign(Report);
+}
+
+bool ARiftExpansionCapture::SampleReaperDesign(const TSharedRef<FJsonObject>& Report) const
+{
+    if(!Fixture||!View.IsValid())return false;
+    const auto& State=Fixture->State();const rift::Entity* Body=nullptr;
+    for(const auto& Entity:State.entities)if(Entity.id==ReaperId)Body=&Entity;
+    ARiftUnitVisual* Visual=nullptr;for(TActorIterator<ARiftArenaPresentation> It(GetWorld());It;++It)if((Visual=It->Visual(ReaperId)))break;
+    auto* Catalog=GetWorld()->GetGameInstance()->GetSubsystem<URiftAssetCatalogSubsystem>();const auto* Card=Catalog->Card(TEXT("aether_reaper"));
+    TArray<USkeletalMeshComponent*> Components;if(Visual)Visual->GetComponents(Components);auto* Mesh=Components.Num()?Components[0]:nullptr;
+    auto Model=MakeShared<FJsonObject>();const bool Imported=Card&&Card->CharacterMesh&&Mesh&&Visual&&Mesh->GetSkeletalMeshAsset()==Card->CharacterMesh.Get()&&Visual->PresentationAssetId()==TEXT("aether_reaper");
+    bool Materials=Imported&&ExpansionMaterialContract(Card->CharacterMesh,TEXT("aether_reaper"),Model);
+    if(Imported)for(int32 Index=0;Index<Card->CharacterMesh->GetMaterials().Num();++Index)
+    {
+        auto* Interface=Mesh->GetMaterial(Index);auto* Base=Interface?Interface->GetMaterial():nullptr;
+        const auto* Original=Card->CharacterMesh->GetMaterials()[Index].MaterialInterface.Get();
+        const FString Expected=Visual->IsCloaked()?TEXT("/Game/Rift/Materials/M_RiftCloak.M_RiftCloak"):Original?Original->GetPathName():TEXT("");
+        Materials&=Base&&Base->GetPathName()==Expected;
+    }
+    const double Travel=Body?FMath::Sqrt(FMath::Square(Body->position.x-ReaperInitialPosition.x)+FMath::Square(Body->position.z-ReaperInitialPosition.z)):0;
+    int32 CleavePieces=0;
+    for(TActorIterator<ARiftArenaPresentation> It(GetWorld());It;++It)
+    {TArray<UInstancedStaticMeshComponent*> Batches;It->GetComponents(Batches);for(auto* Batch:Batches)if(Batch->GetFName()==TEXT("ReaperCleaveViolet")||Batch->GetFName()==TEXT("ReaperCleaveGhost"))CleavePieces+=Batch->GetInstanceCount();}
+    const bool CloakStage=ReaperStage==TEXT("cloak"),ExpiredStage=ReaperStage==TEXT("expired"),DamageStage=CloakStage||ExpiredStage;
+    bool Packets=ReaperIncomingPackets.Num()==(DamageStage?2:0);
+    for(const auto& Value:ReaperIncomingPackets)
+    {auto Packet=Value->AsObject();Packets&=Packet->GetStringField(TEXT("cardId"))==TEXT("bullet_burst")&&Packet->GetNumberField(TEXT("amount"))==175&&Packet->GetNumberField(TEXT("requested"))==175;}
+    const bool StateValid=Body&&!Body->dead&&Body->team==rift::Team::Player&&Body->playId==ReaperPlayId&&Body->maxHp==445&&Body->hp==(DamageStage?95:445)&&
+        Body->healthCloakTriggered==DamageStage&&ReaperDamagePackets==(DamageStage?2:0)&&ReaperCloakEvents==(DamageStage?1:0)&&ReaperExpireEvents==(ExpiredStage?1:0)&&
+        (!DamageStage||ReaperFirstPacketHP==270)&&Packets;
+    bool StageValid=StateValid&&Visual&&Visual->IsCloaked()==CloakStage&&!Visual->HiddenFromViewer()&&Visual->ReaperAuraCount()==34;
+    if(StageValid)
+    {
+        if(ReaperStage==TEXT("idle"))StageValid=Visual->CurrentAnimation()==TEXT("Idle")&&ReaperCleaveEvents==0;
+        else if(ReaperStage==TEXT("walk"))StageValid=Visual->CurrentAnimation()==TEXT("Locomotion")&&Travel>.25&&ReaperCleaveEvents==0;
+        else if(ReaperStage==TEXT("cleave"))StageValid=ReaperCleaveEvents==1&&ReaperCleaveVictims==2&&CleavePieces==20&&State.elapsed-ReaperCleaveAt>0&&State.elapsed-ReaperCleaveAt<.22;
+        else if(CloakStage)StageValid=Body->invisibleUntil>State.elapsed&&FMath::IsNearlyEqual(Body->invisibleUntil-ReaperCloakAt,1.,1e-8)&&ReaperCleaveEvents==0;
+        else StageValid=Body->invisibleUntil==0&&State.elapsed>=ReaperCloakAt+1.&&ReaperCleaveEvents==0;
+    }
+    const bool Scale=Imported&&FMath::IsNearlyEqual(double(Card->BaseModelScale),1.35,1e-5)&&Card->ReadabilityMultiplier>0&&
+        FMath::IsNearlyEqual(double(Visual->PresentationScale()),1.35*RiftArenaGeometry::WorldScale*Card->ReadabilityMultiplier,1e-5)&&Mesh->GetRelativeScale3D().Equals(FVector(Visual->PresentationScale()),1e-5);
+    const bool Paused=View->GetSpeed()==0&&View->ViewState()==&State;
+    const auto Telemetry=State.telemetry[0].find("aether_reaper");
+    const bool TelemetryPassed=Telemetry!=State.telemetry[0].end()&&Telemetry->second.plays==1&&Telemetry->second.spent==4&&
+        Telemetry->second.damageTaken==(DamageStage?350:0)&&Telemetry->second.troopDamage==(ReaperStage==TEXT("cleave")?190:0);
+    Report->SetNumberField(TEXT("reaperId"),double(ReaperId));Report->SetNumberField(TEXT("reaperPlayId"),double(ReaperPlayId));
+    Report->SetNumberField(TEXT("sampledAgeSeconds"),State.elapsed);Report->SetNumberField(TEXT("fixedSteps"),ReaperFixedSteps);
+    Report->SetNumberField(TEXT("baseModelScale"),Card?Card->BaseModelScale:0);Report->SetNumberField(TEXT("actualModelScale"),Visual?Visual->PresentationScale():0);
+    Report->SetNumberField(TEXT("readabilityMultiplier"),Card?Card->ReadabilityMultiplier:0);Report->SetNumberField(TEXT("movementDistanceTiles"),Travel);
+    Report->SetNumberField(TEXT("bodyHP"),Body?Body->hp:0);Report->SetNumberField(TEXT("maxHP"),Body?Body->maxHp:0);Report->SetNumberField(TEXT("firstPacketHP"),ReaperFirstPacketHP);
+    Report->SetBoolField(TEXT("healthCloakTriggered"),Body&&Body->healthCloakTriggered);Report->SetNumberField(TEXT("invisibleUntil"),Body?Body->invisibleUntil:0);
+    Report->SetNumberField(TEXT("cloakAppliedAt"),ReaperCloakAt);Report->SetNumberField(TEXT("actualCloakEvents"),ReaperCloakEvents);Report->SetNumberField(TEXT("actualExpireEvents"),ReaperExpireEvents);
+    Report->SetNumberField(TEXT("actualDamagePackets"),ReaperDamagePackets);Report->SetArrayField(TEXT("incomingPackets"),ReaperIncomingPackets);
+    Report->SetNumberField(TEXT("actualCleaveEvents"),ReaperCleaveEvents);Report->SetNumberField(TEXT("actualCleaveVictims"),ReaperCleaveVictims);
+    Report->SetNumberField(TEXT("cleaveAt"),ReaperCleaveAt);Report->SetNumberField(TEXT("actualCleaveMeshPieces"),CleavePieces);
+    Report->SetNumberField(TEXT("actualAuraInstances"),Visual?Visual->ReaperAuraCount():0);Report->SetBoolField(TEXT("actualAuraMotionObserved"),ReaperAuraMotionObserved);
+    Report->SetBoolField(TEXT("eventAttributionPassed"),ReaperEventAttributionPassed);Report->SetBoolField(TEXT("actualTelemetryPassed"),TelemetryPassed);
+    Report->SetNumberField(TEXT("actualPaidPlays"),Telemetry!=State.telemetry[0].end()?double(Telemetry->second.plays):0);
+    Report->SetNumberField(TEXT("actualPaidSpend"),Telemetry!=State.telemetry[0].end()?Telemetry->second.spent:0);
+    Report->SetNumberField(TEXT("actualDamageTaken"),Telemetry!=State.telemetry[0].end()?Telemetry->second.damageTaken:0);
+    Report->SetNumberField(TEXT("actualTroopDamageDealt"),Telemetry!=State.telemetry[0].end()?Telemetry->second.troopDamage:0);
+    Report->SetStringField(TEXT("animation"),Visual?Visual->CurrentAnimation().ToString():TEXT(""));Report->SetStringField(TEXT("animationAsset"),Visual?Visual->AnimationAssetPath():TEXT(""));
+    Report->SetBoolField(TEXT("cloaked"),Visual&&Visual->IsCloaked());Report->SetBoolField(TEXT("hiddenFromViewer"),Visual&&Visual->HiddenFromViewer());
+    Report->SetStringField(TEXT("model"),Imported?Card->CharacterMesh->GetPathName():TEXT(""));Report->SetStringField(TEXT("portrait"),Card&&Card->Illustration?Card->Illustration->GetPathName():TEXT(""));
+    Report->SetObjectField(TEXT("materialBindings"),Model);Report->SetBoolField(TEXT("allImportedModelsBound"),Imported);Report->SetBoolField(TEXT("allExpansionMaterialsBound"),Materials);
+    Report->SetBoolField(TEXT("scalePassed"),Scale);Report->SetBoolField(TEXT("actualStagePassed"),StageValid);Report->SetBoolField(TEXT("setupPassed"),SetupPassed);Report->SetBoolField(TEXT("paused"),Paused);
+    const bool Passed=SetupPassed&&Imported&&Materials&&Scale&&StageValid&&Paused&&TelemetryPassed;Report->SetBoolField(TEXT("passed"),Passed);
+    if(!Passed)RIFT_LOG(LogRift,Error,TEXT("Reaper design capture stage %s failed: setup=%d imported=%d materials=%d scale=%d stage=%d paused=%d animation=%s hp=%.3f aura=%d cleaves=%d/%d"),
+        *ReaperStage,int32(SetupPassed),int32(Imported),int32(Materials),int32(Scale),int32(StageValid),int32(Paused),Visual?*Visual->CurrentAnimation().ToString():TEXT(""),Body?Body->hp:0,Visual?Visual->ReaperAuraCount():0,ReaperCleaveEvents,CleavePieces);
+    return Passed;
 }
 
 void ARiftExpansionCapture::EndPlay(const EEndPlayReason::Type Reason)

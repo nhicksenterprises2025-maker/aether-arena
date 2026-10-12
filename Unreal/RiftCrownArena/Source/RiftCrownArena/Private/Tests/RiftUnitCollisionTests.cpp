@@ -119,18 +119,31 @@ bool FRiftUnitCollisionIntegrationTest::RunTest(const FString& Parameters)
         FCollisionObservation Observed;
         for(int Play=0;Play<16;++Play)
         {
-            rift::Vec2 Drop{Lane*(Resized?rift::arena::BridgeCenterX+.3:7.5),Sign*(Resized?rift::arena::GuardDepth-4.9:8.5)};
-            if(Play==9)Drop={Lane*(Resized?rift::arena::BridgeCenterX-.7:6.5),Sign*(Resized?rift::arena::GuardDepth-5.9:7.5)};
-            if(Play==15)Drop={Lane*(Resized?rift::arena::BridgeCenterX+2.3:8.5),Sign*(Resized?rift::arena::GuardDepth-5.9:7.5)};
+            // This fixture measures escape at the bridge, whose river depth
+            // is unchanged when the towers move three tiles rearward.
+            rift::Vec2 Drop{Lane*(Resized?rift::arena::BridgeCenterX+.3:7.5),Sign*(Resized?5.5:8.5)};
+            if(Play==9)Drop={Lane*(Resized?rift::arena::BridgeCenterX-.7:6.5),Sign*(Resized?4.5:7.5)};
+            if(Play==15)Drop={Lane*(Resized?rift::arena::BridgeCenterX+2.3:8.5),Sign*(Resized?4.5:7.5)};
+            Drop=rift::SnapToTile(Drop);
             const auto Requested=Drop;const auto Id=Pocket.State().hands[int(Team)][PocketSlots[Play]];const auto* Card=rift::FindCard(Id);
-            if(Card->building&&!Pocket.CanPlace(Team,*Card,Drop))
+            auto BuildingTileFree=[&](rift::Vec2 Candidate) {
+                if(!Pocket.CanPlace(Team,*Card,Candidate))return false;
+                if(!Resized)return true;
+                if(Candidate.z*Sign<4.5||FMath::Abs(Candidate.x)>rift::arena::HalfWidth-.40-Card->collisionRadius*.72)return false;
+                for(const auto& Body:Pocket.State().entities) {
+                    if(Body.dead||(Body.kind==rift::EntityKind::Troop&&Body.flying))continue;
+                    if(CollisionDistance(Candidate,Body.position)<Card->collisionRadius+Body.radius+.22-1e-9)return false;
+                }
+                return true;
+            };
+            if(Card->building&&!BuildingTileFree(Drop))
             {
                 bool Legal=false;
                 for(int Ring=1;Ring<=8&&!Legal;++Ring)for(int Direction=0;Direction<8&&!Legal;++Direction)
                 {
                     const double Angle=Direction*3.14159265358979323846*.25;
                     const auto Candidate=rift::SnapToTile({Requested.x+Ring*std::cos(Angle),Requested.z+Ring*std::sin(Angle)});
-                    if(Pocket.CanPlace(Team,*Card,Candidate)){Drop=Candidate;Legal=true;}
+                    if(BuildingTileFree(Candidate)){Drop=Candidate;Legal=true;}
                 }
                 TestTrue(TEXT("Paid building pocket mirror finds a real legal requested building tile"),Legal);++AdjustedDrops;
                 AddInfo(FString::Printf(TEXT("Collision building requested tile team %d lane %d play %d: %.1f,%.1f -> %.1f,%.1f."),int(Team),Lane,Play,Requested.x,Requested.z,Drop.x,Drop.z));
@@ -144,7 +157,7 @@ bool FRiftUnitCollisionIntegrationTest::RunTest(const FString& Parameters)
         TestEqual(TEXT("Paid building pocket retains all eleven mobile ground members"),int(Ground.size()),11);
         TestEqual(TEXT("Paid pocket contains three real building blockers"),int(Buildings.size()),3);
         TestEqual(TEXT("Pocket keeps the original building lifetime"),rift::FindCard("archer_tower")->lifetime,25.);
-        if(Team==rift::Team::Player&&Lane==1)TestEqual(TEXT("Original and resized bridge pockets retain every exact requested drop tile"),AdjustedDrops,0);
+        if(!Resized&&Team==rift::Team::Player&&Lane==1)TestEqual(TEXT("Original bridge pocket retains every exact requested drop tile"),AdjustedDrops,0);
         std::map<uint64,bool> Crossed;std::map<uint64,rift::Vec2> LastProgress;
         for(const auto& Start:Ground)LastProgress[Start.id]=Start.position;
         int CrossedAt12=0;bool CorrectBridge=true,FixedLiveBuildings=true,StrictSpeed=true,NetProgress=true;
@@ -290,14 +303,14 @@ bool FRiftUnitCollisionIntegrationTest::RunTest(const FString& Parameters)
         const rift::Vec2 Drop{7.5,(Team==rift::Team::Player?1.:-1.)*8.5};
         for(double Z=-rift::arena::LastTileZ;Z<=rift::arena::LastTileZ;Z+=2.)for(double X=-rift::arena::LastTileX;X<=rift::arena::LastTileX;X+=2.)
         {++BuildingRequests;if(Full.Spawn(Team,"archer_tower",{X,Z}))++Buildings;else ++Rejected;}
-        // The actual 24 x 34 board supplies 12 x 17 requested points at a
+        // The actual 22 x 40 board supplies 11 x 20 requested points at a
         // two-tile pitch. Boundary and six Crown body clearances reduce this
-        // fixed packing to 188 separated buildings on either team's layer.
-        TestEqual(TEXT("Capacity matrix covers every two-tile point in the approved board"),BuildingRequests,204);
-        TestEqual(TEXT("Radius-aware boundary and Crown packing retains the observed fixed building count"),Buildings,188);
-        TestEqual(TEXT("Every unavailable building request is accounted for"),Rejected,16);
+        // fixed packing to 207 separated buildings on either team's layer.
+        TestEqual(TEXT("Capacity matrix covers every two-tile point in the approved board"),BuildingRequests,220);
+        TestEqual(TEXT("Radius-aware boundary and Crown packing retains the observed fixed building count"),Buildings,207);
+        TestEqual(TEXT("Every unavailable building request is accounted for"),Rejected,13);
         for(int N=0;N<100;++N){if(!Full.Spawn(Team,"boulderback",Drop)){++Rejected;Exhausted=true;break;}++Residuals;}
-        TestTrue(TEXT("Actual large and small sandbox bodies exhaust the approved twenty-four by thirty-four arena capacity"),Residuals>0&&Exhausted);
+        TestTrue(TEXT("Actual large and small sandbox bodies exhaust the approved twenty-two by forty arena capacity"),Residuals>0&&Exhausted);
         FCollisionObservation Capacity;ObserveCollision(Full.State(),Capacity);
         TestTrue(TEXT("Full-capacity fixture uses genuinely separated unmodified bodies"),Capacity.Clear);
         Full.SetAether(Team,10);

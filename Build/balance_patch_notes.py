@@ -49,6 +49,8 @@ STATS = {
     "initialAttackCooldown": ("First attack cooldown", "s", -1),
     "deathSpawnCount": ("Death-spawned children", "units", 1),
     "invisibilityDuration": ("Invisibility duration", "s", 1),
+    "healthCloakThreshold": ("One-time cloak health threshold", "fraction of maximum HP", 0),
+    "collisionRadius": ("Collision body radius", "tiles", 0),
     "initialDurability": ("Initial body and shield durability per unit", "HP", 1),
     "groupDurability": ("Full group body and shield durability", "HP", 1),
     "fullTroopExposure": ("Maximum full troop exposure", "damage", 1),
@@ -63,6 +65,7 @@ STATS = {
 
 def derived(card):
     values = dict(card)
+    values.setdefault("healthCloakThreshold", 0)
     interval = card["attackInterval"]
     if not card["spell"] and interval > 0:
         values.update(basicDPS=card["damage"] / interval,
@@ -94,10 +97,11 @@ def mechanic_changes(previous, card):
         lines.append("Body HP and shield HP are separate. " + ("A shield-breaking damage event discards its overflow; the next event can damage the body." if card.get("shieldOverflowProtected") else "Shield-breaking damage can overflow into body HP.") + " No shield regeneration.")
     if card.get("deathSpawnCount", 0) > 0 and changed("deathSpawnId", "deathSpawnCount"):
         lines.append("On death, spawns exactly " + str(card["deathSpawnCount"]) + " subordinate units nearby. Children cost no additional Aether and occupy no hand or deck slot; their contribution is credited to the parent.")
-    if card.get("invisibilityDuration", 0) > 0 and changed("invisibilityDuration", "globalFriendlyInvisibility", "breakExistingLocks"):
-        scope = "All friendly troops" if card.get("globalFriendlyInvisibility") else "Friendly troops inside the spell area at impact"
+    if card.get("invisibilityDuration", 0) > 0 and changed("invisibilityDuration", "globalFriendlyInvisibility", "breakExistingLocks", "healthCloakThreshold"):
+        threshold = card.get("healthCloakThreshold", 0)
+        scope = ("Once per deployment, this troop first surviving a hit at or below " + format(threshold * 100, ".9g") + "% maximum body HP") if threshold > 0 else "All friendly troops" if card.get("globalFriendlyInvisibility") else "Friendly troops inside the spell area at impact"
         locks = "Existing enemy target locks drop." if card.get("breakExistingLocks") else "Existing enemy target locks remain."
-        lines.append(scope + " become invisible for " + format(card["invisibilityDuration"], ".9g") + " simulation seconds. " + locks + " New enemy acquisition is prevented. Committed hits, in-flight projectiles and area spells still resolve; invisibility grants no damage immunity.")
+        lines.append(scope + (" becomes" if threshold > 0 else " become") + " invisible for " + format(card["invisibilityDuration"], ".9g") + " simulation seconds. " + locks + " New enemy acquisition is prevented. Committed hits, in-flight projectiles and area spells still resolve; invisibility grants no damage immunity.")
     spell_changed = card["spell"] and changed("damage", "towerDamage", "dotDamage", "dotStructureDamage",
                                              "dotDuration", "dotInterval", "spellRadius", "castDelay", "rounds", "targetMask")
     if spell_changed and card.get("dotDuration", 0) > 0:

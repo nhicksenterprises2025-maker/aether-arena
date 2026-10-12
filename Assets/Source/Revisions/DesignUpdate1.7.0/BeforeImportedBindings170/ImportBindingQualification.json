@@ -1,0 +1,117 @@
+{
+  "schema": 1,
+  "version": "1.7.0",
+  "kind": "health-and-source-stride-import-binding",
+  "scope": "Advance whole-file importer/fixture pins for health decay and exact authored gait stride only; material shader source remains byte-identical",
+  "releasedCommit": "31a19eb06dec0d415712f4691305ccac079eb7f5",
+  "beforeManifest": {
+    "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeImportedBindings170/AssetManifestAfterIronProduction.json",
+    "bytes": 370994,
+    "sha256": "151988de1a73aa03aaae5bb0d82bb14b03ac5b73f24d341a19ebb91e8bf69000"
+  },
+  "producerChanges": {
+    "importer": {
+      "oldWholeFile": {
+        "file": "Build/import_unreal_assets.py",
+        "bytes": 73927,
+        "sha256": "25f9b9b9917c52a22cde1c83699a70a6b8c7324a3072949b4a986a8ee6377af7"
+      },
+      "oldSnapshot": {
+        "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeImportedBindings170/import_unreal_assets.py",
+        "bytes": 73927,
+        "sha256": "25f9b9b9917c52a22cde1c83699a70a6b8c7324a3072949b4a986a8ee6377af7"
+      },
+      "currentWholeFile": {
+        "file": "Build/import_unreal_assets.py",
+        "bytes": 73906,
+        "sha256": "ef66fd24e6e13f996341be8aec27811d765763cf2b76215c206d88eba8b2d2da"
+      },
+      "changedDefinitions": [
+        "animation_contract_properties",
+        "card_data"
+      ],
+      "unchangedDefinitionsExactSource": {
+        "save": true,
+        "import_file": true,
+        "mesh_options": true,
+        "finite_float": true,
+        "texture": true,
+        "arena_tile_size": true,
+        "material": true,
+        "import_expansion_materials": true,
+        "cloak_material": true,
+        "expansion_fx_material": true,
+        "assign_materials": true,
+        "presentation_material": true,
+        "main": true
+      },
+      "unchangedDefinitionAstHashes": {
+        "save": "7eef80f178c84c5ee29aa735176139b1eaef775ed0066db2e7451e9dc235e69f",
+        "import_file": "3807bdcbe368a867a0e2f51a397d9d4161e95d000cc4b910adfaba07fb0ae7ff",
+        "mesh_options": "759aa9ce90b02f9378467b5151c5b1f85db8202f5b05c17eaeadd3229fcee3d4",
+        "finite_float": "59942c3eeeb8190aee5f0b0d660ee4b9d8e2b069ad97bc38ba6e7730fd307e8f",
+        "texture": "848637f3c70bc20db52e17d260ef646a897aa82efbbba952c2a5b63baa833fa5",
+        "arena_tile_size": "23807d0c81eba004221a47f0a9b24dc1dbedc9506e9abba3caac224d041a8f42",
+        "material": "a7efa76e166a7db8afc35d417bca27dd67ba1e5456762225fc548d904e0025f2",
+        "import_expansion_materials": "0321b180ac22d1f7a7eefc8eb0f52634a7f9d4aa64b4565426c8f9e09e396b83",
+        "cloak_material": "dce2d4bdd8fcb814413cd949f38e94ea75102476efa1020f08c65747b9a51ea1",
+        "expansion_fx_material": "8825e0c1b6df72c84ab1ca6e267731acda98d2b8bba077c5ab32af9df42af8ef",
+        "assign_materials": "e03e117deaeeb5973aa8dc94ef1f72dc4c0ef572163979b96b9631bc65aa083b",
+        "presentation_material": "9e41f9f59cd909fd137be8b0a49569b51b8ee0ec6ef29a59cb17494c7d861e3b",
+        "main": "c2d74ed9d1c55884f5f8424ef9d85dbd1d10ac5c3a7020ed2424afe08005d3c7"
+      }
+    },
+    "validator": {
+      "oldWholeFile": {
+        "file": "Build/validate_approved_import_contract.py",
+        "bytes": 6236,
+        "sha256": "2aa65954b6b30584a1fd16474ba083dff03706dee47ab7107efaa2205ef2725a"
+      },
+      "oldSnapshot": {
+        "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeImportedBindings170/validate_approved_import_contract.py",
+        "bytes": 6236,
+        "sha256": "2aa65954b6b30584a1fd16474ba083dff03706dee47ab7107efaa2205ef2725a"
+      },
+      "currentWholeFile": {
+        "file": "Build/validate_approved_import_contract.py",
+        "bytes": 6200,
+        "sha256": "5b07ff875d6b1556333ddf29c1a7aa302292d99e61bb735765585c87b7504e96"
+      },
+      "changedDefinitions": [
+        "main"
+      ],
+      "unchangedDefinitionsExactSource": {
+        "API": true,
+        "functions": true,
+        "graph_for": true
+      },
+      "unchangedDefinitionAstHashes": {
+        "API": "9179f370c39df5c06a74d7f1d74f611f23c8b11ab4b6b3f554c5b2b0f0b5ef97",
+        "functions": "7b10e8ef8816f9256fde1249b0ee2349e5684d02cf7c9122fe665ac77c297628",
+        "graph_for": "3a2e3ac49d5bb5c1473da757ff0396c32a60c679fe8816914f152fec119942ff"
+      }
+    }
+  },
+  "checks": [
+    {
+      "name": "Actual material() exact source and AST unchanged",
+      "passed": true,
+      "astSha256": "a7efa76e166a7db8afc35d417bca27dd67ba1e5456762225fc548d904e0025f2"
+    },
+    {
+      "name": "Actual shader graph fixture assertions unchanged",
+      "passed": true,
+      "astSha256": "a2aef0451ad1275417f39e2b4c897eabfd84f11cbca9f39340a93fddcca46b1d"
+    },
+    {
+      "name": "Before Source and Iron artwork qualification remains exact",
+      "passed": true,
+      "source": {
+        "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
+        "sha256": "83d7708acad6c12c9f6dcf1cf29fad3222fc2fdfc1e509766a0eb18d6f6f6877",
+        "bytes": 22388572
+      }
+    }
+  ],
+  "passed": true
+}

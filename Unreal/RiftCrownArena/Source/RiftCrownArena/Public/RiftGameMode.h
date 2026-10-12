@@ -48,6 +48,8 @@ private:
     bool bConfirmed=false,bPressed=false,bCardDragStarted=false,bCardDragActive=false;
     bool CardDragSelectionIsCurrent()const;
     bool CanDeployTile(FVector2D Tile)const;
+    bool PixelPointToTile(FVector2D Pixel,FVector2D& Out)const;
+    void RefreshPlacementPreview();
     void ResetCardDrag();
     float CameraZoom=1;
     float PendingCaptureZoom=-1;

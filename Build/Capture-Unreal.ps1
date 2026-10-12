@@ -2,7 +2,7 @@ param(
     [string]$EngineRoot = 'C:\Program Files\Epic Games\UE_5.8',
     [string]$Executable = '',
     [string]$Page = 'Battle',
-    [ValidateSet('','roster','expansion_roster','expansion_new_roster','expansion_effects','expansion_warden_death','congestion','effects','effects17','placement','projectiles','spells','tower_pathing','unit_collision','swarm_split','pulverizer')][string]$Scenario = '',
+    [ValidateSet('','roster','expansion_roster','expansion_new_roster','expansion_effects','expansion_warden_death','reaper_design','congestion','effects','effects17','placement','projectiles','spells','tower_pathing','unit_collision','swarm_split','pulverizer')][string]$Scenario = '',
     [ValidateRange(0,8)][float]$PulverizerAge = .35,
     [ValidateSet('crowd','contact','layers')][string]$CollisionCase = 'crowd',
     [ValidateRange(0,12)][float]$CollisionAge = 3,
@@ -17,6 +17,7 @@ param(
     [ValidateRange(0.05,2)][float]$EffectAge = 0.12,
     [ValidateSet('cast','impact','shield')][string]$ExpansionEffectStage = 'shield',
     [ValidateSet('before','death','children','cleanup')][string]$WardenDeathStage='children',
+    [ValidateSet('idle','walk','cleave','cloak','expired')][string]$ReaperStage='idle',
     [ValidateRange(0.25,4)][float]$Speed = 1,
     [switch]$BreathSmoke,
     [ValidateRange(-1,3)][int]$Hand=-1,
@@ -55,6 +56,7 @@ if($Scenario -eq 'tower_pathing' -and ($Page -ne 'Battle' -or $Phase -or $Record
 if($Scenario -eq 'unit_collision' -and ($Page -ne 'Battle' -or $Phase -or $RecordedMatch -or $BreathSmoke)) { throw 'Unit collision requires its live paid Battle fixture without another phase, recorded-match or breath fixture.' }
 if($Scenario -eq 'swarm_split' -and ($Page -ne 'Battle' -or $Phase -or $RecordedMatch -or $BreathSmoke)) { throw 'Swarm splitting requires its live paid Battle fixture without another phase, recorded-match or breath fixture.' }
 if($Scenario -eq 'expansion_warden_death' -and ($Page -ne 'Battle' -or $Phase -or $RecordedMatch -or $BreathSmoke -or $Developer)) { throw 'Warden death requires its isolated paid Battle fixture without another phase, replay, breath or developer fixture.' }
+if($Scenario -eq 'reaper_design' -and ($Page -ne 'Battle' -or $Phase -or $RecordedMatch -or $BreathSmoke -or $Developer)) { throw 'Reaper design requires its isolated Battle fixture without another phase, replay, breath or developer fixture.' }
 $riftTowerSources=@(Get-ChildItem -LiteralPath (Join-Path $repoRoot 'Unreal/RiftCrownArena/Source'),(Join-Path $repoRoot 'Unreal/RiftCrownArena/Config') -File -Recurse | Where-Object Extension -in @('.cpp','.h','.cs','.ini','.inc') | ForEach-Object FullName)+@($projectPath,$PSCommandPath,(Join-Path $repoRoot 'Assets/Data/card_manifest.json'),(Join-Path $repoRoot 'Build/generate_card_manifest.py'))
 if($isEditor) { $riftTowerSources+=@('Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArena.dll','Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArenaEditor.dll') | ForEach-Object { Join-Path $repoRoot $_ } }
 if($isEditor) { $riftTowerSources+=@(Get-ChildItem -LiteralPath (Join-Path $repoRoot 'Unreal/RiftCrownArena/Content') -File -Recurse | Where-Object Extension -in @('.uasset','.umap') | ForEach-Object FullName) }
@@ -88,6 +90,7 @@ if ($Quality -ge 0) { $arguments += "-RiftQAQuality=$Quality" }
 if ($Scenario) { $arguments += "-RiftVisualScenario=$Scenario" }
 if ($Scenario -eq 'expansion_effects') { $arguments += "-RiftExpansionEffectStage=$ExpansionEffectStage" }
 if ($Scenario -eq 'expansion_warden_death') { $arguments += "-RiftWardenDeathStage=$WardenDeathStage" }
+if ($Scenario -eq 'reaper_design') { $arguments += "-RiftReaperStage=$ReaperStage" }
 if ($Scenario -eq 'tower_pathing') { $arguments += '-RiftPathingAge=' + $PathingAge.ToString([System.Globalization.CultureInfo]::InvariantCulture);$arguments += "-RiftRouteCase=$RouteCase";$arguments += "-RiftRouteTeam=$RouteTeam" }
 if ($Scenario -eq 'unit_collision') { $arguments += '-RiftCollisionAge=' + $CollisionAge.ToString([System.Globalization.CultureInfo]::InvariantCulture);$arguments += "-RiftCollisionCase=$CollisionCase" }
 if ($Scenario -eq 'swarm_split') {
@@ -178,7 +181,7 @@ if($riftArenaGeometryRequired) {
         $riftArenaManifest=Get-Content -LiteralPath $riftArenaManifestPath -Raw | ConvertFrom-Json
         $riftArenaManifestPin=@($riftTowerSourcePins | Where-Object path -eq 'Assets/Data/card_manifest.json')
         $riftArenaRules=$riftArenaManifest.rules
-        $riftArenaManifestPassed=$riftArenaManifest.schema -eq 2 -and $riftArenaManifest.status -eq 'approved' -and
+        $riftArenaManifestPassed=$riftArenaManifest.schema -in @(2,3) -and $riftArenaManifest.status -eq 'approved' -and
             $riftArenaManifest.version -eq $ExpectedVersion -and $riftArenaManifestPin.Count -eq 1 -and
             $riftArenaManifestPin[0].sha256 -eq (Get-FileHash -LiteralPath $riftArenaManifestPath -Algorithm SHA256).Hash.ToLowerInvariant() -and
             @(@($riftArenaRules.arenaWidth,$riftArenaRules.arenaHeight,$riftArenaRules.riverHalfWidth,$riftArenaRules.bridgeCenterX,$riftArenaRules.guardDepth,$riftArenaRules.coreDepth) |
@@ -192,9 +195,9 @@ if($riftArenaGeometryRequired) {
                 $riftArenaRowZ=$riftArenaRow-($riftArenaHeight-1)/2.
                 if([math]::Abs($riftArenaRowZ) -lt $riftArenaRules.riverHalfWidth) {++$riftArenaRiverRows;continue}
                 # Native stone paths use two columns and every second board row
-                # inside the 11.5-tile path envelope. Its parity changes with
-                # the approved board height: player4/enemy5 for the34-row field.
-                if([math]::Abs($riftArenaRowZ) -lt 11.5 -and $riftArenaRow%2 -eq 0) {
+                # extending through the current Guard depth; row parity follows
+                # the approved board height.
+                if([math]::Abs($riftArenaRowZ) -lt ($riftArenaGuardDepth+.78) -and $riftArenaRow%2 -eq 0) {
                     if($riftArenaRowZ -gt 0){++$riftArenaPlayerRows}else{++$riftArenaEnemyRows}
                 }
             }
@@ -316,8 +319,48 @@ function Test-RiftWardenDeathCapture($Capture,[string]$Stage) {
         $Capture.livingChildren -eq 4 -and $Capture.livingChildVisuals -eq 4 -and @($Capture.children).Count -eq 4 -and
         $Capture.sampledAgeSeconds -lt ($Capture.referenceDeathSeconds+.3) -and @($Capture.children|Where-Object {$_.parentEntityId -ne $Capture.wardenId -or $_.playId -ne $Capture.wardenPlayId -or $_.dead -ne $false -or !$_.animationAsset}).Count -eq 0
 }
+function Test-RiftReaperDesignCapture($Capture,[string]$Stage) {
+    function Test-RiftReaperNumber($Value) { return $null -ne $Value -and $Value -is [ValueType] -and $Value -isnot [bool] -and [double]::IsFinite([double]$Value) }
+    if($Stage -notin @('idle','walk','cleave','cloak','expired') -or !$Capture -or $Capture.schema -ne 1 -or $Capture.profile -cne 'reaper_design' -or $Capture.stage -cne $Stage){return $false}
+    foreach($flag in @('passed','setupPassed','paused','paidCostAndCyclePassed','sandboxTargetAndPacketSetupPassed','allImportedModelsBound','allExpansionMaterialsBound','scalePassed','actualStagePassed','actualAuraMotionObserved','eventAttributionPassed','actualTelemetryPassed')) {
+        if($Capture.$flag -isnot [bool] -or $Capture.$flag -ne $true){return $false}
+    }
+    foreach($field in @('reaperId','reaperPlayId','sampledAgeSeconds','fixedSteps','baseModelScale','actualModelScale','readabilityMultiplier','movementDistanceTiles','bodyHP','maxHP','firstPacketHP','invisibleUntil','cloakAppliedAt','actualCloakEvents','actualExpireEvents','actualDamagePackets','actualCleaveEvents','actualCleaveVictims','cleaveAt','actualCleaveMeshPieces','actualAuraInstances','actualPaidPlays','actualPaidSpend','actualDamageTaken','actualTroopDamageDealt')) {
+        if(!(Test-RiftReaperNumber $Capture.$field)){return $false}
+    }
+    foreach($field in @('reaperId','reaperPlayId','fixedSteps','actualCloakEvents','actualExpireEvents','actualDamagePackets','actualCleaveEvents','actualCleaveVictims','actualCleaveMeshPieces','actualAuraInstances')) {if([math]::Truncate($Capture.$field) -ne $Capture.$field){return $false}}
+    if($Capture.reaperId -le 0 -or $Capture.reaperPlayId -le 0 -or $Capture.fixedSteps -lt 1 -or $Capture.fixedSteps -gt 360 -or
+       [math]::Abs($Capture.sampledAgeSeconds-$Capture.fixedSteps/60) -gt 1.e-8 -or [math]::Abs($Capture.baseModelScale-1.35) -gt 1.e-5 -or $Capture.readabilityMultiplier -le 0 -or
+       [math]::Abs($Capture.actualModelScale-1.35*1.25*$Capture.readabilityMultiplier) -gt 1.e-5 -or $Capture.actualAuraInstances -ne 34 -or $Capture.maxHP -ne 445 -or
+       !$Capture.model -or !$Capture.portrait -or !$Capture.animationAsset -or $Capture.materialBindings.expansionMaterialBindingsPassed -ne $true -or
+       $Capture.hiddenFromViewer -isnot [bool] -or $Capture.hiddenFromViewer -ne $false -or $Capture.cloaked -isnot [bool] -or $Capture.healthCloakTriggered -isnot [bool]){return $false}
+    $damaged=$Stage -in @('cloak','expired');$expired=$Stage -eq 'expired';$cleave=$Stage -eq 'cleave'
+    if($Capture.actualPaidPlays -ne 1 -or $Capture.actualPaidSpend -ne 4 -or $Capture.actualDamageTaken -ne $(if($damaged){350}else{0}) -or $Capture.actualTroopDamageDealt -ne $(if($cleave){190}else{0})){return $false}
+    if($Capture.bodyHP -ne $(if($damaged){95}else{445}) -or $Capture.firstPacketHP -ne $(if($damaged){270}else{-1}) -or
+       $Capture.actualCloakEvents -ne [int]$damaged -or $Capture.actualExpireEvents -ne [int]$expired -or $Capture.healthCloakTriggered -ne $damaged -or $Capture.cloaked -ne ($Stage -eq 'cloak') -or
+       $Capture.actualDamagePackets -ne $(if($damaged){2}else{0}) -or @($Capture.incomingPackets).Count -ne $(if($damaged){2}else{0}) -or
+       $Capture.actualCleaveEvents -ne [int]$cleave -or $Capture.actualCleaveVictims -ne $(if($cleave){2}else{0}) -or $Capture.actualCleaveMeshPieces -ne $(if($cleave){20}else{0})){return $false}
+    $spawns=@($Capture.sandboxSpawns);$expectedSpawns=if($damaged -or $cleave){2}else{1};$expectedCard=if($damaged){'bullet_burst'}else{'sky_manta'}
+    if($spawns.Count -ne $expectedSpawns -or @($spawns|Where-Object {$_.cardId -cne $expectedCard -or $_.accepted -ne $true -or $_.sandbox -ne $true}).Count -gt 0){return $false}
+    if($damaged) {
+        if($Capture.cloakAppliedAt -le 0 -or @($Capture.incomingPackets.playId|Sort-Object -Unique).Count -ne 2){return $false}
+        for($index=0;$index -lt 2;++$index) {
+            $packet=$Capture.incomingPackets[$index]
+            foreach($field in @('time','amount','requested','hpAfter','playId')){if(!(Test-RiftReaperNumber $packet.$field)){return $false}}
+            if($packet.cardId -cne 'bullet_burst' -or $packet.amount -ne 175 -or $packet.requested -ne 175 -or $packet.hpAfter -ne $(if($index -eq 0){270}else{95}) -or $packet.playId -le 0 -or $packet.time -le 0){return $false}
+        }
+        if($Capture.incomingPackets[0].time -ge $Capture.incomingPackets[1].time -or [math]::Abs($Capture.cloakAppliedAt-$Capture.incomingPackets[1].time) -gt 1.e-8){return $false}
+        if($Stage -eq 'cloak'){return $Capture.invisibleUntil -gt $Capture.sampledAgeSeconds -and [math]::Abs($Capture.invisibleUntil-$Capture.cloakAppliedAt-1) -lt 1.e-8}
+        return $Capture.invisibleUntil -eq 0 -and $Capture.sampledAgeSeconds -ge ($Capture.cloakAppliedAt+1)
+    }
+    if($Capture.invisibleUntil -ne 0 -or $Capture.cloakAppliedAt -ne -1){return $false}
+    if($Stage -eq 'idle'){return $Capture.animation -ceq 'Idle'}
+    if($Stage -eq 'walk'){return $Capture.animation -ceq 'Locomotion' -and $Capture.movementDistanceTiles -gt .25}
+    return $Capture.cleaveAt -ge 0 -and ($Capture.sampledAgeSeconds-$Capture.cleaveAt) -gt 0 -and ($Capture.sampledAgeSeconds-$Capture.cleaveAt) -lt .22
+}
 $riftExpansionRosterPassed=$true
 if($Scenario -eq 'expansion_warden_death') {$riftExpansionRosterPassed=$stateCaptured -and (Test-RiftWardenDeathCapture $riftCaptureState.expansionRoster $WardenDeathStage)}
+if($Scenario -eq 'reaper_design') {$riftExpansionRosterPassed=$stateCaptured -and (Test-RiftReaperDesignCapture $riftCaptureState.expansionRoster $ReaperStage)}
 if($Scenario -in @('expansion_roster','expansion_new_roster','expansion_effects')) {
     $riftRoster=$riftCaptureState.expansionRoster
     $riftRosterNew=$Scenario -ne 'expansion_roster'
@@ -382,6 +425,60 @@ if($Scenario -in @('expansion_roster','expansion_new_roster','expansion_effects'
                 @($riftRoster.members|Where-Object {$_.cardId -eq 'iron_giant' -and $_.team -eq 1 -and $_.bodyHP -eq 1000 -and $_.shieldHP -eq 310 -and $_.shieldFragments -eq 0 -and $_.cloaked -eq $true -and $_.hiddenFromViewer -eq $true}).Count -eq 1
         }
     }
+}
+function Test-RiftPulverizerWitness($State,[double]$Age,$Manifest) {
+    $w=$State.pulverizerWitness
+    if($null -eq $w -or $null -eq $Manifest -or $w.schemaVersion -ne 1 -or $w.passed -ne $true -or $w.realPaidPlay -ne $true -or $w.sandbox -ne $false -or $State.speed -ne 0){return $false}
+    foreach($field in @('sourceId','playId','paidPlaySequence','launchSequence','waveId','cost','spentDelta','aetherBefore','aetherAfterPaidPlay','handIndex','launchWaitFixedSteps','maximumLaunchWaitSeconds','fixtureStartedAt','launchBornSeconds','launchExpiresSeconds','launchDamage','waveSpeed','maximumRadius','requestedAgeSeconds','fixedAdvanceSteps','sampledAgeSeconds','sampleSimulationSeconds','firstWaveLiveRadius','groundHitCount','flyingHitCount','groundSlowCount','flyingSlowCount','sourceHPAtDeployment','sourceMaxHP','sourceHPAtSample')) {
+        $v=$w.$field;if($v -isnot [ValueType] -or $v -is [bool] -or ![double]::IsFinite([double]$v)){return $false}
+    }
+    $card=@($Manifest.cards | Where-Object id -CEQ 'pulverizer');if($card.Count -ne 1){return $false}
+    $steps=[math]::Round($Age*60);$sampleAge=$steps/60.;$tolerance=1.e-7
+    if($w.manifestVersion -ne $Manifest.version -or $w.balanceHash -ne $Manifest.balanceHash -or $w.handCycledOnce -ne $true -or
+        $w.sourceId -le 0 -or $w.playId -le 0 -or $w.paidPlaySequence -le 0 -or $w.launchSequence -le $w.paidPlaySequence -or $w.waveId -ne $w.launchSequence -or
+        $w.cost -ne $card[0].cost -or $w.spentDelta -ne $w.cost -or $w.aetherBefore -ne 10 -or $w.aetherAfterPaidPlay -ne (10-$w.cost) -or
+        $w.handIndex -notin @(0,1,2,3) -or $w.launchWaitFixedSteps -lt 1 -or $w.launchWaitFixedSteps -gt 120 -or $w.maximumLaunchWaitSeconds -ne 2 -or
+        [math]::Abs($w.launchBornSeconds-$w.fixtureStartedAt-$w.launchWaitFixedSteps/60.) -gt $tolerance -or
+        $w.waveSpeed -ne 8 -or $w.maximumRadius -ne 4 -or $w.launchDamage -ne 65 -or
+        [math]::Abs($w.launchExpiresSeconds-$w.launchBornSeconds-.5) -gt $tolerance -or
+        [math]::Abs($w.requestedAgeSeconds-$Age) -gt $tolerance -or $w.fixedAdvanceSteps -ne $steps -or
+        [math]::Abs($w.sampledAgeSeconds-$sampleAge) -gt $tolerance -or [math]::Abs($w.sampleSimulationSeconds-$w.launchBornSeconds-$sampleAge) -gt $tolerance -or
+        [math]::Abs($State.elapsed-$w.sampleSimulationSeconds) -gt $tolerance -or
+        $w.sourceHPAtDeployment -ne $card[0].hp -or $w.sourceMaxHP -ne $card[0].hp -or $w.flyingHitCount -ne 0 -or $w.flyingSlowCount -ne 0){return $false}
+    $enemy=@($w.enemyBodies);if($enemy.Count -ne 7 -or @($enemy.id | Sort-Object -Unique).Count -ne 7 -or @($enemy | Where-Object flying -eq $true).Count -ne 1){return $false}
+    $hits=@($w.firstWaveHits);$slows=@($w.firstWaveSlows)
+    if($hits.Count -ne $w.groundHitCount -or $slows.Count -ne $w.groundSlowCount -or @($hits.target | Sort-Object -Unique).Count -ne $hits.Count -or @($slows.target | Sort-Object -Unique).Count -ne $slows.Count){return $false}
+    foreach($hit in $hits) {
+        if($hit.knownEnemyTroop -ne $true -or $hit.flying -ne $false -or $hit.targetKind -ne 0 -or $hit.requestedDamage -ne 65 -or
+            $hit.amount -le 0 -or $hit.amount -gt 65 -or $hit.time -lt $w.launchBornSeconds -or $hit.time -gt $w.launchExpiresSeconds+$tolerance -or
+            @($enemy | Where-Object { $_.id -eq $hit.target -and $_.flying -eq $false }).Count -ne 1){return $false}
+    }
+    foreach($slow in $slows) {
+        if($slow.knownEnemyTroop -ne $true -or $slow.flying -ne $false -or $slow.amount -ne .1 -or [math]::Abs($slow.until-$slow.time-1.5) -gt $tolerance -or
+            @($hits | Where-Object { $_.target -eq $slow.target -and [math]::Abs($_.time-$slow.time) -le $tolerance }).Count -ne 1){return $false}
+    }
+    $source=@($State.niagara.unitAnimations | Where-Object { $_.entityId -eq $w.sourceId -and $_.assetId -eq 'pulverizer' -and $_.team -eq 'player' })
+    if($sampleAge -le .8+$tolerance -and ($w.sourcePresent -ne $true -or $w.sourceLiving -ne $true -or $source.Count -ne 1 -or $w.sourceHPAtSample -le 0)){return $false}
+    $waves=@($State.niagara.shockwaveVisuals | Where-Object id -EQ $w.waveId)
+    $front=@($State.niagara.expansionSurfaceEffects | Where-Object name -CEQ 'PulverizerTravelingFront')
+    $trail=@($State.niagara.expansionSurfaceEffects | Where-Object name -CEQ 'PulverizerTravelingTrail')
+    if($sampleAge -lt .5-$tolerance) {
+        if($w.firstWaveLive -ne $true -or $waves.Count -ne 1 -or $waves[0].source -ne $w.sourceId -or $waves[0].playId -ne $w.playId -or
+            [math]::Abs($waves[0].born-$w.launchBornSeconds) -gt $tolerance -or [math]::Abs($waves[0].radius-$sampleAge*8) -gt $tolerance -or
+            [math]::Abs($w.firstWaveLiveRadius-$sampleAge*8) -gt $tolerance -or $front.Count -ne 1 -or $front[0].instances -ne 48 -or $front[0].visible -ne $true -or
+            $front[0].nonInteractive -ne $true -or $trail.Count -ne 1 -or $trail[0].instances -ne 48 -or $trail[0].visible -ne $true){return $false}
+    } elseif($w.firstWaveLive -ne $false -or $waves.Count -ne 0){return $false}
+    if([math]::Abs($sampleAge-.1) -lt $tolerance -and $source[0].pulverizerPulsePieces -ne 32){return $false}
+    if([math]::Abs($sampleAge-.35) -lt $tolerance -and $source[0].pulverizerPulsePieces -ne 0){return $false}
+    if([math]::Abs($sampleAge-.8) -lt $tolerance -and ($source[0].pulverizerPulsePieces -ne 0 -or @($front | Where-Object instances -gt 0).Count -gt 0 -or $w.groundHitCount -lt 1 -or $w.groundSlowCount -lt 1 -or $State.slowedEntities -lt 1 -or
+        @($w.sampledEnemyBodies | Where-Object { $_.dead -eq $false -and $_.flying -eq $false -and $_.hp -gt 0 -and $_.slowPct -eq .1 -and $_.slowUntil -gt $w.sampleSimulationSeconds }).Count -lt 1)){return $false}
+    return $true
+}
+
+$riftPulverizerWitnessPassed=$true
+if($Scenario -eq 'pulverizer' -and [version]$ExpectedVersion -ge [version]'1.7.0') {
+    $riftPulverizerManifest=Get-Content -LiteralPath (Join-Path $repoRoot 'Assets/Data/card_manifest.json') -Raw | ConvertFrom-Json
+    $riftPulverizerWitnessPassed=$stateCaptured -and (Test-RiftPulverizerWitness $riftCaptureState ([double]$PulverizerAge) $riftPulverizerManifest)
 }
 $riftTowerSourcesUnchanged=$true
 if($Scenario -eq 'tower_pathing') {
@@ -483,13 +580,15 @@ if ($isEditor) {
     $diagnostics=Get-RiftShippingDiagnostics -RepoRoot $repoRoot -DestinationRoot $runRoot -SaveRoot $saveRoot -EngineUserRoot $engineUserRoot -ProcessId $process.Id -ExpectedVersion $ExpectedVersion -StartedUTC $started -FinishedUTC $finished -ErrorPattern $errorPattern
     $errors=@($diagnostics.errors); $diagnosticSource=$diagnostics.diagnosticSource; $nativeDiagnosticLogs=@($diagnostics.nativeDiagnosticLogs); $diagnosticVerification=$diagnostics.diagnosticVerification; $logPath=$diagnostics.engineLog
 }
-$riftCapturePassed=!$timedOut -and $freshCapture -and $stateCaptured -and $resolutionMatches -and $riftCaptureQualityPassed -and $riftPhaseFixturePassed -and $riftCameraFramingPassed -and $riftModelEnvelopeCheckPassed -and $riftArenaGeometryPassed -and $riftTowerPathingPassed -and $riftUnitCollisionPassed -and $riftSwarmSplitPassed -and $riftExpansionRosterPassed -and $riftTowerSourcesUnchanged -and $riftCaptureExecutableUnchanged -and $process.ExitCode -eq 0 -and $errors.Count -eq 0
+$riftCapturePassed=!$timedOut -and $freshCapture -and $stateCaptured -and $resolutionMatches -and $riftCaptureQualityPassed -and $riftPhaseFixturePassed -and $riftCameraFramingPassed -and $riftModelEnvelopeCheckPassed -and $riftArenaGeometryPassed -and $riftTowerPathingPassed -and $riftUnitCollisionPassed -and $riftSwarmSplitPassed -and $riftExpansionRosterPassed -and $riftPulverizerWitnessPassed -and $riftTowerSourcesUnchanged -and $riftCaptureExecutableUnchanged -and $process.ExitCode -eq 0 -and $errors.Count -eq 0
 $report = [ordered]@{
     schema = 1; version=$ExpectedVersion; passed=[bool]$riftCapturePassed; name = $Name; page = $Page; scenario = $Scenario; inspectCard = $InspectCard; speed = $Speed; breathSmoke = [bool]$BreathSmoke; uiScale=$UIScale; zoom=$Zoom;
     state = $statePath; stateCaptured = $stateCaptured; phaseFixture = $Phase; phaseFixturePassed = $riftPhaseFixturePassed; allowExternalInput = [bool]$AllowExternalInput;
     expansionRosterPassed = [bool]$riftExpansionRosterPassed;
+    pulverizerWitnessPassed = [bool]$riftPulverizerWitnessPassed; pulverizerAge=$(if($Scenario -eq 'pulverizer'){$PulverizerAge}else{$null});
     expansionEffectStage = $(if($Scenario -eq 'expansion_effects'){$ExpansionEffectStage}else{$null});
     wardenDeathStage = $(if($Scenario -eq 'expansion_warden_death'){$WardenDeathStage}else{$null});
+    reaperStage = $(if($Scenario -eq 'reaper_design'){$ReaperStage}else{$null});
     expansionEffectRequestedAdvanceSeconds = $(if($Scenario -eq 'expansion_effects'){$riftExpansionEffectAdvance}else{$null});
     expansionEffectFixedAdvanceSteps = $(if($Scenario -eq 'expansion_effects'){$riftExpansionEffectAdvanceSteps}else{$null});
     pathingAge = $(if($Scenario -eq 'tower_pathing'){$PathingAge}else{$null}); routeCase=$(if($Scenario -eq 'tower_pathing'){$RouteCase}else{$null}); routeTeam=$(if($Scenario -eq 'tower_pathing'){$RouteTeam}else{$null}); towerPathingPassed = $riftTowerPathingPassed;

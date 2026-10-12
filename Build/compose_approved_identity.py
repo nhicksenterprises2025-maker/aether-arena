@@ -1,6 +1,6 @@
 """Compose the approved identities from actual final Blender renders only."""
 from pathlib import Path
-import hashlib,json
+import argparse,hashlib,json
 from PIL import Image,ImageDraw,ImageFont
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -13,9 +13,12 @@ DETAILS={
  'bone_warden':'Shaped ivory anatomy inside fitted iron plates and bronze trim. Four captive skull, rib and limb silhouettes sit behind the open rib cage; their heads and reaching arms move independently. One octagonal bone-and-iron maul has two open curled grips around its shaft and releases during Death. Four separate Skeletons in the illustration represent the death summons.',
  'bone_warden_skeleton':'Subordinate thin ivory skeleton with a connected neck, oversized skull, bronze broken cuff and one chipped short sword. A real child rig with nine clips; no deck slot, independent portrait requirement or recursive summon.',
  'aether_reaper':'Airborne hooded specter with an opaque midnight upper cloak, violet lining, narrow cyan seams and silver crescent scythe. Offset palms and curled fingers hold a real cavity around the shaft. Twelve cloth joints bound the lower tips; no legs, wings or simulated cloth.',
- 'iron_giant':'One broad furnace-gray automaton with amber eye slits, copper hinges and blunt fists. Six separate shield-only deform bones preserve the underlying torso. The one-Giant illustration uses a source-only small cutaway; a dedicated fragment mesh supplies native shield-break pieces.',
+ 'iron_giant':'Forged furnace-gray automaton with a recessed amber visor, fitted cheek guards, plated fingers, knee guards and boot soles. Six detailed shield shells have raised faces, edge channels and reinforcing ribs; every shell follows its own shield bone. The furnace door and rear cooling louvers remain when the shields break. The portrait uses a source-only small cutaway.',
  'shadow_surge':'A spell identity made from one low ring/ribbon and three authored wisps. The card illustration contains three affected allies. These views contain only the actual effect meshes: no skeletal binding or invented spawned creature.',
 }
+parser=argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--cards',nargs='+',choices=tuple(NAMES))
+args=parser.parse_args()
 PALETTE=[('Forged iron',(.17,.205,.24)),('Ivory',(.83,.78,.64)),('Midnight cloth',(.09,.13,.21)),
          ('Violet lining',(.19,.145,.24)),('Green soul',(.13,.50,.255)),('Amber eye',(.95,.43,.08))]
 def font(size,bold=False):return ImageFont.truetype(str(FONTS/('BarlowSemiCondensed-Bold.ttf' if bold else 'BarlowSemiCondensed-Regular.ttf')),size)
@@ -29,7 +32,13 @@ def wrap(draw,text,x,y,width,size=23):
     if line:draw.text((x,y),line,font=style,fill=(202,215,218));y+=size+7
     return y
 report={'schema':1,'sourceBlend':M['source'],'method':'Actual model/effect orthographic review renders; documentation layout, no baked game UI','sheets':{}}
+if args.cards:
+    report=json.loads((DEST/'approved-identity-sheets.json').read_text(encoding='utf-8'))
+    report.setdefault('selectedReplacements',[]).append({'schema':1,'cards':args.cards,'sourceBlend':M['source'],
+        'composer':{'file':'Build/compose_approved_identity.py','bytes':Path(__file__).stat().st_size,
+                    'sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}})
 for card,label in NAMES.items():
+    if args.cards and card not in args.cards:continue
     sheet=Image.new('RGB',(1600,1660),(17,27,34));draw=ImageDraw.Draw(sheet)
     draw.text((42,25),label.upper(),font=font(43,True),fill=(235,230,215))
     draw.text((44,83),'AUTHORED IDENTITY / BLENDER -Y FORWARD / UNREAL +X IMPORT',font=font(20),fill=(152,175,184))

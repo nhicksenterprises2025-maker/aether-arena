@@ -103,10 +103,10 @@ def animation_contract_properties(contract, canonical_scale, authored_flight_bob
     visual = contract.get("visual") or {}
     stride = max(0, finite_float(locomotion.get("strideMeters")))
     canonical_scale = finite_float(canonical_scale)
-    authored_scale = finite_float(visual.get("baseModelScale"), canonical_scale)
-    # The source stride is measured before its intended model scale. Rebind it
-    # to the compiled card scale so the reference gait keeps its authored pace.
-    stride = stride * authored_scale / canonical_scale if canonical_scale > 0 and authored_scale > 0 else 0.0
+    # Runtime multiplies this source-space stride by the actual model scale.
+    # Retain the measured stride when a model gets larger so planted feet do
+    # not slide from preserving the old, smaller body's world-space stride.
+    stride = stride if canonical_scale > 0 else 0.0
     return {"AttackContactNormalized":finite_float(attack.get("contactNormalized"), .48),
             "AttackAnticipationSeconds":finite_float(attack.get("anticipationSeconds")),
             "AttackRecoverySeconds":finite_float(attack.get("recoverySeconds")),
@@ -614,7 +614,7 @@ def card_data(only=None, stats_only=False):
     properties.update({"chargeMoveSeconds":"ChargeMoveSeconds", "chargedMoveSpeed":"ChargedMoveSpeed",
                        "hpDecayPerSecond":"HPDecayPerSecond", "initialAttackCooldown":"InitialAttackCooldown",
                        "shieldHP":"ShieldHP", "deathSpawnCount":"DeathSpawnCount", "deathSpawnId":"DeathSpawnId",
-                       "invisibilityDuration":"InvisibilityDuration", "dotStructureDamage":"DotStructureDamage",
+                       "invisibilityDuration":"InvisibilityDuration", "dotStructureDamage":"DotStructureDamage", "healthCloakThreshold":"HealthCloakThreshold",
                        "hardExpiry":"HardExpiry", "shieldOverflowProtected":"ShieldOverflowProtected",
                        "globalFriendlyInvisibility":"GlobalFriendlyInvisibility", "breakExistingLocks":"BreakExistingLocks"})
     attacks.update({"bone_warden":"heavy_slam", "bone_warden_skeleton":"sword_attack",

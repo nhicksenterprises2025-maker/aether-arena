@@ -1,7 +1,22 @@
 # Rift Crown Arena / Aether Arena
 
-Original Windows card battler: seventeen cards, two lanes, deterministic combat,
+Original Windows card battler: twenty-one cards, two lanes, deterministic combat,
 seven AI personalities, deck workshop, Meta Lab, replays and developer training.
+
+Version 1.7.0 reshapes the arena to 40 tiles long by 22 tiles wide, moves all
+towers three tiles rearward, and moves the Guard Towers, bridges and stone paths
+two tiles outward per lane. Five cards receive larger model scales. Iron Giant
+gains fitted armor and clearer mechanical details, Aether Reaper gains an
+animated purple aura and a one-time one-second cloak at half HP, and Pulverizer
+shows its actual traveling shockwave and release pulse. Dragged cards update
+their placement preview immediately; the hand keeps Aether costs while removing
+the numbered badges. See [the numeric update notes](Docs/PATCH_NOTES_1.7.0.md).
+
+Version 1.6.0 expanded the collection to twenty-one playable cards with Bone
+Warden, Aether Reaper, Iron Giant and Shadow Surge, added the 34-by-24 arena with
+125 cm tiles, and applied the balance expansion. Bone Warden has four animated
+captive skeletons and releases four subordinate units on death. See
+[the expansion notes](Docs/PATCH_NOTES_1.6.0.md).
 
 Version 1.5.0 adds Pulverizer, a 3-Aether building with an animated compression
 mechanism and traveling purple shockwaves. Its 65-damage waves expand at
@@ -74,7 +89,7 @@ specification. Run its `start_game.bat` or follow its README.
 The native Windows implementation uses Unreal Engine 5.8.2 under
 `Unreal/RiftCrownArena`, original asset sources in `Assets`, a self-contained
 .NET 8 WPF launcher in `Launcher`, and packaging tools in `Build` and `Installer`.
-The sixteen-card balance and gameplay rules remain authoritative in the
+The twenty-one-card balance and gameplay rules remain authoritative in the
 deterministic C++ simulation. The browser reference remains intact.
 
 Download the Windows installer, portable game ZIP, standalone launcher and

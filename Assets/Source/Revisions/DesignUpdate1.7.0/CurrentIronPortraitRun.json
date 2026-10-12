@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "sourceBlend": {
+    "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
+    "sha256": "83d7708acad6c12c9f6dcf1cf29fad3222fc2fdfc1e509766a0eb18d6f6f6877",
+    "bytes": 22388572
+  },
+  "method": "Final production meshes, authored poses, perspective studio scenes",
+  "cards": {
+    "iron_giant": {
+      "file": "Assets/Source/CardArt/iron_giant.png",
+      "bytes": 913139,
+      "sha256": "7b0c711d37bc37122ee9eecf9275e5881d903d7531674676ff86fd112b0a875c",
+      "sourceSceneSHA256": "83d7708acad6c12c9f6dcf1cf29fad3222fc2fdfc1e509766a0eb18d6f6f6877",
+      "sources": [
+        {
+          "model": {
+            "file": "Assets/Export/Characters/iron_giant/SK_iron_giant.fbx",
+            "sha256": "d58978c0a003fa1ce8e7f76d99ed027fef79b015aa33ab83fe4d5974b5a01eef",
+            "bytes": 962396
+          },
+          "action": "Locomotion",
+          "phase": 0.15,
+          "instance": "hero",
+          "scale": 1.0,
+          "positionMeters": [
+            0,
+            0,
+            0
+          ],
+          "phaseOffsetFrames": 14,
+          "poseSourceFrame": 15,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_iron_giant_Rig_hero_PortraitPose",
+          "illustrationOnlyShieldCutaway": true,
+          "illustrationOnlyAffectedAlly": false
+        }
+      ],
+      "boundsMeters": [
+        [
+          -0.683785080909729,
+          -0.5253424048423767,
+          0.009999647736549377
+        ],
+        [
+          0.6796382665634155,
+          0.36532488465309143,
+          1.2800512313842773
+        ]
+      ],
+      "poseFrame": 1,
+      "cameraProjection": "Perspective",
+      "cameraDistance": 3.287523361907023,
+      "composition": "One broad automaton, intact cool steel shell with one small cutaway showing warm underlying body",
+      "subjectCount": 1,
+      "master": {
+        "file": "Assets/Source/CardArt/Masters/iron_giant.png",
+        "bytes": 1580532,
+        "sha256": "faca0f04139a67a9f179aa2d6d02b3d015b3d6a41b94ad31f89f81876b95f5d0"
+      },
+      "editableScene": {
+        "file": "Assets/Source/CardArt/Scenes/iron_giant_Portrait.blend",
+        "bytes": 23067861,
+        "sha256": "04138d415c808ef558d4572358b2f4486e5d54a8d8af4ea5cedf3e98660afcb5"
+      },
+      "smallReview": {
+        "file": "Assets/Renders/Expansion/Small/iron_giant_96x120.png",
+        "bytes": 21297,
+        "sha256": "eec5bedb50bee925e881e340ae6cdd9e24d15ed4eea2b8f1cdc6bb3977f5f4be"
+      },
+      "runtimeResolution": [
+        768,
+        960
+      ],
+      "masterResolution": [
+        1024,
+        1280
+      ],
+      "safeZones": {
+        "topLeftBadge": 0.2,
+        "bottomName": 0.14
+      },
+      "rendererScript": {
+        "file": "Build/render_approved_expansion.py",
+        "bytes": 16291,
+        "sha256": "b4af33dfe3d5413a465df4078d940b494b33f50965293710ac75df89b942d714"
+      }
+    }
+  },
+  "renderer": {
+    "file": "Build/render_approved_expansion.py",
+    "bytes": 16291,
+    "sha256": "b4af33dfe3d5413a465df4078d940b494b33f50965293710ac75df89b942d714"
+  }
+}

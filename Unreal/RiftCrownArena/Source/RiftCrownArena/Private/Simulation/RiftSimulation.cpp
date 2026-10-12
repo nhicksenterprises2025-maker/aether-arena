@@ -932,6 +932,15 @@ void Match::Damage(EntityId id, double amount, Team team, const std::string &car
         observed.damageTaken += actual;
         if (t->kind == EntityKind::Building) observed.prevented += actual;
     }
+    if (t->hp > Epsilon && victim && victim->healthCloakThreshold > 0 &&
+        !t->healthCloakTriggered && t->hp <= t->maxHp * victim->healthCloakThreshold + Epsilon) {
+        t->healthCloakTriggered = true;
+        const EntityId cloakedId = t->id;
+        const Team cloakedTeam = t->team;
+        const PlayId cloakedPlay = t->playId;
+        CloakBody(*t, *victim, cloakedPlay, cloakedId);
+        DropCloakedLocks(cloakedTeam, *victim, {cloakedId}, cloakedPlay);
+    }
     if (t->hp <= Epsilon)
         Kill(id, team, card, play, source);
 }
@@ -1097,20 +1106,28 @@ void Match::ApplyInvisibility(Team team, const Card &card, Vec2 point, PlayId pl
             continue;
         if (!card.globalFriendlyInvisibility && Distance(body.position, point) > card.spellRadius + Epsilon)
             continue;
-        body.invisibleUntil = state_.elapsed + card.invisibilityDuration;
-        body.invisibilitySource = 0;
-        body.invisibilityPlayId = play;
-        body.invisibilityCardId = card.id;
         cloaked.push_back(body.id);
-        auto &event = Emit("invisibility_apply", team);
-        event.target = body.id;
-        event.targetTeam = team;
-        event.cardId = card.id;
-        event.playId = play;
-        event.until = body.invisibleUntil;
-        event.amount = card.invisibilityDuration;
-        event.position = body.position;
+        CloakBody(body, card, play);
     }
+    DropCloakedLocks(team, card, cloaked, play);
+}
+void Match::CloakBody(Entity &body, const Card &card, PlayId play, EntityId source) {
+    body.invisibleUntil = std::max(body.invisibleUntil, state_.elapsed + card.invisibilityDuration);
+    body.invisibilitySource = source;
+    body.invisibilityPlayId = play;
+    body.invisibilityCardId = card.id;
+    auto &event = Emit("invisibility_apply", body.team);
+    event.source = source;
+    event.target = body.id;
+    event.targetTeam = body.team;
+    event.cardId = card.id;
+    event.playId = play;
+    event.until = body.invisibleUntil;
+    event.amount = card.invisibilityDuration;
+    event.position = body.position;
+    if (source) event.reason = "health_threshold";
+}
+void Match::DropCloakedLocks(Team team, const Card &card, const std::vector<EntityId> &cloaked, PlayId play) {
     if (!card.breakExistingLocks)
         return;
     for (auto &enemy : state_.entities) {

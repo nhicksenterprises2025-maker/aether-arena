@@ -1,0 +1,683 @@
+{
+  "schema": 1,
+  "sourceBlend": {
+    "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
+    "sha256": "b7c215a00681328298919bb147900285a00335729934d08c28d9b7c608296929",
+    "bytes": 22079995
+  },
+  "method": "Final production meshes, authored poses, perspective studio scenes",
+  "cards": {
+    "bone_warden": {
+      "file": "Assets/Source/CardArt/bone_warden.png",
+      "bytes": 893730,
+      "sha256": "314e6129b8850bd0e4a5094c8f3dd10ffb0532478c5601d351b3674f4460b1bb",
+      "sourceSceneSHA256": "b7c215a00681328298919bb147900285a00335729934d08c28d9b7c608296929",
+      "sources": [
+        {
+          "model": {
+            "file": "Assets/Export/Characters/bone_warden/SK_bone_warden.fbx",
+            "sha256": "48248479ac757e7c3bcbd0074dffe474d4e989903b4189775e0bd4ce7321f33f",
+            "bytes": 1145852
+          },
+          "action": "Attack",
+          "phase": 0.2546341463414634,
+          "instance": "hero",
+          "scale": 1.5,
+          "positionMeters": [
+            0,
+            -0.32,
+            0
+          ],
+          "phaseOffsetFrames": 21,
+          "poseSourceFrame": 22,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_bone_warden_Rig_hero_PortraitPose",
+          "illustrationOnlyShieldCutaway": false,
+          "illustrationOnlyAffectedAlly": false
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton.fbx",
+            "sha256": "46c7d72dcd7ff26895a5c8615386ee54a92c7c72c367a59eaff3f34a26214cb2",
+            "bytes": 405228
+          },
+          "action": "Deploy",
+          "phase": 0.32,
+          "instance": "summon_1",
+          "scale": 0.65,
+          "positionMeters": [
+            -1.04,
+            0.48,
+            0
+          ],
+          "phaseOffsetFrames": 10,
+          "poseSourceFrame": 11,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_bone_warden_Rig_summon_1_PortraitPose",
+          "illustrationOnlyShieldCutaway": false,
+          "illustrationOnlyAffectedAlly": false
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton.fbx",
+            "sha256": "46c7d72dcd7ff26895a5c8615386ee54a92c7c72c367a59eaff3f34a26214cb2",
+            "bytes": 405228
+          },
+          "action": "Deploy",
+          "phase": 0.32,
+          "instance": "summon_2",
+          "scale": 0.65,
+          "positionMeters": [
+            0.91,
+            0.48,
+            0
+          ],
+          "phaseOffsetFrames": 10,
+          "poseSourceFrame": 11,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_bone_warden_Rig_summon_2_PortraitPose",
+          "illustrationOnlyShieldCutaway": false,
+          "illustrationOnlyAffectedAlly": false
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton.fbx",
+            "sha256": "46c7d72dcd7ff26895a5c8615386ee54a92c7c72c367a59eaff3f34a26214cb2",
+            "bytes": 405228
+          },
+          "action": "Deploy",
+          "phase": 0.32,
+          "instance": "summon_3",
+          "scale": 0.65,
+          "positionMeters": [
+            -1.32,
+            1.12,
+            0.025
+          ],
+          "phaseOffsetFrames": 10,
+          "poseSourceFrame": 11,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_bone_warden_Rig_summon_3_PortraitPose",
+          "illustrationOnlyShieldCutaway": false,
+          "illustrationOnlyAffectedAlly": false
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton.fbx",
+            "sha256": "46c7d72dcd7ff26895a5c8615386ee54a92c7c72c367a59eaff3f34a26214cb2",
+            "bytes": 405228
+          },
+          "action": "Deploy",
+          "phase": 0.32,
+          "instance": "summon_4",
+          "scale": 0.65,
+          "positionMeters": [
+            1.18,
+            1.12,
+            0.025
+          ],
+          "phaseOffsetFrames": 10,
+          "poseSourceFrame": 11,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_bone_warden_Rig_summon_4_PortraitPose",
+          "illustrationOnlyShieldCutaway": false,
+          "illustrationOnlyAffectedAlly": false
+        }
+      ],
+      "boundsMeters": [
+        [
+          -1.5006221532821655,
+          -1.1479814052581787,
+          -0.0018981003668159246
+        ],
+        [
+          1.4007277488708496,
+          1.174425482749939,
+          2.8691904544830322
+        ]
+      ],
+      "poseFrame": 1,
+      "cameraProjection": "Perspective",
+      "cameraDistance": 7.475601237156295,
+      "composition": "One imposing Warden; four subordinate Skeleton death-summon silhouettes behind the green ribs",
+      "subjectCount": 5,
+      "master": {
+        "file": "Assets/Source/CardArt/Masters/bone_warden.png",
+        "bytes": 1545996,
+        "sha256": "7a0c6be614c80d4cf2b3a84fd5a9a4700e4b9c428ec2a8e4acf2934893b83cea"
+      },
+      "editableScene": {
+        "file": "Assets/Source/CardArt/Scenes/bone_warden_Portrait.blend",
+        "bytes": 23471687,
+        "sha256": "2ecc2b3f0083fcd545c97821ff20187685f200357d432edd618392db0130343a"
+      },
+      "smallReview": {
+        "file": "Assets/Renders/Expansion/Small/bone_warden_96x120.png",
+        "bytes": 18818,
+        "sha256": "cc2879b9fd98ce81be80f471424db4d80b256087fcfda35ac9ccb904302fb6cf"
+      },
+      "runtimeResolution": [
+        768,
+        960
+      ],
+      "masterResolution": [
+        1024,
+        1280
+      ],
+      "safeZones": {
+        "topLeftBadge": 0.2,
+        "bottomName": 0.14
+      },
+      "rendererScript": {
+        "file": "Build/render_approved_expansion.py",
+        "bytes": 16291,
+        "sha256": "b4af33dfe3d5413a465df4078d940b494b33f50965293710ac75df89b942d714"
+      }
+    },
+    "aether_reaper": {
+      "file": "Assets/Source/CardArt/aether_reaper.png",
+      "bytes": 788283,
+      "sha256": "1d3f66a5682e2732bfaa7dd8692c4bec505ba24bb46c8b1c31251f1768793cb3",
+      "sourceSceneSHA256": "b7c215a00681328298919bb147900285a00335729934d08c28d9b7c608296929",
+      "sources": [
+        {
+          "model": {
+            "file": "Assets/Export/Characters/aether_reaper/SK_aether_reaper.fbx",
+            "sha256": "e229049a12a35e5e8bc2963c74b8479c634615a356d5da45a53c559127488557",
+            "bytes": 516044
+          },
+          "action": "Attack",
+          "phase": 0.2366666666666667,
+          "instance": "hero",
+          "scale": 1.1,
+          "positionMeters": [
+            0,
+            0,
+            0
+          ],
+          "phaseOffsetFrames": 14,
+          "poseSourceFrame": 15,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_aether_reaper_Rig_hero_PortraitPose",
+          "illustrationOnlyShieldCutaway": false,
+          "illustrationOnlyAffectedAlly": false
+        }
+      ],
+      "boundsMeters": [
+        [
+          -0.44522276520729065,
+          -0.4164784252643585,
+          0.29897063970565796
+        ],
+        [
+          0.6788777709007263,
+          0.41040197014808655,
+          2.5936503410339355
+        ]
+      ],
+      "poseFrame": 1,
+      "cameraProjection": "Perspective",
+      "cameraDistance": 5.629558913529406,
+      "composition": "One airborne hooded Reaper; attached silver crescent scythe toward lower right; purple ruins",
+      "subjectCount": 1,
+      "master": {
+        "file": "Assets/Source/CardArt/Masters/aether_reaper.png",
+        "bytes": 1377663,
+        "sha256": "3da786c66a1369b02dd57a1789eaa03faa63c3a8828674aa763e7bbab0424048"
+      },
+      "editableScene": {
+        "file": "Assets/Source/CardArt/Scenes/aether_reaper_Portrait.blend",
+        "bytes": 22341574,
+        "sha256": "cd94920de5ab3f415f8a4005f71667116715fe33aa0b5cad1c57815964f517a9"
+      },
+      "smallReview": {
+        "file": "Assets/Renders/Expansion/Small/aether_reaper_96x120.png",
+        "bytes": 15571,
+        "sha256": "2132726ebdd7761744481db0f2d8af6f7d9c387101e3ebb496350853b32ef80a"
+      },
+      "runtimeResolution": [
+        768,
+        960
+      ],
+      "masterResolution": [
+        1024,
+        1280
+      ],
+      "safeZones": {
+        "topLeftBadge": 0.2,
+        "bottomName": 0.14
+      },
+      "rendererScript": {
+        "file": "Build/render_approved_expansion.py",
+        "bytes": 16291,
+        "sha256": "b4af33dfe3d5413a465df4078d940b494b33f50965293710ac75df89b942d714"
+      }
+    },
+    "iron_giant": {
+      "file": "Assets/Source/CardArt/iron_giant.png",
+      "bytes": 891447,
+      "sha256": "59d2131bc48dbb4f2dd9d6f08360a94520284aa07bc8d491158a2339134c1c57",
+      "sourceSceneSHA256": "b7c215a00681328298919bb147900285a00335729934d08c28d9b7c608296929",
+      "sources": [
+        {
+          "model": {
+            "file": "Assets/Export/Characters/iron_giant/SK_iron_giant.fbx",
+            "sha256": "01ab97dca9f185ac4b53af467e502dcf1ca9ad5cb17d28760ec0df0a323ff737",
+            "bytes": 609020
+          },
+          "action": "Locomotion",
+          "phase": 0.15,
+          "instance": "hero",
+          "scale": 1.0,
+          "positionMeters": [
+            0,
+            0,
+            0
+          ],
+          "phaseOffsetFrames": 14,
+          "poseSourceFrame": 15,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_iron_giant_Rig_hero_PortraitPose",
+          "illustrationOnlyShieldCutaway": true,
+          "illustrationOnlyAffectedAlly": false
+        }
+      ],
+      "boundsMeters": [
+        [
+          -0.683785080909729,
+          -0.5094144344329834,
+          0.01399974524974823
+        ],
+        [
+          0.6796382665634155,
+          0.3622168302536011,
+          1.2765486240386963
+        ]
+      ],
+      "poseFrame": 1,
+      "cameraProjection": "Perspective",
+      "cameraDistance": 3.2672091934601846,
+      "composition": "One broad automaton, intact cool steel shell with one small cutaway showing warm underlying body",
+      "subjectCount": 1,
+      "master": {
+        "file": "Assets/Source/CardArt/Masters/iron_giant.png",
+        "bytes": 1543015,
+        "sha256": "98242aff1973ce27f2bb7bbc2e889aa5d817766254f76614b1a378747cdb3841"
+      },
+      "editableScene": {
+        "file": "Assets/Source/CardArt/Scenes/iron_giant_Portrait.blend",
+        "bytes": 22523523,
+        "sha256": "f6b4237b451a2639ea8552bd0904bc761c9028601b24c4854901d3b020df7ee7"
+      },
+      "smallReview": {
+        "file": "Assets/Renders/Expansion/Small/iron_giant_96x120.png",
+        "bytes": 21086,
+        "sha256": "8b2c47d43c7d7e1c65e1c785c1470cc72cce3382cc20f4bae21d507313dc3741"
+      },
+      "runtimeResolution": [
+        768,
+        960
+      ],
+      "masterResolution": [
+        1024,
+        1280
+      ],
+      "safeZones": {
+        "topLeftBadge": 0.2,
+        "bottomName": 0.14
+      },
+      "rendererScript": {
+        "file": "Build/render_approved_expansion.py",
+        "bytes": 16291,
+        "sha256": "b4af33dfe3d5413a465df4078d940b494b33f50965293710ac75df89b942d714"
+      }
+    },
+    "shadow_surge": {
+      "file": "Assets/Source/CardArt/shadow_surge.png",
+      "bytes": 877995,
+      "sha256": "4c858fa2c461bfdace0f5743df40896165a52f435d0bb723b4ce8d625906c16f",
+      "sourceSceneSHA256": "b7c215a00681328298919bb147900285a00335729934d08c28d9b7c608296929",
+      "sources": [
+        {
+          "model": {
+            "file": "Assets/Export/Characters/ironclad/SK_ironclad.fbx",
+            "sha256": "b6443334658ea634575bdcb650bfdc4d2857131eea521699d96c092b3a4e65cc",
+            "bytes": 635180
+          },
+          "action": "Idle",
+          "phase": 0.16,
+          "instance": "ally_1",
+          "scale": 0.73,
+          "positionMeters": [
+            -0.58,
+            0.02,
+            0
+          ],
+          "phaseOffsetFrames": 9,
+          "poseSourceFrame": 10,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_shadow_surge_Rig_ally_1_PortraitPose",
+          "illustrationOnlyShieldCutaway": false,
+          "illustrationOnlyAffectedAlly": true
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/twin_blades/SK_twin_blades.fbx",
+            "sha256": "48499afbc90f1fab3b4d57dcc33919db042f13636cc3dd243d70a5e51b3731c4",
+            "bytes": 727212
+          },
+          "action": "Idle",
+          "phase": 0.16,
+          "instance": "ally_2",
+          "scale": 0.8,
+          "positionMeters": [
+            0.59,
+            0.17,
+            0
+          ],
+          "phaseOffsetFrames": 9,
+          "poseSourceFrame": 10,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_shadow_surge_Rig_ally_2_PortraitPose",
+          "illustrationOnlyShieldCutaway": false,
+          "illustrationOnlyAffectedAlly": true
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton.fbx",
+            "sha256": "46c7d72dcd7ff26895a5c8615386ee54a92c7c72c367a59eaff3f34a26214cb2",
+            "bytes": 405228
+          },
+          "action": "Idle",
+          "phase": 0.16,
+          "instance": "ally_3",
+          "scale": 0.92,
+          "positionMeters": [
+            0,
+            0.68,
+            0
+          ],
+          "phaseOffsetFrames": 32,
+          "poseSourceFrame": 33,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_shadow_surge_Rig_ally_3_PortraitPose",
+          "illustrationOnlyShieldCutaway": false,
+          "illustrationOnlyAffectedAlly": true
+        },
+        {
+          "model": {
+            "name": "shadow_surge_ribbon",
+            "file": "Assets/Export/Environment/SM_shadow_surge_ribbon.fbx",
+            "sha256": "fe62515cbfacb8329c42303cb7264b2cc4c24f2328c3277cb2f8c36730c9460d",
+            "bytes": 24300,
+            "triangles": 128,
+            "boundsMeters": [
+              2.119999885559082,
+              2.119999885559082,
+              0.0689999982714653
+            ],
+            "materials": [
+              "M_RiftExpansionAscensionGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 64,
+                "file": "Assets/Export/Environment/SM_shadow_surge_ribbon_LOD1.fbx",
+                "sha256": "c4e373d6d1f52e8ef279faa6b7a3651444f5bfca7870e409d6ca1c1b9011d152",
+                "bytes": 23820
+              },
+              {
+                "level": 2,
+                "triangles": 28,
+                "file": "Assets/Export/Environment/SM_shadow_surge_ribbon_LOD2.fbx",
+                "sha256": "c53c94063fbd03da9bf9e88f594f32d2429e64ba334c6a86617cc73ceb3830c0",
+                "bytes": 22636
+              }
+            ]
+          },
+          "illustrationOnlyEffect": true,
+          "instance": "circular_spell_motif"
+        },
+        {
+          "model": {
+            "name": "shadow_surge_wisp",
+            "file": "Assets/Export/Environment/SM_shadow_surge_wisp.fbx",
+            "sha256": "c85716fa578a619e282eaf908d787c3852b25e06fe721bb47684cac777d5aec8",
+            "bytes": 25660,
+            "triangles": 160,
+            "boundsMeters": [
+              0.23503537476062775,
+              0.15134872496128082,
+              0.390812486410141
+            ],
+            "materials": [
+              "M_RiftExpansionAscensionGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 80,
+                "file": "Assets/Export/Environment/SM_shadow_surge_wisp_LOD1.fbx",
+                "sha256": "27c32de90d28763f59f8ace6846a9f8befec751a7d938b2fccbcafac9c36ca60",
+                "bytes": 23740
+              },
+              {
+                "level": 2,
+                "triangles": 34,
+                "file": "Assets/Export/Environment/SM_shadow_surge_wisp_LOD2.fbx",
+                "sha256": "5898f521706e1b921a46d883733311d7a407b413a3feca7e27b945f5d7113887",
+                "bytes": 22572
+              }
+            ]
+          },
+          "illustrationOnlyEffect": true,
+          "instance": "wisp_1"
+        },
+        {
+          "model": {
+            "name": "shadow_surge_wisp",
+            "file": "Assets/Export/Environment/SM_shadow_surge_wisp.fbx",
+            "sha256": "c85716fa578a619e282eaf908d787c3852b25e06fe721bb47684cac777d5aec8",
+            "bytes": 25660,
+            "triangles": 160,
+            "boundsMeters": [
+              0.23503537476062775,
+              0.15134872496128082,
+              0.390812486410141
+            ],
+            "materials": [
+              "M_RiftExpansionAscensionGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 80,
+                "file": "Assets/Export/Environment/SM_shadow_surge_wisp_LOD1.fbx",
+                "sha256": "27c32de90d28763f59f8ace6846a9f8befec751a7d938b2fccbcafac9c36ca60",
+                "bytes": 23740
+              },
+              {
+                "level": 2,
+                "triangles": 34,
+                "file": "Assets/Export/Environment/SM_shadow_surge_wisp_LOD2.fbx",
+                "sha256": "5898f521706e1b921a46d883733311d7a407b413a3feca7e27b945f5d7113887",
+                "bytes": 22572
+              }
+            ]
+          },
+          "illustrationOnlyEffect": true,
+          "instance": "wisp_2"
+        },
+        {
+          "model": {
+            "name": "shadow_surge_wisp",
+            "file": "Assets/Export/Environment/SM_shadow_surge_wisp.fbx",
+            "sha256": "c85716fa578a619e282eaf908d787c3852b25e06fe721bb47684cac777d5aec8",
+            "bytes": 25660,
+            "triangles": 160,
+            "boundsMeters": [
+              0.23503537476062775,
+              0.15134872496128082,
+              0.390812486410141
+            ],
+            "materials": [
+              "M_RiftExpansionAscensionGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 80,
+                "file": "Assets/Export/Environment/SM_shadow_surge_wisp_LOD1.fbx",
+                "sha256": "27c32de90d28763f59f8ace6846a9f8befec751a7d938b2fccbcafac9c36ca60",
+                "bytes": 23740
+              },
+              {
+                "level": 2,
+                "triangles": 34,
+                "file": "Assets/Export/Environment/SM_shadow_surge_wisp_LOD2.fbx",
+                "sha256": "5898f521706e1b921a46d883733311d7a407b413a3feca7e27b945f5d7113887",
+                "bytes": 22572
+              }
+            ]
+          },
+          "illustrationOnlyEffect": true,
+          "instance": "wisp_3"
+        }
+      ],
+      "boundsMeters": [
+        [
+          -1.1660000085830688,
+          -1.1660000085830688,
+          -0.0026864903047680855
+        ],
+        [
+          1.1660000085830688,
+          1.1660000085830688,
+          1.5868816375732422
+        ]
+      ],
+      "poseFrame": 1,
+      "cameraProjection": "Perspective",
+      "cameraDistance": 6.461329456748531,
+      "composition": "Spell illustration: three affected ally silhouettes in a readable low violet circular veil; no spawned creature",
+      "subjectCount": 7,
+      "master": {
+        "file": "Assets/Source/CardArt/Masters/shadow_surge.png",
+        "bytes": 1525089,
+        "sha256": "f90ace4b28e99a61b61a4dccf1bd54aa2f177b6e3438f8cea1ca632e6f8535df"
+      },
+      "editableScene": {
+        "file": "Assets/Source/CardArt/Scenes/shadow_surge_Portrait.blend",
+        "bytes": 23049018,
+        "sha256": "1cc35cea66405a36c5ab0041c1976f9b5d13628dcbdd6080c632d8a72778b598"
+      },
+      "smallReview": {
+        "file": "Assets/Renders/Expansion/Small/shadow_surge_96x120.png",
+        "bytes": 19389,
+        "sha256": "3e1aded6547f6a621d3f2c069e95461b2e78946a52121bdd2a5d0c15573e6558"
+      },
+      "runtimeResolution": [
+        768,
+        960
+      ],
+      "masterResolution": [
+        1024,
+        1280
+      ],
+      "safeZones": {
+        "topLeftBadge": 0.2,
+        "bottomName": 0.14
+      },
+      "rendererScript": {
+        "file": "Build/render_approved_expansion.py",
+        "bytes": 16291,
+        "sha256": "b4af33dfe3d5413a465df4078d940b494b33f50965293710ac75df89b942d714"
+      }
+    },
+    "bone_warden_skeleton": {
+      "file": "Assets/Source/CardArt/Children/bone_warden_skeleton.png",
+      "bytes": 843435,
+      "sha256": "59ff9e7e313a0d4331e8aa208f7505bebdf7f10cb9908e72b017fe10e1ad14ee",
+      "sourceSceneSHA256": "b7c215a00681328298919bb147900285a00335729934d08c28d9b7c608296929",
+      "sources": [
+        {
+          "model": {
+            "file": "Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton.fbx",
+            "sha256": "46c7d72dcd7ff26895a5c8615386ee54a92c7c72c367a59eaff3f34a26214cb2",
+            "bytes": 405228
+          },
+          "action": "Attack",
+          "phase": 0.375,
+          "instance": "hero",
+          "scale": 0.65,
+          "positionMeters": [
+            0,
+            0,
+            0
+          ],
+          "phaseOffsetFrames": 12,
+          "poseSourceFrame": 13,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_bone_warden_skeleton_Rig_hero_PortraitPose",
+          "illustrationOnlyShieldCutaway": false,
+          "illustrationOnlyAffectedAlly": false
+        }
+      ],
+      "boundsMeters": [
+        [
+          -0.2177361100912094,
+          -0.1403840184211731,
+          -0.0018980852328240871
+        ],
+        [
+          0.2467922866344452,
+          0.03560114651918411,
+          0.5981148481369019
+        ]
+      ],
+      "poseFrame": 1,
+      "cameraProjection": "Perspective",
+      "cameraDistance": 1.4859913564122145,
+      "composition": "Subordinate Skeleton identity; one chipped sword, ivory bones and bronze cuff; not a deck card",
+      "subjectCount": 1,
+      "master": {
+        "file": "Assets/Source/CardArt/Masters/bone_warden_skeleton.png",
+        "bytes": 1470812,
+        "sha256": "37faf4dfb510ecdaafb8a2615b56a04e397886d528dadfba55b53a986bb822c1"
+      },
+      "editableScene": {
+        "file": "Assets/Source/CardArt/Scenes/bone_warden_skeleton_Portrait.blend",
+        "bytes": 22209642,
+        "sha256": "d98979064dbf086b61b00b70f946aabaaba85ca96c24c7aefd24cf36da294f96"
+      },
+      "smallReview": {
+        "file": "Assets/Renders/Expansion/Small/bone_warden_skeleton_96x120.png",
+        "bytes": 16758,
+        "sha256": "20b94349ab56ef7f2aeaa66a1a488ed8f69c529f98d07387439acd6a2e0a9cb9"
+      },
+      "runtimeResolution": [
+        768,
+        960
+      ],
+      "masterResolution": [
+        1024,
+        1280
+      ],
+      "safeZones": {
+        "topLeftBadge": 0.2,
+        "bottomName": 0.14
+      },
+      "rendererScript": {
+        "file": "Build/render_approved_expansion.py",
+        "bytes": 16291,
+        "sha256": "b4af33dfe3d5413a465df4078d940b494b33f50965293710ac75df89b942d714"
+      }
+    }
+  },
+  "renderer": {
+    "file": "Build/render_approved_expansion.py",
+    "bytes": 16291,
+    "sha256": "b4af33dfe3d5413a465df4078d940b494b33f50965293710ac75df89b942d714"
+  }
+}

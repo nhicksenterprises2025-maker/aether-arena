@@ -102,7 +102,7 @@ if "balanceHash" in data:
             else:
                 check(captured.get(key) == value, f"Captured identity mismatch: {expected['id']}.{key}")
     if revision >= 4:
-        check(manifest.get("schema") == 2, "Expansion telemetry requires its schema2 mechanics manifest")
+        check(manifest.get("schema") in (2, 3), "Expansion telemetry requires its matching schema2/3 mechanics manifest")
         expected_entities = {card["id"]: card for card in manifest.get("entities", [])}
         check(set(entity_definitions) == set(expected_entities) and len(data.get("entitySnapshot", [])) == len(expected_entities),
               "Captured subordinate definitions differ from matching canonical manifest")

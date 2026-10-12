@@ -25,6 +25,7 @@ const FIELD_UNITS = {
   stunDuration: "s", dotDamage: "damage per troop tick", dotStructureDamage: "damage per structure tick",
   dotDuration: "s", dotInterval: "s", rounds: "visual rounds", hpDecayPerSecond: "HP/s",
   initialAttackCooldown: "s", deathSpawnCount: "children", invisibilityDuration: "s",
+  healthCloakThreshold: "fraction of maximum body HP",
   targetMask: "bits: ground troop 1, air troop 2, structure 4",
 };
 const STAT_NAMES = {
@@ -41,10 +42,12 @@ const STAT_NAMES = {
   dotDuration: "DOT duration", dotInterval: "DOT interval", rounds: "Visual round count",
   hpDecayPerSecond: "Building HP decay", initialAttackCooldown: "Initial attack cooldown",
   deathSpawnCount: "Death-spawn count", invisibilityDuration: "Invisibility duration",
+  healthCloakThreshold: "Health-cloak HP threshold",
   targetMask: "Target mask",
 };
 const LABEL_FIELDS = ["targetMask", "hardExpiry", "shieldOverflowProtected", "deathSpawnId", "globalFriendlyInvisibility", "breakExistingLocks"];
 const MECHANIC_NAMES = { targetMask: "Attack targets", hardExpiry: "Expiry at maximum lifetime", shieldOverflowProtected: "Shield overflow protection", deathSpawnId: "Child definition", globalFriendlyInvisibility: "Global friendly invisibility", breakExistingLocks: "Break existing target locks" };
+const ARENA_STATS = { arenaWidth: "Arena width", arenaHeight: "Arena length", bridgeCenterX: "Bridge center X", guardDepth: "Guard tower depth", coreDepth: "Core tower depth" };
 const ERROR_RE = "#REF!|#DIV/0!|#VALUE!|#NAME\\?|#N/A|#NUM!|#NULL!|#SPILL!|#CALC!";
 const sha = data => createHash("sha256").update(data).digest("hex");
 const col = n => { let s = ""; for (let x = n; x; x = Math.floor((x - 1) / 26)) s = String.fromCharCode(65 + (x - 1) % 26) + s; return s; };
@@ -68,8 +71,13 @@ export function numericDelta(oldValue, newValue) {
 export function manifestRecords(data) {
   return Array.isArray(data) ? { cards: data, entities: [], rules: {} } : data;
 }
+export function baselineProjection(record, schema) {
+  // Schema 2 had no health-triggered cloak. This one documented compatibility
+  // default preserves absent historical stats instead of filling them generally.
+  return schema >= 3 && record.healthCloakThreshold === undefined ? { ...record, healthCloakThreshold: 0 } : record;
+}
 function validateManifest(m, fixture) {
-  if (!m || ![1, 2].includes(m.schema) || !Array.isArray(m.cards) || !Array.isArray(m.entities)) throw new Error("Expected supported canonical schema with cards and entities arrays");
+  if (!m || ![1, 2, 3].includes(m.schema) || !Array.isArray(m.cards) || !Array.isArray(m.entities)) throw new Error("Expected supported canonical schema with cards and entities arrays");
   if (m.status !== "approved" && !(fixture && m.status === "fixture")) throw new Error("Production export requires an approved manifest; pending source conflicts cannot produce a final workbook");
   if (fixture && m.status !== "fixture") throw new Error("Fixture export requires a clearly labeled synthetic manifest");
   if (typeof m.version !== "string" || !m.version.trim()) throw new Error("Manifest version is required");
@@ -83,6 +91,8 @@ function validateManifest(m, fixture) {
     }
     targetLabel(c.targetMask);
     for (const k of Object.keys(FIELD_UNITS)) if (c[k] !== undefined && (typeof c[k] !== "number" || !Number.isFinite(c[k]) || c[k] < 0)) throw new Error(`Numeric input must remain typed: ${c.id}.${k}`);
+    if (m.schema >= 3 && (typeof c.healthCloakThreshold !== "number" || c.healthCloakThreshold > 1)) throw new Error(`Invalid health-cloak threshold for ${c.id}`);
+    if (c.healthCloakThreshold > 0 && (c.spell || c.building || !(c.invisibilityDuration > 0))) throw new Error(`Health cloak requires a troop and positive duration for ${c.id}`);
     if (!Number.isInteger(c.count) || c.count < 1) throw new Error(`Entity count must be a positive integer for ${c.id}`);
     if (!c.spell && c.attackInterval <= 0) throw new Error(`Attack interval must be positive for ${c.id}`);
     if (!c.spell && !(c.collisionRadius > 0)) throw new Error(`Independent collision radius missing for ${c.id}`);
@@ -116,14 +126,23 @@ export function selfTest() {
   check("Target mask explicit structures", targetLabel(4) === "structures");
   check("Wave travel", 4 / 8 === .5);
   check("Approved DOT exposure", 262 + 40 * 5 === 462 && 143 + 15 * 5 === 218);
+  check("Only absent historical health trigger defaults to zero", baselineProjection({ id: "fixture", hp: 445 }, 3).healthCloakThreshold === 0 && baselineProjection({ id: "fixture", hp: 445 }, 3).shieldHP === undefined);
+  check("HP trigger derives from maximum body HP", 445 * .5 === 222.5);
+  const cloakFixture = { schema: 3, status: "fixture", version: "Fixture3", balanceHash: "a".repeat(64), cards: [{ id: "fixture", name: "Fixture", count: 1, hp: 445, damage: 95, attackInterval: 1.05, moveSpeed: 1.85, range: 1.4, targetMask: 7, collisionRadius: .484, healthCloakThreshold: .5, invisibilityDuration: 1 }], entities: [] };
+  validateManifest(cloakFixture, true); check("Valid schema 3 health cloak", true);
+  for (const [label, value] of [["Reject threshold above maximum HP", 1.01], ["Reject missing schema 3 threshold", undefined]]) {
+    const invalid = structuredClone(cloakFixture); invalid.cards[0].healthCloakThreshold = value;
+    let rejected = false; try { validateManifest(invalid, true); } catch { rejected = true; } check(label, rejected);
+  }
   return { kind: "synthetic arithmetic fixtures", passed: true, checks };
 }
 
 async function build(args) {
   const manifestBytes = await fs.readFile(args.manifest), baselineBytes = await fs.readFile(args.baseline);
   const manifest = JSON.parse(manifestBytes.toString("utf8").replace(/^\uFEFF/, ""));
-  const baseline = manifestRecords(JSON.parse(baselineBytes.toString("utf8").replace(/^\uFEFF/, "")));
+  const capturedBaseline = manifestRecords(JSON.parse(baselineBytes.toString("utf8").replace(/^\uFEFF/, "")));
   validateManifest(manifest, args.fixture);
+  const baseline = { ...capturedBaseline, cards: capturedBaseline.cards.map(c => baselineProjection(c, manifest.schema)), entities: (capturedBaseline.entities ?? []).map(c => baselineProjection(c, manifest.schema)) };
   if (!Array.isArray(baseline.cards) || new Set(baseline.cards.map(c => c.id)).size !== baseline.cards.length) throw new Error("Expected unique PRE-PATCH captured card definitions");
   if (baseline.cards.some(c => !manifest.cards.some(p => p.id === c.id))) throw new Error("The post-patch roster omits an existing playable card");
   const output = path.resolve(args.output), qaDir = path.resolve(args.qaDirectory);
@@ -137,6 +156,7 @@ async function build(args) {
   const source = sheets.Source;
   source.getRange("A2").values = [["Balance reference"]];
   source.getRange("D2:E7").values = [["Patch version", manifest.version], ["Balance manifest SHA256", pins.balanceHash], ["Manifest file SHA256", pins.manifestSHA256], ["Pre-patch file SHA256", pins.baselineSHA256], ["Source", path.basename(args.manifest)], ["Pre-patch source", path.basename(args.baseline)]];
+  if (manifest.schema >= 3 && [...capturedBaseline.cards, ...(capturedBaseline.entities ?? [])].some(c => c.healthCloakThreshold === undefined)) source.getRange("D8:E8").values = [["Historical schema default", "Absent healthCloakThreshold = 0 (no HP trigger); other inputs are unchanged."]];
   source.getRange("A9:F9").values = [["Phase", "Record", "Name", "Field", "Value", "Unit"]];
   const sourceRows = [], index = new Map();
   function append(phase, record, name, field, value) {
@@ -204,9 +224,9 @@ async function build(args) {
     else if (typeof c[field] === "boolean") setFormula("Abilities", `E${r}`, `=IF(${sourceCell("Post", c.id, field)},"Yes","No")`, c[field] ? "Yes" : "No", `${c.id} ${description}`);
     else setLink("Abilities", `E${r}`, c.id, field);
     abilityRows.push({ card: c.id, kind, field, row: r });
-    if (field === "slowPct") sheets.Abilities.getRange(`E${r}`).setNumberFormat("0.00%");
+    if (["slowPct", "healthCloakThreshold"].includes(field)) sheets.Abilities.getRange(`E${r}`).setNumberFormat("0.00%");
     else if (typeof c[field] === "number" || typeof expected === "number") sheets.Abilities.getRange(`E${r}`).setNumberFormat(Number.isInteger(c[field] ?? expected) ? "#,##0" : "0.00");
-    if (field === "slowPct") sheets.Abilities.getRange(`F${r}`).values = [["%"]];
+    if (["slowPct", "healthCloakThreshold"].includes(field)) sheets.Abilities.getRange(`F${r}`).values = [["%"]];
     return r;
   }
   for (const c of manifest.cards) {
@@ -231,7 +251,16 @@ async function build(args) {
     if (c.shieldHP > 0) { ability(c, "Shield", "shieldHP", "Initial shield HP", "Body HP is separate from shield HP.", ref("Cards", `G${cr}`), c.shieldHP); ability(c, "Shield", "shieldOverflowProtected", "Overflow protection", "A shield-breaking damage event does not overflow into body HP when enabled."); }
     if (c.deathSpawnCount > 0) { ability(c, "Death summons", "deathSpawnCount", "Child count", "Authoritative death event; no extra Aether payment or card cast."); ability(c, "Death summons", "deathSpawnId", "Child definition", "Children are subordinate entities, not deck cards."); }
     if (c.building) { ability(c, "Building", "hpDecayPerSecond", "HP decay per second"); ability(c, "Building", "lifetime", "Maximum lifetime", "Passive HP loss and the explicit expiry rule are separate."); if (c.hardExpiry !== undefined) ability(c, "Building", "hardExpiry", "Expiry at maximum lifetime", "When enabled, the building expires at maximum lifetime even if body HP remains."); ability(c, "Building", "initialAttackCooldown", "Initial attack cooldown"); }
-    if (c.invisibilityDuration > 0) { ability(c, "Invisibility", "invisibilityDuration", "Duration", "Simulation time; no damage immunity."); ability(c, "Invisibility", "globalFriendlyInvisibility", "Global friendly scope", "No means friendly troops inside the spell area at impact."); ability(c, "Invisibility", "breakExistingLocks", "Break existing target locks", "Enemy acquisition is prevented while cloaked. Committed hits, in-flight projectiles and area spells still resolve."); }
+    if (c.invisibilityDuration > 0) {
+      const kind = c.healthCloakThreshold > 0 ? "Health-triggered cloak" : "Invisibility";
+      if (c.healthCloakThreshold > 0) {
+        const threshold = ability(c, kind, "healthCloakThreshold", "Maximum HP threshold", "Once per deployment, after surviving a damage packet at or below this fraction of maximum body HP.");
+        ability(c, kind, null, "Trigger body HP", "Derived from maximum body HP; shield HP is excluded.", `=${cell("Cards", `F${cr}`)}*E${threshold}`, c.hp * c.healthCloakThreshold, "HP");
+        ability(c, kind, null, "Scope", "This troop only.", '=\"Self\"', "Self", "");
+      } else ability(c, kind, "globalFriendlyInvisibility", "Global friendly scope", "No means friendly troops inside the spell area at impact.");
+      ability(c, kind, "invisibilityDuration", "Duration", "Simulation time; no damage immunity.");
+      ability(c, kind, "breakExistingLocks", "Break existing target locks", "Enemy acquisition is prevented while cloaked. Committed hits, in-flight projectiles and area spells still resolve.");
+    }
   }
   header("Spells", "Spell impact and exposure", ["Card ID", "Spell", "Cost", "Delay (s)", "Radius (tiles)", "Troop impact", "Structure impact", "Troop tick", "Structure tick", "Tick interval (s)", "DOT duration (s)", "Ticks", "Full troop exposure", "Full structure exposure", "Visual rounds", "Targets"]);
   const spells = manifest.cards.filter(c => c.spell);
@@ -271,7 +300,7 @@ async function build(args) {
   for (const c of manifest.cards) {
     const old = baseline.cards.find(b => b.id === c.id);
     if (!old) continue;
-    for (const key of Object.keys(STAT_NAMES)) if (!["targetMask", "chargedMoveSpeed"].includes(key) && typeof old[key] === "number" && typeof c[key] === "number" && !close(old[key], c[key])) change(c, key, STAT_NAMES[key], old[key], c[key], link(c.id, key, "Pre"), link(c.id, key), FIELD_UNITS[key], key === "slowPct");
+    for (const key of Object.keys(STAT_NAMES)) if (!["targetMask", "chargedMoveSpeed"].includes(key) && typeof old[key] === "number" && typeof c[key] === "number" && !close(old[key], c[key])) change(c, key, STAT_NAMES[key], old[key], c[key], link(c.id, key, "Pre"), link(c.id, key), FIELD_UNITS[key], ["slowPct", "healthCloakThreshold"].includes(key));
     if (!c.spell && !old.spell) {
       if (old.chargeDamage > 0 && c.chargeDamage > 0 && old.chargedMoveSpeed !== undefined && c.chargedMoveSpeed !== undefined) {
         const oldSpeed = old.chargedMoveSpeed || old.moveSpeed, newSpeed = c.chargedMoveSpeed || c.moveSpeed;
@@ -289,6 +318,10 @@ async function build(args) {
       const r = chr++; sheets.Changes.getRange(`A${r}:J${r}`).values = [[c.id, c.name, MECHANIC_NAMES[key], mechanicValue(key, old[key]), mechanicValue(key, c[key]), "n.a.", "n.a.", "n.a.", "mechanic", "CHANGED"]];
       changes.push({ id: c.id, field: key, row: r, old: old[key], new: c[key] });
     }
+  }
+  if (manifest.schema >= 3) for (const [field, title] of Object.entries(ARENA_STATS)) {
+    const before = baseline.rules?.[field], after = manifest.rules?.[field];
+    if (typeof before === "number" && typeof after === "number" && !close(before, after)) change({ id: "@rules", name: "Shared rules" }, field, title, before, after, link("@rules", field, "Pre"), link("@rules", field), "tiles");
   }
   const newCards = manifest.cards.filter(c => !baseline.cards.some(b => b.id === c.id));
   if (!changes.length) sheets.Changes.getRange("A6").values = [["No existing-card stat changes."]];
@@ -371,6 +404,17 @@ async function build(args) {
   sourceCount.values = [[originalCount + 1]]; workbook.recalculate();
   if (!close(sheets.Cards.getRange(`L${probeRow}`).values[0][0], (originalCount + 1) * probe.hp) || !close(sheets.Cards.getRange(`N${probeRow}`).values[0][0], (originalCount + 1) * probe.damage / probe.attackInterval)) throw new Error("Swarm count recalculation failed");
   sourceCount.values = [[originalCount]];
+  let healthCloakInputChangeRecalculationPassed = false;
+  const healthProbe = manifest.cards.find(c => c.healthCloakThreshold > 0);
+  if (healthProbe) {
+    const input = source.getRange(index.get(`Post|${healthProbe.id}|healthCloakThreshold`)), original = input.values[0][0];
+    const hpRow = abilityRows.find(r => r.card === healthProbe.id && r.kind === "Health-triggered cloak" && r.field === null && sheets.Abilities.getRange(`D${r.row}`).values[0][0] === "Trigger body HP").row;
+    input.values = [[original / 2]]; workbook.recalculate();
+    if (!close(sheets.Abilities.getRange(`E${hpRow}`).values[0][0], healthProbe.hp * original / 2)) throw new Error("Health-cloak input-change recalculation failed");
+    input.values = [[original]]; workbook.recalculate();
+    if (!close(sheets.Abilities.getRange(`E${hpRow}`).values[0][0], healthProbe.hp * original)) throw new Error("Health-cloak restoration failed");
+    healthCloakInputChangeRecalculationPassed = true;
+  }
   const dotProbe = spells.find(c => c.dotDuration > 0);
   if (dotProbe) {
     const duration = source.getRange(index.get(`Post|${dotProbe.id}|dotDuration`)), originalDuration = duration.values[0][0], sr = spells.indexOf(dotProbe) + 6;
@@ -382,6 +426,7 @@ async function build(args) {
   const review = [];
   for (const [name, last] of Object.entries(lastRows)) {
     const ranges = name === "Cards" ? [`A1:N${Math.min(last, 15)}`, `O5:AB${Math.min(last, 15)}`] : name === "Spells" ? [`A1:H${Math.min(last, 15)}`, `I5:P${Math.min(last, 15)}`] : name === "Summons" ? [`A1:I${Math.min(last, 15)}`, `J5:Q${Math.min(last, 15)}`] : [`A1:${col(widths[name].length)}${Math.min(last, 18)}`];
+    if (name === "Cards" && last > 15) ranges.push(`A16:N${last}`, `O16:AB${last}`);
     if (["Abilities", "Changes", "Source"].includes(name) && last > 18) ranges.push(`A${Math.max(6, last - 13)}:${col(widths[name].length)}${last}`);
     for (let i = 0; i < ranges.length; i++) {
       const preview = await workbook.render({ sheetName: name, range: ranges[i], scale: 1.5, format: "png" });
@@ -393,7 +438,7 @@ async function build(args) {
   const xlsx = await SpreadsheetFile.exportXlsx(workbook);
   await fs.mkdir(path.dirname(output), { recursive: true }); await xlsx.save(output);
   const outputBytes = await fs.readFile(output);
-  const proof = { schemaVersion: 1, fixture: !!args.fixture, status: "awaiting-visual-review", ...pins, output: path.basename(output), outputSHA256: sha(outputBytes), outputBytes: outputBytes.length, cardCount: manifest.cards.length, entityCount: manifest.entities.length, newCardIds: newCards.map(c => c.id), sheets: Object.keys(sheets), formulaChecks: formulaChecks.length, formulaParityPassed: true, inputChangeRecalculationPassed: true, restoredInput: true, previews: review, changes };
+  const proof = { schemaVersion: 1, fixture: !!args.fixture, status: "awaiting-visual-review", ...pins, output: path.basename(output), outputSHA256: sha(outputBytes), outputBytes: outputBytes.length, cardCount: manifest.cards.length, entityCount: manifest.entities.length, newCardIds: newCards.map(c => c.id), sheets: Object.keys(sheets), formulaChecks: formulaChecks.length, formulaParityPassed: true, inputChangeRecalculationPassed: true, healthCloakInputChangeRecalculationPassed, restoredInput: true, previews: review, changes };
   await fs.writeFile(path.join(qaDir, "workbook-verification.json"), JSON.stringify(proof, null, 2) + "\n");
   console.log(JSON.stringify({ status: proof.status, output, cardCount: proof.cardCount, formulaChecks: proof.formulaChecks, qaDirectory: qaDir }));
 }

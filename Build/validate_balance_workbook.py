@@ -33,7 +33,9 @@ FIELDS = {
     "dotDuration": "DOT duration", "dotInterval": "DOT interval", "rounds": "Visual round count",
     "hpDecayPerSecond": "Building HP decay", "initialAttackCooldown": "Initial attack cooldown",
     "deathSpawnCount": "Death-spawn count", "invisibilityDuration": "Invisibility duration",
+    "healthCloakThreshold": "Health-cloak HP threshold",
 }
+ARENA_STATS = {"arenaWidth": "Arena width", "arenaHeight": "Arena length", "bridgeCenterX": "Bridge center X", "guardDepth": "Guard tower depth", "coreDepth": "Core tower depth"}
 MECHANIC_NAMES = {"targetMask": "Attack targets", "hardExpiry": "Expiry at maximum lifetime", "shieldOverflowProtected": "Shield overflow protection", "deathSpawnId": "Child definition", "globalFriendlyInvisibility": "Global friendly invisibility", "breakExistingLocks": "Break existing target locks"}
 
 
@@ -169,13 +171,19 @@ def validate(args):
     manifest_bytes, baseline_bytes, workbook_bytes = args.manifest.read_bytes(), args.baseline.read_bytes(), args.workbook.read_bytes()
     m, b = json.loads(manifest_bytes.decode("utf-8-sig")), records(json.loads(baseline_bytes.decode("utf-8-sig")))
     check("Canonical approval", m.get("status") == "approved" or args.fixture and m.get("status") == "fixture")
-    check("Canonical schema", m.get("schema") in (1, 2))
+    check("Canonical schema", m.get("schema") in (1, 2, 3))
     check("Preserve every existing playable card", {c["id"] for c in b["cards"]} <= {c["id"] for c in m["cards"]})
     # Import the actual project hash convention; do not duplicate serialization.
     spec = importlib.util.spec_from_file_location("rift_balance_manifest", Path(__file__).with_name("generate_card_manifest.py"))
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     check("Canonical balance hash", m.get("balanceHash") == module.balance_hash(m))
+    if m.get("schema", 0) >= 3:
+        for c in m["cards"] + m.get("entities", []):
+            threshold = c.get("healthCloakThreshold")
+            check("Typed bounded health-cloak fraction", type(threshold) in (int, float) and math.isfinite(threshold) and 0 <= threshold <= 1, card=c["id"])
+            if threshold:
+                check("Health cloak is a surviving troop effect", not c["spell"] and not c["building"] and c["invisibilityDuration"] > 0, card=c["id"])
     wb = Xlsx(args.workbook)
     check("Sheet order and names", wb.names == SHEETS, actual=wb.names)
     check("No saved formula errors", not wb.errors, errors=wb.errors)
@@ -196,6 +204,8 @@ def validate(args):
     expected_source = {}
     for phase, manifest in [("Pre", b), ("Post", m)]:
         for c in manifest["cards"] + manifest.get("entities", []):
+            if phase == "Pre" and m.get("schema", 0) >= 3 and "healthCloakThreshold" not in c:
+                expected_source[phase, c["id"], "healthCloakThreshold"] = 0
             for field, value in c.items():
                 if isinstance(value, (str, int, float, bool)) or value is None:
                     expected_source[phase, c["id"], field] = "n.a." if value is None else value
@@ -203,6 +213,8 @@ def validate(args):
             if isinstance(value, (str, int, float, bool)) or value is None:
                 expected_source[phase, "@rules", field] = "n.a." if value is None else value
     check("Complete original pre/post input coverage", set(source_index) == set(expected_source))
+    if m.get("schema", 0) >= 3 and any("healthCloakThreshold" not in c for c in b["cards"] + b.get("entities", [])):
+        check("Only documented historical threshold default", wb.raw("Source", "E8") == "Absent healthCloakThreshold = 0 (no HP trigger); other inputs are unchanged.")
     for key, expected in expected_source.items():
         # OpenXML represents an empty text input as an empty cell. It does not
         # convert an actual numeric zero or a missing required value to zero.
@@ -277,7 +289,12 @@ def validate(args):
                 ability("Expiry at maximum lifetime", "Yes" if c["hardExpiry"] else "No")
         if c.get("invisibilityDuration", 0):
             ability("Duration", c["invisibilityDuration"])
-            ability("Global friendly scope", "Yes" if c["globalFriendlyInvisibility"] else "No")
+            if c.get("healthCloakThreshold", 0):
+                ability("Maximum HP threshold", c["healthCloakThreshold"])
+                ability("Trigger body HP", c["hp"] * c["healthCloakThreshold"])
+                ability("Scope", "Self")
+            else:
+                ability("Global friendly scope", "Yes" if c["globalFriendlyInvisibility"] else "No")
             ability("Break existing target locks", "Yes" if c["breakExistingLocks"] else "No")
     seen_abilities = set()
     for address in wb.sheets["Abilities"]:
@@ -292,6 +309,11 @@ def validate(args):
         seen_abilities.add(key)
         if key in expected_abilities:
             cv("Abilities", f"E{row}", expected_abilities[key])
+            if key[1] == "Trigger body HP":
+                require_formula("Abilities", f"E{row}")
+                check("Self-cloak ability identity", wb.raw("Abilities", f"C{row}") == "Health-triggered cloak")
+            if key[1] == "Maximum HP threshold":
+                check("Surviving-packet once-only self-cloak behavior", wb.raw("Abilities", f"G{row}") == "Once per deployment, after surviving a damage packet at or below this fraction of maximum body HP.")
     check("Complete ability coverage", seen_abilities == set(expected_abilities))
     parents = [c for c in m["cards"] if c.get("deathSpawnCount", 0)]
     check("Subordinates are not playable cards", not ({c["id"] for c in m["cards"]} & {c["id"] for c in m["entities"]}))
@@ -313,11 +335,13 @@ def validate(args):
         if c["id"] not in by_id:
             continue
         new = by_id[c["id"]]
+        if m.get("schema", 0) >= 3 and "healthCloakThreshold" not in c:
+            c = {**c, "healthCloakThreshold": 0}
         for field, title in FIELDS.items():
             if field == "chargedMoveSpeed":
                 continue
             if isinstance(c.get(field), (int, float)) and not isinstance(c.get(field), bool) and isinstance(new.get(field), (int, float)) and not close(c[field], new[field]):
-                numeric_changes[c["id"], title] = (c[field], new[field], field == "slowPct")
+                numeric_changes[c["id"], title] = (c[field], new[field], field in ("slowPct", "healthCloakThreshold"))
         if not c["spell"] and not new["spell"]:
             if c.get("chargeDamage", 0) > 0 and new.get("chargeDamage", 0) > 0 and "chargedMoveSpeed" in c and "chargedMoveSpeed" in new:
                 old_speed, new_speed = c["chargedMoveSpeed"] or c["moveSpeed"], new["chargedMoveSpeed"] or new["moveSpeed"]
@@ -335,6 +359,11 @@ def validate(args):
         for field in MECHANIC_NAMES:
             if field in c and field in new and c[field] != new[field]:
                 mechanic_changes[c["id"], MECHANIC_NAMES[field]] = (mechanic_value(field, c[field]), mechanic_value(field, new[field]))
+    if m.get("schema", 0) >= 3:
+        for field, title in ARENA_STATS.items():
+            before, after = b.get("rules", {}).get(field), m.get("rules", {}).get(field)
+            if isinstance(before, (int, float)) and isinstance(after, (int, float)) and not close(before, after):
+                numeric_changes["@rules", title] = (before, after, False)
     seen_changes = set()
     seen_mechanics = set()
     for addr in wb.sheets["Changes"]:
@@ -373,6 +402,8 @@ def validate(args):
         check("Builder output byte pin", proof.get("outputSHA256") == sha(workbook_bytes) and proof.get("outputBytes") == len(workbook_bytes))
         check("Builder source and version pins", proof.get("balanceHash") == m["balanceHash"] and proof.get("manifestSHA256") == sha(manifest_bytes) and proof.get("baselineSHA256") == sha(baseline_bytes))
         check("Actual artifact-tool input-change recalculation", proof.get("inputChangeRecalculationPassed") is True and proof.get("restoredInput") is True)
+        if any(c.get("healthCloakThreshold", 0) for c in m["cards"]):
+            check("Actual health-cloak input-change recalculation", proof.get("healthCloakInputChangeRecalculationPassed") is True)
     return {"schemaVersion": 1, "passed": not failures, "fixture": args.fixture, "checks": checks, "failures": failures, "version": m["version"], "balanceHash": m["balanceHash"], "manifestFileSHA256": sha(manifest_bytes), "baselineFileSHA256": sha(baseline_bytes), "workbookSHA256": sha(workbook_bytes), "workbookBytes": len(workbook_bytes), "cards": len(m["cards"]), "subordinates": len(m["entities"]), "formulaCells": len(wb.formulas), "engineLimit": "OpenXML and independent scalar formula validation; native Excel UI execution was not performed."}
 
 

@@ -86,6 +86,7 @@ namespace
     bool IsBoar(const FString& Id)
     {return Id==TEXT("mini_stampede") || Id==TEXT("stampede");}
     constexpr int32 HoofDustLimit=4,FormationDustLimit=4,SlowRippleSegments=24;
+    constexpr int32 ReaperAuraStrands=3,ReaperAuraSegments=10,ReaperAuraWispLimit=4,PulverizerPulseSegments=32;
     constexpr double HoofDustLifetime=.22,FormationDustLifetime=.28,SlowRippleLifetime=.28;
     FVector SurfaceMeshScale(UStaticMesh* Mesh,FVector Size)
     {
@@ -142,6 +143,9 @@ int32 ARiftUnitVisual::FormationDustCount()const{return FormationDust?FormationD
 int32 ARiftUnitVisual::DeathFleckCount()const
 {return (CopperFlecks?CopperFlecks->GetInstanceCount():0)+(GrayFlecks?GrayFlecks->GetInstanceCount():0);}
 int32 ARiftUnitVisual::SlowRippleCount()const{return SlowRipple?SlowRipple->GetInstanceCount():0;}
+int32 ARiftUnitVisual::ReaperAuraCount()const
+{return (ReaperAuraRibbons?ReaperAuraRibbons->GetInstanceCount():0)+(ReaperAuraWisps?ReaperAuraWisps->GetInstanceCount():0);}
+int32 ARiftUnitVisual::PulverizerPulseCount()const{return PulverizerPulse?PulverizerPulse->GetInstanceCount():0;}
 int32 ARiftUnitVisual::ShieldFragmentCount()const{return ShieldFragments?ShieldFragments->GetInstanceCount():0;}
 int32 ARiftUnitVisual::ShieldEdgeCount()const{return ShieldEdges?ShieldEdges->GetInstanceCount():0;}
 void ARiftUnitVisual::ShieldHitAt(double Time,double Damage)
@@ -174,7 +178,7 @@ void ARiftUnitVisual::UpdateCloak(const rift::Entity& Entity,double Time)
     bCloaked=Cloaked;bHiddenFromViewer=Hidden;
     Character->SetVisibility(!Hidden);Character->SetCastShadow(!Hidden);
     GroundRing->SetVisibility(!Hidden && !Entity.dead);
-    for(auto* Batch:{HoofDust.Get(),FormationDust.Get(),CopperFlecks.Get(),GrayFlecks.Get(),SlowRipple.Get(),ShieldFragments.Get(),ShieldEdges.Get()})
+    for(auto* Batch:{HoofDust.Get(),FormationDust.Get(),CopperFlecks.Get(),GrayFlecks.Get(),SlowRipple.Get(),ShieldFragments.Get(),ShieldEdges.Get(),ReaperAuraRibbons.Get(),ReaperAuraWisps.Get(),PulverizerPulse.Get()})
         if(Batch)Batch->SetVisibility(!Hidden);
 }
 void ARiftUnitVisual::UpdateShield(const rift::Entity& Entity,double Time)
@@ -266,6 +270,102 @@ UInstancedStaticMeshComponent* ARiftUnitVisual::MakeSurfaceBatch(FName Name,FLin
         {Material->SetVectorParameterValue(TEXT("TeamColor"),Color);Material->SetScalarParameterValue(TEXT("RiftTeamEmissive"),Emissive);}
     }
     Batch->RegisterComponent();AddInstanceComponent(Batch);return Batch;
+}
+UInstancedStaticMeshComponent* ARiftUnitVisual::MakeAuraBatch(FName Name,FName MeshId,FLinearColor Color)
+{
+    auto* Mesh=LoadObject<UStaticMesh>(nullptr,*FString::Printf(TEXT("/Game/Rift/Environment/SM_%s.SM_%s"),*MeshId.ToString(),*MeshId.ToString()));
+    auto* Base=LoadObject<UMaterialInterface>(nullptr,TEXT("/Game/Rift/Materials/M_RiftExpansionFX.M_RiftExpansionFX"));
+    if(!Mesh || !Base){RIFT_LOG(LogRift,Error,TEXT("Purple aura is missing its authored mesh/material"));return nullptr;}
+    auto* Batch=NewObject<UInstancedStaticMeshComponent>(this,Name);Batch->SetupAttachment(Scene);
+    Batch->SetMobility(EComponentMobility::Movable);Batch->SetAbsolute(true,true,true);Batch->SetWorldTransform(FTransform::Identity);
+    Batch->SetStaticMesh(Mesh);Batch->SetCollisionEnabled(ECollisionEnabled::NoCollision);Batch->SetGenerateOverlapEvents(false);
+    Batch->SetCanEverAffectNavigation(false);Batch->SetCastShadow(false);Batch->bReceivesDecals=false;Batch->SetComponentTickEnabled(false);
+    for(int32 I=0;I<Batch->GetNumMaterials();++I)
+    {
+        Batch->SetMaterial(I,Base);
+        if(auto* Material=Batch->CreateDynamicMaterialInstance(I))
+        {
+            Material->SetVectorParameterValue(TEXT("EffectColor"),Color);
+            Material->SetScalarParameterValue(TEXT("EffectOpacity"),.62f);
+            Material->SetScalarParameterValue(TEXT("EffectEmission"),.45f);
+        }
+    }
+    Batch->RegisterComponent();AddInstanceComponent(Batch);return Batch;
+}
+void ARiftUnitVisual::UpdateReaperAura(double Time,bool Moving)
+{
+    if(AssetId!=TEXT("aether_reaper"))return;
+    if(bDead || bHiddenFromViewer)
+    {if(ReaperAuraRibbons)ReaperAuraRibbons->ClearInstances();if(ReaperAuraWisps)ReaperAuraWisps->ClearInstances();return;}
+    const FLinearColor Violet(.82f,.16f,1.f);
+    if(!ReaperAuraRibbons)ReaperAuraRibbons=MakeAuraBatch(TEXT("ReaperVioletAuraRibbons"),TEXT("projectile_trail"),Violet);
+    if(!ReaperAuraWisps)ReaperAuraWisps=MakeAuraBatch(TEXT("ReaperVioletAuraWisps"),TEXT("shadow_surge_wisp"),Violet);
+    if(!ReaperAuraRibbons || !ReaperAuraWisps)return;
+    // The open spiral surrounds the lower silhouette, leaving the hood, hands
+    // and scythe readable. A fixed number of ribbons/wisps works on LOW too;
+    // nothing depends on Niagara scalability, bloom or wall-clock material Time.
+    const double Clock=FMath::Max(0.,Time-Born),Phase=Clock*1.7+AnimationPhase*UE_TWO_PI;
+    const double Breath=.94+.06*FMath::Sin(Clock*2.8+AnimationPhase*UE_TWO_PI);
+    const double Height=190.*Scale,Radius=44.*Scale*Breath;
+    const FVector Center=GetActorLocation(),Behind=-GetActorForwardVector()*(Moving?18.*Scale:0.);
+    TArray<FTransform> Ribbons,Wisps;Ribbons.Reserve(ReaperAuraStrands*ReaperAuraSegments);Wisps.Reserve(ReaperAuraWispLimit);
+    for(int32 Strand=0;Strand<ReaperAuraStrands;++Strand)
+    {
+        auto Path=[&](double T)
+        {
+            const double Angle=Phase+Strand*UE_TWO_PI/ReaperAuraStrands+T*UE_PI*.95;
+            return Center+Behind*(1.-T)+FVector(FMath::Cos(Angle)*Radius,FMath::Sin(Angle)*Radius,Height*(.12+.48*T));
+        };
+        for(int32 I=0;I<ReaperAuraSegments;++I)
+        {
+            const FVector A=Path(double(I)/ReaperAuraSegments),B=Path(double(I+1)/ReaperAuraSegments);
+            Ribbons.Add(FTransform(FRotationMatrix::MakeFromX(B-A).ToQuat(),(A+B)*.5,
+                SurfaceMeshScale(ReaperAuraRibbons->GetStaticMesh(),FVector((B-A).Length(),5.0*Scale,3.0*Scale))));
+        }
+    }
+    for(int32 I=0;I<ReaperAuraWispLimit;++I)
+    {
+        const double T=FMath::Fmod(Clock*.43+double(I)/ReaperAuraWispLimit,1.);
+        const double Angle=Phase*.7+I*UE_TWO_PI/ReaperAuraWispLimit;
+        const double Envelope=FMath::Sin(T*UE_PI);
+        const FVector Position=Center+Behind+FVector(FMath::Cos(Angle)*Radius*1.08,FMath::Sin(Angle)*Radius*1.08,Height*(.08+.65*T));
+        const FVector Direction(-FMath::Sin(Angle)*.35,FMath::Cos(Angle)*.35,1.);
+        Wisps.Add(FTransform(FRotationMatrix::MakeFromZ(Direction).ToQuat(),Position,
+            SurfaceMeshScale(ReaperAuraWisps->GetStaticMesh(),FVector(9.,6.,22.)*Scale*(.35+.65*Envelope))));
+    }
+    ReaperAuraRibbons->ClearInstances();ReaperAuraRibbons->AddInstances(Ribbons,false,true,false);
+    ReaperAuraWisps->ClearInstances();ReaperAuraWisps->AddInstances(Wisps,false,true,false);
+    for(auto* Batch:{ReaperAuraRibbons.Get(),ReaperAuraWisps.Get()})
+    {
+        Batch->SetVisibility(!bHiddenFromViewer);
+        for(int32 I=0;I<Batch->GetNumMaterials();++I)if(auto* Material=Cast<UMaterialInstanceDynamic>(Batch->GetMaterial(I)))
+            Material->SetScalarParameterValue(TEXT("EffectOpacity"),bCloaked?.18f:float(.53+.09*Breath));
+    }
+}
+void ARiftUnitVisual::UpdatePulverizerPulse(double Time,double ReleasedAt)
+{
+    if(AssetId!=TEXT("pulverizer"))return;
+    const double Age=Time-ReleasedAt;
+    if(bDead || bHiddenFromViewer || ReleasedAt<Born || Age<0 || Age>=.28)
+    {if(PulverizerPulse)PulverizerPulse->ClearInstances();return;}
+    if(!PulverizerPulse)PulverizerPulse=MakeAuraBatch(TEXT("PulverizerVioletReleaseHalo"),TEXT("projectile_trail"),FLinearColor(.86f,.15f,1.f));
+    if(!PulverizerPulse)return;
+    // This elevated short pulse makes the actual release visible above the
+    // building's base. The arena owns the separate traveling damage front.
+    const double T=Age/.28,Radius=(.46+.35*T)*RiftArenaGeometry::UnitsPerTile;
+    const FVector Center=GetActorLocation()+FVector(0,0,112.*StructureHeightScale);
+    TArray<FTransform> Instances;Instances.Reserve(PulverizerPulseSegments);
+    for(int32 I=0;I<PulverizerPulseSegments;++I)
+    {
+        const double A=I*UE_TWO_PI/PulverizerPulseSegments,B=(I+1)*UE_TWO_PI/PulverizerPulseSegments;
+        const FVector Start=Center+FVector(FMath::Cos(A)*Radius,FMath::Sin(A)*Radius,0),End=Center+FVector(FMath::Cos(B)*Radius,FMath::Sin(B)*Radius,0);
+        const double Width=(.055*(1.-T)+.012)*RiftArenaGeometry::UnitsPerTile;
+        Instances.Add(FTransform(FRotationMatrix::MakeFromX(End-Start).ToQuat(),(Start+End)*.5,
+            SurfaceMeshScale(PulverizerPulse->GetStaticMesh(),FVector((End-Start).Length(),Width,Width))));
+    }
+    PulverizerPulse->ClearInstances();PulverizerPulse->AddInstances(Instances,false,true,false);PulverizerPulse->SetVisibility(!bHiddenFromViewer);
+    for(int32 I=0;I<PulverizerPulse->GetNumMaterials();++I)if(auto* Material=Cast<UMaterialInstanceDynamic>(PulverizerPulse->GetMaterial(I)))
+        Material->SetScalarParameterValue(TEXT("EffectOpacity"),float(.62*(1.-T)));
 }
 void ARiftUnitVisual::EmitDeploySurfaceDust(double Time)
 {
@@ -393,9 +493,10 @@ void ARiftUnitVisual::UpdateSelectedGlow(double Time,double Cooldown,bool Antici
 {
     if(AssetId!=TEXT("pulverizer"))return;
     const double Windup=Anticipating && AttackAnticipation>0?1.-FMath::Clamp(Cooldown/AttackAnticipation,0.,1.):0.;
-    const double Contact=FMath::Clamp(1.-(Time-LastAttack)/.18,0.,1.);
+    const double ContactAge=Time-LastAttack;
+    const double Contact=ContactAge>=0?FMath::Clamp(1.-ContactAge/.22,0.,1.):0.;
     const double Collapse=bDead?FMath::Square(1.-FMath::Clamp((Time-DeathTime)/CleanupSeconds,0.,1.)):1.;
-    for(auto Material:Materials)Material->SetScalarParameterValue(TEXT("GlowStrength"),float((1.2+.7*Windup+.35*Contact)*Collapse));
+    for(auto Material:Materials)Material->SetScalarParameterValue(TEXT("GlowStrength"),float((1.2+.9*Windup+2.0*Contact)*Collapse));
 }
 bool ARiftUnitVisual::InitializeEntity(const rift::Entity& Entity,URiftCardData* Card,double Time)
 {
@@ -487,6 +588,7 @@ bool ARiftUnitVisual::InitializeEntity(const rift::Entity& Entity,URiftCardData*
     if (Kind==rift::EntityKind::Core && !bCoreActive)
         for (auto Material:Materials) Material->SetScalarParameterValue(TEXT("GlowStrength"),.25f);
     EmitDeploySurfaceDust(Time);
+    UpdateReaperAura(Time,false);
     return true;
 }
 UAnimSequence* ARiftUnitVisual::Clip(FName Name)
@@ -608,12 +710,14 @@ void ARiftUnitVisual::AdvanceDeath(double Time)
         Material->SetScalarParameterValue(TEXT("HitFlash"),float(.65*FMath::Clamp(1.-(Time-DeathTime)/.08,0.,1.)));
     UpdateSelectedGlow(Time,0,false);UpdateSurfaceMotes(Time);
     if(SlowRipple)SlowRipple->ClearInstances();
+    UpdateReaperAura(Time,false);UpdatePulverizerPulse(Time,-100);
     SetClip(TEXT("Death"),(Time-DeathTime)/DeathClipSeconds);
 }
 void ARiftUnitVisual::DieAt(double Time)
 {
     if (bDead) return;bDead=true;DeathTime=Time;VisualTime=Time;DeathFlightHeight=GetActorLocation().Z;GroundRing->SetVisibility(false);
     Cannon->SetVisibility(false);CannonRecoil=0;
+    UpdateReaperAura(Time,false);UpdatePulverizerPulse(Time,-100);
     if (Character->GetSkeletalMeshAsset()) SetClip(TEXT("Death"),0);
     if(IsBoar(AssetId))SurfaceMotes.Reset();
     if(IsBoar(AssetId) || AssetId==TEXT("pulverizer"))AdvanceDeath(Time);
@@ -673,6 +777,12 @@ void ARiftUnitVisual::Synchronize(const rift::Entity& Entity,const rift::Snapsho
     // Real same-time target/cooldown and combat events still choose new poses.
     const bool FrozenMovingPose=AnimationDelta<=0 && Travel<=.005 && !TargetChanged && !CooldownChanged &&
         (CurrentClip==TEXT("Locomotion") || CurrentClip==TEXT("Charge"));
+    UpdateReaperAura(Time,Travel>.005 || FrozenMovingPose);
+    double PulseReleasedAt=-100;
+    if(AssetId==TEXT("pulverizer"))for(const auto& Wave:State.shockwaves)
+        if(Wave.source==EntityId && Wave.cardId=="pulverizer" && Wave.born<=Time && Time<Wave.expires)
+            PulseReleasedAt=FMath::Max(PulseReleasedAt,Wave.born);
+    UpdatePulverizerPulse(Time,PulseReleasedAt);
     const bool Stunned=Entity.stunUntil>Time;
     const bool Slowed=Entity.slowUntil>Time && Entity.slowPct>0;
     const bool Charging=AssetId==TEXT("rambeast") && Entity.charged;
@@ -702,7 +812,8 @@ void ARiftUnitVisual::Synchronize(const rift::Entity& Entity,const rift::Snapsho
         {
             const double Distance=FMath::Sqrt(FMath::Square(Target.position.x-Entity.position.x)+FMath::Square(Target.position.z-Entity.position.z));
             const auto* Definition=rift::FindEntityDefinition(Entity.cardId);
-            TargetInRange=Definition && Distance-Target.radius<=Definition->range+(Kind==rift::EntityKind::Building?.35:.0)+.1;
+            const double BodyReach=Definition&&Kind==rift::EntityKind::Troop&&Definition->projectileSpeed<=0?Entity.radius:0.;
+            TargetInRange=Definition && Distance-Target.radius<=Definition->range+BodyReach+(Kind==rift::EntityKind::Building?.35:.0)+.1;
             break;
         }
     const double RecoveryDuration=AttackRecovery>0?AttackRecovery:FMath::Clamp(AttackInterval*.32,.18,.50);
@@ -833,6 +944,87 @@ bool FRiftSelectedSurfaceEffectsTest::RunTest(const FString& Parameters)
     MiniVisual->AdvanceDeath(1.1+MiniCard->DeathCleanupSeconds+.000001);
     TestEqual(TEXT("All boar flecks retire after the authored cleanup deadline"),MiniVisual->DeathFleckCount(),0);
     TestEqual(TEXT("Visual fixtures emit no extra authoritative combat events"),Sim.Events().size(),InitialEventCount);
+    return !HasAnyErrors();
+}
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRiftVioletAuraPulseTest,"Rift.Presentation.VioletAuraPulse",
+    EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FRiftVioletAuraPulseTest::RunTest(const FString& Parameters)
+{
+    if(!FParse::Param(FCommandLine::Get(),TEXT("RiftAutomationSandbox")))
+    {AddError(TEXT("Violet aura fixture requires isolated RiftSaveRoot/UserDir and RiftAutomationSandbox."));return false;}
+    auto* GI=NewObject<UGameInstance>(GEngine);GI->InitializeStandalone(FName(*FGuid::NewGuid().ToString(EGuidFormats::Digits)));
+    auto* World=GI->GetWorld();if(!TestNotNull(TEXT("Aura fixture uses an actual native world"),World)){GI->Shutdown();return false;}
+    ON_SCOPE_EXIT {World->DestroyWorld(false);GI->Shutdown();GEngine->DestroyWorldContext(World);};
+    auto* Catalog=GI->GetSubsystem<URiftAssetCatalogSubsystem>();
+    rift::MatchOptions Options;Options.aiEnabled={false,false};rift::Match Sim(Options);
+    if(!TestTrue(TEXT("Imported aura owners originate from real card spawns"),Sim.Spawn(rift::Team::Player,"aether_reaper",{-.5,6.5}) && Sim.Spawn(rift::Team::Player,"pulverizer",{4.5,6.5})))return false;
+    const auto InitialEventCount=Sim.Events().size();
+    rift::Entity Reaper,Pulverizer;
+    for(const auto& Entity:Sim.State().entities){if(Entity.cardId=="aether_reaper")Reaper=Entity;if(Entity.cardId=="pulverizer")Pulverizer=Entity;}
+    auto* ReaperData=Catalog->Card(TEXT("aether_reaper"));auto* PulseData=Catalog->Card(TEXT("pulverizer"));
+    if(!TestNotNull(TEXT("Reaper uses the actual imported CardData"),ReaperData)||!TestNotNull(TEXT("Pulverizer uses the actual imported CardData"),PulseData))return false;
+    auto* ReaperVisual=World->SpawnActor<ARiftUnitVisual>();auto* PulseVisual=World->SpawnActor<ARiftUnitVisual>();
+    auto* EnemyVisual=World->SpawnActor<ARiftUnitVisual>();auto Enemy=Reaper;Enemy.team=rift::Team::Enemy;
+    if(!TestTrue(TEXT("Purple effects load real meshes and materials"),ReaperVisual->InitializeEntity(Reaper,ReaperData,0) && PulseVisual->InitializeEntity(Pulverizer,PulseData,0) && EnemyVisual->InitializeEntity(Enemy,ReaperData,0)))return false;
+    constexpr int32 AuraLimit=ReaperAuraStrands*ReaperAuraSegments+ReaperAuraWispLimit;
+    TestEqual(TEXT("An idle Reaper has exactly three open strands and four wisps"),ReaperVisual->ReaperAuraCount(),AuraLimit);
+    auto NamedBatch=[](ARiftUnitVisual* Visual,FName Name)->UInstancedStaticMeshComponent*
+    {TArray<UInstancedStaticMeshComponent*> Batches;Visual->GetComponents(Batches);for(auto* Batch:Batches)if(Batch->GetFName()==Name)return Batch;return nullptr;};
+    auto* Aura=NamedBatch(ReaperVisual,TEXT("ReaperVioletAuraRibbons"));
+    if(!TestNotNull(TEXT("Aura is real instanced geometry, independent of Niagara quality"),Aura))return false;
+    TestTrue(TEXT("Aura geometry cannot block troops or receive floor decals"),Aura->GetCollisionEnabled()==ECollisionEnabled::NoCollision && !Aura->bReceivesDecals && !Aura->CastShadow);
+    auto State=Sim.State();State.elapsed=1.;ReaperVisual->Synchronize(Reaper,State,0);
+    FTransform Idle;Aura->GetInstanceTransform(0,Idle,true);
+    for(int32 I=0;I<20;++I)ReaperVisual->Synchronize(Reaper,State,3.f);
+    FTransform Paused;Aura->GetInstanceTransform(0,Paused,true);
+    TestTrue(TEXT("An idle paused aura retains its exact simulation-time transform"),Idle.Equals(Paused,0.));
+    State.elapsed=1.2;Reaper.position.x+=.5;ReaperVisual->Synchronize(Reaper,State,0);
+    FTransform Moving;Aura->GetInstanceTransform(0,Moving,true);
+    TestTrue(TEXT("Walking advances and carries the purple aura with the body"),ReaperVisual->CurrentAnimation()==TEXT("Locomotion") && !Moving.Equals(Idle,.001) && ReaperVisual->ReaperAuraCount()==AuraLimit);
+    for(int32 I=0;I<20;++I)ReaperVisual->Synchronize(Reaper,State,3.f);
+    Aura->GetInstanceTransform(0,Paused,true);
+    TestTrue(TEXT("Paused locomotion does not turn or slide the aura on wall-clock ticks"),Moving.Equals(Paused,0.));
+    Reaper.invisibleUntil=2.;Enemy.invisibleUntil=2.;ReaperVisual->Synchronize(Reaper,State,0);EnemyVisual->Synchronize(Enemy,State,0);
+    TestEqual(TEXT("An enemy cloak leaves no aura pieces that reveal its location"),EnemyVisual->ReaperAuraCount(),0);
+    if(auto* Material=Cast<UMaterialInstanceDynamic>(Aura->GetMaterial(0)))
+        TestTrue(TEXT("A cloaked ally's purple aura is subdued with its silhouette"),Material->K2_GetScalarParameterValue(TEXT("EffectOpacity"))<=.180001f);
+    else AddError(TEXT("Aura lost its per-actor material instance."));
+    State.elapsed=2.;EnemyVisual->Synchronize(Enemy,State,0);
+    TestEqual(TEXT("Cloak expiry restores the existing bounded aura"),EnemyVisual->ReaperAuraCount(),AuraLimit);
+    // Isolate presentation at the authoritative body-edge melee boundary.
+    // The copied target pose changes no simulation entity or hit packet.
+    for(auto& Target:State.entities)if(Target.team==rift::Team::Enemy&&Target.kind==rift::EntityKind::Guard) {
+        Reaper.invisibleUntil=0;Reaper.target=Target.id;Reaper.cooldown=.1;
+        const double Reach=Sim.AttackReach(Reaper,Target);
+        Target.position={Reaper.position.x+Reach-.01,Reaper.position.z};State.elapsed=2.3;
+        ReaperVisual->Synchronize(Reaper,State,0);
+        TestEqual(TEXT("A legal body-edge melee contact shows its attack windup"),ReaperVisual->CurrentAnimation(),FName(TEXT("Attack")));
+        break;
+    }
+    ReaperVisual->DieAt(2.);ReaperVisual->AdvanceDeath(2.1);
+    TestEqual(TEXT("Reaper death removes all continuous aura geometry immediately"),ReaperVisual->ReaperAuraCount(),0);
+    State.elapsed=1.1;PulseVisual->AttackAt(1.,65);PulseVisual->Synchronize(Pulverizer,State,0);
+    TestEqual(TEXT("An attack animation without a recorded wave cannot fabricate a pulse"),PulseVisual->PulverizerPulseCount(),0);
+    const auto* Definition=rift::FindCard("pulverizer");if(!TestNotNull(TEXT("Wave fixture uses the authoritative definition"),Definition))return false;
+    rift::Shockwave Wave;Wave.source=Pulverizer.id;Wave.cardId="pulverizer";Wave.origin=Pulverizer.position;
+    Wave.born=1.;Wave.radius=Definition->splash;Wave.speed=Definition->shockwaveSpeed;Wave.expires=Wave.born+Wave.radius/Wave.speed;State.shockwaves.push_back(Wave);
+    PulseVisual->Synchronize(Pulverizer,State,0);
+    TestEqual(TEXT("Recorded launch reconstructs one elevated thirty-two-piece release pulse"),PulseVisual->PulverizerPulseCount(),PulverizerPulseSegments);
+    auto* Pulse=NamedBatch(PulseVisual,TEXT("PulverizerVioletReleaseHalo"));
+    if(!TestNotNull(TEXT("Release pulse uses real imported mesh geometry"),Pulse))return false;
+    FTransform Released;Pulse->GetInstanceTransform(0,Released,true);
+    for(int32 I=0;I<20;++I)PulseVisual->Synchronize(Pulverizer,State,3.f);
+    Pulse->GetInstanceTransform(0,Paused,true);
+    TestTrue(TEXT("Paused wave release retains its exact pulse size and height"),Released.Equals(Paused,0.) && PulseVisual->PulverizerPulseCount()==PulverizerPulseSegments);
+    State.elapsed=1.29;PulseVisual->Synchronize(Pulverizer,State,0);
+    TestEqual(TEXT("The elevated release pulse clears while its traveling damage front continues"),PulseVisual->PulverizerPulseCount(),0);
+    State.elapsed=1.1;PulseVisual->Synchronize(Pulverizer,State,0);
+    TestEqual(TEXT("A backward replay sample reconstructs the recorded release pulse"),PulseVisual->PulverizerPulseCount(),PulverizerPulseSegments);
+    State.shockwaves[0].source=Pulverizer.id+1;PulseVisual->Synchronize(Pulverizer,State,0);
+    TestEqual(TEXT("Another source's wave cannot pulse this building"),PulseVisual->PulverizerPulseCount(),0);
+    State.shockwaves[0].source=Pulverizer.id;State.elapsed=Wave.expires;PulseVisual->Synchronize(Pulverizer,State,0);
+    TestEqual(TEXT("An expired wave leaves no release halo"),PulseVisual->PulverizerPulseCount(),0);
+    TestEqual(TEXT("Decorative aura and pulse state emits no gameplay events"),Sim.Events().size(),InitialEventCount);
     return !HasAnyErrors();
 }
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRiftExpansionShieldCloakTest,"Rift.Presentation.ExpansionShieldCloak",

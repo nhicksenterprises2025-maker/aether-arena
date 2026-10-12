@@ -22,7 +22,10 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Engine/World.h"
+#include "Engine/LocalPlayer.h"
+#include "Engine/GameViewportClient.h"
 #include "Engine/UserInterfaceSettings.h"
+#include "SceneView.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Misc/CommandLine.h"
 #include "Misc/Parse.h"
@@ -37,6 +40,119 @@
 
 namespace
 {
+// Isolated visual QA only: the requested age starts at a real paid wave release.
+// No attack clock, health, wave, position or card definition is fabricated.
+bool BuildPulverizerCapture(URiftMatchSubsystem* Match,const TSharedRef<FJsonObject>& Report)
+{
+    auto* Sim=Match->Simulation();if(!Sim)return false;Match->SetSpeed(0);
+    Sim->SetAIEnabled(rift::Team::Player,false);Sim->SetAIEnabled(rift::Team::Enemy,false);Sim->ClearField();
+    const auto* Card=rift::FindCard("pulverizer");if(!Card)return false;
+    Sim->SetAether(rift::Team::Player,10);
+    const double Started=Sim->State().elapsed,SpentBefore=Sim->State().spent[0],AetherBefore=Sim->State().aether[0];
+    const auto HandBefore=Sim->State().hands[0];
+    int32 Hand=-1;for(int32 I=0;I<4;++I)if(HandBefore[I]=="pulverizer")Hand=I;
+    if(Hand<0||!Sim->Play(rift::Team::Player,Hand,{-6.5,6.5},"pulverizer-visual-qa"))return false;
+    const double SpentDelta=Sim->State().spent[0]-SpentBefore,AetherAfter=Sim->State().aether[0];
+    const auto HandAfter=Sim->State().hands[0];
+    rift::EntityId SourceId=0;rift::PlayId PlayId=0;double DeployedHP=0;
+    for(const auto& Body:Sim->State().entities)if(Body.team==rift::Team::Player&&Body.cardId=="pulverizer"&&!Body.dead)
+    {if(SourceId)return false;SourceId=Body.id;PlayId=Body.playId;DeployedHP=Body.hp;}
+    rift::Event PaidPlay;bool PaidEventFound=false;
+    for(const auto& Event:Sim->Events())if(Event.type=="card_play"&&Event.cardId=="pulverizer"&&Event.playId==PlayId&&!Event.sandbox)
+    {PaidPlay=Event;PaidEventFound=true;}
+    const bool Paid=SourceId&&PlayId&&PaidEventFound&&SpentDelta==Card->cost&&AetherAfter==AetherBefore-Card->cost&&HandAfter!=HandBefore;
+    if(!Paid||!Sim->Spawn(rift::Team::Enemy,"ironclad",{-6.5,3.5})||
+        !Sim->Spawn(rift::Team::Enemy,"mini_stampede",{-3.5,6.5})||!Sim->Spawn(rift::Team::Enemy,"sky_manta",{-6.5,4.5}))return false;
+    TMap<uint64,bool> Flying;TArray<TSharedPtr<FJsonValue>> EnemyBodies;
+    for(const auto& Body:Sim->State().entities)if(Body.team==rift::Team::Enemy&&Body.kind==rift::EntityKind::Troop)
+    {
+        Flying.Add(Body.id,Body.flying);auto Row=MakeShared<FJsonObject>();Row->SetNumberField(TEXT("id"),Body.id);
+        Row->SetStringField(TEXT("cardId"),UTF8_TO_TCHAR(Body.cardId.c_str()));Row->SetBoolField(TEXT("flying"),Body.flying);
+        Row->SetNumberField(TEXT("spawnHP"),Body.hp);Row->SetNumberField(TEXT("maxHP"),Body.maxHp);EnemyBodies.Add(MakeShared<FJsonValueObject>(Row));
+    }
+    constexpr double FixedStep=1./60.;constexpr int32 MaximumWaitSteps=120;
+    std::vector<rift::Event> ObservedEvents;
+    auto FlushObserved=[&]()
+    {const auto& Pending=Sim->Events();ObservedEvents.insert(ObservedEvents.end(),Pending.begin(),Pending.end());Match->FlushEvents();};
+    rift::Event Launch;bool Launched=false;int32 WaitSteps=0;
+    for(;WaitSteps<MaximumWaitSteps&&!Launched;)
+    {
+        Sim->Step(FixedStep);++WaitSteps;
+        for(const auto& Event:Sim->Events())if(Event.type=="shockwave_launch"&&Event.cardId=="pulverizer"&&Event.source==SourceId&&Event.playId==PlayId)
+        {Launch=Event;Launched=true;break;}
+        FlushObserved();
+    }
+    if(!Launched)return false;
+    rift::Shockwave FirstWave;bool WaveRecorded=false;
+    for(const auto& Wave:Sim->State().shockwaves)if(Wave.id==Launch.sequence&&Wave.source==SourceId&&Wave.playId==PlayId)
+    {FirstWave=Wave;WaveRecorded=true;}
+    if(!WaveRecorded||FMath::Abs(FirstWave.born-Launch.time)>1.e-9)return false;
+    float Requested=.35f;FParse::Value(FCommandLine::Get(),TEXT("RiftPulverizerAge="),Requested);
+    if(!FMath::IsFinite(Requested)||Requested<0||Requested>8)return false;
+    const int32 AdvanceSteps=FMath::RoundToInt(double(Requested)*60.);
+    for(int32 Step=0;Step<AdvanceSteps;++Step){Sim->Step(FixedStep);FlushObserved();}
+    Match->SetSpeed(0);
+    for(TActorIterator<ARiftArenaPresentation> It(Match->GetWorld());It;++It)It->Tick(0.f);
+    const double SampleTime=Sim->State().elapsed,SampleAge=SampleTime-FirstWave.born;
+    bool FirstWaveLive=false;double Radius=0;
+    for(const auto& Wave:Sim->State().shockwaves)if(Wave.id==FirstWave.id)
+    {FirstWaveLive=true;Radius=Wave.progress;}
+    TArray<TSharedPtr<FJsonValue>> Hits,Slows;int32 GroundHits=0,FlyingHits=0,GroundSlows=0,FlyingSlows=0;
+    for(const auto& Event:ObservedEvents)
+    {
+        if(Event.source!=SourceId||Event.playId!=PlayId||Event.cardId!="pulverizer"||
+            Event.time<FirstWave.born-1.e-9||Event.time>FirstWave.expires+1.e-9)continue;
+        const bool* Air=Flying.Find(Event.target);
+        if(Event.type=="damage"&&Event.damageKind=="shockwave")
+        {
+            auto Row=MakeShared<FJsonObject>();Row->SetNumberField(TEXT("sequence"),Event.sequence);Row->SetNumberField(TEXT("target"),Event.target);
+            Row->SetNumberField(TEXT("time"),Event.time);Row->SetNumberField(TEXT("waveAge"),Event.time-FirstWave.born);
+            Row->SetNumberField(TEXT("amount"),Event.amount);Row->SetNumberField(TEXT("requestedDamage"),Event.requested);
+            Row->SetBoolField(TEXT("flying"),Air&&*Air);Row->SetBoolField(TEXT("knownEnemyTroop"),Air!=nullptr);
+            Row->SetNumberField(TEXT("targetKind"),int32(Event.targetKind));Hits.Add(MakeShared<FJsonValueObject>(Row));
+            if(Air&&*Air)++FlyingHits;else if(Air)++GroundHits;
+        }
+        if(Event.type=="slow")
+        {
+            auto Row=MakeShared<FJsonObject>();Row->SetNumberField(TEXT("sequence"),Event.sequence);Row->SetNumberField(TEXT("target"),Event.target);
+            Row->SetNumberField(TEXT("time"),Event.time);Row->SetNumberField(TEXT("amount"),Event.amount);Row->SetNumberField(TEXT("until"),Event.until);
+            Row->SetBoolField(TEXT("flying"),Air&&*Air);Row->SetBoolField(TEXT("knownEnemyTroop"),Air!=nullptr);Slows.Add(MakeShared<FJsonValueObject>(Row));
+            if(Air&&*Air)++FlyingSlows;else if(Air)++GroundSlows;
+        }
+    }
+    const rift::Entity* Source=nullptr;for(const auto& Body:Sim->State().entities)if(Body.id==SourceId){Source=&Body;break;}
+    TArray<TSharedPtr<FJsonValue>> SampledEnemies;
+    for(const auto& Body:Sim->State().entities)if(Flying.Contains(Body.id))
+    {auto Row=MakeShared<FJsonObject>();Row->SetNumberField(TEXT("id"),Body.id);Row->SetBoolField(TEXT("dead"),Body.dead);Row->SetBoolField(TEXT("flying"),Body.flying);
+        Row->SetNumberField(TEXT("hp"),Body.hp);Row->SetNumberField(TEXT("slowPct"),Body.slowPct);Row->SetNumberField(TEXT("slowUntil"),Body.slowUntil);SampledEnemies.Add(MakeShared<FJsonValueObject>(Row));}
+    const bool Passed=Paid&&WaveRecorded&&WaitSteps<=MaximumWaitSteps&&Flying.Num()==7&&
+        FMath::Abs(SampleAge-AdvanceSteps*FixedStep)<1.e-8&&FlyingHits==0&&FlyingSlows==0&&
+        (SampleAge<.5-1.e-9?FirstWaveLive:!FirstWaveLive)&&(SampleAge<.8-1.e-9||(GroundHits>0&&GroundSlows>0));
+    Report->SetNumberField(TEXT("schemaVersion"),1);Report->SetStringField(TEXT("manifestVersion"),UTF8_TO_TCHAR(rift::CardManifestVersion().c_str()));
+    Report->SetStringField(TEXT("balanceHash"),UTF8_TO_TCHAR(rift::CardManifestHash().c_str()));
+    Report->SetStringField(TEXT("clockMeaning"),TEXT("fixed-step age after first real own shockwave_launch; capture remains paused"));
+    Report->SetBoolField(TEXT("passed"),Passed);Report->SetBoolField(TEXT("realPaidPlay"),Paid);Report->SetBoolField(TEXT("sandbox"),PaidPlay.sandbox);
+    Report->SetNumberField(TEXT("paidPlaySequence"),PaidPlay.sequence);Report->SetNumberField(TEXT("sourceId"),SourceId);Report->SetNumberField(TEXT("playId"),PlayId);
+    Report->SetNumberField(TEXT("handIndex"),Hand);Report->SetBoolField(TEXT("handCycledOnce"),HandAfter!=HandBefore);
+    Report->SetNumberField(TEXT("cost"),Card->cost);Report->SetNumberField(TEXT("spentDelta"),SpentDelta);
+    Report->SetNumberField(TEXT("aetherBefore"),AetherBefore);Report->SetNumberField(TEXT("aetherAfterPaidPlay"),AetherAfter);
+    Report->SetNumberField(TEXT("sourceHPAtDeployment"),DeployedHP);Report->SetNumberField(TEXT("sourceMaxHP"),Card->hp);
+    Report->SetBoolField(TEXT("sourcePresent"),Source!=nullptr);Report->SetBoolField(TEXT("sourceLiving"),Source&&!Source->dead);
+    Report->SetNumberField(TEXT("sourceHPAtSample"),Source?Source->hp:0);Report->SetNumberField(TEXT("fixtureStartedAt"),Started);
+    Report->SetNumberField(TEXT("launchWaitFixedSteps"),WaitSteps);Report->SetNumberField(TEXT("maximumLaunchWaitSeconds"),2);
+    Report->SetNumberField(TEXT("launchSequence"),Launch.sequence);Report->SetNumberField(TEXT("waveId"),FirstWave.id);
+    Report->SetNumberField(TEXT("launchBornSeconds"),FirstWave.born);Report->SetNumberField(TEXT("launchExpiresSeconds"),FirstWave.expires);
+    Report->SetNumberField(TEXT("launchDamage"),Launch.amount);Report->SetNumberField(TEXT("waveSpeed"),FirstWave.speed);Report->SetNumberField(TEXT("maximumRadius"),FirstWave.radius);
+    Report->SetNumberField(TEXT("requestedAgeSeconds"),Requested);Report->SetNumberField(TEXT("fixedAdvanceSteps"),AdvanceSteps);
+    Report->SetNumberField(TEXT("sampledAgeSeconds"),SampleAge);Report->SetNumberField(TEXT("sampleSimulationSeconds"),SampleTime);
+    Report->SetBoolField(TEXT("firstWaveLive"),FirstWaveLive);Report->SetNumberField(TEXT("firstWaveLiveRadius"),Radius);
+    Report->SetNumberField(TEXT("groundHitCount"),GroundHits);Report->SetNumberField(TEXT("flyingHitCount"),FlyingHits);
+    Report->SetNumberField(TEXT("groundSlowCount"),GroundSlows);Report->SetNumberField(TEXT("flyingSlowCount"),FlyingSlows);
+    Report->SetArrayField(TEXT("enemyBodies"),EnemyBodies);Report->SetArrayField(TEXT("firstWaveHits"),Hits);Report->SetArrayField(TEXT("firstWaveSlows"),Slows);
+    Report->SetArrayField(TEXT("sampledEnemyBodies"),SampledEnemies);
+    return Passed;
+}
+
 double CaptureTowerSegmentClearance(const rift::Snapshot& State,const rift::Entity& Unit,rift::Vec2 From)
 {
     double Minimum=1.e9;const double DX=Unit.position.x-From.x,DZ=Unit.position.z-From.z,Length=DX*DX+DZ*DZ;
@@ -657,8 +773,9 @@ void ARiftGameMode::BeginPlay()
         auto UnitCollisionCapture=MakeShared<FJsonObject>();
         auto SwarmSplitCapture=MakeShared<FJsonObject>();
         auto ExpansionRosterCapture=MakeShared<FJsonObject>();
+        auto PulverizerCapture=MakeShared<FJsonObject>();
         GetWorld()->GetSubsystem<URiftMatchSubsystem>()->OnEvent.AddLambda([CapturedEvents](const rift::Event& Event){++CapturedEvents->FindOrAdd(UTF8_TO_TCHAR(Event.type.c_str()));});
-        FTimerHandle SetupTimer;GetWorld()->GetTimerManager().SetTimer(SetupTimer,[this,Page,Scenario,RecordedCapture,RecordedDuration,TowerPathingCapture,UnitCollisionCapture,SwarmSplitCapture,ExpansionRosterCapture]()
+        FTimerHandle SetupTimer;GetWorld()->GetTimerManager().SetTimer(SetupTimer,[this,Page,Scenario,RecordedCapture,RecordedDuration,TowerPathingCapture,UnitCollisionCapture,SwarmSplitCapture,ExpansionRosterCapture,PulverizerCapture]()
         {
             auto* PC=Cast<ARiftPlayerController>(GetWorld()->GetFirstPlayerController());if(!PC||!PC->Interface)return;
             auto* Match=GetWorld()->GetSubsystem<URiftMatchSubsystem>();
@@ -725,7 +842,7 @@ void ARiftGameMode::BeginPlay()
                     {int32 I=0;for(const auto& Card:rift::Cards())if(!Card.spell){Sim->Spawn(rift::Team::Player,Card.id,{double(-10+(I%5)*5),double(3+(I/5)*4)});Sim->Spawn(rift::Team::Enemy,Card.id,{double(-10+(I%5)*5),double(-3-(I/5)*4)});++I;}}
                     Match->SetSpeed(0);
                 }
-                else if(Scenario==TEXT("expansion_roster")||Scenario==TEXT("expansion_new_roster")||Scenario==TEXT("expansion_effects")||Scenario==TEXT("expansion_warden_death"))
+                else if(Scenario==TEXT("expansion_roster")||Scenario==TEXT("expansion_new_roster")||Scenario==TEXT("expansion_effects")||Scenario==TEXT("expansion_warden_death")||Scenario==TEXT("reaper_design"))
                 {
                     auto* Fixture=GetWorld()->SpawnActor<ARiftExpansionCapture>();
                     if(!Fixture||!Fixture->Build(Match,ExpansionRosterCapture))
@@ -837,16 +954,8 @@ void ARiftGameMode::BeginPlay()
                 }
                 else if(Scenario==TEXT("pulverizer"))
                 {
-                    Sim->SetAIEnabled(rift::Team::Player,false);Sim->SetAIEnabled(rift::Team::Enemy,false);Sim->ClearField();
-                    Sim->SetAether(rift::Team::Player,10);
-                    int32 Hand=-1;for(int32 I=0;I<4;++I)if(Sim->State().hands[0][I]=="pulverizer")Hand=I;
-                    if(Hand<0||!Sim->Play(rift::Team::Player,Hand,{-6.5,6.5},"pulverizer-visual-qa")||
-                        !Sim->Spawn(rift::Team::Enemy,"ironclad",{-6.5,3.5})||
-                        !Sim->Spawn(rift::Team::Enemy,"mini_stampede",{-3.5,6.5})||
-                        !Sim->Spawn(rift::Team::Enemy,"sky_manta",{-6.5,4.5}))
-                    {RIFT_LOG(LogRift,Error,TEXT("Pulverizer capture deployment failed"));FPlatformMisc::RequestExitWithStatus(false,2);return;}
-                    float Age=.35f;FParse::Value(FCommandLine::Get(),TEXT("RiftPulverizerAge="),Age);
-                    Sim->Step(FMath::Clamp(double(Age),0.,8.));Match->FlushEvents();Match->SetSpeed(0);
+                    if(!BuildPulverizerCapture(Match,PulverizerCapture))
+                    {RIFT_LOG(LogRift,Error,TEXT("Pulverizer capture failed its real paid launch, fixed-step age or ground-only hit witness"));FPlatformMisc::RequestExitWithStatus(false,2);return;}
                 }
                 else if(Scenario==TEXT("tower_pathing"))
                 {
@@ -864,7 +973,7 @@ void ARiftGameMode::BeginPlay()
                     {RIFT_LOG(LogRift,Error,TEXT("Swarm split capture failed paid formation/landing-lane/body/speed/progress checks"));FPlatformMisc::RequestExitWithStatus(false,2);return;}
                 }
                 else if(Scenario==TEXT("placement")||Scenario==TEXT("effects17"))Match->SetSpeed(0);
-                if(Scenario!=TEXT("roster")&&Scenario!=TEXT("expansion_roster")&&Scenario!=TEXT("expansion_new_roster")&&Scenario!=TEXT("expansion_effects")&&Scenario!=TEXT("expansion_warden_death")&&Scenario!=TEXT("placement")&&Scenario!=TEXT("effects17")&&Scenario!=TEXT("projectiles")&&Scenario!=TEXT("spells")&&Scenario!=TEXT("tower_pathing")&&Scenario!=TEXT("unit_collision")&&Scenario!=TEXT("swarm_split")&&Scenario!=TEXT("pulverizer"))
+                if(Scenario!=TEXT("roster")&&Scenario!=TEXT("expansion_roster")&&Scenario!=TEXT("expansion_new_roster")&&Scenario!=TEXT("expansion_effects")&&Scenario!=TEXT("expansion_warden_death")&&Scenario!=TEXT("reaper_design")&&Scenario!=TEXT("placement")&&Scenario!=TEXT("effects17")&&Scenario!=TEXT("projectiles")&&Scenario!=TEXT("spells")&&Scenario!=TEXT("tower_pathing")&&Scenario!=TEXT("unit_collision")&&Scenario!=TEXT("swarm_split")&&Scenario!=TEXT("pulverizer"))
                 {float CaptureSpeed=1;FParse::Value(FCommandLine::Get(),TEXT("RiftCaptureSpeed="),CaptureSpeed);Match->SetSpeed(FMath::Clamp(CaptureSpeed,.25f,4.f));}
                 Match->FlushEvents();
             }
@@ -979,7 +1088,7 @@ void ARiftGameMode::BeginPlay()
                 {It->ShowcaseNiagaraAtAge(Age);break;}
             }),FMath::Max(1.f,Delay)-.5f,false);
         }
-        FTimerHandle CaptureTimer;GetWorld()->GetTimerManager().SetTimer(CaptureTimer,FTimerDelegate::CreateWeakLambda(this,[this,CapturePath,Quit,CapturedEvents,RecordedCapture,RecordedDuration,TowerPathingCapture,UnitCollisionCapture,SwarmSplitCapture,ExpansionRosterCapture]()
+        FTimerHandle CaptureTimer;GetWorld()->GetTimerManager().SetTimer(CaptureTimer,FTimerDelegate::CreateWeakLambda(this,[this,CapturePath,Quit,CapturedEvents,RecordedCapture,RecordedDuration,TowerPathingCapture,UnitCollisionCapture,SwarmSplitCapture,ExpansionRosterCapture,PulverizerCapture]()
         {
             IFileManager::Get().MakeDirectory(*FPaths::GetPath(CapturePath),true);
             auto Snapshot=MakeShared<FJsonObject>();auto EventCounts=MakeShared<FJsonObject>();
@@ -989,6 +1098,7 @@ void ARiftGameMode::BeginPlay()
             Snapshot->SetBoolField(TEXT("recordedMatchFixture"),*RecordedCapture);
             if(TowerPathingCapture->HasField(TEXT("passed")))Snapshot->SetObjectField(TEXT("towerPathing"),TowerPathingCapture);
             if(UnitCollisionCapture->HasField(TEXT("passed")))Snapshot->SetObjectField(TEXT("unitCollision"),UnitCollisionCapture);
+            if(PulverizerCapture->HasField(TEXT("passed")))Snapshot->SetObjectField(TEXT("pulverizerWitness"),PulverizerCapture);
             if(ExpansionRosterCapture->HasField(TEXT("passed")))
             {
                 for(TActorIterator<ARiftExpansionCapture> It(GetWorld());It;++It)
@@ -1135,8 +1245,7 @@ bool ARiftPlayerController::CursorTile(FVector2D& Out)const
     if(bCardDragStarted)return ScreenPointToTile(CardDragCursor,Out);
     float X=0,Y=0;int32 Width=0,Height=0;GetViewportSize(Width,Height);
     if(!GetMousePosition(X,Y)||X<0||Y<0||X>=Width||Y>=Height||!BattleSafeScreenBounds().IsInside(FVector2D(X,Y)))return false;
-    FVector Origin,Direction;if(!DeprojectScreenPositionToWorld(X,Y,Origin,Direction)||FMath::Abs(Direction.Z)<.001)return false;
-    double T=-Origin.Z/Direction.Z;if(T<0)return false;return GroundPointToTile(Origin+Direction*T,Out);
+    return PixelPointToTile(FVector2D(X,Y),Out);
 }
 bool ARiftPlayerController::ScreenPointToTile(FVector2D ScreenPoint,FVector2D& Out)const
 {
@@ -1148,8 +1257,30 @@ bool ARiftPlayerController::ScreenPointToTile(FVector2D ScreenPoint,FVector2D& O
     // Captured hand releases still route to their original button. Reject HUD,
     // the hand dock and points beyond the viewport before world projection.
     if(!BattleSafeScreenBounds().IsInside(Pixel))return false;
-    FVector Origin,Direction;
-    if(!DeprojectScreenPositionToWorld(Pixel.X,Pixel.Y,Origin,Direction)||FMath::Abs(Direction.Z)<.001)return false;
+    return PixelPointToTile(Pixel,Out);
+}
+bool ARiftPlayerController::PixelPointToTile(FVector2D Pixel,FVector2D& Out)const
+{
+    const auto* LocalPlayer=GetLocalPlayer();
+    if(!LocalPlayer||!LocalPlayer->ViewportClient||!LocalPlayer->ViewportClient->Viewport||!FMath::IsFinite(Pixel.X)||!FMath::IsFinite(Pixel.Y))return false;
+    FSceneViewProjectionData Projection;
+    if(!LocalPlayer->GetProjectionData(LocalPlayer->ViewportClient->Viewport,Projection))return false;
+    const FIntRect Rect=Projection.GetConstrainedViewRect();
+    if(Rect.Width()<=0||Rect.Height()<=0)return false;
+    // UE's generic DeprojectScreenToWorld floors the pointer to whole pixels.
+    // Preserve the captured Slate sample instead: one pixel can cross a tile
+    // edge in this compact orthographic view. Use the same local-player matrix
+    // and reversed-Z ray as the engine, without quantizing its screen position.
+    const double X=2.*(Pixel.X-Rect.Min.X)/Rect.Width()-1.;
+    const double Y=1.-2.*(Pixel.Y-Rect.Min.Y)/Rect.Height();
+    const FMatrix Inverse=Projection.ComputeViewProjectionMatrix().InverseFast();
+    const FVector4 StartH=Inverse.TransformFVector4(FVector4(X,Y,1.,1.));
+    const FVector4 EndH=Inverse.TransformFVector4(FVector4(X,Y,.01,1.));
+    if(!FMath::IsFinite(StartH.W)||!FMath::IsFinite(EndH.W)||FMath::Abs(StartH.W)<UE_SMALL_NUMBER||FMath::Abs(EndH.W)<UE_SMALL_NUMBER)return false;
+    const FVector Origin(StartH.X/StartH.W,StartH.Y/StartH.W,StartH.Z/StartH.W);
+    const FVector End(EndH.X/EndH.W,EndH.Y/EndH.W,EndH.Z/EndH.W);
+    const FVector Direction=(End-Origin).GetSafeNormal();
+    if(Origin.ContainsNaN()||Direction.ContainsNaN()||FMath::Abs(Direction.Z)<.001)return false;
     const double T=-Origin.Z/Direction.Z;
     return T>=0&&GroundPointToTile(Origin+Direction*T,Out);
 }
@@ -1174,6 +1305,11 @@ void ARiftPlayerController::PlayerTick(float DeltaTime)
             float X=0,Y=7;FParse::Value(FCommandLine::Get(),TEXT("RiftPreviewX="),X);FParse::Value(FCommandLine::Get(),TEXT("RiftPreviewY="),Y);const auto Snapped=rift::SnapToTile({X,Y});
             Arena->SetPlacementPreview(FVector2D(Snapped.x,Snapped.z),Sim->CanPlace(rift::Team::Player,*Preview,Snapped),Preview->spellRadius,Preview->spell,Preview->building?Preview->footprint:0);return;
         }
+    RefreshPlacementPreview();
+}
+void ARiftPlayerController::RefreshPlacementPreview()
+{
+    if(!Arena)for(TActorIterator<ARiftArenaPresentation> It(GetWorld());It;++It){Arena=*It;break;}
     FVector2D Tile=FVector2D::ZeroVector;const auto* C=Interface?rift::FindCard(TCHAR_TO_UTF8(*Interface->SelectedCardId())):nullptr;
     bool Visible=Interface&&Interface->CanAcceptBattleInput()&&C&&CursorTile(Tile);
     if(!Visible&&Arena)Arena->ClearPlacementPreview();
@@ -1243,6 +1379,9 @@ void ARiftPlayerController::UpdateCardDragAtScreen(FVector2D ScreenPoint)
     // Latch once crossed: returning to the original card remains a drag that
     // must be cancelled, rather than becoming a fresh card-selection click.
     if(Profile->Settings.DragDeploy&&FVector2D::DistSquared(CardDragOrigin,ScreenPoint)>49.)bCardDragActive=true;
+    // Captured Slate moves and releases can arrive between player ticks. Keep
+    // the visible target on that same pointer sample before a drop is resolved.
+    RefreshPlacementPreview();
 }
 bool ARiftPlayerController::IsDraggingCard()const
 {

@@ -34,10 +34,11 @@ EXPANSION_STRING_FIELDS = ["deathSpawnId"]
 def fields_for(schema):
     if schema == 1:
         return NUMBER_FIELDS, BOOL_FIELDS, STRING_FIELDS
-    if schema == 2:
-        return (NUMBER_FIELDS + EXPANSION_NUMBER_FIELDS, BOOL_FIELDS + EXPANSION_BOOL_FIELDS,
+    if schema in (2, 3):
+        return (NUMBER_FIELDS + EXPANSION_NUMBER_FIELDS +
+                (["healthCloakThreshold"] if schema == 3 else []), BOOL_FIELDS + EXPANSION_BOOL_FIELDS,
                 STRING_FIELDS + EXPANSION_STRING_FIELDS)
-    raise ValueError("Expected balance schema 1 or 2")
+    raise ValueError("Expected balance schema 1, 2 or 3")
 
 
 def balance_hash(manifest):
@@ -114,7 +115,7 @@ def validate(manifest):
                 raise ValueError("Subordinate definitions cannot charge Aether")
             if card["cost"] != int(card["cost"]) or (section == "cards" and card["cost"] <= 0):
                 raise ValueError("Playable Aether cost must be a positive integer")
-            if manifest["schema"] == 2:
+            if manifest["schema"] >= 2:
                 if card["deathSpawnCount"] != int(card["deathSpawnCount"]):
                     raise ValueError("Death spawn count must be an integer")
                 if bool(card["deathSpawnCount"]) != bool(card["deathSpawnId"]):
@@ -127,9 +128,14 @@ def validate(manifest):
                     raise ValueError("Damage zones need positive duration and tick interval")
                 if card["dotStructureDamage"] > 0 and (not card["targetMask"] & 4 or card["dotDamage"] <= 0):
                     raise ValueError("Structure DOT requires structure eligibility and a damage zone")
-                if card["invisibilityDuration"] > 0 and not card["spell"]:
-                    raise ValueError("Invisibility application belongs to a spell")
-    if manifest["schema"] == 2:
+                threshold = card.get("healthCloakThreshold", 0)
+                if not 0 <= threshold <= 1:
+                    raise ValueError("Health cloak threshold must be a fraction between zero and one")
+                if threshold > 0 and (card["spell"] or card["building"] or card["invisibilityDuration"] <= 0):
+                    raise ValueError("Health cloak requires a troop and positive invisibility duration")
+                if card["invisibilityDuration"] > 0 and not card["spell"] and threshold <= 0:
+                    raise ValueError("Troop invisibility needs an explicit health threshold")
+    if manifest["schema"] >= 2:
         children = {card["id"]: card for card in manifest.get("entities", [])}
         for card in manifest["cards"] + manifest.get("entities", []):
             if card["deathSpawnId"]:

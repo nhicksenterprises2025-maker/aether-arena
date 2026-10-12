@@ -38,7 +38,7 @@ struct Card {
     double slowPct = 0, slowDuration = 0, auraDamage = 0, auraInterval = 0, auraRadius = 0, stunDuration = 0;
     double dotDamage = 0, dotDuration = 0, dotInterval = 0;
     double chargeMoveSeconds = 0, chargedMoveSpeed = 0, hpDecayPerSecond = 0, initialAttackCooldown = 0;
-    double shieldHP = 0, invisibilityDuration = 0, dotStructureDamage = 0;
+    double shieldHP = 0, invisibilityDuration = 0, dotStructureDamage = 0, healthCloakThreshold = 0;
     int deathSpawnCount = 0;
     std::string deathSpawnId;
     int rounds = 0;
@@ -82,7 +82,7 @@ struct Entity {
     double stuckClock = 0, stuckTime = 0, stuckDistance = 1e9;
     double slowTrackedFrom = -1, stunTrackedFrom = -1;
     int lane = 0, bridge = 0, memberCount = 1;
-    bool active = true, dead = false, flying = false, charged = false;
+    bool active = true, dead = false, flying = false, charged = false, healthCloakTriggered = false;
     std::vector<Vec2> path;
     std::vector<SlowEffect> slows;
 };
@@ -254,6 +254,7 @@ class Match {
     bool CanTarget(const Entity &source, const Entity &target) const;
     bool InSight(const Entity &source, const Entity &target) const;
     double CombatDistance(const Entity &source, const Entity &target) const;
+    double AttackReach(const Entity &source, const Entity &target) const;
     std::vector<Vec2> FindPath(const Entity &source, const Entity &target, int bridge = 0) const;
     static double AetherGenerated(double from, double to);
 
@@ -279,16 +280,31 @@ class Match {
     // Private fixed-step origins also constrain presentation's interpolation.
     // They never enter card stats, saves, replay snapshots, or random decisions.
     std::map<EntityId, Vec2> bodyStepStarts_;
+    struct EngagementSlot {
+        EntityId target = 0;
+        Vec2 offset, progressPosition;
+        double progressDistance = 1e9, progressAt = 0;
+        bool pendingAcquisition = false;
+    };
+    // Arrival goals reserve physical space, not damage permission. They are
+    // local movement state; attacks still validate the authored reach each tick.
+    std::map<EntityId, EngagementSlot> engagementSlots_;
+    double engagementCleanupAt_ = -1;
     struct NavBlocker {
         EntityId id = 0;
         Vec2 position;
         double radius = 0;
+        EntityKind kind = EntityKind::Building;
     };
     struct CollisionBody {
         Vec2 from, to;
         double radius = 0;
         EntityKind kind = EntityKind::Troop;
         Team team = Team::Player;
+        // Query-local constants for the collecting source. No body or source
+        // moves between collection and this steering query's sweep tests.
+        Vec2 relativeStart, forecastStart;
+        double startSquared = 0, forecastSquared = 0, clearanceSquared = 0;
     };
     double Random();
     Entity *Get(EntityId id);
@@ -316,6 +332,8 @@ class Match {
     void Kill(EntityId target, Team team, const std::string &card, PlayId play, EntityId source);
     void SpawnDeathChildren(const Entity &parent, const Card &definition);
     void ApplyInvisibility(Team team, const Card &card, Vec2 point, PlayId play);
+    void CloakBody(Entity &body, const Card &card, PlayId play, EntityId source = 0);
+    void DropCloakedLocks(Team team, const Card &card, const std::vector<EntityId> &cloaked, PlayId play);
     void PullDeployment(EntityId deployed);
     void UpdateEntity(EntityId id, double dt);
     void Acquire(Entity &source);
@@ -324,6 +342,8 @@ class Match {
     void RefreshSlows(Entity &victim);
     void UpdateShockwaves();
     void Move(Entity &source, const Entity &target, double dt);
+    bool EngagementPoint(const Entity &source, const Entity &target,
+                         const std::vector<NavBlocker> &blockers, Vec2 &point);
     bool NavValid(Vec2 point, const Entity &source, EntityId goal, int bridge = 0) const;
     bool NavSegmentValid(Vec2 from, Vec2 to, const Entity &source, EntityId goal, int bridge = 0) const;
     std::vector<NavBlocker> CollectNavBlockers() const;
