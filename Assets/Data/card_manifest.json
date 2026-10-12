@@ -1,8 +1,8 @@
 {
   "schema": 3,
-  "version": "1.7.0",
+  "version": "1.7.1",
   "status": "approved",
-  "sourceCommit": "31a19eb06dec0d415712f4691305ccac079eb7f5",
+  "sourceCommit": "e47a919223056aec843ab80309b6384b97750422",
   "cards": [
     {
       "id": "ironclad",
@@ -1153,7 +1153,7 @@
   ],
   "rules": {
     "combatRevision": 4,
-    "navigationRevision": 9,
+    "navigationRevision": 10,
     "targetHardLock": "first authoritative attack against a Crown Tower",
     "frontSight": 8,
     "rearSight": 5,
@@ -1166,27 +1166,28 @@
     "coreDepth": 16.84,
     "cloakLockException": "Approved Shadow Surge drops enemy locks, including committed Crown Tower locks; committed damage and projectiles still resolve"
   },
-  "balanceHash": "7d23c5e1d5bb848cb887fec350fd814753210a9a81bfcf6a561d5a42d3fa15f4",
-  "baseline": "Assets/Data/Baselines/1.6.0.json",
+  "balanceHash": "88c28ff155ef5e63becb70515e0d30b1cef10c2d0f0b7cfc53ced371e4d9c90a",
+  "baseline": "Assets/Data/Baselines/1.7.0.json",
   "approval": {
     "sourceResolution": "Assets/Data/source_resolution.json",
-    "source": "Direct user design, collision and Reaper ability revision on 2026-10-12",
-    "arenaAnswer": "Extend each rear by3 tiles; reduce each side by1 tile; towers3 tiles back; bridge and Guards2 tiles outward",
+    "source": "Direct user quick hotfix request and swarm-only scope correction on 2026-10-12",
+    "scope": "Swarm combat shuffling; friendly troops may push one another, opponents hold combat positions; remove only overhead slow percentage and VEIL text.",
+    "balanceUnchanged": "All card/entity definitions, abilities, assets, model scales and arena geometry retain their 1.7.0 values.",
     "releaseAcceptance": "Runtime and Windows package acceptance are measured separately."
   },
   "baselineRuntimePins": [
     {
       "path": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArena.dll",
-      "sha256": "33a7bd03ec8b81ceb016f73ee6796f581998d1a7d3804af95d42192af92bc615"
+      "sha256": "61fc67b17638e4d16df30deda73a5046cfb4de1707a4c8ec82d74fa665c9ec64"
     },
     {
       "path": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArenaEditor.dll",
-      "sha256": "2cfb31aa17d1396895e5e106272412c2b0753d073b27a18e6f8e1e256e547cfb"
+      "sha256": "9b39240bcdcc65b30fd5564c115bc45dfd7cccdad61fb116d3ab77508b0b45e1"
     }
   ],
   "baselineProvenance": {
-    "tag": "v1.6.0",
-    "sourceCommit": "31a19eb06dec0d415712f4691305ccac079eb7f5",
-    "canonicalFileSHA256": "67229363a030a17491d04a9c1fecc991be2cb52903c5b0aba849db421203547e"
+    "tag": "v1.7.0",
+    "sourceCommit": "e47a919223056aec843ab80309b6384b97750422",
+    "canonicalFileSHA256": "97c0e1ddce1efb0c4b37aa15b3f494625977c5efa44b3342ed33db3c5cf7aa3e"
   }
 }

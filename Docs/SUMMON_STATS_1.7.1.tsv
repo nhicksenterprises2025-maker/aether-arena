@@ -1,0 +1,2 @@
+Parent card	Subordinate unit	Children per death	Body HP each	Damage each	Attack interval (s)	Basic DPS each	Group body HP	Group basic DPS	Movement (tiles/s)	Range (tiles)	Targets	Model scale	Collision radius (tiles)	Additional Aether cost	Additional deck slots	Parent ID	Entity ID
+Bone Warden	Bone Warden Skeleton	4	50	36	0.75	48.00	200	192.00	2	0.7	Ground troops, Structures	0.65	0.286	0	0	bone_warden	bone_warden_skeleton

@@ -3,55 +3,27 @@
   "status": "approved",
   "unresolved": false,
   "releaseBlocked": false,
-  "baseline": "Assets/Data/Baselines/1.6.0.json",
-  "baselineBalanceHash": "e87244ec5b4629688bfdf83e5ef3888f3ad61b96848e9f117e3af12b96b236d5",
-  "startingCommit": "31a19eb06dec0d415712f4691305ccac079eb7f5",
-  "version": "1.7.0",
+  "baseline": "Assets/Data/Baselines/1.7.0.json",
+  "baselineBalanceHash": "7d23c5e1d5bb848cb887fec350fd814753210a9a81bfcf6a561d5a42d3fa15f4",
+  "startingCommit": "e47a919223056aec843ab80309b6384b97750422",
+  "version": "1.7.1",
   "confirmation": {
-    "source": "Direct user messages in this chat on 2026-10-12",
-    "modelScales": {
-      "pulverizer": 1.05,
-      "bone_warden": 1.65,
-      "iron_giant": 1.65,
-      "aether_reaper": 1.35,
-      "stampede": 0.9
-    },
-    "arenaWidth": 22,
-    "arenaHeight": 40,
-    "towerRearShiftTiles": 3,
-    "bridgeAndGuardOutwardShiftTiles": 2,
-    "reaperHealthCloakThreshold": 0.5,
-    "reaperHealthCloakDuration": 1
+    "source": "Direct user quick hotfix request and swarm-only scope correction in this chat on 2026-10-12",
+    "swarmCombatShufflingOnly": true,
+    "friendlyTroopsMayPushOneAnother": true,
+    "opponentsHoldCombatPositions": true,
+    "removeOverheadSlowPercentageText": true,
+    "removeOverheadVeilText": true
   },
   "resolvedChoices": {
-    "arena": {
-      "arenaWidth": 22,
-      "arenaHeight": 40,
-      "worldUnitsPerTile": 125
-    },
-    "aether_reaper": {
-      "healthCloakThreshold": 0.5,
-      "invisibilityDuration": 1,
-      "oneTimePerEntity": true,
-      "lethalHitDoesNotTrigger": true,
-      "purpleIdleMovingAura": true,
-      "multiTargetSlash": true
-    },
-    "modelScales": {
-      "pulverizer": 1.05,
-      "bone_warden": 1.65,
-      "iron_giant": 1.65,
-      "aether_reaper": 1.35,
-      "stampede": 0.9
-    },
-    "stampede": {
-      "collisionRadius": 0.42
-    },
-    "iron_giant": {
-      "collisionRadius": 0.7
-    }
+    "navigationRevision": 10
   },
-  "collisionWork": "Correct body-edge melee reach and deterministic free engagement positions; retain swept body collision and per-member bridge lanes. Stampede collider0.572->0.42 tiles follows its compact torso rather than decorative snout/tail. Listed melee range is now measured between body edges. Iron Giant collision radius0.44->0.70 tiles contains the measured0.68165-tile neutral torso at scale1.65; weapon and shield reach remain visual attachments.",
-  "unchanged": "Other damage, HP, costs, attack intervals, movement speeds, spell delays and target masks retain their1.6.0 values.",
-  "priorResolution": "Assets/Data/History/source_resolution_1.6.0.json"
+  "mechanicNotes": [
+    "Swarm combat: friendly troops can make room for one another, while opponents hold their combat positions. This prevents collision movement from making swarm attackers continually shuffle around their targets.",
+    "Overhead slow percentage text and VEIL labels are removed. Slow and cloak abilities and their existing visual effects remain active.",
+    "Balance unchanged: all 21 playable cards and the subordinate skeleton retain their 1.7.0 stats, abilities, model scales and assets. The arena remains 40 tiles long by 22 tiles wide.",
+    "Navigation rules revision 9 -> 10: new match, replay and Meta data use the hotfix rules identity."
+  ],
+  "unchanged": "Every playable and subordinate definition is identical to 1.7.0. Costs, HP, damage, attack intervals, movement, ranges, projectiles, abilities, collision radii, model scales, assets and arena geometry are unchanged. Only the navigation revision identifies the corrected swarm combat rules.",
+  "priorResolution": "Assets/Data/History/source_resolution_1.7.0.json"
 }

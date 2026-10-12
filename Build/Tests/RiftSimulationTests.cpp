@@ -2416,6 +2416,125 @@ int main(int argc, char **argv) {
                 }
             }
         });
+        Test("opposing paid swarm combat holds positions without friendly crowd pressure", [] {
+            int fixtures = 0, contactFrames = 0, movingContactFrames = 0, hitMembers = 0;
+            double maximumContactMove = 0;
+            for (const auto *id : {"twin_blades", "mini_stampede", "vampire_bats"})
+                for (const int lane : {-1, 1}) {
+                    Match m(CollisionOptions(id, id));FreezeCrowns(m);
+                    Check(m.SetTowerHP(Tower(m, Team::Player, EntityKind::Guard, lane).id, 0),
+                          "actual Guard loss unlocks the opponent's legal same-bank combat pocket");
+                    std::vector<Entity> paid;
+                    std::set<EntityId> fighters;
+                    for (const Team team : {Team::Player, Team::Enemy}) {
+                        const auto added = PaidCollisionCard(m, team, id,
+                            {lane * 7.5, team == Team::Player ? 8.5 : 5.5});
+                        paid.insert(paid.end(), added.begin(), added.end());
+                        fighters.insert(added.front().id);
+                        // Isolate enemy contact from the explicitly allowed
+                        // friendly crowd pressure. Every other real paid body
+                        // remains solid and in place, using a declared stun control.
+                        for (std::size_t member = 1; member < added.size(); ++member)
+                            MutableEntity(m, added[member].id).stunUntil = 100;
+                    }
+                    std::map<EntityId, int> hits;
+                    std::size_t cursor = m.Events().size();
+                    for (int frame = 0; frame < 12 * 60; ++frame) {
+                        // HP-only observation maintenance keeps these actual paid
+                        // opponents alive. No positions, targets, cooldowns,
+                        // movement, collision bodies or damage are injected.
+                        for (const auto &start : paid) {
+                            auto &body = MutableEntity(m, start.id);
+                            Check(!body.dead, "combat observation retains its real paid members");
+                            body.hp = body.maxHp;
+                        }
+                        const auto before = m.State().entities;m.Step(1. / 60.);
+                        SweptBodyClearance(m, before, "stationary opposing swarm combat");
+                        for (const auto &old : before) {
+                            if (old.dead || !fighters.count(old.id) || !hits.count(old.id)) continue;
+                            const auto target = std::find_if(before.begin(), before.end(),
+                                [&](const Entity &body) {return body.id == old.target;});
+                            const auto &now = ById(m, old.id);
+                            const auto *targetNow = FindEntity(m,old.target);
+                            if (target == before.end() || target->dead || target->kind != EntityKind::Troop ||
+                                target->team == old.team || now.target != old.target ||
+                                !targetNow || targetNow->dead ||
+                                m.CombatDistance(old, *target) > m.AttackReach(old, *target) + 1e-9 ||
+                                m.CombatDistance(old, *targetNow) > m.AttackReach(old, *targetNow) + 1e-9) continue;
+                            const double travel = std::hypot(now.position.x - old.position.x, now.position.z - old.position.z);
+                            maximumContactMove = std::max(maximumContactMove, travel);
+                            movingContactFrames += travel > 1e-8;
+                            ++contactFrames;
+                        }
+                        for (; cursor < m.Events().size(); ++cursor) {
+                            const auto &event = m.Events()[cursor];
+                            if (event.type == "damage" && event.cardId == id && event.damageKind == "attack") {
+                                Near(event.requested, FindCard(id)->damage, 0, "stationary combat retains real authored hit damage");
+                                ++hits[event.source];
+                            }
+                        }
+                    }
+                    for (const EntityId fighter : fighters) {
+                        std::cout << "SWARM_COMBAT_MEMBER card=" << id << " lane=" << lane << " id=" << fighter
+                                  << " hits=" << hits[fighter] << '\n';
+                        Check(hits[fighter] >= 2, "both active paid opponents keep making real attacks");
+                    }
+                    hitMembers += int(fighters.size());++fixtures;
+                }
+            std::cout << "SWARM_COMBAT_STABILITY fixtures=" << fixtures << " hit_members=" << hitMembers
+                      << " observed_contact_frames=" << contactFrames << " moving_contact_frames=" << movingContactFrames
+                      << " max_contact_move=" << maximumContactMove << '\n';
+            Check(contactFrames > 600, "real repeated enemy contacts were observed across both collision layers");
+            Check(movingContactFrames == 0, "opposing swarms stay put while their existing melee target remains in reach");
+        });
+        Test("swarm tower combat settles while friendly contact yielding remains available", [] {
+            int stableFrames = 0, friendlyYieldFrames = 0;
+            double maximumSettledMove = 0;
+            for (const Team team : {Team::Player, Team::Enemy}) {
+                const int sign = team == Team::Player ? 1 : -1;
+                const Team opponent = team == Team::Player ? Team::Enemy : Team::Player;
+                for (const bool crowded : {false, true}) {
+                    Match m(CollisionOptions("mini_stampede", "stampede"));FreezeCrowns(m);
+                    const EntityId targetId = Tower(m, opponent, EntityKind::Guard, -1).id;
+                    auto paid = PaidCollisionCard(m, team, "mini_stampede", {-7.5, sign * 3.5});
+                    if (crowded) {
+                        const auto extra = PaidCollisionCard(m, team, "stampede", {-7.5, sign * 3.5});
+                        paid.insert(paid.end(), extra.begin(), extra.end());
+                    }
+                    std::map<EntityId, double> firstHit;
+                    std::size_t cursor = m.Events().size();
+                    double togetherAt = -1;
+                    for (int frame = 0; frame < 18 * 60; ++frame) {
+                        Check(m.SetTowerHP(targetId, ById(m,targetId).maxHp), "observation keeps the real tower live");
+                        const auto before = m.State().entities;m.Step(1. / 60.);
+                        SweptBodyClearance(m, before, "friendly swarm combat yielding");
+                        for (; cursor < m.Events().size(); ++cursor) {
+                            const auto &event = m.Events()[cursor];
+                            if (event.type == "damage" && event.target == targetId)
+                                firstHit.try_emplace(event.source, event.time);
+                        }
+                        if (firstHit.size() == paid.size() && togetherAt < 0) togetherAt = m.State().elapsed;
+                        for (const auto &start : paid) {
+                            const auto &body = ById(m,start.id);
+                            const auto old = std::find_if(before.begin(), before.end(),
+                                [&](const Entity &prior) {return prior.id == start.id;});
+                            const double travel = std::hypot(body.position.x - old->position.x, body.position.z - old->position.z);
+                            if (crowded && firstHit.count(body.id) && m.State().elapsed > firstHit.at(body.id) + .5)
+                                friendlyYieldFrames += travel > .001;
+                            if (!crowded && togetherAt >= 0 && m.State().elapsed > togetherAt + 2.) {
+                                maximumSettledMove = std::max(maximumSettledMove, travel);
+                                ++stableFrames;
+                            }
+                        }
+                    }
+                    if (!crowded) Check(firstHit.size() == paid.size(), "all five real Mini Stampede members join tower combat");
+                }
+            }
+            std::cout << "SWARM_FRIENDLY_STABILITY stable_frames=" << stableFrames
+                      << " max_settled_move=" << maximumSettledMove << " friendly_yield_frames=" << friendlyYieldFrames << '\n';
+            Check(stableFrames > 300 && maximumSettledMove < 1e-8, "settled tower attackers hold their positions without a waiting friendly crowd");
+            Check(friendlyYieldFrames > 0, "crowded friendly swarm contacts can still move to make room");
+        });
         Test("opposing paid melee swarms make contact without overlap or crossing through one another", [] {
             for (const int lane : {-1, 1}) {
                 Match m(CollisionOptions("twin_blades", "ironclad"));

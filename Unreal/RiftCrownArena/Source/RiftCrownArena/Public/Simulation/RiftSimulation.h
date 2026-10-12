@@ -285,6 +285,7 @@ class Match {
         Vec2 offset, progressPosition;
         double progressDistance = 1e9, progressAt = 0;
         bool pendingAcquisition = false;
+        bool yieldingToFriend = false;
     };
     // Arrival goals reserve physical space, not damage permission. They are
     // local movement state; attacks still validate the authored reach each tick.

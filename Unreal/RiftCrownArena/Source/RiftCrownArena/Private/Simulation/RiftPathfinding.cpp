@@ -880,6 +880,7 @@ bool Match::EngagementPoint(const Entity &s, const Entity &t,
             // bodies walk normally; only their arrival goals exchange places.
             auto &other = engagementSlots_.at(partner);
             std::swap(other.offset, existing->second.offset);
+            other.yieldingToFriend = existing->second.yieldingToFriend = true;
             for (EntityId ownerId : {s.id, partner})
                 if (Entity *owner = Get(ownerId)) {
                     owner->path.clear();

@@ -437,7 +437,7 @@ bool FRiftMetaAggregationTest::RunTest(const FString& Parameters)
         TestTrue(TEXT("Snapshots capture each card's actual health-cloak trigger"),Card&&Definition->HasField(TEXT("healthCloakThreshold"))&&FMath::IsNearlyEqual(Number(Definition,TEXT("healthCloakThreshold")),Card->healthCloakThreshold,1e-7));
     }
     TestTrue(TEXT("Immutable rule snapshot describes target selection at impact"),ReadObject(Dataset,TEXT("rulesSnapshot"))->HasField(TEXT("spellImpact")));
-    TestEqual(TEXT("The resized arena and its navigation use immutable rule revision9"),Number(ReadObject(Dataset,TEXT("rulesSnapshot")),TEXT("navigationRevision")),9.0);
+    TestEqual(TEXT("Immutable rule snapshot captures the compiled navigation revision"),Number(ReadObject(Dataset,TEXT("rulesSnapshot")),TEXT("navigationRevision")),double(rift::arena::NavigationRevision));
     TestEqual(TEXT("New Meta snapshots capture dynamic arena fingerprint policy"),Number(Dataset,TEXT("fingerprintPolicyRevision")),2.0);
     TestEqual(TEXT("Immutable arena width captures the confirmed22 tiles"),Number(ReadObject(Dataset,TEXT("rulesSnapshot")),TEXT("arenaWidth")),22.0);
     TestEqual(TEXT("Immutable arena length captures the confirmed40 tiles"),Number(ReadObject(Dataset,TEXT("rulesSnapshot")),TEXT("arenaHeight")),40.0);
