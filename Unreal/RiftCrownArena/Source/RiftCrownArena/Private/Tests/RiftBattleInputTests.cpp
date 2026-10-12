@@ -67,7 +67,7 @@ bool FRiftBattleInputRoutingTest::RunTest(const FString& Parameters)
         TestTrue(TEXT("Boundary clicks preserve the updated half-cell centers"),GroundTile.Equals(FVector2D(X<0?-rift::arena::LastTileX:rift::arena::LastTileX,Y<0?-rift::arena::LastTileZ:rift::arena::LastTileZ),.001));
     }
     const FVector2D LastValidTile=GroundTile;
-    for(const FVector& Point:{FVector(-rift::arena::HalfWidth*100.-.1,0,0),FVector(rift::arena::HalfWidth*100.+.1,0,0),FVector(0,-rift::arena::HalfHeight*100.-.1,0),FVector(0,rift::arena::HalfHeight*100.+.1,0)})
+    for(const FVector& Point:{FVector(-rift::arena::HalfWidth*RiftArenaGeometry::UnitsPerTile-.1,0,0),FVector(rift::arena::HalfWidth*RiftArenaGeometry::UnitsPerTile+.1,0,0),FVector(0,-rift::arena::HalfHeight*RiftArenaGeometry::UnitsPerTile-.1,0),FVector(0,rift::arena::HalfHeight*RiftArenaGeometry::UnitsPerTile+.1,0)})
     {
         TestFalse(TEXT("Decorative ground outside every board edge cannot snap into a deployment"),Controller->GroundPointToTile(Point,GroundTile));
         TestTrue(TEXT("Rejected ground cannot supply a replacement deployment tile"),GroundTile.Equals(LastValidTile,.001));

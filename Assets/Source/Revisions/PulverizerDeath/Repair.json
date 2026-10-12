@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "passed": true,
+  "cause": "Zero-scale death debris made first-frame FBX bind transforms singular.",
+  "fix": "Minimum .001 debris scale with dense linear scale keys; same production action builder.",
+  "unchangedAssetFiles": 639,
+  "unexpectedChanges": [],
+  "geometrySignatureBefore": "f4a19e0dfb3a0b9ed8f85245ef288e0d263a1a70bb68ba330e1bad5474e4753e",
+  "geometrySignatureAfter": "f4a19e0dfb3a0b9ed8f85245ef288e0d263a1a70bb68ba330e1bad5474e4753e",
+  "changedFiles": [
+    "Assets/Export/Characters/pulverizer/AN_pulverizer_Death.fbx",
+    "Assets/Source/RiftCrown_ProductionAssets.blend",
+    "Assets/asset_manifest.json"
+  ],
+  "sourceBlend": {
+    "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
+    "sha256": "81cefa2d1a025dd4250da5fc86d353f4febf3a1fb695d69dc513c89ee0dfcbc2",
+    "bytes": 15278680
+  },
+  "deathClip": {
+    "name": "Death",
+    "action": "AN_pulverizer_Death",
+    "frames": 86,
+    "fps": 100,
+    "seconds": 0.85,
+    "releaseNormalized": null,
+    "loop": false,
+    "strideMeters": null,
+    "file": "Assets/Export/Characters/pulverizer/AN_pulverizer_Death.fbx",
+    "sha256": "8bbf1f2944e88a31decc8e48b936fd14b8d6f8343c067439c6622575c6ec7c51",
+    "bytes": 179996
+  },
+  "failedSourceSnapshot": "C:\\Users\\Noah\\OneDrive\\Documents\\ChatGPT\\Aether Arena\\Artifacts\\QA\\ExpansionAssets\\animation-repair-20261011-1644\\before",
+  "limitations": "Native UE reimport is separate; numerical matrix safety is checked next."
+}

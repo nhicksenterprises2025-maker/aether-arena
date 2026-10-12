@@ -162,6 +162,7 @@ private:
     UBorder* Panel(UWidget*,FMargin Padding=FMargin(16),FLinearColor Color=FLinearColor(.018f,.035f,.065f,1));
     UWidget* Badge(const FString&,FLinearColor Color,int32 Size=16);
     void Home();void Profile();void Loadout();void Cards();void CardDetail();void Settings();void Battle();void UpdateBattleHUD(float);void Developer(UVerticalBox*);void UpdateTrainingReadout();void FieldManual();void Replays();void ReplayView();void UpdateReplayHUD();void MatchAnalysis();void Meta();void MetaRows();void PatchNotes();
+    bool ApprovedPatchNotes();
     void SelectPreset(int32 Index);void ToggleDraft(const FString& Id);void Say(const FString& Message);
     void CaptureFilters();
     void ShowJSON(const TSharedPtr<FJsonObject>& Object,UVerticalBox* Target=nullptr,const FString& Prefix=TEXT(""));

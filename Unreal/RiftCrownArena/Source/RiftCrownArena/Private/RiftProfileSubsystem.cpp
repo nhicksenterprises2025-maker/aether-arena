@@ -628,10 +628,11 @@ void URiftProfileSubsystem::ApplySettings() {
         return;
     int32 DisplayWidth = Settings.Width, DisplayHeight = Settings.Height;
     FString QAOutput;
-    if (FParse::Value(FCommandLine::Get(), TEXT("RiftCapture="), QAOutput) ||
+    const bool AutomatedQA = FParse::Value(FCommandLine::Get(), TEXT("RiftCapture="), QAOutput) ||
         FParse::Value(FCommandLine::Get(), TEXT("RiftPerfReport="), QAOutput) ||
         FParse::Value(FCommandLine::Get(), TEXT("RiftAudioSmoke="), QAOutput) ||
-        FParse::Value(FCommandLine::Get(), TEXT("RiftDragSmoke="), QAOutput)) {
+        FParse::Value(FCommandLine::Get(), TEXT("RiftDragSmoke="), QAOutput);
+    if (AutomatedQA) {
         FParse::Value(FCommandLine::Get(), TEXT("ResX="), DisplayWidth);
         FParse::Value(FCommandLine::Get(), TEXT("ResY="), DisplayHeight);
         DisplayWidth = FMath::Clamp(DisplayWidth, 800, 7680);
@@ -649,5 +650,10 @@ void URiftProfileSubsystem::ApplySettings() {
     G->SetTextureQuality(Settings.Textures);
     G->SetPostProcessingQuality(Settings.Post);
     G->SetViewDistanceQuality(Settings.ViewDistance);
+    // Isolated captures exercise the same presets as the settings screen
+    // without writing a different quality preference into the profile.
+    int32 QAQuality = -1;
+    if (AutomatedQA && FParse::Value(FCommandLine::Get(), TEXT("RiftQAQuality="), QAQuality) && QAQuality >= 0 && QAQuality <= 3)
+        G->SetOverallScalabilityLevel(QAQuality);
     G->ApplySettings(false);
 }

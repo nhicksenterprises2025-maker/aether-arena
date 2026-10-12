@@ -10,17 +10,14 @@
 
 namespace rift {
 namespace arena {
-inline constexpr int HalfWidth = 15, HalfHeight = 22;
-inline constexpr int Width = HalfWidth * 2, Height = HalfHeight * 2;
-inline constexpr double LastTileX = HalfWidth - .5, LastTileZ = HalfHeight - .5;
-inline constexpr double RiverHalfWidth = 1.65, BridgeCenterX = 7.2, BridgeWidth = 4.2;
-inline constexpr double CoreDepth = 17.3, GuardDepth = 13.4, GuardX = BridgeCenterX;
-inline constexpr double DeploymentMaxX = HalfWidth - 1.8;
-inline constexpr double PocketOuterX = HalfWidth - .8, PocketMaxDepth = GuardDepth - 3.15;
+#include "RiftArenaRules.generated.inc"
 } // namespace arena
 namespace detection {
 inline constexpr double Front = 8, Rear = 5;
 } // namespace detection
+namespace targets {
+inline constexpr std::uint8_t GroundTroop = 1, AirTroop = 2, Structure = 4, All = 7;
+} // namespace targets
 using EntityId = std::uint64_t;
 using PlayId = std::uint64_t;
 enum class Team : std::uint8_t { Player, Enemy };
@@ -34,14 +31,27 @@ struct Card {
     int cost = 0, count = 1;
     double hp = 0, damage = 0, attackInterval = 0, moveSpeed = 0, range = 0, scale = 1;
     double projectileSpeed = 0, splash = 0, lifetime = 0, footprint = 0, shockwaveSpeed = 0;
+    // Collision is gameplay data, independent of the displayed model scale.
+    double collisionRadius = 0;
+    std::uint8_t targetMask = 0;
     double towerDamage = 0, spellRadius = 0, chargeDamage = 0, castDelay = 0;
     double slowPct = 0, slowDuration = 0, auraDamage = 0, auraInterval = 0, auraRadius = 0, stunDuration = 0;
     double dotDamage = 0, dotDuration = 0, dotInterval = 0;
+    double chargeMoveSeconds = 0, chargedMoveSpeed = 0, hpDecayPerSecond = 0, initialAttackCooldown = 0;
+    double shieldHP = 0, invisibilityDuration = 0, dotStructureDamage = 0;
+    int deathSpawnCount = 0;
+    std::string deathSpawnId;
     int rounds = 0;
     bool flying = false, canHitAir = false, structuresOnly = false, spell = false, building = false;
+    bool hardExpiry = false, shieldOverflowProtected = false, globalFriendlyInvisibility = false,
+         breakExistingLocks = false;
 };
 const std::vector<Card> &Cards();
 const Card *FindCard(const std::string &id);
+const std::vector<Card> &EntityDefinitions(); // Subordinate entities, excluded from decks/collection.
+const Card *FindEntityDefinition(const std::string &id);
+const std::string &CardManifestHash();
+const std::string &CardManifestVersion();
 const std::vector<std::string> &DefaultDeck();
 std::string TeamName(Team team);
 std::string PhaseName(Phase phase);
@@ -61,8 +71,12 @@ struct Entity {
     Team team = Team::Player;
     EntityKind kind = EntityKind::Troop;
     std::string cardId;
+    EntityId parentEntityId = 0, invisibilitySource = 0;
+    PlayId invisibilityPlayId = 0;
+    std::string attributionCardId, invisibilityCardId;
     Vec2 position, facing{0, -1}, pathTarget, stuckPosition;
     double hp = 0, maxHp = 0, radius = 0, cooldown = 0, born = 0, died = 0;
+    double shieldHP = 0, maxShieldHP = 0, shieldBrokenAt = -1, invisibleUntil = 0;
     double slowPct = 0, slowUntil = 0, stunUntil = 0, forcedUntil = 0;
     double chargeTime = 0, auraClock = 0, repathClock = 0, scanClock = 0;
     double stuckClock = 0, stuckTime = 0, stuckDistance = 1e9;
@@ -72,6 +86,8 @@ struct Entity {
     std::vector<Vec2> path;
     std::vector<SlowEffect> slows;
 };
+std::uint8_t TargetMaskFor(const Card &card);
+bool CanHit(const Card &card, const Entity &target);
 struct Projectile {
     std::uint64_t id = 0;
     EntityId source = 0, target = 0;
@@ -112,10 +128,13 @@ struct Event {
     std::string type, reason, cardId, damageKind;
     Team team = Team::Player, targetTeam = Team::Player;
     EntityId source = 0, target = 0;
+    EntityId parentEntityId = 0;
+    std::string attributionCardId;
     PlayId playId = 0;
     EntityKind targetKind = EntityKind::Troop;
     Vec2 position;
     double amount = 0, requested = 0, overkill = 0, hp = 0, maxHp = 0;
+    double shieldHP = 0, maxShieldHP = 0, shieldOverflowBlocked = 0;
     double aetherBefore = 0, aetherAfter = 0, until = 0, targetCost = 0;
     int handIndex = -1, count = 1, crowns = 0;
     bool sandbox = false, openingHand = false, firstPlay = false, overtime = false;
@@ -128,9 +147,17 @@ struct CardTelemetry {
     double placementX = 0, placementZ = 0, spellValue = 0, zoneOccupancy = 0, zoneSeconds = 0;
     double crownContribution = 0;
     double buildingLifetime = 0, buildingCapacity = 0, slowTrackedSeconds = 0, stunTrackedSeconds = 0;
+    double shieldDamage = 0, shieldDamageTaken = 0, shieldAbsorbed = 0, overflowPrevented = 0;
     std::uint64_t plays = 0, spawns = 0, surviving = 0, pulls = 0, connected = 0, targets = 0;
     std::uint64_t openingPlays = 0, firstPlays = 0, overtimePlays = 0, stunned = 0, dotTicks = 0;
     std::uint64_t openingEligible = 0;
+    std::uint64_t childSpawns = 0, childDeaths = 0, childSurviving = 0;
+};
+struct EntityTelemetry {
+    EntityId id = 0, parentEntityId = 0;
+    PlayId playId = 0;
+    std::string cardId, attributionCardId;
+    CardTelemetry observed;
 };
 struct AIState {
     bool enabled = false;
@@ -156,6 +183,7 @@ struct Snapshot {
     std::vector<Hazard> hazards;
     std::vector<SpellCast> spellCasts;
     std::array<std::map<std::string, CardTelemetry>, 2> telemetry;
+    std::array<std::map<EntityId, EntityTelemetry>, 2> entityTelemetry;
     int winner = -1; // -1 draw/unresolved, 0 Player, 1 Enemy; phase disambiguates.
     std::string resultReason;
 };
@@ -167,6 +195,7 @@ struct MatchOptions {
 };
 struct DeckAnalysis {
     double averageCost = 0, averageHP = 0, deploymentDPS = 0, averageRange = 0;
+    double totalShieldHP = 0, deathSpawnHP = 0, deathSpawnDPS = 0;
     int troops = 0, spells = 0, buildings = 0, air = 0, ground = 0, antiAir = 0, sustainedAntiAir = 0;
     int winConditions = 0, cheap = 0, ranged = 0, frontline = 0, splash = 0, fast = 0;
     double defenseScore = 0, synergy = 0;
@@ -190,6 +219,17 @@ struct CardIntelligence {
 CardIntelligence IntelligenceFor(const std::string &cardId);
 DeckAnalysis AnalyzeDeck(const std::vector<std::string> &deck);
 std::vector<std::string> BuildAIDeck(const std::string &style, std::uint32_t seed);
+inline constexpr std::size_t AIDeckCandidateLimit = 24310;
+using AIDeckIndices = std::array<std::size_t, 8>;
+// Exhaustive through the original 17-card roster; bounded deterministic
+// coverage for expansions. Indices always refer to playable Cards(), never summons.
+std::vector<AIDeckIndices> AIDeckCandidateIndices(std::size_t rosterSize);
+struct AIDeckCacheMetrics {
+    std::size_t evaluated = 0, legal = 0, retained = 0;
+    std::uint64_t hits = 0;
+    double buildMilliseconds = 0;
+};
+AIDeckCacheMetrics AIDeckCacheDiagnostics(const std::string &style);
 
 class Match {
   public:
@@ -232,16 +272,23 @@ class Match {
     struct StatusCredit {
         Team team = Team::Player;
         std::string card;
+        EntityId source = 0;
     };
     std::map<PlayId, StatusCredit> statusCredits_;
     std::map<EntityId, std::map<std::pair<Team, std::string>, double>> towerCredits_;
     // Private fixed-step origins also constrain presentation's interpolation.
     // They never enter card stats, saves, replay snapshots, or random decisions.
     std::map<EntityId, Vec2> bodyStepStarts_;
+    struct NavBlocker {
+        EntityId id = 0;
+        Vec2 position;
+        double radius = 0;
+    };
     struct CollisionBody {
         Vec2 from, to;
         double radius = 0;
         EntityKind kind = EntityKind::Troop;
+        Team team = Team::Player;
     };
     double Random();
     Entity *Get(EntityId id);
@@ -261,11 +308,14 @@ class Match {
                               const std::vector<Entity> &planned, Vec2 &result) const;
     std::vector<CollisionBody> CollisionBodies(const Entity &source, double distance) const;
     double BodyMotionFraction(const Entity &source, Vec2 to,
-                              const std::vector<CollisionBody> &bodies, bool forecast = false) const;
+                              const std::vector<CollisionBody> &bodies,
+                              const std::vector<NavBlocker> &blockers, bool forecast = false) const;
     void ApplySpell(Team team, const Card &card, Vec2 point, PlayId play);
     void Damage(EntityId target, double amount, Team team, const std::string &card, PlayId play,
                 EntityId source = 0, const std::string &kind = "attack");
     void Kill(EntityId target, Team team, const std::string &card, PlayId play, EntityId source);
+    void SpawnDeathChildren(const Entity &parent, const Card &definition);
+    void ApplyInvisibility(Team team, const Card &card, Vec2 point, PlayId play);
     void PullDeployment(EntityId deployed);
     void UpdateEntity(EntityId id, double dt);
     void Acquire(Entity &source);
@@ -276,6 +326,13 @@ class Match {
     void Move(Entity &source, const Entity &target, double dt);
     bool NavValid(Vec2 point, const Entity &source, EntityId goal, int bridge = 0) const;
     bool NavSegmentValid(Vec2 from, Vec2 to, const Entity &source, EntityId goal, int bridge = 0) const;
+    std::vector<NavBlocker> CollectNavBlockers() const;
+    bool NavValid(Vec2 point, const Entity &source, EntityId goal, int bridge,
+                  const std::vector<NavBlocker> &blockers) const;
+    bool NavSegmentValid(Vec2 from, Vec2 to, const Entity &source, EntityId goal, int bridge,
+                         const std::vector<NavBlocker> &blockers) const;
+    std::vector<Vec2> FindPath(const Entity &source, const Entity &target, int bridge,
+                              const std::vector<NavBlocker> &blockers) const;
     void UpdateAI(Team team, double dt);
     void Decision(Team team, const std::string &label, const std::string &reason);
     bool AIPlay(Team team, int index, Vec2 point, const std::string &reason, double reserve = 0);

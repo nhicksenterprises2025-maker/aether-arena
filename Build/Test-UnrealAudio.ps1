@@ -20,19 +20,37 @@ if (!(Test-Path -LiteralPath $Executable)) { throw "Audio QA executable not foun
 $Executable = (Resolve-Path -LiteralPath $Executable).Path
 $riftAudioExecutableHash = (Get-FileHash -LiteralPath $Executable -Algorithm SHA256).Hash.ToLowerInvariant()
 $isEditor = [System.IO.Path]::GetFileNameWithoutExtension($Executable) -in @('UnrealEditor','UnrealEditor-Cmd')
-$riftAudioSourcePaths = @(
-    Get-ChildItem -LiteralPath (Join-Path $repoRoot 'Unreal/RiftCrownArena/Source'),(Join-Path $repoRoot 'Unreal/RiftCrownArena/Config') -File -Recurse |
-        Where-Object Extension -in @('.cpp','.h','.cs','.ini') | ForEach-Object FullName
-) + @($projectPath,(Join-Path $repoRoot 'Build/Test-UnrealAudio.ps1'),(Join-Path $repoRoot 'Assets/Source/Audio/audio_manifest.json'))
-$riftAudioSourcePaths += @(Get-ChildItem -LiteralPath (Join-Path $repoRoot 'Assets/Source/Audio') -File | Where-Object Extension -eq '.wav' | ForEach-Object FullName)
-if ($isEditor) { $riftAudioSourcePaths += @('Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArena.dll','Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArenaEditor.dll') | ForEach-Object { Join-Path $repoRoot $_ } }
-$riftAudioSourcePins = @($riftAudioSourcePaths | Sort-Object -Unique | ForEach-Object {
-    [ordered]@{path=[IO.Path]::GetRelativePath($repoRoot,$_).Replace('\','/');sha256=(Get-FileHash -LiteralPath $_ -Algorithm SHA256).Hash.ToLowerInvariant()}
-})
+function Get-RiftAudioPins([string]$Base,[string[]]$Paths) {
+    @($Paths|Sort-Object -Unique|ForEach-Object {
+        if(!(Test-Path -LiteralPath $_ -PathType Leaf)){throw "Audio provenance input missing: $_"}
+        [ordered]@{path=[IO.Path]::GetRelativePath($Base,$_).Replace('\','/');sha256=(Get-FileHash -LiteralPath $_ -Algorithm SHA256).Hash.ToLowerInvariant();bytes=(Get-Item -LiteralPath $_).Length}
+    })
+}
+function Get-RiftAudioSourcePaths {
+    $riftPaths=@(Get-ChildItem -LiteralPath (Join-Path $repoRoot 'Unreal/RiftCrownArena/Source'),(Join-Path $repoRoot 'Unreal/RiftCrownArena/Config') -File -Recurse|ForEach-Object FullName)+@(
+        'Build/Test-UnrealAudio.ps1','Build/ShippingDiagnostics.ps1','Build/generate_card_manifest.py','Build/generate_audio.py','Build/generate_expansion_audio.py','Build/import_unreal_audio.py',
+        'Assets/Data/card_manifest.json','Assets/asset_manifest.json','Assets/Source/Audio/audio_manifest.json'|ForEach-Object {Join-Path $repoRoot $_})+@($projectPath)
+    $riftPaths+=@(Get-ChildItem -LiteralPath (Join-Path $repoRoot 'Assets/Source/Audio') -File|Where-Object Extension -eq '.wav'|ForEach-Object FullName)
+    if($isEditor){$riftPaths+=@('UnrealEditor-RiftCrownArena.dll','UnrealEditor-RiftCrownArenaEditor.dll'|ForEach-Object {Join-Path $repoRoot ('Unreal/RiftCrownArena/Binaries/Win64/'+$_)})}
+    $riftPaths
+}
+$riftAudioRuntimeRoot=if($isEditor){Join-Path $repoRoot 'Unreal/RiftCrownArena'}else{$null}
+if(!$isEditor){
+    for($riftAncestor=[IO.DirectoryInfo]::new((Split-Path -Parent $Executable));$riftAncestor;$riftAncestor=$riftAncestor.Parent){
+        if((Test-Path -LiteralPath (Join-Path $riftAncestor.FullName 'RiftCrownArena.exe') -PathType Leaf)-and(Test-Path -LiteralPath (Join-Path $riftAncestor.FullName 'RiftCrownArena/Content') -PathType Container)){$riftAudioRuntimeRoot=$riftAncestor.FullName;break}
+    }
+    if(!$riftAudioRuntimeRoot){throw 'Audio smoke requires an attributable packaged game root with RiftCrownArena.exe and RiftCrownArena/Content.'}
+}
+function Get-RiftAudioRuntimePaths {
+    if($isEditor){@(Get-ChildItem -LiteralPath (Join-Path $riftAudioRuntimeRoot 'Binaries'),(Join-Path $riftAudioRuntimeRoot 'Config'),(Join-Path $riftAudioRuntimeRoot 'Content') -File -Recurse|ForEach-Object FullName)+@(Join-Path $riftAudioRuntimeRoot 'RiftCrownArena.uproject')}
+    else {@(Get-ChildItem -LiteralPath $riftAudioRuntimeRoot -File -Recurse|ForEach-Object FullName)}
+}
+$riftAudioSourcePins=@(Get-RiftAudioPins $repoRoot (Get-RiftAudioSourcePaths))
+$riftAudioRuntimePins=@(Get-RiftAudioPins $riftAudioRuntimeRoot (Get-RiftAudioRuntimePaths))
 $workingDirectory = if ($isEditor) { $repoRoot } else { Split-Path -Parent $Executable }
 New-Item -ItemType Directory -Path $qaRoot,$saveRoot,$engineUserRoot -Force | Out-Null
-$reportPath = Join-Path $qaRoot 'audio-smoke.json'
-$logPath = Join-Path $qaRoot 'engine.log'
+$reportPath = Join-Path $isolatedRunRoot 'audio-smoke.json'
+$logPath = Join-Path $isolatedRunRoot 'engine.log'
 $arguments = @('/Game/Rift/Maps/Arena','-game','-RenderOffscreen','-windowed','-ResX=1280','-ResY=720',
     ('-RiftSaveRoot="' + $saveRoot + '"'),('-UserDir="' + $engineUserRoot + '"'),
     ('-RiftAudioSmoke="' + $reportPath + '"'),'-unattended','-nosplash','-NoVSync',('-abslog="' + $logPath + '"'))
@@ -40,7 +58,8 @@ if ($isEditor) { $arguments = @(('"' + $projectPath + '"')) + $arguments }
 # Audio remains enabled: this validates actual AudioDevice components and the bound
 # Settings slider callbacks. It is not an acoustic assessment of the loop seam.
 $started = Get-Date
-$process = Start-Process -FilePath $Executable -ArgumentList $arguments -WorkingDirectory $workingDirectory -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $qaRoot 'stdout.log') -RedirectStandardError (Join-Path $qaRoot 'stderr.log')
+[IO.File]::WriteAllText((Join-Path $isolatedRunRoot 'provenance.json'),([ordered]@{executable=$Executable;executableSha256=$riftAudioExecutableHash;sourceHashes=$riftAudioSourcePins;runtimeRoot=$riftAudioRuntimeRoot;runtimePins=$riftAudioRuntimePins;startedUtc=$started.ToUniversalTime().ToString('o')}|ConvertTo-Json -Depth 14),[Text.UTF8Encoding]::new($false))
+$process = Start-Process -FilePath $Executable -ArgumentList $arguments -WorkingDirectory $workingDirectory -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $isolatedRunRoot 'stdout.log') -RedirectStandardError (Join-Path $isolatedRunRoot 'stderr.log')
 $timedOut = $false
 while (!$process.HasExited) {
     if (((Get-Date)-$started).TotalSeconds -gt $TimeoutSeconds) { $timedOut = $true; Stop-Process -Id $process.Id -Force; break }
@@ -57,32 +76,52 @@ if ($isEditor) {
     if ((Test-Path -LiteralPath $logPath) -and (Get-Item -LiteralPath $logPath).LastWriteTimeUtc -ge $started.ToUniversalTime()) { $errors = @(Select-String -LiteralPath $logPath -Pattern $errorPattern | ForEach-Object { $_.Line }) }
     else { $errors=@('Fresh Editor engine log missing.') }
 } else {
-    $diagnostics=Get-RiftShippingDiagnostics -RepoRoot $repoRoot -DestinationRoot $qaRoot -SaveRoot $saveRoot -EngineUserRoot $engineUserRoot -ProcessId $process.Id -ExpectedVersion $ExpectedVersion -StartedUTC $started -FinishedUTC $finished -ErrorPattern $errorPattern
+    $diagnostics=Get-RiftShippingDiagnostics -RepoRoot $repoRoot -DestinationRoot $isolatedRunRoot -SaveRoot $saveRoot -EngineUserRoot $engineUserRoot -ProcessId $process.Id -ExpectedVersion $ExpectedVersion -StartedUTC $started -FinishedUTC $finished -ErrorPattern $errorPattern
     $errors=@($diagnostics.errors); $diagnosticSource=$diagnostics.diagnosticSource; $nativeDiagnosticLogs=@($diagnostics.nativeDiagnosticLogs); $diagnosticVerification=$diagnostics.diagnosticVerification; $logPath=$diagnostics.engineLog
 }
-$passed = $false
-if ($freshReport) {
-    $riftAudioReport=Get-Content -LiteralPath $reportPath -Raw | ConvertFrom-Json
-    $riftAudioCheckNames=@($riftAudioReport.checks | ForEach-Object name)
-    $passed=$riftAudioReport.passed -eq $true -and @($riftAudioReport.errors).Count -eq 0 -and @($riftAudioReport.checks).Count -gt 0 -and @($riftAudioReport.checks | Where-Object { !$_.passed }).Count -eq 0 -and @($riftAudioCheckNames | Sort-Object -Unique).Count -eq $riftAudioCheckNames.Count
-    if($ExpectedVersion -eq '1.3.2') {
-        $passed=$passed -and $riftAudioCheckNames.Count -eq 61
+function Test-RiftAudioSmokeContract($Report,[string]$Version) {
+    if(!$Report){return $false}
+    $riftAudioCheckNames=@($Report.checks|ForEach-Object name)
+    $riftValid=$Report.passed -eq $true -and @($Report.errors).Count -eq 0 -and @($Report.checks).Count -gt 0 -and @($Report.checks|Where-Object {$_.passed -ne $true}).Count -eq 0 -and @($riftAudioCheckNames|Sort-Object -Unique).Count -eq $riftAudioCheckNames.Count
+    if($Version -eq '1.3.2'){$riftValid=$riftValid -and $riftAudioCheckNames.Count -eq 61}
+    if($Version -in @('1.3.2','1.6.0')) {
         foreach($riftRequired in @('riverVoiceInspectionDetectsSilentControl','noRiverVoiceInHome','actualBattleActiveForWaterCheck','noRiverVoiceInBattle','noRiverVoiceAfterRepeatedWorldBinding','noRiverVoiceAfterReturningHome','noRiverVoiceInSettings','noRiverVoiceAfterDeferredBurst','noRiverVoiceDuringLimiterOverload','noRiverVoiceInQuietScene','quietMusicSliderMuteApplied','quietLiveMixerHasNoConstantSound','postMixSettingsRestored')) {
-            $passed=$passed -and $riftAudioCheckNames -contains $riftRequired
+            $riftValid=$riftValid -and $riftAudioCheckNames -contains $riftRequired
         }
     }
+    if($Version -eq '1.6.0') {
+        foreach($riftRequired in @('all41ImportedSoundsLoad','all20CombatVariationsLoad','all2ExpansionSoundsLoadWithoutLoops','shieldBreakSoundLoadsWithoutLoop','shadowSurgeSoundLoadsWithoutLoop')){$riftValid=$riftValid -and $riftAudioCheckNames -contains $riftRequired}
+        $riftValid=$riftValid -and $Report.loadedSounds -eq 41 -and $Report.loadedCombatVariations -eq 20 -and $Report.loadedExpansionSounds -eq 2 -and ($Report.loadedSounds+$Report.loadedCombatVariations+$Report.loadedExpansionSounds) -eq 63
+    }
+    return [bool]$riftValid
+}
+$passed=$false;$riftAudioReport=$null
+if($freshReport){
+    try {$riftAudioReport=Get-Content -LiteralPath $reportPath -Raw|ConvertFrom-Json;$passed=Test-RiftAudioSmokeContract $riftAudioReport $ExpectedVersion}
+    catch {$errors+=@('Audio smoke report is invalid JSON: '+$_.Exception.Message)}
 }
 $riftAudioSourcesUnchanged=$true
-foreach($riftPin in $riftAudioSourcePins){if((Get-FileHash -LiteralPath (Join-Path $repoRoot $riftPin.path) -Algorithm SHA256).Hash.ToLowerInvariant() -ne $riftPin.sha256){$riftAudioSourcesUnchanged=$false}}
+$riftAudioRuntimeUnchanged=$false;$riftAudioAfterSourcePins=@();$riftAudioAfterRuntimePins=@()
+try {
+    $riftAudioAfterSourcePins=@(Get-RiftAudioPins $repoRoot (Get-RiftAudioSourcePaths))
+    $riftAudioSourcesUnchanged=($riftAudioSourcePins|ConvertTo-Json -Depth 5 -Compress) -eq ($riftAudioAfterSourcePins|ConvertTo-Json -Depth 5 -Compress)
+    $riftAudioAfterRuntimePins=@(Get-RiftAudioPins $riftAudioRuntimeRoot (Get-RiftAudioRuntimePaths))
+    $riftAudioRuntimeUnchanged=($riftAudioRuntimePins|ConvertTo-Json -Depth 5 -Compress) -eq ($riftAudioAfterRuntimePins|ConvertTo-Json -Depth 5 -Compress)
+}catch {$riftAudioSourcesUnchanged=$false;$errors+=@('Audio source/runtime provenance check failed: '+$_.Exception.Message)}
 $riftAudioExecutableUnchanged=(Get-FileHash -LiteralPath $Executable -Algorithm SHA256).Hash.ToLowerInvariant() -eq $riftAudioExecutableHash
 if(!$riftAudioSourcesUnchanged){$errors+=@('Audio QA source/module bytes changed during execution.')}
+if(!$riftAudioRuntimeUnchanged){$errors+=@('Loaded audio/native Content, modules or runtime configuration changed during execution.')}
 if(!$riftAudioExecutableUnchanged){$errors+=@('Audio QA executable changed during execution.')}
-$passed=$passed -and !$timedOut -and $freshReport -and $process.ExitCode -eq 0 -and $errors.Count -eq 0 -and $riftAudioSourcesUnchanged -and $riftAudioExecutableUnchanged
+$passed=$passed -and !$timedOut -and $freshReport -and $process.ExitCode -eq 0 -and $errors.Count -eq 0 -and $riftAudioSourcesUnchanged -and $riftAudioRuntimeUnchanged -and $riftAudioExecutableUnchanged
 $run = [ordered]@{ version=$ExpectedVersion; executable=$Executable; executableSha256=$riftAudioExecutableHash; editor=$isEditor; workingDirectory=$workingDirectory; audioDisabled=$false;
     processId=$process.Id;startedUtc=$started.ToUniversalTime().ToString('o');finishedUtc=$finished.ToString('o');sourceHashes=$riftAudioSourcePins;sourcesUnchanged=$riftAudioSourcesUnchanged;executableUnchanged=$riftAudioExecutableUnchanged;
+    runtimeRoot=$riftAudioRuntimeRoot;runtimePins=$riftAudioRuntimePins;afterRuntimePins=$riftAudioAfterRuntimePins;runtimePinsUnchanged=$riftAudioRuntimeUnchanged;afterSourceHashes=$riftAudioAfterSourcePins;runRoot=$isolatedRunRoot;
     engineUserRoot=$engineUserRoot; report=$reportPath; reportSha256=$(if($freshReport){(Get-FileHash -LiteralPath $reportPath -Algorithm SHA256).Hash.ToLowerInvariant()}else{''});checkCount=$(if($freshReport){@($riftAudioReport.checks).Count}else{0});engineLog=$logPath; freshReport=$freshReport;
     diagnosticSource=$diagnosticSource; nativeDiagnosticLogs=$nativeDiagnosticLogs; diagnosticVerification=$diagnosticVerification;
     timedOut=$timedOut; exitCode=$process.ExitCode; seconds=[math]::Round(((Get-Date)-$started).TotalSeconds,2); passed=$passed; errors=$errors }
-[System.IO.File]::WriteAllText((Join-Path $qaRoot 'run.json'),($run | ConvertTo-Json -Depth 10),[System.Text.UTF8Encoding]::new($false))
+[System.IO.File]::WriteAllText((Join-Path $isolatedRunRoot 'run.json'),($run | ConvertTo-Json -Depth 14),[System.Text.UTF8Encoding]::new($false))
+# Historical readers retain latest aliases; all paths in run.json point to immutable originals.
+foreach($riftName in @('run.json','audio-smoke.json','stdout.log','stderr.log')){if(Test-Path -LiteralPath (Join-Path $isolatedRunRoot $riftName)){Copy-Item -LiteralPath (Join-Path $isolatedRunRoot $riftName) -Destination (Join-Path $qaRoot $riftName) -Force}}
+if(Test-Path -LiteralPath $logPath){Copy-Item -LiteralPath $logPath -Destination (Join-Path $qaRoot 'engine.log') -Force}
 Write-Output ($run | ConvertTo-Json -Depth 10)
 if ($timedOut -or !$freshReport -or !$passed -or $process.ExitCode -ne 0 -or $errors.Count -gt 0) { throw "Native audio QA failed; inspect $qaRoot" }

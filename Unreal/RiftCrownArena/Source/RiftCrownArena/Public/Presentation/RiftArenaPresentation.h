@@ -70,6 +70,8 @@ private:
     void SynchronizeSpellDebris(const rift::Snapshot& State);
     void SynchronizeHazards(const rift::Snapshot& State);
     void SynchronizeStatuses(const rift::Snapshot& State);
+    void SynchronizeExpansionEffects(const rift::Snapshot& State);
+    UInstancedStaticMeshComponent* ExpansionBatch(FName Key,FName Mesh,FLinearColor Color);
     void OnSimulationEvent(const rift::Event& Event);
     void OnMatchChanged();
     void ClearVisuals();
@@ -102,6 +104,7 @@ private:
     UPROPERTY() TMap<uint64,TObjectPtr<UNiagaraComponent>> SlowEffects;
     UPROPERTY() TMap<uint64,TObjectPtr<UNiagaraComponent>> StunEffects;
     UPROPERTY() TMap<uint64,TObjectPtr<UMaterialInstanceDynamic>> ParticleMaterials;
+    UPROPERTY() TMap<FName,TObjectPtr<UInstancedStaticMeshComponent>> ExpansionBatches;
     TMap<uint64,FVector> ProjectileOrigins;
     uint64 ProjectileBodiesCreated=0, ProjectileBodiesReleased=0;
     struct FSpellDebris
@@ -117,6 +120,8 @@ private:
     struct FSpellImpactEffect { TWeakObjectPtr<UNiagaraComponent> Component; double Born=0.; };
     TArray<FSpellImpactEffect> SpellImpactEffects;
     TArray<rift::Event> RecentSpellImpacts;
+    TArray<rift::Event> RecentReaperAttacks;
+    TArray<rift::Event> RecentCloakExpiries;
     uint64 SpellImpactEvents=0;
     TMap<uint64,double> NextFrostBreath;
     TArray<TWeakObjectPtr<UNiagaraComponent>> TransientEffects;

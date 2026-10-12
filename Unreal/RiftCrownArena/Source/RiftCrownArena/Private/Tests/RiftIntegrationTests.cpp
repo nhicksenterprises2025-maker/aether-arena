@@ -669,6 +669,39 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRiftSnapshotRoundtripTest, "Rift.Integration.S
 bool FRiftSnapshotRoundtripTest::RunTest(const FString &Parameters) {
     rift::MatchOptions Options;
     Options.aiEnabled = {false, false};
+    TestEqual(TEXT("Arena has exactly 24 columns"), rift::arena::Width, 24);
+    TestEqual(TEXT("Arena has exactly 34 rows"), rift::arena::Height, 34);
+    TSet<double> Columns, Rows;
+    int32 Centers = 0;
+    for (int32 Row = 0; Row < 34; ++Row)
+        for (int32 Column = 0; Column < 24; ++Column) {
+            const rift::Vec2 Center{-11.5 + Column, -16.5 + Row};
+            const auto Snapped = rift::SnapToTile(Center);
+            TestTrue(TEXT("Every authored tile center snaps to itself"),
+                     Snapped.x == Center.x && Snapped.z == Center.z);
+            Columns.Add(Snapped.x); Rows.Add(Snapped.z); ++Centers;
+        }
+    TestEqual(TEXT("All 816 tile centers exist"), Centers, 816);
+    TestEqual(TEXT("Tile centers occupy 24 distinct columns"), Columns.Num(), 24);
+    TestEqual(TEXT("Tile centers occupy 34 distinct rows"), Rows.Num(), 34);
+    for (const auto Team : {rift::Team::Player, rift::Team::Enemy})
+        for (const int32 Side : {-1, 1}) {
+            rift::Match Edge(Options);
+            const double Sign = Team == rift::Team::Player ? 1. : -1.;
+            Edge.SetAether(Team, 10);
+            TestTrue(TEXT("Actual paid hand accepts each mirrored outer tile"),
+                     Edge.Play(Team, 0, {Side * 11.5, Sign * 16.5}));
+            const auto Encoded = URiftReplaySubsystem::SnapshotJSON(Edge.State());
+            rift::Snapshot EdgeParsed;
+            TestTrue(TEXT("New-edge paid snapshots remain valid"),
+                     URiftReplaySubsystem::SnapshotFromJSON(Encoded, EdgeParsed));
+            TestEqual(TEXT("New-edge snapshots preserve actual deployment coordinates"),
+                      Serialize(URiftReplaySubsystem::SnapshotJSON(EdgeParsed)), Serialize(Encoded));
+            TestFalse(TEXT("Paid deployment rejects outside the new across boundary"),
+                      Edge.Play(Team, 1, {Side * 12.001, Sign * 8.5}));
+            TestFalse(TEXT("Paid deployment rejects outside the new Core-to-Core boundary"),
+                      Edge.Play(Team, 1, {0, Sign * 17.001}));
+        }
     rift::Match Match(Options);
     Match.Spawn(rift::Team::Player, "frost_fang", {1, 5});
     Match.Spawn(rift::Team::Enemy, "ironclad", {1, 4});
@@ -774,7 +807,7 @@ bool FRiftSnapshotRoundtripTest::RunTest(const FString &Parameters) {
     Bad->SetArrayField(TEXT("spellCasts"), {MakeShared<FJsonValueBoolean>(false)});
     Invalid.Add(Bad);
     Bad = Clone(Original);
-    Bad->GetArrayField(TEXT("spellCasts"))[0]->AsObject()->SetStringField(TEXT("cardId"), TEXT("nova_flask"));
+    Bad->GetArrayField(TEXT("spellCasts"))[0]->AsObject()->SetStringField(TEXT("cardId"), TEXT("ironclad"));
     Invalid.Add(Bad);
     Bad = Clone(Original);
     Bad->GetArrayField(TEXT("spellCasts"))[0]->AsObject()->SetNumberField(TEXT("impactAt"), .1);
@@ -840,6 +873,15 @@ bool FRiftReplayIntegrationTest::RunTest(const FString &Parameters) {
     M.Step(.15);
     for (const auto &E : M.DrainEvents())
         R->RecordEvent(E);
+    const auto* Nova=rift::FindCard("nova_flask");
+    if(!TestNotNull(TEXT("Nova has its captured delayed-impact definition"),Nova)) return false;
+    double ImpactTime=-1;
+    M.Step(.1+Nova->castDelay+.01-M.State().elapsed);
+    for(const auto& E:M.DrainEvents()) {
+        if(E.type=="spell_impact"&&E.cardId=="nova_flask")ImpactTime=E.time;
+        R->RecordEvent(E);
+    }
+    if(!TestTrue(TEXT("Nova reaches its real delayed impact before the final sample"),ImpactTime>=.1+Nova->castDelay-1e-6))return false;
     R->EndRecording(M.State(), true);
     TestTrue(TEXT("Recorded replay background write succeeds"), R->FlushPendingWrites());
     TestTrue(TEXT("Recorded replay saved"),
@@ -858,9 +900,14 @@ bool FRiftReplayIntegrationTest::RunTest(const FString &Parameters) {
         if (E.id == Tower)
             TowerHP = E.hp;
     }
-    TestEqual(TEXT("All five immediate spell deaths reconstructed"), DeadBats, 5);
+    TestEqual(TEXT("Nova does not damage troops at the cast timestamp"),DeadBats,0);
     TestEqual(TEXT("Tower edit reconstructed"), TowerHP, 1234.0);
-    TestEqual(TEXT("Nova retains its instant hit without a lingering zone"), int32(R->View.hazards.size()), 0);
+    auto CountDeadBats=[&](){int32 Count=0;for(const auto& E:R->View.entities)if(E.cardId=="vampire_bats"&&E.dead)++Count;return Count;};
+    R->Seek(float(ImpactTime-.001));
+    TestEqual(TEXT("Nova still preserves all five troops immediately before impact"),CountDeadBats(),0);
+    R->Seek(float(ImpactTime+.001));
+    TestEqual(TEXT("All five Nova deaths reconstruct at the authoritative delayed impact"),CountDeadBats(),5);
+    TestEqual(TEXT("Nova has no lingering zone after its delayed impact"), int32(R->View.hazards.size()), 0);
     R->Seek(0);
     TestEqual(TEXT("Backward seek restores initial state"), int32(R->View.entities.size()), 6);
     R->Advance(.11f);
@@ -1281,14 +1328,162 @@ bool FRiftSpellCastReplayIntegrationTest::RunTest(const FString &Parameters) {
         return false;
     Replay->Seek(.2f);
     TestTrue(TEXT("Old Meteor has no retroactively added windup"), Replay->View.spellCasts.empty());
-    TestTrue(TEXT("Old Meteor retains its recorded instant zone timing"),
-             Replay->View.hazards.size() == 1 && Replay->View.hazards[0].born == .1 &&
-                 Replay->View.hazards[0].nextTick == 1.1);
+    TestTrue(TEXT("Old Meteor does not invent missing historical zone mechanics"),Replay->View.hazards.empty());
+    TestTrue(TEXT("Missing legacy zone mechanics have an explicit reconstruction limitation"),Replay->ReconstructionDiagnostics()->GetArrayField(TEXT("limitations")).Num()>0);
     TestEqual(TEXT("Old spell damage is reconstructed at its recorded time"),
               HP(OldVictimId), OldVictimHP - 262);
     Replay->CloseReplay();
     return true;
 }
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRiftHistoricalReplayIntegrationTest,"Rift.Integration.HistoricalReplayBalance",Flags)
+bool FRiftHistoricalReplayIntegrationTest::RunTest(const FString& Parameters) {
+    if(!Sandbox()){AddError(TEXT("Use an isolated -RiftSaveRoot and -RiftAutomationSandbox."));return false;}
+    auto* GI=NewObject<UGameInstance>();auto* Replay=NewObject<URiftReplaySubsystem>(GI);
+    ON_SCOPE_EXIT {Replay->CloseReplay();Replay->FlushPendingWrites();};
+    rift::MatchOptions Options;Options.aiEnabled={false,false};
+    struct FAttackProof {rift::Event Event;rift::EntityKind SourceKind,TargetKind;bool StructuresOnly=false;};
+    TSet<FString> LockCoverage;int32 RadiusChecks=0;
+    // These records come from actual Match attacks and deployments. Initial and
+    // terminal samples force the interior seek to reconstruct from events.
+    for(int32 Scenario=0;Scenario<4;++Scenario) {
+        Options.seed=60100+Scenario;rift::Match Match(Options);Replay->BeginRecording(Options,true);Replay->Sample(Match.State());
+        auto Flush=[&](){for(const auto& Event:Match.DrainEvents())Replay->RecordEvent(Event);};Flush();Match.Step(.1);Flush();
+        if(Scenario==0){TestTrue(TEXT("Crown fixture troop spawns"),Match.Spawn(rift::Team::Player,"ironclad",{-rift::arena::BridgeCenterX,-(rift::arena::GuardDepth-3.9)}));TestTrue(TEXT("Collision fixture full Stampede spawns"),Match.Spawn(rift::Team::Player,"stampede",{rift::arena::BridgeCenterX,6.5}));}
+        else if(Scenario==1){TestTrue(TEXT("Melee fixture player spawns"),Match.Spawn(rift::Team::Player,"ironclad",{-10,4}));TestTrue(TEXT("Melee fixture enemy spawns"),Match.Spawn(rift::Team::Enemy,"ironclad",{-10,2.5}));}
+        else {TestTrue(TEXT("Building fixture attacking troop spawns"),Match.Spawn(rift::Team::Player,Scenario==2?"ironclad":"rambeast",{-rift::arena::BridgeCenterX,-4.5}));TestTrue(TEXT("Building fixture enemy tower spawns"),Match.Spawn(rift::Team::Enemy,"archer_tower",{-rift::arena::BridgeCenterX,-7.2}));}
+        const auto Spawned=Match.State().entities;Flush();TArray<FAttackProof> Attacks;TSet<uint64> SeenSources;
+        for(int32 Step=0;Step<60;++Step) {
+            Match.Step(.05);
+            for(const auto& Event:Match.DrainEvents()) {
+                Replay->RecordEvent(Event);if(Event.type!="attack"||SeenSources.Contains(Event.source))continue;
+                const rift::Entity* Source=nullptr;const rift::Entity* Target=nullptr;
+                for(const auto& Entity:Match.State().entities){if(Entity.id==Event.source)Source=&Entity;if(Entity.id==Event.target)Target=&Entity;}
+                if(!Source||!Target)continue;SeenSources.Add(Event.source);const auto* Card=rift::FindEntityDefinition(Source->cardId);
+                Attacks.Add({Event,Source->kind,Target->kind,Card&&Card->structuresOnly});
+            }
+        }
+        Replay->EndRecording(Match.State(),true);
+        if(!TestTrue(TEXT("Real attack fixture archive finishes writing"),Replay->FlushPendingWrites())||!TestTrue(TEXT("Real attack fixture archive reopens"),Replay->OpenReplay(Replay->LatestFilename)))return false;
+        Replay->Seek(.1001f);
+        for(const auto& Entity:Spawned)if(Entity.cardId=="stampede") {
+            const auto Found=std::find_if(Replay->View.entities.begin(),Replay->View.entities.end(),[&](const auto& E){return E.id==Entity.id;});
+            TestTrue(TEXT("Every recorded Stampede member retains its actual collision body"),Found!=Replay->View.entities.end()&&FMath::IsNearlyEqual(Found->radius,Entity.radius,1e-9));++RadiusChecks;
+        }
+        for(const auto& Proof:Attacks) {
+            const bool CrownTarget=Proof.TargetKind==rift::EntityKind::Guard||Proof.TargetKind==rift::EntityKind::Core;
+            const bool Hard=Proof.SourceKind==rift::EntityKind::Troop&&(CrownTarget||(Proof.StructuresOnly&&Proof.TargetKind==rift::EntityKind::Building));
+            Replay->Seek(float(Proof.Event.time-.0001));
+            auto Before=std::find_if(Replay->View.entities.begin(),Replay->View.entities.end(),[&](const auto& E){return E.id==Proof.Event.source;});
+            TestTrue(TEXT("Recorded source is uncommitted before its first actual attack"),Before!=Replay->View.entities.end()&&Before->hardLock==0);
+            Replay->Seek(float(Proof.Event.time+.0001));
+            auto After=std::find_if(Replay->View.entities.begin(),Replay->View.entities.end(),[&](const auto& E){return E.id==Proof.Event.source;});
+            TestTrue(TEXT("Replay reconstructs only authoritative first-attack commitments"),After!=Replay->View.entities.end()&&After->hardLock==(Hard?Proof.Event.target:0));
+            if(Proof.SourceKind==rift::EntityKind::Guard||Proof.SourceKind==rift::EntityKind::Core)LockCoverage.Add(TEXT("crown-source"));
+            else if(Proof.SourceKind==rift::EntityKind::Building)LockCoverage.Add(TEXT("building-source"));
+            else if(CrownTarget)LockCoverage.Add(TEXT("troop-crown"));
+            else if(Proof.TargetKind==rift::EntityKind::Troop)LockCoverage.Add(TEXT("troop-troop"));
+            else if(Proof.TargetKind==rift::EntityKind::Building)LockCoverage.Add(Proof.StructuresOnly?TEXT("structure-building"):TEXT("troop-building"));
+        }
+        Replay->CloseReplay();
+    }
+    TestEqual(TEXT("All fifteen real Stampede spawn events exercise radius reconstruction"),RadiusChecks,rift::FindCard("stampede")->count);
+    for(const TCHAR* Coverage:{TEXT("crown-source"),TEXT("building-source"),TEXT("troop-crown"),TEXT("troop-troop"),TEXT("structure-building"),TEXT("troop-building")})TestTrue(FString(TEXT("Actual attack fixture covers "))+Coverage,LockCoverage.Contains(Coverage));
+
+    rift::Match Quiet(Options);Replay->BeginRecording(Options,true);Replay->Sample(Quiet.State());
+    for(const auto& Event:Quiet.DrainEvents())Replay->RecordEvent(Event);Quiet.Step(.1);
+    TestTrue(TEXT("Quiet actual Archer Tower deploys"),Quiet.Spawn(rift::Team::Player,"archer_tower",{-rift::arena::BridgeCenterX,7}));
+    TestTrue(TEXT("Quiet actual Pulverizer deploys"),Quiet.Spawn(rift::Team::Player,"pulverizer",{rift::arena::BridgeCenterX,7}));
+    for(const auto& Event:Quiet.DrainEvents())Replay->RecordEvent(Event);
+    TMap<uint64,double> LiveBuildingHP;double QuietProbeTime=0;
+    for(int32 Step=0;Step<20;++Step) {
+        Quiet.Step(.05);for(const auto& Event:Quiet.DrainEvents())Replay->RecordEvent(Event);
+        if(Step==9){QuietProbeTime=Quiet.State().elapsed;for(const auto& Entity:Quiet.State().entities)if(Entity.kind==rift::EntityKind::Building)LiveBuildingHP.Add(Entity.id,Entity.hp);}
+    }
+    Replay->EndRecording(Quiet.State(),true);
+    if(!TestTrue(TEXT("Quiet building archive finishes writing"),Replay->FlushPendingWrites())||!TestTrue(TEXT("Quiet building archive opens"),Replay->OpenReplay(Replay->LatestFilename)))return false;
+    Replay->Seek(float(QuietProbeTime));int32 DecayChecks=0;
+    for(const auto& Entity:Replay->View.entities)if(const auto* Actual=LiveBuildingHP.Find(Entity.id)) {
+        TestTrue(TEXT("Quiet replay HP matches actual authoritative building decay"),FMath::IsNearlyEqual(Entity.hp,*Actual,1e-4));
+        const auto* Definition=rift::FindCard(Entity.cardId);TestTrue(TEXT("Both actual quiet buildings lose HP through their lifetime rule"),Definition&&*Actual<Definition->hp);++DecayChecks;
+    }
+    TestEqual(TEXT("Actual quiet HP parity covers both baseline buildings"),DecayChecks,2);Replay->CloseReplay();
+
+    // Deliberately synthetic historical mechanics differ from the live roster.
+    // Its hash is provenance metadata, not a claim to authenticate a real patch.
+    rift::Match Empty(Options);auto Initial=Empty.State();Initial.aether[1]=10;
+    auto PlayedSlot=std::find(Initial.hands[1].begin(),Initial.hands[1].end(),"ironclad");
+    if(PlayedSlot==Initial.hands[1].end()){auto Queued=std::find(Initial.queues[1].begin(),Initial.queues[1].end(),"ironclad");if(!TestTrue(TEXT("Historical paid card exists in the actual eight-card cycle"),Queued!=Initial.queues[1].end()))return false;std::swap(Initial.hands[1][0],*Queued);PlayedSlot=Initial.hands[1].begin();}
+    const int32 Slot=int32(PlayedSlot-Initial.hands[1].begin());auto Mid=Initial;Mid.elapsed=Mid.phaseElapsed=.6;Mid.timeRemaining=179.4;
+    rift::Entity Victim;Victim.id=100;Victim.team=rift::Team::Enemy;Victim.cardId="ironclad";Victim.playId=101;Victim.position={0,6};Victim.hp=Victim.maxHp=901;Victim.radius=.65;Victim.born=.1;
+    rift::Entity Building;Building.id=101;Building.team=rift::Team::Player;Building.kind=rift::EntityKind::Building;Building.cardId="pulverizer";Building.playId=103;Building.position={0,4};Building.hp=Building.maxHp=700;Building.radius=.9;Building.born=.15;
+    Mid.entities.push_back(Victim);Mid.entities.push_back(Building);Mid.aether[1]=1;Mid.spent[1]=9;Mid.telemetry[1]["ironclad"].plays=Mid.telemetry[1]["ironclad"].spawns=1;Mid.telemetry[1]["ironclad"].spent=9;
+    Mid.hands[1][Slot]=Initial.queues[1].front();Mid.queues[1].erase(Mid.queues[1].begin());Mid.queues[1].push_back("ironclad");
+    Mid.entities[6].target=Mid.entities[6].hardLock=101;Mid.entities[6].cooldown=.8;Mid.entities[7].hp=607;
+    rift::SpellCast Cast;Cast.playId=102;Cast.cardId="meteor_shards";Cast.position={0,4};Cast.born=.2;Cast.impactAt=.7;Mid.spellCasts.push_back(Cast);
+    rift::Shockwave Wave;Wave.id=5;Wave.source=101;Wave.playId=103;Wave.cardId="pulverizer";Wave.origin={0,4};Wave.radius=Wave.speed=5;Wave.born=.3;Wave.expires=1.3;Wave.progress=1.5;Mid.shockwaves.push_back(Wave);
+    auto Final=Mid;Final.elapsed=Final.phaseElapsed=2;Final.timeRemaining=178;Final.spellCasts.clear();Final.shockwaves.clear();Final.entities[6].cooldown=0;
+    rift::SlowEffect Slow;Slow.source=101;Slow.playId=103;Slow.cardId="pulverizer";Slow.pct=.25;Slow.born=.8;Slow.until=2.8;
+    Final.entities[6].slows.push_back(Slow);Final.entities[6].slowPct=.25;Final.entities[6].slowUntil=2.8;Final.entities[6].slowSource=103;
+    rift::Hazard Hazard;Hazard.playId=102;Hazard.cardId="meteor_shards";Hazard.position={0,4};Hazard.radius=4.5;Hazard.born=.7;Hazard.expires=3.2;Hazard.nextTick=2.2;Hazard.ticks=2;Final.hazards.push_back(Hazard);
+    const FString HistoricalHash=FString::ChrN(64,TEXT('a'));
+    auto SetHistoricalBalance=[&](const TSharedPtr<FJsonObject>& Balance) {
+        Balance->SetStringField(TEXT("manifestHash"),HistoricalHash);Balance->SetStringField(TEXT("manifestVersion"),TEXT("synthetic-historical-fixture"));
+        for(auto Value:Balance->GetArrayField(TEXT("cards"))) {
+            auto Card=Value->AsObject();const FString Id=Card->GetStringField(TEXT("id"));
+            if(Id==TEXT("ironclad")){Card->SetNumberField(TEXT("cost"),9);Card->SetNumberField(TEXT("hp"),901);Card->SetNumberField(TEXT("collisionRadius"),.65);Card->SetNumberField(TEXT("targetMask"),4);Card->SetBoolField(TEXT("structuresOnly"),true);}
+            if(Id==TEXT("pulverizer")){Card->SetNumberField(TEXT("collisionRadius"),.9);Card->SetNumberField(TEXT("damage"),77);Card->SetNumberField(TEXT("splash"),5);Card->SetNumberField(TEXT("shockwaveSpeed"),5);Card->SetNumberField(TEXT("slowPct"),.25);Card->SetNumberField(TEXT("slowDuration"),2);Card->SetNumberField(TEXT("hpDecayPerSecond"),0);}
+            if(Id==TEXT("meteor_shards")){Card->SetNumberField(TEXT("castDelay"),.5);Card->SetNumberField(TEXT("spellRadius"),4.5);Card->SetNumberField(TEXT("dotDamage"),41);Card->SetNumberField(TEXT("dotDuration"),2.5);Card->SetNumberField(TEXT("dotInterval"),.5);}
+        }
+    };
+    Replay->BeginRecording(Options,true);SetHistoricalBalance(Replay->Recording->GetObjectField(TEXT("balance")));Replay->Sample(Initial);uint64 Sequence=0;
+    auto Event=[&](const char* Type,double Time,const char* CardId){rift::Event E;E.sequence=++Sequence;E.type=Type;E.time=Time;E.cardId=CardId;return E;};
+    auto E=Event("card_play",.1,"ironclad");E.team=rift::Team::Enemy;E.playId=101;E.amount=9;E.aetherBefore=10;E.aetherAfter=1;E.handIndex=Slot;E.handAfter=Mid.hands[1];Replay->RecordEvent(E);
+    E=Event("entity_spawn",.1,"ironclad");E.team=rift::Team::Enemy;E.source=100;E.playId=101;E.position=Victim.position;E.hp=E.maxHp=901;Replay->RecordEvent(E);
+    E=Event("entity_spawn",.15,"pulverizer");E.source=101;E.playId=103;E.position=Building.position;E.hp=E.maxHp=700;Replay->RecordEvent(E);
+    E=Event("spell_cast",.2,"meteor_shards");E.playId=102;E.position={0,4};E.until=.7;Replay->RecordEvent(E);
+    E=Event("shockwave_launch",.3,"pulverizer");E.source=101;E.target=100;E.playId=103;E.position={0,4};E.amount=77;E.until=1.3;Replay->RecordEvent(E);
+    E=Event("attack",.4,"ironclad");E.team=rift::Team::Enemy;E.source=100;E.target=101;E.playId=101;E.amount=93;E.position=Victim.position;Replay->RecordEvent(E);
+    E=Event("damage",.4,"ironclad");E.team=rift::Team::Enemy;E.source=100;E.target=101;E.playId=101;E.targetKind=rift::EntityKind::Building;E.amount=E.requested=93;E.hp=607;Replay->RecordEvent(E);Replay->Sample(Mid);
+    E=Event("spell_impact",.7,"meteor_shards");E.playId=102;E.position={0,4};Replay->RecordEvent(E);
+    E=Event("slow",.8,"pulverizer");E.source=101;E.target=100;E.targetTeam=rift::Team::Enemy;E.playId=103;E.amount=.25;E.until=2.8;Replay->RecordEvent(E);
+    for(double Tick:{1.2,1.7}){E=Event("hazard_tick",Tick,"meteor_shards");E.playId=102;Replay->RecordEvent(E);}
+    Replay->EndRecording(Final,true);if(!TestTrue(TEXT("Synthetic archive template finishes writing"),Replay->FlushPendingWrites()))return false;
+    const FString Exported=Fixture(TEXT("-historical-template.json"));if(!TestTrue(TEXT("Synthetic archive template exports"),Replay->ExportReplay(Replay->LatestFilename,Exported)))return false;
+    FString Bytes;FFileHelper::LoadFileToString(Bytes,*Exported);auto Historical=Json(Bytes);
+    const FString LiveHash=UTF8_TO_TCHAR(rift::CardManifestHash().c_str());FString Error;
+    if(!TestTrue(TEXT("Self-consistent captured historical balance validates"),URiftReplaySubsystem::ValidateRecording(Historical,Error))){AddError(Error);return false;}
+    const FString Name=FGuid::NewGuid().ToString(EGuidFormats::Digits)+TEXT("-historical-balance.json");const FString Path=FPaths::Combine(URiftProfileSubsystem::SaveRoot(),TEXT("Replays"),Name);
+    if(!TestTrue(TEXT("Historical fixture writes atomically"),URiftProfileSubsystem::AtomicWrite(Path,Serialize(Historical.ToSharedRef()),Error))||!TestTrue(TEXT("Historical balance opens despite changed current mechanics"),Replay->OpenReplay(Name)))return false;
+    Replay->Seek(.4f);auto Find=[&](uint64 Id)->const rift::Entity*{for(const auto& Entity:Replay->View.entities)if(Entity.id==Id)return &Entity;return nullptr;};
+    TestTrue(TEXT("Historical event spawn uses captured body radius"),Find(100)&&Find(100)->radius==.65);
+    TestEqual(TEXT("Historical paid cost uses captured mechanics"),Replay->View.spent[1],9.0);
+    TestTrue(TEXT("Historical spell windup uses its recorded impact time"),Replay->View.spellCasts.size()==1&&Replay->View.spellCasts[0].impactAt==.7);
+    TestTrue(TEXT("Historical wave reconstructs captured radius and speed"),Replay->View.shockwaves.size()==1&&Replay->View.shockwaves[0].radius==5&&Replay->View.shockwaves[0].speed==5);
+    Replay->Seek(.45f);TestTrue(TEXT("Historical structure-only mask drives building commitment despite current general targeting"),Find(100)&&Find(100)->hardLock==101&&rift::TargetMaskFor(*rift::FindCard("ironclad"))==5);
+    Replay->Seek(.9f);TestTrue(TEXT("Historical slow uses captured amount and expiry"),Find(100)&&Find(100)->slowPct==.25&&Find(100)->slowUntil==2.8);
+    TestTrue(TEXT("Synthetic historical zero-decay policy does not inherit today's building drain"),Find(101)&&Find(101)->hp==607);
+    TestTrue(TEXT("Historical DOT zone uses captured geometry and duration"),Replay->View.hazards.size()==1&&Replay->View.hazards[0].radius==4.5&&Replay->View.hazards[0].expires==3.2);
+    Replay->Seek(1.25f);TestTrue(TEXT("Historical DOT tick advances by captured interval"),Replay->View.hazards.size()==1&&Replay->View.hazards[0].ticks==1&&FMath::IsNearlyEqual(Replay->View.hazards[0].nextTick,1.7,1e-9));
+    auto Diagnostics=Replay->ReconstructionDiagnostics();TestTrue(TEXT("Historical diagnostics identify captured definitions"),Diagnostics->GetBoolField(TEXT("hasCapturedDefinitions")));
+    TestEqual(TEXT("Historical diagnostics identify the archive's provenance hash"),Diagnostics->GetStringField(TEXT("manifestHash")),HistoricalHash);
+    TestEqual(TEXT("Historical reads leave current canonical definitions untouched"),FString(UTF8_TO_TCHAR(rift::CardManifestHash().c_str())),LiveHash);
+    auto Broken=Clone(Historical.ToSharedRef());Broken->GetArrayField(TEXT("events"))[4]->AsObject()->SetNumberField(TEXT("amount"),78);
+    TestFalse(TEXT("Captured wave/event damage mismatch still rejects"),URiftReplaySubsystem::ValidateRecording(Broken,Error));
+    Broken=Clone(Historical.ToSharedRef());Broken->GetArrayField(TEXT("states"))[1]->AsObject()->GetArrayField(TEXT("shockwaves"))[0]->AsObject()->SetNumberField(TEXT("progress"),2);
+    TestFalse(TEXT("Captured wave progress inconsistent with its timestamp rejects"),URiftReplaySubsystem::ValidateRecording(Broken,Error));
+    Broken=Clone(Historical.ToSharedRef());Broken->GetArrayField(TEXT("events"))[3]->AsObject()->SetNumberField(TEXT("until"),.8);
+    TestFalse(TEXT("Captured spell/event delay mismatch still rejects"),URiftReplaySubsystem::ValidateRecording(Broken,Error));
+    Broken=Clone(Historical.ToSharedRef());Broken->GetArrayField(TEXT("events"))[8]->AsObject()->SetNumberField(TEXT("amount"),.3);
+    TestFalse(TEXT("Captured slow/event amount mismatch still rejects"),URiftReplaySubsystem::ValidateRecording(Broken,Error));
+    Broken=Clone(Historical.ToSharedRef());Broken->GetObjectField(TEXT("balance"))->GetArrayField(TEXT("cards"))[0]->AsObject()->SetNumberField(TEXT("hp"),std::numeric_limits<double>::infinity());
+    TestFalse(TEXT("Unsafe captured numerical definition rejects"),URiftReplaySubsystem::ValidateRecording(Broken,Error));
+    auto Legacy=Clone(Historical.ToSharedRef());Legacy->RemoveField(TEXT("balance"));const FString LegacyName=FGuid::NewGuid().ToString(EGuidFormats::Digits)+TEXT("-legacy-numeric-balance.json");
+    if(!TestTrue(TEXT("Legacy numerical archive without definitions remains readable"),URiftReplaySubsystem::ValidateRecording(Legacy,Error))||!TestTrue(TEXT("Legacy numerical fixture writes"),URiftProfileSubsystem::AtomicWrite(FPaths::Combine(URiftProfileSubsystem::SaveRoot(),TEXT("Replays"),LegacyName),Serialize(Legacy),Error))||!TestTrue(TEXT("Legacy numerical archive opens"),Replay->OpenReplay(LegacyName)))return false;
+    Diagnostics=Replay->ReconstructionDiagnostics();TestFalse(TEXT("Legacy diagnostics do not invent captured definitions"),Diagnostics->GetBoolField(TEXT("hasCapturedDefinitions")));
+    TestTrue(TEXT("Legacy missing-mechanics limitation is explicit"),Diagnostics->GetArrayField(TEXT("limitations")).Num()>0);
+    return !HasAnyErrors();
+}
+
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRiftFullReplayIntegrationTest, "Rift.Integration.FullLengthReplay", Flags)
 bool FRiftFullReplayIntegrationTest::RunTest(const FString &Parameters) {
     if (!FParse::Param(FCommandLine::Get(), TEXT("RiftAutomationSandbox"))) {
@@ -1379,11 +1574,12 @@ bool FRiftFullReplayIntegrationTest::RunTest(const FString &Parameters) {
                             Match.State().elapsed));
     AddInfo(FString::Printf(TEXT("Long replay game-thread finalization queue time %.3f ms."), QueueMS));
     Replay->CloseReplay();
+    FString PaidReplayFilename;
+    int64 PaidReplayBytes=0;
     auto RecordAIMatch = [&](bool Congestion) {
         rift::MatchOptions AIOptions;
-        // Ordinary paid fixture preserves zero-crown overtime and >=20 live bodies
-        // under strict detection and aligned towers, using the measured seed11 workload.
-        // The separate Developer congestion fixture retains its known >=40 load.
+        // Record a complete populated paid match under the current balance. The
+        // Developer fixture separately holds towers alive for overtime/congestion.
         AIOptions.seed = Congestion ? 32 : 11;
         AIOptions.aiEnabled = {true, true};
         AIOptions.aiStyles = {"control", "counter"};
@@ -1394,6 +1590,7 @@ bool FRiftFullReplayIntegrationTest::RunTest(const FString &Parameters) {
         rift::Match AI(AIOptions);
         Replay->BeginRecording(AIOptions, Congestion);
         int32 RecordedCount = 0, Samples = 1, Peak = 6;
+        std::array<int32,2> PaidPlays{};
         bool ZeroCrownOvertime = false;
         double NextSpawn = 0;
         for (const auto &Event : AI.DrainEvents()) {
@@ -1419,6 +1616,7 @@ bool FRiftFullReplayIntegrationTest::RunTest(const FString &Parameters) {
             for (const auto &Event : AI.DrainEvents()) {
                 Replay->RecordEvent(Event);
                 ++RecordedCount;
+                if(Event.type=="card_play"&&!Event.sandbox)++PaidPlays[int(Event.team)];
             }
             Replay->Sample(AI.State());
             ++Samples;
@@ -1426,9 +1624,11 @@ bool FRiftFullReplayIntegrationTest::RunTest(const FString &Parameters) {
             ZeroCrownOvertime |= AI.State().phase == rift::Phase::Overtime && AI.State().crowns[0] == 0 &&
                                  AI.State().crowns[1] == 0;
         }
-        TestTrue(TEXT("Actual paid AI match reaches a native terminal result through zero-crown overtime"),
-                 AI.State().phase == rift::Phase::Finished && AI.State().elapsed > 180 && ZeroCrownOvertime &&
-                     AI.State().spent[0] > 100 && AI.State().spent[1] > 100);
+        TestTrue(TEXT("Complete native AI history reaches a terminal result with sustained real paid casts"),
+                 AI.State().phase == rift::Phase::Finished && AI.State().elapsed>=180 &&
+                     PaidPlays[0]>=20&&PaidPlays[1]>=20&&AI.State().spent[0]>0&&AI.State().spent[1]>0);
+        if(Congestion)TestTrue(TEXT("Developer congestion still covers zero-crown overtime and paid economy"),
+            AI.State().elapsed>180&&ZeroCrownOvertime&&AI.State().spent[0]>100&&AI.State().spent[1]>100);
         if (Congestion)
             TestTrue(TEXT("Reachable Developer swarm field exercises substantial congestion"), Peak >= 40);
         else
@@ -1438,10 +1638,30 @@ bool FRiftFullReplayIntegrationTest::RunTest(const FString &Parameters) {
         const double AIQueueMS = (FPlatformTime::Seconds() - Started) * 1000;
         TestTrue(TEXT("Populated match finalization also queues without a game-thread stall"),
                  AIQueueMS < 250);
+        if (Congestion) {
+            // Persistent entity telemetry makes this reachable Developer workload
+            // exceed the archive's decoded bound. Reject the complete recording;
+            // silently dropping body history would make its analysis misleading.
+            const FString RejectedName=Replay->LatestQueuedFilename;
+            TestFalse(TEXT("Oversized Developer history fails safely before unbounded serialization"),Replay->FlushPendingWrites());
+            TestTrue(TEXT("Oversized history reports its decoded JSON limit"),Replay->LastError.Contains(TEXT("256 MB")));
+            TestTrue(TEXT("Oversized history never publishes a partial filename"),Replay->LatestFilename.IsEmpty());
+            TestFalse(TEXT("Oversized history never writes a partial native archive"),
+                IFileManager::Get().FileExists(*FPaths::Combine(URiftProfileSubsystem::SaveRoot(),TEXT("Replays"),RejectedName)));
+            const FString PaidPath=FPaths::Combine(URiftProfileSubsystem::SaveRoot(),TEXT("Replays"),PaidReplayFilename);
+            TestEqual(TEXT("Prior complete paid archive is unchanged by size rejection"),IFileManager::Get().FileSize(*PaidPath),PaidReplayBytes);
+            TestTrue(TEXT("Prior complete paid archive still opens after size rejection"),Replay->OpenReplay(PaidReplayFilename));
+            Replay->CloseReplay();
+            AddInfo(FString::Printf(TEXT("Oversized Developer/paid AI history rejected without truncation: %.3fs, peak %d, %d events, %d samples, %.3fms queue."),
+                AI.State().elapsed,Peak,RecordedCount,Samples+1,AIQueueMS));
+            return;
+        }
         TestTrue(TEXT("Populated complete native archive saves successfully"), Replay->FlushPendingWrites());
         const FString SavedName = Replay->LatestFilename;
         const int64 StoredSize = IFileManager::Get().FileSize(
             *FPaths::Combine(URiftProfileSubsystem::SaveRoot(), TEXT("Replays"), SavedName));
+        PaidReplayFilename=SavedName;
+        PaidReplayBytes=StoredSize;
         if (!TestTrue(TEXT("Populated native archive opens with its bounded checksums"),
                       Replay->OpenReplay(SavedName)))
             return;
@@ -1456,12 +1676,12 @@ bool FRiftFullReplayIntegrationTest::RunTest(const FString &Parameters) {
         TestTrue(TEXT("Populated archive terminal playback matches the actual native winner"),
                  Replay->View.phase == rift::Phase::Finished && Replay->View.winner == AI.State().winner);
         int64 JSONSize = 0;
-        if (Congestion) {
-            const FString Plain = Fixture(TEXT("-congested-plain.json"));
-            TestTrue(TEXT("Congested archive exports a complete ordinary JSON document"),
+        {
+            const FString Plain = Fixture(TEXT("-populated-plain.json"));
+            TestTrue(TEXT("Complete paid archive exports a lossless ordinary JSON document"),
                      Replay->ExportReplay(SavedName, Plain));
             JSONSize = IFileManager::Get().FileSize(*Plain);
-            TestTrue(TEXT("Congested ordinary JSON export stays in its decoded input bound"),
+            TestTrue(TEXT("Complete paid JSON export stays in its decoded input bound"),
                      JSONSize > 0 && JSONSize <= 256 * 1024 * 1024);
             auto *ImportGI = NewObject<UGameInstance>(GEngine);
             ImportGI->InitializeStandalone(FName(*FGuid::NewGuid().ToString(EGuidFormats::Digits)));
@@ -1476,10 +1696,10 @@ bool FRiftFullReplayIntegrationTest::RunTest(const FString &Parameters) {
                 TestTrue(TEXT("Reimported archive has the native extension"),
                          ImportedName.EndsWith(TEXT(".riftreplay")));
                 TestTrue(TEXT("Reimported complete archive opens"), ImportedReplay->OpenReplay(ImportedName));
-                TestEqual(TEXT("Reimport preserves all congestion events"),
+                TestEqual(TEXT("Reimport preserves all paid match events"),
                           ImportedReplay->EventsNear(AI.State().elapsed, AI.State().elapsed).Num(),
                           RecordedCount);
-                TestEqual(TEXT("Reimport preserves every congestion snapshot"),
+                TestEqual(TEXT("Reimport preserves every paid match snapshot"),
                           ImportedReplay->RecordedStates().Num(), Samples + 1);
                 TestEqual(TEXT("Native archive/JSON/import roundtrip preserves the complete analysis"),
                           Serialize(ImportedReplay->CurrentAnalysis().ToSharedRef()),
@@ -1500,6 +1720,65 @@ bool FRiftFullReplayIntegrationTest::RunTest(const FString &Parameters) {
     };
     RecordAIMatch(false);
     RecordAIMatch(true);
+    return true;
+}
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRiftReplaySizeBudgetIntegrationTest,"Rift.Integration.ReplaySizeBudget",Flags)
+bool FRiftReplaySizeBudgetIntegrationTest::RunTest(const FString& Parameters) {
+    if (!Sandbox()) {AddError(TEXT("Replay size fixture requires an isolated automation sandbox."));return false;}
+    auto TextObject=MakeShared<FJsonObject>();
+    const FString Text=TEXT("Rift \"\n\t\\ \u5b88\u671b\u00e9 \n\n\n\n\n\n\n\n\n\n");
+    TextObject->SetStringField(TEXT("text"),Text);
+    TextObject->SetNumberField(TEXT("fraction"),1.0/3.0);
+    TArray<uint8> Exact,Bounded;
+    FString Error;
+    if (!TestTrue(TEXT("Bounded UTF-8 serializer preserves an ordinary document"),
+        URiftReplaySubsystem::SerializeRecording(TextObject,Exact,Error))) return false;
+    TestTrue(TEXT("Exact decoded byte boundary is accepted"),
+        URiftReplaySubsystem::SerializeRecording(TextObject,Bounded,Error,Exact.Num()));
+    TestTrue(TEXT("Exact boundary output is lossless"),Exact==Bounded);
+    TestFalse(TEXT("Escaping and UTF-8 expansion cannot exceed the actual byte cap"),
+        URiftReplaySubsystem::SerializeRecording(TextObject,Bounded,Error,Exact.Num()-1));
+    TestTrue(TEXT("Rejected serialization clears the partial output"),Bounded.IsEmpty()&&!Error.IsEmpty());
+    FUTF8ToTCHAR Converted(reinterpret_cast<const UTF8CHAR*>(Exact.GetData()),Exact.Num());
+    TSharedPtr<FJsonObject> Decoded;
+    if (TestTrue(TEXT("Bounded UTF-8 output parses as ordinary JSON"),
+        FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(FString(Converted.Length(),Converted.Get())),Decoded))) {
+        TestEqual(TEXT("Unicode and control characters survive serialization"),Decoded->GetStringField(TEXT("text")),Text);
+        TestEqual(TEXT("Double precision survives serialization"),Decoded->GetNumberField(TEXT("fraction")),1.0/3.0);
+    }
+    auto* GI=NewObject<UGameInstance>();
+    auto* Replay=NewObject<URiftReplaySubsystem>(GI);
+    rift::MatchOptions Options;Options.aiEnabled={false,false};Options.decks={rift::DefaultDeck(),rift::DefaultDeck()};
+    rift::Match Match(Options);
+    for(int I=0;I<128;++I)Match.Spawn(rift::Team::Player,"ironclad",{double(I%12)-5.5,8+double(I/12)*.25});
+    auto Snapshot=URiftReplaySubsystem::SnapshotJSON(Match.State());
+    Replay->BeginRecording(Options,true);
+    Replay->Recording->SetNumberField(TEXT("duration"),0);
+    Replay->Recording->SetArrayField(TEXT("events"),{});
+    Replay->Recording->SetObjectField(TEXT("result"),Snapshot);
+    auto Value=MakeShared<FJsonValueObject>(Snapshot);
+    Replay->Recording->SetArrayField(TEXT("states"),{Value});
+    TestTrue(TEXT("Single captured snapshot with persistent body telemetry is valid"),
+        URiftReplaySubsystem::ValidateRecording(Replay->Recording,Error));
+    TArray<TSharedPtr<FJsonValue>> Repeated;
+    for(int I=0;I<16000;++I)Repeated.Add(Value);
+    Replay->Recording->SetArrayField(TEXT("states"),Repeated);
+    TestFalse(TEXT("Aggregate persistent telemetry is bounded before parsing or serialization"),
+        URiftReplaySubsystem::ValidateRecording(Replay->Recording,Error));
+    TestTrue(TEXT("Aggregate telemetry rejection reports decoded size"),Error.Contains(TEXT("256 MB")));
+    Replay->BeginRecording(Options,true);
+    const auto BeforeBodies=Match.State().entityTelemetry[0].size();
+    bool WithinBudget=true;int32 Accounted=0;
+    while(WithinBudget&&Accounted<20000) {WithinBudget=Replay->AccountRecordingObject(Snapshot);++Accounted;}
+    TestFalse(TEXT("Incremental capture budget includes every persistent body record"),WithinBudget);
+    TestTrue(TEXT("Rejected capture releases its recording buffers"),Replay->RecordedSamples.IsEmpty()&&Replay->RecordedEvents.IsEmpty());
+    TestEqual(TEXT("Recording rejection preserves live individual analytics"),Match.State().entityTelemetry[0].size(),BeforeBodies);
+    Replay->EndRecording(Match.State(),true);
+    const FString RejectedFilename=Replay->LatestQueuedFilename;
+    TestFalse(TEXT("Oversized capture queues a recoverable save failure"),Replay->FlushPendingWrites());
+    TestTrue(TEXT("Recoverable save failure retains size diagnostics"),Replay->LastError.Contains(TEXT("256 MB")));
+    TestFalse(TEXT("Rejected capture does not write a partial archive"),
+        IFileManager::Get().FileExists(*FPaths::Combine(URiftProfileSubsystem::SaveRoot(),TEXT("Replays"),RejectedFilename)));
     return true;
 }
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRiftPausedResultIntegrationTest,
@@ -1611,6 +1890,112 @@ bool FRiftPausedResultIntegrationTest::RunTest(const FString &Parameters) {
     GEngine->DestroyWorldContext(World);
     return true;
 }
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRiftExpansionMechanicsIntegrationTest,"Rift.Integration.ExpansionMechanics",Flags)
+bool FRiftExpansionMechanicsIntegrationTest::RunTest(const FString& Parameters) {
+    if(!FParse::Param(FCommandLine::Get(),TEXT("RiftAutomationSandbox"))) {
+        AddError(TEXT("Expansion mechanics requires isolated saves and RiftAutomationSandbox."));return false;
+    }
+    auto* GI=NewObject<UGameInstance>();auto* Replay=NewObject<URiftReplaySubsystem>(GI);
+    auto Find=[](const rift::Snapshot& State,uint64 Id)->const rift::Entity* {
+        for(const auto& Body:State.entities)if(Body.id==Id)return &Body;return nullptr;
+    };
+    auto Mutable=[](rift::Match& Match,uint64 Id)->rift::Entity* {
+        for(auto& Body:const_cast<rift::Snapshot&>(Match.State()).entities)if(Body.id==Id)return &Body;return nullptr;
+    };
+    auto Id=[](const rift::Match& Match,const char* Card,rift::Team Team)->uint64 {
+        for(const auto& Body:Match.State().entities)if(Body.cardId==Card&&Body.team==Team&&!Body.dead)return Body.id;return 0;
+    };
+    for(int32 Scenario=0;Scenario<5;++Scenario) {
+        rift::MatchOptions Options;Options.seed=69000+Scenario;Options.aiEnabled={false,false};
+        const char* Card=Scenario==0?"iron_giant":Scenario==1?"bone_warden":Scenario==2?"shadow_surge":Scenario==3?"archer_tower":"rambeast";
+        Options.decks[0]={Card,"ironclad","ember_archer","twin_blades","arc_mage","sky_manta","bullet_burst","nova_flask"};
+        if(Card==std::string("archer_tower"))Options.decks[0][7]="meteor_shards";
+        Options.decks[1]=rift::DefaultDeck();rift::Match Match(Options);
+        for(auto& Body:const_cast<rift::Snapshot&>(Match.State()).entities)Body.stunUntil=100;
+        Replay->BeginRecording(Options,true);Replay->Sample(Match.State());
+        Match.SetAether(rift::Team::Player,10);
+        uint64 Subject=0,Enemy=0,Crown=0;double Duration=Scenario==3?25.1:Scenario==4?2.:1.6;
+        if(Scenario==2) {
+            TestTrue(TEXT("Local cloak paid fixture creates friendly body"),Match.Spawn(rift::Team::Player,"ironclad",{.5,8.5}));
+            Subject=Id(Match,"ironclad",rift::Team::Player);Mutable(Match,Subject)->stunUntil=100;
+            TestTrue(TEXT("Local cloak fixture launches real ranged enemy attack"),Match.Spawn(rift::Team::Enemy,"ember_archer",{.5,2.5}));
+            Enemy=Id(Match,"ember_archer",rift::Team::Enemy);
+            for(auto& Body:const_cast<rift::Snapshot&>(Match.State()).entities)
+                if(Body.team==rift::Team::Enemy&&Body.kind==rift::EntityKind::Guard&&Body.lane==1) {
+                    Crown=Body.id;Body.target=Body.hardLock=Body.forcedTarget=Subject;
+                }
+            TestTrue(TEXT("Actual paid Shadow Surge cast"),Match.Play(rift::Team::Player,0,{.5,8.5}));
+        } else {
+            TestTrue(TEXT("Actual paid expansion body cast"),Match.Play(rift::Team::Player,0,{.5,8.5}));
+            Subject=Id(Match,Card,rift::Team::Player);
+            if(!TestTrue(TEXT("Paid body actually exists"),Subject!=0))continue;
+            if(Scenario!=4)Mutable(Match,Subject)->stunUntil=100;
+            if(Scenario==0)TestTrue(TEXT("Actual delayed375 incoming shield packet"),Match.Spawn(rift::Team::Enemy,"nova_flask",{.5,8.5}));
+            if(Scenario==1) {
+                Mutable(Match,Subject)->hp=1;
+                TestTrue(TEXT("Actual delayed lethal child-spawn packet"),Match.Spawn(rift::Team::Enemy,"bullet_burst",{.5,8.5}));
+            }
+        }
+        auto Feed=[&]() {for(const auto& Event:Match.DrainEvents())Replay->RecordEvent(Event);Replay->Sample(Match.State());};
+        Feed();double Probe=Scenario==0?.9:Scenario==1?.35:Scenario==2?.3:Scenario==3?24.9:1.8;
+        rift::Snapshot LiveProbe;bool Probed=false;
+        for(int32 Tick=0;Tick<int32(Duration*60+.5);++Tick) {
+            Match.Step(1./60.);Feed();
+            if(!Probed&&Match.State().elapsed+1e-8>=Probe){LiveProbe=Match.State();Probed=true;}
+        }
+        Replay->EndRecording(Match.State(),true);
+        if(!TestTrue(TEXT("Actual expansion recording writes"),Replay->FlushPendingWrites())||
+           !TestTrue(TEXT("Captured schema2 expansion recording opens"),Replay->OpenReplay(Replay->LatestFilename)))continue;
+        TestEqual(TEXT("Replay captured expansion mechanics schema"),int32(Replay->ReconstructionDiagnostics()->GetNumberField(TEXT("balanceSchema"))),2);
+        Replay->Seek(float(LiveProbe.elapsed));const auto* Live=Find(LiveProbe,Subject);const auto* Restored=Find(Replay->View,Subject);
+        if(Scenario==0) {
+            if(TestNotNull(TEXT("Shield live body remains"),Live)&&TestNotNull(TEXT("Shield replay body remains"),Restored)) {
+                TestEqual(TEXT("Live shield-breaking packet leaves1000bodyHP"),Live->hp,1000.);
+                TestEqual(TEXT("Replay preserves protected bodyHP"),Restored->hp,1000.);
+                TestEqual(TEXT("Replay preserves broken shield"),Restored->shieldHP,0.);
+                TestTrue(TEXT("Replay preserves actual shield-break timestamp"),FMath::IsNearlyEqual(Restored->shieldBrokenAt,Live->shieldBrokenAt,1e-7));
+            }
+            const auto& Tele=Replay->View.telemetry[0].at("iron_giant");
+            TestEqual(TEXT("Replay shield actual loss"),Tele.shieldDamageTaken,310.);
+            TestEqual(TEXT("Replay shield full packet absorbed"),Tele.shieldAbsorbed,375.);
+            TestEqual(TEXT("Replay shield overflow discarded"),Tele.overflowPrevented,65.);
+            TestEqual(TEXT("Replay body loss excludes shield packet"),Tele.damageTaken,0.);
+        } else if(Scenario==1) {
+            int32 Children=0;
+            for(const auto& Body:Replay->View.entities)if(Body.parentEntityId==Subject) {
+                ++Children;TestEqual(TEXT("Replay subordinate definition"),FString(UTF8_TO_TCHAR(Body.cardId.c_str())),FString(TEXT("bone_warden_skeleton")));
+                TestEqual(TEXT("Replay child original paid attribution"),FString(UTF8_TO_TCHAR(Body.attributionCardId.c_str())),FString(TEXT("bone_warden")));
+                TestTrue(TEXT("Replay child original paid play identity"),Live&&Body.playId==Live->playId);
+                TestTrue(TEXT("Replay entity observations include actual child identity"),Replay->View.entityTelemetry[0].count(Body.id)==1);
+            }
+            TestEqual(TEXT("Replay reconstructs all four immediate death children"),Children,4);
+            const auto& Tele=Replay->View.telemetry[0].at("bone_warden");
+            TestEqual(TEXT("Replay keeps one paid parent play"),Tele.plays,uint64(1));
+            TestEqual(TEXT("Replay keeps one paid-body spawn"),Tele.spawns,uint64(1));
+            TestEqual(TEXT("Replay keeps four subordinate spawns"),Tele.childSpawns,uint64(4));
+            TestEqual(TEXT("Replay keeps one parent-body death"),Tele.deaths,double(1));
+        } else if(Scenario==2) {
+            if(TestNotNull(TEXT("Cloaked live subject"),Live)&&TestNotNull(TEXT("Cloaked replay subject"),Restored))
+                TestTrue(TEXT("Replay retains exact local cloak expiration"),FMath::IsNearlyEqual(Restored->invisibleUntil,Live->invisibleUntil,1e-7)&&Restored->invisibleUntil>Replay->TimelinePosition());
+            const auto* Drop=Find(Replay->View,Crown);
+            TestTrue(TEXT("Replay clears the previously locked Crown target"),Drop&&Drop->target==0&&Drop->hardLock==0&&Drop->forcedTarget==0);
+            Replay->Seek(.5f);Restored=Find(Replay->View,Subject);
+            TestTrue(TEXT("Replay committed projectile damages invisible subject"),Restored&&Restored->hp==822-152&&Restored->invisibleUntil>Replay->TimelinePosition());
+            Replay->Seek(1.3f);Restored=Find(Replay->View,Subject);
+            TestTrue(TEXT("Replay local cloak expires without borrowing current targeting"),Restored&&Restored->invisibleUntil==0);
+        } else if(Scenario==3) {
+            if(TestNotNull(TEXT("Live Archer before hard expiry"),Live)&&TestNotNull(TEXT("Replay Archer before hard expiry"),Restored))
+                TestTrue(TEXT("Replay uses captured25HP per second decay"),FMath::IsNearlyEqual(Restored->hp,Live->hp,.005));
+            Replay->Seek(25.05f);Restored=Find(Replay->View,Subject);
+            TestTrue(TEXT("Replay hard expiry kills Archer while body HP would remain"),Restored&&Restored->dead&&Restored->hp==0);
+        } else if(TestNotNull(TEXT("Live charged Ram"),Live)&&TestNotNull(TEXT("Replay charged Ram"),Restored)) {
+            TestTrue(TEXT("Actual Ram movement accumulates approved1.5second threshold"),Live->charged&&Live->chargeTime>1.5);
+            TestTrue(TEXT("Replay carries actual charged movement state"),Restored->charged&&Restored->chargeTime>1.5);
+        }
+        Replay->CloseReplay();
+    }
+    return !HasAnyErrors();
+}
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRiftCardDataIntegrationTest, "Rift.Integration.CardData", Flags)
 bool FRiftCardDataIntegrationTest::RunTest(const FString &Parameters) {
     for (const auto &C : rift::Cards()) {
@@ -1636,6 +2021,10 @@ bool FRiftCardDataIntegrationTest::RunTest(const FString &Parameters) {
         METRIC(Footprint, footprint)
         METRIC(TowerDamage, towerDamage) METRIC(SpellRadius, spellRadius) METRIC(ChargeDamage, chargeDamage)
             METRIC(CastDelay, castDelay)
+        METRIC(CollisionRadius, collisionRadius) METRIC(ChargeMoveSeconds, chargeMoveSeconds)
+        METRIC(ChargedMoveSpeed, chargedMoveSpeed) METRIC(HPDecayPerSecond, hpDecayPerSecond)
+        METRIC(InitialAttackCooldown, initialAttackCooldown) METRIC(ShieldHP, shieldHP)
+        METRIC(InvisibilityDuration, invisibilityDuration) METRIC(DotStructureDamage, dotStructureDamage)
             METRIC(SlowPct, slowPct) METRIC(SlowDuration, slowDuration) METRIC(AuraDamage, auraDamage)
                 METRIC(AuraInterval, auraInterval) METRIC(AuraRadius, auraRadius)
                     METRIC(StunDuration, stunDuration) METRIC(DotDamage, dotDamage)
@@ -1647,6 +2036,13 @@ bool FRiftCardDataIntegrationTest::RunTest(const FString &Parameters) {
         TestEqual(Id + TEXT(" structures targeting"), D->StructuresOnly, C.structuresOnly);
         TestEqual(Id + TEXT(" spell type"), D->Spell, C.spell);
         TestEqual(Id + TEXT(" building type"), D->Building, C.building);
+        TestEqual(Id + TEXT(" target mask"),D->TargetMask,int32(C.targetMask));
+        TestEqual(Id + TEXT(" child count"),D->DeathSpawnCount,C.deathSpawnCount);
+        TestEqual(Id + TEXT(" child definition"),D->DeathSpawnId,FString(UTF8_TO_TCHAR(C.deathSpawnId.c_str())));
+        TestEqual(Id + TEXT(" hard expiry"),D->HardExpiry,C.hardExpiry);
+        TestEqual(Id + TEXT(" shield protection"),D->ShieldOverflowProtected,C.shieldOverflowProtected);
+        TestEqual(Id + TEXT(" local/global cloak scope"),D->GlobalFriendlyInvisibility,C.globalFriendlyInvisibility);
+        TestEqual(Id + TEXT(" cloak lock drop"),D->BreakExistingLocks,C.breakExistingLocks);
         TestNotNull(Id + TEXT(" card illustration"), D->Illustration.Get());
         if ((!C.spell && !C.building)||C.shockwaveSpeed>0) {
             TestNotNull(Id + TEXT(" skeletal mesh"), D->CharacterMesh.Get());

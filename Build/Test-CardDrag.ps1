@@ -1,13 +1,15 @@
 param(
     [string]$Executable = '',
     [string]$Name = 'card-drag-native',
-    [string]$ExpectedVersion = '1.3.1',
+    [string]$ExpectedVersion = '',
     [ValidateRange(1280,7680)][int]$Width = 1920,
     [ValidateRange(720,4320)][int]$Height = 1080,
     [ValidateRange(30,600)][int]$TimeoutSeconds = 180
 )
 $ErrorActionPreference = 'Stop'
 $riftDragRepo = [IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot))
+. (Join-Path $PSScriptRoot 'ShippingDiagnostics.ps1')
+$ExpectedVersion = Get-RiftExpectedGameVersion $riftDragRepo $ExpectedVersion
 if ($Name -notmatch '^[a-z0-9][a-z0-9_-]*$') { throw 'Use a lowercase QA report name.' }
 if ($ExpectedVersion -notmatch '^\d+\.\d+\.\d+$') { throw 'Use a three-part release version.' }
 $riftDragExpectedChecks = if ($ExpectedVersion -eq '1.3.0') { 29 } else { 32 }
@@ -28,31 +30,52 @@ $riftDragArguments = @(
     '-unattended','-nosplash','-NoSound','-NoVSync',('-abslog="' + $riftDragLog + '"')
 )
 if ($riftDragIsEditor) { $riftDragArguments = @(('"' + (Join-Path $riftDragRepo 'Unreal/RiftCrownArena/RiftCrownArena.uproject') + '"')) + $riftDragArguments }
-$riftDragSources = @(
-    'Unreal/RiftCrownArena/Config/DefaultGame.ini',
-    'Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftGameMode.h',
-    'Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftUIWidget.h',
-    'Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftHandButton.h',
-    'Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftGameMode.cpp',
-    'Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftUIWidget.cpp',
-    'Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftBattleHUD.cpp',
-    'Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftHandButton.cpp',
-    'Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftProfileSubsystem.cpp',
-    'Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftTypography.cpp',
-    'Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftTypography.h',
-    'Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftCardDragSmoke.cpp',
-    'Build/Test-CardDrag.ps1'
-)
-if ($riftDragIsEditor) {
-    $riftDragSources += 'Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArena.dll'
-    $riftDragSources += 'Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArenaEditor.dll'
+function Get-RiftDragPins([string]$Base, [string[]]$Paths) {
+    @($Paths | Sort-Object -Unique | ForEach-Object {
+        if (!(Test-Path -LiteralPath $_ -PathType Leaf)) { throw "Native smoke provenance input is missing: $_" }
+        [ordered]@{path=[IO.Path]::GetRelativePath($Base,$_).Replace('\','/');sha256=(Get-FileHash -LiteralPath $_ -Algorithm SHA256).Hash.ToLowerInvariant();bytes=(Get-Item -LiteralPath $_).Length}
+    })
 }
-$riftDragPins = @()
-foreach ($riftDragSource in $riftDragSources) {
-    $riftDragFile = Join-Path $riftDragRepo $riftDragSource
-    $riftDragPins += [ordered]@{path=$riftDragSource;sha256=(Get-FileHash -LiteralPath $riftDragFile -Algorithm SHA256).Hash.ToLowerInvariant();bytes=(Get-Item -LiteralPath $riftDragFile).Length}
+function Get-RiftDragSourcePaths {
+    $riftDragPaths = @(Get-ChildItem -LiteralPath (Join-Path $riftDragRepo 'Unreal/RiftCrownArena/Source'),(Join-Path $riftDragRepo 'Unreal/RiftCrownArena/Config') -File -Recurse | ForEach-Object FullName) +
+        @('Unreal/RiftCrownArena/RiftCrownArena.uproject','Assets/Data/card_manifest.json','Build/generate_card_manifest.py','Build/Test-CardDrag.ps1','Build/ShippingDiagnostics.ps1' | ForEach-Object { Join-Path $riftDragRepo $_ })
+    # Historical evidence readers also find Editor module pins in sourcePins.
+    if ($riftDragIsEditor) {
+        $riftDragPaths += @('UnrealEditor-RiftCrownArena.dll','UnrealEditor-RiftCrownArenaEditor.dll' | ForEach-Object { Join-Path $riftDragRepo ('Unreal/RiftCrownArena/Binaries/Win64/' + $_) })
+    }
+    $riftDragPaths
+}
+function Get-RiftDragRuntimePaths {
+    if ($riftDragIsEditor) {
+        @(Get-ChildItem -LiteralPath (Join-Path $riftDragRuntimeRoot 'Binaries'),(Join-Path $riftDragRuntimeRoot 'Config'),(Join-Path $riftDragRuntimeRoot 'Content') -File -Recurse | ForEach-Object FullName) +
+            @((Join-Path $riftDragRuntimeRoot 'RiftCrownArena.uproject'))
+    } else {
+        @(Get-ChildItem -LiteralPath $riftDragRuntimeRoot -File -Recurse | ForEach-Object FullName)
+    }
+}
+$riftDragRuntimeRoot = if ($riftDragIsEditor) { Join-Path $riftDragRepo 'Unreal/RiftCrownArena' } else { $null }
+if (!$riftDragIsEditor) {
+    for ($riftDragAncestor = [IO.DirectoryInfo]::new((Split-Path -Parent $Executable)); $riftDragAncestor; $riftDragAncestor = $riftDragAncestor.Parent) {
+        if ((Test-Path -LiteralPath (Join-Path $riftDragAncestor.FullName 'RiftCrownArena.exe') -PathType Leaf) -and
+            (Test-Path -LiteralPath (Join-Path $riftDragAncestor.FullName 'RiftCrownArena/Content') -PathType Container)) {
+            $riftDragRuntimeRoot = $riftDragAncestor.FullName
+            break
+        }
+    }
+    if (!$riftDragRuntimeRoot) { throw 'Native smoke requires an attributable packaged game root containing RiftCrownArena.exe and RiftCrownArena/Content.' }
+}
+$riftDragPins = @(Get-RiftDragPins $riftDragRepo (Get-RiftDragSourcePaths))
+$riftDragRuntimePins = @(Get-RiftDragPins $riftDragRuntimeRoot (Get-RiftDragRuntimePaths))
+if ($riftDragIsEditor) {
+    foreach ($riftDragModule in @('UnrealEditor-RiftCrownArena.dll','UnrealEditor-RiftCrownArenaEditor.dll')) {
+        if (!(Test-Path -LiteralPath (Join-Path $riftDragRuntimeRoot ('Binaries/Win64/' + $riftDragModule)) -PathType Leaf)) { throw "Build the Editor module before native smoke: $riftDragModule" }
+    }
 }
 $riftDragStarted = [DateTime]::UtcNow
+[IO.File]::WriteAllText((Join-Path $riftDragRoot 'provenance.json'),([ordered]@{
+    startedUtc=$riftDragStarted.ToString('o');executable=$Executable;executableSha256=$riftDragExecutableHash;
+    sourcePins=$riftDragPins;runtimeRoot=$riftDragRuntimeRoot;runtimePins=$riftDragRuntimePins
+} | ConvertTo-Json -Depth 14),[Text.UTF8Encoding]::new($false))
 $riftDragProcess = Start-Process -FilePath $Executable -ArgumentList $riftDragArguments -WorkingDirectory $(if ($riftDragIsEditor) { $riftDragRepo } else { Split-Path -Parent $Executable }) -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $riftDragRoot 'stdout.log') -RedirectStandardError (Join-Path $riftDragRoot 'stderr.log')
 $riftDragTimedOut = $false
 while (!$riftDragProcess.HasExited) {
@@ -148,8 +171,21 @@ foreach ($riftDragPin in $riftDragPins) {
         $riftDragErrors += 'Source or Editor module changed during the native smoke: ' + $riftDragPin.path
     }
 }
+try {
+    $riftDragCurrentSourcePins = @(Get-RiftDragPins $riftDragRepo (Get-RiftDragSourcePaths))
+    if (($riftDragPins | ConvertTo-Json -Depth 5 -Compress) -ne ($riftDragCurrentSourcePins | ConvertTo-Json -Depth 5 -Compress)) {
+        $riftDragSourcesUnchanged = $false
+        $riftDragErrors += 'Native smoke source inventory changed during the run.'
+    }
+    $riftDragCurrentRuntimePins = @(Get-RiftDragPins $riftDragRuntimeRoot (Get-RiftDragRuntimePaths))
+    $riftDragRuntimeUnchanged = ($riftDragRuntimePins | ConvertTo-Json -Depth 5 -Compress) -eq ($riftDragCurrentRuntimePins | ConvertTo-Json -Depth 5 -Compress)
+} catch {
+    $riftDragRuntimeUnchanged = $false
+    $riftDragErrors += 'Native smoke source/runtime provenance check failed: ' + $_.Exception.Message
+}
+if (!$riftDragRuntimeUnchanged) { $riftDragErrors += 'Loaded native modules, configuration or Content changed during the run.' }
 $riftDragExecutableUnchanged = (Get-FileHash -LiteralPath $Executable -Algorithm SHA256).Hash.ToLowerInvariant() -eq $riftDragExecutableHash
-$riftDragPassed = !$riftDragTimedOut -and $riftDragProcess.ExitCode -eq 0 -and $riftDragFresh -and $riftDragSourcesUnchanged -and $riftDragExecutableUnchanged -and $null -ne $riftDragResult -and $riftDragResult.passed -eq $true -and $riftDragResult.version -eq $ExpectedVersion -and $riftDragResult.width -eq $Width -and $riftDragResult.height -eq $Height -and $riftDragResult.checkCount -eq $riftDragExpectedChecks -and @($riftDragResult.checks).Count -eq $riftDragExpectedChecks -and @($riftDragResult.checks | Where-Object { $_.passed -ne $true }).Count -eq 0 -and @($riftDragErrors).Count -eq 0
+$riftDragPassed = !$riftDragTimedOut -and $riftDragProcess.ExitCode -eq 0 -and $riftDragFresh -and $riftDragSourcesUnchanged -and $riftDragRuntimeUnchanged -and $riftDragExecutableUnchanged -and $null -ne $riftDragResult -and $riftDragResult.passed -eq $true -and $riftDragResult.version -eq $ExpectedVersion -and $riftDragResult.width -eq $Width -and $riftDragResult.height -eq $Height -and $riftDragResult.checkCount -eq $riftDragExpectedChecks -and @($riftDragResult.checks).Count -eq $riftDragExpectedChecks -and @($riftDragResult.checks | Where-Object { $_.passed -ne $true }).Count -eq 0 -and @($riftDragErrors).Count -eq 0
 function Get-RiftDragRelative([string]$Path) {
     if ($Path.StartsWith($riftDragRepo + [IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)) { return [IO.Path]::GetRelativePath($riftDragRepo,$Path).Replace('\','/') }
     return 'external-runtime/' + [IO.Path]::GetFileName($Path)
@@ -170,9 +206,13 @@ $riftDragVerification = [ordered]@{
     checks=$(if ($riftDragResult) { @($riftDragResult.checks) } else { @() });checkCount=$(if ($riftDragResult) { $riftDragResult.checkCount } else { 0 });
     errors=@($riftDragErrors);nativeReportSha256=$(if ($riftDragFresh) { (Get-FileHash -LiteralPath $riftDragNativeReport -Algorithm SHA256).Hash.ToLowerInvariant() } else { $null });
     sourcePins=$riftDragPins;
+    runtimeRoot=(Get-RiftDragRelative $riftDragRuntimeRoot);runtimePins=$riftDragRuntimePins;runtimePinsUnchanged=[bool]$riftDragRuntimeUnchanged;
+    runReport=(Get-RiftDragRelative (Join-Path $riftDragRoot 'verification.json'));
     scope='Real Slate mouse routing through the production UMG hand, legal single deployment and lossless cancellation. Editor errors use engine.log; Shipping errors use fresh structured FRiftDiagnostics game logs. This smoke does not certify art quality.'
 }
 $riftDragVerificationPath = Join-Path $riftDragRepo ('Artifacts/QA/CardDrag/' + $Name + '-verification.json')
+[IO.File]::WriteAllText((Join-Path $riftDragRoot 'verification.json'),($riftDragVerification | ConvertTo-Json -Depth 14),[Text.UTF8Encoding]::new($false))
+# Keep the historical latest-report path while retaining immutable per-run evidence.
 [IO.File]::WriteAllText($riftDragVerificationPath,($riftDragVerification | ConvertTo-Json -Depth 14),[Text.UTF8Encoding]::new($false))
 Write-Output "Native hand drag checks: $($riftDragVerification.checkCount). Report: $riftDragVerificationPath"
 if (!$riftDragPassed) { throw "Native hand drag smoke failed; inspect $riftDragVerificationPath" }

@@ -27,6 +27,17 @@ public:
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float MoveSpeed=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float AttackRange=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float BaseModelScale=1;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) float CollisionRadius=0;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) int32 TargetMask=0;
+    // Imported animation metadata controls presentation, never attack cadence.
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) float AttackContactNormalized=.48f;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) float AttackAnticipationSeconds=0;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) float AttackRecoverySeconds=0;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) float GaitStrideMeters=0;
+    // Zero keeps the established fall/clip/cleanup timing for older assets.
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) float DeathCleanupSeconds=0;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) float ReadabilityMultiplier=0;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) float FlightBobTiles=.09f;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float FrontSight=8;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float RearSight=5;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float ProjectileSpeed=0;
@@ -38,6 +49,18 @@ public:
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float SpellRadius=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float CastDelay=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float ChargeDamage=0;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) float ChargeMoveSeconds=0;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) float ChargedMoveSpeed=0;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) float HPDecayPerSecond=0;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) float InitialAttackCooldown=0;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) float ShieldHP=0;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) FString DeathSpawnId;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) int32 DeathSpawnCount=0;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) float InvisibilityDuration=0;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) bool HardExpiry=false;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) bool ShieldOverflowProtected=false;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) bool GlobalFriendlyInvisibility=false;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) bool BreakExistingLocks=false;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float SlowPct=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float SlowDuration=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float AuraDamage=0;
@@ -45,6 +68,7 @@ public:
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float AuraInterval=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float StunDuration=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float DotDamage=0;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) float DotStructureDamage=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float DotDuration=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float DotInterval=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) int32 Rounds=0;

@@ -26,8 +26,9 @@ double CollisionDistance(rift::Vec2 A,rift::Vec2 B){return std::hypot(A.x-B.x,A.
 void ObserveCollision(const rift::Snapshot& State,FCollisionObservation& Result,const std::vector<rift::Entity>* Previous=nullptr)
 {
     if(Previous)for(const auto& Start:*Previous)if(!Start.dead&&Start.kind==rift::EntityKind::Troop)
-        if(const auto* End=CollisionEntity(State,Start.id))if(const auto* Card=rift::FindCard(Start.cardId))
-            Result.SpeedClear&=CollisionDistance(Start.position,End->position)<=Card->moveSpeed/60.+1.e-6;
+        if(const auto* End=CollisionEntity(State,Start.id))if(const auto* Card=rift::FindEntityDefinition(Start.cardId))
+            Result.SpeedClear&=CollisionDistance(Start.position,End->position)<=
+                std::max(Card->moveSpeed,(Start.charged||End->charged)?Card->chargedMoveSpeed:0.)/60.+1.e-6;
     for(size_t I=0;I<State.entities.size();++I)for(size_t J=I+1;J<State.entities.size();++J)
     {
         const auto& A=State.entities[I];const auto& B=State.entities[J];if(!CollisionPair(A,B))continue;
@@ -75,7 +76,7 @@ std::vector<rift::Entity> CollisionPaid(FAutomationTestBase& Test,rift::Match& M
         {
             Test.TestTrue(Label+TEXT(" retains member identity and resolved spawn position"),!Event.sandbox&&Entity->cardId==Id&&Entity->team==Team&&Entity->playId==Event.playId&&CollisionDistance(Entity->position,Event.position)<1.e-9);
             Test.TestEqual(Label+TEXT(" preserves authored HP"),Entity->hp,Card->hp);
-            Test.TestTrue(Label+TEXT(" preserves authored radius"),FMath::Abs(Entity->radius-(Card->building?Card->footprint*.52:Card->scale*.44))<1.e-12);
+            Test.TestTrue(Label+TEXT(" preserves canonical body radius independently of visual scale"),FMath::Abs(Entity->radius-Card->collisionRadius)<1.e-12);
             Members.push_back(*Entity);
         }
     }
@@ -107,18 +108,20 @@ bool FRiftUnitCollisionIntegrationTest::RunTest(const FString& Parameters)
             TestTrue(Label+TEXT(" has real movement or a stable fixed building"),Start.kind==rift::EntityKind::Troop?(!End->dead&&CollisionDistance(Start.position,End->position)>.5):CollisionDistance(Start.position,End->position)<1.e-9);
         Total.PairChecks+=Observed.PairChecks;Total.SweepChecks+=Observed.SweepChecks;Total.MinimumGap=std::min(Total.MinimumGap,Observed.MinimumGap);Total.MinimumSweep=std::min(Total.MinimumSweep,Observed.MinimumSweep);
     }
-    TestEqual(TEXT("Every physical card covers both teams"),Cases,28);TestEqual(TEXT("Paid physical card casts"),PaidPlays,56);TestEqual(TEXT("Every actual paid physical member retained"),Members,110);
+    TestEqual(TEXT("All seventeen physical cards cover both teams"),Cases,34);TestEqual(TEXT("Paid physical card casts"),PaidPlays,68);TestEqual(TEXT("Every actual paid physical member retained"),Members,122);
     const std::vector<std::string> PocketDeck{"ironclad","twin_blades","boulderback","archer_tower","sky_manta","vampire_bats","storm_raven","frost_fang"};
     const int PocketSlots[]{1,2,2,3,0,1,0,1,0,1,2,3,2,3,2,3};
-    for(const auto Team:{rift::Team::Player,rift::Team::Enemy})for(const int Lane:{-1,1})
+    for(const bool Resized:{true,false})for(const auto Team:{rift::Team::Player,rift::Team::Enemy})for(const int Lane:{-1,1})
     {
         auto Options=CollisionDeck("ironclad","twin_blades");Options.seed=135;Options.decks[int(Team)]=PocketDeck;
-        rift::Match Pocket(Options);const int Sign=Team==rift::Team::Player?1:-1,Deadline=Team==rift::Team::Player?12:15;
+        rift::Match Pocket(Options);const int Sign=Team==rift::Team::Player?1:-1,Deadline=Resized?(Team==rift::Team::Player?12:15):20;
         std::vector<rift::Entity> PaidMembers,Ground,Buildings;int AdjustedDrops=0;
         FCollisionObservation Observed;
         for(int Play=0;Play<16;++Play)
         {
-            rift::Vec2 Drop{Lane*7.5,Sign*8.5};if(Play==9)Drop={Lane*6.5,Sign*7.5};if(Play==15)Drop={Lane*8.5,Sign*7.5};
+            rift::Vec2 Drop{Lane*(Resized?rift::arena::BridgeCenterX+.3:7.5),Sign*(Resized?rift::arena::GuardDepth-4.9:8.5)};
+            if(Play==9)Drop={Lane*(Resized?rift::arena::BridgeCenterX-.7:6.5),Sign*(Resized?rift::arena::GuardDepth-5.9:7.5)};
+            if(Play==15)Drop={Lane*(Resized?rift::arena::BridgeCenterX+2.3:8.5),Sign*(Resized?rift::arena::GuardDepth-5.9:7.5)};
             const auto Requested=Drop;const auto Id=Pocket.State().hands[int(Team)][PocketSlots[Play]];const auto* Card=rift::FindCard(Id);
             if(Card->building&&!Pocket.CanPlace(Team,*Card,Drop))
             {
@@ -141,10 +144,19 @@ bool FRiftUnitCollisionIntegrationTest::RunTest(const FString& Parameters)
         TestEqual(TEXT("Paid building pocket retains all eleven mobile ground members"),int(Ground.size()),11);
         TestEqual(TEXT("Paid pocket contains three real building blockers"),int(Buildings.size()),3);
         TestEqual(TEXT("Pocket keeps the original building lifetime"),rift::FindCard("archer_tower")->lifetime,25.);
-        if(Team==rift::Team::Player&&Lane==1)TestEqual(TEXT("Original Shipping pocket retains every exact requested drop tile"),AdjustedDrops,0);
-        std::map<uint64,bool> Crossed;int CrossedAt12=0;bool CorrectBridge=true,FixedLiveBuildings=true,StrictSpeed=true;
+        if(Team==rift::Team::Player&&Lane==1)TestEqual(TEXT("Original and resized bridge pockets retain every exact requested drop tile"),AdjustedDrops,0);
+        std::map<uint64,bool> Crossed;std::map<uint64,rift::Vec2> LastProgress;
+        for(const auto& Start:Ground)LastProgress[Start.id]=Start.position;
+        int CrossedAt12=0;bool CorrectBridge=true,FixedLiveBuildings=true,StrictSpeed=true,NetProgress=true;
         for(int Step=0;Step<Deadline*60;++Step)
         {
+            // This separate original-layout diagnostic is farther from the
+            // bridge and allows twenty seconds for 1.3-tile/s detours. Keep
+            // the Core alive through the public developer action so early
+            // victory cannot stop the clock while lagging bodies are measured.
+            // The resized paid acceptance fixture uses no tower maintenance.
+            if(!Resized)for(const auto& Entity:Pocket.State().entities)
+                if(!Entity.dead&&Entity.kind==rift::EntityKind::Core)Pocket.SetTowerHP(Entity.id,Entity.maxHp);
             const auto Before=Pocket.State().entities;Pocket.Step(1./60.);ObserveCollision(Pocket.State(),Observed,&Before);
             for(const auto& Start:Before)if(!Start.dead&&Start.kind==rift::EntityKind::Troop)
                 if(const auto* End=CollisionEntity(Pocket.State(),Start.id))
@@ -153,14 +165,24 @@ bool FRiftUnitCollisionIntegrationTest::RunTest(const FString& Parameters)
             {const auto* End=CollisionEntity(Pocket.State(),Start.id);FixedLiveBuildings&=End&&!End->dead&&End->hp>0&&CollisionDistance(Start.position,End->position)<1.e-9;}
             for(const auto& Start:Ground)if(const auto* End=CollisionEntity(Pocket.State(),Start.id))
             {if(End->position.z*Sign<-rift::arena::RiverHalfWidth-.28)Crossed[End->id]=true;
-             if(!End->dead&&FMath::Abs(End->position.z)<rift::arena::RiverHalfWidth+.28)CorrectBridge&=End->position.x*Lane>0;}
+             if(!End->dead&&FMath::Abs(End->position.z)<rift::arena::RiverHalfWidth+.28)CorrectBridge&=End->position.x*Lane>0;
+             if(!Resized&&(Step+1)%300==0){if(!Crossed.count(End->id))NetProgress&=!End->dead&&CollisionDistance(End->position,LastProgress.at(End->id))>.25;LastProgress[End->id]=End->position;}}
             if(Step==719)CrossedAt12=int(Crossed.size());
         }
         TestTrue(TEXT("Paid building pocket preserves strict endpoint/swept separation and authored speed"),Observed.Clear&&Observed.SweptClear&&Observed.SpeedClear&&StrictSpeed);
         TestTrue(TEXT("All three twenty-five-second paid buildings remain live and stationary through the progress deadline"),FixedLiveBuildings);
         TestTrue(TEXT("Every ground member exits the live building pocket and clears the selected bridge by its authored deadline"),Ground.size()==11&&Crossed.size()==Ground.size()&&CorrectBridge);
+        TestTrue(TEXT("Original pocket survivors make net progress every five seconds instead of oscillating at legal escape points"),NetProgress);
         Total.PairChecks+=Observed.PairChecks;Total.SweepChecks+=Observed.SweepChecks;Total.MinimumGap=std::min(Total.MinimumGap,Observed.MinimumGap);Total.MinimumSweep=std::min(Total.MinimumSweep,Observed.MinimumSweep);
-        AddInfo(FString::Printf(TEXT("Collision paid building pocket team %d lane %d: %d of 11 ground crossed, %d crossed at 12s; 16 paid casts, 31 members, 3 live fixed buildings, deadline %ds, %d adjusted building requests."),int(Team),Lane,int(Crossed.size()),CrossedAt12,Deadline,AdjustedDrops));
+        for(const auto& Start:Ground)if(!Crossed.count(Start.id))
+        {
+            const auto* End=CollisionEntity(Pocket.State(),Start.id);FString Path;
+            if(End)for(const auto Point:End->path)Path+=FString::Printf(TEXT("%.4f,%.4f;"),Point.x,Point.z);
+            AddInfo(FString::Printf(TEXT("Pocket lag resized %d team %d lane %d id %llu %s: HP %.4f dead %d position %.6f,%.6f target %llu stuck %.6f speed %.4f path %s"),
+                int(Resized),int(Team),Lane,Start.id,UTF8_TO_TCHAR(Start.cardId.c_str()),End?End->hp:0.,!End||End->dead,
+                End?End->position.x:0.,End?End->position.z:0.,End?End->target:0,End?End->stuckTime:0.,rift::FindEntityDefinition(Start.cardId)->moveSpeed,*Path));
+        }
+        AddInfo(FString::Printf(TEXT("Collision building pocket resized %d Core-maintained diagnostic %d team %d lane %d: %d of 11 ground crossed, %d crossed at 12s; 16 actual paid casts, 31 members, 3 live fixed buildings, deadline %ds, %d adjusted building requests."),int(Resized),int(!Resized),int(Team),Lane,int(Crossed.size()),CrossedAt12,Deadline,AdjustedDrops));
     }
     for(const auto Team:{rift::Team::Player,rift::Team::Enemy})
     {
@@ -205,7 +227,7 @@ bool FRiftUnitCollisionIntegrationTest::RunTest(const FString& Parameters)
         auto Options=CollisionDeck("boulderback","twin_blades");Options.decks={Deck,Deck};rift::Match Match(Options);const int Sign=Team==rift::Team::Player?1:-1;
         std::vector<rift::Entity> Starts;FCollisionObservation Observed;
         for(int Cycle=0;Cycle<3;++Cycle)for(const auto& Id:Deck)
-        {const auto New=CollisionPaid(*this,Match,Team,Id,Id=="bullet_burst"?rift::Vec2{-Lane*13.5,-Sign*20.5}:rift::Vec2{Lane*7.5,Sign*6.5});Starts.insert(Starts.end(),New.begin(),New.end());ObserveCollision(Match.State(),Observed);}
+        {const auto New=CollisionPaid(*this,Match,Team,Id,Id=="bullet_burst"?rift::Vec2{-Lane*(rift::arena::LastTileX-1),-Sign*(rift::arena::LastTileZ-1)}:rift::Vec2{Lane*7.5,Sign*6.5});Starts.insert(Starts.end(),New.begin(),New.end());ObserveCollision(Match.State(),Observed);}
         TestEqual(TEXT("Dense crowd retains all twenty-four actual paid troop members"),int(Starts.size()),24);std::map<uint64,bool> Crossed;bool CorrectBridge=true;
         for(int Step=0;Step<900;++Step)
         {
@@ -264,12 +286,18 @@ bool FRiftUnitCollisionIntegrationTest::RunTest(const FString& Parameters)
     }
     for(const auto Team:{rift::Team::Player,rift::Team::Enemy})
     {
-        rift::Match Full(CollisionDeck("boulderback","sky_manta"));int Buildings=0,Residuals=0,Rejected=0;bool Exhausted=false;
+        rift::Match Full(CollisionDeck("boulderback","sky_manta"));int Buildings=0,Residuals=0,Rejected=0,BuildingRequests=0;bool Exhausted=false;
         const rift::Vec2 Drop{7.5,(Team==rift::Team::Player?1.:-1.)*8.5};
-        for(double Z=-21.5;Z<=21.5;Z+=2.)for(double X=-13.5;X<=14.5;X+=2.)
-            if(Full.Spawn(Team,"archer_tower",{X,Z}))++Buildings;else ++Rejected;
+        for(double Z=-rift::arena::LastTileZ;Z<=rift::arena::LastTileZ;Z+=2.)for(double X=-rift::arena::LastTileX;X<=rift::arena::LastTileX;X+=2.)
+        {++BuildingRequests;if(Full.Spawn(Team,"archer_tower",{X,Z}))++Buildings;else ++Rejected;}
+        // The actual 24 x 34 board supplies 12 x 17 requested points at a
+        // two-tile pitch. Boundary and six Crown body clearances reduce this
+        // fixed packing to 188 separated buildings on either team's layer.
+        TestEqual(TEXT("Capacity matrix covers every two-tile point in the approved board"),BuildingRequests,204);
+        TestEqual(TEXT("Radius-aware boundary and Crown packing retains the observed fixed building count"),Buildings,188);
+        TestEqual(TEXT("Every unavailable building request is accounted for"),Rejected,16);
         for(int N=0;N<100;++N){if(!Full.Spawn(Team,"boulderback",Drop)){++Rejected;Exhausted=true;break;}++Residuals;}
-        TestTrue(TEXT("Actual large and small sandbox bodies exhaust bounded physical capacity"),Buildings>=300&&Residuals>0&&Exhausted);
+        TestTrue(TEXT("Actual large and small sandbox bodies exhaust the approved twenty-four by thirty-four arena capacity"),Residuals>0&&Exhausted);
         FCollisionObservation Capacity;ObserveCollision(Full.State(),Capacity);
         TestTrue(TEXT("Full-capacity fixture uses genuinely separated unmodified bodies"),Capacity.Clear);
         Full.SetAether(Team,10);

@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "generatedUTC": "2026-10-11T16:15:05.547056+00:00",
+  "reviewed": true,
+  "passed": true,
+  "scope": "Source model/art review only; native facing, hand-size game capture, live timing/cleanup and swarm performance remain pending.",
+  "method": "Actual final Blender renders inspected visually at master and 96x120 sizes, plus identity sheets.",
+  "checks": {
+    "fiveMiniBoarletHeadsVisible": true,
+    "fifteenStampedeHeadsVisible": true,
+    "sameBoarletSpecies": true,
+    "slateCopperTealPalette": true,
+    "redOrangePennantVariant": true,
+    "fixedTusksAndSnoutPlate": true,
+    "fourStrutsAndCornerBraces": true,
+    "connectedCompressionArmsAndAnnularShoe": true,
+    "visibleSuspendedCrystal": true,
+    "noBakedCardTextOrCost": true,
+    "fontGlyphsResolvedInIdentitySheets": true,
+    "identitySheetTextFitsWithoutOverlap": true
+  },
+  "filePins": [
+    {
+      "file": "Assets/Source/CardArt/Masters/mini_stampede.png",
+      "bytes": 1538596,
+      "sha256": "b3b1392a542cd7af2246a8c62eb38f651236577d6203165d7c36fc944b50d74e"
+    },
+    {
+      "file": "Assets/Source/CardArt/mini_stampede.png",
+      "bytes": 886734,
+      "sha256": "ff7ce346fa6e216c41019bcfc9a11d1b0619631377560b09fa78b62657430844"
+    },
+    {
+      "file": "Assets/Renders/Expansion/Small/mini_stampede_96x120.png",
+      "bytes": 19688,
+      "sha256": "7b29a7dc8c6b1bf88b4ce79f337ff6acbc8f77e91896d8a9f7b0942d6d8fe683"
+    },
+    {
+      "file": "Assets/Renders/Expansion/Identity/mini_stampede_IdentitySheet.png",
+      "bytes": 753606,
+      "sha256": "4e9f8741454ef050e3f2f70a0308cdd3085db73a883c1eeacba270a3e8c36e0b"
+    },
+    {
+      "file": "Assets/Source/CardArt/Masters/stampede.png",
+      "bytes": 1580355,
+      "sha256": "fdcc6bb8a6a849f1b1f59cf25d82d67b5c64c16b787af8768a8457adea6f5556"
+    },
+    {
+      "file": "Assets/Source/CardArt/stampede.png",
+      "bytes": 909906,
+      "sha256": "f9cda67ee2e708c105f4a702cad28b26bc464102e7a4a9160070a88b688df6f9"
+    },
+    {
+      "file": "Assets/Renders/Expansion/Small/stampede_96x120.png",
+      "bytes": 19398,
+      "sha256": "4155c3fb076f7870971cac0084bbc8dde9335cc882e86c34114474dd2baef12f"
+    },
+    {
+      "file": "Assets/Renders/Expansion/Identity/stampede_IdentitySheet.png",
+      "bytes": 764299,
+      "sha256": "a159c5fb7aa79956bd9410f34a4a631b5c7c4be00f4129437c10872895ed5b61"
+    },
+    {
+      "file": "Assets/Source/CardArt/Masters/pulverizer.png",
+      "bytes": 1544645,
+      "sha256": "272163d13c517a34732438ef1969655abd136ee17cc0e259a52578661c45a3a0"
+    },
+    {
+      "file": "Assets/Source/CardArt/pulverizer.png",
+      "bytes": 892436,
+      "sha256": "9f9175b47a5cf88b01ccf3e655cc088b814daab801e9bed3e1a7594da7c01642"
+    },
+    {
+      "file": "Assets/Renders/Expansion/Small/pulverizer_96x120.png",
+      "bytes": 19088,
+      "sha256": "4f31d6420ed0be3f4481364614ea50c87f7f865029b2232e1bd9d348e3c3a0a2"
+    },
+    {
+      "file": "Assets/Renders/Expansion/Identity/pulverizer_IdentitySheet.png",
+      "bytes": 894335,
+      "sha256": "3495cdceb3e9c468b54d5ce507b75829913c51172a26e58cd91ce3dce9332c0b"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "method": "Production documentation layout with actual final Blender renders",
+  "sourceBlend": {
+    "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
+    "sha256": "6799847a62fba2340ef86dc64967c8235f11ad3d9403ddd32dc890bdac5b8ce6",
+    "bytes": 15209481
+  },
+  "sheets": {
+    "mini_stampede": {
+      "file": "Assets/Renders/Expansion/Identity/mini_stampede_IdentitySheet.png",
+      "bytes": 753606,
+      "sha256": "4e9f8741454ef050e3f2f70a0308cdd3085db73a883c1eeacba270a3e8c36e0b"
+    },
+    "stampede": {
+      "file": "Assets/Renders/Expansion/Identity/stampede_IdentitySheet.png",
+      "bytes": 764299,
+      "sha256": "a159c5fb7aa79956bd9410f34a4a631b5c7c4be00f4129437c10872895ed5b61"
+    },
+    "pulverizer": {
+      "file": "Assets/Renders/Expansion/Identity/pulverizer_IdentitySheet.png",
+      "bytes": 894335,
+      "sha256": "3495cdceb3e9c468b54d5ce507b75829913c51172a26e58cd91ce3dce9332c0b"
+    }
+  }
+}

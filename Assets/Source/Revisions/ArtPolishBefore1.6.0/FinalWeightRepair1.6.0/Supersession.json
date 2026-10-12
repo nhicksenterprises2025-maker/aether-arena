@@ -1,0 +1,121 @@
+{
+  "schema": 1,
+  "kind": "unaccepted-art-polish-supersession",
+  "accepted": false,
+  "interimManifest": {
+    "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/FinalWeightRepair1.6.0/InterimManifest.json",
+    "bytes": 363425,
+    "sha256": "5bb773c0bd9868d799151d3591e6162208b19e7f8a11466a548dccfb9526d185"
+  },
+  "interimSource": {
+    "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/FinalWeightRepair1.6.0/InterimSource.blend",
+    "bytes": 22081077,
+    "sha256": "6e5d91490a984b4601ad9c12ee92f13ce567ae6ac06e09fb877c6b08f7099902"
+  },
+  "interimModelBuilder": {
+    "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/FinalWeightRepair1.6.0/InterimNewModels.py",
+    "bytes": 65333,
+    "sha256": "d510e80fa36f56192d12e98c469e0571f45b1e29be5dec02d30e3ae5c8943107"
+  },
+  "interimFinalizer": {
+    "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/FinalWeightRepair1.6.0/InterimFinalizer.py",
+    "bytes": 42682,
+    "sha256": "3f08407b050ba6b6a76b132b90629c1c5dde4a8d24d9b9836460b3dd1a05328f"
+  },
+  "failedAssetValidation": {
+    "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/FinalWeightRepair1.6.0/InterimAllAssetsFailure.json",
+    "bytes": 233783,
+    "sha256": "e9a5b307afdcf5c0dd5141b48cf181cc96cf36c4bb7fab80a8f0504e8be89746"
+  },
+  "preservedInterimMetadata": [
+    {
+      "originalFile": "Assets/asset_manifest.json",
+      "snapshot": {
+        "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/FinalWeightRepair1.6.0/InterimManifest.json",
+        "bytes": 363425,
+        "sha256": "5bb773c0bd9868d799151d3591e6162208b19e7f8a11466a548dccfb9526d185"
+      }
+    },
+    {
+      "originalFile": "Assets/Source/Revisions/ArtPolishBefore1.6.0/SavedScenePreservation.json",
+      "snapshot": {
+        "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/SavedScenePreservation.json",
+        "bytes": 32246,
+        "sha256": "0b4270702399d27147fa89df643dcc3ebbe46827d41384168e67d55e13b0d3e3"
+      }
+    },
+    {
+      "originalFile": "Assets/Source/Revisions/ArtPolishBefore1.6.0/FinalMatrixSafety.json",
+      "snapshot": {
+        "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/FinalMatrixSafety.json",
+        "bytes": 272840,
+        "sha256": "4d9c80921116dbc361af5f03981bf29b886cab1261b22c7d5c41ee71d8c4236b"
+      }
+    },
+    {
+      "originalFile": "Assets/Source/Revisions/ArtPolishBefore1.6.0/FinalArtQuality.json",
+      "snapshot": {
+        "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/FinalArtQuality.json",
+        "bytes": 764575,
+        "sha256": "9c8d0a55fa2f5e28b776e85ab5b4d3ea4454bb54e81d05b48808d9cf493d7a4c"
+      }
+    },
+    {
+      "originalFile": "Assets/Source/Revisions/ArtPolishBefore1.6.0/AfterArtManifestBeforeProvenance.json",
+      "snapshot": {
+        "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/AfterArtManifestBeforeProvenance.json",
+        "bytes": 337909,
+        "sha256": "9c18aefb0681f854c6d8a1f73c175aa8b59c778c8fab8a192daa04f0d589ffa2"
+      }
+    },
+    {
+      "originalFile": "Assets/Source/Revisions/ArtPolishBefore1.6.0/HistoricalPortraitProduction.json",
+      "snapshot": {
+        "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/HistoricalPortraitProduction.json",
+        "bytes": 19790,
+        "sha256": "c7b5ab2b6bce14c259090ac0915fe5516ac58b2f0259da6116fd7c88070412a0"
+      }
+    },
+    {
+      "originalFile": "Assets/Source/Revisions/ArtPolishBefore1.6.0/PortraitSummaryRecoveryEvidence.json",
+      "snapshot": {
+        "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/PortraitSummaryRecoveryEvidence.json",
+        "bytes": 2192,
+        "sha256": "5ddf53d9121852ba3c68b9e1f2b8c8c839065ecc58021d71b29fcd87864a61c6"
+      }
+    },
+    {
+      "originalFile": "Assets/Source/Revisions/ArtPolishBefore1.6.0/HistoricalIdentitySheets.json",
+      "snapshot": {
+        "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/HistoricalIdentitySheets.json",
+        "bytes": 972,
+        "sha256": "5e4ba181a38cadf23b2d65a223430a102e82f3e85e8c2249c836087f43fb08b4"
+      }
+    },
+    {
+      "originalFile": "Assets/Source/Revisions/ArtPolishBefore1.6.0/IdentitySummaryRecoveryEvidence.json",
+      "snapshot": {
+        "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/IdentitySummaryRecoveryEvidence.json",
+        "bytes": 2302,
+        "sha256": "56e50377f8efedc58c543c477d0ad56fa846ff490e0ff79639060e24355864c5"
+      }
+    }
+  ],
+  "authorizedRepair": {
+    "card": "aether_reaper",
+    "bone": "scythe_socket",
+    "vertexIndices": [
+      7984,
+      7998,
+      8000,
+      8001,
+      8004,
+      8348,
+      8356,
+      8358,
+      8361
+    ],
+    "weightBefore": 0,
+    "weightAfter": 1
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "passed": true,
+  "sourceBlendSHA256": "81cefa2d1a025dd4250da5fc86d353f4febf3a1fb695d69dc513c89ee0dfcbc2",
+  "builderSHA256": "bb79d2b3817bf4e96d00fa24b6e7e05c71770e9c2275b7236782e1d144448e65",
+  "samples": 341,
+  "poseMatrices": 5115,
+  "maxAbsoluteMatrixDelta": 0.0,
+  "method": "Reload actual saved scene; independently rerun the corrected production builder in memory; compare every bone matrix at every quarter frame. No source save/export."
+}

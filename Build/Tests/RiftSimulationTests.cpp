@@ -4,6 +4,7 @@
 #include <cmath>
 #include <functional>
 #include <iostream>
+#include <set>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -11,6 +12,8 @@
 using namespace rift;
 namespace {
 int passed = 0;
+int failed = 0;
+bool continueAfterFailure = false;
 std::string scenarioFilter;
 std::uint64_t collisionPairChecks = 0, collisionSweepChecks = 0;
 int collisionPaidFixtures = 0, collisionPaidPlays = 0, collisionMembers = 0;
@@ -87,10 +90,10 @@ void ClearOwnStructures(const Match &m, const Entity &unit, Vec2 from) {
             Check(SegmentDistance(from, unit.position, e.position) + 1e-8 >=
                       e.radius + unit.radius + .22,
                   "ground movement clears entire own-structure segment");
-    if (std::abs(unit.position.z) < 1.65 + .28) {
-        const double half = std::max(.34, 2.1 - .16 - unit.radius * .92);
-        Check(std::abs(unit.position.x + 7.2) <= half + 1e-8 ||
-                  std::abs(unit.position.x - 7.2) <= half + 1e-8,
+    if (std::abs(unit.position.z) < arena::RiverHalfWidth + .28) {
+        const double half = std::max(.34, arena::BridgeWidth / 2 - .16 - unit.radius * .92);
+        Check(std::abs(unit.position.x + arena::BridgeCenterX) <= half + 1e-8 ||
+                  std::abs(unit.position.x - arena::BridgeCenterX) <= half + 1e-8,
               "ground unit stays on a radius-aware bridge");
     }
 }
@@ -125,7 +128,8 @@ void SweptBodyClearance(const Match &m, const std::vector<Entity> &before, const
         if (!start.dead && start.kind == EntityKind::Troop)
             if (const auto *after = FindEntity(m, start.id))
                 Check(std::hypot(after->position.x - start.position.x, after->position.z - start.position.z) <=
-                          FindCard(start.cardId)->moveSpeed / 60. + 1e-6,
+                          std::max(FindEntityDefinition(start.cardId)->moveSpeed,
+                                   (start.charged || after->charged) ? FindEntityDefinition(start.cardId)->chargedMoveSpeed : 0.) / 60. + 1e-6,
                       label + " never teleports or exceeds authored movement speed " + start.cardId);
     for (std::size_t i = 0; i < before.size(); ++i)
         for (std::size_t j = i + 1; j < before.size(); ++j) {
@@ -195,7 +199,7 @@ std::vector<Entity> PaidCollisionCard(Match &m, Team team, const std::string &id
             Near(std::hypot(event.position.x - entity.position.x, event.position.z - entity.position.z),
                  0, 1e-9, "spawn event records resolved body position");
             Near(entity.hp, card->hp, 0, "collision keeps canonical per-member HP");
-            Near(entity.radius, card->building ? card->footprint * .52 : card->scale * .44,
+            Near(entity.radius, card->collisionRadius,
                  1e-12, "collision keeps canonical per-member radius");
             members.push_back(entity);
         }
@@ -207,13 +211,19 @@ std::vector<Entity> PaidCollisionCard(Match &m, Team team, const std::string &id
 void Test(const char *name, const std::function<void()> &fn) {
     if (!scenarioFilter.empty() && std::string(name).find(scenarioFilter) == std::string::npos)
         return;
-    fn();
+    try {fn();}
+    catch (const std::exception &error) {
+        if (!continueAfterFailure) throw;
+        ++failed;
+        std::cerr << "FAIL " << name << ": " << error.what() << '\n';
+        return;
+    }
     ++passed;
     std::cout << "PASS " << name << '\n';
 }
-void Same(const Match &a, const Match &b) {
-    const auto &x = a.State();
-    const auto &y = b.State();
+void Same(const Match &left, const Match &right) {
+    const auto &x = left.State();
+    const auto &y = right.State();
     Check(x.phase == y.phase && x.winner == y.winner && x.randomState == y.randomState,
           "deterministic phase/RNG");
     Near(x.elapsed, y.elapsed, 1e-9, "deterministic elapsed");
@@ -245,7 +255,16 @@ void Same(const Match &a, const Match &b) {
         const auto &f = y.entities[n];
         Check(e.id == f.id && e.target == f.target && e.hardLock == f.hardLock && e.dead == f.dead,
               "deterministic target/death");
+        Check(e.parentEntityId == f.parentEntityId && e.attributionCardId == f.attributionCardId &&
+                  e.invisibilitySource == f.invisibilitySource && e.invisibilityPlayId == f.invisibilityPlayId &&
+                  e.invisibilityCardId == f.invisibilityCardId && e.charged == f.charged,
+              "deterministic child, cloak and charge identity");
         Near(e.hp, f.hp, 1e-8, "deterministic HP");
+        Near(e.shieldHP, f.shieldHP, 1e-8, "deterministic remaining shield");
+        Near(e.maxShieldHP, f.maxShieldHP, 0, "deterministic maximum shield");
+        Near(e.shieldBrokenAt, f.shieldBrokenAt, 1e-9, "deterministic shield break time");
+        Near(e.invisibleUntil, f.invisibleUntil, 1e-9, "deterministic cloak expiry");
+        Near(e.chargeTime, f.chargeTime, 1e-9, "deterministic actual charge travel");
         Near(e.position.x, f.position.x, 1e-8, "deterministic X");
         Near(e.position.z, f.position.z, 1e-8, "deterministic Z");
         Check(e.slows.size() == f.slows.size(), "deterministic independent slow components");
@@ -261,35 +280,253 @@ void Same(const Match &a, const Match &b) {
     for (int i = 0; i < 2; ++i) {
         Near(x.aether[i], y.aether[i], 1e-8, "deterministic Aether");
         Check(x.hands[i] == y.hands[i], "deterministic hand");
+        Check(x.entityTelemetry[i].size() == y.entityTelemetry[i].size(), "deterministic individual body records");
+        for (const auto &[id, record] : x.entityTelemetry[i]) {
+            const auto &other = y.entityTelemetry[i].at(id);
+            Check(record.id == other.id && record.parentEntityId == other.parentEntityId &&
+                      record.playId == other.playId && record.cardId == other.cardId &&
+                      record.attributionCardId == other.attributionCardId,
+                  "deterministic persistent body attribution");
+            const auto &a = record.observed, &b = other.observed;
+            Check(a.spawns == b.spawns && a.deaths == b.deaths && a.surviving == b.surviving &&
+                      a.childSpawns == b.childSpawns && a.childDeaths == b.childDeaths &&
+                      a.childSurviving == b.childSurviving && a.targets == b.targets && a.connected == b.connected,
+                  "deterministic individual body counters");
+            Near(a.damageTaken, b.damageTaken, 1e-8, "deterministic individual body damage");
+            Near(a.shieldDamageTaken, b.shieldDamageTaken, 1e-8, "deterministic individual shield loss");
+            Near(a.shieldAbsorbed, b.shieldAbsorbed, 1e-8, "deterministic individual shield absorption");
+            Near(a.overflowPrevented, b.overflowPrevented, 1e-8, "deterministic individual shield overflow");
+            Near(a.lifetime, b.lifetime, 1e-8, "deterministic individual lifetime");
+            Near(a.buildingLifetime, b.buildingLifetime, 1e-8, "deterministic individual building lifetime");
+            Near(a.slowTime, b.slowTime, 1e-8, "deterministic individual credited slow");
+            Near(a.stunTime, b.stunTime, 1e-8, "deterministic individual credited stun");
+        }
     }
-    Check(a.Events().size() == b.Events().size(), "deterministic events");
-    for (std::size_t n = 0; n < a.Events().size(); ++n) {
-        const auto &e = a.Events()[n];
-        const auto &f = b.Events()[n];
+    Check(left.Events().size() == right.Events().size(), "deterministic events");
+    for (std::size_t n = 0; n < left.Events().size(); ++n) {
+        const auto &e = left.Events()[n];
+        const auto &f = right.Events()[n];
         Check(e.sequence == f.sequence && e.type == f.type && e.cardId == f.cardId &&
-                  e.playId == f.playId && e.target == f.target,
+                  e.playId == f.playId && e.target == f.target && e.source == f.source &&
+                  e.parentEntityId == f.parentEntityId && e.attributionCardId == f.attributionCardId,
               "deterministic event identity and order");
         Near(e.time, f.time, 1e-9, "deterministic event time");
         Near(e.until, f.until, 1e-9, "deterministic event deadline");
         Near(e.amount, f.amount, 1e-8, "deterministic event amount");
+        Near(e.shieldHP, f.shieldHP, 1e-8, "deterministic event remaining shield");
+        Near(e.shieldOverflowBlocked, f.shieldOverflowBlocked, 1e-8, "deterministic event blocked overflow");
     }
 }
 } // namespace
 int main(int argc, char **argv) {
-    if (argc > 1)
-        scenarioFilter = argv[1];
+    for (int argument = 1; argument < argc; ++argument)
+        if (std::string(argv[argument]) == "--all-errors") continueAfterFailure = true;
+        else scenarioFilter = argv[argument];
     try {
+        Test("expansion shield protects breaking packet and preserves separate body telemetry", [] {
+            Match m(CollisionOptions("iron_giant", "ember_archer"));FreezeCrowns(m);
+            const auto giant = PaidCollisionCard(m, Team::Player, "iron_giant", {.5, 8.5})[0];
+            MutableEntity(m, giant.id).stunUntil = 30;
+            Check(m.Spawn(Team::Enemy, "ember_archer", {.5, 5.5}), "actual projectile attacker");
+            while (m.State().projectiles.empty() && m.State().elapsed < 1) m.Step(1. / 60.);
+            Check(!m.State().projectiles.empty(), "real attack launches a committed projectile");
+            const auto attacker = m.State().projectiles[0].source;
+            auto &projectile = const_cast<Snapshot &>(m.State()).projectiles[0];
+            projectile.damage = 400; // Controlled incoming packet, not a card-stat modification.
+            MutableEntity(m, attacker).stunUntil = 30;
+            m.Step(.5);
+            Near(ById(m, giant.id).shieldHP, 0, 0, "400 packet consumes310 shield");
+            Near(ById(m, giant.id).hp, 1000, 0, "breaking packet discards90 overflow");
+            Check(ById(m, giant.id).shieldBrokenAt >= 0 && !ById(m, giant.id).dead, "shield break timestamp is authoritative and body remains live");
+            const double broken = ById(m, giant.id).shieldBrokenAt;
+            auto &second = const_cast<Snapshot &>(m.State()).projectiles.emplace_back();
+            second.source = attacker;second.target = giant.id;second.team = Team::Enemy;
+            second.cardId = "ember_archer";second.damage = 400;second.remaining = 1. / 60.;
+            m.Step(1. / 60.);
+            Near(ById(m, giant.id).hp, 600, 0, "next400 packet reaches body");
+            Near(ById(m, giant.id).shieldBrokenAt, broken, 0, "later damage cannot restart shield fragments");
+            const auto &tele = m.State().telemetry[0].at("iron_giant");
+            Near(tele.shieldDamageTaken, 310, 0, "actual shield loss");
+            Near(tele.shieldAbsorbed, 400, 0, "shield blocked full packet");
+            Near(tele.overflowPrevented, 90, 0, "discarded overflow separate");
+            Near(tele.damageTaken, 400, 0, "body damage excludes shield");
+            const auto &observed = m.State().entityTelemetry[0].at(giant.id).observed;
+            Near(observed.shieldDamageTaken, 310, 0, "entity observation retains actual shield loss");
+            Near(observed.damageTaken, 400, 0, "entity observation retains actual body loss");
+            int shieldEvents = 0;
+            for (const auto &event : m.Events()) if (event.type == "shield_damage" && event.target == giant.id) {
+                ++shieldEvents;Near(event.amount, 310, 0, "shield packet actual amount");
+                Near(event.requested, 400, 0, "shield packet incoming amount");
+                Near(event.shieldOverflowBlocked, 90, 0, "shield packet explicit overflow");
+            }
+            Check(shieldEvents == 1, "exactly one breaking shield packet");
+            m.Step(3);Near(ById(m, giant.id).shieldHP, 0, 0, "no shield regeneration");
+        });
+        Test("expansion Bone Warden death children spawn once through every lethal damage path", [] {
+            for (const Team team : {Team::Player, Team::Enemy})
+                for (const std::string mode : {"initial", "dot", "projectile", "melee", "aura", "shockwave"}) {
+                    Match m(CollisionOptions("bone_warden", "ironclad"));FreezeCrowns(m);
+                    const Team foe = team == Team::Player ? Team::Enemy : Team::Player;
+                    const double sign = team == Team::Player ? 1 : -1;
+                    const auto parent = PaidCollisionCard(m, team, "bone_warden", {.5, sign * 7.5})[0];
+                    auto &body = MutableEntity(m, parent.id);body.stunUntil = 30;
+                    body.hp = mode == "dot" ? 263 : 1;
+                    const Vec2 position = body.position;
+                    const std::string attack = mode == "initial" ? "bullet_burst" : mode == "dot" ? "meteor_shards"
+                                               : mode == "projectile" ? "ember_archer" : mode == "melee" ? "ironclad"
+                                               : mode == "aura" ? "storm_raven" : "pulverizer";
+                    Check(m.Spawn(foe, attack, mode == "initial" || mode == "dot" ? position
+                                                 : Vec2{position.x + (mode == "melee" ? 1.5 : mode == "aura" ? 2. : 2.5), position.z}), "real lethal source");
+                    if (mode == "aura") {
+                        const auto source = Unit(m, attack, foe).id;
+                        MutableEntity(m, source).auraClock = 2.99;
+                        MutableEntity(m, source).cooldown = 30;
+                    }
+                    const double spent = m.State().spent[int(team)];
+                    int ticks = 0;
+                    while (Count(m, "bone_warden_skeleton", team) == 0 && ticks++ < 180) m.Step(1. / 60.);
+                    Check(Count(m, "bone_warden_skeleton", team) == 4, "lethal path releases all four actual children " + mode);
+                    const auto &tele = m.State().telemetry[int(team)].at("bone_warden");
+                    Check(tele.plays == 1 && tele.spawns == 1 && tele.deaths == 1 && tele.childSpawns == 4,
+                          "one paid parent, one body death, four subordinate spawns");
+                    Near(m.State().spent[int(team)], spent, 0, "children grant no paid cost or play");
+                    BodyClearance(m, "death children real collision packing");
+                    int childEvents = 0;
+                    for (const auto &event : m.Events()) if (event.type == "entity_spawn" && event.parentEntityId == parent.id) {
+                        ++childEvents;Check(event.playId == parent.playId && event.attributionCardId == "bone_warden" &&
+                            event.cardId == "bone_warden_skeleton", "children preserve separate entity and original paid attribution");
+                        const auto &child = ById(m, event.source);
+                        Near(child.maxHp, 50, 0, "actual child bodyHP");
+                        Check(child.parentEntityId == parent.id && child.playId == parent.playId && !child.dead,
+                              "child identity remains playable physics");
+                    }
+                    Check(childEvents == 4, "one event per actual child");
+                    // Stop further attacks; verify corpse removal does not spawn a second group.
+                    for (auto &entity : const_cast<Snapshot &>(m.State()).entities) entity.stunUntil = 30;
+                    m.Step(.6);Check(!FindEntity(m, parent.id), "parent corpse is actually removed");
+                    Check(m.State().telemetry[int(team)].at("bone_warden").childSpawns == 4,
+                          "removal cannot duplicate death spawn");
+                }
+        });
+        Test("expansion local cloak drops troop and Crown locks but preserves committed damage", [] {
+            Match m(CollisionOptions("shadow_surge", "ironclad"));FreezeCrowns(m);
+            Check(m.Spawn(Team::Player, "ironclad", {.5, 7.5}), "inside friendly troop");
+            Check(m.Spawn(Team::Player, "sky_manta", {4.5, 7.5}), "outside friendly troop");
+            Check(m.Spawn(Team::Player, "archer_tower", {.5, 11.5}), "friendly building");
+            Check(m.Spawn(Team::Enemy, "ember_archer", {.5, 4.5}), "actual enemy projectile source");
+            const auto victim = Unit(m, "ironclad", Team::Player).id;
+            MutableEntity(m, victim).stunUntil = 30;
+            while (m.State().projectiles.empty() && m.State().elapsed < 1) m.Step(1. / 60.);
+            Check(!m.State().projectiles.empty(), "real projectile exists before cloak");
+            const auto attacker = m.State().projectiles[0].source;
+            const double hp = ById(m, victim).hp;
+            auto &projectile = const_cast<Snapshot &>(m.State()).projectiles[0];projectile.remaining = .4;
+            auto &enemy = MutableEntity(m, attacker);enemy.target = enemy.hardLock = enemy.forcedTarget = victim;
+            enemy.cooldown = 30;
+            auto &crown = MutableEntity(m, Tower(m, Team::Enemy, EntityKind::Guard, 1).id);
+            crown.target = crown.hardLock = crown.forcedTarget = victim;
+            PaidCollisionCard(m, Team::Player, "shadow_surge", {.5, 7.5});
+            m.Step(.25);
+            Check(ById(m, victim).invisibleUntil > m.State().elapsed, "local inside troop cloaked at impact");
+            Near(Unit(m, "sky_manta", Team::Player).invisibleUntil, 0, 0, "outside local radius stays visible");
+            Near(Unit(m, "archer_tower", Team::Player).invisibleUntil, 0, 0, "building is not cloaked");
+            Check(ById(m, attacker).target != victim && ById(m, attacker).hardLock == 0 &&
+                      ById(m, attacker).forcedTarget == 0 && crown.target == 0 && crown.hardLock == 0,
+                  "apply explicitly drops ordinary and Crown existing locks");
+            Check(!m.CanTarget(ById(m, attacker), ById(m, victim)), "cloak denies new targets");
+            m.Step(.2);Near(ById(m, victim).hp, hp - 152, 1e-9, "committed projectile still resolves");
+            m.Step(.8);Check(m.CanTarget(ById(m, attacker), ById(m, victim)), "exact one-second cloak expires");
+            int applied = 0, expired = 0, drops = 0;
+            for (const auto &event : m.Events()) {
+                applied += event.type == "invisibility_apply" && event.target == victim;
+                expired += event.type == "invisibility_expire" && event.target == victim;
+                drops += event.type == "target_drop" && event.target == victim;
+            }
+            Check(applied == 1 && expired == 1 && drops >= 2, "explicit replayable apply/drop/expiry events");
+        });
+        Test("expansion Archer decay hard expiry and Meteor structure DOT are independent", [] {
+            Match m(Quiet());FreezeCrowns(m);
+            Check(m.Spawn(Team::Player, "archer_tower", {.5, 8.5}), "actual Archer");
+            const auto tower = Unit(m, "archer_tower", Team::Player).id;
+            m.Step(24.9);Near(ById(m, tower).hp, 850 - 24.9 * 25, 1e-7, "25HP per second explicit decay");
+            Check(!ById(m, tower).dead, "Archer still lives before hard expiry with HP remaining");
+            m.Step(.1);Check(ById(m, tower).dead, "hard25second expiry removes remaining225HP");
+            Match spell(Quiet());FreezeCrowns(spell);
+            const auto guard = Tower(spell, Team::Enemy, EntityKind::Guard, 1);
+            Check(spell.Spawn(Team::Enemy, "boulderback", {guard.position.x, guard.position.z + 3}), "troop near real Crown");
+            const auto troop = Unit(spell, "boulderback", Team::Enemy).id;MutableEntity(spell, troop).stunUntil = 30;
+            Check(spell.Spawn(Team::Player, "meteor_shards", guard.position), "actual delayed Meteor");
+            spell.Step(.75);Near(ById(spell, guard.id).hp, 2250 - 143, 0, "structure initial143");
+            spell.Step(5);Near(ById(spell, guard.id).hp, 2250 - 143 - 5 * 15, 1e-8, "five structure15 ticks");
+            Near(ById(spell, troop).hp, 1620 - 262 - 5 * 40, 1e-8, "same five troop40 ticks");
+            Check(spell.State().telemetry[0].at("meteor_shards").dotTicks == 5, "exactly five shared zone ticks");
+        });
+        Test("expansion shield processes each Meteor packet independently", [] {
+            Match m(Quiet());FreezeCrowns(m);
+            Check(m.Spawn(Team::Enemy, "iron_giant", {.5, 8.5}), "real Giant shield target");
+            const auto id = Unit(m, "iron_giant", Team::Enemy).id;MutableEntity(m,id).stunUntil=30;
+            Check(m.Spawn(Team::Player, "meteor_shards", {.5,8.5}), "actual Meteor packets");
+            m.Step(.75);Near(ById(m,id).shieldHP,48,0,"initial262 leaves48 shield");
+            m.Step(1);Near(ById(m,id).shieldHP,8,0,"first40 tick leaves8 shield");
+            m.Step(1);Near(ById(m,id).shieldHP,0,0,"second40 tick breaks shield");
+            Near(ById(m,id).hp,1000,0,"second tick discards32 rather than hurting body");
+            m.Step(3);Near(ById(m,id).hp,880,1e-9,"remaining three40 ticks hurt body");
+            const auto &tele=m.State().telemetry[1].at("iron_giant");
+            Near(tele.shieldDamageTaken,310,0,"separate total actual shield loss");
+            Near(tele.shieldAbsorbed,342,0,"three shield packets fully blocked");
+            Near(tele.overflowPrevented,32,0,"actual breaking DOT overflow");
+            Near(tele.damageTaken,120,0,"actual three body packets");
+        });
+        Test("expansion Reaper direct melee splash respects ground air and structure masks", [] {
+            Match m(Quiet());FreezeCrowns(m);
+            m.Spawn(Team::Player,"aether_reaper",{.5,8.5});
+            m.Spawn(Team::Enemy,"ironclad",{.5,7.5});
+            m.Spawn(Team::Enemy,"sky_manta",{1.5,7.5});
+            m.Spawn(Team::Enemy,"archer_tower",{3.5,7.5});
+            const auto troop=Unit(m,"ironclad",Team::Enemy).id, air=Unit(m,"sky_manta",Team::Enemy).id,
+                       structure=Unit(m,"archer_tower",Team::Enemy).id;
+            MutableEntity(m,structure).position={2.2,7.5};
+            for(auto &e:const_cast<Snapshot &>(m.State()).entities)if(e.team==Team::Enemy)e.stunUntil=30;
+            BodyClearance(m,"controlled actual Reaper contacts");m.Step(1./60.);
+            int hits=0;std::set<EntityId> targets;
+            for(const auto &event:m.Events())if(event.type=="damage"&&event.cardId=="aether_reaper") {
+                ++hits;targets.insert(event.target);Near(event.requested,95,0,"one95 damage packet per contact");
+            }
+            Check(hits==3&&targets==std::set<EntityId>{troop,air,structure},"one melee attack reaches three eligible contacts");
+            Check(std::none_of(m.State().projectiles.begin(),m.State().projectiles.end(),[](const Projectile&p){return p.cardId=="aether_reaper";}),
+                  "direct Reaper attack has no invented projectile");
+        });
+        Test("expansion charged movement speed and total opening packet follow real movement", [] {
+            Match m(Quiet());FreezeCrowns(m);m.Spawn(Team::Player,"rambeast",{arena::BridgeCenterX,8.5});
+            const auto id=Unit(m,"rambeast",Team::Player).id;
+            m.Step(1.5);Check(!ById(m,id).charged,"exact1.5 accumulated seconds does not charge before threshold");
+            m.Step(1./60.);Check(ById(m,id).charged,"next actual movement tick charges");
+            double maximum=0;bool hit=false;
+            for(int n=0;n<1000&&!hit;++n) {
+                const Entity before=ById(m,id);m.Step(1./60.);
+                const auto *after=FindEntity(m,id);if(!after||after->dead)break;
+                const double distance=std::hypot(after->position.x-before.position.x,after->position.z-before.position.z);
+                maximum=std::max(maximum,distance*60);
+                Check(distance<=3.2/60.+1e-8,"charged movement remains physically speed bounded");
+                for(const auto &event:m.Events())if(event.type=="damage"&&event.source==id&&event.targetKind!=EntityKind::Troop) {
+                    Near(event.requested,302,0,"first charged structure packet is total302");hit=true;break;
+                }
+            }
+            Check(maximum>3.19&&hit,"actual movement reaches3.2 before actual302 hit");
+            int ready=0,spent=0;for(const auto &event:m.Events()){ready+=event.type=="charge_ready"&&event.source==id;spent+=event.type=="charge_spent"&&event.source==id;}
+            Check(ready==1&&spent==1,"exact charge entry and spend are replayable");
+        });
         Test("complete exact roster and swarm DPS", [] {
-            Check(Cards().size() == 17, "seventeen cards including Pulverizer and both hog swarms");
-            const std::vector<double> hp{822, 374, 262, 1620, 547, 880, 480, 174, 1265, 1337, 0, 850, 0, 0, 95, 95, 700},
-                damage{93, 152, 55, 118, 120, 140, 77, 86, 72, 251, 262, 75, 175, 375, 18, 18, 65},
-                interval{1, 1.55, .75, 2, 1.15, 1.4, .92, 1.05, .75, 1.7, 0, 1, 0, 0, .9, 1, .9};
+            Check(Cards().size() == 21 && EntityDefinitions().size() == 1 && !FindCard("bone_warden_skeleton"), "twenty-one playable cards and one subordinate outside decks");
+            const std::vector<double> hp{822, 374, 262, 1620, 512, 934, 480, 174, 1265, 1222, 0, 850, 0, 0, 111, 111, 700, 1526, 445, 1000, 0},
+                damage{93, 152, 55, 118, 108, 156, 77, 86, 72, 251, 262, 75, 175, 375, 20, 20, 65, 101, 95, 85, 100},
+                interval{1.1, 1.75, .75, 2, 1.15, 1.25, .92, 1.05, .75, 1.7, 0, .9, 0, 0, .9, 1, .9, 1.5, 1.05, 1.3, 0};
             for (std::size_t n = 0; n < Cards().size(); ++n) {
                 Near(Cards()[n].hp, hp[n], 0, "roster HP");
                 Near(Cards()[n].damage, damage[n], 0, "roster damage");
                 Near(Cards()[n].attackInterval, interval[n], 0, "roster attack interval");
             }
-            Near(FindCard("rambeast")->chargeDamage, 255, 0, "charge");
+            Near(FindCard("rambeast")->chargeDamage, 302, 0, "total charged packet");
             Check(FindCard("vampire_bats")->count == 5, "five Bats");
             Check(FindCard("twin_blades")->count == 2, "two Blades");
             Check(FindCard("mini_stampede")->count == 5 && FindCard("mini_stampede")->cost == 2,
@@ -297,16 +534,17 @@ int main(int argc, char **argv) {
             Check(FindCard("stampede")->count == 15 && FindCard("stampede")->cost == 7 &&
                       FindCard("stampede")->structuresOnly && !FindCard("mini_stampede")->structuresOnly,
                   "fifteen royal hogs cost seven Aether and target structures");
-            Near(FindCard("mini_stampede")->damage / FindCard("mini_stampede")->attackInterval, 20, 1e-12,
-                 "Mini Stampede has twenty basic DPS per hog");
-            Near(FindCard("stampede")->damage / FindCard("stampede")->attackInterval * 15, 270, 1e-12,
-                 "Stampede has 270 basic deployment DPS");
+            Near(FindCard("mini_stampede")->damage / FindCard("mini_stampede")->attackInterval, 20/.9, 1e-12,
+                 "Mini Stampede correct derived per-hog DPS");
+            Near(FindCard("stampede")->damage / FindCard("stampede")->attackInterval * 15, 300, 1e-12,
+                 "Stampede has300 basic deployment DPS");
             Near(FindCard("archer_tower")->footprint, 1.65, 0, "building footprint");
             Near(FindCard("nova_flask")->towerDamage, 185, 0, "nova structures");
             for (const auto &card : Cards())
                 Near(card.castDelay,
-                     card.id == "meteor_shards" ? .75 : card.id == "bullet_burst" ? .30 : 0,
-                     0, "only Meteor and Bullet have a cast delay");
+                     card.id == "meteor_shards" ? .75 : card.id == "bullet_burst" ? .30 :
+                     card.id == "nova_flask" ? .85 : card.id == "shadow_surge" ? .25 : 0,
+                     0, "all four approved spell windups");
         });
         Test("current patch Pulverizer exact paid stats footprint lifetime", [] {
             const auto *card = FindCard("pulverizer");
@@ -340,12 +578,13 @@ int main(int argc, char **argv) {
             Match m(CollisionOptions("pulverizer", "ironclad"));
             FreezeCrowns(m);
             const auto source = PaidCollisionCard(m, Team::Player, "pulverizer", {.5, 8.5})[0];
-            Check(m.Spawn(Team::Enemy, "boulderback", {.5, 5.5}), "controlled ground victim");
+            Check(m.Spawn(Team::Enemy, "boulderback", {.5, 4.5}), "controlled ground victim");
             const auto victim = Unit(m, "boulderback", Team::Enemy).id;
             MutableEntity(m, victim).stunUntil = 20;
             Check(m.Spawn(Team::Enemy, "sky_manta", {2.5, 8.5}), "air victim in radial area");
             MutableEntity(m, Unit(m, "sky_manta", Team::Enemy).id).stunUntil = 20;
             Check(m.Spawn(Team::Enemy, "archer_tower", {-2.5, 8.5}), "enemy structure in radial area");
+            const auto structure = Unit(m, "archer_tower", Team::Enemy).id;
             Check(m.Spawn(Team::Player, "ironclad", {3.5, 8.5}), "friendly ground body");
             MutableEntity(m, Unit(m, "ironclad", Team::Player).id).stunUntil = 20;
             while(m.State().shockwaves.empty() && m.State().elapsed<1)
@@ -363,7 +602,8 @@ int main(int argc, char **argv) {
             m.Step(.1);Near(ById(m, victim).hp, 1620, 0, "distant enemy is not hit during travel");
             Near(m.State().shockwaves[0].progress, .8, 1e-9, "actual radial speed");
             MutableEntity(m, source.id).hp = 1;
-            Check(m.Spawn(Team::Enemy, "nova_flask", {.5, 8.5}), "real spell destroys source after launch");
+            Check(m.Spawn(Team::Enemy, "bullet_burst", {.5, 8.5}), "real delayed spell destroys source after launch");
+            m.Step(.30);
             Check(ById(m, source.id).dead && m.State().shockwaves.size() == 1, "source death leaves wave alive");
             double damageTime = -1;
             for (int step = 0; step < 25; ++step) {
@@ -372,18 +612,25 @@ int main(int argc, char **argv) {
                     if (event.type == "damage" && event.cardId == "pulverizer" && event.target == victim)
                         damageTime = event.time;
             }
-            const double contact = wave.born + (3-ById(m,victim).radius)/8;
+            const double contact = wave.born + (4-ById(m,victim).radius)/8;
             Check(damageTime >= contact-1e-9 && damageTime <= contact+1./60.+1e-9,
                   "wave contacts body at distance divided by travel speed");
-            int hits=0, forbidden=0;
+            int hits=0, forbidden=0, structureHits=0;
             for (const auto &event : m.Events())
                 if (event.type == "damage" && event.cardId == "pulverizer") {
                     hits += event.target == victim;
-                    forbidden += event.target != victim;
+                    structureHits += event.target == structure;
+                    forbidden += event.target != victim && event.target != structure;
                     Check(event.damageKind == "shockwave" && event.requested == 65 && event.source == source.id &&
                               event.playId == source.playId, "post-death hit retains exact damage/source/play attribution");
                 }
-            Check(hits == 1 && forbidden == 0, "one hit per wave, no ally/air/structure damage");
+            if (hits != 1 || structureHits != 0 || forbidden) {
+                std::cerr << "WAVE_CONTACTS troop=" << hits << " structure=" << structureHits << " forbidden=" << forbidden << '\n';
+                for (const auto &event : m.Events()) if (event.type == "damage" && event.cardId == "pulverizer")
+                    std::cerr << "WAVE_CONTACT target=" << event.target << " kind=" << int(event.targetKind)
+                              << " at=" << event.time << " requested=" << event.requested << '\n';
+            }
+            Check(hits == 1 && structureHits == 0 && forbidden == 0, "one hit per wave on ground troops only, no ally, air or structure damage");
             Check(m.State().shockwaves.empty(), "wave expires after four-tile travel");
             Near(ById(m,victim).slowPct, .10, 0, "travel hit applies ten percent slow");
             Near(m.State().telemetry[0].at("pulverizer").troopDamage, 65, 0, "post-death actual damage telemetry");
@@ -431,7 +678,7 @@ int main(int argc, char **argv) {
                 }
                 ++cards;
             }
-            Check(cards==14,"all fourteen physical cards share strict8/5");
+            Check(cards==17,"all seventeen physical cards share strict8/5");
             for(const auto&id:std::vector<std::string>{"ironclad","ember_archer","archer_tower","pulverizer","stampede"}){
                 Match a(Quiet());a.Spawn(Team::Player,id,{.5,8.5});
                 a.Spawn(Team::Enemy,id=="stampede"?"archer_tower":"ironclad",{.5,4.5});
@@ -453,16 +700,16 @@ int main(int argc, char **argv) {
                 for(bool structure:{false,true})for(bool front:{false,true})for(bool inside:{false,true}){
                     Match fresh(Quiet());FreezeCrowns(fresh);
                     const double home=team==Team::Player?1:-1;
-                    fresh.Spawn(team,id,{.5,home*8.5});
+                    fresh.Spawn(team,id,{.5,home*7.5});
                     const auto source=Unit(fresh,id,team).id;
-                    auto&s=MutableEntity(fresh,source);s.position={.5,home*8.5};s.facing={0,-home};
+                    auto&s=MutableEntity(fresh,source);s.position={.5,home*7.5};s.facing={0,-home};
                     s.target=Tower(fresh,team==Team::Player?Team::Enemy:Team::Player,EntityKind::Guard,1).id;
                     s.hardLock=s.forcedTarget=0;
                     const double boundary=front?8:5;
                     const double distance=boundary+(inside?-1:1);
                     const Team foeTeam=team==Team::Player?Team::Enemy:Team::Player;
                     const std::string foeCard=structure?"archer_tower":"ironclad";
-                    Check(fresh.Spawn(foeTeam,foeCard,{.5,home*8.5+(front?-home:home)*distance}),
+                    Check(fresh.Spawn(foeTeam,foeCard,{.5,home*7.5+(front?-home:home)*distance}),
                           "fresh deployed enemy fixture is physically accepted");
                     const auto&foe=Unit(fresh,foeCard,foeTeam);
                     const auto&after=ById(fresh,source);
@@ -479,7 +726,7 @@ int main(int argc, char **argv) {
             int fixtures=0,members=0;
             for(Team team:{Team::Player,Team::Enemy}){
                 const double sign=team==Team::Player?1:-1;
-                for(Vec2 drop:std::vector<Vec2>{{-.5,2.5},{.5,2.5},{7.5,2.5},{.5,8.5},{7.5,8.5},{7.5,11.5},{.5,16.5},{.5,8.5}}){
+                for(Vec2 drop:std::vector<Vec2>{{-.5,2.5},{.5,2.5},{5.5,2.5},{.5,6.5},{5.5,6.5},{5.5,9.5},{.5,14.5},{.5,6.5}}){
                     Match m(CollisionOptions("mini_stampede","archer_tower"));
                     const bool obstacle=fixtures%8==7;
                     if(obstacle)PaidCollisionCard(m,team,"archer_tower",{drop.x,sign*drop.z});
@@ -492,7 +739,7 @@ int main(int argc, char **argv) {
                         left+=unit.position.x<0;
                         Check(unit.lane==(unit.position.x<0?-1:1),"actual resolved landing side determines lane");
                     }
-                    const bool clear=!obstacle&&drop.z<=8.5;
+                    const bool clear=!obstacle&&drop.z<=6.5;
                     Check(maximum<=(clear?1.30:3.25),"no independent four-tile scattering from clear compact drop");
                     Check(std::hypot(x-drop.x,z-sign*drop.z)<=(clear?.20:2.0),"formation centroid remains anchored to hand drop");
                     if(clear&&std::abs(drop.x)<=.5)Check(left==2||left==3,"center placement still splits five hogs2/3");
@@ -533,6 +780,7 @@ int main(int argc, char **argv) {
             const auto id = Tower(m, Team::Enemy, EntityKind::Core).id;
             Check(!Tower(m, Team::Enemy, EntityKind::Core).active, "Core initially dormant");
             m.Spawn(Team::Player, "nova_flask", {0, -arena::CoreDepth});
+            m.Step(.85);
             Near(Tower(m, Team::Enemy, EntityKind::Core).hp, 3415, 0, "Core takes spell damage");
             Check(!Tower(m, Team::Enemy, EntityKind::Core).active, "Core hit does not activate");
             Check(m.SetTowerHP(Tower(m, Team::Enemy, EntityKind::Guard, -1).id, 0), "destroy Guard");
@@ -557,10 +805,10 @@ int main(int argc, char **argv) {
             const auto *c = FindCard("archer_tower");
             Check(!m.CanPlace(Team::Player, *c, {7.5, 2.5}), "footprint crosses bank");
             Check(m.CanPlace(Team::Player, *c, {7.5, 4.5}), "full footprint fits");
-            Check(!m.CanPlace(Team::Player, *c, {8.5, 13.5}), "Tower overlap");
+            Check(!m.CanPlace(Team::Player, *c, {arena::GuardX, arena::GuardDepth}), "Tower overlap");
             m.Spawn(Team::Player, c->id, {7.5, 4.5});
             Check(!m.CanPlace(Team::Player, *c, {7.5, 5.5}), "building overlap");
-            Check(m.CanPlace(Team::Player, *FindCard("nova_flask"), {0, -20.5}), "spell any board region");
+            Check(m.CanPlace(Team::Player, *FindCard("nova_flask"), {0, -arena::LastTileZ + 1}), "spell any board region");
         });
         Test("paid hand rotation and invalid play no cost", [] {
             Match m(Quiet());
@@ -604,6 +852,7 @@ int main(int argc, char **argv) {
             m.Spawn(Team::Enemy, "boulderback", {0, 0});
             m.Spawn(Team::Player, "boulderback", {0, 0});
             m.Spawn(Team::Player, "nova_flask", {0, 0});
+            m.Step(.85);
             Near(Unit(m, "boulderback", Team::Enemy).hp, 1245, 0, "375 troop damage");
             Near(Unit(m, "boulderback", Team::Player).hp, 1620, 0, "friendly immune");
             m.Spawn(Team::Player, "bullet_burst", {0, -arena::CoreDepth});
@@ -738,22 +987,24 @@ int main(int argc, char **argv) {
             for (const auto *id : {"bullet_burst", "meteor_shards"}) {
                 const auto *card = FindCard(id);
                 const auto *enteringId = card->id == "bullet_burst" ? "sky_manta" : "boulderback";
+                const auto *dodgingId = enteringId;
                 const Vec2 dodgePoint{7.5, card->id == "bullet_burst" ? 3.5 : 1.5};
                 const Vec2 enterPoint{7.5, card->id == "bullet_burst" ? 8.5 : 10.5};
                 Match dodge(Quiet()), enter(Quiet());
-                Check(dodge.Spawn(Team::Enemy, "boulderback", {7.5, 5.5}), "moving dodge target");
+                FreezeCrowns(dodge);FreezeCrowns(enter);
+                Check(dodge.Spawn(Team::Enemy, dodgingId, {7.5, 5.5}), "moving dodge target");
                 Check(enter.Spawn(Team::Enemy, enteringId, {7.5, 5.5}), "moving enter target");
                 const auto inside = [&](const Entity &entity, Vec2 point) {
                     return std::hypot(entity.position.x - point.x, entity.position.z - point.z) <=
                            card->spellRadius + entity.radius * .2;
                 };
-                Check(inside(Unit(dodge, "boulderback", Team::Enemy), dodgePoint), "dodger starts inside");
+                Check(inside(Unit(dodge, dodgingId, Team::Enemy), dodgePoint), "dodger starts inside");
                 Check(!inside(Unit(enter, enteringId, Team::Enemy), enterPoint), "entrant starts outside");
                 Check(dodge.Spawn(Team::Player, id, dodgePoint) && enter.Spawn(Team::Player, id, enterPoint),
                       "fixed-area casts accepted");
                 dodge.Step(card->castDelay);
                 enter.Step(card->castDelay);
-                Check(!inside(Unit(dodge, "boulderback", Team::Enemy), dodgePoint), "dodger leaves before impact");
+                Check(!inside(Unit(dodge, dodgingId, Team::Enemy), dodgePoint), "dodger leaves before impact");
                 Check(inside(Unit(enter, enteringId, Team::Enemy), enterPoint), "entrant reaches area at impact");
                 Near(dodge.State().telemetry[0].at(id).initialDamage, 0, 0, "spell misses departed target");
                 Near(enter.State().telemetry[0].at(id).initialDamage, card->damage, 0, "spell hits arriving target");
@@ -875,11 +1126,11 @@ int main(int argc, char **argv) {
         });
         Test("Crown hardlock survives defender before next hit", [] {
             Match m(Quiet());
-            m.Spawn(Team::Player, "ironclad", {-8.5, -11.5});
+            m.Spawn(Team::Player, "ironclad", {-arena::GuardX - 1.3, -arena::GuardDepth + 1.5});
             m.Step(.05);
             auto tower = Tower(m, Team::Enemy, EntityKind::Guard, -1).id;
-            Check(Unit(m, "ironclad", Team::Player).hardLock == tower, "locks upon reaching attack range");
-            m.Spawn(Team::Enemy, "ironclad", {-7.5, -11.5});
+            Check(Unit(m, "ironclad", Team::Player).hardLock == tower, "first real Crown attack commits lock");
+            m.Spawn(Team::Enemy, "ironclad", {-arena::GuardX - 2.3, -arena::GuardDepth + 1.5});
             m.Step(.05);
             Check(Unit(m, "ironclad", Team::Player).target == tower, "fresh defender cannot pull hardlock");
         });
@@ -892,6 +1143,47 @@ int main(int argc, char **argv) {
             const auto &u = Unit(m, "ironclad", Team::Player);
             Check(u.forcedTarget != 0, "fresh defender pull");
             Check(u.target == Unit(m, "ironclad", Team::Enemy).id, "pulled target");
+        });
+        Test("Crown target remains pullable while waiting for its first attack", [] {
+            for (Team team : {Team::Player, Team::Enemy}) {
+                Match m(Quiet());
+                FreezeCrowns(m);
+                const double sign = team == Team::Player ? 1. : -1.;
+                const Team other = team == Team::Player ? Team::Enemy : Team::Player;
+                Check(m.Spawn(team, "ironclad", {arena::GuardX + 1.3, -sign * (arena::GuardDepth - 1.5)}), "waiting attacker spawns");
+                const EntityId attacker = Unit(m, "ironclad", team).id;
+                MutableEntity(m, attacker).cooldown = 1;
+                m.Step(.05);
+                Check(ById(m, attacker).target == Tower(m, other, EntityKind::Guard, 1).id &&
+                          ById(m, attacker).hardLock == 0,
+                      "being in Crown range does not commit a cooldown-blocked attack");
+                for (const auto &event : m.Events())
+                    Check(event.type != "attack" || event.source != attacker,
+                          "fixture has not begun an actual attack");
+                Check(m.Spawn(other, "ironclad", {arena::GuardX + 1.3, -sign * (arena::GuardDepth - 2.5)}), "nearby defender spawns");
+                const EntityId defender = Unit(m, "ironclad", other).id;
+                Check(ById(m, attacker).target == defender && ById(m, attacker).hardLock == 0,
+                      "legal defender pulls an uncommitted Crown approach");
+            }
+        });
+        Test("explicit target masks govern ground air and structures", [] {
+            Entity ground, air, building, guard;
+            air.flying = true;
+            building.kind = EntityKind::Building;
+            guard.kind = EntityKind::Guard;
+            for (std::uint8_t mask = 1; mask <= targets::All; ++mask) {
+                Card card;
+                card.targetMask = mask;
+                // Deliberately contradictory legacy projections cannot widen
+                // an explicit mask used by primary or secondary attack hits.
+                card.canHitAir = true;
+                card.structuresOnly = true;
+                card.building = true;
+                Check(CanHit(card, ground) == bool(mask & targets::GroundTroop), "ground mask parity");
+                Check(CanHit(card, air) == bool(mask & targets::AirTroop), "air mask parity");
+                Check(CanHit(card, building) == bool(mask & targets::Structure), "building mask parity");
+                Check(CanHit(card, guard) == bool(mask & targets::Structure), "Crown mask parity");
+            }
         });
         Test("structure-only building pull and hardlock", [] {
             Match m(Quiet());
@@ -933,7 +1225,7 @@ int main(int argc, char **argv) {
             Match m(Quiet());
             m.Spawn(Team::Player, "archer_tower", {7.5, 5.5});
             m.Step(24.9);
-            Near(Unit(m, "archer_tower", Team::Player).hp, 3.4, .0001, "34HPpersecond");
+            Near(Unit(m, "archer_tower", Team::Player).hp, 850 - 24.9 * 25, .0001, "explicit25HPpersecond");
             m.Step(.1);
             Check(Count(m, "archer_tower", Team::Player) == 0, "expires25");
             const auto &t = m.State().telemetry[0].at("archer_tower");
@@ -1005,40 +1297,52 @@ int main(int argc, char **argv) {
         });
         Test("both bridge routes legal and ground progress", [] {
             Match m(Quiet());
+            std::map<EntityId, bool> crossed;
             for (int lane : {-1, 1}) {
-                m.Spawn(Team::Player, "boulderback", {lane * 7.5, 5.5});
-                m.Spawn(Team::Enemy, "boulderback", {lane * 7.5, -5.5});
+                Check(m.Spawn(Team::Player, "boulderback", {lane * 7.5, 5.5}), "Player heavy troop spawns");
+                Check(m.Spawn(Team::Enemy, "boulderback", {lane * 7.5, -5.5}), "Enemy heavy troop spawns");
             }
-            for (int n = 0; n < 600; ++n) {
-                m.Step(1. / 60);
-                for (const auto &e : m.State().entities)
-                    if (!e.dead && e.kind == EntityKind::Troop && std::abs(e.position.z) < 1.93)
-                        Check(std::abs(e.position.x - 7.2) < 1.94 || std::abs(e.position.x + 7.2) < 1.94,
-                              "no illegal river walking");
-            }
-            bool crossed = false;
             for (const auto &e : m.State().entities)
-                if (!e.dead && e.kind == EntityKind::Troop)
-                    crossed |= e.team == Team::Player ? e.position.z < 0 : e.position.z > 0;
-            Check(crossed, "large units cross bridge");
+                if (e.kind == EntityKind::Troop) crossed[e.id] = false;
+            for (int n = 0; n < 600; ++n) {
+                const auto before = m.State().entities;
+                m.Step(1. / 60);
+                SweptBodyClearance(m, before, "opposite heavy bridge traffic");
+                for (const auto &e : m.State().entities)
+                    if (!e.dead && e.kind == EntityKind::Troop) {
+                        const double sign = e.team == Team::Player ? 1. : -1.;
+                        crossed[e.id] = crossed[e.id] || e.position.z * sign < -arena::RiverHalfWidth - .28;
+                        ClearOwnStructures(m, e, e.position);
+                    }
+            }
+            const bool allCrossed = crossed.size() == 4 &&
+                std::all_of(crossed.begin(), crossed.end(), [](const auto &entry) { return entry.second; });
+            if (!allCrossed)
+                for (const auto &e : m.State().entities)
+                    if (!e.dead && e.kind == EntityKind::Troop)
+                        std::cerr << "BRIDGE_PROGRESS id=" << e.id << " team=" << int(e.team)
+                                  << " position=" << e.position.x << ',' << e.position.z
+                                  << " target=" << e.target << " bridge=" << e.bridge
+                                  << " path=" << e.path.size() << " stuck=" << e.stuckTime << '\n';
+            Check(allCrossed, "all four opposing heavy units pass on both bridges within ten seconds");
         });
-        Test("expanded arena aligns tower bridge axes and keeps rear depths and full new edge placement", [] {
+        Test("24 by 34 arena preserves physical tower axes and validates every new grid edge", [] {
             Match m(Quiet());
-            Check(arena::Width == 30 && arena::Height == 44, "new 30 by 44 physical board");
-            Near(arena::BridgeCenterX, 7.2, 0, "existing bridge centers retained");
+            Check(arena::Width == 24 && arena::Height == 34, "confirmed 24 by 34 tile board");
+            Near(arena::BridgeCenterX * 1.25, 7.2, 1e-12, "larger tiles preserve physical bridge centers");
             Near(arena::GuardX, arena::BridgeCenterX, 0, "Guard axis shares the bridge center");
             int guardsAligned = 0, coresCentered = 0;
             for (Team team : {Team::Player, Team::Enemy}) {
                 const double sign = team == Team::Player ? 1. : -1.;
                 const auto &core = Tower(m, team, EntityKind::Core);
                 Near(core.position.x, 0, 0, "Core remains centered between the bridge lanes");
-                Near(core.position.z, sign * 17.3, 0, "Core keeps its established rear depth");
+                Near(core.position.z * 1.25, sign * 17.3, 1e-12, "larger tiles preserve physical Core depth");
                 Near(core.radius, 1.35, 0, "Core collision radius retained");
                 ++coresCentered;
                 for (int lane : {-1, 1}) {
                     const auto &guard = Tower(m, team, EntityKind::Guard, lane);
-                    Near(guard.position.z, sign * 13.4, 0, "Guard keeps its established rear depth");
-                    Near(guard.position.x, lane * 7.2, 0, "Guard aligns with its own bridge center");
+                    Near(guard.position.z * 1.25, sign * 13.4, 1e-12, "larger tiles preserve physical Guard depth");
+                    Near(guard.position.x * 1.25, lane * 7.2, 1e-12, "physical Guard and bridge axes stay aligned");
                     Near(guard.position.x, lane * arena::BridgeCenterX, 0, "actual Guard body follows the bridge axis");
                     Near(guard.radius, 1.15, 0, "Guard collision radius retained");
                     ++guardsAligned;
@@ -1046,20 +1350,53 @@ int main(int argc, char **argv) {
                 Near(core.position.x, (Tower(m, team, EntityKind::Guard, -1).position.x +
                                       Tower(m, team, EntityKind::Guard, 1).position.x) * .5, 0,
                      "Core stays centered between actual mirrored Guards");
-                Check(m.CanPlace(team, *FindCard("ironclad"), {14.5, sign * 21.5}), "new outer corner accepts ordinary ground card");
+                Check(m.CanPlace(team, *FindCard("ironclad"), {11.5, sign * 16.5}), "new outer corner accepts ordinary ground card");
                 m.SetAether(team, 10);
-                Check(m.Play(team, 0, {-14.5, sign * 21.5}), "new outer paid corner accepted");
+                Check(m.Play(team, 0, {-11.5, sign * 16.5}), "new outer paid corner accepted");
                 ClearOwnStructures(m, Unit(m, "ironclad", team), Unit(m, "ironclad", team).position);
-                Check(m.Spawn(team, "sky_manta", {14.5, sign * 21.5}), "new outer DEV corner accepted");
+                Check(m.Spawn(team, "sky_manta", {11.5, sign * 16.5}), "new outer DEV corner accepted");
             }
-            Near(SnapToTile({15, 22}).x, 14.5, 0, "positive X tile reaches widened edge");
-            Near(SnapToTile({15, 22}).z, 21.5, 0, "positive Z tile reaches deeper edge");
-            Near(SnapToTile({-15, -22}).x, -14.5, 0, "negative X tile reaches widened edge");
-            Near(SnapToTile({-15, -22}).z, -21.5, 0, "negative Z tile reaches deeper edge");
-            Check(!m.Spawn(Team::Player, "ironclad", {15.001, 10}), "outside new width rejected");
-            Check(!m.Spawn(Team::Enemy, "ironclad", {0, -22.001}), "outside new depth rejected");
-            Near(arena::PocketOuterX, 14.2, 1e-12, "pocket widens with board");
-            Near(arena::PocketMaxDepth, 10.25, 1e-12, "pocket retreats with Guard");
+            Near(SnapToTile({12, 17}).x, 11.5, 0, "positive X edge snaps to the last center");
+            Near(SnapToTile({12, 17}).z, 16.5, 0, "positive Z edge snaps to the last center");
+            Near(SnapToTile({-12, -17}).x, -11.5, 0, "negative X edge snaps to the last center");
+            Near(SnapToTile({-12, -17}).z, -16.5, 0, "negative Z edge snaps to the last center");
+            Check(!m.Spawn(Team::Player, "ironclad", {12.001, 10}), "outside new width rejected");
+            Check(!m.Spawn(Team::Enemy, "ironclad", {0, -17.001}), "outside new depth rejected");
+            Near(arena::PocketOuterX, 11.2, 1e-12, "pocket outer edge derives from new width");
+            Near(arena::PocketMaxDepth, 7.57, 1e-12, "pocket depth derives from adjusted Guard");
+            int tileCenters = 0, edgeFixtures = 0;
+            std::set<double> centersX, centersZ;
+            for (int row = 0; row < 34; ++row)
+                for (int column = 0; column < 24; ++column) {
+                    const Vec2 point{-11.5 + column, -16.5 + row};
+                    const Vec2 snapped = SnapToTile(point);
+                    Near(snapped.x, point.x, 0, "all grid centers retain exact X");
+                    Near(snapped.z, point.z, 0, "all grid centers retain exact Z");
+                    centersX.insert(snapped.x); centersZ.insert(snapped.z); ++tileCenters;
+                }
+            Check(tileCenters == 816 && centersX.size() == 24 && centersZ.size() == 34,
+                  "exactly 24 across and 34 Core-to-Core grid centers");
+            for (const auto &card : Cards())
+                for (Team team : {Team::Player, Team::Enemy})
+                    for (int side : {-1, 1}) {
+                        Match edge(CollisionOptions(card.id, "ironclad"));
+                        const double sign = team == Team::Player ? 1. : -1.;
+                        if (card.building)
+                            Check(!edge.CanPlace(team, card, {side * 11.5, sign * 16.5}),
+                                  "a building footprint cannot extend beyond the last corner tile");
+                        const double inset = card.building ? 1 : 0;
+                        PaidCollisionCard(edge, team, card.id, {side * (11.5 - inset), sign * (16.5 - inset)});
+                        BodyClearance(edge, "new arena paid outer corner");
+                        for (const auto &body : edge.State().entities)
+                            if (!body.dead && body.kind < EntityKind::Guard) {
+                                const double margin = .40 + body.radius * .72;
+                                Check(std::abs(body.position.x) <= 12 - margin + 1e-8 &&
+                                          std::abs(body.position.z) <= 17 - margin + 1e-8,
+                                      "every paid edge member remains inside its full body bounds");
+                            }
+                        ++edgeFixtures;
+                    }
+            Check(edgeFixtures == int(Cards().size()) * 4, "all cards mirror new paid corners for both teams");
             Check(guardsAligned == 4 && coresCentered == 2, "every actual tower has the requested lane axis");
             std::cout << "TOWER_ALIGNMENT width=" << arena::Width << " height=" << arena::Height
                       << " guard_x=" << arena::GuardX << " bridge_x=" << arena::BridgeCenterX
@@ -1135,7 +1472,7 @@ int main(int argc, char **argv) {
                             members += static_cast<int>(ids.size());
                         }
             }
-            Check(fixtures == 108 && members == 336, "all nine ground cards, both teams, both lane states and pockets");
+            Check(fixtures == 132 && members == 360, "all eleven ground cards, both teams, both lane states and pockets");
         });
         Test("continuous routes to an opposite target still use the current side bridge", [] {
             int routes = 0;
@@ -1149,7 +1486,7 @@ int main(int argc, char **argv) {
                         source.id = 9000;
                         source.team = team;
                         source.cardId = card.id;
-                        source.radius = .44 * card.scale;
+                        source.radius = card.collisionRadius;
                         source.lane = lane;
                         source.position = {lane * 7.5, team == Team::Player ? 5.5 : -5.5};
                         const auto &target = Tower(m, team == Team::Player ? Team::Enemy : Team::Player,
@@ -1175,7 +1512,7 @@ int main(int argc, char **argv) {
                         routes++;
                     }
             }
-            Check(routes == 36, "all nine ground cards mirror the current-side route policy");
+            Check(routes == 44, "all eleven ground cards mirror the current-side route policy");
         });
         Test("paid swarms split from each resolved landing side and advance through their own lane", [] {
             int fixtures = 0, members = 0, splitFixtures = 0;
@@ -1206,8 +1543,9 @@ int main(int argc, char **argv) {
                             if (std::abs(x) < 1.) {
                                 Check(leftMembers > 0 && rightMembers > 0,
                                       "both center-adjacent tiles split every multi-unit card across the divider");
-                                Check(std::abs(leftMembers - rightMembers) <= 1,
-                                      "unblocked center formations divide evenly, with one extra odd member");
+                                Check(std::abs(leftMembers - rightMembers) <=
+                                          (std::string(id) == "stampede" ? 3 : 1),
+                                      "members split by landing side, including Stampede's three-member center rank");
                                 ++splitFixtures;
                             } else
                                 Check(x < 0 ? rightMembers == 0 : leftMembers == 0,
@@ -1287,6 +1625,40 @@ int main(int argc, char **argv) {
                 Near(left.position.x, right.position.x, 1e-9, "swarm replay event X is deterministic");
                 Near(left.position.z, right.position.z, 1e-9, "swarm replay event Z is deterministic");
             }
+        });
+        Test("Stampede uses five columns and three ranks at clear ordinary and river-edge drops", [] {
+            int fixtures = 0;
+            for (Team team : {Team::Player, Team::Enemy})
+                for (double x : {-7.5, -.5, .5, 7.5})
+                    for (double z : {2.5, 6.5}) {
+                        Match m(CollisionOptions("stampede", "ironclad"));
+                        const double sign = team == Team::Player ? 1. : -1.;
+                        const auto members = PaidCollisionCard(m, team, "stampede", {x, sign * z});
+                        Check(members.size() == 15, "all fifteen paid bodies land");
+                        std::map<double, int> rows, columns;
+                        for (const auto &member : members) {
+                            ++rows[member.position.z * sign];
+                            ++columns[member.position.x];
+                            Check(m.CanPlace(team, *FindCard("stampede"), member.position),
+                                  "whole grid remains inside legal deployment region");
+                        }
+                        Check(rows.size() == 3 && columns.size() == 5, "five across and three deep");
+                        for (const auto &[position, count] : rows) {
+                            (void)position;
+                            Check(count == 5, "each rank contains exactly five members");
+                        }
+                        for (const auto &[position, count] : columns) {
+                            (void)position;
+                            Check(count == 3, "each column contains exactly three members");
+                        }
+                        if (z == 2.5)
+                            Near(rows.begin()->first, 2.15, 1e-12,
+                                 "river-edge grid moves together to first legal front row");
+                        BodyClearance(m, "five-by-three paid landing");
+                        ++fixtures;
+                    }
+            Check(fixtures == 16, "both teams both banks and center/side placements inspected");
+            std::cout << "STAMPEDE_FORMATION fixtures=" << fixtures << " columns=5 ranks=3 members=240\n";
         });
         Test("destroyed-lane Core advances stay deterministic across frame chunks", [] {
             auto options = Quiet();
@@ -1371,7 +1743,7 @@ int main(int argc, char **argv) {
                             ++fixtures;
                         }
             }
-            Check(fixtures == 108 && members == 336, "all nine ground cards and every swarm member in the tower matrix");
+            Check(fixtures == 132 && members == 360, "all eleven ground cards and every swarm member in the tower matrix");
         });
         Test("continuous tower perimeter paths clear corners and blocked rounded start cells", [] {
             int paths = 0;
@@ -1387,7 +1759,7 @@ int main(int argc, char **argv) {
                             source.id = 9000;
                             source.cardId = id;
                             source.team = team;
-                            source.radius = .44 * FindCard(id)->scale;
+                            source.radius = FindCard(id)->collisionRadius;
                             const double angle = n * 6.28318530717958647692 / 64.;
                             const double clearance = tower.radius + source.radius + .221;
                             source.position = {tower.position.x + std::cos(angle) * clearance,
@@ -1407,9 +1779,9 @@ int main(int argc, char **argv) {
         });
         Test("paid rear rows and corner drops resolve each ground member before its first tick", [] {
             int fixtures = 0, members = 0;
-            const std::vector<Vec2> points{{.5, arena::LastTileZ}, {-13.5, arena::LastTileZ},
-                                           {13.5, arena::LastTileZ}, {-arena::LastTileX, arena::LastTileZ},
-                                           {arena::LastTileX, arena::LastTileZ}, {-13.5, 8.5}, {13.5, 8.5}};
+            const std::vector<Vec2> points{{.5, arena::LastTileZ}, {-arena::DeploymentMaxX, arena::LastTileZ},
+                                           {arena::DeploymentMaxX, arena::LastTileZ}, {-arena::LastTileX, arena::LastTileZ},
+                                           {arena::LastTileX, arena::LastTileZ}, {-arena::DeploymentMaxX, 8.5}, {arena::DeploymentMaxX, 8.5}};
             for (const auto &card : Cards()) {
                 if (card.flying || card.spell || card.building)
                     continue;
@@ -1424,6 +1796,7 @@ int main(int argc, char **argv) {
                         const double sign = team == Team::Player ? 1. : -1.;
                         point.z *= sign;
                         Match m(options);
+                        FreezeCrowns(m);
                         m.SetAether(team, 10);
                         Check(m.CanPlace(team, card, point), "original paid rear/side/corner drop stays legal");
                         Check(m.Play(team, 0, point), "paid edge drop succeeds");
@@ -1463,24 +1836,25 @@ int main(int argc, char **argv) {
                         ++fixtures;
                     }
             }
-            Check(fixtures == 126 && members == 392, "all nine ground cards mirrored across rear/side/corner cases");
+            Check(fixtures == 154 && members == 420, "all eleven ground cards mirrored across rear/side/corner cases");
         });
         Test("legal ground drops air spells buildings and DEV river fixtures retain their positions", [] {
             for (Team team : {Team::Player, Team::Enemy}) {
                 const double sign = team == Team::Player ? 1. : -1.;
+                const double coreTile = SnapToTile({0, arena::CoreDepth}).z;
                 Match m(Quiet());
                 Check(m.Spawn(team, "ironclad", {7.5, sign * 5.5}), "legal DEV ground drop");
                 Near(Unit(m, "ironclad", team).position.x, 7.5, 0, "legal ground X unchanged");
                 Near(Unit(m, "ironclad", team).position.z, sign * 5.5, 0, "legal ground Z unchanged");
-                Check(m.Spawn(team, "sky_manta", {.5, sign * 16.5}), "flying tower-center fixture");
+                Check(m.Spawn(team, "sky_manta", {.5, sign * coreTile}), "flying tower-center fixture");
                 Near(Unit(m, "sky_manta", team).position.x, .5, 0, "air X unchanged");
-                Near(Unit(m, "sky_manta", team).position.z, sign * 16.5, 0, "air can still fly over towers");
+                Near(Unit(m, "sky_manta", team).position.z, sign * coreTile, 0, "air can still fly over towers");
                 Check(m.Spawn(team, "archer_tower", {.5, sign * 8.5}), "existing legal DEV building fixture");
                 Near(Unit(m, "archer_tower", team).position.x, .5, 0, "building X unchanged");
                 Near(Unit(m, "archer_tower", team).position.z, sign * 8.5, 0, "legal fixed building position unchanged");
-                Check(m.Spawn(team, "meteor_shards", {.5, sign * 16.5}), "existing fixed spell fixture");
+                Check(m.Spawn(team, "meteor_shards", {.5, sign * coreTile}), "existing fixed spell fixture");
                 Near(m.State().spellCasts.back().position.x, .5, 0, "spell area X unchanged");
-                Near(m.State().spellCasts.back().position.z, sign * 16.5, 0, "spell area Z unchanged");
+                Near(m.State().spellCasts.back().position.z, sign * coreTile, 0, "spell area Z unchanged");
                 Match river(Quiet());
                 Check(river.Spawn(team, "ironclad", {.5, .5}), "DEV river fixture still accepted");
                 Near(Unit(river, "ironclad", team).position.x, .5, 0, "DEV river X unchanged at spawn");
@@ -1515,8 +1889,8 @@ int main(int argc, char **argv) {
                 for (Team team : {Team::Player, Team::Enemy}) {
                     const double sign = team == Team::Player ? 1. : -1.;
                     m->SetAether(team, 10);
-                    Check(m->Play(team, 0, {.5, sign * 17.5}), "paid original Core repro");
-                    Check(m->Spawn(team, "twin_blades", {8.5, sign * 13.5}), "Guard swarm repro");
+                    Check(m->Play(team, 0, {.5, sign * (arena::CoreDepth + .5)}), "paid original Core repro");
+                    Check(m->Spawn(team, "twin_blades", {arena::GuardX + 1.3, sign * arena::GuardDepth}), "Guard swarm repro");
                     Check(m->Spawn(team, "boulderback", {-.5, sign * 16.5}), "large Core repro");
                 }
             a.Step(4);
@@ -1546,6 +1920,9 @@ int main(int argc, char **argv) {
                 for (unsigned n = 0; n < 8; ++n) {
                     auto d = BuildAIDeck(s, 100 + n);
                     Check(ValidateDeck(d), "AI valid eight");
+                    Check(d == BuildAIDeck(s, 100 + n), "identical seed retains identical deck and hand order");
+                    for (const auto &id : d)
+                        Check(FindCard(id) != nullptr, "every generated slot is a playable card");
                     auto a = AnalyzeDeck(d);
                     Check(a.winConditions >= 1 && a.spells >= 1 && a.sustainedAntiAir >= 2 &&
                               a.antiAir >= 3 && a.cheap >= 2,
@@ -1557,6 +1934,242 @@ int main(int argc, char **argv) {
                     if (s == "control")
                         Check(a.buildings >= 1 && a.defenseScore >= 65, "control defense");
                 }
+            for (const std::string &style :
+                 {"beatdown", "aggro", "control", "cycle", "split", "spell_cycle", "counter"}) {
+                const auto diagnostics = AIDeckCacheDiagnostics(style);
+                Check(diagnostics.evaluated > 0 && diagnostics.evaluated <= AIDeckCandidateLimit &&
+                          diagnostics.legal >= diagnostics.retained && diagnostics.retained > 0 &&
+                          diagnostics.retained <= 24 && diagnostics.hits >= 8,
+                      "cache reports actual bounded evaluations legal pools retained pools and reuse");
+                Check(std::isfinite(diagnostics.buildMilliseconds) && diagnostics.buildMilliseconds >= 0,
+                      "reported construction latency is finite measured time");
+                std::cout << "AI_CACHE style=" << style << " evaluated=" << diagnostics.evaluated
+                          << " legal=" << diagnostics.legal << " retained=" << diagnostics.retained
+                          << " hits=" << diagnostics.hits << " build_ms=" << diagnostics.buildMilliseconds << '\n';
+            }
+        });
+        Test("AI candidate coverage is deterministic bounded and independent of bit-mask width", [] {
+            for (const std::size_t roster : {7U, 8U, 9U, 17U, 18U, 21U, 32U, 40U, 64U, 128U}) {
+                const auto began = std::chrono::steady_clock::now();
+                const auto candidates = AIDeckCandidateIndices(roster);
+                const auto repeated = AIDeckCandidateIndices(roster);
+                Check(candidates == repeated, "candidate order is deterministic without match RNG");
+                Check(candidates.size() <= AIDeckCandidateLimit, "evaluations stay within practical cap");
+                std::set<AIDeckIndices> unique;
+                std::vector<bool> covered(roster, false);
+                for (const auto &candidate : candidates) {
+                    Check(unique.insert(candidate).second, "each candidate subset is unique");
+                    for (std::size_t slot = 0; slot < candidate.size(); ++slot) {
+                        Check(candidate[slot] < roster && (slot == 0 || candidate[slot] > candidate[slot - 1]),
+                              "eight legal distinct playable indices without shift overflow");
+                        covered[candidate[slot]] = true;
+                    }
+                }
+                if (roster < 8)
+                    Check(candidates.empty(), "undersized roster cannot produce an eight-card deck");
+                else
+                    Check(std::all_of(covered.begin(), covered.end(), [](bool value) { return value; }),
+                          "every card including high indices can enter a candidate deck");
+                if (roster == 8) Check(candidates.size() == 1, "single eight-card combination");
+                if (roster == 9) Check(candidates.size() == 9, "all nine eight-card combinations");
+                if (roster >= 17) Check(candidates.size() == AIDeckCandidateLimit,
+                                       "baseline exhaustiveness and expansion sample count");
+                const double milliseconds = std::chrono::duration<double, std::milli>(
+                    std::chrono::steady_clock::now() - began).count();
+                std::cout << "AI_CANDIDATES roster=" << roster << " candidates=" << candidates.size()
+                          << " repeated_and_checked_ms=" << milliseconds << '\n';
+            }
+        });
+        Test("AI counter reasoning obeys explicit masks with a separate troop-only aura", [] {
+            Card attack = *FindCard("ironclad");
+            attack.targetMask = targets::GroundTroop;
+            attack.canHitAir = true;
+            Near(CounterScore(attack, *FindCard("vampire_bats")), 0, 0, "mask excludes air despite legacy flag");
+            Near(CounterScore(attack, *FindCard("archer_tower")), 0, 0, "troop-only mask excludes structures");
+            Check(CounterScore(attack, *FindCard("ironclad")) > 0, "ground counter remains eligible");
+            attack.targetMask = targets::AirTroop;
+            attack.canHitAir = false;
+            Check(CounterScore(attack, *FindCard("vampire_bats")) > 0, "air mask admits flying troops");
+            Near(CounterScore(attack, *FindCard("ironclad")), 0, 0, "air-only mask excludes ground");
+            Card spell = *FindCard("bullet_burst");
+            spell.targetMask = targets::GroundTroop;
+            Near(CounterScore(spell, *FindCard("vampire_bats")), 0, 0, "spell mask excludes air");
+            Near(CounterScore(spell, *FindCard("archer_tower")), 0, 0, "spell mask excludes structure damage");
+            const auto &raven = *FindCard("storm_raven");
+            Check(CounterScore(raven, *FindCard("vampire_bats")) > 0 &&
+                      CounterScore(raven, *FindCard("ironclad")) > 0,
+                  "Raven's separate aura still counters ground and air troops");
+        });
+        Test("AI ground-only building defense distinguishes air swarms from eligible ground pressure", [] {
+            for (const std::string &enemy : {"vampire_bats", "boulderback"}) {
+                auto options = Quiet();
+                options.aiEnabled[0] = true;
+                options.decks[0] = {"pulverizer", "boulderback", "rambeast", "stampede",
+                                    "ironclad", "archer_tower", "sky_manta", "ember_archer"};
+                Match match(options);
+                FreezeCrowns(match);
+                match.SetAether(Team::Player, 10);
+                Check(match.Spawn(Team::Enemy, enemy, {7.5, 5.5}), "real enemy pressure spawns");
+                match.Step(.45);
+                bool buildingDefense = false;
+                for (const auto &event : match.Events())
+                    if (event.type == "card_play" && event.team == Team::Player) {
+                        std::cout << "AI_MASK_DEFENSE enemy=" << enemy << " played=" << event.cardId
+                                  << " reason=" << event.reason << '\n';
+                        buildingDefense |= event.cardId == "pulverizer" && event.reason == "building_defense";
+                    }
+                Check(buildingDefense == (enemy == "boulderback"),
+                      "AI uses Pulverizer for ground tank pressure and does not pretend it shoots bats");
+            }
+        });
+        Test("expanded deck analysis separates shield and future child reserves from initial bodies", [] {
+            const auto deck = AnalyzeDeck({"bone_warden", "iron_giant", "shadow_surge", "bone_warden",
+                                           "bone_warden_skeleton", "unknown"});
+            Check(deck.troops == 2 && deck.spells == 1 && deck.ground == 2,
+                  "only unique playable cards enter a deck analysis");
+            Near(deck.averageHP, (1526. + 1000.) / 2, 0, "initial paid body HP excludes shield and later children");
+            Near(deck.deploymentDPS, (101. / 1.5 + 85. / 1.3) / 2, .0051,
+                 "initial deployment DPS excludes not-yet-born children");
+            Near(deck.totalShieldHP, 310, 0, "shield reserve reported independently");
+            Near(deck.deathSpawnHP, 4 * 50, 0, "four child bodies reported independently");
+            Near(deck.deathSpawnDPS, 4 * 36 / .75, 0, "future child DPS reported independently");
+            Card packet = *FindCard("nova_flask"), protectedBody = *FindCard("iron_giant");
+            packet.damage = 400; packet.dotDamage = 0; packet.dotDuration = 0;
+            Card overflowBody = protectedBody; overflowBody.shieldOverflowProtected = false;
+            Check(CounterScore(packet, protectedBody) < CounterScore(packet, overflowBody),
+                  "a shield-breaking protected packet cannot be valued as body overflow");
+            Check(CounterReason(packet, protectedBody).find("cannot overflow") != std::string::npos,
+                  "shield counter explanation matches the actual packet rule");
+            Card noChildren = *FindCard("bone_warden"); noChildren.deathSpawnCount = 0;
+            Check(CounterScore(*FindCard("ember_archer"), *FindCard("bone_warden")) <=
+                      CounterScore(*FindCard("ember_archer"), noChildren),
+                  "future child HP cannot make the parent cheaper to remove");
+            Check(CounterScore(*FindCard("pulverizer"), *FindCard("iron_giant")) > 0,
+                  "Pulverizer notices eligible ground troops including shielded Giant");
+            Near(CounterScore(*FindCard("pulverizer"), *FindCard("archer_tower")), 0, 0,
+                 "Pulverizer never treats a ground building as a ground troop");
+        });
+        Test("expanded paid mechanics and individual telemetry are deterministic across frame chunks", [] {
+            auto options = Quiet(); options.seed = 20261011;
+            for (auto &deck : options.decks)
+                deck = {"bone_warden", "iron_giant", "shadow_surge", "archer_tower",
+                        "meteor_shards", "ember_archer", "rambeast", "frost_fang"};
+            Match a(options), b(options);
+            for (Match *match : {&a, &b}) {
+                FreezeCrowns(*match);
+                const auto parent = PaidCollisionCard(*match, Team::Player, "bone_warden", {-3.5, 7.5})[0];
+                MutableEntity(*match, parent.id).hp = 1;
+                PaidCollisionCard(*match, Team::Player, "iron_giant", {3.5, 7.5});
+                PaidCollisionCard(*match, Team::Player, "archer_tower", {.5, 4.5});
+                PaidCollisionCard(*match, Team::Player, "shadow_surge", {3.5, 7.5});
+                Check(match->Spawn(Team::Enemy, "bullet_burst", {-3.5, 7.5}), "controlled real child-spawn packet");
+                Check(match->Spawn(Team::Enemy, "nova_flask", {3.5, 7.5}), "controlled real shield-breaking packet");
+            }
+            a.Step(2);
+            for (int tick = 0; tick < 240; ++tick) b.Step(1. / 120.);
+            Same(a, b);
+            Check(Count(a, "bone_warden_skeleton", Team::Player) == 4, "all four real child bodies were compared");
+            Check(Unit(a, "iron_giant", Team::Player).shieldBrokenAt >= 0, "actual shield transition was compared");
+            int cloaks = 0, expiries = 0;
+            for (const auto &event : a.Events()) {
+                cloaks += event.type == "invisibility_apply";
+                expiries += event.type == "invisibility_expire";
+            }
+            Check(cloaks > 0 && expiries > 0, "actual local cloak application and expiry were compared");
+            BodyClearance(a, "expanded fixed-step final bodies");
+        });
+        Test("cloak AI values future enemy locks and excludes already committed or stunned damage", [] {
+            for (const std::string mode : {"future_lock", "no_lock", "outside_window", "committed_only", "stunned", "short_stun"}) {
+                auto options = Quiet(); options.seed = 71217;
+                options.aiStyles[0] = "control";
+                options.decks[0] = {"shadow_surge", "bone_warden", "stampede", "meteor_shards",
+                                    "storm_raven", "frost_fang", "vampire_bats", "boulderback"};
+                Match match(options); FreezeCrowns(match);
+                Check(match.Spawn(Team::Player, "ironclad", {.5, 5.5}), "visible friendly body");
+                Check(match.Spawn(Team::Enemy, "ember_archer", {.5, 2.5}), "visible enemy with direct target capability");
+                const auto friendly = Unit(match, "ironclad", Team::Player).id;
+                const auto enemy = Unit(match, "ember_archer", Team::Enemy).id;
+                MutableEntity(match, friendly).hp = 100;
+                MutableEntity(match, friendly).stunUntil = 30;
+                auto &attacker = MutableEntity(match, enemy);
+                attacker.target = mode == "no_lock" || mode == "committed_only" ? 0 : friendly;
+                attacker.cooldown = mode == "outside_window" || mode == "committed_only" ? 3 : .6;
+                if (mode == "stunned") attacker.stunUntil = 30;
+                if (mode == "short_stun") {attacker.stunUntil = .6; attacker.cooldown = .1;}
+                if (mode == "committed_only") {
+                    Projectile projectile; projectile.id = 90000; projectile.source = enemy; projectile.target = friendly;
+                    projectile.team = Team::Enemy; projectile.cardId = "ember_archer";
+                    projectile.damage = 152; projectile.remaining = .6;
+                    const_cast<Snapshot &>(match.State()).projectiles.push_back(projectile);
+                }
+                match.SetAether(Team::Player, 3);
+                match.SetAIEnabled(Team::Player, true);
+                const_cast<Snapshot &>(match.State()).ai[0].think = 0;
+                match.Step(1. / 60.);
+                bool cloakDefense = false;
+                for (const auto &event : match.Events())
+                    if (event.type == "card_play" && event.team == Team::Player && event.reason == "cloak_defense") {
+                        cloakDefense = true;
+                        Check(event.cardId == "shadow_surge" && !event.sandbox, "AI cloak uses a real paid card");
+                        Near(event.amount, 3, 0, "AI cloak pays full Aether cost");
+                    }
+                std::cout << "AI_CLOAK mode=" << mode << " paid_cloak_defense=" << cloakDefense << '\n';
+                Check(cloakDefense == (mode == "future_lock" || mode == "short_stun"),
+                      "cloak prevents an actual future lock attack, not committed or disabled packets: " + mode);
+            }
+        });
+        Test("approved paid performance opening packs all eight cards on both teams and bridge sides", [] {
+            auto options = Quiet(); options.seed = 74021;
+            const std::vector<std::string> requested{"pulverizer", "stampede", "mini_stampede", "bone_warden",
+                                                      "aether_reaper", "iron_giant", "shadow_surge", "nova_flask"};
+            options.decks = {requested, requested};
+            Match match(options);
+            int plays = 0, bodies = 0, stampede = 0, mini = 0;
+            for (const Team team : {Team::Player, Team::Enemy})
+                for (int lane : {-1, 1})
+                    for (const auto &id : requested) {
+                        const double sign = team == Team::Player ? 1 : -1;
+                        const auto *card = FindCard(id);
+                        Vec2 point{lane * arena::BridgeCenterX, 0};
+                        if (id == "pulverizer") point.z = sign * 3.5;
+                        if (id == "stampede") point.z = sign * 6.5;
+                        if (id == "mini_stampede" || id == "aether_reaper" || id == "shadow_surge") point.z = sign * 4.5;
+                        if (id == "bone_warden") point = {lane * (arena::HalfWidth - 3.5), sign * 5.5};
+                        if (id == "iron_giant") point = {lane * (arena::BridgeCenterX - 2.8), sign * 8};
+                        int hand = -1;
+                        for (int slot = 0; slot < 4; ++slot)
+                            if (match.State().hands[int(team)][slot] == id) hand = slot;
+                        Check(hand >= 0, "real hand rotates to every requested fixture card");
+                        const Vec2 offsets[]{{0, 0}, {3. * lane, 0}, {-3. * lane, 0}, {0, 3 * sign},
+                                             {0, 6 * sign}, {0, 9 * sign}, {-3. * lane, 6 * sign}};
+                        match.SetAether(team, 10);
+                        const double before = match.State().spent[int(team)];
+                        const auto sequence = match.Events().empty() ? 0 : match.Events().back().sequence;
+                        bool accepted = false;
+                        for (const auto offset : offsets) {
+                            const Vec2 candidate{point.x + offset.x, point.z + offset.z};
+                            if (!card->spell && candidate.x * lane <= 0) continue;
+                            if (match.Play(team, hand, candidate, "performance_expansion_paid_fixture")) {
+                                accepted = true; break;
+                            }
+                            if (card->spell) break;
+                        }
+                        Check(accepted, "real expanded paid fixture placement accepted for " + id);
+                        Near(match.State().spent[int(team)] - before, card->cost, 0, "fixture actually pays canonical cost");
+                        int members = 0;
+                        for (const auto &event : match.Events())
+                            if (event.sequence > sequence && event.type == "entity_spawn" && event.cardId == id && event.team == team)
+                                ++members;
+                        Check(members == (card->spell ? 0 : card->count), "exact real fixture member count");
+                        bodies += members; stampede += id == "stampede" ? members : 0; mini += id == "mini_stampede" ? members : 0;
+                        ++plays;
+                        BodyClearance(match, "approved fixture opening");
+                    }
+            Check(plays == 32 && bodies == 96 && stampede == 60 && mini == 20,
+                  "independent approved opening counts are32plays96bodies60hogs20mini");
+            Near(match.State().spent[0] + match.State().spent[1], 128, 0, "exact canonical paid opening Aether");
+            std::cout << "EXPANSION_PERF_OPENING paid_plays=" << plays << " bodies=" << bodies
+                      << " stampede=" << stampede << " mini=" << mini << " spent=128\n";
         });
         Test("mechanical counters and all symmetric card pairs", [] {
             const auto *iron = FindCard("ironclad"), *bat = FindCard("vampire_bats"),
@@ -1572,7 +2185,7 @@ int main(int argc, char **argv) {
                     Near(PairSynergy(Cards()[a], Cards()[b]), PairSynergy(Cards()[b], Cards()[a]), 0,
                          "symmetric");
                 }
-            Check(pairs == 136, "all seventeen-card pairs");
+            Check(pairs == 210, "all twenty-one-card pairs");
             auto d = AnalyzeDeck({"vampire_bats", "twin_blades", "nova_flask"});
             Near(d.averageHP, (174 * 5 + 262 * 2) / 2., 0, "swarm aggregate spell excluded");
             Near(d.deploymentDPS, (86 / 1.05 * 5 + 55 / .75 * 2) / 2., .0051, "aggregate DPS spell excluded");
@@ -1620,6 +2233,7 @@ int main(int argc, char **argv) {
             Match m(Quiet());
             m.Spawn(Team::Enemy, "ironclad", {0, 0});
             m.Spawn(Team::Player, "nova_flask", {0, 0});
+            m.Step(.85);
             std::uint64_t previous = 0;
             bool damage = false;
             for (const auto &e : m.Events()) {
@@ -1666,14 +2280,14 @@ int main(int argc, char **argv) {
         });
         Test("charged Ram hit and actual projectile splash attribution", [] {
             Match ram(Quiet());
-            ram.Spawn(Team::Player, "rambeast", {7.5, -5.5});
+            ram.Spawn(Team::Player, "rambeast", {arena::BridgeCenterX, -arena::GuardDepth + 8});
             ram.Step(5);
             bool charged = false;
             for (const auto &e : ram.Events())
                 if (e.type == "damage" && e.cardId == "rambeast" && e.targetKind == EntityKind::Guard &&
-                    e.requested == 255)
+                    e.requested == 302)
                     charged = true;
-            Check(charged, "running approach charged255");
+            Check(charged, "running approach total charged302");
             Match mage(Quiet());
             mage.Spawn(Team::Player, "arc_mage", {7.5, 5.5});
             mage.Spawn(Team::Enemy, "vampire_bats", {7.5, 6.5});
@@ -1708,7 +2322,7 @@ int main(int argc, char **argv) {
                     Check(std::isfinite(e.hp) && std::isfinite(e.position.x) && std::isfinite(e.position.z),
                           "stress finite entities");
                     if (!e.dead && e.kind == EntityKind::Troop && !e.flying && std::abs(e.position.z) < 1.93)
-                        Check(std::abs(e.position.x - 7.2) < 1.94 || std::abs(e.position.x + 7.2) < 1.94,
+                        Check(std::abs(e.position.x - arena::BridgeCenterX) < 1.94 || std::abs(e.position.x + arena::BridgeCenterX) < 1.94,
                               "stress inside bridge");
                 }
                 if (m.State().phase == Phase::Finished)
@@ -1771,9 +2385,9 @@ int main(int argc, char **argv) {
                                  0, 0, "building stays fixed while nearby troops route around it");
                         }
                 }
-            Check(collisionPaidFixtures - fixtureStart == 28 && collisionPaidPlays - playStart == 56 &&
-                      collisionMembers - memberStart == 110,
-                  "all fourteen physical cards, both teams, fifty-six paid casts and 110 actual members");
+            Check(collisionPaidFixtures - fixtureStart == 34 && collisionPaidPlays - playStart == 68 &&
+                      collisionMembers - memberStart == 122,
+                  "all seventeen physical cards, both teams, sixty-eight paid casts and122 actual members");
         });
         Test("ground and air occupy distinct collision layers while spells have no body", [] {
             for (const Team team : {Team::Player, Team::Enemy}) {
@@ -1859,7 +2473,7 @@ int main(int argc, char **argv) {
                 for (int cycle = 0; cycle < 3; ++cycle)
                     for (const auto &id : deck) {
                         const auto members = PaidCollisionCard(m, team, id,
-                            id == "bullet_burst" ? Vec2{-lane * 13.5, -sign * 20.5} : Vec2{lane * 7.5, sign * 6.5});
+                            id == "bullet_burst" ? Vec2{-lane * (arena::LastTileX - 1), -sign * (arena::LastTileZ - 1)} : Vec2{lane * 7.5, sign * 6.5});
                         starts.insert(starts.end(), members.begin(), members.end());
                         BodyClearance(m, "dense paid same-tile deployment");
                     }
@@ -1917,9 +2531,9 @@ int main(int argc, char **argv) {
                 std::vector<Entity> members, ground, buildings;
                 int adjustedBuildingDrops = 0;
                 for (int play = 0; play < 16; ++play) {
-                    Vec2 drop{lane * 7.5, sign * 8.5};
-                    if (play == 9) drop = {lane * 6.5, sign * 7.5};
-                    if (play == 15) drop = {lane * 8.5, sign * 7.5};
+                    Vec2 drop{lane * (arena::BridgeCenterX + .3), sign * (arena::GuardDepth - 4.9)};
+                    if (play == 9) drop = {lane * (arena::BridgeCenterX - .7), sign * (arena::GuardDepth - 5.9)};
+                    if (play == 15) drop = {lane * (arena::BridgeCenterX + 2.3), sign * (arena::GuardDepth - 5.9)};
                     const Vec2 requested = drop;
                     const auto id = m.State().hands[int(team)][slots[play]];
                     const auto *card = FindCard(id);
@@ -1953,7 +2567,7 @@ int main(int argc, char **argv) {
                       "exact sixteen paid drops retain thirty-one bodies including eleven ground troops and three buildings");
                 Near(FindCard("archer_tower")->lifetime, 25, 0, "pocket keeps authored twenty-five-second building lifetime");
                 if (team == Team::Player && lane == 1)
-                    Check(adjustedBuildingDrops == 0, "original Shipping pocket preserves every exact requested tile");
+                    Check(adjustedBuildingDrops == 0, "resized bridge pocket preserves every exact requested tile");
                 std::map<EntityId, bool> crossed;
                 std::size_t crossedAt12 = 0;
                 for (int step = 0; step < deadline * 60; ++step) {
@@ -1990,8 +2604,98 @@ int main(int argc, char **argv) {
                                        << " stuck=" << body->stuckTime << " path_size=" << body->path.size();
                     else std::cerr << " removed_after_death=1";
                     std::cerr << '\n';
+                    if (body)
+                        for (const auto &point : body->path)
+                            std::cerr << "BUILDING_POCKET_PATH id=" << body->id << " point="
+                                      << point.x << ',' << point.z << '\n';
                 }
                 Check(crossed.size() == ground.size(), "every paid mobile ground member escapes the live three-building pocket and clears its bridge by the authored deadline");
+            }
+        });
+        Test("original legal three-building pocket yields before obstacle expiry without tunneling", [] {
+            const std::vector<std::string> deck{"ironclad", "twin_blades", "boulderback", "archer_tower",
+                                                "sky_manta", "vampire_bats", "storm_raven", "frost_fang"};
+            const int slots[]{1, 2, 2, 3, 0, 1, 0, 1, 0, 1, 2, 3, 2, 3, 2, 3};
+            for (const Team team : {Team::Player, Team::Enemy}) for (const int lane : {-1, 1}) {
+                auto options = Quiet(); options.seed = 135; options.decks[int(team)] = deck;
+                Match first(options), repeat(options); const int sign = team == Team::Player ? 1 : -1;
+                std::vector<Entity> ground, buildings;
+                for (Match *m : {&first, &repeat}) {
+                    int members = 0;
+                    for (int play = 0; play < 16; ++play) {
+                        Vec2 drop{lane * 7.5, sign * 8.5};
+                        if (play == 9) drop = {lane * 6.5, sign * 7.5};
+                        if (play == 15) drop = {lane * 8.5, sign * 7.5};
+                        const Vec2 requested = drop;
+                        const auto id = m->State().hands[int(team)][slots[play]];
+                        const auto *card = FindCard(id);
+                        if (card->building && !m->CanPlace(team, *card, drop)) {
+                            bool legal = false;
+                            for (int ring = 1; ring <= 8 && !legal; ++ring)
+                                for (int direction = 0; direction < 8 && !legal; ++direction) {
+                                    const double angle = direction * 3.14159265358979323846 * .25;
+                                    const auto candidate = SnapToTile({requested.x + ring * std::cos(angle),
+                                                                       requested.z + ring * std::sin(angle)});
+                                    if (m->CanPlace(team, *card, candidate)) {drop = candidate; legal = true;}
+                                }
+                            Check(legal, "original pocket requests a real legal nearby building tile");
+                        }
+                        const auto added = PaidCollisionCard(*m, team, id, drop); members += int(added.size());
+                        if (m == &first) for (const auto &body : added) {
+                            if (body.kind == EntityKind::Troop && !body.flying) ground.push_back(body);
+                            if (body.kind == EntityKind::Building) buildings.push_back(body);
+                        }
+                        BodyClearance(*m, "original pocket paid landing");
+                    }
+                    Check(members == 31, "original pocket retains all thirty-one physical paid bodies");
+                    ++collisionPaidFixtures;
+                }
+                Check(ground.size() == 11 && buildings.size() == 3, "original pocket has eleven mobile ground bodies and three fixed buildings");
+                std::map<EntityId, bool> crossed;
+                std::map<EntityId, Vec2> progress;
+                for (const auto &body : ground) progress[body.id] = body.position;
+                for (int step = 0; step < 20 * 60; ++step) {
+                    for (Match *m : {&first, &repeat}) {
+                        // Explicit developer diagnostic: maintain only Core HP
+                        // so a fast member's victory cannot end the clock while
+                        // slower bodies are still observed. Paid cards, firing,
+                        // radii, targets, and obstacle lifetimes stay unchanged.
+                        for (const auto &body : m->State().entities)
+                            if (!body.dead && body.kind == EntityKind::Core)
+                                Check(m->SetTowerHP(body.id, body.maxHp), "declared diagnostic Core maintenance accepted");
+                        const auto before = m->State().entities; m->Step(1. / 60.);
+                        SweptBodyClearance(*m, before, "original legal pocket safe yield");
+                    }
+                    for (const auto &start : buildings) {
+                        const auto *body = FindEntity(first, start.id);
+                        Check(body && !body->dead && body->hp > 0, "original pocket does not wait for paid building death or expiry");
+                        Near(std::hypot(body->position.x - start.position.x, body->position.z - start.position.z),
+                             0, 1e-9, "original pocket never shoves a stationary building");
+                    }
+                    for (const auto &start : ground) if (const auto *body = FindEntity(first, start.id)) {
+                        if (body->position.z * sign < -arena::RiverHalfWidth - .28) crossed[body->id] = true;
+                        if (!body->dead && std::abs(body->position.z) < arena::RiverHalfWidth + .28)
+                            Check(body->position.x * lane > 0, "original pocket preserves deployment-side bridge");
+                        if ((step + 1) % 300 == 0) {
+                            const auto previous = progress.at(body->id);
+                            if (!crossed.count(body->id)) {
+                                const double net = std::hypot(body->position.x - previous.x, body->position.z - previous.z);
+                                if (net <= .25)
+                                    std::cerr << "ORIGINAL_POCKET_STALLED team=" << int(team) << " lane=" << lane
+                                              << " time=" << first.State().elapsed << " id=" << body->id << " card=" << body->cardId
+                                              << " hp=" << body->hp << " dead=" << body->dead << " position=" << body->position.x << ',' << body->position.z
+                                              << " target=" << body->target << " stuck=" << body->stuckTime << " net=" << net << '\n';
+                                Check(!body->dead && net > .25, "surviving un-crossed original pocket member makes net progress every five seconds");
+                            }
+                            progress[body->id] = body->position;
+                        }
+                    }
+                }
+                Same(first, repeat);
+                Check(crossed.size() == ground.size(), "all eleven original-layout ground bodies clear their bridge within twenty seconds before building expiry");
+                std::cout << "COLLISION_ORIGINAL_POCKET core_maintained_diagnostic=1 team=" << int(team)
+                          << " lane=" << lane << " casts_per_repeat=16 members=31 ground=" << ground.size()
+                          << " crossed=" << crossed.size() << " seconds=20 deterministic_repeats=2\n";
             }
         });
         Test("collision crowd remains deterministic across fixed-step frame chunks", [] {
@@ -2075,19 +2779,21 @@ int main(int argc, char **argv) {
         Test("full physical deployment capacity rejects paid cards atomically without consuming IDs", [] {
             for (const Team team : {Team::Player, Team::Enemy}) {
                 Match m(CollisionOptions("boulderback", "sky_manta"));
-                int buildings = 0, residuals = 0, rejected = 0;
+                int buildings = 0, residuals = 0, rejected = 0, buildingRequests = 0;
                 const Vec2 drop{7.5, (team == Team::Player ? 1 : -1) * 8.5};
                 // These are actual public sandbox casts, including deliberate
                 // river rows, rather than fabricated occupied cells or radii.
-                for (double z = -21.5; z <= 21.5; z += 2)
-                    for (double x = -13.5; x <= 14.5; x += 2)
-                        if (m.Spawn(team, "archer_tower", {x, z})) ++buildings; else ++rejected;
+                for (double z = -arena::LastTileZ; z <= arena::LastTileZ; z += 2)
+                    for (double x = -arena::LastTileX; x <= arena::LastTileX; x += 2)
+                        {++buildingRequests; if (m.Spawn(team, "archer_tower", {x, z})) ++buildings; else ++rejected;}
+                Check(buildingRequests == 204 && buildings == 188 && rejected == 16,
+                      "24x34 board has204 requests at two-tile pitch and188 radius-aware separated building placements");
                 bool exhausted = false;
                 for (int n = 0; n < 100; ++n) {
                     if (!m.Spawn(team, "boulderback", drop)) {++rejected;exhausted = true;break;}
                     ++residuals;
                 }
-                Check(buildings >= 300 && residuals > 0 && exhausted,
+                Check(residuals > 0 && exhausted,
                       "bounded real large/small bodies genuinely exhaust arena capacity");
                 BodyClearance(m, "capacity fixture real physical bodies");
                 Check(m.CanPlace(team, *FindCard("boulderback"), drop), "capacity rejection is a legal-zone attempt");
@@ -2167,6 +2873,7 @@ int main(int argc, char **argv) {
                   << " swept_pair_checks=" << collisionSweepChecks << " min_body_gap=" << collisionMinimumGap
                   << " min_swept_gap=" << collisionMinimumSweepGap << '\n';
         std::cout << "Native authoritative simulation: " << passed << " scenarios passed.\n";
+        if (failed) {std::cerr << "Native authoritative simulation: " << failed << " scenarios failed.\n";return 1;}
         return 0;
     } catch (const std::exception &e) {
         std::cerr << "FAIL: " << e.what() << '\n';

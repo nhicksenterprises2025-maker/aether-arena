@@ -1,5 +1,6 @@
 #include "Simulation/RiftSimulation.h"
 #include <algorithm>
+#include <chrono>
 #include <cmath>
 #include <mutex>
 #include <set>
@@ -16,13 +17,14 @@ bool Troop(const Card &c) {
     return !c.spell && !c.building;
 }
 bool DirectAir(const Card &c) {
-    return !c.spell && !c.structuresOnly && c.canHitAir;
+    return !c.spell && (TargetMaskFor(c) & targets::AirTroop) != 0;
 }
 bool Area(const Card &c) {
     return c.spell || c.splash > 0 || c.auraDamage > 0;
 }
 bool AntiAir(const Card &c) {
-    return c.spell || DirectAir(c) || c.auraDamage > 0;
+    return (c.spell && c.damage > 0 && (TargetMaskFor(c) & targets::AirTroop)) ||
+           DirectAir(c) || c.auraDamage > 0;
 }
 struct Pool {
     double hp = 0, range = 0, move = 0, cost = 0;
@@ -53,16 +55,39 @@ const Pool &P() {
 bool Direct(const Card &a, const Card &b) {
     if (b.spell)
         return false;
-    if (a.spell)
-        return b.building ? a.towerDamage > 0 : a.damage > 0;
-    if (a.building)
-        return Troop(b) && (!b.flying || a.canHitAir);
-    if (a.structuresOnly)
-        return b.building;
-    return !b.flying || a.canHitAir;
+    const std::uint8_t kind = b.building ? targets::Structure
+                                : b.flying ? targets::AirTroop : targets::GroundTroop;
+    return (TargetMaskFor(a) & kind) != 0 &&
+           (!a.spell || (b.building ? a.towerDamage > 0 : a.damage > 0));
 }
 double DPS(const Card &c) {
     return c.attackInterval > 0 ? c.damage / c.attackInterval * c.count : 0;
+}
+double ChildHP(const Card &card) {
+    const auto *child = FindEntityDefinition(card.deathSpawnId);
+    return child && card.deathSpawnCount > 0 ? child->hp * card.deathSpawnCount : 0;
+}
+double ShieldWork(const Card &card, double packet) {
+    if (card.shieldHP <= 0 || packet <= 0) return 0;
+    return card.shieldOverflowProtected ? std::ceil(card.shieldHP / packet) * packet : card.shieldHP;
+}
+double SpellBodyDamage(const Card &spell, const Card &victim, double dwell, double *shieldDamage = nullptr) {
+    double shield = victim.shieldHP, body = 0;
+    auto packet = [&](double damage) {
+        if (shield > 0) {
+            const double used = std::min(shield, damage);
+            shield -= used;
+            damage = victim.shieldOverflowProtected ? 0 : damage - used;
+        }
+        body += damage;
+    };
+    packet(victim.building ? spell.towerDamage : spell.damage);
+    const double tick = victim.building ? spell.dotStructureDamage : spell.dotDamage;
+    if (spell.dotInterval > 0)
+        for (int n = 0; n < static_cast<int>(std::floor(dwell / spell.dotInterval + 1e-9)); ++n)
+            packet(tick);
+    if (shieldDamage) *shieldDamage = victim.shieldHP - shield;
+    return body;
 }
 double AttackDPS(const Card &a, const Card &b) {
     double d =
@@ -105,6 +130,28 @@ double Random(std::uint32_t &s) {
     t ^= t + (t ^ (t >> 7)) * (t | 61u);
     return static_cast<double>(t ^ (t >> 14)) / 4294967296.;
 }
+struct DeckCandidate {
+    std::vector<std::string> ids;
+    double score = 0;
+};
+struct DeckCache {
+    std::vector<DeckCandidate> pool;
+    AIDeckCacheMetrics metrics;
+    bool built = false;
+};
+std::mutex &DeckCacheMutex() {
+    static std::mutex mutex;
+    return mutex;
+}
+std::map<std::string, DeckCache> &DeckCaches() {
+    static std::map<std::string, DeckCache> cache;
+    return cache;
+}
+std::string DeckStyle(const std::string &requested) {
+    return requested == "beatdown" || requested == "aggro" || requested == "cycle" ||
+                   requested == "split" || requested == "spell_cycle" || requested == "counter"
+               ? requested : "control";
+}
 } // namespace
 
 double CounterScore(const Card &d, const Card &t) {
@@ -113,8 +160,9 @@ double CounterScore(const Card &d, const Card &t) {
     double result = 0;
     if (d.spell) {
         const double dwell = std::min(d.dotDuration, 2 * d.spellRadius / std::max(.5, t.moveSpeed));
-        const double damage = t.building ? d.towerDamage : d.damage + d.dotDamage * dwell;
-        result = Clamp(damage / std::max(1., t.hp)) * 57 + (damage >= t.hp ? 23 : 0) +
+        double shieldDamage = 0;
+        const double damage = SpellBodyDamage(d, t, dwell, &shieldDamage);
+        result = Clamp((damage + shieldDamage) / std::max(1., t.hp + t.shieldHP)) * 57 + (damage >= t.hp ? 23 : 0) +
                  Clamp(t.cost / std::max(.1, static_cast<double>(d.cost)), 0, 2) * 10;
         if (t.building && damage < t.hp)
             result *= .72;
@@ -125,11 +173,14 @@ double CounterScore(const Card &d, const Card &t) {
         const double loss = incoming * approach + Charge(t, d);
         const double casualty = d.count > 1 && incoming > 0 ? (Area(t) ? .56 : .76) : 1;
         const double killTime =
-            std::max(1., t.hp * t.count - Charge(d, t)) / std::max(1., outgoing * casualty) + start +
+            std::max(1., (t.hp + ShieldWork(t, d.damage) + ChildHP(t)) * t.count - Charge(d, t)) /
+            std::max(1., outgoing * casualty) + start +
             approach;
-        const double decay = d.building && d.lifetime > 0 ? d.hp * d.count / d.lifetime : 0;
-        const double survival =
-            incoming + decay > 0 ? std::max(0., d.hp * d.count - loss) / (incoming + decay) : 30;
+        const double decay = d.building ? d.hpDecayPerSecond * d.count : 0;
+        double survival = incoming + decay > 0
+                              ? std::max(0., (d.hp + ShieldWork(d, t.damage) + ChildHP(d)) * d.count - loss) /
+                                    (incoming + decay) : 30;
+        if (d.hardExpiry && d.lifetime > 0) survival = std::min(survival, d.lifetime);
         result = 34 * Clamp(9 / std::max(1., killTime)) + 35 * Clamp(survival / std::max(.25, killTime)) +
                  12 * Clamp(t.cost / std::max(.1, static_cast<double>(d.cost)), 0, 1.5);
         if (t.flying && DirectAir(d))
@@ -198,7 +249,7 @@ double PairSynergy(const Card &a, const Card &b) {
         s -= 7;
     if (a.structuresOnly && b.structuresOnly)
         s -= 4;
-    if (!a.spell && !b.spell && !a.canHitAir && !b.canHitAir && a.auraDamage == 0 && b.auraDamage == 0)
+    if (!a.spell && !b.spell && !DirectAir(a) && !DirectAir(b) && a.auraDamage == 0 && b.auraDamage == 0)
         s -= 6;
     return std::round(Clamp(s, 0, 100));
 }
@@ -209,9 +260,10 @@ std::string CounterReason(const Card &d, const Card &t) {
         return t.flying ? "Cannot damage this flying target." : "Target restrictions prevent damage.";
     if (d.spell) {
         const double damage =
-            t.building ? d.towerDamage
-                       : d.damage + d.dotDamage * std::min(d.dotDuration,
-                                                           2 * d.spellRadius / std::max(.5, t.moveSpeed));
+            SpellBodyDamage(d, t, std::min(d.dotDuration,
+                                          2 * d.spellRadius / std::max(.5, t.moveSpeed)));
+        if (t.shieldHP > 0 && t.shieldOverflowProtected)
+            return "Damage packets remove shield first; the shield-breaking packet cannot overflow into body HP.";
         return std::string(damage >= t.hp ? "Removes " : "Damages ") +
                (t.count > 1  ? "clustered swarm members"
                 : t.building ? "the building"
@@ -297,7 +349,7 @@ std::vector<std::string> PairSynergyReasons(const Card &a, const Card &b) {
         reasons.emplace_back("Two spells need troops or a building to hold the lane.");
     if (a.structuresOnly && b.structuresOnly)
         reasons.emplace_back("Two structure attackers need separate troop support.");
-    if (!a.spell && !b.spell && !a.canHitAir && !b.canHitAir && a.auraDamage == 0 && b.auraDamage == 0)
+    if (!a.spell && !b.spell && !DirectAir(a) && !DirectAir(b) && a.auraDamage == 0 && b.auraDamage == 0)
         reasons.emplace_back("The pair needs separate air coverage.");
     if (reasons.empty())
         reasons.emplace_back("Similar roles offer reliable rotation but limited complementary coverage.");
@@ -324,8 +376,16 @@ CardIntelligence IntelligenceFor(const std::string &id) {
         intel.role = "Ground control frontline";
     else if (c.count > 1)
         intel.role = c.flying ? "Air swarm damage and counter-push" : "Fast ground swarm and cycle pressure";
-    else if (c.splash > 0)
-        intel.role = "Ranged splash support and anti-air";
+    else if (c.splash > 0) {
+        if (c.range >= P().range)
+            intel.role = DirectAir(c) ? "Ranged splash support and anti-air" : "Ranged splash support";
+        else if (c.flying)
+            intel.role = DirectAir(c) ? "Flying melee splash and anti-air" : "Flying melee splash fighter";
+        else if (c.deathSpawnCount > 0)
+            intel.role = "Ground melee splash with " + std::to_string(c.deathSpawnCount) + " fighters on death";
+        else
+            intel.role = "Ground melee splash frontline";
+    }
     else if (c.flying)
         intel.role = "Flying skirmisher and anti-air support";
     else if (c.range >= P().range)
@@ -340,6 +400,10 @@ CardIntelligence IntelligenceFor(const std::string &id) {
         uses.emplace_back(c.towerDamage > 0
                               ? "Include a Crown Tower in the impact when troop removal still provides value."
                               : "Target troops; this spell deals no structure damage.");
+        if (c.invisibilityDuration > 0)
+            uses.emplace_back(c.globalFriendlyInvisibility
+                                  ? "Time the friendly cloak to drop enemy target locks; launched attacks and spells still resolve."
+                                  : "Cast around friendly troops within the spell area to hide them and drop enemy target locks; launched attacks and spells still resolve.");
     } else {
         if (c.structuresOnly)
             uses.emplace_back("Stage a push with troop support and spell coverage for defenders.");
@@ -356,6 +420,10 @@ CardIntelligence IntelligenceFor(const std::string &id) {
         if (c.auraDamage > 0)
             uses.emplace_back("Keep nearby troops inside the ring; it pulses every few seconds and cannot "
                               "replace ranged anti-air.");
+        if (c.shieldHP > 0)
+            uses.emplace_back("A shield-breaking damage packet cannot overflow into the body; the shield never regenerates.");
+        if (c.deathSpawnCount > 0)
+            uses.emplace_back("Death releases four separate ground fighters from the original paid play; their attacks begin after the parent dies.");
         if (uses.empty())
             uses.emplace_back("Defend efficiently, then support the surviving fighter on a counter-push.");
     }
@@ -430,6 +498,10 @@ DeckAnalysis AnalyzeDeck(const std::vector<std::string> &input) {
                 d.averageHP += c->hp * c->count;
                 d.deploymentDPS += DPS(*c);
                 d.averageRange += c->range;
+                d.totalShieldHP += c->shieldHP * c->count;
+                d.deathSpawnHP += ChildHP(*c) * c->count;
+                if (const auto *child = FindEntityDefinition(c->deathSpawnId); child && c->deathSpawnCount > 0)
+                    d.deathSpawnDPS += DPS(*child) * c->deathSpawnCount * c->count;
             }
         }
     if (cards.empty())
@@ -511,31 +583,80 @@ DeckAnalysis AnalyzeDeck(const std::vector<std::string> &input) {
         d.weaknesses.emplace_back("Three spells reduce persistent troops and counter-push bodies.");
     return d;
 }
-std::vector<std::string> BuildAIDeck(const std::string &requested, std::uint32_t seed) {
-    const std::string style = requested == "beatdown" || requested == "aggro" || requested == "cycle" ||
-                                      requested == "split" || requested == "spell_cycle" ||
-                                      requested == "counter"
-                                  ? requested
-                                  : "control";
-    struct Candidate {
-        std::vector<std::string> ids;
-        double score = 0;
+std::vector<AIDeckIndices> AIDeckCandidateIndices(std::size_t rosterSize) {
+    std::vector<AIDeckIndices> result;
+    if (rosterSize < 8)
+        return result;
+    if (rosterSize <= 17) {
+        AIDeckIndices indices{0, 1, 2, 3, 4, 5, 6, 7};
+        while (true) {
+            result.push_back(indices);
+            int slot = 7;
+            while (slot >= 0 && indices[slot] == rosterSize - 8 + slot)
+                --slot;
+            if (slot < 0)
+                break;
+            ++indices[slot];
+            for (int next = slot + 1; next < 8; ++next)
+                indices[next] = indices[next - 1] + 1;
+        }
+        return result;
+    }
+    std::set<AIDeckIndices> unique;
+    // Guarantee playable-card coverage before sampling; no deck can contain
+    // a repeated index. The cap also bounds work for unusually large catalogs.
+    const std::size_t blocks = std::min(AIDeckCandidateLimit, (rosterSize - 1) / 8 + 1);
+    for (std::size_t block = 0; block < blocks; ++block) {
+        AIDeckIndices indices;
+        for (std::size_t slot = 0; slot < 8; ++slot)
+            indices[slot] = (block * 8 + slot) % rosterSize;
+        std::sort(indices.begin(), indices.end());
+        unique.insert(indices);
+    }
+    std::uint64_t state = 0xC6A4A7935BD1E995ULL ^ std::uint64_t(rosterSize);
+    auto draw = [&]() {
+        state += 0x9E3779B97F4A7C15ULL;
+        auto value = state;
+        value = (value ^ (value >> 30)) * 0xBF58476D1CE4E5B9ULL;
+        value = (value ^ (value >> 27)) * 0x94D049BB133111EBULL;
+        return value ^ (value >> 31);
     };
-    static std::mutex cacheMutex;
-    static std::map<std::string, std::vector<Candidate>> cache;
-    std::lock_guard<std::mutex> guard(cacheMutex);
-    auto &pool = cache[style];
-    if (pool.empty())
-        for (unsigned mask = 0; mask < (1u << Cards().size()); ++mask) {
-            int bits = 0;
-            for (unsigned n = mask; n; n &= n - 1)
-                ++bits;
-            if (bits != 8)
-                continue;
+    for (std::size_t attempts = 0;
+         unique.size() < AIDeckCandidateLimit && attempts < AIDeckCandidateLimit * 16; ++attempts) {
+        // Floyd sampling selects eight distinct indices in constant space.
+        // Its private RNG does not consume the live match or deck-choice seed.
+        AIDeckIndices indices;
+        std::size_t used = 0;
+        for (std::size_t upper = rosterSize - 8; upper < rosterSize; ++upper) {
+            const auto selected = std::size_t(draw() % (upper + 1));
+            indices[used] = std::find(indices.begin(), indices.begin() + used, selected) ==
+                                    indices.begin() + used ? selected : upper;
+            ++used;
+        }
+        std::sort(indices.begin(), indices.end());
+        unique.insert(indices);
+    }
+    result.assign(unique.begin(), unique.end());
+    return result;
+}
+AIDeckCacheMetrics AIDeckCacheDiagnostics(const std::string &requested) {
+    std::lock_guard<std::mutex> guard(DeckCacheMutex());
+    const auto found = DeckCaches().find(DeckStyle(requested));
+    return found == DeckCaches().end() ? AIDeckCacheMetrics{} : found->second.metrics;
+}
+std::vector<std::string> BuildAIDeck(const std::string &requested, std::uint32_t seed) {
+    const std::string style = DeckStyle(requested);
+    std::lock_guard<std::mutex> guard(DeckCacheMutex());
+    auto &cached = DeckCaches()[style];
+    auto &pool = cached.pool;
+    if (!cached.built) {
+        const auto began = std::chrono::steady_clock::now();
+        static const auto candidates = AIDeckCandidateIndices(Cards().size());
+        cached.metrics.evaluated = candidates.size();
+        for (const auto &indices : candidates) {
             std::vector<std::string> ids;
-            for (std::size_t i = 0; i < Cards().size(); ++i)
-                if (mask & (1u << i))
-                    ids.push_back(Cards()[i].id);
+            for (const auto index : indices)
+                ids.push_back(Cards()[index].id);
             const auto d = AnalyzeDeck(ids);
             const auto m = Extra(ids);
             if (d.winConditions < 1 || d.spells < 1 || d.sustainedAntiAir < 2 || d.antiAir < 3 ||
@@ -582,17 +703,25 @@ std::vector<std::string> BuildAIDeck(const std::string &requested, std::uint32_t
                          d.averageCost * 4;
             pool.push_back({ids, score});
         }
+        cached.metrics.legal = pool.size();
+        std::sort(pool.begin(), pool.end(), [](const DeckCandidate &a, const DeckCandidate &b) {
+        return a.score != b.score ? a.score > b.score : a.ids < b.ids;
+        });
+        if (!pool.empty()) {
+            const double best = pool.front().score;
+            pool.erase(std::remove_if(pool.begin(), pool.end(),
+                                     [&](const DeckCandidate &c) { return c.score < best - 7; }), pool.end());
+            if (pool.size() > 24)
+                pool.resize(24);
+        }
+        cached.metrics.retained = pool.size();
+        cached.metrics.buildMilliseconds =
+            std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - began).count();
+        cached.built = true;
+    } else
+        ++cached.metrics.hits;
     if (pool.empty())
         return DefaultDeck();
-    std::sort(pool.begin(), pool.end(), [](const Candidate &a, const Candidate &b) {
-        return a.score != b.score ? a.score > b.score : a.ids < b.ids;
-    });
-    const double best = pool.front().score;
-    pool.erase(
-        std::remove_if(pool.begin(), pool.end(), [&](const Candidate &c) { return c.score < best - 7; }),
-        pool.end());
-    if (pool.size() > 24)
-        pool.resize(24);
     auto ids = pool[static_cast<std::size_t>(Random(seed) * pool.size())].ids;
     for (std::size_t i = ids.size() - 1; i > 0; --i)
         std::swap(ids[i], ids[static_cast<std::size_t>(Random(seed) * (i + 1))]);

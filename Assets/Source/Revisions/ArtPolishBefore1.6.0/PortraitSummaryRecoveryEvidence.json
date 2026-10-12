@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "passed": true,
+  "scope": "Exact raw pre-Art summary bytes reconstructed solely from retained BeforePortraits selected records plus actual retained old renderer/source pins and original serializer; cryptographic byte recovery, not regenerated art or rewritten history",
+  "expectedOriginal": {
+    "file": "Assets/Renders/Expansion/portrait-production.json",
+    "bytes": 19790,
+    "sha256": "c7b5ab2b6bce14c259090ac0915fe5516ac58b2f0259da6116fd7c88070412a0"
+  },
+  "recovered": {
+    "file": "Artifacts/QA/ExpansionArtRework/PortraitSummaryRecovery-4d75dd144fa74d15898e9839ea720d00/portrait-production.json",
+    "bytes": 19790,
+    "sha256": "c7b5ab2b6bce14c259090ac0915fe5516ac58b2f0259da6116fd7c88070412a0"
+  },
+  "retainedPortraits": {
+    "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/BeforePortraits.json",
+    "bytes": 73630,
+    "sha256": "c5964e22dde3c5e785418ceb613954602c2af9f50f629b65d312ee22956f2dda"
+  },
+  "retainedRenderer": {
+    "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Build/render_expansion_portraits.py",
+    "bytes": 15995,
+    "sha256": "83f91c97553de3c226dcb1b708a6ad9a64427fcaf4795314d67e4317fa3bb593"
+  },
+  "retainedInventory": {
+    "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/RetainedProductionInventory.json",
+    "bytes": 175661,
+    "sha256": "ca8aa54f8cbd1551bb45f80a0a5624cc316ab197fe22ddd1e0e640b7233c4f3c"
+  },
+  "sourceBlendPinAsRecorded": {
+    "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
+    "sha256": "6799847a62fba2340ef86dc64967c8235f11ad3d9403ddd32dc890bdac5b8ce6",
+    "bytes": 15209481
+  },
+  "rendererPinAsProduced": {
+    "file": "Build/render_expansion_portraits.py",
+    "sha256": "83f91c97553de3c226dcb1b708a6ad9a64427fcaf4795314d67e4317fa3bb593",
+    "bytes": 15995
+  },
+  "serialization": {
+    "outerKeyOrder": [
+      "schema",
+      "sourceBlend",
+      "renderer",
+      "cards"
+    ],
+    "cardOrder": [
+      "mini_stampede",
+      "stampede",
+      "pulverizer"
+    ],
+    "indent": 2,
+    "encoding": "utf-8",
+    "newline": "CRLF",
+    "trailingNewline": false
+  },
+  "trackedFilesMutated": false
+}

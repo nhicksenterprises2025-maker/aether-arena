@@ -76,7 +76,8 @@ bool FRiftPresentationIntegrationTest::RunTest(const FString& Parameters)
     if(!TestEqual(TEXT("Presentation retains exactly four deployment cards"),Hand.Num(),4))return false;
     const auto* Played=rift::FindCard(Match->ViewState()->hands[0][0]);Hand[0]->OnPressed.Broadcast();Refresh();
     auto* Selected=NamedPresentationWidget<UTextBlock>(UI,TEXT("SelectedCardStats"));if(!TestNotNull(TEXT("Hand selection has an in-battle stat readout"),Selected))return false;
-    TestTrue(TEXT("Selected stats and hover details show the canonical cost and HP"),Selected->GetText().ToString().Contains(FString::Printf(TEXT("%d Aether"),Played->cost))&&Selected->GetText().ToString().Contains(FString::Printf(TEXT("%.0f HP"),Played->hp))&&Hand[0]->GetToolTipText().ToString().Contains(FString::Printf(TEXT("%.2fs"),Played->attackInterval)));
+    TestTrue(TEXT("Selected stats retain the canonical cost and HP without battle hover windows"),Selected->GetText().ToString().Contains(FString::Printf(TEXT("%d Aether"),Played->cost))&&Selected->GetText().ToString().Contains(FString::Printf(TEXT("%.0f HP"),Played->hp)));
+    for(auto* Button:Hand)TestTrue(TEXT("Every battle hand card keeps hover stats suppressed"),Button->GetToolTipText().IsEmpty());
     UI->WorldClicked({0,8.5});Refresh();
     const FString CycledNext=UTF8_TO_TCHAR(Match->ViewState()->queues[0].front().c_str());
     TestEqual(TEXT("A paid deployment updates the preview to the new queue head"),Next->GetBrush().GetResourceObject()->GetName(),TEXT("T_Card_")+CycledNext);

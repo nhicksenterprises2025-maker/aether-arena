@@ -1,0 +1,1087 @@
+{
+  "schema": 1,
+  "passed": true,
+  "scope": "Actual saved new source and source-builder reproducibility; native import/render separate",
+  "sourceBlend": {
+    "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
+    "sha256": "46fbbcf748d5b023987a33d2bdba08c19d4cc488dd591b0aacec313cc0c58914",
+    "bytes": 18955574
+  },
+  "modelBuilderSHA256": "2bab6ae4d92615e187a978761be068e91a696e5409250e7fb26e267ba1c8627f",
+  "checks": [
+    {
+      "name": "Actual production source raw pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden all nine exact source clips",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden supplied scale",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden independent game collision",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden -Y source to +X declaration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden source rig bone count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden dedicated new materials",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden four total practical LODs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Idle actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Idle exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Idle finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Idle single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Locomotion actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Locomotion exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Locomotion finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Locomotion single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Attack actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Attack exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Attack finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Attack single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Hit actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Hit exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Hit finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Hit single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Death actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Death exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Death finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Death single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Deploy actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Deploy exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Deploy finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Deploy single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Status actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Status exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Status finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Status single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Turn actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Turn exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Turn finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Turn single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Acquire actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Acquire exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Acquire finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden Acquire single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden every quarter root stays in place",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "bone_warden every quarter matrix is invertible",
+      "passed": true,
+      "detail": 0.9999984502792358
+    },
+    {
+      "name": "bone_warden both living weapon grip points remain inside actual palm volume",
+      "passed": true,
+      "detail": 0.6906505182048294
+    },
+    {
+      "name": "bone_warden builder reproduces every actual saved quarter-frame pose",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "bone_warden_skeleton all nine exact source clips",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton supplied scale",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton independent game collision",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton -Y source to +X declaration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton source rig bone count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton dedicated new materials",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton four total practical LODs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Idle actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Idle exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Idle finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Idle single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Locomotion actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Locomotion exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Locomotion finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Locomotion single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Attack actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Attack exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Attack finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Attack single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Hit actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Hit exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Hit finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Hit single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Death actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Death exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Death finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Death single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Deploy actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Deploy exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Deploy finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Deploy single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Status actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Status exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Status finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Status single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Turn actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Turn exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Turn finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Turn single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Acquire actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Acquire exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Acquire finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton Acquire single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bone_warden_skeleton every quarter root stays in place",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "bone_warden_skeleton every quarter matrix is invertible",
+      "passed": true,
+      "detail": 0.9999993443489075
+    },
+    {
+      "name": "bone_warden_skeleton builder reproduces every actual saved quarter-frame pose",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "aether_reaper all nine exact source clips",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper supplied scale",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper independent game collision",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper -Y source to +X declaration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper source rig bone count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper dedicated new materials",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper four total practical LODs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Idle actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Idle exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Idle finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Idle single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Locomotion actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Locomotion exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Locomotion finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Locomotion single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Attack actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Attack exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Attack finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Attack single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Hit actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Hit exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Hit finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Hit single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Death actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Death exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Death finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Death single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Deploy actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Deploy exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Deploy finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Deploy single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Status actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Status exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Status finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Status single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Turn actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Turn exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Turn finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Turn single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Acquire actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Acquire exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Acquire finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper Acquire single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper every quarter root stays in place",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "aether_reaper every quarter matrix is invertible",
+      "passed": true,
+      "detail": 0.9999997019767761
+    },
+    {
+      "name": "aether_reaper both living weapon grip points remain inside actual palm volume",
+      "passed": true,
+      "detail": 0.02946323361558139
+    },
+    {
+      "name": "Reaper has no walking legs or wings",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Reaper twelve bounded independent cloth joints",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "aether_reaper builder reproduces every actual saved quarter-frame pose",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "iron_giant all nine exact source clips",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant supplied scale",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant independent game collision",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant -Y source to +X declaration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant source rig bone count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant dedicated new materials",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant four total practical LODs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Idle actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Idle exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Idle finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Idle single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Locomotion actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Locomotion exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Locomotion finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Locomotion single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Attack actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Attack exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Attack finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Attack single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Hit actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Hit exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Hit finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Hit single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Death actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Death exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Death finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Death single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Deploy actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Deploy exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Deploy finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Deploy single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Status actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Status exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Status finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Status single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Turn actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Turn exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Turn finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Turn single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Acquire actual raw FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Acquire exact 100FPS decimal duration",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Acquire finite quarter-frame matrices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Acquire single marker only on Attack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant every quarter root stays in place",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "iron_giant every quarter matrix is invertible",
+      "passed": true,
+      "detail": 0.9999992251396179
+    },
+    {
+      "name": "Giant exactly six shield-only deform bones",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Giant six separate source panel meshes attached to owning joints",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Giant underlying torso is not shield-weighted",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant builder reproduces every actual saved quarter-frame pose",
+      "passed": true,
+      "detail": 0.0
+    }
+  ],
+  "errors": [],
+  "cards": {
+    "bone_warden": {
+      "boneCount": 31,
+      "triangles": 15141,
+      "boundsMeters": [
+        1.309999942779541,
+        0.7512999773025513,
+        2.1580002307891846
+      ],
+      "maximumGripErrorMeters": 0.0027312508686196256,
+      "maximumRootMotionMeters": 0.0,
+      "deathMaulReleaseGapMeters": 0.756164280782601,
+      "gripErrorsByClipMeters": {
+        "Idle": 6.143906154658885e-07,
+        "Locomotion": 6.567085608667227e-07,
+        "Attack": 0.0027312508686196256,
+        "Hit": 2.186970687980334e-06,
+        "Death": 0.756164280782601,
+        "Deploy": 2.874031889734553e-07,
+        "Status": 2.5331974029541016e-07,
+        "Turn": 1.517713808448578e-05,
+        "Acquire": 2.5331974029541016e-07
+      },
+      "maximumPalmEllipsoidNormalizedSquaredDistance": 0.6906505182048294,
+      "minimumAbsoluteDeterminant": 0.9999984502792358,
+      "maximumReproductionDelta": 0.0,
+      "clipCount": 9
+    },
+    "bone_warden_skeleton": {
+      "boneCount": 27,
+      "triangles": 4677,
+      "boundsMeters": [
+        0.6124999523162842,
+        0.3009721636772156,
+        0.9775643348693848
+      ],
+      "maximumGripErrorMeters": 0.0,
+      "maximumRootMotionMeters": 0.0,
+      "deathMaulReleaseGapMeters": 0.0,
+      "gripErrorsByClipMeters": {
+        "Idle": 0.0,
+        "Locomotion": 0.0,
+        "Attack": 0.0,
+        "Hit": 0.0,
+        "Death": 0.0,
+        "Deploy": 0.0,
+        "Status": 0.0,
+        "Turn": 0.0,
+        "Acquire": 0.0
+      },
+      "maximumPalmEllipsoidNormalizedSquaredDistance": 0.0,
+      "minimumAbsoluteDeterminant": 0.9999993443489075,
+      "maximumReproductionDelta": 0.0,
+      "clipCount": 9
+    },
+    "aether_reaper": {
+      "boneCount": 28,
+      "triangles": 2810,
+      "boundsMeters": [
+        1.3958977460861206,
+        0.6491393446922302,
+        1.7682373523712158
+      ],
+      "maximumGripErrorMeters": 0.010919316920820293,
+      "maximumRootMotionMeters": 0.0,
+      "deathMaulReleaseGapMeters": 0.0,
+      "gripErrorsByClipMeters": {
+        "Idle": 5.829097328802541e-07,
+        "Locomotion": 3.2544627290728025e-07,
+        "Attack": 0.010919316920820293,
+        "Hit": 4.1062974465993396e-06,
+        "Death": 6.8306273177920785e-06,
+        "Deploy": 5.339525004377638e-07,
+        "Status": 5.529515539192996e-07,
+        "Turn": 1.7802767508883657e-05,
+        "Acquire": 9.251029232103323e-07
+      },
+      "maximumPalmEllipsoidNormalizedSquaredDistance": 0.02946323361558139,
+      "minimumAbsoluteDeterminant": 0.9999997019767761,
+      "maximumReproductionDelta": 0.0,
+      "clipCount": 9
+    },
+    "iron_giant": {
+      "boneCount": 34,
+      "triangles": 8608,
+      "boundsMeters": [
+        1.450799822807312,
+        0.6419999599456787,
+        1.3630000352859497
+      ],
+      "maximumGripErrorMeters": 0.0,
+      "maximumRootMotionMeters": 0.0,
+      "deathMaulReleaseGapMeters": 0.0,
+      "gripErrorsByClipMeters": {
+        "Idle": 0.0,
+        "Locomotion": 0.0,
+        "Attack": 0.0,
+        "Hit": 0.0,
+        "Death": 0.0,
+        "Deploy": 0.0,
+        "Status": 0.0,
+        "Turn": 0.0,
+        "Acquire": 0.0
+      },
+      "maximumPalmEllipsoidNormalizedSquaredDistance": 0.0,
+      "minimumAbsoluteDeterminant": 0.9999992251396179,
+      "maximumReproductionDelta": 0.0,
+      "clipCount": 9
+    }
+  },
+  "poseMatricesChecked": 290624,
+  "quarterFrameSamples": 9648,
+  "checkCount": 192
+}

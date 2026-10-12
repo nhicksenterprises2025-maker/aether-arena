@@ -13,6 +13,7 @@
 #include "Presentation/RiftArenaGeometry.h"
 #include "Presentation/RiftBattleLayout.h"
 #include "Presentation/RiftUnitVisual.h"
+#include "Presentation/RiftExpansionCapture.h"
 #include "EngineUtils.h"
 #include "Camera/CameraComponent.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
@@ -22,6 +23,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Engine/World.h"
 #include "Engine/UserInterfaceSettings.h"
+#include "GameFramework/GameUserSettings.h"
 #include "Misc/CommandLine.h"
 #include "Misc/Parse.h"
 #include "Misc/FileHelper.h"
@@ -257,7 +259,7 @@ bool BuildSwarmSplitCapture(URiftMatchSubsystem* Match,const TSharedRef<FJsonObj
     auto* Sim=Match->Simulation();if(!Sim)return false;Match->SetSpeed(0);
     FString CardId=TEXT("stampede");FParse::Value(FCommandLine::Get(),TEXT("RiftSwarmCard="),CardId);
     const auto* Card=rift::FindCard(TCHAR_TO_UTF8(*CardId));if(!Card||Card->count<2||Card->spell||Card->building)return false;
-    float Age=3,X=.5f,Z=8.5f;FParse::Value(FCommandLine::Get(),TEXT("RiftSwarmAge="),Age);
+    float Age=3,X=.5f,Z=6.5f;FParse::Value(FCommandLine::Get(),TEXT("RiftSwarmAge="),Age);
     FParse::Value(FCommandLine::Get(),TEXT("RiftSwarmX="),X);FParse::Value(FCommandLine::Get(),TEXT("RiftSwarmZ="),Z);
     if(!FMath::IsFinite(Age)||Age<0||Age>12||!FMath::IsFinite(X)||FMath::Abs(FMath::Abs(X)-.5f)>.00001f||!FMath::IsFinite(Z))return false;
     const bool GuardDown=FParse::Param(FCommandLine::Get(),TEXT("RiftSwarmLeftGuardDown"));
@@ -285,6 +287,29 @@ bool BuildSwarmSplitCapture(URiftMatchSubsystem* Match,const TSharedRef<FJsonObj
         Row->SetBoolField(TEXT("alive"),!Unit.dead);Row->SetBoolField(TEXT("deathObserved"),false);Row->SetBoolField(TEXT("crossedFarBank"),false);
         Row->SetBoolField(TEXT("expectedCrownObserved"),false);Row->SetBoolField(TEXT("bridgeHistoryPassed"),true);Row->SetArrayField(TEXT("routeHistory"),{});
         Rows.Add(MakeShared<FJsonValueObject>(Row));Index.Add(Unit.id,Row);
+    }
+    // Three members occupy each of Stampede's five columns. The middle
+    // column stays on the side of the snapped drop, yielding a 6/9 split.
+    const bool StampedeGrid=Card->id=="stampede"&&Card->count==15;
+    const int32 ExpectedLeft=StampedeGrid?(Drop.x<0?9:6):(Drop.x<0?(Card->count+1)/2:Card->count/2);
+    const int32 ExpectedRight=Card->count-ExpectedLeft;
+    const bool LandingSplit=Left==ExpectedLeft&&Right==ExpectedRight;
+    bool FormationGridPassed=!StampedeGrid;
+    if(StampedeGrid&&Rows.Num()==15)
+    {
+        const double Spacing=FMath::Max(1.12,Card->collisionRadius*2+.06);
+        double FirstRankZ=1.e9;for(const auto& Value:Rows)FirstRankZ=FMath::Min(FirstRankZ,Value->AsObject()->GetNumberField(TEXT("spawnZ")));
+        TSet<int32> Cells;FormationGridPassed=true;
+        for(const auto& Value:Rows)
+        {
+            const auto Row=Value->AsObject();const double SpawnX=Row->GetNumberField(TEXT("spawnX")),SpawnZ=Row->GetNumberField(TEXT("spawnZ"));
+            const int32 Column=FMath::RoundToInt((SpawnX-Drop.x)/Spacing),Rank=FMath::RoundToInt((SpawnZ-FirstRankZ)/Spacing);
+            const int32 Cell=Rank*5+Column+2;
+            FormationGridPassed&=Column>=-2&&Column<=2&&Rank>=0&&Rank<=2&&
+                FMath::Abs(SpawnX-Drop.x-Column*Spacing)<=1.e-6&&FMath::Abs(SpawnZ-FirstRankZ-Rank*Spacing)<=1.e-6&&!Cells.Contains(Cell);
+            Cells.Add(Cell);
+        }
+        FormationGridPassed&=Cells.Num()==15;
     }
     Match->FlushEvents();for(TActorIterator<ARiftArenaPresentation> It(Match->GetWorld());It;++It)It->Tick(0.f);
     const double Tolerance=1.e-8;double Minimum=1.e9,MinimumSweep=1.e9;int64 Pairs=0,Sweeps=0;
@@ -351,7 +376,7 @@ bool BuildSwarmSplitCapture(URiftMatchSubsystem* Match,const TSharedRef<FJsonObj
         Row->SetNumberField(TEXT("distanceFromSpawn"),Distance);if(Distance>.1)++Moved;
     }
     const bool RequireProgress=Steps>=120,RequireCross=Steps>=720;
-    const bool Passed=Paid&&Rows.Num()==Card->count&&SpawnLegal&&Left>0&&Right>0&&FMath::Abs(Left-Right)<=1&&Accounted&&Clearance&&SweptClearance&&SpeedClearance&&LaneTargets&&BridgeCorrect&&(!Steps||TargetObserved)&&(!RequireProgress||Moved==Card->count)&&(!RequireCross||Crossed==Card->count);
+    const bool Passed=Paid&&Rows.Num()==Card->count&&SpawnLegal&&Left>0&&Right>0&&LandingSplit&&FormationGridPassed&&Accounted&&Clearance&&SweptClearance&&SpeedClearance&&LaneTargets&&BridgeCorrect&&(!Steps||TargetObserved)&&(!RequireProgress||Moved==Card->count)&&(!RequireCross||Crossed==Card->count);
     Report->SetNumberField(TEXT("schemaVersion"),1);Report->SetStringField(TEXT("route"),TEXT("normal preset / StartMatch / paid Play / fixed steps / actual authored visuals"));
     Report->SetStringField(TEXT("cardId"),CardId);Report->SetStringField(TEXT("team"),TEXT("player"));Report->SetBoolField(TEXT("paidPlayOnly"),true);
     Report->SetBoolField(TEXT("paidCostAndCyclePassed"),Paid);Report->SetNumberField(TEXT("cost"),Card->cost);Report->SetNumberField(TEXT("aetherBefore"),10);Report->SetNumberField(TEXT("aetherAfter"),AetherAfter);Report->SetNumberField(TEXT("spentDelta"),Debit);
@@ -360,6 +385,8 @@ bool BuildSwarmSplitCapture(URiftMatchSubsystem* Match,const TSharedRef<FJsonObj
     {BeforeCards.Add(MakeShared<FJsonValueString>(UTF8_TO_TCHAR(Hand[I].c_str())));AfterCards.Add(MakeShared<FJsonValueString>(UTF8_TO_TCHAR(Sim->State().hands[0][I].c_str())));}
     Report->SetArrayField(TEXT("handBefore"),BeforeCards);Report->SetArrayField(TEXT("handAfter"),AfterCards);
     Report->SetNumberField(TEXT("expectedUnitCount"),Card->count);Report->SetNumberField(TEXT("actualUnitCount"),Rows.Num());Report->SetNumberField(TEXT("leftMembers"),Left);Report->SetNumberField(TEXT("rightMembers"),Right);
+    Report->SetNumberField(TEXT("expectedLeftMembers"),ExpectedLeft);Report->SetNumberField(TEXT("expectedRightMembers"),ExpectedRight);Report->SetBoolField(TEXT("landingSplitPassed"),LandingSplit);
+    Report->SetBoolField(TEXT("formationGridPassed"),FormationGridPassed);if(StampedeGrid){Report->SetNumberField(TEXT("formationColumns"),5);Report->SetNumberField(TEXT("formationRanks"),3);}
     Report->SetNumberField(TEXT("requestedAge"),Age);Report->SetNumberField(TEXT("sampledAge"),Sim->State().elapsed-Started);Report->SetNumberField(TEXT("fixedSteps"),Steps);Report->SetBoolField(TEXT("leftGuardDestroyed"),GuardDown);
     Report->SetNumberField(TEXT("leftGuardId"),LeftGuard);Report->SetNumberField(TEXT("rightGuardId"),RightGuard);Report->SetNumberField(TEXT("coreId"),Core);
     Report->SetBoolField(TEXT("spawnLegalPassed"),SpawnLegal);Report->SetBoolField(TEXT("allMembersAccounted"),Accounted);Report->SetBoolField(TEXT("allClearancePassed"),Clearance);Report->SetBoolField(TEXT("allSweptClearancePassed"),SweptClearance);
@@ -629,8 +656,9 @@ void ARiftGameMode::BeginPlay()
         auto TowerPathingCapture=MakeShared<FJsonObject>();
         auto UnitCollisionCapture=MakeShared<FJsonObject>();
         auto SwarmSplitCapture=MakeShared<FJsonObject>();
+        auto ExpansionRosterCapture=MakeShared<FJsonObject>();
         GetWorld()->GetSubsystem<URiftMatchSubsystem>()->OnEvent.AddLambda([CapturedEvents](const rift::Event& Event){++CapturedEvents->FindOrAdd(UTF8_TO_TCHAR(Event.type.c_str()));});
-        FTimerHandle SetupTimer;GetWorld()->GetTimerManager().SetTimer(SetupTimer,[this,Page,Scenario,RecordedCapture,RecordedDuration,TowerPathingCapture,UnitCollisionCapture,SwarmSplitCapture]()
+        FTimerHandle SetupTimer;GetWorld()->GetTimerManager().SetTimer(SetupTimer,[this,Page,Scenario,RecordedCapture,RecordedDuration,TowerPathingCapture,UnitCollisionCapture,SwarmSplitCapture,ExpansionRosterCapture]()
         {
             auto* PC=Cast<ARiftPlayerController>(GetWorld()->GetFirstPlayerController());if(!PC||!PC->Interface)return;
             auto* Match=GetWorld()->GetSubsystem<URiftMatchSubsystem>();
@@ -696,6 +724,12 @@ void ARiftGameMode::BeginPlay()
                     if(!FParse::Param(FCommandLine::Get(),TEXT("RiftBreathSmoke")))
                     {int32 I=0;for(const auto& Card:rift::Cards())if(!Card.spell){Sim->Spawn(rift::Team::Player,Card.id,{double(-10+(I%5)*5),double(3+(I/5)*4)});Sim->Spawn(rift::Team::Enemy,Card.id,{double(-10+(I%5)*5),double(-3-(I/5)*4)});++I;}}
                     Match->SetSpeed(0);
+                }
+                else if(Scenario==TEXT("expansion_roster")||Scenario==TEXT("expansion_new_roster")||Scenario==TEXT("expansion_effects")||Scenario==TEXT("expansion_warden_death"))
+                {
+                    auto* Fixture=GetWorld()->SpawnActor<ARiftExpansionCapture>();
+                    if(!Fixture||!Fixture->Build(Match,ExpansionRosterCapture))
+                    {RIFT_LOG(LogRift,Error,TEXT("Selected gallery failed its actual paid count/model/facing/pose checks"));FPlatformMisc::RequestExitWithStatus(false,2);return;}
                 }
                 else if(Scenario==TEXT("congestion"))
                 {
@@ -806,10 +840,10 @@ void ARiftGameMode::BeginPlay()
                     Sim->SetAIEnabled(rift::Team::Player,false);Sim->SetAIEnabled(rift::Team::Enemy,false);Sim->ClearField();
                     Sim->SetAether(rift::Team::Player,10);
                     int32 Hand=-1;for(int32 I=0;I<4;++I)if(Sim->State().hands[0][I]=="pulverizer")Hand=I;
-                    if(Hand<0||!Sim->Play(rift::Team::Player,Hand,{-6.5,8.5},"pulverizer-visual-qa")||
-                        !Sim->Spawn(rift::Team::Enemy,"ironclad",{-6.5,5.5})||
-                        !Sim->Spawn(rift::Team::Enemy,"mini_stampede",{-3.5,8.5})||
-                        !Sim->Spawn(rift::Team::Enemy,"sky_manta",{-6.5,6.5}))
+                    if(Hand<0||!Sim->Play(rift::Team::Player,Hand,{-6.5,6.5},"pulverizer-visual-qa")||
+                        !Sim->Spawn(rift::Team::Enemy,"ironclad",{-6.5,3.5})||
+                        !Sim->Spawn(rift::Team::Enemy,"mini_stampede",{-3.5,6.5})||
+                        !Sim->Spawn(rift::Team::Enemy,"sky_manta",{-6.5,4.5}))
                     {RIFT_LOG(LogRift,Error,TEXT("Pulverizer capture deployment failed"));FPlatformMisc::RequestExitWithStatus(false,2);return;}
                     float Age=.35f;FParse::Value(FCommandLine::Get(),TEXT("RiftPulverizerAge="),Age);
                     Sim->Step(FMath::Clamp(double(Age),0.,8.));Match->FlushEvents();Match->SetSpeed(0);
@@ -830,7 +864,7 @@ void ARiftGameMode::BeginPlay()
                     {RIFT_LOG(LogRift,Error,TEXT("Swarm split capture failed paid formation/landing-lane/body/speed/progress checks"));FPlatformMisc::RequestExitWithStatus(false,2);return;}
                 }
                 else if(Scenario==TEXT("placement")||Scenario==TEXT("effects17"))Match->SetSpeed(0);
-                if(Scenario!=TEXT("roster")&&Scenario!=TEXT("placement")&&Scenario!=TEXT("effects17")&&Scenario!=TEXT("projectiles")&&Scenario!=TEXT("spells")&&Scenario!=TEXT("tower_pathing")&&Scenario!=TEXT("unit_collision")&&Scenario!=TEXT("swarm_split")&&Scenario!=TEXT("pulverizer"))
+                if(Scenario!=TEXT("roster")&&Scenario!=TEXT("expansion_roster")&&Scenario!=TEXT("expansion_new_roster")&&Scenario!=TEXT("expansion_effects")&&Scenario!=TEXT("expansion_warden_death")&&Scenario!=TEXT("placement")&&Scenario!=TEXT("effects17")&&Scenario!=TEXT("projectiles")&&Scenario!=TEXT("spells")&&Scenario!=TEXT("tower_pathing")&&Scenario!=TEXT("unit_collision")&&Scenario!=TEXT("swarm_split")&&Scenario!=TEXT("pulverizer"))
                 {float CaptureSpeed=1;FParse::Value(FCommandLine::Get(),TEXT("RiftCaptureSpeed="),CaptureSpeed);Match->SetSpeed(FMath::Clamp(CaptureSpeed,.25f,4.f));}
                 Match->FlushEvents();
             }
@@ -945,14 +979,22 @@ void ARiftGameMode::BeginPlay()
                 {It->ShowcaseNiagaraAtAge(Age);break;}
             }),FMath::Max(1.f,Delay)-.5f,false);
         }
-        FTimerHandle CaptureTimer;GetWorld()->GetTimerManager().SetTimer(CaptureTimer,FTimerDelegate::CreateWeakLambda(this,[this,CapturePath,Quit,CapturedEvents,RecordedCapture,RecordedDuration,TowerPathingCapture,UnitCollisionCapture,SwarmSplitCapture]()
+        FTimerHandle CaptureTimer;GetWorld()->GetTimerManager().SetTimer(CaptureTimer,FTimerDelegate::CreateWeakLambda(this,[this,CapturePath,Quit,CapturedEvents,RecordedCapture,RecordedDuration,TowerPathingCapture,UnitCollisionCapture,SwarmSplitCapture,ExpansionRosterCapture]()
         {
             IFileManager::Get().MakeDirectory(*FPaths::GetPath(CapturePath),true);
             auto Snapshot=MakeShared<FJsonObject>();auto EventCounts=MakeShared<FJsonObject>();
+            if(const auto* Settings=GEngine?GEngine->GetGameUserSettings():nullptr)
+                Snapshot->SetNumberField(TEXT("observedQualityPreset"),Settings->GetOverallScalabilityLevel());
             if(CaptureInputFilter)Snapshot->SetObjectField(TEXT("captureInput"),CaptureInputFilter->Report());
             Snapshot->SetBoolField(TEXT("recordedMatchFixture"),*RecordedCapture);
             if(TowerPathingCapture->HasField(TEXT("passed")))Snapshot->SetObjectField(TEXT("towerPathing"),TowerPathingCapture);
             if(UnitCollisionCapture->HasField(TEXT("passed")))Snapshot->SetObjectField(TEXT("unitCollision"),UnitCollisionCapture);
+            if(ExpansionRosterCapture->HasField(TEXT("passed")))
+            {
+                for(TActorIterator<ARiftExpansionCapture> It(GetWorld());It;++It)
+                    if(!It->SampleReport(ExpansionRosterCapture))RIFT_LOG(LogRift,Error,TEXT("Selected gallery's actual frozen snapshot/model/pose checks changed before capture"));
+                Snapshot->SetObjectField(TEXT("expansionRoster"),ExpansionRosterCapture);
+            }
             if(SwarmSplitCapture->HasField(TEXT("passed")))
             {
                 TArray<TSharedPtr<FJsonValue>> Visuals;const FString CardId=SwarmSplitCapture->GetStringField(TEXT("cardId"));
@@ -1348,13 +1390,14 @@ FString ARiftPlayerController::CameraFramingDiagnosticsJSON()const
     Report->SetNumberField(TEXT("usableWidthPixels"),FMath::Max(0.f,Width-CameraSafeLeft-CameraSafeRight));
     Report->SetNumberField(TEXT("usableHeightPixels"),FMath::Max(0.f,Height-CameraSafeTop-CameraSafeBottom));
     Report->SetNumberField(TEXT("legalFieldWidthTiles"),rift::arena::Width);Report->SetNumberField(TEXT("legalFieldHeightTiles"),rift::arena::Height);
+    Report->SetNumberField(TEXT("worldUnitsPerTile"),RiftArenaGeometry::UnitsPerTile);Report->SetNumberField(TEXT("authoredModelScale"),RiftArenaGeometry::WorldScale);
     Report->SetNumberField(TEXT("legalFieldHalfWidthTiles"),rift::arena::HalfWidth);Report->SetNumberField(TEXT("legalFieldHalfHeightTiles"),rift::arena::HalfHeight);
     const FBox2D Safe=BattleSafeScreenBounds();
     auto InsideSafe=[&](FVector2D Screen){return Screen.X>=Safe.Min.X-1&&Screen.X<=Safe.Max.X+1&&Screen.Y>=Safe.Min.Y-1&&Screen.Y<=Safe.Max.Y+1;};
     FVector2D OriginScreen,RightScreen,DepthScreen,HeightScreen;
     const bool PitchProjected=ArenaCamera&&ProjectWorldLocationToScreen(FVector::ZeroVector,OriginScreen,false)
-        &&ProjectWorldLocationToScreen(ArenaCamera->GetRightVector()*100.,RightScreen,false)
-        &&ProjectWorldLocationToScreen(FVector(0,100,0),DepthScreen,false)
+        &&ProjectWorldLocationToScreen(ArenaCamera->GetRightVector()*RiftArenaGeometry::UnitsPerTile,RightScreen,false)
+        &&ProjectWorldLocationToScreen(FVector(0,RiftArenaGeometry::UnitsPerTile,0),DepthScreen,false)
         &&ProjectWorldLocationToScreen(FVector(0,0,100),HeightScreen,false);
     Report->SetBoolField(TEXT("tilePitchProjected"),PitchProjected);
     if(PitchProjected)

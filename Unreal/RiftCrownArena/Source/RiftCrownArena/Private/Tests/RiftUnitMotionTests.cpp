@@ -1,5 +1,6 @@
 #if WITH_DEV_AUTOMATION_TESTS
 #include "Presentation/RiftUnitVisual.h"
+#include "Presentation/RiftArenaGeometry.h"
 #include "RiftCardData.h"
 #include "RiftReplaySubsystem.h"
 #include "RiftMatchSubsystem.h"
@@ -30,7 +31,7 @@ namespace
     {
         rift::Entity Entity;Entity.id=Number;Entity.cardId=Id;Entity.kind=rift::EntityKind::Troop;
         if(const auto* Card=rift::FindCard(Id))
-        {Entity.hp=Entity.maxHp=Card->hp;Entity.flying=Card->flying;Entity.radius=.4*Card->scale;}
+        {Entity.hp=Entity.maxHp=Card->hp;Entity.flying=Card->flying;Entity.radius=Card->collisionRadius;}
         return Entity;
     }
 }
@@ -50,7 +51,7 @@ bool FRiftUnitMotionIntegrationTest::RunTest(const FString& Parameters)
     auto* Mesh=Actor->FindComponentByClass<USkeletalMeshComponent>();
     if(!TestNotNull(TEXT("Production skeletal component exists"),Mesh) ||
         !TestNotNull(TEXT("Production native crossfade instance is bound"),Cast<URiftUnitAnimInstance>(Mesh->GetSingleNodeInstance())))return false;
-    TestTrue(TEXT("Troop presentation is larger without changing canonical Card.scale"),FMath::IsNearlyEqual(Actor->PresentationScale(),1.80f) && rift::FindCard("ironclad")->scale==1.);
+    TestTrue(TEXT("Troop presentation follows the larger tile without changing canonical Card.scale"),FMath::IsNearlyEqual(Actor->PresentationScale(),1.80f*RiftArenaGeometry::WorldScale) && rift::FindCard("ironclad")->scale==1.);
     Actor->Synchronize(Entity,State,0);const auto IdlePose=Mesh->GetBoneSpaceTransforms();
     TestTrue(TEXT("Native pose actually evaluates every imported bone"),IdlePose.Num()>20);
 
@@ -69,19 +70,21 @@ bool FRiftUnitMotionIntegrationTest::RunTest(const FString& Parameters)
     TestTrue(TEXT("Pause preserves the exact evaluated bone pose through renderer ticks"),SameMotionPose(BlendedPose,Mesh->GetBoneSpaceTransforms()));
     TestTrue(TEXT("Pause preserves seek position, crossfade, gait and facing"),Actor->AnimationPosition()==PausedPosition && Actor->AnimationCycleFraction()==PausedFraction && Actor->LocomotionPhase()==PausedGait && Actor->GetActorRotation().Equals(PausedRotation,.0001f) && FMath::IsNearlyEqual(Actor->AnimationBlendAlpha(),.5f,.001f));
 
-    Actor->AttackAt(1.30,96);
+    Actor->AttackAt(1.30,93);
     TestTrue(TEXT("Authoritative release immediately evaluates the exact authored contact pose"),FMath::IsNearlyEqual(Actor->AnimationCycleFraction(),.48f,.00001f) && Actor->AnimationBlendAlpha()==1.f);
     float PreviousFraction=.48f;
     for(int32 Frame=0;Frame<32;++Frame)
     {
-        State.elapsed=1.30+Frame*.01;Entity.cooldown=1.-Frame*.01;State.entities[0]=Entity;Actor->Synchronize(Entity,State,.01f);
+        State.elapsed=1.30+Frame*.01;Entity.cooldown=1.1-Frame*.01;State.entities[0]=Entity;Actor->Synchronize(Entity,State,.01f);
         TestTrue(FString::Printf(TEXT("Release recovery stays monotonic at frame %d"),Frame),Actor->CurrentAnimation()==TEXT("Attack") && Actor->AnimationCycleFraction()>=PreviousFraction && Actor->AnimationCycleFraction()<=1.f);
         PreviousFraction=Actor->AnimationCycleFraction();
     }
-    const auto RecoveryPose=Mesh->GetBoneSpaceTransforms();State.elapsed=1.63;Entity.cooldown=.67;State.entities[0]=Entity;Actor->Synchronize(Entity,State,.02f);
+    // The approved 1.1-second interval lengthens the default visual recovery to
+    // .352 seconds. Observe after recovery with the real remaining cooldown.
+    const auto RecoveryPose=Mesh->GetBoneSpaceTransforms();State.elapsed=1.67;Entity.cooldown=.73;State.entities[0]=Entity;Actor->Synchronize(Entity,State,.06f);
     TestEqual(TEXT("Completed attack returns to idle instead of wrapping through its windup"),Actor->CurrentAnimation(),FName(TEXT("Idle")));
     TestTrue(TEXT("Recovery-to-idle transition begins without a bone-pose pop"),SameMotionPose(RecoveryPose,Mesh->GetBoneSpaceTransforms()) && Actor->AnimationBlendAlpha()==0.f);
-    State.elapsed=1.84;Entity.cooldown=.46;State.entities[0]=Entity;Actor->Synchronize(Entity,State,.21f);
+    State.elapsed=1.84;Entity.cooldown=.56;State.entities[0]=Entity;Actor->Synchronize(Entity,State,.17f);
     TestEqual(TEXT("No false attack occurs at the old release-cycle wrap point"),Actor->CurrentAnimation(),FName(TEXT("Idle")));
 
     Entity.target=0;Entity.position.x+=1.;State.elapsed=2.;State.entities={Entity};const double BeforeTravel=Actor->LocomotionPhase();
@@ -102,18 +105,20 @@ bool FRiftUnitMotionIntegrationTest::RunTest(const FString& Parameters)
         const FString WalkingId=UTF8_TO_TCHAR(WalkingCard.id.c_str());
         auto Walker=MotionEntity(WalkingCard.id.c_str(),WalkingNumber++);Walker.born=0.;
         auto* WalkingActor=World->SpawnActor<ARiftUnitVisual>();State.elapsed=20.;State.entities={Walker};
-        if(!TestTrue(WalkingId+TEXT(" actual ground model initializes"),WalkingActor->InitializeEntity(Walker,MotionCard(*WalkingId),State.elapsed)))return false;
+        auto* WalkingData=MotionCard(*WalkingId);
+        if(!TestNotNull(WalkingId+TEXT(" imported animation metadata exists"),WalkingData)||!TestTrue(WalkingId+TEXT(" actual ground model initializes"),WalkingActor->InitializeEntity(Walker,WalkingData,State.elapsed)))return false;
         auto* WalkingMesh=WalkingActor->FindComponentByClass<USkeletalMeshComponent>();
         WalkingActor->Synchronize(Walker,State,0);
         const bool Quadruped=WalkingId==TEXT("boulderback") || WalkingId==TEXT("rambeast") || WalkingId==TEXT("frost_fang") || WalkingId==TEXT("mini_stampede") || WalkingId==TEXT("stampede");
-        const double SourceStride=(WalkingId==TEXT("mini_stampede") || WalkingId==TEXT("stampede"))?78.:Quadruped?90.:105.;
+        const double SourceStride=WalkingData->GaitStrideMeters>0?double(WalkingData->GaitStrideMeters)*100.:
+            (WalkingId==TEXT("mini_stampede") || WalkingId==TEXT("stampede"))?78.:Quadruped?90.:105.;
         const double WorldStride=SourceStride*WalkingActor->PresentationScale();
-        Walker.position.x+=WorldStride*.25/100.;State.elapsed=20.25;State.entities={Walker};WalkingActor->Synchronize(Walker,State,.25f);
-        Walker.position.x+=WorldStride*.25/100.;State.elapsed=20.5;State.entities={Walker};WalkingActor->Synchronize(Walker,State,.25f);
+        Walker.position.x+=WorldStride*.25/RiftArenaGeometry::UnitsPerTile;State.elapsed=20.25;State.entities={Walker};WalkingActor->Synchronize(Walker,State,.25f);
+        Walker.position.x+=WorldStride*.25/RiftArenaGeometry::UnitsPerTile;State.elapsed=20.5;State.entities={Walker};WalkingActor->Synchronize(Walker,State,.25f);
         const FName LeftFoot=Quadruped?FName(TEXT("front_l_contact")):FName(TEXT("foot_l_contact"));
         const FVector FirstFoot=WalkingMesh->GetSocketTransform(LeftFoot,RTS_Component).GetLocation();
         const auto FirstWalkingPose=WalkingMesh->GetBoneSpaceTransforms();
-        Walker.position.x+=WorldStride*.25/100.;State.elapsed=20.75;State.entities={Walker};WalkingActor->Synchronize(Walker,State,.25f);
+        Walker.position.x+=WorldStride*.25/RiftArenaGeometry::UnitsPerTile;State.elapsed=20.75;State.entities={Walker};WalkingActor->Synchronize(Walker,State,.25f);
         const FVector SecondFoot=WalkingMesh->GetSocketTransform(LeftFoot,RTS_Component).GetLocation();
         TestTrue(WalkingId+TEXT(" locomotion evaluates an actual visible leg swing"),WalkingActor->CurrentAnimation()==TEXT("Locomotion") && !SameMotionPose(FirstWalkingPose,WalkingMesh->GetBoneSpaceTransforms()) && FVector::Distance(FirstFoot,SecondFoot)>3.);
         TestTrue(WalkingId+TEXT(" three quarter-stride movements advance exactly three quarter cycles"),FMath::IsNearlyEqual(WalkingActor->LocomotionPhase(),.75,.00001));
@@ -124,9 +129,17 @@ bool FRiftUnitMotionIntegrationTest::RunTest(const FString& Parameters)
         TestTrue(WalkingId+TEXT(" paused walking retains exact bones and cadence"),SameMotionPose(ParkedPose,WalkingMesh->GetBoneSpaceTransforms()) && WalkingActor->LocomotionPhase()==ParkedPhase);
         TestTrue(WalkingId+TEXT(" repeated paused renderer ticks retain the walking clip and seek fraction"),WalkingActor->CurrentAnimation()==ParkedClip && WalkingActor->AnimationAssetPath()==ParkedAsset && WalkingActor->AnimationCycleFraction()==ParkedFraction);
         WalkingActor->AttackAt(State.elapsed,WalkingCard.damage);
-        TestTrue(WalkingId+TEXT(" a real same-time release replaces the frozen walking pose immediately"),WalkingActor->CurrentAnimation()!=ParkedClip && FMath::IsNearlyEqual(WalkingActor->AnimationCycleFraction(),.48f,.00001f) && WalkingActor->AnimationBlendAlpha()==1.f);
+        TestTrue(WalkingId+TEXT(" a real same-time release replaces the frozen walking pose at its authored contact"),WalkingActor->CurrentAnimation()!=ParkedClip && FMath::IsNearlyEqual(WalkingActor->AnimationCycleFraction(),WalkingData->AttackContactNormalized,.00001f) && WalkingActor->AnimationBlendAlpha()==1.f);
         State.elapsed=21.;WalkingActor->Synchronize(Walker,State,.25f);
         TestEqual(WalkingId+TEXT(" waiting for a clear route does not run its feet in place"),WalkingActor->LocomotionPhase(),ParkedPhase);
+        if(WalkingData->DeathCleanupSeconds>0)
+        {
+            const double Cleanup=WalkingData->DeathCleanupSeconds;
+            WalkingActor->DieAt(0);WalkingActor->AdvanceDeath(Cleanup*.5);
+            TestTrue(WalkingId+TEXT(" authored defeat reaches its midpoint without early removal"),FMath::IsNearlyEqual(WalkingActor->AnimationCycleFraction(),.5f,.00001f)&&!WalkingActor->IsExpired(Cleanup*.5));
+            WalkingActor->AdvanceDeath(Cleanup);
+            TestTrue(WalkingId+TEXT(" authored defeat reaches its endpoint and cleanup deadline"),FMath::IsNearlyEqual(WalkingActor->AnimationCycleFraction(),1.f,.00001f)&&WalkingActor->IsExpired(Cleanup));
+        }
         WalkingActor->Destroy();
     }
 
@@ -134,14 +147,14 @@ bool FRiftUnitMotionIntegrationTest::RunTest(const FString& Parameters)
     if(!TestTrue(TEXT("Actual larger Boulderback model initializes"),BoulderActor->InitializeEntity(Boulder,MotionCard(TEXT("boulderback")),State.elapsed)))return false;
     BoulderActor->Synchronize(Boulder,State,0);auto* BoulderMesh=BoulderActor->FindComponentByClass<USkeletalMeshComponent>();
     const double BoulderModelTop=FMath::Max(BoulderMesh->Bounds.GetBox().Max.Z,BoulderMesh->GetSkeletalMeshAsset()->GetImportedBounds().GetBox().TransformBy(BoulderMesh->GetComponentTransform()).Max.Z);
-    TestTrue(TEXT("Heavy unit scale preserves its canonical gameplay scale and radius"),FMath::IsNearlyEqual(BoulderActor->PresentationScale(),float(1.22*1.65),.00001f) && rift::FindCard("boulderback")->scale==1.22 && Boulder.radius==.4*1.22);
+    TestTrue(TEXT("Heavy unit scale preserves its canonical gameplay scale and independent radius"),FMath::IsNearlyEqual(BoulderActor->PresentationScale(),float(1.22*1.65)*RiftArenaGeometry::WorldScale,.00001f) && rift::FindCard("boulderback")->scale==1.22 && Boulder.radius==rift::FindCard("boulderback")->collisionRadius);
     TestTrue(TEXT("Boulderback health clears the real upper crystals instead of the lower hp bone"),BoulderActor->HealthLocation().Z>=BoulderModelTop+29.999 && BoulderActor->HealthLocation().Z>BoulderMesh->GetSocketLocation(TEXT("hp_anchor")).Z+20.);
     TestTrue(TEXT("Boulderback status effects remain above its health marker"),BoulderActor->StatusLocation().Z>=BoulderActor->HealthLocation().Z+15.999);
 
     auto FreshArcher=MotionEntity("ember_archer",705);FreshArcher.born=3.;
     auto* FreshActor=World->SpawnActor<ARiftUnitVisual>();State.elapsed=3.05;State.entities={FreshArcher};
     if(!TestTrue(TEXT("Newly deployed production archer initializes"),FreshActor->InitializeEntity(FreshArcher,MotionCard(TEXT("ember_archer")),State.elapsed)))return false;
-    FreshActor->AttackAt(State.elapsed,152);FreshArcher.cooldown=1.55;
+    FreshActor->AttackAt(State.elapsed,152);FreshArcher.cooldown=rift::FindCard("ember_archer")->attackInterval;
     FreshActor->Synchronize(FreshArcher,State,0);
     TestTrue(TEXT("An actual early projectile release takes priority over deployment animation"),FreshActor->CurrentAnimation()==TEXT("DrawRelease") && FMath::IsNearlyEqual(FreshActor->AnimationCycleFraction(),.48f,.00001f));
 
@@ -151,15 +164,18 @@ bool FRiftUnitMotionIntegrationTest::RunTest(const FString& Parameters)
     AddInfo(FString::Printf(TEXT("Flying death altitude before %.12f cm; at start %.12f cm; displacement %.12f cm."),AirHeight,FlyingActor->GetActorLocation().Z,FlyingActor->GetActorLocation().Z-AirHeight));
     TestTrue(TEXT("Flying death begins at the current altitude without teleporting to ground"),AirHeight>80. && FMath::IsNearlyEqual(FlyingActor->GetActorLocation().Z,AirHeight,.001));
     FlyingActor->AdvanceDeath(5.2);const double FallingHeight=FlyingActor->GetActorLocation().Z;
-    TestTrue(TEXT("Flying death has a visible intermediate descent"),FallingHeight>8.f && FallingHeight<AirHeight);
-    FlyingActor->AdvanceDeath(5.65);TestTrue(TEXT("Flying death settles at its ground endpoint"),FMath::IsNearlyEqual(FlyingActor->GetActorLocation().Z,8.f,.001f));
+    TestTrue(TEXT("Flying death has a visible intermediate descent"),FallingHeight>8.f*RiftArenaGeometry::WorldScale && FallingHeight<AirHeight);
+    FlyingActor->AdvanceDeath(5.65);TestTrue(TEXT("Flying death settles at its ground endpoint"),FMath::IsNearlyEqual(FlyingActor->GetActorLocation().Z,8.f*RiftArenaGeometry::WorldScale,.001f));
+    TestTrue(TEXT("Legacy flying death retains the original 0.80-second clip timing"),FMath::IsNearlyEqual(FlyingActor->AnimationCycleFraction(),.65f/.8f,.00001f));
+    TestFalse(TEXT("Legacy death does not expire before its original cleanup boundary"),FlyingActor->IsExpired(6.));
+    TestTrue(TEXT("Legacy death expires after the original 1.05-second cleanup interval"),FlyingActor->IsExpired(6.050001));
 
     auto Building=MotionEntity("archer_tower",704);Building.kind=rift::EntityKind::Building;Building.flying=false;
     auto* BuildingActor=World->SpawnActor<ARiftUnitVisual>();
     if(!TestTrue(TEXT("Actual Archer Tower structure and turret initialize"),BuildingActor->InitializeEntity(Building,MotionCard(TEXT("archer_tower")),5.)))return false;
     auto* BuildingBase=BuildingActor->FindComponentByClass<UStaticMeshComponent>();const FTransform BuildingBaseTransform=BuildingBase->GetComponentTransform();
     auto* BuildingArcher=BuildingActor->FindComponentByClass<USkeletalMeshComponent>();
-    TestTrue(TEXT("Archer Tower presentation enlarges its archer and height"),FMath::IsNearlyEqual(BuildingActor->PresentationScale(),1.22f) && BuildingArcher->GetRelativeScale3D().Equals(FVector(.60),.0001f));
+    TestTrue(TEXT("Archer Tower presentation enlarges its archer and height"),FMath::IsNearlyEqual(BuildingActor->PresentationScale(),1.22f*RiftArenaGeometry::WorldScale) && BuildingArcher->GetRelativeScale3D().Equals(FVector(.60*RiftArenaGeometry::WorldScale),.0001f));
     const double ArcherModelTop=FMath::Max(BuildingArcher->Bounds.GetBox().Max.Z,BuildingArcher->GetSkeletalMeshAsset()->GetImportedBounds().GetBox().TransformBy(BuildingArcher->GetComponentTransform()).Max.Z);
     TestTrue(TEXT("Archer Tower health clears the actual skeletal decoration"),BuildingActor->HealthLocation().Z>=ArcherModelTop+29.999);
     BuildingActor->AimAt(BuildingActor->GetActorLocation()+FVector(400,200,0));
@@ -180,10 +196,10 @@ bool FRiftUnitMotionIntegrationTest::RunTest(const FString& Parameters)
     TestTrue(TEXT("Guard aims its cannon at release without rotating its stone castle"),GuardBase->GetComponentTransform().Equals(GuardBaseTransform,.001f) && FMath::IsNearlyEqual(GuardCannon->GetComponentRotation().Yaw,45.f,.001f));
     TestTrue(TEXT("Guard release origin follows the actual visible cannon muzzle"),GuardActor->AttackLocation().Equals(GuardCannon->GetComponentTransform().TransformPosition(FVector(99,0,263)),.001f) && GuardActor->GuardRecoilDistance()==0.f);
     Guard.facing={1,1};Guard.cooldown=.93;State.elapsed=5.09;State.entities={Guard};GuardActor->Synchronize(Guard,State,.09f);
-    TestTrue(TEXT("Guard cannon reaches its readable recoil while stone remains still"),FMath::IsNearlyEqual(GuardActor->GuardRecoilDistance(),16.f,.001f) && GuardBase->GetComponentTransform().Equals(GuardBaseTransform,.001f));
+    TestTrue(TEXT("Guard cannon reaches its readable recoil while stone remains still"),FMath::IsNearlyEqual(GuardActor->GuardRecoilDistance(),16.f*RiftArenaGeometry::WorldScale,.001f) && GuardBase->GetComponentTransform().Equals(GuardBaseTransform,.001f));
     const FTransform PausedCannon=GuardCannon->GetComponentTransform();
     for(int32 Frame=0;Frame<24;++Frame)GuardActor->Synchronize(Guard,State,.1f);
-    TestTrue(TEXT("Guard recoil and independent aim freeze with the simulation"),GuardCannon->GetComponentTransform().Equals(PausedCannon,.001f) && FMath::IsNearlyEqual(GuardActor->GuardRecoilDistance(),16.f,.001f));
+    TestTrue(TEXT("Guard recoil and independent aim freeze with the simulation"),GuardCannon->GetComponentTransform().Equals(PausedCannon,.001f) && FMath::IsNearlyEqual(GuardActor->GuardRecoilDistance(),16.f*RiftArenaGeometry::WorldScale,.001f));
     State.elapsed=5.18;GuardActor->Synchronize(Guard,State,.09f);
     TestTrue(TEXT("Guard cannon settles at its original perch after recoil"),GuardActor->GuardRecoilDistance()==0.f && GuardCannon->GetRelativeLocation().IsNearlyZero(.001f) && GuardBase->GetComponentTransform().Equals(GuardBaseTransform,.001f));
 
@@ -212,13 +228,14 @@ bool FRiftUnitMotionIntegrationTest::RunTest(const FString& Parameters)
     const auto* TowerDefinition=rift::FindCard("archer_tower");auto* AgingActor=World->SpawnActor<ARiftUnitVisual>();
     if(!TestTrue(TEXT("Actual undamaged defensive building health fixture initializes"),AgingActor->InitializeEntity(Aging,MotionCard(TEXT("archer_tower")),10.)))return false;
     TestFalse(TEXT("An undamaged defensive building has no HP annotation"),AgingActor->HasBeenDamaged());
-    State.elapsed=15.;Aging.hp=Aging.maxHp-Aging.maxHp/TowerDefinition->lifetime*5.;State.entities={Aging};AgingActor->Synchronize(Aging,State,5.f);
+    const double PassiveDecay=TowerDefinition->hpDecayPerSecond>0?TowerDefinition->hpDecayPerSecond:Aging.maxHp/TowerDefinition->lifetime;
+    State.elapsed=15.;Aging.hp=Aging.maxHp-PassiveDecay*5.;State.entities={Aging};AgingActor->Synchronize(Aging,State,5.f);
     TestFalse(TEXT("An uncontested building's passive lifetime HP loss does not reveal its health"),AgingActor->HasBeenDamaged());
     Aging.hp-=1;State.entities={Aging};AgingActor->Synchronize(Aging,State,0);
     TestTrue(TEXT("Building HP below the undamaged aging baseline reveals real damage"),AgingActor->HasBeenDamaged());
     Aging.hp=Aging.maxHp;State.entities={Aging};AgingActor->Synchronize(Aging,State,0);
     TestTrue(TEXT("A fully healed building retains its first-damage health annotation"),AgingActor->HasBeenDamaged());
-    Aging.hp=Aging.maxHp-Aging.maxHp/TowerDefinition->lifetime*5.;AgingActor->InitializeEntity(Aging,MotionCard(TEXT("archer_tower")),15.);
+    Aging.hp=Aging.maxHp-PassiveDecay*5.;AgingActor->InitializeEntity(Aging,MotionCard(TEXT("archer_tower")),15.);
     TestFalse(TEXT("An aging building loaded without a combat hit remains hidden"),AgingActor->HasBeenDamaged());
     AgingActor->HitAt(15.,1);AgingActor->Synchronize(Aging,State,0);
     TestTrue(TEXT("A positive building damage event reveals health independently of passive aging"),AgingActor->HasBeenDamaged());
@@ -237,11 +254,27 @@ bool FRiftUnitMotionIntegrationTest::RunTest(const FString& Parameters)
     if(!TestTrue(TEXT("Recording fixture finds native crown structures"),ReplayGuard.id!=0 && EditedCore.id!=0))return false;
     Replay->BeginRecording(Options,true);Replay->Sample(Recorded.State());
     for(const auto& Event:Recorded.DrainEvents())Replay->RecordEvent(Event);
-    Recorded.Step(.1);Recorded.Spawn(rift::Team::Player,"nova_flask",ReplayGuard.position);
+    Recorded.Step(.1);
+    for(const auto& Event:Recorded.DrainEvents())Replay->RecordEvent(Event);
+    Replay->Sample(Recorded.State());
+    const double CastStarted=Recorded.State().elapsed;
+    const auto* NovaDefinition=rift::FindCard("nova_flask");
+    if(!TestNotNull(TEXT("Health fixture uses the compiled Nova timing"),NovaDefinition) ||
+       !TestTrue(TEXT("Health fixture accepts the real delayed Nova cast"),Recorded.Spawn(rift::Team::Player,"nova_flask",ReplayGuard.position)))return false;
     double FirstHit=-1;
     for(const auto& Event:Recorded.DrainEvents())
     {Replay->RecordEvent(Event);if(Event.type=="damage" && Event.target==ReplayGuard.id && Event.amount>0.)FirstHit=Event.time;}
+    Replay->Sample(Recorded.State());
+    TestTrue(TEXT("Nova's cast animation does not reveal tower health before contact"),FirstHit<0);
+    for(int32 Frame=0;FirstHit<0 && Frame<FMath::CeilToInt((NovaDefinition->castDelay+1.)*60.);++Frame)
+    {
+        Recorded.Step(1./60.);
+        for(const auto& Event:Recorded.DrainEvents())
+        {Replay->RecordEvent(Event);if(Event.type=="damage" && Event.target==ReplayGuard.id && Event.amount>0.)FirstHit=Event.time;}
+        Replay->Sample(Recorded.State());
+    }
     if(!TestTrue(TEXT("Native Nova Flask produces actual positive tower damage"),FirstHit>=0))return false;
+    TestTrue(TEXT("The recorded first hit follows Nova's authoritative cast delay"),FirstHit+1e-9>=CastStarted+NovaDefinition->castDelay);
     TestTrue(TEXT("Production DEV command heals the hit guard fully"),Recorded.SetTowerHP(ReplayGuard.id,ReplayGuard.maxHp));
     TestTrue(TEXT("Production DEV command lowers an otherwise undamaged Core"),Recorded.SetTowerHP(EditedCore.id,EditedCore.maxHp-1));
     TestTrue(TEXT("Production DEV command then heals that Core"),Recorded.SetTowerHP(EditedCore.id,EditedCore.maxHp));

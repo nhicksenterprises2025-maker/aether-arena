@@ -7,6 +7,7 @@
 #include "RiftReplaySubsystem.generated.h"
 
 struct FRiftReplayWriteJob;
+struct FRiftReplayBalanceContext;
 
 UCLASS()
 class RIFTCROWNARENA_API URiftReplaySubsystem : public UGameInstanceSubsystem, public FTickableGameObject {
@@ -57,6 +58,9 @@ class RIFTCROWNARENA_API URiftReplaySubsystem : public UGameInstanceSubsystem, p
     FString LastError;
     FString LatestFilename;
     TSharedPtr<FJsonObject> CurrentAnalysis() const;
+    // Recorded mechanics are provenance, not authentication of an arbitrary archive.
+    // Legacy archives expose any unavailable sparse reconstruction fields here.
+    TSharedRef<FJsonObject> ReconstructionDiagnostics() const;
     TArray<TSharedPtr<FJsonObject>> EventsNear(double Time, double Window = 5) const;
     // Immutable recorded first-hit cache permits exact backward/forward seeks.
     bool HasTakenDamageBy(uint64 EntityId, double Time) const;
@@ -68,7 +72,10 @@ class RIFTCROWNARENA_API URiftReplaySubsystem : public UGameInstanceSubsystem, p
   private:
     friend class FRiftReplayIntegrationTest;
     friend class FRiftFullReplayIntegrationTest;
+    friend class FRiftReplaySizeBudgetIntegrationTest;
     friend class FRiftSpellCastReplayIntegrationTest;
+    friend class FRiftHistoricalReplayIntegrationTest;
+    friend class FRiftExpansionMechanicsIntegrationTest;
     TSharedPtr<FJsonObject> Recording, Loaded;
     TArray<TSharedPtr<FJsonValue>> RecordedEvents, RecordedSamples;
     rift::Snapshot View;
@@ -77,11 +84,18 @@ class RIFTCROWNARENA_API URiftReplaySubsystem : public UGameInstanceSubsystem, p
     float PlaybackSpeed = 1;
     int32 EventCursor = 0;
     uint64 RecordedSequence = 0;
+    int64 RecordedMinimumBytes = 0;
+    FString RecordingBudgetError;
     TArray<rift::Event> PlaybackEvents;
+    TSharedPtr<FRiftReplayBalanceContext> PlaybackBalance;
     TMap<uint64,double> FirstDamageTimes;
     TArray<TSharedPtr<FRiftReplayWriteJob, ESPMode::ThreadSafe>> PendingWrites;
     FString LatestQueuedFilename;
     void CompleteWrites(bool Wait, bool Publish = true);
+    bool AccountRecordingObject(const TSharedPtr<FJsonObject>& Object);
+    void RejectRecording(const FString& Error);
+    static bool SerializeRecording(const TSharedPtr<FJsonObject>& Object, TArray<uint8>& UTF8Bytes,
+                                   FString& Error, int64 ByteLimit = 256 * 1024 * 1024);
     void UpdateView();
     void ResetEventCursor();
 };

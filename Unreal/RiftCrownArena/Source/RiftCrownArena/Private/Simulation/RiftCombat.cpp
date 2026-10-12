@@ -20,9 +20,13 @@ bool Structure(const Entity &e) {
 bool Running(Phase p) {
     return p == Phase::Regulation || p == Phase::Overtime;
 }
+bool StructuresOnly(const Card &card) {
+    return (TargetMaskFor(card) & targets::Structure) != 0 &&
+           (TargetMaskFor(card) & (targets::GroundTroop | targets::AirTroop)) == 0;
+}
 } // namespace
 void Match::Acquire(Entity &s) {
-    const Card *c = FindCard(s.cardId);
+    const Card *c = FindEntityDefinition(s.cardId);
     if (s.kind == EntityKind::Troop && !s.flying && !s.bridge &&
         s.position.z * (s.team == Team::Player ? 1 : -1) > arena::RiverHalfWidth + .28)
         s.lane = s.position.x < 0 ? -1 : s.position.x > 0 ? 1 : s.lane < 0 ? -1 : 1;
@@ -41,7 +45,7 @@ void Match::Acquire(Entity &s) {
     }
     s.forcedTarget = 0;
     const Entity *current = Get(s.target);
-    if (!Crown(s) && c && !c->structuresOnly && current && current->kind == EntityKind::Troop &&
+    if (!Crown(s) && c && !StructuresOnly(*c) && current && current->kind == EntityKind::Troop &&
         CanTarget(s, *current) && InSight(s, *current))
         return;
     if (Crown(s)) {
@@ -77,7 +81,7 @@ void Match::Acquire(Entity &s) {
         s.target = id;
         return;
     }
-    if (!c->structuresOnly) {
+    if (!StructuresOnly(*c)) {
         double best = std::numeric_limits<double>::max();
         EntityId id = 0;
         for (const auto &t : state_.entities)
@@ -119,7 +123,7 @@ void Match::Acquire(Entity &s) {
         if (Structure(t) && CanTarget(s, t)) {
             if (Crown(t) && (!advanceCrown || t.id != advanceCrown->id))
                 continue;
-            if (!c->structuresOnly && t.kind != EntityKind::Building)
+            if (!StructuresOnly(*c) && t.kind != EntityKind::Building)
                 continue;
             if (t.kind == EntityKind::Building && !InSight(s, t))
                 continue;
@@ -137,7 +141,7 @@ void Match::Acquire(Entity &s) {
         s.target = advanceCrown->id;
         return;
     }
-    if (!c->structuresOnly)
+    if (!StructuresOnly(*c))
         for (const auto &t : state_.entities)
             if (!t.dead && t.team != s.team && t.kind == EntityKind::Guard && t.lane == s.lane) {
                 s.target = t.id;
@@ -163,12 +167,12 @@ void Match::PullDeployment(EntityId id) {
     for (auto &s : state_.entities) {
         if (s.dead || s.kind != EntityKind::Troop || s.team == deployed.team || s.hardLock)
             continue;
-        const Card *c = FindCard(s.cardId);
+        const Card *c = FindEntityDefinition(s.cardId);
         const Entity *target = Get(s.target);
         if (!c || !target || target->dead || !Structure(*target))
             continue;
         if (deployed.kind == EntityKind::Troop) {
-            if (c->structuresOnly || !CanTarget(s, deployed))
+            if (StructuresOnly(*c) || !CanTarget(s, deployed))
                 continue;
             if (!InSight(s, deployed))
                 continue;
@@ -188,7 +192,7 @@ void Match::PullDeployment(EntityId id) {
         } else if (deployed.kind == EntityKind::Building && CanTarget(s, deployed)) {
             const double distance = CombatDistance(s, deployed);
             const bool pull = InSight(s, deployed) &&
-                (!c->structuresOnly || distance <= CombatDistance(s, *target) + .35);
+                (!StructuresOnly(*c) || distance <= CombatDistance(s, *target) + .35);
             if (pull) {
                 s.target = deployed.id;
                 s.cooldown = std::min(s.cooldown, c->attackInterval * .35);
@@ -205,7 +209,14 @@ void Match::PullDeployment(EntityId id) {
     }
 }
 void Match::Attack(Entity &s, const Entity &t) {
-    const Card *c = FindCard(s.cardId);
+    const Card *c = FindEntityDefinition(s.cardId);
+    // A navigation target becomes a structure commitment only when this
+    // authoritative attack actually starts, never while waiting on cooldown.
+    if (s.kind == EntityKind::Troop &&
+        (Crown(t) || (c && StructuresOnly(*c) && t.kind == EntityKind::Building))) {
+        s.hardLock = t.id;
+        s.forcedTarget = 0;
+    }
     double damage = Crown(s) ? s.kind == EntityKind::Core ? 112 : 86 : c ? c->damage : 0;
     double interval = Crown(s) ? s.kind == EntityKind::Core ? .92 : 1.02 : c ? c->attackInterval : 1;
     const double speed = Crown(s) ? 17 : c ? c->projectileSpeed : 0;
@@ -214,6 +225,13 @@ void Match::Attack(Entity &s, const Entity &t) {
         damage = c->chargeDamage;
         s.chargeTime = 0;
         s.charged = false;
+        auto &spent = Emit("charge_spent", s.team);
+        spent.source = s.id;
+        spent.target = t.id;
+        spent.cardId = s.cardId;
+        spent.playId = s.playId;
+        spent.amount = damage;
+        spent.position = s.position;
     }
     s.cooldown = interval;
     const Vec2 delta{t.position.x - s.position.x, t.position.z - s.position.z};
@@ -231,6 +249,8 @@ void Match::Attack(Entity &s, const Entity &t) {
     e.playId = play;
     e.amount = damage;
     e.position = s.position;
+    e.parentEntityId = s.parentEntityId;
+    e.attributionCardId = s.attributionCardId;
     if (c && c->shockwaveSpeed > 0) {
         Shockwave wave;
         wave.source = source;
@@ -279,7 +299,24 @@ void Match::Attack(Entity &s, const Entity &t) {
         event.until = state_.elapsed + p.duration;
         event.position = p.origin;
     } else {
+        // Enumerate the single attack's eligible contacts before applying
+        // damage. Visual weapon trails never cause additional hit packets.
+        const Vec2 impact = t.position;
+        std::vector<EntityId> victims;
+        if (c && splash > 0)
+            for (const auto &other : state_.entities)
+                if (!other.dead && other.team != team && other.id != target && CanHit(*c, other)) {
+                    const double padding = other.kind == EntityKind::Building ? other.radius * .35
+                                             : Crown(other) ? other.radius * .25 : 0;
+                    if (D(other.position, impact) <= splash + padding)
+                        victims.push_back(other.id);
+                }
         Damage(target, damage, team, card, play, source);
+        for (auto id : victims) {
+            if (!Running(state_.phase))
+                break;
+            Damage(id, damage, team, card, play, source, "splash");
+        }
         auto *victim = Get(target);
         if (c && c->slowPct > 0 && victim && !victim->dead && victim->kind == EntityKind::Troop &&
             Running(state_.phase)) {
@@ -324,7 +361,7 @@ void Match::ApplySlow(Entity &victim, const Card &card, PlayId play, EntityId so
         *effect = application;
     else
         victim.slows.push_back(application);
-    statusCredits_[play] = {team, card.id};
+    statusCredits_[play] = {team, card.id, source};
     RefreshSlows(victim);
     auto &event = Emit("slow", team);
     event.source = source;
@@ -340,7 +377,7 @@ void Match::UpdateShockwaves() {
         auto &wave = state_.shockwaves[index];
         const double previous = wave.progress;
         wave.progress = std::min(wave.radius, wave.speed * std::max(0., state_.elapsed - wave.born));
-        const Card *card = FindCard(wave.cardId);
+        const Card *card = FindEntityDefinition(wave.cardId);
         if (!card) {
             state_.shockwaves.erase(state_.shockwaves.begin() + index);
             continue;
@@ -348,7 +385,7 @@ void Match::UpdateShockwaves() {
         std::vector<EntityId> victims;
         if (wave.progress > previous + 1e-9)
             for (const auto &target : state_.entities) {
-                if (target.dead || target.team == wave.team || target.kind != EntityKind::Troop || target.flying ||
+                if (target.dead || target.team == wave.team || !CanHit(*card, target) ||
                     std::find(wave.hitTargets.begin(), wave.hitTargets.end(), target.id) != wave.hitTargets.end())
                     continue;
                 const auto start = bodyStepStarts_.find(target.id);
@@ -368,7 +405,7 @@ void Match::UpdateShockwaves() {
             if (!Running(state_.phase))
                 return;
             auto *victim = Get(target);
-            if (victim && !victim->dead)
+            if (victim && !victim->dead && victim->kind == EntityKind::Troop && card->slowPct > 0)
                 ApplySlow(*victim, *card, copy.playId, copy.source, copy.team);
         }
         if (state_.elapsed + 1e-9 >= copy.expires)
@@ -381,7 +418,18 @@ void Match::UpdateEntity(EntityId id, double dt) {
     Entity *s = Get(id);
     if (!s || s->dead || !Running(state_.phase))
         return;
-    const Card *c = FindCard(s->cardId);
+    const Card *c = FindEntityDefinition(s->cardId);
+    if (s->invisibleUntil > 0 && state_.elapsed + 1e-9 >= s->invisibleUntil) {
+        auto &event = Emit("invisibility_expire", s->team);
+        event.target = s->id;
+        event.targetTeam = s->team;
+        event.source = s->invisibilitySource;
+        event.playId = s->invisibilityPlayId;
+        event.cardId = s->invisibilityCardId;
+        event.until = s->invisibleUntil;
+        event.position = s->position;
+        s->invisibleUntil = 0;
+    }
     s->cooldown -= dt;
     s->scanClock -= dt;
     if (s->kind == EntityKind::Core && !s->active) {
@@ -395,9 +443,12 @@ void Match::UpdateEntity(EntityId id, double dt) {
     }
     if (c && c->building) {
         auto &tele = state_.telemetry[I(s->team)][c->id];
-        tele.buildingLifetime += std::min(dt, std::max(0., state_.elapsed - s->born));
-        s->hp = std::max(0., s->hp - c->hp / c->lifetime * dt);
-        if (s->hp <= 1e-9) {
+        const double activeDt = std::min(dt, std::max(0., state_.elapsed - s->born));
+        tele.buildingLifetime += activeDt;
+        state_.entityTelemetry[I(s->team)][id].observed.buildingLifetime += activeDt;
+        s->hp = std::max(0., s->hp - c->hpDecayPerSecond * dt);
+        if (s->hp <= 1e-9 || (c->hardExpiry && c->lifetime > 0 &&
+                             state_.elapsed + 1e-9 >= s->born + c->lifetime)) {
             Kill(id, s->team, "", 0, 0);
             return;
         }
@@ -428,7 +479,7 @@ void Match::UpdateEntity(EntityId id, double dt) {
                     v->stunSource = copy.playId;
                     if (v->stunTrackedFrom < 0)
                         v->stunTrackedFrom = state_.elapsed;
-                    statusCredits_[copy.playId] = {copy.team, copy.cardId};
+                    statusCredits_[copy.playId] = {copy.team, copy.cardId, copy.id};
                     ++state_.telemetry[I(copy.team)][copy.cardId].stunned;
                     auto &event = Emit("stun", copy.team);
                     event.source = copy.id;
@@ -438,17 +489,19 @@ void Match::UpdateEntity(EntityId id, double dt) {
                     event.until = v->stunUntil;
                 }
             }
+            s = Get(id); // A lethal aura may insert four children and move every vector element.
+            if (!s || s->dead) return;
         }
     }
     RefreshSlows(*s);
     if (state_.elapsed + 1e-9 < s->stunUntil)
         return;
     const Entity *target = Get(s->target);
-    if (target && target->dead) {
+    if (target && (target->dead || !CanTarget(*s, *target))) {
         s->target = 0;
         s->hardLock = 0;
         s->path.clear();
-        if (std::abs(s->position.z) > 2.69)
+        if (std::abs(s->position.z) > arena::RiverHalfWidth + 1.04)
             s->bridge = 0;
         target = nullptr;
     }
@@ -460,7 +513,7 @@ void Match::UpdateEntity(EntityId id, double dt) {
         s->path.clear();
         target = nullptr;
     }
-    const bool approachTroops = c && !c->structuresOnly && !s->hardLock && target && Structure(*target);
+    const bool approachTroops = c && !StructuresOnly(*c) && !s->hardLock && target && Structure(*target);
     if (s->scanClock <= 0 || !target || approachTroops) {
         Acquire(*s);
         s->scanClock = s->kind == EntityKind::Building ? .12 : .10 + Random() * .06;
@@ -471,11 +524,6 @@ void Match::UpdateEntity(EntityId id, double dt) {
     const double range = Crown(*s) ? s->kind == EntityKind::Core ? 8.9 : 10 : c ? c->range : 0;
     const double distance = CombatDistance(*s, *target);
     if (distance <= range + target->radius + (s->kind == EntityKind::Building ? .35 : 0) + 1e-9) {
-        if (s->kind == EntityKind::Troop &&
-            (Crown(*target) || (c && c->structuresOnly && target->kind == EntityKind::Building))) {
-            s->hardLock = target->id;
-            s->forcedTarget = 0;
-        }
         s->chargeTime = std::max(0., s->chargeTime - dt * .7);
         if (s->cooldown <= 1e-9)
             Attack(*s, *target);

@@ -12,3 +12,12 @@
 *.ttf binary
 Assets/Fonts/BarlowSemiCondensed/OFL.txt -text
 Unreal/RiftCrownArena/Content/Rift/Fonts/Barlow-OFL.txt -text
+
+# Preserve the exact bytes recorded by asset and release provenance checks.
+Assets/** -text
+Build/** -text
+Unreal/RiftCrownArena/Source/** -text
+Unreal/RiftCrownArena/Config/** -text
+Docs/*.tsv -text
+Unreal/RiftCrownArena/RiftCrownArena.uproject -text
+.gitattributes -text

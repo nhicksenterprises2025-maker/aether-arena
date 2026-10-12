@@ -16,6 +16,11 @@ ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser()
 parser.add_argument('--cards', nargs='*')
 opts = parser.parse_args(sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else [])
+if opts.cards and set(opts.cards).issubset({'mini_stampede', 'stampede', 'pulverizer'}):
+    sys.path.insert(0, str(ROOT / 'Build'))
+    from render_expansion_portraits import render_selected
+    render_selected(ROOT, opts.cards)
+    sys.exit(0)
 manifest_path = ROOT / 'Assets/asset_manifest.json'
 manifest = json.loads(manifest_path.read_text())
 bpy.ops.wm.open_mainfile(filepath=str(ROOT / manifest['source']['file']))

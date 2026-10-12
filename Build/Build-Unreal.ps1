@@ -2,13 +2,17 @@ param(
     [string]$EngineRoot = 'C:\Program Files\Epic Games\UE_5.8',
     [ValidateSet('Development','Shipping')][string]$Configuration = 'Development',
     [switch]$Package,
-    [string]$ArchiveDirectory = ''
+    [string]$ArchiveDirectory = '',
+    [string]$PythonExecutable = ''
 )
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $projectPath = Join-Path $repoRoot 'Unreal\RiftCrownArena\RiftCrownArena.uproject'
 $outputRoot = if ($ArchiveDirectory) { [IO.Path]::GetFullPath($ArchiveDirectory) } else { Join-Path $repoRoot 'Artifacts\Game' }
 if (!(Test-Path -LiteralPath $projectPath)) { throw "Project not found: $projectPath" }
+if ($Package -and $Configuration -eq 'Shipping') {
+    & (Join-Path $PSScriptRoot 'Validate-BalanceRelease.ps1') -PythonExecutable $PythonExecutable
+}
 if ($Package) {
     $riftDebugStageArgs = @()
     if ($Configuration -eq 'Shipping') { $riftDebugStageArgs += '-nodebuginfo' }

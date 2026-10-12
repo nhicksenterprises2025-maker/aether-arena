@@ -1,11 +1,12 @@
 param(
     [string]$GamePackage,
-    [string]$Version='1.1.0',
+    [string]$Version='1.6.0',
     [string]$Repository='nhicksenterprises2025-maker/aether-arena',
     [string]$ToolchainRoot,
     [string]$BuildLog,
     [string]$PatchNotesFile,
-    [string]$PatchNotes='Rift Crown Arena native Windows release. Exact QA and build evidence are included alongside this package.'
+    [string]$PatchNotes='Rift Crown Arena native Windows release. Exact QA and build evidence are included alongside this package.',
+    [string]$PythonExecutable=''
 )
 $ErrorActionPreference='Stop'
 $repoRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
@@ -14,6 +15,7 @@ $packageRoot=[IO.Path]::GetFullPath($GamePackage)
 if(-not (Test-Path -LiteralPath (Join-Path $packageRoot 'RiftCrownArena.exe') -PathType Leaf)){throw 'Actual packaged RiftCrownArena.exe is missing. Run Unreal Shipping packaging first.'}
 if($Version -notmatch '^\d+\.\d+\.\d+(\.\d+)?$'){throw 'Release version must be numeric with three or four components.'}
 if($Repository -notmatch '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$'){throw 'Invalid GitHub repository name.'}
+& (Join-Path $PSScriptRoot 'Validate-BalanceRelease.ps1') -Version $Version -PythonExecutable $PythonExecutable
 # Debug symbols are preserved as development artifacts before the player inventory is frozen.
 # Only .pdb files are separated; executables, DLLs, assets, and runtime resources stay in the game.
 $symbols=@(Get-ChildItem -LiteralPath $packageRoot -Filter '*.pdb' -File -Recurse)

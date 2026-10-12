@@ -39,122 +39,28 @@ bool StyleKnown(const std::string &s) {
     return s == "beatdown" || s == "aggro" || s == "control" || s == "cycle" || s == "split" ||
            s == "spell_cycle" || s == "counter";
 }
-Card Troop(const char *id, const char *name, int cost, double hp, double damage, double interval,
-           double speed, double range, double scale) {
-    Card c;
-    c.id = id;
-    c.name = name;
-    c.cost = cost;
-    c.hp = hp;
-    c.damage = damage;
-    c.attackInterval = interval;
-    c.moveSpeed = speed;
-    c.range = range;
-    c.scale = scale;
-    return c;
-}
-Card Spell(const char *id, const char *name, int cost, double damage, double tower, double radius) {
-    Card c;
-    c.id = id;
-    c.name = name;
-    c.cost = cost;
-    c.damage = damage;
-    c.towerDamage = tower;
-    c.spellRadius = radius;
-    c.spell = true;
-    return c;
-}
-} // namespace
+ } // namespace
+#include "RiftCardManifest.generated.inc"
 const std::vector<Card> &Cards() {
-    static const std::vector<Card> cards = []() {
-        std::vector<Card> v;
-        auto c = Troop("ironclad", "Ironclad", 3, 822, 93, 1, 2.25, 1.35, 1);
-        v.push_back(c);
-        c = Troop("ember_archer", "Ember Archer", 3, 374, 152, 1.55, 2.35, 6, .95);
-        c.projectileSpeed = 16;
-        c.canHitAir = true;
-        v.push_back(c);
-        c = Troop("twin_blades", "Twin Blades", 2, 262, 55, .75, 3.35, 1.2, .82);
-        c.count = 2;
-        v.push_back(c);
-        c = Troop("boulderback", "Boulderback", 5, 1620, 118, 2, 1.3, 1.5, 1.22);
-        c.structuresOnly = true;
-        v.push_back(c);
-        c = Troop("arc_mage", "Arc Mage", 4, 547, 120, 1.15, 1.7, 6, .96);
-        c.projectileSpeed = 17;
-        c.canHitAir = true;
-        c.splash = 2.25;
-        v.push_back(c);
-        c = Troop("rambeast", "Rambeast", 4, 880, 140, 1.4, 2.6, 1.45, 1.06);
-        c.structuresOnly = true;
-        c.chargeDamage = 255;
-        v.push_back(c);
-        c = Troop("sky_manta", "Sky Manta", 3, 480, 77, .92, 3.05, 3.4, 1.05);
-        c.projectileSpeed = 15;
-        c.flying = true;
-        c.canHitAir = true;
-        v.push_back(c);
-        c = Troop("vampire_bats", "Vampire Bats", 5, 174, 86, 1.05, 1.95, 2, .68);
-        c.count = 5;
-        c.flying = true;
-        c.canHitAir = true;
-        v.push_back(c);
-        c = Troop("frost_fang", "Frost Fang", 5, 1265, 72, .75, 2.5, 1.1, 1.02);
-        c.slowPct = .3;
-        c.slowDuration = 2;
-        v.push_back(c);
-        c = Troop("storm_raven", "Storm Raven", 6, 1337, 251, 1.7, 1.18, 4.3, 1.2);
-        c.flying = true;
-        c.structuresOnly = true;
-        c.projectileSpeed = 18;
-        c.auraDamage = 82;
-        c.auraInterval = 3;
-        c.auraRadius = 2;
-        c.stunDuration = .4;
-        v.push_back(c);
-        c = Spell("meteor_shards", "Meteor Shards", 5, 262, 0, 4.5);
-        c.castDelay = .75;
-        c.dotDamage = 40;
-        c.dotDuration = 5;
-        c.dotInterval = 1;
-        v.push_back(c);
-        c = Troop("archer_tower", "Archer Tower", 4, 850, 75, 1, 0, 7, 1);
-        c.building = true;
-        c.projectileSpeed = 18;
-        c.canHitAir = true;
-        c.lifetime = 25;
-        c.footprint = 1.65;
-        v.push_back(c);
-        c = Spell("bullet_burst", "Bullet Burst", 2, 175, 55, 2.2);
-        c.castDelay = .30;
-        c.rounds = 7;
-        v.push_back(c);
-        c = Spell("nova_flask", "Nova Flask", 4, 375, 185, 3.25);
-        v.push_back(c);
-        c = Troop("mini_stampede", "Mini Stampede", 2, 95, 18, .9, 3.5, 1, .85);
-        c.count = 5;
-        v.push_back(c);
-        c = Troop("stampede", "Stampede", 7, 95, 18, 1, 3, .9, 1.3);
-        c.count = 15;
-        c.structuresOnly = true;
-        v.push_back(c);
-        c = Troop("pulverizer", "Pulverizer", 3, 700, 65, .9, 0, 4, .95);
-        c.building = true;
-        c.splash = 4;
-        c.lifetime = 45;
-        c.footprint = 1.65;
-        c.shockwaveSpeed = 8;
-        c.slowPct = .10;
-        c.slowDuration = 1.5;
-        v.push_back(c);
-        return v;
-    }();
+    static const std::vector<Card> cards = BuildManifestCards();
     return cards;
 }
 const Card *FindCard(const std::string &id) {
     for (const auto &c : Cards())
         if (c.id == id)
             return &c;
+    return nullptr;
+}
+const std::vector<Card> &EntityDefinitions() {
+    static const std::vector<Card> definitions = BuildManifestEntities();
+    return definitions;
+}
+const Card *FindEntityDefinition(const std::string &id) {
+    if (const Card *card = FindCard(id))
+        return card;
+    for (const auto &definition : EntityDefinitions())
+        if (definition.id == id)
+            return &definition;
     return nullptr;
 }
 const std::vector<std::string> &DefaultDeck() {
@@ -348,6 +254,18 @@ void Match::FixedStep(double dt) {
                 telemetry.stunTrackedSeconds += exposure;
                 telemetry.stunTime += affected;
             }
+            auto &sourceRecords = state_.entityTelemetry[Index(credit->second.team)];
+            auto entity = sourceRecords.find(credit->second.source);
+            if (entity != sourceRecords.end()) {
+                auto &observed = entity->second.observed;
+                if (slow) {
+                    observed.slowTrackedSeconds += exposure;
+                    observed.slowTime += affected;
+                } else {
+                    observed.stunTrackedSeconds += exposure;
+                    observed.stunTime += affected;
+                }
+            }
         }
     }
     // Alternate team evaluation from match seed, never from wall-frame order.
@@ -397,9 +315,11 @@ void Match::FixedStep(double dt) {
         if (!Running(state_.phase))
             return;
         if (projectile.splash > 0) {
+            const Card *card = FindEntityDefinition(projectile.cardId);
             std::vector<EntityId> victims;
             for (const auto &e : state_.entities)
-                if (!e.dead && e.team != projectile.team && e.id != projectile.target) {
+                if (!e.dead && e.team != projectile.team && e.id != projectile.target && card &&
+                    CanHit(*card, e)) {
                     const double extra = e.kind == EntityKind::Building ? e.radius * .35
                                          : Crown(e)                     ? e.radius * .25
                                                                         : 0;
@@ -445,7 +365,7 @@ void Match::FixedStep(double dt) {
         }
         int occupants = 0;
         for (const auto &e : state_.entities)
-            if (!e.dead && e.kind == EntityKind::Troop && e.team != h.team &&
+            if (!e.dead && e.team != h.team && (e.kind == EntityKind::Troop || c->dotStructureDamage > 0) &&
                 Distance(e.position, h.position) <= h.radius + e.radius * .2)
                 ++occupants;
         auto &tele = state_.telemetry[Index(h.team)][h.cardId];
@@ -457,7 +377,7 @@ void Match::FixedStep(double dt) {
         while (h.nextTick <= state_.elapsed + Epsilon && h.nextTick <= h.expires + Epsilon && h.ticks < 5) {
             std::vector<EntityId> victims;
             for (const auto &e : state_.entities)
-                if (!e.dead && e.kind == EntityKind::Troop && e.team != h.team &&
+                if (!e.dead && e.team != h.team && (e.kind == EntityKind::Troop || c->dotStructureDamage > 0) &&
                     Distance(e.position, h.position) <= h.radius + e.radius * .2)
                     victims.push_back(e.id);
             const auto copy = h;
@@ -466,7 +386,9 @@ void Match::FixedStep(double dt) {
             ++tele.dotTicks;
             Emit("hazard_tick", h.team).playId = h.playId;
             for (auto id : victims) {
-                Damage(id, c->dotDamage, copy.team, copy.cardId, copy.playId, 0, "dot");
+                const Entity *victim = Get(id);
+                Damage(id, victim && Structure(*victim) ? c->dotStructureDamage : c->dotDamage,
+                       copy.team, copy.cardId, copy.playId, 0, "dot");
                 if (!Running(state_.phase))
                     return;
             }
@@ -496,12 +418,16 @@ void Match::Finish(int winner, const std::string &reason) {
     state_.spellCasts.clear();
     for (auto &team : state_.telemetry)
         for (auto &[id, t] : team)
-            t.surviving = 0;
+            t.surviving = t.childSurviving = 0;
     for (const auto &e : state_.entities)
         if (!e.dead && !Crown(e)) {
-            auto &t = state_.telemetry[Index(e.team)][e.cardId];
-            ++t.surviving;
+            auto &t = state_.telemetry[Index(e.team)][e.attributionCardId.empty() ? e.cardId : e.attributionCardId];
+            if (e.parentEntityId) ++t.childSurviving;
+            else ++t.surviving;
             t.lifetime += state_.elapsed - e.born;
+            auto &observed = state_.entityTelemetry[Index(e.team)][e.id].observed;
+            observed.surviving = 1;
+            observed.lifetime += state_.elapsed - e.born;
         }
     auto &e = Emit("match_end", winner == 1 ? Team::Enemy : Team::Player);
     e.reason = reason;
@@ -687,7 +613,7 @@ bool Match::PlanDeployment(Team team, const Card &c, Vec2 p, bool sandbox,
         return true;
     if (c.count < 1)
         return false;
-    const double radius = c.building ? c.footprint * .52 : .44 * c.scale;
+    const double radius = c.collisionRadius;
     const double spacing = std::max(1.12, radius * 2 + .06);
     const bool centerSplit = std::abs(p.x) <= .5 + Epsilon;
     const bool establishedSideFormation = !centerSplit && (c.count == 2 || (c.count == 5 && c.flying));
@@ -709,6 +635,13 @@ bool Match::PlanDeployment(Team team, const Card &c, Vec2 p, bool sandbox,
         // before reservation and naturally splits a center placement 2/3.
         offsets = {{-spacing, -.38 * spacing}, {0, -.38 * spacing}, {spacing, -.38 * spacing},
                    {-.5 * spacing, .486 * spacing}, {.5 * spacing, .486 * spacing}};
+    } else if (c.id == "stampede" && c.count == 15) {
+        // Five bodies across, three ranks deep. Individual landing positions
+        // still determine bridge choice; the central column remains on the
+        // side of the snapped drop instead of overriding member lanes.
+        for (int row = 0; row < 3; ++row)
+            for (int column = 0; column < 5; ++column)
+                offsets.push_back({(column - 2.) * spacing, (row - 1.) * spacing});
     } else {
         // Every member gets its own offset, including large swarms. Short
         // final rows are centered instead of biasing the swarm to one lane.
@@ -721,7 +654,7 @@ bool Match::PlanDeployment(Team team, const Card &c, Vec2 p, bool sandbox,
                                    (row - (rows - 1) * .5) * spacing});
         }
     }
-    if (c.id == "mini_stampede" && !sandbox) {
+    if ((c.id == "mini_stampede" || c.id == "stampede") && !sandbox) {
         // At the first legal tile, the three forward hogs otherwise request
         // the forbidden river strip and can be independently sent to distant
         // free contacts. Keep the whole formation anchored to the hand drop.
@@ -794,14 +727,23 @@ void Match::Deploy(Team team, const Card &c, Vec2 p, PlayId play, bool sandbox,
         e.position = positions[static_cast<std::size_t>(i)];
         e.facing = {0, -Sign(team)};
         e.hp = e.maxHp = c.hp;
-        e.radius = c.building ? c.footprint * .52 : .44 * c.scale;
+        e.shieldHP = e.maxShieldHP = c.shieldHP;
+        e.attributionCardId = c.id;
+        e.radius = c.collisionRadius;
         e.flying = c.flying;
         e.born = state_.elapsed;
         e.memberCount = c.count;
-        e.cooldown = c.building ? .35 : 0;
+        e.cooldown = c.initialAttackCooldown;
         e.lane = e.position.x < 0 ? -1 : 1;
         e.stuckPosition = e.position;
         state_.entities.push_back(e);
+        EntityTelemetry record;
+        record.id = e.id;
+        record.playId = play;
+        record.cardId = record.attributionCardId = c.id;
+        record.observed.spawns = 1;
+        if (c.building) record.observed.buildingCapacity = c.lifetime;
+        state_.entityTelemetry[Index(team)].emplace(e.id, std::move(record));
         deployed.push_back(e.id);
         auto &t = state_.telemetry[Index(team)][c.id];
         ++t.spawns;
@@ -813,6 +755,8 @@ void Match::Deploy(Team team, const Card &c, Vec2 p, PlayId play, bool sandbox,
         event.playId = play;
         event.position = e.position;
         event.hp = event.maxHp = c.hp;
+        event.shieldHP = event.maxShieldHP = c.shieldHP;
+        event.attributionCardId = c.id;
         event.targetKind = e.kind;
         event.count = c.count;
         event.sandbox = sandbox;
@@ -824,7 +768,7 @@ void Match::ApplySpell(Team team, const Card &c, Vec2 p, PlayId play) {
     std::vector<EntityId> ids;
     for (const auto &e : state_.entities)
         if (!e.dead && e.team != team) {
-            if (c.dotDamage > 0 && Structure(e))
+            if (c.dotDamage > 0 && c.dotStructureDamage <= 0 && Structure(e))
                 continue;
             const double padding = c.id == "bullet_burst" ? (Structure(e) ? e.radius * .25 : e.radius * .2)
                                    : c.dotDamage > 0      ? e.radius * .2
@@ -839,6 +783,8 @@ void Match::ApplySpell(Team team, const Card &c, Vec2 p, PlayId play) {
         if (!Running(state_.phase))
             return;
     }
+    if (c.invisibilityDuration > 0)
+        ApplyInvisibility(team, c, p, play);
     if (c.dotDamage > 0) {
         Hazard h;
         h.playId = play;
@@ -857,9 +803,65 @@ void Match::Damage(EntityId id, double amount, Team team, const std::string &car
     Entity *t = Get(id);
     if (!t || t->dead || !Running(state_.phase) || t->team == team || !std::isfinite(amount) || amount <= 0)
         return;
+    const Card *victim = FindEntityDefinition(t->cardId);
+    const auto attackerRecord = state_.entityTelemetry[Index(team)].find(source);
+    const std::string creditCard = attackerRecord == state_.entityTelemetry[Index(team)].end()
+                                       ? card : attackerRecord->second.attributionCardId;
+    const std::string victimCredit = t->attributionCardId.empty() ? t->cardId : t->attributionCardId;
+    if (t->shieldHP > 0) {
+        const double shieldLoss = std::min(t->shieldHP, amount);
+        const bool protect = victim && victim->shieldOverflowProtected;
+        const double overflow = protect ? std::max(0., amount - shieldLoss) : 0;
+        t->shieldHP -= shieldLoss;
+        if (t->shieldHP <= Epsilon) {
+            t->shieldHP = 0;
+            t->shieldBrokenAt = state_.elapsed;
+        }
+        auto &event = Emit("shield_damage", team);
+        event.source = source;
+        event.target = id;
+        event.targetTeam = t->team;
+        event.targetKind = t->kind;
+        event.cardId = card;
+        event.playId = play;
+        event.amount = shieldLoss;
+        event.requested = amount;
+        event.shieldOverflowBlocked = overflow;
+        event.shieldHP = t->shieldHP;
+        event.maxShieldHP = t->maxShieldHP;
+        event.hp = t->hp;
+        event.maxHp = t->maxHp;
+        event.position = t->position;
+        event.damageKind = kind;
+        event.attributionCardId = creditCard;
+        if (attackerRecord != state_.entityTelemetry[Index(team)].end())
+            event.parentEntityId = attackerRecord->second.parentEntityId;
+        auto &taken = state_.telemetry[Index(t->team)][victimCredit];
+        taken.shieldDamageTaken += shieldLoss;
+        taken.shieldAbsorbed += shieldLoss + overflow;
+        taken.overflowPrevented += overflow;
+        auto &observed = state_.entityTelemetry[Index(t->team)][id].observed;
+        observed.shieldDamageTaken += shieldLoss;
+        observed.shieldAbsorbed += shieldLoss + overflow;
+        observed.overflowPrevented += overflow;
+        if (!creditCard.empty()) {
+            auto &attacker = state_.telemetry[Index(team)][creditCard];
+            attacker.shieldDamage += shieldLoss;
+            if (play) {
+                auto &targets = castTargets_[play];
+                if (std::find(targets.begin(), targets.end(), id) == targets.end()) {
+                    targets.push_back(id);
+                    ++attacker.targets;
+                }
+            }
+        }
+        if (attackerRecord != state_.entityTelemetry[Index(team)].end())
+            attackerRecord->second.observed.shieldDamage += shieldLoss;
+        amount = protect ? 0 : amount - shieldLoss;
+        if (amount <= Epsilon) return;
+    }
     const double actual = std::min(t->hp, amount), overkill = std::max(0., amount - t->hp);
     t->hp -= actual;
-    const Card *victim = FindCard(t->cardId);
     auto &event = Emit("damage", team);
     event.source = source;
     event.target = id;
@@ -876,8 +878,11 @@ void Match::Damage(EntityId id, double amount, Team team, const std::string &car
     event.count = t->memberCount;
     event.targetCost = victim ? static_cast<double>(victim->cost) / victim->count : 0;
     event.damageKind = kind;
-    if (!card.empty()) {
-        auto &tele = state_.telemetry[Index(team)][card];
+    event.attributionCardId = creditCard;
+    if (attackerRecord != state_.entityTelemetry[Index(team)].end())
+        event.parentEntityId = attackerRecord->second.parentEntityId;
+    if (!creditCard.empty()) {
+        auto &tele = state_.telemetry[Index(team)][creditCard];
         if (Crown(*t))
             tele.towerDamage += actual;
         else if (t->kind == EntityKind::Building)
@@ -892,7 +897,7 @@ void Match::Damage(EntityId id, double amount, Team team, const std::string &car
         if (kind == "aura")
             tele.auraDamage += actual;
         if (Crown(*t)) {
-            towerCredits_[id][{team, card}] += actual;
+            towerCredits_[id][{team, creditCard}] += actual;
             if (play && !connected_[play]) {
                 connected_[play] = true;
                 ++tele.connected;
@@ -908,11 +913,24 @@ void Match::Damage(EntityId id, double amount, Team team, const std::string &car
                 tele.spellValue += actual / t->maxHp * victim->cost / victim->count;
         }
     }
+    if (attackerRecord != state_.entityTelemetry[Index(team)].end()) {
+        auto &observed = attackerRecord->second.observed;
+        if (Crown(*t)) observed.towerDamage += actual;
+        else if (t->kind == EntityKind::Building) observed.buildingDamage += actual;
+        else observed.troopDamage += actual;
+        observed.overkill += overkill;
+        if (kind == "initial") observed.initialDamage += actual;
+        if (kind == "dot") observed.dotDamage += actual;
+        if (kind == "aura") observed.auraDamage += actual;
+    }
     if (victim) {
-        auto &v = state_.telemetry[Index(t->team)][t->cardId];
+        auto &v = state_.telemetry[Index(t->team)][victimCredit];
         v.damageTaken += actual;
         if (t->kind == EntityKind::Building)
             v.prevented += actual;
+        auto &observed = state_.entityTelemetry[Index(t->team)][id].observed;
+        observed.damageTaken += actual;
+        if (t->kind == EntityKind::Building) observed.prevented += actual;
     }
     if (t->hp <= Epsilon)
         Kill(id, team, card, play, source);
@@ -933,20 +951,35 @@ void Match::Kill(EntityId id, Team team, const std::string &card, PlayId play, E
     ev.targetKind = t->kind;
     ev.position = t->position;
     ev.count = t->memberCount;
-    const Card *v = FindCard(t->cardId);
+    const Entity deceased = *t; // Child insertion may reallocate the entity vector.
+    const Card *v = FindEntityDefinition(t->cardId);
     if (v) {
-        auto &victim = state_.telemetry[Index(t->team)][t->cardId];
-        ++victim.deaths;
+        auto &victim = state_.telemetry[Index(t->team)][t->attributionCardId.empty() ? t->cardId : t->attributionCardId];
+        if (t->parentEntityId) ++victim.childDeaths;
+        else ++victim.deaths;
         victim.lifetime += state_.elapsed - t->born;
+        auto &observed = state_.entityTelemetry[Index(t->team)][id].observed;
+        ++observed.deaths;
+        observed.lifetime += state_.elapsed - t->born;
         ev.targetCost = static_cast<double>(v->cost) / v->count;
         if (!card.empty()) {
-            auto &killer = state_.telemetry[Index(team)][card];
+            auto attacker = state_.entityTelemetry[Index(team)].find(source);
+            const std::string credit = attacker == state_.entityTelemetry[Index(team)].end()
+                                           ? card : attacker->second.attributionCardId;
+            auto &killer = state_.telemetry[Index(team)][credit];
             ++killer.kills;
             killer.killValue += ev.targetCost;
+            if (attacker != state_.entityTelemetry[Index(team)].end()) {
+                ++attacker->second.observed.kills;
+                attacker->second.observed.killValue += ev.targetCost;
+            }
         }
     }
-    if (!Crown(*t))
+    if (!Crown(deceased)) {
+        if (v && v->deathSpawnCount > 0 && !v->deathSpawnId.empty())
+            SpawnDeathChildren(deceased, *v);
         return;
+    }
     const int award = t->kind == EntityKind::Core ? 3 : 1;
     const auto kind = t->kind;
     const auto owner = t->team;
@@ -988,6 +1021,119 @@ void Match::SetAether(Team team, double value) {
     e.aetherBefore = previous;
     e.aetherAfter = state_.aether[i];
     e.sandbox = true;
+}
+void Match::SpawnDeathChildren(const Entity &parent, const Card &definition) {
+    const Card *child = FindEntityDefinition(definition.deathSpawnId);
+    if (!child || child->spell || child->building || definition.deathSpawnCount <= 0)
+        return;
+    std::vector<Entity> planned;
+    planned.reserve(static_cast<std::size_t>(definition.deathSpawnCount));
+    const int columns = static_cast<int>(std::ceil(std::sqrt(static_cast<double>(definition.deathSpawnCount))));
+    const int rows = (definition.deathSpawnCount + columns - 1) / columns;
+    const double pitch = 2 * child->collisionRadius + .06;
+    for (int n = 0; n < definition.deathSpawnCount; ++n) {
+        Entity body;
+        body.id = nextEntity_ + static_cast<EntityId>(n);
+        body.parentEntityId = parent.id;
+        body.attributionCardId = parent.attributionCardId.empty() ? parent.cardId : parent.attributionCardId;
+        body.cardId = child->id;
+        body.team = parent.team;
+        body.kind = EntityKind::Troop;
+        body.playId = parent.playId;
+        body.radius = child->collisionRadius;
+        body.flying = child->flying;
+        body.facing = parent.facing;
+        body.hp = body.maxHp = child->hp;
+        body.shieldHP = body.maxShieldHP = child->shieldHP;
+        body.born = state_.elapsed;
+        body.memberCount = definition.deathSpawnCount;
+        body.cooldown = child->initialAttackCooldown;
+        const Vec2 requested{parent.position.x + (n % columns - (columns - 1) * .5) * pitch,
+                             parent.position.z + (n / columns - (rows - 1) * .5) * pitch};
+        if (!ResolveBodyPlacement(requested, body, false, planned, body.position)) {
+            auto &failure = Emit("death_spawn_blocked", parent.team);
+            failure.source = parent.id;
+            failure.playId = parent.playId;
+            failure.cardId = parent.cardId;
+            failure.count = definition.deathSpawnCount;
+            return; // Never insert an overlapping or partially paid formation.
+        }
+        body.lane = body.position.x < 0 ? -1 : 1;
+        body.stuckPosition = body.position;
+        planned.push_back(body);
+    }
+    for (const auto &body : planned) {
+        ++nextEntity_;
+        state_.entities.push_back(body);
+        EntityTelemetry record;
+        record.id = body.id;
+        record.parentEntityId = parent.id;
+        record.playId = parent.playId;
+        record.cardId = child->id;
+        record.attributionCardId = body.attributionCardId;
+        record.observed.spawns = 1;
+        state_.entityTelemetry[Index(body.team)].emplace(body.id, std::move(record));
+        ++state_.telemetry[Index(body.team)][body.attributionCardId].childSpawns;
+        auto &event = Emit("entity_spawn", body.team);
+        event.source = body.id;
+        event.parentEntityId = parent.id;
+        event.attributionCardId = body.attributionCardId;
+        event.playId = body.playId;
+        event.cardId = body.cardId;
+        event.position = body.position;
+        event.targetKind = body.kind;
+        event.hp = event.maxHp = body.hp;
+        event.shieldHP = event.maxShieldHP = body.shieldHP;
+        event.count = definition.deathSpawnCount;
+        event.reason = "death_spawn";
+    }
+    for (const auto &body : planned)
+        PullDeployment(body.id);
+}
+void Match::ApplyInvisibility(Team team, const Card &card, Vec2 point, PlayId play) {
+    std::vector<EntityId> cloaked;
+    for (auto &body : state_.entities) {
+        if (body.dead || body.team != team || body.kind != EntityKind::Troop)
+            continue;
+        if (!card.globalFriendlyInvisibility && Distance(body.position, point) > card.spellRadius + Epsilon)
+            continue;
+        body.invisibleUntil = state_.elapsed + card.invisibilityDuration;
+        body.invisibilitySource = 0;
+        body.invisibilityPlayId = play;
+        body.invisibilityCardId = card.id;
+        cloaked.push_back(body.id);
+        auto &event = Emit("invisibility_apply", team);
+        event.target = body.id;
+        event.targetTeam = team;
+        event.cardId = card.id;
+        event.playId = play;
+        event.until = body.invisibleUntil;
+        event.amount = card.invisibilityDuration;
+        event.position = body.position;
+    }
+    if (!card.breakExistingLocks)
+        return;
+    for (auto &enemy : state_.entities) {
+        if (enemy.dead || enemy.team == team)
+            continue;
+        auto hidden = [&](EntityId id) { return std::find(cloaked.begin(), cloaked.end(), id) != cloaked.end(); };
+        if (!hidden(enemy.target) && !hidden(enemy.hardLock) && !hidden(enemy.forcedTarget))
+            continue;
+        const EntityId dropped = hidden(enemy.target) ? enemy.target
+                               : hidden(enemy.hardLock) ? enemy.hardLock : enemy.forcedTarget;
+        enemy.target = enemy.hardLock = enemy.forcedTarget = 0;
+        enemy.forcedUntil = 0;
+        enemy.path.clear();
+        enemy.repathClock = enemy.scanClock = 0;
+        auto &event = Emit("target_drop", team);
+        event.source = enemy.id;
+        event.target = dropped;
+        event.targetTeam = team;
+        event.cardId = card.id;
+        event.playId = play;
+        event.reason = "invisibility";
+        event.until = state_.elapsed + card.invisibilityDuration;
+    }
 }
 bool Match::SetTowerHP(EntityId id, double hp) {
     auto *t = Get(id);
@@ -1041,19 +1187,32 @@ bool Match::SetAIStyle(Team team, const std::string &style) {
     Decision(team, "AI STYLE", style);
     return true;
 }
+std::uint8_t TargetMaskFor(const Card &c) {
+    if (c.targetMask)
+        return c.targetMask;
+    if (c.spell)
+        return c.towerDamage > 0 ? targets::All : targets::GroundTroop | targets::AirTroop;
+    if (c.structuresOnly)
+        return targets::Structure;
+    return targets::GroundTroop | (c.canHitAir ? targets::AirTroop : 0) |
+           (c.building ? 0 : targets::Structure);
+}
+bool CanHit(const Card &c, const Entity &t) {
+    const std::uint8_t bit = Structure(t) ? targets::Structure
+                              : t.flying ? targets::AirTroop : targets::GroundTroop;
+    return (TargetMaskFor(c) & bit) != 0;
+}
 bool Match::CanTarget(const Entity &s, const Entity &t) const {
     if (s.dead || t.dead || s.id == t.id || s.team == t.team)
         return false;
+    if (t.kind == EntityKind::Troop && t.invisibleUntil > state_.elapsed + Epsilon)
+        return false;
     if (Crown(s))
         return t.kind == EntityKind::Troop;
-    const Card *c = FindCard(s.cardId);
+    const Card *c = FindEntityDefinition(s.cardId);
     if (!c)
         return false;
-    if (c->building)
-        return t.kind == EntityKind::Troop && (!t.flying || c->canHitAir);
-    if (c->structuresOnly)
-        return Structure(t);
-    return !t.flying || c->canHitAir;
+    return CanHit(*c, t);
 }
 bool Match::InSight(const Entity &s, const Entity &t) const {
     const Vec2 delta = Difference(t.position, s.position);
@@ -1063,15 +1222,13 @@ bool Match::InSight(const Entity &s, const Entity &t) const {
 }
 double Match::CombatDistance(const Entity &s, const Entity &t) const {
     const double direct = Distance(s.position, t.position);
-    const auto *c = FindCard(s.cardId);
+    const auto *c = FindEntityDefinition(s.cardId);
     if (s.flying || Crown(s) || s.kind == EntityKind::Building || (c && c->projectileSpeed > 0))
         return direct;
-    const int a = s.position.z > 1.65    ? 1
-                  : s.position.z < -1.65 ? -1
-                                         : 0,
-              b = t.position.z > 1.65    ? 1
-                  : t.position.z < -1.65 ? -1
-                                         : 0;
+    const int a = s.position.z > arena::RiverHalfWidth ? 1
+                  : s.position.z < -arena::RiverHalfWidth ? -1 : 0;
+    const int b = t.position.z > arena::RiverHalfWidth ? 1
+                  : t.position.z < -arena::RiverHalfWidth ? -1 : 0;
     if (!a || !b || a == b)
         return direct;
     const int lane = s.bridge ? s.bridge : s.position.x < 0 ? -1 : s.position.x > 0 ? 1

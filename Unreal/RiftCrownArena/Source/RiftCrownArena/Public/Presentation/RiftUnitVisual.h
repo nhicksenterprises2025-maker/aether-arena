@@ -11,6 +11,8 @@ class UDecalComponent;
 class UAnimSequence;
 class URiftCardData;
 class UMaterialInstanceDynamic;
+class UMaterialInterface;
+class UInstancedStaticMeshComponent;
 
 /** Evaluates authored clips at exact simulation time and blends their local poses. */
 UCLASS(Transient, NotBlueprintable)
@@ -37,9 +39,15 @@ public:
     void AttackAt(double Time, double Damage);
     void AimAt(FVector Target);
     void HitAt(double Time, double Damage);
+    void ShieldHitAt(double Time,double Damage);
     void DieAt(double Time);
     void AdvanceDeath(double Time);
     void SpecialAt(FName Name,double Time,float Duration=.5f);
+    void SetFormationDustLeader(bool Leader,FVector Center);
+    int32 HoofDustCount() const;
+    int32 FormationDustCount() const;
+    int32 DeathFleckCount() const;
+    int32 SlowRippleCount() const;
     void ActivateCore();
     bool IsExpired(double Time) const;
     FVector HealthLocation() const;
@@ -50,6 +58,10 @@ public:
     bool IsTower() const { return Kind!=rift::EntityKind::Troop; }
     bool IsDead() const { return bDead; }
     bool HasBeenDamaged() const { return bHasBeenDamaged; }
+    bool HiddenFromViewer() const { return bHiddenFromViewer; }
+    bool IsCloaked() const { return bCloaked; }
+    int32 ShieldFragmentCount() const;
+    int32 ShieldEdgeCount() const;
     const FString& PresentationAssetId() const { return AssetId; }
     FName CurrentAnimation() const { return CurrentClip; }
     FString AnimationAssetPath() const;
@@ -65,6 +77,14 @@ private:
     FName AttackClip() const;
     void UpdateStructureAim(double Time);
     void UpdateDamageHistory(const rift::Entity& Entity, double Time);
+    UInstancedStaticMeshComponent* MakeSurfaceBatch(FName Name,FLinearColor Color,float Emissive);
+    void UpdateSurfaceMotes(double Time);
+    void EmitDeploySurfaceDust(double Time);
+    void EmitHoofDust(double Time,double PreviousPhase,double CurrentPhase);
+    void UpdatePulverizerSlow(const rift::Entity& Entity,double Time);
+    void UpdateSelectedGlow(double Time,double Cooldown,bool Anticipating);
+    void UpdateCloak(const rift::Entity& Entity,double Time);
+    void UpdateShield(const rift::Entity& Entity,double Time);
     UAnimSequence* Clip(FName Name);
     void ColorMesh(class UMeshComponent* Component, FLinearColor Color);
     UPROPERTY() TObjectPtr<USceneComponent> Scene;
@@ -75,6 +95,26 @@ private:
     UPROPERTY() TObjectPtr<URiftCardData> CardData;
     UPROPERTY() TMap<FName,TObjectPtr<UAnimSequence>> Clips;
     UPROPERTY() TArray<TObjectPtr<UMaterialInstanceDynamic>> Materials;
+    UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> HoofDust;
+    UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> FormationDust;
+    UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> CopperFlecks;
+    UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> GrayFlecks;
+    UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> SlowRipple;
+    UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> ShieldFragments;
+    UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> ShieldEdges;
+    UPROPERTY() TArray<TObjectPtr<UMaterialInterface>> OriginalCharacterMaterials;
+    UPROPERTY() TArray<TObjectPtr<UMaterialInstanceDynamic>> CloakMaterials;
+    struct FSurfaceMote
+    {
+        FVector Origin=FVector::ZeroVector,Velocity=FVector::ZeroVector;
+        FVector Size=FVector(4,2,2);
+        double Born=0,Lifetime=.22;
+        float Yaw=0;
+        bool Formation=false;
+    };
+    TArray<FSurfaceMote> SurfaceMotes;
+    FVector FormationCenter=FVector::ZeroVector;
+    bool bFormationDustLeader=false;
     FString AssetId;
     FName CurrentClip;
     FName SpecialClip;
@@ -83,12 +123,18 @@ private:
     FVector PreviousPosition=FVector::ZeroVector;
     double Born=0, DeathTime=-1, LastAttack=-100, LastHit=-100, AttackInterval=1;
     double TurnTime=-100, AcquireTime=-100;
+    double LastShieldHit=-100;
     double SpecialTime=-100;
     double AnimationTime=-1, VisualTime=0, GaitClock=0, DeathFlightHeight=0;
     double LastSynchronizedCooldown=-1;
+    double AttackContact=.48, AttackAnticipation=0, AttackRecovery=0;
+    double AuthoredStrideMeters=0, CleanupSeconds=1.05, FlightBobTiles=.09;
+    double DeathFallSeconds=.65, DeathClipSeconds=.8;
     float SpecialDuration=.5f;
     uint64 LastTarget=0;
     float Scale=1.f, StructureHeightScale=1.f, AnimationPhase=0.f, CurrentFraction=0.f;
     float FlightBank=0.f, ArcherPerchHeight=0.f, StructureBaseYaw=0.f, CannonRecoil=0.f;
     bool bDead=false, bFlying=false, bCoreActive=false, bHasBeenDamaged=false;
+    bool bHasAuthoredDeathTiming=false;
+    bool bCloaked=false,bHiddenFromViewer=false,bShieldBroken=false;
 };

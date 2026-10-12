@@ -1,8 +1,9 @@
-param([string]$Version='1.1.0')
+param([string]$Version='1.6.0',[string]$PythonExecutable='')
 $ErrorActionPreference='Stop'
 $repoRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $releaseRoot=Join-Path $repoRoot 'Artifacts/Release'
 $qaRoot=Join-Path $repoRoot 'Artifacts/QA'
+& (Join-Path $PSScriptRoot 'Validate-BalanceRelease.ps1') -Version $Version -PythonExecutable $PythonExecutable
 function ReadReport([string]$Name){
     $path=Join-Path $qaRoot $Name
     if(-not(Test-Path -LiteralPath $path -PathType Leaf)){throw "Measured release evidence is missing: $Name"}

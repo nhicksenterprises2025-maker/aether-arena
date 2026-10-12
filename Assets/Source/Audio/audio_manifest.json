@@ -858,6 +858,36 @@
       "sources": [
         "Recorded CC0 palette and original synthesis; see Palette/sources.json"
       ]
+    },
+    "shield_break": {
+      "file": "Assets/Source/Audio/shield_break.wav",
+      "duration": 0.5,
+      "sha256": "71957557a26111ff4ddbdb2855826fef24845f171c2761eedb8caf46485a6455",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.600006103515625,
+      "rmsDbFS": -24.918687706253145,
+      "dcOffset": 6.699888614299886e-05,
+      "role": "combat",
+      "sources": [
+        "Recorded CC0 palette and original synthesis; see Palette/sources.json"
+      ],
+      "productionSource": "Build/generate_expansion_audio.py"
+    },
+    "shadow_surge": {
+      "file": "Assets/Source/Audio/shadow_surge.wav",
+      "duration": 0.42,
+      "sha256": "a509d98cae18fd8cf272a8e9c8354e52c255ce960aaa3443baec924585b01616",
+      "loop": false,
+      "channels": 2,
+      "peak": 0.237396240234375,
+      "rmsDbFS": -27.999993600487564,
+      "dcOffset": 1.5299980049063277e-05,
+      "role": "combat",
+      "sources": [
+        "Recorded CC0 palette and original synthesis; see Palette/sources.json"
+      ],
+      "productionSource": "Build/generate_expansion_audio.py"
     }
   },
   "usedSourceFiles": [
