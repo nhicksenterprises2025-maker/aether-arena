@@ -54,7 +54,7 @@ bool FRiftPulverizerTest::RunTest(const FString& Parameters)
     Stat(TEXT("wave radius"),C->splash,4);Stat(TEXT("wave travel speed"),C->shockwaveSpeed,8);
     Stat(TEXT("maximum wave travel time"),C->splash/C->shockwaveSpeed,.5);
     Stat(TEXT("lifetime"),C->lifetime,45);Stat(TEXT("footprint"),C->footprint,1.65);
-    Stat(TEXT("model scale"),C->scale,.95);Stat(TEXT("projectile speed"),C->projectileSpeed,0);
+    Stat(TEXT("model scale"),C->scale,1.05);Stat(TEXT("projectile speed"),C->projectileSpeed,0);
     Stat(TEXT("movement slow fraction"),C->slowPct,.10);Stat(TEXT("slow duration"),C->slowDuration,1.5);
     Stat(TEXT("explicit natural HP decay"),C->hpDecayPerSecond,700./45.);
     Stat(TEXT("initial attack cooldown"),C->initialAttackCooldown,.35);

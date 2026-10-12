@@ -311,11 +311,30 @@ void Match::Attack(Entity &s, const Entity &t) {
                     if (D(other.position, impact) <= splash + padding)
                         victims.push_back(other.id);
                 }
-        Damage(target, damage, team, card, play, source);
+        const Vec2 contactSourcePosition = s.position;
+        int contacts = 0;
+        auto applyContact = [&](EntityId id, const std::string &kind) {
+            const auto *before = Get(id);
+            const double beforeHealth = before && !before->dead ? before->hp + before->shieldHP : 0.;
+            Damage(id, damage, team, card, play, source, kind);
+            const auto *after = Get(id);
+            if (beforeHealth > 0 && after && after->hp + after->shieldHP < beforeHealth)
+                ++contacts;
+        };
+        applyContact(target, "attack");
         for (auto id : victims) {
             if (!Running(state_.phase))
                 break;
-            Damage(id, damage, team, card, play, source, "splash");
+            applyContact(id, "splash");
+        }
+        if (card == "aether_reaper" && contacts >= 2) {
+            auto &cleave = Emit("melee_cleave", team);
+            cleave.source = source;
+            cleave.target = target;
+            cleave.cardId = card;
+            cleave.playId = play;
+            cleave.count = contacts;
+            cleave.position = contactSourcePosition;
         }
         auto *victim = Get(target);
         if (c && c->slowPct > 0 && victim && !victim->dead && victim->kind == EntityKind::Troop &&
@@ -413,6 +432,18 @@ void Match::UpdateShockwaves() {
         else
             ++index;
     }
+}
+double Match::AttackReach(const Entity &s, const Entity &t) const {
+    if (Crown(s))
+        return (s.kind == EntityKind::Core ? 8.9 : 10.) + t.radius;
+    const Card *c = FindEntityDefinition(s.cardId);
+    if (!c)
+        return 0;
+    // Direct melee range is measured from the two body edges. Ranged shots
+    // and stationary buildings retain their existing center-based reach.
+    const double bodyReach = s.kind == EntityKind::Troop && c->projectileSpeed <= 0
+                                 ? s.radius : 0.;
+    return c->range + t.radius + bodyReach + (s.kind == EntityKind::Building ? .35 : 0.);
 }
 void Match::UpdateEntity(EntityId id, double dt) {
     Entity *s = Get(id);
@@ -521,13 +552,38 @@ void Match::UpdateEntity(EntityId id, double dt) {
     }
     if (!target || target->dead || !CanTarget(*s, *target))
         return;
-    const double range = Crown(*s) ? s->kind == EntityKind::Core ? 8.9 : 10 : c ? c->range : 0;
+    bool moved = false;
+    auto arrival = engagementSlots_.find(s->id);
+    if (s->kind == EntityKind::Troop && c && c->count > 1 && c->projectileSpeed <= 0 &&
+        (arrival == engagementSlots_.end() || arrival->second.target != target->id) &&
+        CombatDistance(*s, *target) <= AttackReach(*s, *target) + 1e-9) {
+        // The front row can enter melee reach during a bridge exit, or be
+        // deployed already within reach. It needs an arrival reservation too;
+        // otherwise an unaligned early attacker can seal the rest of its swarm.
+        const auto blockers = s->flying ? std::vector<NavBlocker>{} : CollectNavBlockers();
+        Vec2 point;
+        EngagementPoint(*s, *target, blockers, point);
+        arrival = engagementSlots_.find(s->id);
+    }
+    if (s->kind == EntityKind::Troop && arrival != engagementSlots_.end() &&
+        arrival->second.target == target->id &&
+        CombatDistance(*s, *target) <= AttackReach(*s, *target) + 1e-9) {
+        const Vec2 point{target->position.x + arrival->second.offset.x,
+                          target->position.z + arrival->second.offset.z};
+        if (D(s->position, point) > .0005) {
+            // Finish the approach while cooling down instead of freezing a
+            // fraction of a step off-slot and blocking another swarm member.
+            // This is one normal swept movement, followed by a fresh reach test.
+            Move(*s, *target, dt);
+            moved = true;
+        }
+    }
     const double distance = CombatDistance(*s, *target);
-    if (distance <= range + target->radius + (s->kind == EntityKind::Building ? .35 : 0) + 1e-9) {
+    if (distance <= AttackReach(*s, *target) + 1e-9) {
         s->chargeTime = std::max(0., s->chargeTime - dt * .7);
         if (s->cooldown <= 1e-9)
             Attack(*s, *target);
-    } else if (s->kind == EntityKind::Troop)
+    } else if (s->kind == EntityKind::Troop && !moved)
         Move(*s, *target, dt);
 }
 } // namespace rift

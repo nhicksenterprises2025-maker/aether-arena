@@ -282,7 +282,7 @@ void ARiftArenaPresentation::ConstructArena()
     for(int32 Y=0;Y<rift::arena::Height;++Y)
     {
         const float PY=(Y-rift::arena::LastTileZ)*Tile;
-        if(FMath::Abs(PY)<RiverHalfWidth||FMath::Abs(PY)>=11.5f*Tile||Y%2!=0)continue;
+        if(FMath::Abs(PY)<RiverHalfWidth||FMath::Abs(PY)>=(rift::arena::GuardDepth+.78)*Tile||Y%2!=0)continue;
         for(float Lane:{-1.f,1.f})for(float Column:{-.5f,.5f})
             Place(TEXT("lane_paver"),FVector(Lane*BridgeX+Column*Tile,PY,1),FRotator(0,Random.FRandRange(-8,8),0));
     }
@@ -431,7 +431,7 @@ FString ARiftArenaPresentation::GeometryDiagnosticsJSON() const
     for(int32 Z=0;Z<rift::arena::Height;++Z)
     {
         const float PZ=(Z-rift::arena::LastTileZ)*Tile;
-        if(FMath::Abs(PZ)>=rift::arena::RiverHalfWidth*Tile&&FMath::Abs(PZ)<11.5f*Tile&&Z%2==0)
+        if(FMath::Abs(PZ)>=rift::arena::RiverHalfWidth*Tile&&FMath::Abs(PZ)<(rift::arena::GuardDepth+.78)*Tile&&Z%2==0)
             for(int32 Lane:{-1,1}){ExpectedPaverCount+=2;ExpectedPaverGroups.FindOrAdd(FIntPoint(Lane,PZ<0?-1:1))+=2;}
     }
     TMap<FIntPoint,TMap<int32,TArray<double>>> PaverGroups;TArray<TSharedPtr<FJsonValue>> PaverRows,PathRows;
@@ -655,6 +655,8 @@ FString ARiftArenaPresentation::NiagaraDiagnosticsJSON()
         Entry->SetBoolField(TEXT("healthBarVisible"),!Unit->IsDead()&&Unit->HasBeenDamaged()&&!Unit->HiddenFromViewer());
         Entry->SetBoolField(TEXT("cloaked"),Unit->IsCloaked());Entry->SetBoolField(TEXT("hiddenFromViewer"),Unit->HiddenFromViewer());
         Entry->SetNumberField(TEXT("shieldFragments"),Unit->ShieldFragmentCount());
+        Entry->SetNumberField(TEXT("reaperAuraPieces"),Unit->ReaperAuraCount());
+        Entry->SetNumberField(TEXT("pulverizerPulsePieces"),Unit->PulverizerPulseCount());
         if (const auto* State=ViewState()) if (const auto* Entity=FindEntity(*State,Pair.Key))
         {
             Entry->SetNumberField(TEXT("hp"),Entity->hp);Entry->SetNumberField(TEXT("maxHp"),Entity->maxHp);
@@ -1231,7 +1233,8 @@ void ARiftArenaPresentation::SynchronizeShockwaves(const rift::Snapshot& State)
             if (auto* Base=LoadObject<UMaterialInterface>(nullptr,TEXT("/Game/Rift/Materials/M_RiftShockwave.M_RiftShockwave")))
             {
                 auto* Material=UMaterialInstanceDynamic::Create(Base,this);
-                Material->SetVectorParameterValue(TEXT("RingColor"),FLinearColor(.64f,.12f,1.f,1.f));
+                Material->SetVectorParameterValue(TEXT("RingColor"),FLinearColor(.82f,.16f,1.f,1.f));
+                Material->SetScalarParameterValue(TEXT("FrontWidth"),.027f);
                 Ring->SetDecalMaterial(Material);
             }
             Ring->RegisterComponent();AddInstanceComponent(Ring);ShockwaveRings.Add(Wave.id,Ring);
@@ -1317,6 +1320,36 @@ void ARiftArenaPresentation::SynchronizeExpansionEffects(const rift::Snapshot& S
     {Piece(Key,TEXT("shadow_surge_ribbon"),Color,(A+B)*.5,B-A,FVector((B-A).Length(),Width,Width*.6));};
     const double Tile=RiftArenaGeometry::UnitsPerTile;
     const FLinearColor Violet(.37f,.08f,.66f),Cyan(.10f,.75f,.90f),Green(.20f,.70f,.27f);
+    // The damage front is authored mesh geometry as well as a floor decal.
+    // This remains visible when LOW suppresses decals/bloom, and remains owned
+    // by the paid wave after its source dies. No attack/cooldown or wall-clock
+    // approximation can move the ring ahead of the authoritative hit front.
+    for(const auto& Wave:State.shockwaves)
+    {
+        if(Wave.cardId!="pulverizer" || State.phase==rift::Phase::Finished || State.elapsed<Wave.born || State.elapsed>=Wave.expires)continue;
+        const double Radius=FMath::Clamp((State.elapsed-Wave.born)*Wave.speed,0.,Wave.radius)*Tile;
+        if(Radius<=0.)continue;
+        const FLinearColor PulseViolet(.86f,.15f,1.f);
+        auto* Front=ExpansionBatch(TEXT("PulverizerTravelingFront"),TEXT("projectile_trail"),PulseViolet);
+        if(Front)for(int32 I=0;I<Front->GetNumMaterials();++I)if(auto* MID=Cast<UMaterialInstanceDynamic>(Front->GetMaterial(I)))
+        {MID->SetScalarParameterValue(TEXT("EffectOpacity"),.65f);MID->SetScalarParameterValue(TEXT("EffectEmission"),.45f);}
+        const FVector Center=URiftMatchSubsystem::WorldPoint(Wave.origin)+FVector(0,0,Tile*.065);
+        constexpr int32 Segments=48;
+        for(int32 I=0;I<Segments;++I)
+        {
+            const double A=I*UE_TWO_PI/Segments,B=(I+1)*UE_TWO_PI/Segments;
+            const FVector Start=Center+FVector(FMath::Cos(A)*Radius,FMath::Sin(A)*Radius,0),End=Center+FVector(FMath::Cos(B)*Radius,FMath::Sin(B)*Radius,0);
+            Piece(TEXT("PulverizerTravelingFront"),TEXT("projectile_trail"),PulseViolet,(Start+End)*.5,End-Start,FVector((End-Start).Length(),.065*Tile,.045*Tile));
+            // A subdued inner ribbon makes travel readable without obscuring
+            // the tile grid or spawning a cloud around every damaged troop.
+            const double TrailRadius=FMath::Max(0.,Radius-.10*Tile);
+            if(TrailRadius>0.)
+            {
+                const FVector TrailStart=Center+FVector(FMath::Cos(A)*TrailRadius,FMath::Sin(A)*TrailRadius,0),TrailEnd=Center+FVector(FMath::Cos(B)*TrailRadius,FMath::Sin(B)*TrailRadius,0);
+                Piece(TEXT("PulverizerTravelingTrail"),TEXT("projectile_trail"),FLinearColor(.48f,.08f,.75f),(TrailStart+TrailEnd)*.5,TrailEnd-TrailStart,FVector((TrailEnd-TrailStart).Length(),.023*Tile,.016*Tile));
+            }
+        }
+    }
     for(const auto& Cast:State.spellCasts)if(Cast.cardId=="shadow_surge")
     {
         const double T=FMath::Clamp((State.elapsed-Cast.born)/FMath::Max(.001,Cast.impactAt-Cast.born),0.,1.);
@@ -1342,16 +1375,25 @@ void ARiftArenaPresentation::SynchronizeExpansionEffects(const rift::Snapshot& S
     }
     for(const auto& Event:RecentReaperAttacks)
     {
-        const double Age=State.elapsed-Event.time;if(Age<0 || Age>=.20)continue;
-        const auto* Source=FindEntity(State,Event.source);if(!Source || (Source->team==rift::Team::Enemy && Source->invisibleUntil>State.elapsed))continue;
-        const double T=Age/.20,Radius=(.75+.75*T)*Tile;
-        const FVector Center=URiftMatchSubsystem::WorldPoint(Event.position,Tile*.62);
+        const double Age=State.elapsed-Event.time;if(Age<0 || Age>=.22)continue;
+        const auto* Source=FindEntity(State,Event.source);auto* SourceVisual=Visual(Event.source);
+        if(!Source || Source->dead || !SourceVisual || SourceVisual->IsDead() || SourceVisual->HiddenFromViewer())continue;
+        const bool Ghost=SourceVisual->IsCloaked();
+        const FName Key=Ghost?TEXT("ReaperCleaveGhost"):TEXT("ReaperCleaveViolet");
+        const FLinearColor SlashViolet(.88f,.17f,1.f);
+        auto* Slash=ExpansionBatch(Key,TEXT("projectile_trail"),SlashViolet);
+        if(Slash)for(int32 I=0;I<Slash->GetNumMaterials();++I)if(auto* MID=Cast<UMaterialInstanceDynamic>(Slash->GetMaterial(I)))
+        {MID->SetScalarParameterValue(TEXT("EffectOpacity"),Ghost?.18f:.65f);MID->SetScalarParameterValue(TEXT("EffectEmission"),.45f);}
+        const double T=Age/.22,Radius=(.78+.50*T)*Tile;
+        const FVector Center=URiftMatchSubsystem::WorldPoint(Event.position)+FVector(0,0,SourceVisual->GetActorLocation().Z+100.*SourceVisual->PresentationScale());
         const double Facing=FMath::Atan2(Source->facing.z,Source->facing.x);
-        for(int32 I=0;I<12;++I)
+        constexpr int32 Segments=20;
+        for(int32 I=0;I<Segments;++I)
         {
-            const double A=Facing-.6+I*1.2/12.,B=Facing-.6+(I+1)*1.2/12.;
-            Ribbon(TEXT("ReaperContactCrescent"),Cyan,Center+FVector(FMath::Cos(A),FMath::Sin(A),0)*Radius,
-                Center+FVector(FMath::Cos(B),FMath::Sin(B),0)*Radius,(.018*(1.-T)+.002)*Tile);
+            const double A=Facing-1.05+I*2.10/Segments+.25*T,B=Facing-1.05+(I+1)*2.10/Segments+.25*T;
+            const FVector Start=Center+FVector(FMath::Cos(A),FMath::Sin(A),.10*FMath::Sin(A-Facing))*Radius,End=Center+FVector(FMath::Cos(B),FMath::Sin(B),.10*FMath::Sin(B-Facing))*Radius;
+            const double Width=(.045*(1.-T)+.008)*Tile;
+            Piece(Key,TEXT("projectile_trail"),SlashViolet,(Start+End)*.5,End-Start,FVector((End-Start).Length(),Width,Width*.65));
         }
     }
     for(const auto& Event:RecentCloakExpiries)
@@ -1417,10 +1459,14 @@ void ARiftArenaPresentation::OnSimulationEvent(const rift::Event& Event)
             Event.cardId=="vampire_bats"?TEXT("bat_bite"):Event.cardId=="frost_fang"?TEXT("frost_attack"):
             Event.cardId=="storm_raven"?TEXT("storm_bolt"):TEXT("heavy_slam");
         PlayEventSound(Sound,Origin,Event.cardId=="vampire_bats"?.18f:.45f);
-        if(Event.cardId=="aether_reaper")
-        {auto VisualEvent=Event;if(Target)VisualEvent.position={Target->GetActorLocation().X/RiftArenaGeometry::UnitsPerTile,Target->GetActorLocation().Y/RiftArenaGeometry::UnitsPerTile};RecentReaperAttacks.Add(VisualEvent);if(RecentReaperAttacks.Num()>64)RecentReaperAttacks.RemoveAt(0);}
         if (Event.cardId=="frost_fang" && !HiddenSource)
         {auto* FX=SpawnEffect(TEXT("Frost"),Origin,Event.team,70*RiftArenaGeometry::WorldScale);SetEffectParameters(FX,Event.team,70*RiftArenaGeometry::WorldScale,Origin,Position);}
+    }
+    else if (Event.type=="melee_cleave" && Event.cardId=="aether_reaper" && Event.count>=2)
+    {
+        // The simulation emits this once only after two or more real victims
+        // received that strike. One target cannot create a fake cleave flash.
+        RecentReaperAttacks.Add(Event);if(RecentReaperAttacks.Num()>64)RecentReaperAttacks.RemoveAt(0);
     }
     else if (Event.type=="projectile_launch")
     {

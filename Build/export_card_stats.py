@@ -24,7 +24,7 @@ if not cards or len({c["id"] for c in cards}) != len(cards):
     raise ValueError("Expected a complete native card definition array")
 entities = [] if isinstance(data, list) else data.get("entities", data.get("entitySnapshot", []))
 rules = {} if isinstance(data, list) else data.get("rules", data.get("rulesSnapshot", {}))
-if isinstance(data, dict) and data.get("schema") in (1, 2) and data.get("balanceHash") and "cards" in data:
+if isinstance(data, dict) and data.get("schema") in (1, 2, 3) and data.get("balanceHash") and "cards" in data:
     from generate_card_manifest import validate
     validate(data)
     if data.get("version") != args.version:
@@ -110,7 +110,8 @@ for c in cards:
     if c.get("deathSpawnId"):
         ability("Death summons", f"{c['deathSpawnCount']} × {c['deathSpawnId']}", "Exactly one death transition; children cost zero Aether and occupy no additional hand/deck slots; contribution credited to parent")
     if c.get("invisibilityDuration"):
-        scope = "All friendly troops" if c.get("globalFriendlyInvisibility") else "Friendly troops inside the spell area at impact"
+        threshold=c.get("healthCloakThreshold",0)
+        scope = ("Once per deployment, this troop survives damage leaving it at or below " + numeric(threshold*100) + "% maximum HP") if threshold else "All friendly troops" if c.get("globalFriendlyInvisibility") else "Friendly troops inside the spell area at impact"
         locks = "; existing enemy locks drop" if c.get("breakExistingLocks") else "; existing locks are preserved"
         ability("Invisibility", f"{numeric(c['invisibilityDuration'])} simulation s", scope+locks+"; new enemy acquisition is prevented; committed hits, in-flight projectiles and area spells still resolve; no damage immunity")
 

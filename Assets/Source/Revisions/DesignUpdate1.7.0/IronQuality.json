@@ -1,0 +1,4087 @@
+{
+  "schema": 1,
+  "passed": true,
+  "fixture": false,
+  "scope": "Actual evaluated saved production meshes/poses and strict builder reproduction; human art and native-camera acceptance are separate",
+  "sourceBlend": {
+    "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
+    "bytes": 22388572,
+    "sha256": "83d7708acad6c12c9f6dcf1cf29fad3222fc2fdfc1e509766a0eb18d6f6f6877"
+  },
+  "manifest": {
+    "file": "Assets/asset_manifest.json",
+    "bytes": 362638,
+    "sha256": "efdfb67728cb54ea30df964391a38518038328346076e808489d45499207b3b8"
+  },
+  "verifier": {
+    "file": "Build/validate_expansion_art_quality.py",
+    "bytes": 71204,
+    "sha256": "7b2cff1cc9775834edabb78fceccf0b1cdb1017b4525639e7267aa1379dde194"
+  },
+  "thresholds": {
+    "livingFloorPenetrationMeters": 0.02,
+    "deathFloorPenetrationMeters": 0.04,
+    "gripToHandMeters": 0.005,
+    "landmarkSurfaceDistanceMeters": 0.015,
+    "eyeRayEndpointToleranceMeters": 0.006,
+    "stanceHeightBandMeters": 0.008,
+    "stanceVerticalSpeedMetersPerSecond": 0.1,
+    "stanceSlipReferenceFraction": 0.12,
+    "stanceSlipMetersPerSecondAllowance": 0.025,
+    "semanticSeparateSurfaceGapMeters": 0.004
+  },
+  "preview": false,
+  "productionExportPinsChecked": true,
+  "sampling": {
+    "poseMatrices": "Every integer and quarter frame, inclusive endpoints",
+    "evaluatedMeshes": "Every integer and half frame, inclusive endpoints",
+    "occlusionViews": {
+      "front": [
+        0,
+        -1,
+        0.12
+      ],
+      "left_threequarter": [
+        -0.75,
+        -1,
+        0.35
+      ],
+      "right_threequarter": [
+        0.75,
+        -1,
+        0.35
+      ],
+      "battle_elevation": [
+        0.28,
+        -1,
+        1.25
+      ]
+    },
+    "occlusionPhases": [
+      0,
+      0.25,
+      0.5,
+      0.75,
+      1
+    ]
+  },
+  "checks": [
+    {
+      "name": "Saved source is the exact current manifest source",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant retains exact nine clips",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant has source geometry authoring semantics",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant declared geometry matches actual saved mesh",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant actual mesh export pin Assets/Export/Characters/iron_giant/SK_iron_giant.fbx",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant actual mesh export pin Assets/Export/Characters/iron_giant/SK_iron_giant_LOD1.fbx",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant actual mesh export pin Assets/Export/Characters/iron_giant/SK_iron_giant_LOD2.fbx",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant actual mesh export pin Assets/Export/Characters/iron_giant/SK_iron_giant_LOD3.fbx",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant actual face group left_eye",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant actual face group right_eye",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Idle actual FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Idle finite invertible quarter-frame poses",
+      "passed": true,
+      "detail": 0.9999991655349731
+    },
+    {
+      "name": "iron_giant Idle root stays authority independent",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "iron_giant Idle actual evaluated mesh stays finite",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Idle avoids deep ground clipping",
+      "passed": true,
+      "detail": 0.00999978557229042
+    },
+    {
+      "name": "iron_giant Idle separate surface shield_body_0",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.016294045373797417,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Idle separate surface shield_body_1",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.016294030472636223,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Idle separate surface shield_body_2",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.007789460942149162,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Idle separate surface shield_body_3",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.007840599864721298,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Idle separate surface shield_body_4",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.027838269248604774,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Idle separate surface shield_body_5",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.02783828042447567,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Idle declared eyes coincide with actual posed surfaces",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Idle identity face is not fully occluded from both threequarter views",
+      "passed": true,
+      "detail": [
+        {
+          "phase": 0.0,
+          "landmarks": [
+            {
+              "name": "left_eye",
+              "distanceToActualEyeSurfaceMeters": 0.0,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            },
+            {
+              "name": "right_eye",
+              "distanceToActualEyeSurfaceMeters": 0.0,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            }
+          ]
+        },
+        {
+          "phase": 0.25,
+          "landmarks": [
+            {
+              "name": "left_eye",
+              "distanceToActualEyeSurfaceMeters": 1.4901161193847656e-08,
+              "visible": {
+                "front": true,
+                "left_threequarter": false,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            },
+            {
+              "name": "right_eye",
+              "distanceToActualEyeSurfaceMeters": 1.4901161193847656e-08,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            }
+          ]
+        },
+        {
+          "phase": 0.5,
+          "landmarks": [
+            {
+              "name": "left_eye",
+              "distanceToActualEyeSurfaceMeters": 0.0,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            },
+            {
+              "name": "right_eye",
+              "distanceToActualEyeSurfaceMeters": 0.0,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            }
+          ]
+        },
+        {
+          "phase": 0.75,
+          "landmarks": [
+            {
+              "name": "left_eye",
+              "distanceToActualEyeSurfaceMeters": 1.4901161193847656e-08,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            },
+            {
+              "name": "right_eye",
+              "distanceToActualEyeSurfaceMeters": 1.4901161193847656e-08,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            }
+          ]
+        },
+        {
+          "phase": 1.0,
+          "landmarks": [
+            {
+              "name": "left_eye",
+              "distanceToActualEyeSurfaceMeters": 0.0,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            },
+            {
+              "name": "right_eye",
+              "distanceToActualEyeSurfaceMeters": 0.0,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "iron_giant Locomotion actual FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Locomotion finite invertible quarter-frame poses",
+      "passed": true,
+      "detail": 0.9999991059303284
+    },
+    {
+      "name": "iron_giant Locomotion root stays authority independent",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "iron_giant Locomotion actual evaluated mesh stays finite",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Locomotion avoids deep ground clipping",
+      "passed": true,
+      "detail": 0.009948253631591797
+    },
+    {
+      "name": "iron_giant Locomotion separate surface shield_body_0",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.01629403419792652,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Locomotion separate surface shield_body_1",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.016294028609991074,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Locomotion separate surface shield_body_2",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.007789426948875189,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Locomotion separate surface shield_body_3",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.007840580306947231,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Locomotion separate surface shield_body_4",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.027838250622153282,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Locomotion separate surface shield_body_5",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.027838274836540222,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Locomotion declared eyes coincide with actual posed surfaces",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant locomotion has measurable planted stance foot_l_contact",
+      "passed": true,
+      "detail": {
+        "stanceIntervals": 68,
+        "referenceSpeedSourceMetersPerSecond": 0.9393939393939393,
+        "medianStanceSlipMetersPerSecond": 0.0021522489354351016,
+        "maximumStanceSlipMetersPerSecond": 0.0036545777563652348,
+        "minimumContactZ": 0.003949938341975212,
+        "maximumContactZ": 0.13940568268299103,
+        "minimumSoleZ": 0.009948253631591797
+      }
+    },
+    {
+      "name": "iron_giant locomotion planted stance avoids visible skating foot_l_contact",
+      "passed": true,
+      "detail": {
+        "measured": {
+          "stanceIntervals": 68,
+          "referenceSpeedSourceMetersPerSecond": 0.9393939393939393,
+          "medianStanceSlipMetersPerSecond": 0.0021522489354351016,
+          "maximumStanceSlipMetersPerSecond": 0.0036545777563652348,
+          "minimumContactZ": 0.003949938341975212,
+          "maximumContactZ": 0.13940568268299103,
+          "minimumSoleZ": 0.009948253631591797
+        },
+        "allowedSlipMetersPerSecond": 0.13772727272727273
+      }
+    },
+    {
+      "name": "iron_giant locomotion has measurable planted stance foot_r_contact",
+      "passed": true,
+      "detail": {
+        "stanceIntervals": 68,
+        "referenceSpeedSourceMetersPerSecond": 0.9393939393939393,
+        "medianStanceSlipMetersPerSecond": 0.0021466613463295274,
+        "maximumStanceSlipMetersPerSecond": 0.0036574723333281794,
+        "minimumContactZ": 0.003949938341975212,
+        "maximumContactZ": 0.13940568268299103,
+        "minimumSoleZ": 0.009948253631591797
+      }
+    },
+    {
+      "name": "iron_giant locomotion planted stance avoids visible skating foot_r_contact",
+      "passed": true,
+      "detail": {
+        "measured": {
+          "stanceIntervals": 68,
+          "referenceSpeedSourceMetersPerSecond": 0.9393939393939393,
+          "medianStanceSlipMetersPerSecond": 0.0021466613463295274,
+          "maximumStanceSlipMetersPerSecond": 0.0036574723333281794,
+          "minimumContactZ": 0.003949938341975212,
+          "maximumContactZ": 0.13940568268299103,
+          "minimumSoleZ": 0.009948253631591797
+        },
+        "allowedSlipMetersPerSecond": 0.13772727272727273
+      }
+    },
+    {
+      "name": "iron_giant Attack actual FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Attack finite invertible quarter-frame poses",
+      "passed": true,
+      "detail": 0.9999991059303284
+    },
+    {
+      "name": "iron_giant Attack root stays authority independent",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "iron_giant Attack actual evaluated mesh stays finite",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Attack avoids deep ground clipping",
+      "passed": true,
+      "detail": 0.00985182635486126
+    },
+    {
+      "name": "iron_giant Attack separate surface shield_body_0",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.016294024884700775,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Attack separate surface shield_body_1",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.01629401370882988,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Attack separate surface shield_body_2",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.007789475377649069,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Attack separate surface shield_body_3",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.007840578444302082,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Attack separate surface shield_body_4",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.027838243171572685,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Attack separate surface shield_body_5",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.02783823013305664,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Attack declared eyes coincide with actual posed surfaces",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Hit actual FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Hit finite invertible quarter-frame poses",
+      "passed": true,
+      "detail": 0.9999992847442627
+    },
+    {
+      "name": "iron_giant Hit root stays authority independent",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "iron_giant Hit actual evaluated mesh stays finite",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Hit avoids deep ground clipping",
+      "passed": true,
+      "detail": 0.00997275859117508
+    },
+    {
+      "name": "iron_giant Hit separate surface shield_body_0",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.016294021159410477,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Hit separate surface shield_body_1",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.016294049099087715,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Hit separate surface shield_body_2",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.0077894688583910465,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Hit separate surface shield_body_3",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.007840610109269619,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Hit separate surface shield_body_4",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.027838261798024178,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Hit separate surface shield_body_5",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.02783825248479843,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Hit declared eyes coincide with actual posed surfaces",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Death actual FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Death finite invertible quarter-frame poses",
+      "passed": true,
+      "detail": 0.9999991059303284
+    },
+    {
+      "name": "iron_giant Death root stays authority independent",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "iron_giant Death actual evaluated mesh stays finite",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Death avoids deep ground clipping",
+      "passed": true,
+      "detail": -0.022877871990203857
+    },
+    {
+      "name": "iron_giant Death declared eyes coincide with actual posed surfaces",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Deploy actual FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Deploy finite invertible quarter-frame poses",
+      "passed": true,
+      "detail": 0.9999991655349731
+    },
+    {
+      "name": "iron_giant Deploy root stays authority independent",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "iron_giant Deploy actual evaluated mesh stays finite",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Deploy avoids deep ground clipping",
+      "passed": true,
+      "detail": 0.009759264066815376
+    },
+    {
+      "name": "iron_giant Deploy separate surface shield_body_0",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.01629403792321682,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Deploy separate surface shield_body_1",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.016294047236442566,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Deploy separate surface shield_body_2",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.007789480034261942,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Deploy separate surface shield_body_3",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.007840625941753387,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Deploy separate surface shield_body_4",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.027838261798024178,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Deploy separate surface shield_body_5",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.027838241308927536,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Deploy declared eyes coincide with actual posed surfaces",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Status actual FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Status finite invertible quarter-frame poses",
+      "passed": true,
+      "detail": 0.9999991655349731
+    },
+    {
+      "name": "iron_giant Status root stays authority independent",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "iron_giant Status actual evaluated mesh stays finite",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Status avoids deep ground clipping",
+      "passed": true,
+      "detail": 0.00999978557229042
+    },
+    {
+      "name": "iron_giant Status separate surface shield_body_0",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.01629403792321682,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Status separate surface shield_body_1",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.016294049099087715,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Status separate surface shield_body_2",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.007789552677422762,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Status separate surface shield_body_3",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.007840661332011223,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Status separate surface shield_body_4",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.027838263660669327,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Status separate surface shield_body_5",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.02783825621008873,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Status declared eyes coincide with actual posed surfaces",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Status identity face is not fully occluded from both threequarter views",
+      "passed": true,
+      "detail": [
+        {
+          "phase": 0.0,
+          "landmarks": [
+            {
+              "name": "left_eye",
+              "distanceToActualEyeSurfaceMeters": 0.0,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            },
+            {
+              "name": "right_eye",
+              "distanceToActualEyeSurfaceMeters": 0.0,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            }
+          ]
+        },
+        {
+          "phase": 0.25,
+          "landmarks": [
+            {
+              "name": "left_eye",
+              "distanceToActualEyeSurfaceMeters": 0.0,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            },
+            {
+              "name": "right_eye",
+              "distanceToActualEyeSurfaceMeters": 0.0,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            }
+          ]
+        },
+        {
+          "phase": 0.5,
+          "landmarks": [
+            {
+              "name": "left_eye",
+              "distanceToActualEyeSurfaceMeters": 0.0,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            },
+            {
+              "name": "right_eye",
+              "distanceToActualEyeSurfaceMeters": 0.0,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            }
+          ]
+        },
+        {
+          "phase": 0.75,
+          "landmarks": [
+            {
+              "name": "left_eye",
+              "distanceToActualEyeSurfaceMeters": 0.0,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            },
+            {
+              "name": "right_eye",
+              "distanceToActualEyeSurfaceMeters": 0.0,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            }
+          ]
+        },
+        {
+          "phase": 1.0,
+          "landmarks": [
+            {
+              "name": "left_eye",
+              "distanceToActualEyeSurfaceMeters": 0.0,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            },
+            {
+              "name": "right_eye",
+              "distanceToActualEyeSurfaceMeters": 0.0,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "iron_giant Turn actual FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Turn finite invertible quarter-frame poses",
+      "passed": true,
+      "detail": 0.9999992847442627
+    },
+    {
+      "name": "iron_giant Turn root stays authority independent",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "iron_giant Turn actual evaluated mesh stays finite",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Turn avoids deep ground clipping",
+      "passed": true,
+      "detail": 0.009993817657232285
+    },
+    {
+      "name": "iron_giant Turn separate surface shield_body_0",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.01629403792321682,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Turn separate surface shield_body_1",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.016294047236442566,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Turn separate surface shield_body_2",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.007789517752826214,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Turn separate surface shield_body_3",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.007840652018785477,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Turn separate surface shield_body_4",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.02783825434744358,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Turn separate surface shield_body_5",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.02783825621008873,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Turn declared eyes coincide with actual posed surfaces",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Acquire actual FBX pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Acquire finite invertible quarter-frame poses",
+      "passed": true,
+      "detail": 0.9999992251396179
+    },
+    {
+      "name": "iron_giant Acquire root stays authority independent",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "iron_giant Acquire actual evaluated mesh stays finite",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Acquire avoids deep ground clipping",
+      "passed": true,
+      "detail": 0.00999978557229042
+    },
+    {
+      "name": "iron_giant Acquire separate surface shield_body_0",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.01629403792321682,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Acquire separate surface shield_body_1",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.01629398763179779,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Acquire separate surface shield_body_2",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.007789485156536102,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Acquire separate surface shield_body_3",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.00784060824662447,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Acquire separate surface shield_body_4",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.027838263660669327,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Acquire separate surface shield_body_5",
+      "passed": true,
+      "detail": {
+        "minimumGapMeters": 0.02783825248479843,
+        "triangleIntersections": 0,
+        "requiredGapMeters": 0.004
+      }
+    },
+    {
+      "name": "iron_giant Acquire declared eyes coincide with actual posed surfaces",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Acquire identity face is not fully occluded from both threequarter views",
+      "passed": true,
+      "detail": [
+        {
+          "phase": 0.0,
+          "landmarks": [
+            {
+              "name": "left_eye",
+              "distanceToActualEyeSurfaceMeters": 0.0,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            },
+            {
+              "name": "right_eye",
+              "distanceToActualEyeSurfaceMeters": 0.0,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            }
+          ]
+        },
+        {
+          "phase": 0.25,
+          "landmarks": [
+            {
+              "name": "left_eye",
+              "distanceToActualEyeSurfaceMeters": 1.4901161193847656e-08,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            },
+            {
+              "name": "right_eye",
+              "distanceToActualEyeSurfaceMeters": 0.0,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            }
+          ]
+        },
+        {
+          "phase": 0.5,
+          "landmarks": [
+            {
+              "name": "left_eye",
+              "distanceToActualEyeSurfaceMeters": 1.4901161193847656e-08,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            },
+            {
+              "name": "right_eye",
+              "distanceToActualEyeSurfaceMeters": 0.0,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            }
+          ]
+        },
+        {
+          "phase": 0.75,
+          "landmarks": [
+            {
+              "name": "left_eye",
+              "distanceToActualEyeSurfaceMeters": 1.4901161193847656e-08,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            },
+            {
+              "name": "right_eye",
+              "distanceToActualEyeSurfaceMeters": 0.0,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            }
+          ]
+        },
+        {
+          "phase": 1.0,
+          "landmarks": [
+            {
+              "name": "left_eye",
+              "distanceToActualEyeSurfaceMeters": 0.0,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            },
+            {
+              "name": "right_eye",
+              "distanceToActualEyeSurfaceMeters": 0.0,
+              "visible": {
+                "front": true,
+                "left_threequarter": true,
+                "right_threequarter": true,
+                "battle_elevation": true
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "iron_giant regenerated Idle retains exact sample count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Idle current builder reproduces every saved quarter-frame pose",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "iron_giant regenerated Locomotion retains exact sample count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Locomotion current builder reproduces every saved quarter-frame pose",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "iron_giant regenerated Attack retains exact sample count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Attack current builder reproduces every saved quarter-frame pose",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "iron_giant regenerated Hit retains exact sample count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Hit current builder reproduces every saved quarter-frame pose",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "iron_giant regenerated Death retains exact sample count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Death current builder reproduces every saved quarter-frame pose",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "iron_giant regenerated Deploy retains exact sample count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Deploy current builder reproduces every saved quarter-frame pose",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "iron_giant regenerated Status retains exact sample count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Status current builder reproduces every saved quarter-frame pose",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "iron_giant regenerated Turn retains exact sample count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Turn current builder reproduces every saved quarter-frame pose",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "iron_giant regenerated Acquire retains exact sample count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "iron_giant Acquire current builder reproduces every saved quarter-frame pose",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "Source blend remained byte identical during read-only audit",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Producer stayed unchanged during art audit generate_assets",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Producer stayed unchanged during art audit expansion_new_models",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Producer stayed unchanged during art audit expansion_asset_models",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Source blend remained byte identical during read-only audit",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Producer stayed unchanged during art audit generate_assets",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Producer stayed unchanged during art audit expansion_new_models",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Producer stayed unchanged during art audit expansion_asset_models",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "errors": [],
+  "cards": {
+    "iron_giant": {
+      "clipCount": 9,
+      "maximumReproductionDelta": 0.0,
+      "maximumLivingGripGapMeters": 0.0,
+      "sourceTriangles": 38740,
+      "sourceBoundsMeters": [
+        1.4144186973571777,
+        0.7233999967575073,
+        1.3680000305175781
+      ],
+      "measuredTriangles": 38740,
+      "measuredBoundsMeters": [
+        1.4144186973571777,
+        0.7233999967575073,
+        1.3680000305175781
+      ],
+      "clips": {
+        "Idle": {
+          "quarterSamples": 801,
+          "meshSamples": 401,
+          "maximumRootMotionMeters": 0.0,
+          "minimumAbsoluteDeterminant": 0.9999991655349731,
+          "minimumMeshZ": 0.00999978557229042,
+          "minimumScale": 1.0,
+          "maximumGripToHandMeters": 0.0,
+          "outsidePalmSamples": 0,
+          "maximumReachExcessMeters": 0.0,
+          "occlusion": [
+            {
+              "phase": 0.0,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.25,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 1.4901161193847656e-08,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": false,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 1.4901161193847656e-08,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.5,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.75,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 1.4901161193847656e-08,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 1.4901161193847656e-08,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 1.0,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            }
+          ],
+          "separateSurfaces": {
+            "shield_body_0": {
+              "minimumGapMeters": 0.016294045373797417,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_1": {
+              "minimumGapMeters": 0.016294030472636223,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_2": {
+              "minimumGapMeters": 0.007789460942149162,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_3": {
+              "minimumGapMeters": 0.007840599864721298,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_4": {
+              "minimumGapMeters": 0.027838269248604774,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_5": {
+              "minimumGapMeters": 0.02783828042447567,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            }
+          },
+          "groundContacts": {},
+          "nonfiniteMatrices": 0,
+          "nonfiniteMeshSamples": 0,
+          "socketContacts": {},
+          "captiveSurfaces": {},
+          "captiveMotions": {}
+        },
+        "Locomotion": {
+          "quarterSamples": 361,
+          "meshSamples": 181,
+          "maximumRootMotionMeters": 0.0,
+          "minimumAbsoluteDeterminant": 0.9999991059303284,
+          "minimumMeshZ": 0.009948253631591797,
+          "minimumScale": 1.0,
+          "maximumGripToHandMeters": 0.0,
+          "outsidePalmSamples": 0,
+          "maximumReachExcessMeters": 0.0,
+          "occlusion": [
+            {
+              "phase": 0.0,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": false,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": false,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.25,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 1.4901161193847656e-08,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.5,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": false,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": false,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.75,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 1.4901161193847656e-08,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 1.0,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": false,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": false,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            }
+          ],
+          "separateSurfaces": {
+            "shield_body_0": {
+              "minimumGapMeters": 0.01629403419792652,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_1": {
+              "minimumGapMeters": 0.016294028609991074,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_2": {
+              "minimumGapMeters": 0.007789426948875189,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_3": {
+              "minimumGapMeters": 0.007840580306947231,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_4": {
+              "minimumGapMeters": 0.027838250622153282,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_5": {
+              "minimumGapMeters": 0.027838274836540222,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            }
+          },
+          "groundContacts": {
+            "foot_l_contact": {
+              "stanceIntervals": 68,
+              "referenceSpeedSourceMetersPerSecond": 0.9393939393939393,
+              "medianStanceSlipMetersPerSecond": 0.0021522489354351016,
+              "maximumStanceSlipMetersPerSecond": 0.0036545777563652348,
+              "minimumContactZ": 0.003949938341975212,
+              "maximumContactZ": 0.13940568268299103,
+              "minimumSoleZ": 0.009948253631591797
+            },
+            "foot_r_contact": {
+              "stanceIntervals": 68,
+              "referenceSpeedSourceMetersPerSecond": 0.9393939393939393,
+              "medianStanceSlipMetersPerSecond": 0.0021466613463295274,
+              "maximumStanceSlipMetersPerSecond": 0.0036574723333281794,
+              "minimumContactZ": 0.003949938341975212,
+              "maximumContactZ": 0.13940568268299103,
+              "minimumSoleZ": 0.009948253631591797
+            }
+          },
+          "nonfiniteMatrices": 0,
+          "nonfiniteMeshSamples": 0,
+          "socketContacts": {},
+          "captiveSurfaces": {},
+          "captiveMotions": {}
+        },
+        "Attack": {
+          "quarterSamples": 241,
+          "meshSamples": 121,
+          "maximumRootMotionMeters": 0.0,
+          "minimumAbsoluteDeterminant": 0.9999991059303284,
+          "minimumMeshZ": 0.00985182635486126,
+          "minimumScale": 1.0,
+          "maximumGripToHandMeters": 0.0,
+          "outsidePalmSamples": 0,
+          "maximumReachExcessMeters": 0.0,
+          "occlusion": [
+            {
+              "phase": 0.0,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.25,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 1.4901161193847656e-08,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 1.4901161193847656e-08,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.36666666666666664,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 2.9802322387695312e-08,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 2.9802322387695312e-08,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.5,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 1.4901161193847656e-08,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.75,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 1.0,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            }
+          ],
+          "separateSurfaces": {
+            "shield_body_0": {
+              "minimumGapMeters": 0.016294024884700775,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_1": {
+              "minimumGapMeters": 0.01629401370882988,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_2": {
+              "minimumGapMeters": 0.007789475377649069,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_3": {
+              "minimumGapMeters": 0.007840578444302082,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_4": {
+              "minimumGapMeters": 0.027838243171572685,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_5": {
+              "minimumGapMeters": 0.02783823013305664,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            }
+          },
+          "groundContacts": {},
+          "nonfiniteMatrices": 0,
+          "nonfiniteMeshSamples": 0,
+          "socketContacts": {},
+          "captiveSurfaces": {},
+          "captiveMotions": {}
+        },
+        "Hit": {
+          "quarterSamples": 65,
+          "meshSamples": 33,
+          "maximumRootMotionMeters": 0.0,
+          "minimumAbsoluteDeterminant": 0.9999992847442627,
+          "minimumMeshZ": 0.00997275859117508,
+          "minimumScale": 1.0,
+          "maximumGripToHandMeters": 0.0,
+          "outsidePalmSamples": 0,
+          "maximumReachExcessMeters": 0.0,
+          "occlusion": [
+            {
+              "phase": 0.0,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.25,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 1.4901161193847656e-08,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 1.4901161193847656e-08,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.5,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.75,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 1.0,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            }
+          ],
+          "separateSurfaces": {
+            "shield_body_0": {
+              "minimumGapMeters": 0.016294021159410477,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_1": {
+              "minimumGapMeters": 0.016294049099087715,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_2": {
+              "minimumGapMeters": 0.0077894688583910465,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_3": {
+              "minimumGapMeters": 0.007840610109269619,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_4": {
+              "minimumGapMeters": 0.027838261798024178,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_5": {
+              "minimumGapMeters": 0.02783825248479843,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            }
+          },
+          "groundContacts": {},
+          "nonfiniteMatrices": 0,
+          "nonfiniteMeshSamples": 0,
+          "socketContacts": {},
+          "captiveSurfaces": {},
+          "captiveMotions": {}
+        },
+        "Death": {
+          "quarterSamples": 321,
+          "meshSamples": 161,
+          "maximumRootMotionMeters": 0.0,
+          "minimumAbsoluteDeterminant": 0.9999991059303284,
+          "minimumMeshZ": -0.022877871990203857,
+          "minimumScale": 1.0,
+          "maximumGripToHandMeters": 0.0,
+          "outsidePalmSamples": 0,
+          "maximumReachExcessMeters": 0.0,
+          "occlusion": [
+            {
+              "phase": 0.0,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.25,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.5,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.75,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 2.9802322387695312e-08,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": false
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 1.0,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": false,
+                    "right_threequarter": true,
+                    "battle_elevation": false
+                  }
+                }
+              ]
+            }
+          ],
+          "separateSurfaces": {},
+          "groundContacts": {},
+          "nonfiniteMatrices": 0,
+          "nonfiniteMeshSamples": 0,
+          "socketContacts": {},
+          "captiveSurfaces": {},
+          "captiveMotions": {}
+        },
+        "Deploy": {
+          "quarterSamples": 121,
+          "meshSamples": 61,
+          "maximumRootMotionMeters": 0.0,
+          "minimumAbsoluteDeterminant": 0.9999991655349731,
+          "minimumMeshZ": 0.009759264066815376,
+          "minimumScale": 1.0,
+          "maximumGripToHandMeters": 0.0,
+          "outsidePalmSamples": 0,
+          "maximumReachExcessMeters": 0.0,
+          "occlusion": [
+            {
+              "phase": 0.0,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.25,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 1.4901161193847656e-08,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": false,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 1.4901161193847656e-08,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.5,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.75,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 1.0,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            }
+          ],
+          "separateSurfaces": {
+            "shield_body_0": {
+              "minimumGapMeters": 0.01629403792321682,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_1": {
+              "minimumGapMeters": 0.016294047236442566,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_2": {
+              "minimumGapMeters": 0.007789480034261942,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_3": {
+              "minimumGapMeters": 0.007840625941753387,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_4": {
+              "minimumGapMeters": 0.027838261798024178,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_5": {
+              "minimumGapMeters": 0.027838241308927536,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            }
+          },
+          "groundContacts": {},
+          "nonfiniteMatrices": 0,
+          "nonfiniteMeshSamples": 0,
+          "socketContacts": {},
+          "captiveSurfaces": {},
+          "captiveMotions": {}
+        },
+        "Status": {
+          "quarterSamples": 401,
+          "meshSamples": 201,
+          "maximumRootMotionMeters": 0.0,
+          "minimumAbsoluteDeterminant": 0.9999991655349731,
+          "minimumMeshZ": 0.00999978557229042,
+          "minimumScale": 1.0,
+          "maximumGripToHandMeters": 0.0,
+          "outsidePalmSamples": 0,
+          "maximumReachExcessMeters": 0.0,
+          "occlusion": [
+            {
+              "phase": 0.0,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.25,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.5,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.75,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 1.0,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            }
+          ],
+          "separateSurfaces": {
+            "shield_body_0": {
+              "minimumGapMeters": 0.01629403792321682,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_1": {
+              "minimumGapMeters": 0.016294049099087715,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_2": {
+              "minimumGapMeters": 0.007789552677422762,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_3": {
+              "minimumGapMeters": 0.007840661332011223,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_4": {
+              "minimumGapMeters": 0.027838263660669327,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_5": {
+              "minimumGapMeters": 0.02783825621008873,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            }
+          },
+          "groundContacts": {},
+          "nonfiniteMatrices": 0,
+          "nonfiniteMeshSamples": 0,
+          "socketContacts": {},
+          "captiveSurfaces": {},
+          "captiveMotions": {}
+        },
+        "Turn": {
+          "quarterSamples": 73,
+          "meshSamples": 37,
+          "maximumRootMotionMeters": 0.0,
+          "minimumAbsoluteDeterminant": 0.9999992847442627,
+          "minimumMeshZ": 0.009993817657232285,
+          "minimumScale": 1.0,
+          "maximumGripToHandMeters": 0.0,
+          "outsidePalmSamples": 0,
+          "maximumReachExcessMeters": 0.0,
+          "occlusion": [
+            {
+              "phase": 0.0,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.25,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": false,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.5,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.75,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": false,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 1.0,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            }
+          ],
+          "separateSurfaces": {
+            "shield_body_0": {
+              "minimumGapMeters": 0.01629403792321682,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_1": {
+              "minimumGapMeters": 0.016294047236442566,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_2": {
+              "minimumGapMeters": 0.007789517752826214,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_3": {
+              "minimumGapMeters": 0.007840652018785477,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_4": {
+              "minimumGapMeters": 0.02783825434744358,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_5": {
+              "minimumGapMeters": 0.02783825621008873,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            }
+          },
+          "groundContacts": {},
+          "nonfiniteMatrices": 0,
+          "nonfiniteMeshSamples": 0,
+          "socketContacts": {},
+          "captiveSurfaces": {},
+          "captiveMotions": {}
+        },
+        "Acquire": {
+          "quarterSamples": 49,
+          "meshSamples": 25,
+          "maximumRootMotionMeters": 0.0,
+          "minimumAbsoluteDeterminant": 0.9999992251396179,
+          "minimumMeshZ": 0.00999978557229042,
+          "minimumScale": 1.0,
+          "maximumGripToHandMeters": 0.0,
+          "outsidePalmSamples": 0,
+          "maximumReachExcessMeters": 0.0,
+          "occlusion": [
+            {
+              "phase": 0.0,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.25,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 1.4901161193847656e-08,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.5,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 1.4901161193847656e-08,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 0.75,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 1.4901161193847656e-08,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            },
+            {
+              "phase": 1.0,
+              "landmarks": [
+                {
+                  "name": "left_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                },
+                {
+                  "name": "right_eye",
+                  "distanceToActualEyeSurfaceMeters": 0.0,
+                  "visible": {
+                    "front": true,
+                    "left_threequarter": true,
+                    "right_threequarter": true,
+                    "battle_elevation": true
+                  }
+                }
+              ]
+            }
+          ],
+          "separateSurfaces": {
+            "shield_body_0": {
+              "minimumGapMeters": 0.01629403792321682,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_1": {
+              "minimumGapMeters": 0.01629398763179779,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_2": {
+              "minimumGapMeters": 0.007789485156536102,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_3": {
+              "minimumGapMeters": 0.00784060824662447,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_4": {
+              "minimumGapMeters": 0.027838263660669327,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            },
+            "shield_body_5": {
+              "minimumGapMeters": 0.02783825248479843,
+              "triangleIntersections": 0,
+              "requiredGapMeters": 0.004
+            }
+          },
+          "groundContacts": {},
+          "nonfiniteMatrices": 0,
+          "nonfiniteMeshSamples": 0,
+          "socketContacts": {},
+          "captiveSurfaces": {},
+          "captiveMotions": {}
+        }
+      }
+    }
+  },
+  "renders": [
+    {
+      "model": "iron_giant",
+      "clip": "Idle",
+      "phase": 0,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Idle_front_0.00000.png",
+      "bytes": 196740,
+      "sha256": "af9798d816c9d02db1926e69c0ca97b9e6202d3bf6e71e45867cf212810db352"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Idle",
+      "phase": 0.25,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Idle_front_0.25000.png",
+      "bytes": 196582,
+      "sha256": "66462700d4b0a8e13e425bc400c841901f784b1efc9283255dd316a573e30dd1"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Idle",
+      "phase": 0.5,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Idle_front_0.50000.png",
+      "bytes": 196824,
+      "sha256": "a7277df911d0283840866f540168a847513c7c658ab8f5824403b7d3bb63b55d"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Idle",
+      "phase": 0.75,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Idle_front_0.75000.png",
+      "bytes": 196810,
+      "sha256": "ec8eecc8d2cfd5c606d45016ac13eb118e00dae66cc7629423c6d2ec8a0edc0c"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Idle",
+      "phase": 1,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Idle_front_1.00000.png",
+      "bytes": 196739,
+      "sha256": "03d1de071026f9b86c4961389aa2db90b0823bc1298a1a2831d794ad56ef5a32"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Idle",
+      "phase": 0,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Idle_threequarter_0.00000.png",
+      "bytes": 198854,
+      "sha256": "597f072bd13d7c8ea1f52291434fd33e79dbfe9aa061e4b3e1ff67d31806bbb2"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Idle",
+      "phase": 0.25,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Idle_threequarter_0.25000.png",
+      "bytes": 198830,
+      "sha256": "a23dd0f87e9a71670a0bbda7b0e9c6a0650e7ea045b8b447b6b7a56e6d5a6749"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Idle",
+      "phase": 0.5,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Idle_threequarter_0.50000.png",
+      "bytes": 198881,
+      "sha256": "5a9dc65529420000363551bd24f2201fdd841b3b17d6a3cd1216a5fc7e00d982"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Idle",
+      "phase": 0.75,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Idle_threequarter_0.75000.png",
+      "bytes": 198912,
+      "sha256": "0d39a341fd80f7491e1183db53c310e7e14f638aa2520ec1d3efea8d2ffbee55"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Idle",
+      "phase": 1,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Idle_threequarter_1.00000.png",
+      "bytes": 198944,
+      "sha256": "0f743ebdb98c4492eeea85a4acea155a0ef6abe4c7cbce1829a5fc1d5c894aad"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Locomotion",
+      "phase": 0,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Locomotion_front_0.00000.png",
+      "bytes": 196294,
+      "sha256": "0e8c72f4590beefb29b04c5841cb392286ec397b9e7d1ceb1d323ebe90f5d9de"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Locomotion",
+      "phase": 0.25,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Locomotion_front_0.25000.png",
+      "bytes": 195672,
+      "sha256": "4ef71cbe8f8962e2c9903715567e734674cf11adb3c8de751d53a45e034c68ae"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Locomotion",
+      "phase": 0.5,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Locomotion_front_0.50000.png",
+      "bytes": 196268,
+      "sha256": "35a592b9046c1a11f1d6f050b23f90b17e072dd6a52533a523a3df57a461b169"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Locomotion",
+      "phase": 0.75,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Locomotion_front_0.75000.png",
+      "bytes": 195414,
+      "sha256": "ffd8f3ef809fa2b936e7a4f4b31baed05b1fa4533846d92d9f4f5ef67b8bcf6a"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Locomotion",
+      "phase": 1,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Locomotion_front_1.00000.png",
+      "bytes": 196380,
+      "sha256": "104cd94f8258abc517e034ff658d2b746228fb659fb1cde0f595611d1310adee"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Locomotion",
+      "phase": 0,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Locomotion_threequarter_0.00000.png",
+      "bytes": 197042,
+      "sha256": "a3b1230e04b4e074f369bec87186b4656ff3660cb0e6479fd368383d06b96e81"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Locomotion",
+      "phase": 0.25,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Locomotion_threequarter_0.25000.png",
+      "bytes": 196093,
+      "sha256": "b7dd894fd13a59ecb4a52419ad56c5355c9ecc198900c09785268bded5df9b12"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Locomotion",
+      "phase": 0.5,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Locomotion_threequarter_0.50000.png",
+      "bytes": 197862,
+      "sha256": "867e3f16f65821f72802b40a9b5d0f1cc3e3b0e6bef1cfcef1179af1657637c6"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Locomotion",
+      "phase": 0.75,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Locomotion_threequarter_0.75000.png",
+      "bytes": 197339,
+      "sha256": "c1bbeded15b6682210b96e50fa0f026b3bcc13e3d43704eae70de75ca5dd77f3"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Locomotion",
+      "phase": 1,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Locomotion_threequarter_1.00000.png",
+      "bytes": 197002,
+      "sha256": "b1884edc35aae2539a6479fecab42c9a72d0e73a2571b2be7de63110e3a82ec3"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Attack",
+      "phase": 0,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Attack_front_0.00000.png",
+      "bytes": 196255,
+      "sha256": "34462665f499ac54b34be49b07878910dd4d9f1d14c6590776064b20940a645f"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Attack",
+      "phase": 0.25,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Attack_front_0.25000.png",
+      "bytes": 199445,
+      "sha256": "1b4ee1f48fbdbcab925817c4ba5d7cfc002124ac386b19aca13625d2831355d7"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Attack",
+      "phase": 0.3666666666666667,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Attack_front_0.36667.png",
+      "bytes": 199345,
+      "sha256": "0d515c11f7fb56f8cacb074c9f56404f0409b7a420f638e630824fc9928f1209"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Attack",
+      "phase": 0.5,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Attack_front_0.50000.png",
+      "bytes": 198074,
+      "sha256": "5ab144b75507ba5297ca32f196b53c0cc4c5f4351971e92e1bc7227a1231a3fa"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Attack",
+      "phase": 0.75,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Attack_front_0.75000.png",
+      "bytes": 197061,
+      "sha256": "5a7eade92584be514ed749218f920a86ae268b894c9d59ae11f07ac608ef1f43"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Attack",
+      "phase": 1,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Attack_front_1.00000.png",
+      "bytes": 196280,
+      "sha256": "c1cdbd8482a4ab0be8d41d7cbd09ceccd8d9ce76e5a0310eaa22459b980f4b2b"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Attack",
+      "phase": 0,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Attack_threequarter_0.00000.png",
+      "bytes": 198408,
+      "sha256": "3825e13a7400e32f9a0a9fde80ef211ae85d272a27c53f8d710e4574000b2d90"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Attack",
+      "phase": 0.25,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Attack_threequarter_0.25000.png",
+      "bytes": 196702,
+      "sha256": "e9f08b91d3acffd28d7f284de564b15435555b239b228e07bcf42e4776b5e4f2"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Attack",
+      "phase": 0.3666666666666667,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Attack_threequarter_0.36667.png",
+      "bytes": 197911,
+      "sha256": "518c543cbb1452851871920ad05f99849be5bd73c09bba467ef9fa4dc9ad9832"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Attack",
+      "phase": 0.5,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Attack_threequarter_0.50000.png",
+      "bytes": 197943,
+      "sha256": "a821f7145b98d1b1a8e45117d3dbaebc318ba9825fb78cc967c8fc5d0382f8bb"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Attack",
+      "phase": 0.75,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Attack_threequarter_0.75000.png",
+      "bytes": 198312,
+      "sha256": "30c5bba726e06b8ce40dd8f4baaa1778624ffef67b7f86944227ada137aa437c"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Attack",
+      "phase": 1,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Attack_threequarter_1.00000.png",
+      "bytes": 198429,
+      "sha256": "3ab69785c11a596cb75751243fc3331722496786b6de3094c1d79117e9063aa7"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Hit",
+      "phase": 0,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Hit_front_0.00000.png",
+      "bytes": 197041,
+      "sha256": "01a4e0b044ebbe3404c830c97678c62afc5c34b333f89a3c6deea674a33fdee3"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Hit",
+      "phase": 0.25,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Hit_front_0.25000.png",
+      "bytes": 197129,
+      "sha256": "9070d2d68ee01cf97eb4038faa66e513c0f78f5ecfe058aea935d4bada700a69"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Hit",
+      "phase": 0.5,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Hit_front_0.50000.png",
+      "bytes": 197202,
+      "sha256": "33603303b97154f1b44edd4c4b3af682c50fcc85d501310b4843ed31a00f8162"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Hit",
+      "phase": 0.75,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Hit_front_0.75000.png",
+      "bytes": 197078,
+      "sha256": "4a36644e64210df525b12af254bb08fca420b06a674bb70051cf7c81f7e85b05"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Hit",
+      "phase": 1,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Hit_front_1.00000.png",
+      "bytes": 197004,
+      "sha256": "4183af2642afb24c5278def52c30d7ed323ccac91b648b1d6fcdcb1e799b933c"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Hit",
+      "phase": 0,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Hit_threequarter_0.00000.png",
+      "bytes": 199015,
+      "sha256": "2fbd973816ed38535bf87fc1084f3bb78b74c12cdbf17aa9177a52ddd5223eb9"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Hit",
+      "phase": 0.25,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Hit_threequarter_0.25000.png",
+      "bytes": 198505,
+      "sha256": "42a3fc056141e8d0e74dc179bb45b35a417c3f22321fc638d8bd44a8ca958f75"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Hit",
+      "phase": 0.5,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Hit_threequarter_0.50000.png",
+      "bytes": 199022,
+      "sha256": "1a6c77458d0ec827c66fb037bb68ee861cd9123cee58c53ceca1e6a4f5723a56"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Hit",
+      "phase": 0.75,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Hit_threequarter_0.75000.png",
+      "bytes": 198824,
+      "sha256": "b7bfa1a3f48681f54e7f619736ab8ef736d58e7ca097edbbf686ba969c7fcbaa"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Hit",
+      "phase": 1,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Hit_threequarter_1.00000.png",
+      "bytes": 199087,
+      "sha256": "95bc191cf8e52cbb7a7d5992cdf0d09a31c00d3fa11e6a8e241d5d17009d3797"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Death",
+      "phase": 0,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Death_front_0.00000.png",
+      "bytes": 197634,
+      "sha256": "61aa322791823da4693b4f94df8cd72f5622d7e1985c045981e2cecfcdd6b35d"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Death",
+      "phase": 0.25,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Death_front_0.25000.png",
+      "bytes": 194713,
+      "sha256": "6dabe355793e9fc87792edbe87ddb0bdb8ea1948a9e65950030037131fd65689"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Death",
+      "phase": 0.5,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Death_front_0.50000.png",
+      "bytes": 193294,
+      "sha256": "9e62528c2a15f9c52b00bdb48a6426c3dda815c536af13244d77d1b5bbdced3f"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Death",
+      "phase": 0.75,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Death_front_0.75000.png",
+      "bytes": 192981,
+      "sha256": "45dacff76737138a0c1f04cdd4bc7baf2e2b2207ed4a399de050318f5412c753"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Death",
+      "phase": 1,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Death_front_1.00000.png",
+      "bytes": 192644,
+      "sha256": "1b0b7339494af71b06fca12008762077c27ebcfc8f90e84343b3bdf7521484ad"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Death",
+      "phase": 0,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Death_threequarter_0.00000.png",
+      "bytes": 198942,
+      "sha256": "3c7a1ad887dbb555272564e04dbbdf747173c7df3d0d8ee92640724c2c752c92"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Death",
+      "phase": 0.25,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Death_threequarter_0.25000.png",
+      "bytes": 197108,
+      "sha256": "a5f05f5fac6928efddbccb3baef7b4ff196645c2b8708ba81acf1ae0fe10c06c"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Death",
+      "phase": 0.5,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Death_threequarter_0.50000.png",
+      "bytes": 193347,
+      "sha256": "38d9606be64195d10d0e45adc32e2030a6f78819493ed4f42e5486fbeca5f8ba"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Death",
+      "phase": 0.75,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Death_threequarter_0.75000.png",
+      "bytes": 191287,
+      "sha256": "d10057c1f2af74d072458d2ee4ea48ba3a04750434b74b419dafbc5370128c11"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Death",
+      "phase": 1,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Death_threequarter_1.00000.png",
+      "bytes": 190733,
+      "sha256": "cc01c23418a2f21d7c2a87766421197756e512362014e19020cd68e67216e58c"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Deploy",
+      "phase": 0,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Deploy_front_0.00000.png",
+      "bytes": 197640,
+      "sha256": "935b5f3f5d9d835996d9778a8055e6d25425c9188716d3ae9586736f518b4e20"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Deploy",
+      "phase": 0.25,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Deploy_front_0.25000.png",
+      "bytes": 197145,
+      "sha256": "03d8f36eab77dbb3cc770854b929dd711c2cf67eff60647dd618b4b85afc8c27"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Deploy",
+      "phase": 0.5,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Deploy_front_0.50000.png",
+      "bytes": 197157,
+      "sha256": "9fb678af456d6ae8b7d46ace3b5f8f588edcd45b291c9e0ed575fad6bc274105"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Deploy",
+      "phase": 0.75,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Deploy_front_0.75000.png",
+      "bytes": 197374,
+      "sha256": "f9710b16c12aadbb59c2dcac054fb1467cae75de09a455727dd1843ce50060c5"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Deploy",
+      "phase": 1,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Deploy_front_1.00000.png",
+      "bytes": 197602,
+      "sha256": "d1e1156a6bc2ae455adecb1830e3dc4a6316eec6f5b059cdc49bfea56261cfce"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Deploy",
+      "phase": 0,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Deploy_threequarter_0.00000.png",
+      "bytes": 199069,
+      "sha256": "ce6b64be30fd1538500f9f6b1596b93214a3e7e7e1c9089dc31f568f7d981b54"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Deploy",
+      "phase": 0.25,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Deploy_threequarter_0.25000.png",
+      "bytes": 199310,
+      "sha256": "f7f91f09013d42afc2816b2bd10a99b4aa6992dc4adebf29dafcbbaf123f0cc8"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Deploy",
+      "phase": 0.5,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Deploy_threequarter_0.50000.png",
+      "bytes": 199045,
+      "sha256": "78a4eaee3d07b00eb58a34f65fd141f33f6ba06484e8aaa2f0b89a1efaac0b03"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Deploy",
+      "phase": 0.75,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Deploy_threequarter_0.75000.png",
+      "bytes": 199223,
+      "sha256": "7006e410a27841cf2c56dc1cf357300e8d10f5c664cb15b8ceed808c43cbc106"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Deploy",
+      "phase": 1,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Deploy_threequarter_1.00000.png",
+      "bytes": 199082,
+      "sha256": "683c12b3385d7c8ebeb4bd964a557eef270690ddf6a567362ff1e41a0904cc1f"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Status",
+      "phase": 0,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Status_front_0.00000.png",
+      "bytes": 196828,
+      "sha256": "43f5d2e86603511152e738d1b10eea8938c218326d8e4f9b938a66c827630728"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Status",
+      "phase": 0.25,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Status_front_0.25000.png",
+      "bytes": 196794,
+      "sha256": "7b25b821e6fc7a70940f2f660efb6ec1bfa434d6b0a89493fe614637db264cf2"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Status",
+      "phase": 0.5,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Status_front_0.50000.png",
+      "bytes": 196818,
+      "sha256": "474b6faac625764fa54a8733eb76d0f700bd880e6e40b6c2e86b0be147aca78f"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Status",
+      "phase": 0.75,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Status_front_0.75000.png",
+      "bytes": 196692,
+      "sha256": "0f180cb9979d1eeb865a20d8b1950902acd59cfe8481f30a2d01f077dc22ccf2"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Status",
+      "phase": 1,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Status_front_1.00000.png",
+      "bytes": 196756,
+      "sha256": "bb5f66617d12b14708a09ed86d2f0366e219c0b22af4f2c4990edd0a9f722eab"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Status",
+      "phase": 0,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Status_threequarter_0.00000.png",
+      "bytes": 199212,
+      "sha256": "e3269ae02fc65cc2bbe8a82977516ebc1a99817f3bbed3a5493da20ed51168f7"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Status",
+      "phase": 0.25,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Status_threequarter_0.25000.png",
+      "bytes": 199150,
+      "sha256": "5df190da8d9c0de4dbc8532b88d7417176cb32754c7a99ca3ce19b3d4b5d7f05"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Status",
+      "phase": 0.5,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Status_threequarter_0.50000.png",
+      "bytes": 199155,
+      "sha256": "0bc143fe96ba467c62a50dd7a291f64ff63bded528b619cf08e1d16ee5151165"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Status",
+      "phase": 0.75,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Status_threequarter_0.75000.png",
+      "bytes": 199214,
+      "sha256": "e3e38d65e39a670f30ee38e0b976d4e2bf5b75cdaa96fbeebce474bd517c687b"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Status",
+      "phase": 1,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Status_threequarter_1.00000.png",
+      "bytes": 199220,
+      "sha256": "805b3efb277651d0b58e8492ba9331c337b2c894783726df9ca3fd78bf51541a"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Turn",
+      "phase": 0,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Turn_front_0.00000.png",
+      "bytes": 196815,
+      "sha256": "33dea625a832005aa1d32c91f8f743b880b6574b9c67257cb5882b4022934abf"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Turn",
+      "phase": 0.25,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Turn_front_0.25000.png",
+      "bytes": 198854,
+      "sha256": "317bffae4ca19dadeec7c83134ac373623af9427c37ad7df99a6a7b2ae8f53fc"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Turn",
+      "phase": 0.5,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Turn_front_0.50000.png",
+      "bytes": 200334,
+      "sha256": "a32145ab3799e89a7e6cde83b1f00674c105d3f79ea2da3542e21e64294e3b1d"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Turn",
+      "phase": 0.75,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Turn_front_0.75000.png",
+      "bytes": 198800,
+      "sha256": "3d398577df80f4c7c8e82797a9097910582e924e2811b1310ad89a18704872c5"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Turn",
+      "phase": 1,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Turn_front_1.00000.png",
+      "bytes": 196812,
+      "sha256": "23971f56a55ed542c6a1affbb7b80c1380d0ef2d8956c379b704eb58d9d3d9e6"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Turn",
+      "phase": 0,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Turn_threequarter_0.00000.png",
+      "bytes": 199221,
+      "sha256": "63ad582fc0db27721f619856e5dba10eebf0c35f678cbb1610c882e9007fb06c"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Turn",
+      "phase": 0.25,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Turn_threequarter_0.25000.png",
+      "bytes": 198339,
+      "sha256": "c8b4d17cf2a054714d68fee533b460ae326f9f7c2145fb35acb308d78741a711"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Turn",
+      "phase": 0.5,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Turn_threequarter_0.50000.png",
+      "bytes": 197845,
+      "sha256": "cb3dd10344931dea2989ff8dee7283bc57d09f35905cfa3a14f08bb4b04a42fe"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Turn",
+      "phase": 0.75,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Turn_threequarter_0.75000.png",
+      "bytes": 198339,
+      "sha256": "523b35725ee628632832ba49e39e3b0046a5e906e576b013564def3f631bca0d"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Turn",
+      "phase": 1,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Turn_threequarter_1.00000.png",
+      "bytes": 199197,
+      "sha256": "39c5eae0a0c58c41030dc2fad07fe6b8f55c6b223750d2a62b4eb1c8c152c0ae"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Acquire",
+      "phase": 0,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Acquire_front_0.00000.png",
+      "bytes": 196825,
+      "sha256": "d9fb3c6596e401a804c29e88fea73e7c1132cdcef6efe68cabe1cdec464a76cf"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Acquire",
+      "phase": 0.25,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Acquire_front_0.25000.png",
+      "bytes": 197844,
+      "sha256": "81e0ba713341888a092ac682c35d28654a0f2d566388acf1e070ac9bd1360d59"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Acquire",
+      "phase": 0.5,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Acquire_front_0.50000.png",
+      "bytes": 198068,
+      "sha256": "6650058aa7f2dc59efe822c256897954e78461ef981469733e2655dc1e89d0d6"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Acquire",
+      "phase": 0.75,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Acquire_front_0.75000.png",
+      "bytes": 197885,
+      "sha256": "06bf747888b3628a29db5af118deebdd56538b1b77d3dde6a93ae80c4e3c7e22"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Acquire",
+      "phase": 1,
+      "view": "front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Acquire_front_1.00000.png",
+      "bytes": 196846,
+      "sha256": "ca4d6cd568c3929f496ad66bbcf74c7a0c0c39a2c5c0d08ae5f67ffb3dbd9ab2"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Acquire",
+      "phase": 0,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Acquire_threequarter_0.00000.png",
+      "bytes": 199150,
+      "sha256": "fe3cb82ff71c5a137b5ce6f6d598d121a9cc46b87e8432bcebfa5c0c88d327da"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Acquire",
+      "phase": 0.25,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Acquire_threequarter_0.25000.png",
+      "bytes": 198605,
+      "sha256": "2708ba26ec046fa2b7d08ea729ecfe426e42691e9c9dc2cca6b339d94173613b"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Acquire",
+      "phase": 0.5,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Acquire_threequarter_0.50000.png",
+      "bytes": 198407,
+      "sha256": "e7bdc5455444cbf1be2f031d815799873be78f0d0c81a045931c0b86660456dc"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Acquire",
+      "phase": 0.75,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Acquire_threequarter_0.75000.png",
+      "bytes": 198716,
+      "sha256": "26894b6a7de2ea208343af3832b58f51d4b0961bb080bde53b1cc1a615cdbe22"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Acquire",
+      "phase": 1,
+      "view": "threequarter",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/poses/iron_giant_Acquire_threequarter_1.00000.png",
+      "bytes": 199223,
+      "sha256": "6f5cdd6bba470571f58d3d555cff933aa688678021fe2c08702a176347a3b48e"
+    }
+  ],
+  "optionalReview": {
+    "requested": true,
+    "completed": true
+  },
+  "reviewRequired": "Human playback/normal-camera review; these gates do not rate artistic quality",
+  "producerPins": {
+    "generate_assets": {
+      "file": "Build/generate_assets.py",
+      "bytes": 92878,
+      "sha256": "8fd23860738fe4f80e1201ba8b9d71572bf0749db6f04f85215d28318b8b3e16"
+    },
+    "expansion_new_models": {
+      "file": "Build/expansion_new_models.py",
+      "bytes": 72711,
+      "sha256": "12c70e7810a150751eaf1080d51773845edd9f0ff2d47afaa386b0db7affba7e"
+    },
+    "expansion_asset_models": {
+      "file": "Build/expansion_asset_models.py",
+      "bytes": 44988,
+      "sha256": "c103dceb1a2468bb7aa9fd146acec288a64479fe263bfde0866402fb08486a1d"
+    }
+  },
+  "checkCount": 145,
+  "mathematicalEvidence": {
+    "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/quality-visor-clearance.geometry.json",
+    "bytes": 97198,
+    "sha256": "f643a90fa4d1dde9682e5e1069490908525e5ea5e530804120131c03d3449c3c"
+  },
+  "animationSequences": [
+    {
+      "model": "iron_giant",
+      "clip": "Locomotion",
+      "fps": 12,
+      "sourceDurationSeconds": 0.9,
+      "frameCount": 12,
+      "frames": [
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Locomotion/0000.png",
+          "bytes": 197119,
+          "sha256": "81eb39684b4c756ae8f61b548e3cf583931779a0166368ecdc87172ee15a89c6"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Locomotion/0001.png",
+          "bytes": 196224,
+          "sha256": "8f834c28879c3b9d15abfb912976490a3bf60f0e134f9528ebb448d1fb113911"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Locomotion/0002.png",
+          "bytes": 195839,
+          "sha256": "bb126c4f86be687d6927f3360d7ce2a15a4cc89a9622e3e6f3de86469799c3a6"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Locomotion/0003.png",
+          "bytes": 195862,
+          "sha256": "e558eb3b6d2b63b22c76f9717adda216a7031ebf16b339322e584223897f1141"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Locomotion/0004.png",
+          "bytes": 196342,
+          "sha256": "05ab4b3e439807e0d0e3379195649202916b83efd33fb2cabfdcb722ce72a24d"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Locomotion/0005.png",
+          "bytes": 197254,
+          "sha256": "80206994ec1eb57e4e52a34f22aeed104036257f7798964a7be9499b2401853c"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Locomotion/0006.png",
+          "bytes": 197807,
+          "sha256": "5f02a3aaeb49a6a6c14f139b7e85828faa165bf058fbb29496734fe0c6089b18"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Locomotion/0007.png",
+          "bytes": 197851,
+          "sha256": "2608ca85a2841a2de4ed59346fd0e993086479882aff46dcfdaf545e33ca968e"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Locomotion/0008.png",
+          "bytes": 197593,
+          "sha256": "532bcdde99bea5d34cc328fea71c1fa58a6e323a4ba8b9c170af1f78c0a5e4c1"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Locomotion/0009.png",
+          "bytes": 197236,
+          "sha256": "ce2aae17c59d245b35b29923693a2e860eb9629c10dd38c5e84898c41c1ea2dd"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Locomotion/0010.png",
+          "bytes": 196962,
+          "sha256": "2f926455627e1faad19db145e36f92cb204d83d373a9f14753362b80674a9bda"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Locomotion/0011.png",
+          "bytes": 197062,
+          "sha256": "04114fb1546af0f35729d490699f9c0483ce1edbbdbd71bc968e53fcb6a7b25b"
+        }
+      ],
+      "source": {
+        "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
+        "sha256": "83d7708acad6c12c9f6dcf1cf29fad3222fc2fdfc1e509766a0eb18d6f6f6877",
+        "bytes": 22388572
+      },
+      "note": "Exact saved source poses resampled for playback; no runtime FPS measurement"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Attack",
+      "fps": 12,
+      "sourceDurationSeconds": 0.6,
+      "frameCount": 8,
+      "frames": [
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Attack/0000.png",
+          "bytes": 198439,
+          "sha256": "1bd32784bb834f75c0659b95af39749a1a7ccb5f1f1b2514139ec2e62cd2f142"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Attack/0001.png",
+          "bytes": 197265,
+          "sha256": "760854e32ebbede9e9809492c9d33bb375bc4830c88f78bc7c6a50a4df30a547"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Attack/0002.png",
+          "bytes": 197797,
+          "sha256": "0cb215c1db5a732abbd9f08ee57bd356c5e00875d8bcb0ccab198d4533ed4997"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Attack/0003.png",
+          "bytes": 197807,
+          "sha256": "f113b9f6b210df26ba9ca5675e80e1d9d20cf4dcf1b9a013dd7afbf13bcca6fa"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Attack/0004.png",
+          "bytes": 198424,
+          "sha256": "3409def356217bcb9dd51aea074fa7edcad73eacb9382dbe93c2c06041306f8a"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Attack/0005.png",
+          "bytes": 198236,
+          "sha256": "530450e460f9f095c966f2b7b62080d9fd4135b929c4ee5f56973d9c21e6f51e"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Attack/0006.png",
+          "bytes": 198188,
+          "sha256": "8b2f5e6c042b146e4dfb17def62078f08cc7fbd2b357764f4e7f67f803499131"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Attack/0007.png",
+          "bytes": 198490,
+          "sha256": "75107fe965274d287bc9204fcd699da03f752a1a0821b109d5b0c70156d53b40"
+        }
+      ],
+      "source": {
+        "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
+        "sha256": "83d7708acad6c12c9f6dcf1cf29fad3222fc2fdfc1e509766a0eb18d6f6f6877",
+        "bytes": 22388572
+      },
+      "note": "Exact saved source poses resampled for playback; no runtime FPS measurement"
+    },
+    {
+      "model": "iron_giant",
+      "clip": "Death",
+      "fps": 12,
+      "sourceDurationSeconds": 0.8,
+      "frameCount": 11,
+      "frames": [
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Death/0000.png",
+          "bytes": 198949,
+          "sha256": "57b0aa84e9d037bf8f38234a23530389b90310a2b48f9b68c01365777b967d38"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Death/0001.png",
+          "bytes": 199004,
+          "sha256": "3c2a827197953b7af0b65e9663380357376bd083e1f417fdb3816951ef9c64f9"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Death/0002.png",
+          "bytes": 198142,
+          "sha256": "c88fcef1f7c1a3fa146c94258b230845feb01d7a94629879db1a4d9e337aa07d"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Death/0003.png",
+          "bytes": 196090,
+          "sha256": "3ce31d56f7981039ac47219f2342f4a9aab1873ab27a1ec1c7b31be8a89c5df4"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Death/0004.png",
+          "bytes": 194173,
+          "sha256": "0b59edc3daad81c3d1f257b23fea9cb77fb845ac67038e9ff61590cd41bfdde7"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Death/0005.png",
+          "bytes": 193417,
+          "sha256": "1b5953eb8b352eaf19e1b06cbe63d8a6cd757975c1a5970419e637265b6a6a8e"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Death/0006.png",
+          "bytes": 192456,
+          "sha256": "0bcd083d054e7d0b1e97bce202e4f1b9ce418e66515309579fec875883b301c7"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Death/0007.png",
+          "bytes": 191535,
+          "sha256": "de2bba0fa8ca2605d10fbd6a2471ced4d11f9e72e88e89d8d1422bdaec0538b5"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Death/0008.png",
+          "bytes": 190962,
+          "sha256": "da2cbc73c59dc7a22e545657457dcec8cf5a35a63234c7ab7d636b3206855aa3"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Death/0009.png",
+          "bytes": 190741,
+          "sha256": "929fa08ae6c44f972b201962e1528eb31b9fb1c1395bba3c6c386d2d32b4459d"
+        },
+        {
+          "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/motion/iron_giant_Death/0010.png",
+          "bytes": 190731,
+          "sha256": "89e4e54af04fff3a58c82a5a199a71df68cb97f40c2fc45c8f91f02cc79ac005"
+        }
+      ],
+      "source": {
+        "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
+        "sha256": "83d7708acad6c12c9f6dcf1cf29fad3222fc2fdfc1e509766a0eb18d6f6f6877",
+        "bytes": 22388572
+      },
+      "note": "Exact saved source poses resampled for playback; no runtime FPS measurement"
+    }
+  ],
+  "reviewIndex": {
+    "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ReviewFinal/index.html",
+    "bytes": 11834,
+    "sha256": "da8bd9a0e8b12196252cf05831af92ed76cd056903d949cc3378498a387a68d1"
+  }
+}

@@ -137,6 +137,9 @@ def validate_revision(root,manifest,portrait_source,overrides=None):
     the final stage always checks current raw models, portraits and source scene.
     """
     root=Path(root).resolve();revisions=manifest.get('sourceRevisions',[])
+    if len(revisions)==4:
+        if overrides:raise ValueError('Final targeted replacement must check current raw assets')
+        return validate_targeted_replacement(root,manifest,portrait_source)
     if len(revisions)==3:
         if overrides:raise ValueError('Final art-polish stage must check current raw assets')
         return validate_art_revision(root,manifest,portrait_source)
@@ -269,6 +272,240 @@ def validate_art_revision(root,manifest,portrait_source):
     spec=importlib.util.spec_from_file_location('art_polish_provenance',path)
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
     return module.validate_art_revision(Path(root),manifest,portrait_source)
+
+
+def validate_targeted_replacement(root,manifest,portrait_source):
+    """Qualify unchanged historical artwork across the explicit Iron revision.
+
+    The previous three accepted records retain their original source attribution.
+    Their actual accepted report, saved scene and raw assets qualify reuse; only
+    the current Iron mesh/poses/portrait receive new production claims.
+    """
+    root=Path(root).resolve();revisions=manifest['sourceRevisions'];stage=revisions[3]
+    if stage.get('schema')!=1 or stage.get('kind')!='targeted-model-replacement' or \
+       stage.get('version')!='1.7.0' or stage.get('changedCharacters')!=['iron_giant'] or \
+       stage.get('changedPortraits')!=['iron_giant']:
+        raise ValueError('Unapproved targeted replacement scope')
+    before=read(root,stage['beforeManifestSnapshot']);old_portraits=read(root,stage['beforePortraitSnapshot'])
+    if before.get('sourceRevisions')!=revisions[:3] or [r.get('kind') for r in revisions[:3]]!=[
+            'animation-only','additive-model-production','art-polish'] or \
+       stage['fromSource']!=before['source'] or stage['toSource']!=manifest['source'] or \
+       revisions[2]['toSource']!=before['source'] or old_portraits.get('sourceBlend')!=portrait_source:
+        raise ValueError('Targeted replacement changed or relabelled the three historical source stages')
+    saved=raw_pin(root,stage['beforeSourceSnapshot']['file'])
+    if saved!=stage['beforeSourceSnapshot'] or any(saved[k]!=before['source'][k] for k in ('bytes','sha256')):
+        raise ValueError('Preserved accepted pre-replacement Source changed')
+    accepted=read(root,stage['historicalAcceptance'])
+    old_manifest_pin=accepted.get('afterFinalizerManifest',{})
+    if accepted.get('passed') is not True or any(old_manifest_pin.get(k)!=stage['beforeManifestSnapshot'][k] for k in ('bytes','sha256')):
+        raise ValueError('Historical acceptance does not bind the exact preserved final manifest')
+    for old in revisions[:3]:
+        def historical_snapshots(value):
+            if isinstance(value,dict):
+                if {'file','bytes','sha256'}<=set(value) and value['file'].startswith('Assets/Source/Revisions/'):
+                    if raw_pin(root,value['file'])!={k:value[k] for k in ('file','bytes','sha256')}:
+                        raise ValueError('Historical tracked evidence changed: '+value['file'])
+                for child in value.values():historical_snapshots(child)
+            elif isinstance(value,list):
+                for child in value:historical_snapshots(child)
+        historical_snapshots(old)
+    comparison=read(root,stage['savedSceneComparison'])
+    if comparison.get('passed') is not True or comparison.get('kind')!='independent-saved-scene-selected-replacement' or \
+       comparison['fromSource']!=saved or comparison['toSource']!=manifest['source'] or \
+       comparison.get('unchangedBefore')!=comparison.get('unchangedAfter') or \
+       comparison.get('keptObjects')!=73 or comparison.get('keptActions')!=167 or \
+       len(comparison['unchangedBefore']['signatures']['objects'])!=73 or \
+       len(comparison['unchangedBefore']['signatures']['actions'])!=167:
+        raise ValueError('Actual saved non-Iron geometry/rest-joint/action/material comparison changed')
+    for evidence_key,snapshot_key in (('verifier','comparisonVerifierSnapshot'),):
+        snapshot=stage[snapshot_key]
+        if raw_pin(root,snapshot['file'])!=snapshot or any(snapshot[k]!=comparison[evidence_key][k] for k in ('bytes','sha256')):
+            raise ValueError('Saved Source comparison verifier snapshot changed')
+    if raw_pin(root,manifest['source']['file'])!=manifest['source']:
+        raise ValueError('Current targeted Source raw pin changed')
+    for record in stage['producerScripts'].values():
+        if raw_pin(root,record['file'])!=record:raise ValueError('Current targeted producer changed: '+record['file'])
+    expected=copy.deepcopy(before);expected['source']=manifest['source'];expected['sourceRevisions']=revisions
+    expected['characters']['iron_giant']=manifest['characters']['iron_giant']
+    expected['illustrations']['iron_giant']=manifest['illustrations']['iron_giant']
+    old_renders={item['file']:item for item in before['renders']};new_renders={item['file']:item for item in manifest['renders']}
+    selected_render='Assets/Renders/iron_giant.png'
+    if len(new_renders)!=len(manifest['renders']) or set(old_renders)!=set(new_renders) or \
+       any(old_renders[n]!=new_renders[n] for n in old_renders if n!=selected_render) or \
+       [r for r in before['renders'] if r['file']!=selected_render]!=[r for r in manifest['renders'] if r['file']!=selected_render]:
+        raise ValueError('A non-Iron general render or render inventory changed')
+    expected['renders']=manifest['renders']
+    if manifest.get('presentationMaterials')!=before.get('presentationMaterials'):
+        validate_import_binding_qualification(root,manifest,stage)
+        fx_script=root/'Build/generate_expansion_fx_contract.py'
+        if raw_pin(root,fx_script)!=revisions[2]['producerScripts']['FXContract']:
+            raise ValueError('The retained dedicated FX contract producer changed')
+        spec=importlib.util.spec_from_file_location('targeted_fx_contract',fx_script)
+        module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+        if manifest['presentationMaterials']!=[module.definition(root)]:
+            raise ValueError('Current FX declaration does not equal its actual retained definition')
+        expected['presentationMaterials']=manifest['presentationMaterials']
+    if expected!=manifest:raise ValueError('A non-Iron source/model/portrait/binding/material record changed')
+    portraits=json.loads((root/'Assets/Source/CardArt/model_portraits.json').read_text(encoding='utf-8'))
+    expected_portraits=copy.deepcopy(old_portraits);expected_portraits['cards']['iron_giant']=portraits['cards']['iron_giant']
+    if portraits!=expected_portraits:raise ValueError('A non-Iron portrait or historical attribution changed')
+    if portraits['cards']['iron_giant'].get('sourceSceneSHA256')!=manifest['source']['sha256']:
+        raise ValueError('Current Iron portrait does not identify the actual current Source')
+    def verify_records(value):
+        if isinstance(value,dict):
+            if {'file','bytes','sha256'}<=set(value):
+                if raw_pin(root,value['file'])!={k:value[k] for k in ('file','bytes','sha256')}:
+                    raise ValueError('Current targeted raw file changed: '+value['file'])
+            for child in value.values():verify_records(child)
+        elif isinstance(value,list):
+            for child in value:verify_records(child)
+    verify_records(manifest['characters']['iron_giant']);verify_records(portraits['cards']['iron_giant'])
+    g=manifest['characters']['iron_giant']
+    if g!=read(root,stage['currentModelRecord']) or any(manifest['illustrations']['iron_giant'].get(k)!=
+            portraits['cards']['iron_giant'].get(k) for k in ('file','bytes','sha256','sourceSceneSHA256')):
+        raise ValueError('Current produced Iron model record or portrait binding changed')
+    if g['boneCount']!=34 or len(g['lods'])!=3 or {c['name'] for c in g['animations']}!={
+            'Idle','Locomotion','Attack','Hit','Death','Deploy','Status','Turn','Acquire'} or \
+       g['modelDesign']['baseModelScale']!=1.65 or any(c['fps']!=100 for c in g['animations']):
+        raise ValueError('Current Iron rig, scale, LOD or nine-clip contract changed')
+    proof=read(root,stage['generationPreservation'])
+    if proof.get('passed') is not True or proof.get('replacedCharacters')!=['iron_giant'] or \
+       proof.get('fromSource')!=before['source'] or proof.get('before')!=proof.get('after') or \
+       proof.get('materialsBefore')!=proof.get('materialsAfter') or \
+       proof.get('untouchedAssetsBefore')!=proof.get('untouchedAssetsAfter'):
+        raise ValueError('Original generation preservation proof changed')
+    final_generation=read(root,stage['finalGenerationPreservation'])
+    used=stage['generationProducerUsedSnapshot']
+    recorded=stage['recordedGenerationProducerSnapshot']
+    if raw_pin(root,used['file'])!=used or final_generation.get('passed') is not True or \
+       final_generation.get('toSource')!=manifest['source'] or final_generation.get('replacedCharacters')!=['iron_giant'] or \
+       raw_pin(root,recorded['file'])!=recorded or any(final_generation['producer'][k]!=recorded[k] for k in ('bytes','sha256')) or \
+       final_generation['modelBuilder']!=stage['producerScripts']['modelBuilder'] or \
+       final_generation.get('before')!=final_generation.get('after'):
+        raise ValueError('Actual final generation producer/source/preservation snapshot changed')
+    recorded_bytes=(root/used['file']).read_bytes().replace(
+        b'bpy.ops.wm.save_as_mainfile(filepath=str(blend),compress=bool(opts.replacement_proof))',
+        b'if opts.replacement_proof:bpy.ops.wm.save_as_mainfile(filepath=str(blend),compress=True)\nelse:bpy.ops.wm.save_as_mainfile(filepath=str(blend))')
+    if (root/recorded['file']).read_bytes()!=recorded_bytes or stage.get('producerPinQualification')!=\
+       'The recorded end-of-run producer differs only in the save-call branch; replacement_proof was true, so both branches save with compress=True. Both exact byte versions are retained. Current pose/signature helpers are unchanged.':
+        raise ValueError('Generation producer pin qualification changed beyond the exact equivalent save call')
+    # The final metadata fix preserves unused Glass declarations. It changes no
+    # geometry, pose solver or saved-scene signature implementation; the exact
+    # actually used producer remains archived rather than relabelled as fresh.
+    import ast
+    def helper_asts(path):
+        tree=ast.parse(path.read_text(encoding='utf-8'))
+        names={'set_world_rotation','aim_leg','aim_arm','source_signatures','replacement_material_signatures'}
+        return {n.name:ast.dump(n,include_attributes=False) for n in tree.body if isinstance(n,ast.FunctionDef) and n.name in names}
+    if helper_asts(root/used['file'])!=helper_asts(root/stage['producerScripts']['generator']['file']):
+        raise ValueError('Current producer changed a measured pose/signature helper')
+    permitted={manifest['source']['file'],'Assets/Source/CardArt/model_portraits.json',
+               'Assets/Renders/Expansion/approved-portrait-production.json',
+               'Assets/Renders/Expansion/Identity/approved-identity-sheets.json',selected_render}
+    def collect_paths(value):
+        if isinstance(value,dict):
+            if {'file','bytes','sha256'}<=set(value):permitted.add(value['file'])
+            for child in value.values():collect_paths(child)
+        elif isinstance(value,list):
+            for child in value:collect_paths(child)
+    for model in (before['characters']['iron_giant'],g,old_portraits['cards']['iron_giant'],portraits['cards']['iron_giant']):collect_paths(model)
+    kept=0
+    for name,record in proof['untouchedAssetsBefore'].items():
+        # Balance Data is independently versioned by the gameplay update. This
+        # stage covers authored Source, exports and rendered artwork only.
+        if name in permitted or name.startswith('Assets/Source/Revisions/DesignUpdate1.7.0/') or \
+           not name.startswith(('Assets/Source/','Assets/Export/','Assets/Renders/')):continue
+        if raw_pin(root,name)!={'file':name,**record}:raise ValueError('A non-Iron authored asset changed: '+name)
+        kept+=1
+    quality=read(root,stage['qualityEvidence']);exports=read(root,stage['exportEvidence'])
+    if quality.get('passed') is not True or quality.get('errors') or quality.get('sourceBlend')!=manifest['source'] or \
+       set(quality.get('cards',{}))!={'iron_giant'} or quality['cards']['iron_giant']['clipCount']!=9 or \
+       quality['cards']['iron_giant']['maximumReproductionDelta']>1e-7 or \
+       exports.get('passed') is not True or exports.get('errors') or exports.get('source')!=manifest['source'] or \
+       len(exports.get('exports',[]))!=4:
+        raise ValueError('Current Iron source/pose/export evidence failed or binds a different Source')
+    if quality['producerPins']['expansion_new_models']!=stage['producerScripts']['modelBuilder'] or \
+       any(quality['producerPins']['generate_assets'][k]!=used[k] for k in ('bytes','sha256')) or \
+       quality['verifier']!=stage['producerScripts']['qualityValidator'] or \
+       any(stage['exportVerifierSnapshot'][k]!=exports['verifier'][k] for k in ('bytes','sha256')) or \
+       raw_pin(root,stage['exportVerifierSnapshot']['file'])!=stage['exportVerifierSnapshot']:
+        raise ValueError('Current accepted pose/export evidence producer changed')
+    for record in exports['exports']:
+        actual=raw_pin(root,record['file'])
+        if any(actual[k]!=record[k] for k in ('file','bytes','sha256')):raise ValueError('Actual exported Iron LOD changed')
+    old_matrix=read(root,revisions[2]['matrixSafetyEvidence']);old_quality=read(root,revisions[2]['artQualityEvidence'])
+    if not old_matrix.get('passed') or old_matrix.get('sourceBlendSHA256')!=before['source']['sha256'] or \
+       not old_quality.get('passed') or old_quality.get('sourceBlend')!=before['source']:
+        raise ValueError('Historical matrix/geometry acceptance binds a different preserved Source')
+    for key,current_path,old_pin in [('portrait','Assets/Renders/Expansion/approved-portrait-production.json',stage['beforeRendererSummary']),
+                                    ('identity','Assets/Renders/Expansion/Identity/approved-identity-sheets.json',stage['beforeIdentitySummary'])]:
+        old=read(root,old_pin);current=json.loads((root/current_path).read_text(encoding='utf-8'));wanted=copy.deepcopy(old)
+        field='cards' if key=='portrait' else 'sheets'
+        wanted[field]['iron_giant']=current[field]['iron_giant']
+        wanted['selectedReplacements']=current.get('selectedReplacements')
+        if current!=wanted or len(current.get('selectedReplacements',[]))!=1 or \
+           current['selectedReplacements'][0].get('cards')!=['iron_giant'] or \
+           current['selectedReplacements'][0].get('sourceBlend')!=manifest['source']:
+            raise ValueError('Mixed '+key+' registry relabelled or discarded unchanged historical records')
+        if key=='portrait':
+            run=read(root,current['selectedReplacements'][0]['run'])
+            if run['sourceBlend']!=manifest['source'] or set(run['cards'])!={'iron_giant'} or run['cards']['iron_giant']!=portraits['cards']['iron_giant']:
+                raise ValueError('Actual selected Iron portrait run differs from the merged registry')
+        else:
+            if current['sheets']['iron_giant']!=g['identitySheet']:raise ValueError('Current Iron identity sheet differs from registry')
+    return {'kind':'targeted-model-replacement','changedCharacters':['iron_giant'],'historicalStagesPreserved':3,
+            'historicalAcceptedManifest':stage['beforeManifestSnapshot'],'historicalRenderSource':portrait_source,
+            'currentExportSource':manifest['source'],'actualSavedObjectsUnchanged':73,'actualSavedActionsUnchanged':167,
+            'retainedAuthoredAssetsVerified':kept,'currentIronSourceChecks':quality['checkCount'],
+            'currentIronExportChecks':exports['checkCount'],'unchangedSourceChecksQualified':True,
+            'scope':'Only Iron source/poses/portrait are newly produced; all other original image/source attributions remain exact'}
+
+
+def validate_import_binding_qualification(root,manifest,stage):
+    """Advance whole-file binding pins while proving shader source stayed exact."""
+    import ast
+    ledger=read(root,stage['importBindingQualification'])
+    if ledger.get('schema')!=1 or ledger.get('version')!='1.7.0' or \
+       ledger.get('kind')!='health-and-source-stride-import-binding' or ledger.get('passed') is not True or \
+       set(ledger.get('producerChanges',{}))!={'importer','validator'}:
+        raise ValueError('Unapproved importer binding qualification')
+    frozen=read(root,ledger['beforeManifest'])
+    expected=copy.deepcopy(frozen)
+    expected['presentationMaterials']=manifest['presentationMaterials']
+    expected['sourceRevisions'][3]['importBindingQualification']=stage['importBindingQualification']
+    expected['sourceRevisions'][3]['producerScripts']['revisionValidator']=stage['producerScripts']['revisionValidator']
+    if expected!=manifest:raise ValueError('Binding advance changed Source, model, artwork or another record')
+    for label,allowed in (('importer',['animation_contract_properties','card_data']),('validator',['main'])):
+        change=ledger['producerChanges'][label];snapshot=change['oldSnapshot'];current=change['currentWholeFile']
+        if raw_pin(root,snapshot['file'])!=snapshot or raw_pin(root,current['file'])!=current or \
+           any(snapshot[k]!=change['oldWholeFile'][k] for k in ('bytes','sha256')):
+            raise ValueError('Binding producer snapshot or current whole-file pin changed: '+label)
+        old_text=(root/snapshot['file']).read_text(encoding='utf-8');new_text=(root/current['file']).read_text(encoding='utf-8')
+        old={n.name:n for n in ast.parse(old_text).body if isinstance(n,(ast.FunctionDef,ast.ClassDef))}
+        new={n.name:n for n in ast.parse(new_text).body if isinstance(n,(ast.FunctionDef,ast.ClassDef))}
+        if set(old)!=set(new):raise ValueError('Binding producer definition inventory changed: '+label)
+        changed=[name for name in old if ast.dump(old[name],include_attributes=False)!=ast.dump(new[name],include_attributes=False)]
+        if changed!=allowed or change.get('changedDefinitions')!=allowed:
+            raise ValueError('Binding changes exceed health and authored stride: '+label)
+        exact={name:ast.get_source_segment(old_text,old[name])==ast.get_source_segment(new_text,new[name]) for name in old if name not in allowed}
+        if not all(exact.values()) or exact!=change.get('unchangedDefinitionsExactSource'):
+            raise ValueError('Unchanged shader/helper source text changed: '+label)
+        hashes={name:hashlib.sha256(ast.dump(old[name],include_attributes=False).encode()).hexdigest() for name in exact}
+        if hashes!=change.get('unchangedDefinitionAstHashes'):raise ValueError('Unchanged shader/helper AST fingerprint changed')
+        if label=='validator':
+            def prefix(node):
+                result=[]
+                for statement in node.body:
+                    if isinstance(statement,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='M' for t in statement.targets):break
+                    result.append(statement)
+                return ast.dump(ast.Module(body=result,type_ignores=[]),include_attributes=False)
+            if prefix(old['main'])!=prefix(new['main']):raise ValueError('Shader graph fixture assertions changed')
+    fx=manifest['presentationMaterials'][0]
+    if fx['shaderProducer']!=ledger['producerChanges']['importer']['currentWholeFile'] or \
+       fx['contractProducer']!=frozen['presentationMaterials'][0]['contractProducer']:
+        raise ValueError('Binding advance replaced the retained FX contract producer or mismatched importer')
+    return {'shaderSourceUnchanged':True,'healthAndAuthoredStrideBindingsAdvanced':True,
+            'qualification':stage['importBindingQualification']}
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)

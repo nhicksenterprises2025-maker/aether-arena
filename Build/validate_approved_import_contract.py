@@ -70,7 +70,7 @@ def main():
     e={'math':math};functions({'finite_float','animation_contract_properties'},e)
     for card,scale in (('mini_stampede',1.3),('stampede',.85)):
         c=M['characters'][card]['modelDesign']['animationContract'];values=e['animation_contract_properties'](c,scale)
-        expected=c['locomotion']['strideMeters']*c['visual']['baseModelScale']/scale
+        expected=c['locomotion']['strideMeters']
         check(card+' approved canonical scale preserves exact reference gait',abs(values['GaitStrideMeters']-expected)<1e-9)
     reaper=M['characters']['aether_reaper']['modelDesign'];values=e['animation_contract_properties'](reaper['animationContract'],1.1,reaper['flightBobTiles'])
     check('Actual Reaper authored bob bound is .08 logical tiles',values['FlightBobTiles']==.08)

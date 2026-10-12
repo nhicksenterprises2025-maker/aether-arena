@@ -193,6 +193,11 @@ bool SpellCard(const FRiftReplayBalanceContext* Context,const std::string& Id) {
     const auto* Card=Context && Context->HasCapturedDefinitions ? RecordedCard(Context,Id) : rift::FindEntityDefinition(Id);
     return Card&&Card->spell;
 }
+bool HealthCloakCard(const FRiftReplayBalanceContext* Context,const std::string& Id) {
+    const auto* Card=Context && Context->HasCapturedDefinitions ? RecordedCard(Context,Id) : rift::FindEntityDefinition(Id);
+    return Card&&!Card->spell&&!Card->building&&Card->healthCloakThreshold>0&&Card->invisibilityDuration>0&&
+        (!Context||(Context->HasCapturedDefinitions&&Context->Schema>=3));
+}
 bool RecordedDeck(const FRiftReplayBalanceContext* Context,const std::vector<std::string>& Deck) {
     if (Deck.size()!=8) return false;
     TSet<FString> Unique;
@@ -328,7 +333,7 @@ struct Reader {
 #define EXPANSION_CARD_FLAGS(X) X(hardExpiry) X(shieldOverflowProtected) X(globalFriendlyInvisibility) X(breakExistingLocks)
 TSharedRef<FJsonObject> BalanceJSON() {
     auto Balance=MakeShared<FJsonObject>();
-    Balance->SetNumberField(TEXT("schema"),2);
+    Balance->SetNumberField(TEXT("schema"),3);
     Balance->SetStringField(TEXT("manifestHash"),FS(rift::CardManifestHash()));
     Balance->SetStringField(TEXT("manifestVersion"),FS(rift::CardManifestVersion()));
     TArray<TSharedPtr<FJsonValue>> Cards;
@@ -340,6 +345,7 @@ TSharedRef<FJsonObject> BalanceJSON() {
         CARD_NUMBERS(FIELD)
         EXPANSION_CARD_NUMBERS(FIELD)
 #undef FIELD
+        C->SetNumberField(TEXT("healthCloakThreshold"),Card.healthCloakThreshold);
 #define FIELD(K) C->SetBoolField(TEXT(#K),Card.K);
         CARD_FLAGS(FIELD)
         EXPANSION_CARD_FLAGS(FIELD)
@@ -357,7 +363,7 @@ bool ReadBalance(const TSharedPtr<FJsonObject>& Recording,FRiftReplayBalanceCont
     const TSharedPtr<FJsonObject>* B=nullptr;
     if (!Recording->TryGetObjectField(TEXT("balance"),B)) return false;
     Reader R(*B);int Schema=0;std::string Hash,Version;
-    R.Number(TEXT("schema"),Schema,1,2,true);R.Text(TEXT("manifestHash"),Hash,true);R.Text(TEXT("manifestVersion"),Version,true);
+    R.Number(TEXT("schema"),Schema,1,3,true);R.Text(TEXT("manifestHash"),Hash,true);R.Text(TEXT("manifestVersion"),Version,true);
     if (Hash.size()!=64||Version.empty()||Version.size()>128) return false;
     for (char C:Hash) if (!(C>='0'&&C<='9')&&!(C>='a'&&C<='f')) return false;
     const TArray<TSharedPtr<FJsonValue>>* Cards=nullptr;
@@ -373,6 +379,7 @@ bool ReadBalance(const TSharedPtr<FJsonObject>& Recording,FRiftReplayBalanceCont
 #define FIELD(K) CR.Number(TEXT(#K),C.K,0,1e9,Schema>=2);
         EXPANSION_CARD_NUMBERS(FIELD)
 #undef FIELD
+        CR.Number(TEXT("healthCloakThreshold"),C.healthCloakThreshold,0,1,Schema>=3);
         CR.Text(TEXT("deathSpawnId"),C.deathSpawnId,Schema>=2);
 #define FIELD(K) if (!CR.O||!CR.O->HasField(TEXT(#K))) CR.Valid=false;else CR.Flag(TEXT(#K),C.K);
         CARD_FLAGS(FIELD)
@@ -395,7 +402,9 @@ bool ReadBalance(const TSharedPtr<FJsonObject>& Recording,FRiftReplayBalanceCont
             (C.shockwaveSpeed>0&&C.splash<=0)||(C.slowPct>0&&C.slowDuration<=0)||
             C.chargeMoveSeconds>MaxTime||C.chargedMoveSpeed>100||C.initialAttackCooldown>MaxTime||C.invisibilityDuration>10||
             C.deathSpawnCount>100||((C.deathSpawnCount>0)!=!C.deathSpawnId.empty())||
-            (C.hardExpiry&&!C.building)||(C.shieldHP>0&&C.spell)||(C.invisibilityDuration>0&&!C.spell)||(!Playable&&C.cost!=0)) return false;
+            (C.hardExpiry&&!C.building)||(C.shieldHP>0&&C.spell)||
+            (C.healthCloakThreshold>0&&(Schema<3||C.spell||C.building||C.invisibilityDuration<=0))||
+            (C.invisibilityDuration>0&&!C.spell&&C.healthCloakThreshold<=0)||(!Playable&&C.cost!=0)) return false;
         if (Playable) Context.PlayableIds.Add(FS(C.id));
         Context.BuildingDecayRates.emplace(C.id,Decay);
         Context.Definitions.emplace(C.id,MoveTemp(C));
@@ -708,6 +717,7 @@ TSharedRef<FJsonObject> URiftReplaySubsystem::SnapshotJSON(const rift::Snapshot 
         R->SetBoolField(TEXT("dead"), E.dead);
         R->SetBoolField(TEXT("flying"), E.flying);
         R->SetBoolField(TEXT("charged"), E.charged);
+        R->SetBoolField(TEXT("healthCloakTriggered"), E.healthCloakTriggered);
         TArray<TSharedPtr<FJsonValue>> Slows;
         for (const auto& Slow:E.slows)
         {
@@ -896,6 +906,7 @@ static bool ReadSnapshot(const TSharedPtr<FJsonObject> &O, rift::Snapshot &State
         T.Flag(TEXT("dead"), E.dead);
         T.Flag(TEXT("flying"), E.flying);
         T.Flag(TEXT("charged"), E.charged);
+        T.Flag(TEXT("healthCloakTriggered"), E.healthCloakTriggered);
         const TArray<TSharedPtr<FJsonValue>>* Slows=nullptr;
         TSet<FString> SlowCards;
         if (T.List(TEXT("slows"),Slows,100)) for (const auto& SV:*Slows)
@@ -928,7 +939,11 @@ static bool ReadSnapshot(const TSharedPtr<FJsonObject> &O, rift::Snapshot &State
             E.shieldHP<0||E.maxShieldHP<0||E.shieldHP>E.maxShieldHP+.001||E.shieldBrokenAt < -1||
             E.shieldBrokenAt>Parsed.elapsed+1e-6||E.invisibleUntil<0||E.invisibleUntil>MaxTime+10||
             (!E.attributionCardId.empty()&&!PlayableCard(Context,E.attributionCardId))||
-            (!E.invisibilityCardId.empty()&&!SpellCard(Context,E.invisibilityCardId))||
+            (E.healthCloakTriggered&&!HealthCloakCard(Context,E.cardId))||
+            (!E.invisibilityCardId.empty()&&!SpellCard(Context,E.invisibilityCardId)&&
+                !(HealthCloakCard(Context,E.invisibilityCardId)&&E.healthCloakTriggered&&
+                    E.kind==rift::EntityKind::Troop&&E.cardId==E.invisibilityCardId&&
+                    E.invisibilitySource==E.id&&E.invisibilityPlayId==E.playId))||
             (E.parentEntityId&&(E.parentEntityId==E.id||E.attributionCardId.empty()))||
             (!E.cardId.empty() && !KnownCard(Context,E.cardId)) ||
             (E.cardId.empty() && E.kind < rift::EntityKind::Guard))
@@ -1430,6 +1445,7 @@ void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E,FRiftReplayBal
         Target->stunSource = E.playId;
     } else if(E.type=="invisibility_apply"&&Target) {
         Target->invisibleUntil=E.until;Target->invisibilitySource=E.source;
+        if(E.reason=="health_threshold")Target->healthCloakTriggered=true;
         Target->invisibilityPlayId=E.playId;Target->invisibilityCardId=E.cardId;
     } else if(E.type=="invisibility_expire"&&Target) {
         if(Target->invisibilityPlayId==E.playId)Target->invisibleUntil=0;

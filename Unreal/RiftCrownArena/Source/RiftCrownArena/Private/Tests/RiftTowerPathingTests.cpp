@@ -176,18 +176,19 @@ bool FRiftTowerPathingIntegrationTest::RunTest(const FString& Parameters)
     TestEqual(TEXT("Both teams' rear rows, side rows and extreme corners cover all eleven ground cards"),BoundaryCases,154);
     TestEqual(TEXT("Rear/side/corner paid deployments retain all single, twin and swarm members"),BoundaryMembers,420);
 
-    TestEqual(TEXT("The approved arena is twenty-four tiles wide"),rift::arena::Width,24);
-    TestEqual(TEXT("The approved arena is thirty-four tiles deep"),rift::arena::Height,34);
-    TestEqual(TEXT("Larger tiles retain the Core physical depth"),rift::arena::CoreDepth,13.84);
-    TestEqual(TEXT("Larger tiles retain the Guard physical depth"),rift::arena::GuardDepth,10.72);
-    TestEqual(TEXT("Guard centers share the unchanged bridge axis"),rift::arena::GuardX,rift::arena::BridgeCenterX);
+    TestEqual(TEXT("The approved arena is twenty-two tiles wide"),rift::arena::Width,22);
+    TestEqual(TEXT("The approved arena is forty tiles deep"),rift::arena::Height,40);
+    TestEqual(TEXT("The Core physical depth adds three rear tiles"),rift::arena::CoreDepth,16.84);
+    TestEqual(TEXT("The Guard physical depth adds three rear tiles"),rift::arena::GuardDepth,13.72);
+    TestEqual(TEXT("Guard centers move two more tiles away from the Core axis"),rift::arena::GuardX,7.76);
+    TestEqual(TEXT("Bridge centers follow the moved Guard axes"),rift::arena::BridgeCenterX,7.76);
     rift::Match AlignedTowers(TowerOptions());int32 AlignedGuards=0,CenteredCores=0;
     for(const auto& Tower:AlignedTowers.State().entities)
     {
         const bool Core=Tower.kind==rift::EntityKind::Core;const double Sign=Tower.team==rift::Team::Player?1.:-1.;
-        TestEqual(TEXT("Every actual tower retains its rear depth"),Tower.position.z,Sign*(Core?13.84:10.72));
+        TestEqual(TEXT("Every actual tower uses its shifted rear depth"),Tower.position.z,Sign*(Core?16.84:13.72));
         TestEqual(TEXT("Every actual tower retains its original body radius"),Tower.radius,Core?1.35:1.15);
-        TestEqual(TEXT("Every actual Guard follows its bridge and every Core stays centered"),Tower.position.x,Core?0.:Tower.lane*5.76);
+        TestEqual(TEXT("Every actual Guard follows its bridge and every Core stays centered"),Tower.position.x,Core?0.:Tower.lane*7.76);
         if(Core)++CenteredCores;else ++AlignedGuards;
     }
     TestEqual(TEXT("All four actual Guard bodies align with their stone-path and bridge axes"),AlignedGuards,4);
@@ -195,7 +196,7 @@ bool FRiftTowerPathingIntegrationTest::RunTest(const FString& Parameters)
     rift::Match Geometry(TowerOptions());
     for(const auto& Tower:Geometry.State().entities)
         TestTrue(TEXT("All six actual towers use the shifted symmetric depths"),
-            FMath::IsNearlyEqual(FMath::Abs(Tower.position.z),Tower.kind==rift::EntityKind::Core?13.84:10.72,1.e-9));
+            FMath::IsNearlyEqual(FMath::Abs(Tower.position.z),Tower.kind==rift::EntityKind::Core?16.84:13.72,1.e-9));
 
     int32 RouteCases=0,RouteMembers=0;
     for(const auto& Card:rift::Cards())if(!Card.spell&&!Card.building&&!Card.flying)

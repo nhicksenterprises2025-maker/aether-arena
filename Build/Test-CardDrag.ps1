@@ -12,7 +12,7 @@ $riftDragRepo = [IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot))
 $ExpectedVersion = Get-RiftExpectedGameVersion $riftDragRepo $ExpectedVersion
 if ($Name -notmatch '^[a-z0-9][a-z0-9_-]*$') { throw 'Use a lowercase QA report name.' }
 if ($ExpectedVersion -notmatch '^\d+\.\d+\.\d+$') { throw 'Use a three-part release version.' }
-$riftDragExpectedChecks = if ($ExpectedVersion -eq '1.3.0') { 29 } else { 32 }
+$riftDragExpectedChecks = if ($ExpectedVersion -eq '1.3.0') { 29 } elseif ([version]$ExpectedVersion -lt [version]'1.7.0') { 32 } else { 37 }
 if (!$Executable) { $Executable = Join-Path $riftDragRepo ('Artifacts/Game-' + $ExpectedVersion + '/Windows/RiftCrownArena/Binaries/Win64/RiftCrownArena-Win64-Shipping.exe') }
 $Executable = (Resolve-Path -LiteralPath $Executable).Path
 $riftDragExecutableHash = (Get-FileHash -LiteralPath $Executable -Algorithm SHA256).Hash.ToLowerInvariant()

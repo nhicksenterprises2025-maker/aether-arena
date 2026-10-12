@@ -204,7 +204,7 @@ void Match::UpdateAI(Team team, double dt) {
     // can drop. Existing projectiles, aura packets and spells are not avoided.
     for (const auto choice : available) {
         const auto &spell = *choice.card;
-        if (spell.invisibilityDuration <= 0 || !spell.breakExistingLocks) continue;
+        if (!spell.spell || spell.invisibilityDuration <= 0 || !spell.breakExistingLocks) continue;
         Vec2 point;
         double best = 0;
         for (const auto &center : state_.entities) {

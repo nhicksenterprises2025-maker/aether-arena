@@ -3,8 +3,8 @@
   "build": "UE-balance-expansion-source",
   "source": {
     "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
-    "sha256": "b7c215a00681328298919bb147900285a00335729934d08c28d9b7c608296929",
-    "bytes": 22079995
+    "sha256": "83d7708acad6c12c9f6dcf1cf29fad3222fc2fdfc1e509766a0eb18d6f6f6877",
+    "bytes": 22388572
   },
   "units": {
     "blender": "meter",
@@ -8377,8 +8377,8 @@
       "rigFamily": "humanoid",
       "mesh": {
         "file": "Assets/Export/Characters/iron_giant/SK_iron_giant.fbx",
-        "sha256": "01ab97dca9f185ac4b53af467e502dcf1ca9ad5cb17d28760ec0df0a323ff737",
-        "bytes": 609020
+        "sha256": "d58978c0a003fa1ce8e7f76d99ed027fef79b015aa33ab83fe4d5974b5a01eef",
+        "bytes": 962396
       },
       "bones": [
         "root",
@@ -8473,37 +8473,37 @@
           ]
         }
       },
-      "triangles": 22436,
+      "triangles": 38740,
       "materials": [
         "M_RiftExpansionAscensionSurface",
         "M_RiftExpansionAscensionGlow"
       ],
       "boundsMeters": [
         1.4144186973571777,
-        0.723416805267334,
-        1.3590000867843628
+        0.7233999967575073,
+        1.3680000305175781
       ],
       "lods": [
         {
           "level": 1,
-          "triangles": 11218,
+          "triangles": 19370,
           "file": "Assets/Export/Characters/iron_giant/SK_iron_giant_LOD1.fbx",
-          "sha256": "c9065314a460d39d20c8402ca186a2c9351f82fb28cfa1d4441a03ca12b7a04b",
-          "bytes": 423788
+          "sha256": "4d4f24307239a8deeebe6a4a61a5a4715a12fa4d0d28664244f00c036d2db3a1",
+          "bytes": 646492
         },
         {
           "level": 2,
-          "triangles": 5608,
+          "triangles": 9684,
           "file": "Assets/Export/Characters/iron_giant/SK_iron_giant_LOD2.fbx",
-          "sha256": "c0e0fdebb991c53a488ce7658f66482f8a1f0a46f2c640d6c928fbcb01a8e69c",
-          "bytes": 283884
+          "sha256": "d87a321ef90894bbe184f8fb3c9061fb30c4c300027f28d14b50dcff967cadc0",
+          "bytes": 415516
         },
         {
           "level": 3,
-          "triangles": 2690,
+          "triangles": 4628,
           "file": "Assets/Export/Characters/iron_giant/SK_iron_giant_LOD3.fbx",
-          "sha256": "bb5d8e1ce7fa459fa8b2290bbd1eb2f05e0ba293802a2610245eaedcb65e6c04",
-          "bytes": 194524
+          "sha256": "d7f41c69870d327148f0a07c44e7297312bcb251360b05705de8e9aa612bace4",
+          "bytes": 264620
         }
       ],
       "animations": [
@@ -8517,7 +8517,7 @@
           "loop": true,
           "strideMeters": null,
           "file": "Assets/Export/Characters/iron_giant/AN_iron_giant_Idle.fbx",
-          "sha256": "fe969329f586eeb092082a4cb421c4c98baf28c1aa779f112d7f22c8059b480c",
+          "sha256": "46f7037df011ef0b616b86fa9318abe6e8e94bbbbb1a7595222971b3028274c5",
           "bytes": 569772
         },
         {
@@ -8528,10 +8528,10 @@
           "seconds": 0.9,
           "releaseNormalized": null,
           "loop": true,
-          "strideMeters": 1.395,
+          "strideMeters": 0.8454545454545455,
           "file": "Assets/Export/Characters/iron_giant/AN_iron_giant_Locomotion.fbx",
-          "sha256": "fc013722438d680b68ed30feb6d66d98a5f0d2b423ba0276ea22e733252e3134",
-          "bytes": 412124
+          "sha256": "e48c1cfca06a9d0862029b93958bac614afd94fadd3ced01592a86904f32a67d",
+          "bytes": 412140
         },
         {
           "name": "Attack",
@@ -8543,7 +8543,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/iron_giant/AN_iron_giant_Attack.fbx",
-          "sha256": "6bb07f3a10d2b6d5ee86e4ce5334e4898d10f6743e8b41993b843a60f595d393",
+          "sha256": "57d23d424135c54bcff9d47e4c62dbceffa34ab93748d587e2c3aca4f80a2a27",
           "bytes": 356060
         },
         {
@@ -8556,7 +8556,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/iron_giant/AN_iron_giant_Hit.fbx",
-          "sha256": "5172318c6ccdd13e7fd58cbb231391b79695bdcde9a22473a2c55829677444d8",
+          "sha256": "0c9d9578dc9381e9ac223c22bb6d3bb5ddc84525ff969221e59e634297e8fb58",
           "bytes": 261068
         },
         {
@@ -8569,7 +8569,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/iron_giant/AN_iron_giant_Death.fbx",
-          "sha256": "f6ce1bd3e0cb7449262d5e604d07f58fff521c18ef065a4524ff8fc123317a2a",
+          "sha256": "02e60a4cd6fb7cd2d1b9a007c27613144b9aca434305986e2e8a4f390f0d0372",
           "bytes": 392236
         },
         {
@@ -8582,7 +8582,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/iron_giant/AN_iron_giant_Deploy.fbx",
-          "sha256": "3d3b50fc00f7beb3c8964ab4a40e033ecd8cad3e8abfbc8887761995100613a7",
+          "sha256": "3fff12450089887ec5ee926d5891cedb651f14d857e7ed94891021a1421a2f89",
           "bytes": 305164
         },
         {
@@ -8595,7 +8595,7 @@
           "loop": true,
           "strideMeters": null,
           "file": "Assets/Export/Characters/iron_giant/AN_iron_giant_Status.fbx",
-          "sha256": "f47357bb89a8ac5f5715fc3e7fa2b285ab20aaa22a6caae5dbb5ddc5167f86f5",
+          "sha256": "db9fb6739052b400163852d9ab986d1f2a145010d115bb923bb03f8c7cef566c",
           "bytes": 394268
         },
         {
@@ -8608,7 +8608,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/iron_giant/AN_iron_giant_Turn.fbx",
-          "sha256": "755b70b01d4589e1c66703eb125e0c2b8dd4c3d448fc2fde702c78d701e61c2b",
+          "sha256": "1d6024a5e35d9e063dcf112cdb6674c118ad2a17c5e18aa27902a9b35eb0bc8e",
           "bytes": 267676
         },
         {
@@ -8621,14 +8621,14 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/iron_giant/AN_iron_giant_Acquire.fbx",
-          "sha256": "6c17956b8f637d72dad8005394013b3839c9752abdfe426abdb1c57f0f9e11c3",
+          "sha256": "8ecf16d8ecfd9349428a0dcbb4522c63c3a4cc6a0ae5a2793280c110d3145644",
           "bytes": 254444
         }
       ],
       "modelDesign": {
-        "revision": "crafted-expansion-rework-1",
-        "detailPasses": 3,
-        "baseModelScale": 1.0,
+        "revision": "forged-iron-giant-detail-2",
+        "detailPasses": 4,
+        "baseModelScale": 1.65,
         "attackContactNormalized": 0.3666666666666667,
         "species": "Squat furnace-gray iron automaton; warm body beneath six independent steel shield panels",
         "rootMotion": false,
@@ -8645,7 +8645,7 @@
           "locomotion": {
             "referenceCycleSeconds": 0.9,
             "referenceSpeedTilesPerSecond": 1.55,
-            "strideMeters": 1.395,
+            "strideMeters": 0.8454545454545455,
             "phaseOffsets": true
           },
           "death": {
@@ -8656,9 +8656,17 @@
             "unreal": "+X"
           },
           "visual": {
-            "baseModelScale": 1.0,
+            "baseModelScale": 1.65,
             "readabilityMultiplier": 1.0
           }
+        },
+        "armorConstruction": {
+          "visor": "Recessed amber eye slit with separate brow, cheek guards and center bridge",
+          "body": "Chest-owned furnace door, rear louvers and service fittings remain after shield break",
+          "shield": "Six independent shield shells with fitted relief, edge channels and reinforcing ribs",
+          "hands": "Four separated plated fingers with dark flexion grooves and a fitted back plate",
+          "limbs": "Readable joint gaps, knee guards, sleeve seams and fitted boot soles",
+          "unchangedRigAndGameplay": true
         },
         "shieldPanels": [
           {
@@ -8737,7 +8745,7 @@
               "bone": "head",
               "positionMeters": [
                 -0.073,
-                -0.197,
+                -0.211,
                 1.26
               ],
               "group": "QA_eyes"
@@ -8747,7 +8755,7 @@
               "bone": "head",
               "positionMeters": [
                 0.073,
-                -0.197,
+                -0.211,
                 1.26
               ],
               "group": "QA_eyes"
@@ -8768,38 +8776,38 @@
         {
           "view": "front",
           "file": "Assets/Renders/Expansion/Identity/iron_giant_front.png",
-          "bytes": 312486,
-          "sha256": "d561519f9047f327601d77eeb34f3fb972e55f1b6f1aa14ee34f579d2babbc2b"
+          "bytes": 319668,
+          "sha256": "59ce7c6fdbb52d4bb6416affccf43c1392e70730df953fd3b7a98c3cdb4a21d2"
         },
         {
           "view": "rear",
           "file": "Assets/Renders/Expansion/Identity/iron_giant_rear.png",
-          "bytes": 298707,
-          "sha256": "5512ca509442c2e4ade73af0242af4ef032707ae5f2de43f7e0171087fb9b8dc"
+          "bytes": 307359,
+          "sha256": "559cb7012620252291524144593fedc7cf3cbd114c1e5d673fb9f98c57f5ccb3"
         },
         {
           "view": "side",
           "file": "Assets/Renders/Expansion/Identity/iron_giant_side.png",
-          "bytes": 290009,
-          "sha256": "6a72aa41790709cc74c3f8b22808c91ac24c8dcff3e30411f1c8fb84b5decd27"
+          "bytes": 295085,
+          "sha256": "2c20fbb4dffa7eeaad87bb8adbb1b0bebef1420f77c50d667c9ab61fb42457b2"
         },
         {
           "view": "threequarter",
           "file": "Assets/Renders/Expansion/Identity/iron_giant_threequarter.png",
-          "bytes": 318871,
-          "sha256": "2f11a79c788791b2d916c53624c63ab238222cb20c6f8f333801d7c58229ffba"
+          "bytes": 327229,
+          "sha256": "97e9bbd034fe28fc921b0b205f3bea960cb66f75cd1e69b2d51987d55a646fe3"
         },
         {
           "view": "silhouette",
           "file": "Assets/Renders/Expansion/Identity/iron_giant_silhouette.png",
-          "bytes": 296123,
-          "sha256": "65d9f3d7315088deeb349ad466e2d462528d1f75855227c545397bf999cc719c"
+          "bytes": 303166,
+          "sha256": "4dea13f513ec32b12e5bf7bb962bbff9d5ba8f1851180ded4626fb1c6c607495"
         }
       ],
       "identitySheet": {
         "file": "Assets/Renders/Expansion/Identity/iron_giant_IdentitySheet.png",
-        "bytes": 662015,
-        "sha256": "4dc8bfe2238ebe638c73218369ce8361795c5c5500518d06460c6e4edb1ccfe9"
+        "bytes": 691092,
+        "sha256": "406c668f0ebc97b90f4975e980b4fa01e08c16140ed77352f18a48b52f4e171f"
       }
     }
   },
@@ -9848,26 +9856,26 @@
     },
     "bone_warden": {
       "file": "Assets/Source/CardArt/bone_warden.png",
-      "bytes": 893730,
       "sha256": "314e6129b8850bd0e4a5094c8f3dd10ffb0532478c5601d351b3674f4460b1bb",
+      "bytes": 893730,
       "sourceSceneSHA256": "b7c215a00681328298919bb147900285a00335729934d08c28d9b7c608296929"
     },
     "aether_reaper": {
       "file": "Assets/Source/CardArt/aether_reaper.png",
-      "bytes": 788283,
       "sha256": "1d3f66a5682e2732bfaa7dd8692c4bec505ba24bb46c8b1c31251f1768793cb3",
+      "bytes": 788283,
       "sourceSceneSHA256": "b7c215a00681328298919bb147900285a00335729934d08c28d9b7c608296929"
     },
     "iron_giant": {
       "file": "Assets/Source/CardArt/iron_giant.png",
-      "bytes": 891447,
-      "sha256": "59d2131bc48dbb4f2dd9d6f08360a94520284aa07bc8d491158a2339134c1c57",
-      "sourceSceneSHA256": "b7c215a00681328298919bb147900285a00335729934d08c28d9b7c608296929"
+      "bytes": 913139,
+      "sha256": "7b0c711d37bc37122ee9eecf9275e5881d903d7531674676ff86fd112b0a875c",
+      "sourceSceneSHA256": "83d7708acad6c12c9f6dcf1cf29fad3222fc2fdfc1e509766a0eb18d6f6f6877"
     },
     "shadow_surge": {
       "file": "Assets/Source/CardArt/shadow_surge.png",
-      "bytes": 877995,
       "sha256": "4c858fa2c461bfdace0f5743df40896165a52f435d0bb723b4ce8d625906c16f",
+      "bytes": 877995,
       "sourceSceneSHA256": "b7c215a00681328298919bb147900285a00335729934d08c28d9b7c608296929"
     }
   },
@@ -10083,11 +10091,6 @@
       "bytes": 1156366
     },
     {
-      "file": "Assets/Renders/iron_giant.png",
-      "sha256": "ea64d04101f9614945159ebf42b4d86a2cb67c62b91f92489a4f40da0a37bf75",
-      "bytes": 1280772
-    },
-    {
       "file": "Assets/Renders/iron_shield_fragment.png",
       "sha256": "5765f9c6da5e2d3352cb52dcd65db71ac7612333eb1fd9eac892b61f49761e91",
       "bytes": 1003251
@@ -10101,6 +10104,11 @@
       "file": "Assets/Renders/shadow_surge_ribbon.png",
       "sha256": "ce2e61c8ab1bf5ca4b8517c1afe9e13bba88ad2d33e9df9849daa6e487963818",
       "bytes": 1036866
+    },
+    {
+      "file": "Assets/Renders/iron_giant.png",
+      "sha256": "6efab4e8f7c7505f80890cd6660926c1aef66d9bec2bf39a00446e7d3c2f1f9d",
+      "bytes": 1307584
     }
   ],
   "cards": {
@@ -10910,6 +10918,146 @@
         "bytes": 337909,
         "sha256": "da187cf659e849db20807e3de657e9696fc4da83edb243032c247cec7389e3ec"
       }
+    },
+    {
+      "schema": 1,
+      "kind": "targeted-model-replacement",
+      "version": "1.7.0",
+      "changedCharacters": [
+        "iron_giant"
+      ],
+      "changedPortraits": [
+        "iron_giant"
+      ],
+      "fromSource": {
+        "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
+        "sha256": "b7c215a00681328298919bb147900285a00335729934d08c28d9b7c608296929",
+        "bytes": 22079995
+      },
+      "toSource": {
+        "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
+        "sha256": "83d7708acad6c12c9f6dcf1cf29fad3222fc2fdfc1e509766a0eb18d6f6f6877",
+        "bytes": 22388572
+      },
+      "beforeManifestSnapshot": {
+        "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeIronGiant/asset_manifest.json",
+        "bytes": 363875,
+        "sha256": "68333849b6484108ce96217859b19b869a169bc0cd647307f4eb4742bd762cf4"
+      },
+      "beforeSourceSnapshot": {
+        "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeIronGiant/RiftCrown_ProductionAssets.blend",
+        "bytes": 22079995,
+        "sha256": "b7c215a00681328298919bb147900285a00335729934d08c28d9b7c608296929"
+      },
+      "beforePortraitSnapshot": {
+        "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeIronGiant/BeforePortraits.json",
+        "bytes": 74252,
+        "sha256": "a817361808cd04d2afad941f1889698e2e899d2e7a3c55e9b45f11cfa502b3a3"
+      },
+      "beforeRendererSummary": {
+        "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeIronGiant/BeforeApprovedPortraitProduction.json",
+        "bytes": 23805,
+        "sha256": "85fdffc015c70289f018cbc2ee114a1f51dc2ca076696445b142681abbf6541f"
+      },
+      "beforeIdentitySummary": {
+        "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeIronGiant/BeforeApprovedIdentitySheets.json",
+        "bytes": 1460,
+        "sha256": "61a0e2d49ad69c2edc1461d19b8fca994750622cf1f3e144fa06123eea246c78"
+      },
+      "historicalAcceptance": {
+        "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeIronGiant/AcceptedSourceRun1.6.0.json",
+        "bytes": 224619,
+        "sha256": "163c6d7b19587bb29ad60b67c1109a3ea5bea62bb4bd85fd3c6f96d5d07c6676"
+      },
+      "savedSceneComparison": {
+        "file": "Assets/Source/Revisions/DesignUpdate1.7.0/SavedSourceComparison.json",
+        "bytes": 55767,
+        "sha256": "acd54418663dd461e18d7e035ac8289d72b9a0d114b29271d1e77b9bb7b06215"
+      },
+      "comparisonVerifierSnapshot": {
+        "file": "Assets/Source/Revisions/DesignUpdate1.7.0/SavedSourceComparisonVerifier.py",
+        "bytes": 2447,
+        "sha256": "da84bb47146dc869398df288708e62e8952b96ec5eb702919777dbd1bf72a5f4"
+      },
+      "generationPreservation": {
+        "file": "Assets/Source/Revisions/DesignUpdate1.7.0/iron-giant-replacement.json",
+        "bytes": 445258,
+        "sha256": "20b1fc0ee9180f5919ac508e2ed43a351f1a4b0e7a0a9c16cc32ed06a0fe80e7"
+      },
+      "finalGenerationPreservation": {
+        "file": "Assets/Source/Revisions/DesignUpdate1.7.0/iron-giant-replacement-visor-clearance.json",
+        "bytes": 445650,
+        "sha256": "a3e478817a751a31fe7a7f30a9d4831e9157bd43b1fdd0dfaa6fa387eb4e6597"
+      },
+      "qualityEvidence": {
+        "file": "Assets/Source/Revisions/DesignUpdate1.7.0/IronQuality.json",
+        "bytes": 142020,
+        "sha256": "b4a1c26643e2910b0c9b6935025ffdb3e571b6a1bfe9b2d0005600f10c1d1814"
+      },
+      "exportEvidence": {
+        "file": "Assets/Source/Revisions/DesignUpdate1.7.0/IronExports.json",
+        "bytes": 14030,
+        "sha256": "4a30486c92f15077aa7ee60cde93c7718be1840f0a6fb9ede99503908a8c31b2"
+      },
+      "exportVerifierSnapshot": {
+        "file": "Assets/Source/Revisions/DesignUpdate1.7.0/IronExportVerifier.py",
+        "bytes": 9049,
+        "sha256": "02015bbe756c0648706a71bf86d45ce293c57d8f1a65b1c86ed89584222a9180"
+      },
+      "generationProducerUsedSnapshot": {
+        "file": "Assets/Source/Revisions/DesignUpdate1.7.0/GenerationProducerUsed.py",
+        "bytes": 92878,
+        "sha256": "8fd23860738fe4f80e1201ba8b9d71572bf0749db6f04f85215d28318b8b3e16"
+      },
+      "producerScripts": {
+        "generator": {
+          "file": "Build/generate_assets.py",
+          "bytes": 92940,
+          "sha256": "beae4e37805b4f08e540f4bc9701ddb685080adbeed4179a5598b34aab534d69"
+        },
+        "modelBuilder": {
+          "file": "Build/expansion_new_models.py",
+          "bytes": 72711,
+          "sha256": "12c70e7810a150751eaf1080d51773845edd9f0ff2d47afaa386b0db7affba7e"
+        },
+        "portraitRenderer": {
+          "file": "Build/render_approved_expansion.py",
+          "bytes": 16291,
+          "sha256": "b4af33dfe3d5413a465df4078d940b494b33f50965293710ac75df89b942d714"
+        },
+        "identityComposer": {
+          "file": "Build/compose_approved_identity.py",
+          "bytes": 7847,
+          "sha256": "2ef557733680a24380f84f40a53eabf83aff47ce12fffb60ea0321b6b78ddbde"
+        },
+        "qualityValidator": {
+          "file": "Build/validate_expansion_art_quality.py",
+          "bytes": 71204,
+          "sha256": "7b2cff1cc9775834edabb78fceccf0b1cdb1017b4525639e7267aa1379dde194"
+        },
+        "revisionValidator": {
+          "file": "Build/portrait_source_revision.py",
+          "bytes": 42856,
+          "sha256": "bc6e4b5929ec9d3c64af6cb253a3796a99fee558ca21c3ca550650ec6fde0cf9"
+        }
+      },
+      "qualifiedScope": "Only Iron Giant is newly built/rendered. Exact saved non-Iron objects/actions/materials and raw authored files qualify the prior accepted checks; old illustrations retain their original Source pins.",
+      "recordedGenerationProducerSnapshot": {
+        "file": "Assets/Source/Revisions/DesignUpdate1.7.0/RecordedFinalGenerationProducer.py",
+        "bytes": 92934,
+        "sha256": "afb15e98bd0dfcf42db948bdd973d39ba38b33ae7e417ead51e20a9361e76646"
+      },
+      "producerPinQualification": "The recorded end-of-run producer differs only in the save-call branch; replacement_proof was true, so both branches save with compress=True. Both exact byte versions are retained. Current pose/signature helpers are unchanged.",
+      "currentModelRecord": {
+        "file": "Assets/Source/Revisions/DesignUpdate1.7.0/CurrentIronModelRecord.json",
+        "bytes": 12527,
+        "sha256": "bac8ea020a175098ecd75dd88ec9221cec97d6f254ae5ab40c8ed5c7e7ae665a"
+      },
+      "importBindingQualification": {
+        "file": "Assets/Source/Revisions/DesignUpdate1.7.0/BeforeImportedBindings170/ImportBindingQualification.json",
+        "bytes": 5094,
+        "sha256": "8c32b51086a44006abff1cb348c8c0cade70c1214393d05996cd2046dfda939c"
+      }
     }
   ],
   "entities": {
@@ -10958,8 +11106,8 @@
       "timeSource": "Native simulation-clock geometry only; no material Time",
       "shaderProducer": {
         "file": "Build/import_unreal_assets.py",
-        "bytes": 73927,
-        "sha256": "25f9b9b9917c52a22cde1c83699a70a6b8c7324a3072949b4a986a8ee6377af7"
+        "bytes": 73906,
+        "sha256": "ef66fd24e6e13f996341be8aec27811d765763cf2b76215c206d88eba8b2d2da"
       },
       "contractProducer": {
         "file": "Build/generate_expansion_fx_contract.py",

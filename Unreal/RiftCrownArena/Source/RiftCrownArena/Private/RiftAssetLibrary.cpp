@@ -14,7 +14,7 @@ FString SerializeDefinitions(const std::vector<rift::Card>& Definitions)
 #define RF(K) O->SetNumberField(TEXT(#K),double(C.K))
         RF(cost);RF(count);RF(hp);RF(damage);RF(attackInterval);RF(moveSpeed);RF(range);RF(scale);RF(collisionRadius);RF(targetMask);RF(projectileSpeed);RF(shockwaveSpeed);RF(splash);RF(lifetime);RF(footprint);RF(towerDamage);RF(spellRadius);RF(castDelay);RF(chargeDamage);RF(slowPct);RF(slowDuration);RF(auraDamage);RF(auraInterval);RF(auraRadius);RF(stunDuration);RF(dotDamage);RF(dotDuration);RF(dotInterval);RF(rounds);
         RF(chargeMoveSeconds);RF(chargedMoveSpeed);RF(hpDecayPerSecond);RF(initialAttackCooldown);
-        RF(shieldHP);RF(deathSpawnCount);RF(invisibilityDuration);RF(dotStructureDamage);
+        RF(shieldHP);RF(deathSpawnCount);RF(invisibilityDuration);RF(dotStructureDamage);RF(healthCloakThreshold);
 #undef RF
 #define RB(K) O->SetBoolField(TEXT(#K),C.K)
         RB(flying);RB(canHitAir);RB(structuresOnly);RB(spell);RB(building);
@@ -70,7 +70,7 @@ bool URiftAssetCatalogSubsystem::Validate(FString& Error)const
         MATCH_STAT(DotDuration,dotDuration);MATCH_STAT(DotInterval,dotInterval);
         MATCH_STAT(ChargeMoveSeconds,chargeMoveSeconds);MATCH_STAT(ChargedMoveSpeed,chargedMoveSpeed);
         MATCH_STAT(HPDecayPerSecond,hpDecayPerSecond);MATCH_STAT(InitialAttackCooldown,initialAttackCooldown);
-        MATCH_STAT(ShieldHP,shieldHP);MATCH_STAT(InvisibilityDuration,invisibilityDuration);MATCH_STAT(DotStructureDamage,dotStructureDamage);
+        MATCH_STAT(ShieldHP,shieldHP);MATCH_STAT(InvisibilityDuration,invisibilityDuration);MATCH_STAT(DotStructureDamage,dotStructureDamage);MATCH_STAT(HealthCloakThreshold,healthCloakThreshold);
         Matches=Matches&&FMath::IsNearlyEqual(A->FrontSight,8.f,.001f)&&FMath::IsNearlyEqual(A->RearSight,5.f,.001f);
 #undef MATCH_STAT
         if(!Matches)

@@ -24,13 +24,31 @@
     },
     "iron_giant": {
       "file": "Assets/Renders/Expansion/Identity/iron_giant_IdentitySheet.png",
-      "bytes": 662015,
-      "sha256": "4dc8bfe2238ebe638c73218369ce8361795c5c5500518d06460c6e4edb1ccfe9"
+      "bytes": 691092,
+      "sha256": "406c668f0ebc97b90f4975e980b4fa01e08c16140ed77352f18a48b52f4e171f"
     },
     "shadow_surge": {
       "file": "Assets/Renders/Expansion/Identity/shadow_surge_IdentitySheet.png",
       "bytes": 502312,
       "sha256": "01d736f50ff9c168f4e7d4a391b7c8dbbe4a73dec1bdeb146915f9540f66f526"
     }
-  }
+  },
+  "selectedReplacements": [
+    {
+      "schema": 1,
+      "cards": [
+        "iron_giant"
+      ],
+      "sourceBlend": {
+        "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
+        "sha256": "83d7708acad6c12c9f6dcf1cf29fad3222fc2fdfc1e509766a0eb18d6f6f6877",
+        "bytes": 22388572
+      },
+      "composer": {
+        "file": "Build/compose_approved_identity.py",
+        "bytes": 7847,
+        "sha256": "2ef557733680a24380f84f40a53eabf83aff47ce12fffb60ea0321b6b78ddbde"
+      }
+    }
+  ]
 }

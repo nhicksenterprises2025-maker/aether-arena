@@ -554,7 +554,7 @@ int main(int argc, char **argv) {
             Near(card->attackInterval, .9, 0, "wave attack cadence");Near(card->range, 4, 0, "unchanged attack range");
             Near(card->splash, 4, 0, "radial reach");Near(card->shockwaveSpeed, 8, 0, "radial travel speed");
             Near(card->slowPct, .10, 0, "nonstacking slow potency");Near(card->slowDuration, 1.5, 0, "slow refresh duration");
-            Near(card->footprint, 1.65, 0, "building footprint");Near(card->scale, .95, 0, "model scale");
+            Near(card->footprint, 1.65, 0, "building footprint");Near(card->scale, 1.05, 0, "model scale");
             Near(card->lifetime, 45, 0, "natural expiry");Near(card->moveSpeed, 0, 0, "stationary");
             Near(card->projectileSpeed, 0, 0, "shockwave is independent of ordinary projectiles");
             for (Team team : {Team::Player, Team::Enemy}) {
@@ -1326,23 +1326,23 @@ int main(int argc, char **argv) {
                                   << " path=" << e.path.size() << " stuck=" << e.stuckTime << '\n';
             Check(allCrossed, "all four opposing heavy units pass on both bridges within ten seconds");
         });
-        Test("24 by 34 arena preserves physical tower axes and validates every new grid edge", [] {
+        Test("22 by 40 arena preserves physical tower axes and validates every new grid edge", [] {
             Match m(Quiet());
-            Check(arena::Width == 24 && arena::Height == 34, "confirmed 24 by 34 tile board");
-            Near(arena::BridgeCenterX * 1.25, 7.2, 1e-12, "larger tiles preserve physical bridge centers");
+            Check(arena::Width == 22 && arena::Height == 40, "confirmed 22 by 40 tile board");
+            Near(arena::BridgeCenterX * 1.25, 9.7, 1e-12, "updated arena places physical bridge centers");
             Near(arena::GuardX, arena::BridgeCenterX, 0, "Guard axis shares the bridge center");
             int guardsAligned = 0, coresCentered = 0;
             for (Team team : {Team::Player, Team::Enemy}) {
                 const double sign = team == Team::Player ? 1. : -1.;
                 const auto &core = Tower(m, team, EntityKind::Core);
                 Near(core.position.x, 0, 0, "Core remains centered between the bridge lanes");
-                Near(core.position.z * 1.25, sign * 17.3, 1e-12, "larger tiles preserve physical Core depth");
+                Near(core.position.z * 1.25, sign * 21.05, 1e-12, "updated arena places physical Core depth");
                 Near(core.radius, 1.35, 0, "Core collision radius retained");
                 ++coresCentered;
                 for (int lane : {-1, 1}) {
                     const auto &guard = Tower(m, team, EntityKind::Guard, lane);
-                    Near(guard.position.z * 1.25, sign * 13.4, 1e-12, "larger tiles preserve physical Guard depth");
-                    Near(guard.position.x * 1.25, lane * 7.2, 1e-12, "physical Guard and bridge axes stay aligned");
+                    Near(guard.position.z * 1.25, sign * 17.15, 1e-12, "updated arena places physical Guard depth");
+                    Near(guard.position.x * 1.25, lane * 9.7, 1e-12, "physical Guard and bridge axes stay aligned");
                     Near(guard.position.x, lane * arena::BridgeCenterX, 0, "actual Guard body follows the bridge axis");
                     Near(guard.radius, 1.15, 0, "Guard collision radius retained");
                     ++guardsAligned;
@@ -1350,48 +1350,48 @@ int main(int argc, char **argv) {
                 Near(core.position.x, (Tower(m, team, EntityKind::Guard, -1).position.x +
                                       Tower(m, team, EntityKind::Guard, 1).position.x) * .5, 0,
                      "Core stays centered between actual mirrored Guards");
-                Check(m.CanPlace(team, *FindCard("ironclad"), {11.5, sign * 16.5}), "new outer corner accepts ordinary ground card");
+                Check(m.CanPlace(team, *FindCard("ironclad"), {10.5, sign * 19.5}), "new outer corner accepts ordinary ground card");
                 m.SetAether(team, 10);
-                Check(m.Play(team, 0, {-11.5, sign * 16.5}), "new outer paid corner accepted");
+                Check(m.Play(team, 0, {-10.5, sign * 19.5}), "new outer paid corner accepted");
                 ClearOwnStructures(m, Unit(m, "ironclad", team), Unit(m, "ironclad", team).position);
-                Check(m.Spawn(team, "sky_manta", {11.5, sign * 16.5}), "new outer DEV corner accepted");
+                Check(m.Spawn(team, "sky_manta", {10.5, sign * 19.5}), "new outer DEV corner accepted");
             }
-            Near(SnapToTile({12, 17}).x, 11.5, 0, "positive X edge snaps to the last center");
-            Near(SnapToTile({12, 17}).z, 16.5, 0, "positive Z edge snaps to the last center");
-            Near(SnapToTile({-12, -17}).x, -11.5, 0, "negative X edge snaps to the last center");
-            Near(SnapToTile({-12, -17}).z, -16.5, 0, "negative Z edge snaps to the last center");
-            Check(!m.Spawn(Team::Player, "ironclad", {12.001, 10}), "outside new width rejected");
-            Check(!m.Spawn(Team::Enemy, "ironclad", {0, -17.001}), "outside new depth rejected");
-            Near(arena::PocketOuterX, 11.2, 1e-12, "pocket outer edge derives from new width");
-            Near(arena::PocketMaxDepth, 7.57, 1e-12, "pocket depth derives from adjusted Guard");
+            Near(SnapToTile({11, 20}).x, 10.5, 0, "positive X edge snaps to the last center");
+            Near(SnapToTile({11, 20}).z, 19.5, 0, "positive Z edge snaps to the last center");
+            Near(SnapToTile({-11, -20}).x, -10.5, 0, "negative X edge snaps to the last center");
+            Near(SnapToTile({-11, -20}).z, -19.5, 0, "negative Z edge snaps to the last center");
+            Check(!m.Spawn(Team::Player, "ironclad", {11.001, 10}), "outside new width rejected");
+            Check(!m.Spawn(Team::Enemy, "ironclad", {0, -20.001}), "outside new depth rejected");
+            Near(arena::PocketOuterX, 10.2, 1e-12, "pocket outer edge derives from new width");
+            Near(arena::PocketMaxDepth, 10.57, 1e-12, "pocket depth derives from adjusted Guard");
             int tileCenters = 0, edgeFixtures = 0;
             std::set<double> centersX, centersZ;
-            for (int row = 0; row < 34; ++row)
-                for (int column = 0; column < 24; ++column) {
-                    const Vec2 point{-11.5 + column, -16.5 + row};
+            for (int row = 0; row < 40; ++row)
+                for (int column = 0; column < 22; ++column) {
+                    const Vec2 point{-10.5 + column, -19.5 + row};
                     const Vec2 snapped = SnapToTile(point);
                     Near(snapped.x, point.x, 0, "all grid centers retain exact X");
                     Near(snapped.z, point.z, 0, "all grid centers retain exact Z");
                     centersX.insert(snapped.x); centersZ.insert(snapped.z); ++tileCenters;
                 }
-            Check(tileCenters == 816 && centersX.size() == 24 && centersZ.size() == 34,
-                  "exactly 24 across and 34 Core-to-Core grid centers");
+            Check(tileCenters == 880 && centersX.size() == 22 && centersZ.size() == 40,
+                  "exactly 22 across and 40 Core-to-Core grid centers");
             for (const auto &card : Cards())
                 for (Team team : {Team::Player, Team::Enemy})
                     for (int side : {-1, 1}) {
                         Match edge(CollisionOptions(card.id, "ironclad"));
                         const double sign = team == Team::Player ? 1. : -1.;
                         if (card.building)
-                            Check(!edge.CanPlace(team, card, {side * 11.5, sign * 16.5}),
+                            Check(!edge.CanPlace(team, card, {side * 10.5, sign * 19.5}),
                                   "a building footprint cannot extend beyond the last corner tile");
                         const double inset = card.building ? 1 : 0;
-                        PaidCollisionCard(edge, team, card.id, {side * (11.5 - inset), sign * (16.5 - inset)});
+                        PaidCollisionCard(edge, team, card.id, {side * (10.5 - inset), sign * (19.5 - inset)});
                         BodyClearance(edge, "new arena paid outer corner");
                         for (const auto &body : edge.State().entities)
                             if (!body.dead && body.kind < EntityKind::Guard) {
                                 const double margin = .40 + body.radius * .72;
-                                Check(std::abs(body.position.x) <= 12 - margin + 1e-8 &&
-                                          std::abs(body.position.z) <= 17 - margin + 1e-8,
+                                Check(std::abs(body.position.x) <= 11 - margin + 1e-8 &&
+                                          std::abs(body.position.z) <= 20 - margin + 1e-8,
                                       "every paid edge member remains inside its full body bounds");
                             }
                         ++edgeFixtures;
@@ -2463,6 +2463,273 @@ int main(int argc, char **argv) {
                 Check(crossed[0] && crossed[1], "both non-aggro runners pass the opposing body and clear the same bridge");
             }
         });
+        Test("direct melee reach uses body edges while ranged reach remains unchanged", [] {
+            Match m(Quiet());
+            Entity source, target;
+            source.kind = EntityKind::Troop;source.team = Team::Player;
+            target.kind = EntityKind::Guard;target.team = Team::Enemy;target.radius = 1.15;
+            for (const auto &card : Cards()) {
+                if (card.spell || card.building)
+                    continue;
+                source.cardId = card.id;source.radius = card.collisionRadius;source.flying = card.flying;
+                Near(m.AttackReach(source, target), card.range + target.radius +
+                    (card.projectileSpeed <= 0 ? source.radius : 0.), 1e-12,
+                    "only direct melee adds the actual source body radius " + card.id);
+                Near(FindCard(card.id)->range, card.range, 0, "melee correction changes no authored card range");
+            }
+            source.cardId = "pulverizer";source.kind = EntityKind::Building;source.radius = .858;
+            Near(m.AttackReach(source, target), 4 + 1.15 + .35, 1e-12, "stationary building keeps center reach");
+            source.kind = EntityKind::Guard;
+            Near(m.AttackReach(source, target), 10 + 1.15, 1e-12, "Guard keeps center reach");
+            source.kind = EntityKind::Core;
+            Near(m.AttackReach(source, target), 8.9 + 1.15, 1e-12, "Core keeps center reach");
+        });
+        Test("paid hog swarms wrap free target arcs and all members attack together", [] {
+            int fixtures = 0, members = 0;
+            int slowContactFixtures = 0;
+            for (const auto *cardId : {"mini_stampede", "stampede"})
+                for (const Team team : {Team::Player, Team::Enemy})
+                    for (const int lane : {-1, 1})
+                        for (const EntityKind kind : {EntityKind::Guard, EntityKind::Core, EntityKind::Building}) {
+                            Match m(CollisionOptions(cardId, "archer_tower"));FreezeCrowns(m);
+                            const int sign = team == Team::Player ? 1 : -1;
+                            const Team opponent = team == Team::Player ? Team::Enemy : Team::Player;
+                            EntityId targetId = 0;
+                            if (kind == EntityKind::Building) {
+                                targetId = PaidCollisionCard(m, opponent, "archer_tower", {lane * 7.5, -sign * 5.5})[0].id;
+                                MutableEntity(m, targetId).stunUntil = 100;
+                            } else {
+                                if (kind == EntityKind::Core)
+                                    Check(m.SetTowerHP(Tower(m, opponent, EntityKind::Guard, lane).id, 0), "real Guard destruction exposes Core lane");
+                                targetId = Tower(m, opponent, kind, kind == EntityKind::Guard ? lane : 0).id;
+                            }
+                            const auto swarm = PaidCollisionCard(m, team, cardId, {lane * 7.5, sign * 5.5});
+                            const auto *card = FindCard(cardId);
+                            Check(swarm.size() == std::size_t(card->count), "contact fixture keeps complete actual paid swarm");
+                            const auto oppositeGuard = Tower(m, opponent, EntityKind::Guard, -lane).id;
+                            std::map<EntityId, double> lastHit;
+                            std::map<EntityId, double> firstHit;
+                            std::map<EntityId, double> approachEntry;
+                            std::map<EntityId, double> approachTravel, stationaryClock, stationaryMax;
+                            std::map<EntityId, double> windowAt, netWait, netWaitMax;
+                            std::map<EntityId, Vec2> windowPosition;
+                            std::size_t eventCursor = m.Events().size();
+                            int peakConcurrent = 0, togetherFrames = 0;
+                            double firstTogether = -1;
+                            for (int step = 0; step < 24 * 60; ++step) {
+                                // Declared diagnostic HP maintenance keeps one
+                                // real target alive long enough to observe arrival.
+                                // Costs, movement, attack intervals and body sizes
+                                // remain the exact canonical paid game definitions.
+                                auto &target = MutableEntity(m, targetId);
+                                Check(!target.dead, "contact target remains live before maintenance");
+                                if (kind == EntityKind::Building) target.hp = target.maxHp;
+                                else Check(m.SetTowerHP(targetId, target.maxHp), "declared diagnostic crown HP maintenance accepted");
+                                const auto before = m.State().entities;m.Step(1. / 60.);
+                                SweptBodyClearance(m, before, "swarm target arc arrival");
+                                for (; eventCursor < m.Events().size(); ++eventCursor) {
+                                    const auto &event = m.Events()[eventCursor];
+                                    if (event.type == "damage" && event.target == targetId && event.cardId == cardId) {
+                                        Near(event.requested, card->damage, 0, "every swarm hit retains authored per-member damage");
+                                        lastHit[event.source] = event.time;
+                                        firstHit.try_emplace(event.source, event.time);
+                                    }
+                                }
+                                int concurrent = 0, recentlyHit = 0;
+                                for (const auto &start : swarm) {
+                                    const auto &body = ById(m, start.id);
+                                    Check(!body.dead && body.target != oppositeGuard, "contact movement keeps each living member and its original bridge lane target");
+                                    Near(body.radius, card->collisionRadius, 0, "contact movement keeps the authored body radius");
+                                    if (body.target == targetId && body.position.z * ById(m, targetId).position.z >= 0 &&
+                                        m.CombatDistance(body, ById(m, targetId)) <=
+                                            card->range + body.radius + ById(m, targetId).radius + 4.)
+                                        approachEntry.try_emplace(body.id, m.State().elapsed);
+                                    if (approachEntry.count(body.id) && !firstHit.count(body.id)) {
+                                        const auto prior = std::find_if(before.begin(), before.end(), [&](const Entity &old) {return old.id == body.id;});
+                                        const double travel = std::hypot(body.position.x - prior->position.x, body.position.z - prior->position.z);
+                                        approachTravel[body.id] += travel;
+                                        stationaryClock[body.id] = travel < .0001 ? stationaryClock[body.id] + 1. / 60. : 0.;
+                                        stationaryMax[body.id] = std::max(stationaryMax[body.id], stationaryClock[body.id]);
+                                        if (!windowAt.count(body.id)) {windowAt[body.id] = m.State().elapsed;windowPosition[body.id] = body.position;}
+                                        if (m.State().elapsed - windowAt[body.id] >= .5 - 1e-9) {
+                                            const double net = std::hypot(body.position.x - windowPosition[body.id].x, body.position.z - windowPosition[body.id].z);
+                                            netWait[body.id] = net < .03 ? netWait[body.id] + .5 : 0.;
+                                            netWaitMax[body.id] = std::max(netWaitMax[body.id], netWait[body.id]);
+                                            windowAt[body.id] = m.State().elapsed;windowPosition[body.id] = body.position;
+                                        }
+                                        if (stationaryClock[body.id] > .5 && stationaryClock[body.id] <= .5 + 1. / 60. + 1e-9) {
+                                            EntityId blocker = 0;double closest = 1e9;
+                                            for (const auto &other : m.State().entities) if (PhysicalPair(body, other)) {
+                                                const double gap = std::hypot(body.position.x - other.position.x, body.position.z - other.position.z) -
+                                                    body.radius - other.radius - (other.kind == EntityKind::Troop ? .02 : .22);
+                                                if (gap < closest) {closest = gap;blocker = other.id;}
+                                            }
+                                            std::cout << "SWARM_BLOCKED card=" << cardId << " id=" << body.id << " time=" << m.State().elapsed
+                                                      << " position=" << body.position.x << ',' << body.position.z << " arrival=" << body.pathTarget.x << ',' << body.pathTarget.z
+                                                      << " reason=" << (body.path.empty() ? "no_route" : "contact_or_obstacle")
+                                                      << " nearest_body=" << blocker << " clearance_gap=" << closest << '\n';
+                                        }
+                                    }
+                                    if (body.target == targetId && m.CombatDistance(body, ById(m, targetId)) <=
+                                        card->range + body.radius + ById(m, targetId).radius + 1e-9)
+                                        ++concurrent;
+                                    const auto hit = lastHit.find(body.id);
+                                    if (hit != lastHit.end() && m.State().elapsed - hit->second <= card->attackInterval + .05)
+                                        ++recentlyHit;
+                                }
+                                peakConcurrent = std::max(peakConcurrent, concurrent);
+                                if (concurrent == card->count && recentlyHit == card->count) {
+                                    if (firstTogether < 0) firstTogether = m.State().elapsed;
+                                    ++togetherFrames;
+                                }
+                            }
+                            std::cout << "SWARM_ENGAGEMENT card=" << cardId << " team=" << int(team) << " lane=" << lane
+                                      << " target_kind=" << int(kind) << " members=" << swarm.size()
+                                      << " peak_concurrent=" << peakConcurrent << " hit_members=" << lastHit.size()
+                                      << " together_frames=" << togetherFrames << " first_together=" << firstTogether << '\n';
+                            double firstAttack = 1e9, lastArrivalAttack = 0;
+                            double longestApproach = 0;
+                            for (const auto &[id, time] : firstHit) {
+                                firstAttack = std::min(firstAttack, time);
+                                lastArrivalAttack = std::max(lastArrivalAttack, time);
+                                Check(approachEntry.count(id), "every observed attacker has an actual local approach entry");
+                                longestApproach = std::max(longestApproach, time - approachEntry.at(id));
+                            }
+                            std::cout << "SWARM_CONTACT_TIMING card=" << cardId << " team=" << int(team) << " lane=" << lane
+                                      << " target_kind=" << int(kind) << " requested_drop=" << lane * 7.5 << ',' << sign * 5.5
+                                      << " target_center=" << ById(m, targetId).position.x << ',' << ById(m, targetId).position.z
+                                      << " first_member_attack=" << firstAttack << " last_member_first_attack=" << lastArrivalAttack
+                                      << " settling_delay=" << lastArrivalAttack - firstAttack
+                                      << " max_local_approach=" << longestApproach << '\n';
+                            for (const auto &start : swarm)
+                                std::cout << "SWARM_MEMBER_TIMING card=" << cardId << " team=" << int(team) << " lane=" << lane
+                                          << " target_kind=" << int(kind) << " id=" << start.id << " spawn=" << start.position.x << ',' << start.position.z
+                                          << " local_entry=" << (approachEntry.count(start.id) ? approachEntry.at(start.id) : -1)
+                                          << " first_attack=" << (firstHit.count(start.id) ? firstHit.at(start.id) : -1)
+                                          << " local_path_length=" << approachTravel[start.id] << " max_stationary_wait=" << stationaryMax[start.id]
+                                          << " max_no_progress_wait=" << netWaitMax[start.id] << '\n';
+                            if (togetherFrames < 30 || lastArrivalAttack - firstAttack > 5)
+                                for (const auto &start : swarm) {
+                                    const auto &body = ById(m, start.id);
+                                    std::cerr << "ENGAGEMENT_MEMBER id=" << body.id << " position=" << body.position.x << ',' << body.position.z
+                                              << " target=" << body.target << " last_hit=" << (lastHit.count(body.id) ? lastHit.at(body.id) : -1)
+                                              << " first_hit=" << (firstHit.count(body.id) ? firstHit.at(body.id) : -1)
+                                              << " path_size=" << body.path.size() << " stuck=" << body.stuckTime
+                                              << " arrival=" << body.pathTarget.x << ',' << body.pathTarget.z << '\n';
+                                    for (const auto &point : body.path)
+                                        std::cerr << "ENGAGEMENT_PATH id=" << body.id << " point=" << point.x << ',' << point.z << '\n';
+                                }
+                            Check(peakConcurrent == card->count && lastHit.size() == swarm.size() && togetherFrames >= 30,
+                                  "every paid swarm member occupies legal melee reach and damages the same live target concurrently");
+                            slowContactFixtures += longestApproach > 5 ||
+                                lastArrivalAttack - firstAttack > (kind == EntityKind::Core ? 6. : 5.);
+                            ++fixtures;members += int(swarm.size());
+                        }
+            Check(fixtures == 24 && members == 240, "both real hog swarms and every member contact Guard Core and paid building in both mirrored lanes");
+            Check(slowContactFixtures == 0, "all members join within five seconds of local approach, with bounded first-to-last arrival travel");
+        });
+        Test("swarm target arc reservations remain deterministic across frame chunks", [] {
+            auto options = CollisionOptions("stampede", "archer_tower");Match first(options), repeat(options);
+            for (Match *m : {&first, &repeat}) {
+                FreezeCrowns(*m);
+                Check(m->SetTowerHP(Tower(*m, Team::Enemy, EntityKind::Guard, -1).id, 0), "deterministic real Core lane opened");
+                PaidCollisionCard(*m, Team::Player, "stampede", {-7.5, 5.5});
+            }
+            for (int step = 0; step < 12 * 60; ++step) first.Step(1. / 60.);
+            for (int step = 0; step < 48; ++step) repeat.Step(.25);
+            Same(first, repeat);BodyClearance(first, "deterministic actual target arc bodies");
+        });
+        Test("real crown fire frees swarm contacts and living waiting members refill promptly", [] {
+            int refills = 0, exposedDeaths = 0;
+            double worstLatency = 0;
+            for (const Team team : {Team::Player, Team::Enemy}) for (const int lane : {-1, 1}) {
+                Match m(CollisionOptions("mini_stampede", "stampede"));
+                const Team opponent = team == Team::Player ? Team::Enemy : Team::Player;
+                const int sign = team == Team::Player ? 1 : -1;
+                const EntityId targetId = Tower(m, opponent, EntityKind::Guard, lane).id;
+                // Two actual paid plays exceed the contact ring's body capacity.
+                // Every crown fires normally; no HP, damage or position edits.
+                const double dropDepth = team == Team::Player && lane == -1 ? 4.5 : 3.5;
+                auto paid = PaidCollisionCard(m, team, "mini_stampede", {lane * 7.5, sign * dropDepth});
+                const auto larger = PaidCollisionCard(m, team, "stampede", {lane * 7.5, sign * dropDepth});
+                paid.insert(paid.end(), larger.begin(), larger.end());
+                Check(paid.size() == 20, "two paid swarm plays retain all twenty real bodies");
+                struct Vacancy {EntityId lost = 0;double at = 0, deadline = 0, distance = 0;};
+                std::map<EntityId, Vacancy> waiting;
+                std::set<EntityId> hit;
+                std::size_t cursor = m.Events().size();
+                int fixtureRefills = 0;
+                for (int frame = 0; frame < 20 * 60; ++frame) {
+                    const auto before = m.State().entities;m.Step(1. / 60.);
+                    SweptBodyClearance(m, before, "real crown fire swarm contact refill");
+                    for (; cursor < m.Events().size(); ++cursor) {
+                        const auto &event = m.Events()[cursor];
+                        if (event.type != "damage" || event.target != targetId ||
+                            (event.cardId != "mini_stampede" && event.cardId != "stampede")) continue;
+                        hit.insert(event.source);
+                        const auto refill = waiting.find(event.source);
+                        if (refill == waiting.end()) continue;
+                        const double latency = event.time - refill->second.at;
+                        std::cout << "SWARM_VACANCY_REFILL team=" << int(team) << " lane=" << lane
+                                  << " lost=" << refill->second.lost << " replacement=" << event.source
+                                  << " death_time=" << refill->second.at << " hit_time=" << event.time
+                                  << " latency=" << latency << " direct_contact_distance=" << refill->second.distance
+                                  << " allowed_latency=" << refill->second.deadline - refill->second.at << '\n';
+                        Check(event.time <= refill->second.deadline + 1e-9,
+                              "a living nearby waiter refills a real crown casualty within direct walking time plus normal steering allowance");
+                        worstLatency = std::max(worstLatency, latency);++refills;++fixtureRefills;
+                        waiting.erase(refill);
+                    }
+                    const auto *target = FindEntity(m, targetId);
+                    for (auto it = waiting.begin(); it != waiting.end();) {
+                        const auto *body = FindEntity(m, it->first);
+                        if (!target || target->dead || !body || body->dead) {it = waiting.erase(it);continue;}
+                        if (m.State().elapsed > it->second.deadline + 1e-9)
+                            std::cerr << "SWARM_VACANCY_DELAY team=" << int(team) << " lane=" << lane << " lost=" << it->second.lost
+                                      << " waiter=" << body->id << " elapsed=" << m.State().elapsed << " death_time=" << it->second.at
+                                      << " deadline=" << it->second.deadline << " position=" << body->position.x << ',' << body->position.z
+                                      << " arrival=" << body->pathTarget.x << ',' << body->pathTarget.z << '\n';
+                        Check(m.State().elapsed <= it->second.deadline + 1e-9,
+                              "a live waiting member cannot remain sealed behind a vacated nearby attacking contact");
+                        ++it;
+                    }
+                    if (!target || target->dead) break;
+                    for (const auto &lost : before) {
+                        if (lost.dead || lost.team != team || !hit.count(lost.id) || lost.target != targetId ||
+                            m.CombatDistance(lost, *target) > m.AttackReach(lost, *target) + 1e-9) continue;
+                        const auto *now = FindEntity(m, lost.id);
+                        if (now && !now->dead) continue;
+                        ++exposedDeaths;
+                        EntityId next = 0;double nearest = 3.;
+                        for (const auto &candidate : paid) {
+                            const auto *body = FindEntity(m, candidate.id);
+                            if (!body || body->dead || hit.count(body->id) || waiting.count(body->id) || body->target != targetId) continue;
+                            const double distance = std::hypot(body->position.x - lost.position.x, body->position.z - lost.position.z);
+                            bool clear = true;
+                            for (const auto &obstacle : m.State().entities) {
+                                if (obstacle.id == lost.id || !PhysicalPair(*body, obstacle)) continue;
+                                const double clearance = body->radius + obstacle.radius +
+                                    (obstacle.kind == EntityKind::Troop ? .02 : .22);
+                                if (SegmentDistance(body->position, lost.position, obstacle.position) < clearance - 1e-8) {clear = false;break;}
+                            }
+                            if (!clear) continue;
+                            if (distance < nearest) {nearest = distance;next = body->id;}
+                        }
+                        if (next) {
+                            const Card *definition = FindEntityDefinition(ById(m,next).cardId);
+                            const double allowance = std::max(1., nearest / definition->moveSpeed + .75);
+                            waiting[next] = {lost.id, m.State().elapsed, m.State().elapsed + allowance, nearest};
+                        }
+                    }
+                }
+                std::cout << "SWARM_VACANCY_FIXTURE team=" << int(team) << " lane=" << lane << " paid_members=20 hit_members=" << hit.size()
+                          << " refills=" << fixtureRefills << " exposed_deaths_so_far=" << exposedDeaths << '\n';
+                Check(fixtureRefills > 0, "real crown fire exposes and refills a clear-route waiting contact in every mirrored lane");
+            }
+            Check(refills > 0 && exposedDeaths > 0, "real crown fire actually exposes and refills attacking contacts during the four mirrored matches");
+            std::cout << "SWARM_VACANCY_SUMMARY fixtures=4 exposed_attacker_deaths=" << exposedDeaths
+                      << " completed_refills=" << refills << " worst_latency=" << worstLatency << '\n';
+        });
         Test("dense paid mixed ground crowd queues at bridges and makes bounded forward progress", [] {
             const std::vector<std::string> deck{"boulderback", "twin_blades", "ironclad", "rambeast",
                                                 "frost_fang", "ember_archer", "arc_mage", "bullet_burst"};
@@ -2531,22 +2798,38 @@ int main(int argc, char **argv) {
                 std::vector<Entity> members, ground, buildings;
                 int adjustedBuildingDrops = 0;
                 for (int play = 0; play < 16; ++play) {
-                    Vec2 drop{lane * (arena::BridgeCenterX + .3), sign * (arena::GuardDepth - 4.9)};
-                    if (play == 9) drop = {lane * (arena::BridgeCenterX - .7), sign * (arena::GuardDepth - 5.9)};
-                    if (play == 15) drop = {lane * (arena::BridgeCenterX + 2.3), sign * (arena::GuardDepth - 5.9)};
+                    // This measures escape through the bridge. Keep its paid
+                    // pocket's river-relative travel distance when the crowns
+                    // move farther back in an arena geometry update.
+                    Vec2 drop{lane * (arena::BridgeCenterX + .3), sign * 5.5};
+                    if (play == 9) drop = {lane * (arena::BridgeCenterX - .7), sign * 4.5};
+                    if (play == 15) drop = {lane * (arena::BridgeCenterX + 2.3), sign * 4.5};
+                    drop = SnapToTile(drop);
                     const Vec2 requested = drop;
                     const auto id = m.State().hands[int(team)][slots[play]];
                     const auto *card = FindCard(id);
+                    auto buildingTileFree = [&](Vec2 candidate) {
+                        if (!m.CanPlace(team, *card, candidate) || candidate.z * sign < 4.5 ||
+                            std::abs(candidate.x) > arena::HalfWidth - .40 - card->collisionRadius * .72) return false;
+                        for (const auto &body : m.State().entities) {
+                            if (body.dead || (body.kind == EntityKind::Troop && body.flying)) continue;
+                            if (std::hypot(candidate.x - body.position.x, candidate.z - body.position.z) <
+                                card->collisionRadius + body.radius + .22 - 1e-9) return false;
+                        }
+                        return true;
+                    };
                     // Mirror body offsets can make a building request illegal.
-                    // Choose a real legal requested tile, never edit a spawned body.
-                    if (card->building && !m.CanPlace(team, *card, drop)) {
+                    // Request a genuinely free tile at this pocket's depth;
+                    // resolving a crowded request nearer the river can close
+                    // the selected bridge physically to the largest bodies.
+                    if (card->building && !buildingTileFree(drop)) {
                         bool legal = false;
                         for (int ring = 1; ring <= 8 && !legal; ++ring)
                             for (int direction = 0; direction < 8 && !legal; ++direction) {
                                 const double angle = direction * 3.14159265358979323846 * .25;
                                 const Vec2 candidate = SnapToTile({requested.x + ring * std::cos(angle),
                                                                    requested.z + ring * std::sin(angle)});
-                                if (m.CanPlace(team, *card, candidate)) {drop = candidate;legal = true;}
+                                if (buildingTileFree(candidate)) {drop = candidate;legal = true;}
                             }
                         Check(legal, "paid building pocket finds a lawful nearby requested building tile");
                         ++adjustedBuildingDrops;
@@ -2566,8 +2849,15 @@ int main(int argc, char **argv) {
                 Check(members.size() == 31 && ground.size() == 11 && buildings.size() == 3,
                       "exact sixteen paid drops retain thirty-one bodies including eleven ground troops and three buildings");
                 Near(FindCard("archer_tower")->lifetime, 25, 0, "pocket keeps authored twenty-five-second building lifetime");
-                if (team == Team::Player && lane == 1)
-                    Check(adjustedBuildingDrops == 0, "resized bridge pocket preserves every exact requested tile");
+                if (team == Team::Enemy && lane == 1) {
+                    for (const auto &building : buildings)
+                        std::cout << "POCKET_STATIC_OBSTACLE id=" << building.id << " pos=" << building.position.x << ',' << building.position.z
+                                  << " radius=" << building.radius << '\n';
+                    for (const auto &start : ground) {
+                        const auto path = m.FindPath(start, Tower(m, Team::Player, EntityKind::Guard, lane), lane);
+                        std::cout << "POCKET_INITIAL_ROUTE id=" << start.id << " card=" << start.cardId << " points=" << path.size() << '\n';
+                    }
+                }
                 std::map<EntityId, bool> crossed;
                 std::size_t crossedAt12 = 0;
                 for (int step = 0; step < deadline * 60; ++step) {
@@ -2692,11 +2982,115 @@ int main(int argc, char **argv) {
                     }
                 }
                 Same(first, repeat);
+                if (crossed.size() != ground.size()) for (const auto &start : ground) if (!crossed.count(start.id)) {
+                    const auto *body = FindEntity(first, start.id);
+                    std::cerr << "ORIGINAL_POCKET_UNCROSSED team=" << int(team) << " lane=" << lane << " id=" << start.id
+                              << " card=" << start.cardId << " start=" << start.position.x << ',' << start.position.z;
+                    if (body) {
+                        std::cerr << " end=" << body->position.x << ',' << body->position.z << " hp=" << body->hp << " dead=" << body->dead
+                                  << " target=" << body->target << " stuck=" << body->stuckTime << " goal=" << body->pathTarget.x << ',' << body->pathTarget.z;
+                        for (const auto &point : body->path) std::cerr << " via=" << point.x << ',' << point.z;
+                    } else std::cerr << " removed=1";
+                    std::cerr << '\n';
+                }
                 Check(crossed.size() == ground.size(), "all eleven original-layout ground bodies clear their bridge within twenty seconds before building expiry");
                 std::cout << "COLLISION_ORIGINAL_POCKET core_maintained_diagnostic=1 team=" << int(team)
                           << " lane=" << lane << " casts_per_repeat=16 members=31 ground=" << ground.size()
                           << " crossed=" << crossed.size() << " seconds=20 deterministic_repeats=2\n";
             }
+        });
+        Test("physically sealed paid bridge waits safely and resumes after real building expiry", [] {
+            const std::vector<std::string> deck{"ironclad", "twin_blades", "boulderback", "archer_tower",
+                                                "sky_manta", "vampire_bats", "storm_raven", "frost_fang"};
+            const int slots[]{1, 2, 2, 3, 0, 1, 0, 1, 0, 1, 2, 3, 2, 3, 2, 3};
+            auto options = Quiet();options.seed = 135;options.decks[1] = deck;
+            Match m(options);FreezeCrowns(m);
+            std::vector<Entity> ground, buildings;
+            for (int play = 0; play < 16; ++play) {
+                Vec2 drop{arena::BridgeCenterX + .3, -5.5};
+                if (play == 9) drop = {arena::BridgeCenterX - .7, -4.5};
+                if (play == 15) drop = {arena::BridgeCenterX + 2.3, -4.5};
+                drop = SnapToTile(drop);
+                const auto requested = drop;
+                const auto id = m.State().hands[1][slots[play]];
+                const auto *card = FindCard(id);
+                // Reproduce the observed legal casts whose normal crowded
+                // placement resolution physically closes this bridge. This
+                // fixture intentionally permits that resolved wall geometry.
+                if (card->building && !m.CanPlace(Team::Enemy, *card, drop)) {
+                    bool legal = false;
+                    for (int ring = 1; ring <= 8 && !legal; ++ring)
+                        for (int direction = 0; direction < 8 && !legal; ++direction) {
+                            const double angle = direction * 3.14159265358979323846 * .25;
+                            const auto candidate = SnapToTile({requested.x + ring * std::cos(angle), requested.z + ring * std::sin(angle)});
+                            if (m.CanPlace(Team::Enemy, *card, candidate)) {drop = candidate;legal = true;}
+                        }
+                    Check(legal, "sealed bridge still uses a legal real paid building request");
+                }
+                const auto added = PaidCollisionCard(m, Team::Enemy, id, drop);
+                for (const auto &body : added) {
+                    if (body.kind == EntityKind::Troop && !body.flying) ground.push_back(body);
+                    if (body.kind == EntityKind::Building) buildings.push_back(body);
+                }
+                BodyClearance(m, "sealed bridge paid landing");
+            }
+            ++collisionPaidFixtures;
+            Check(ground.size() == 11 && buildings.size() == 3, "sealed bridge retains eleven paid ground members and three actual building bodies");
+            const auto target = Tower(m, Team::Player, EntityKind::Guard, 1);
+            std::vector<Entity> waiting;
+            int physicallySealed = 0;
+            for (const auto &body : ground)
+                if (m.FindPath(body, target, 1).empty()) {
+                    waiting.push_back(body);
+                    physicallySealed += body.cardId == "boulderback";
+                }
+            Check(waiting.size() == 5 && physicallySealed == 3,
+                  "observed grid-unrouted cohort includes the three analytically sealed Boulderbacks");
+            std::map<EntityId, double> crossed;
+            double openedAt = -1;
+            for (int frame = 0; frame < 45 * 60; ++frame) {
+                // Explicit observation-only crown suppression and HP upkeep
+                // prevent fire/casualties or an early victory ending the clock.
+                // Building HP decay, mandatory lifetime and all troops are real.
+                for (const auto &body : m.State().entities)
+                    if (!body.dead && (body.kind == EntityKind::Guard || body.kind == EntityKind::Core))
+                        Check(m.SetTowerHP(body.id, body.maxHp), "declared sealed-bridge crown HP maintenance accepted");
+                const auto before = m.State().entities;m.Step(1. / 60.);
+                SweptBodyClearance(m, before, "sealed bridge wait and expiry recovery");
+                bool allLive = true;
+                for (const auto &start : buildings) {
+                    const auto *body = FindEntity(m, start.id);
+                    allLive = allLive && body && !body->dead;
+                    if (body && !body->dead) {
+                        Near(std::hypot(body->position.x - start.position.x, body->position.z - start.position.z), 0, 0,
+                             "sealed bridge never shoves its stationary obstacles");
+                        Check(body->hp > 0 && m.State().elapsed < 25 + 1e-8, "live wall follows real building HP and lifetime");
+                    }
+                }
+                if (!allLive && openedAt < 0) {
+                    openedAt = m.State().elapsed;
+                    Near(openedAt, 25, 1. / 60. + 1e-8, "bridge wall opens at mandatory expiry rather than a shortened lifetime");
+                }
+                for (const auto &start : waiting) {
+                    const auto &body = ById(m, start.id);
+                    Check(!body.dead, "suppressed crown observation keeps every waiting paid member alive");
+                    if (allLive && body.cardId == "boulderback")
+                        Check(body.position.z <= arena::RiverHalfWidth + .28, "a physically blocked paid body cannot cross the live solid wall");
+                    if (std::abs(body.position.z) < arena::RiverHalfWidth + .28)
+                        Check(body.position.x > 0, "a closed bridge never redirects a waiting troop to the opposite bridge");
+                    if (body.position.z > arena::RiverHalfWidth + .28) crossed.try_emplace(body.id, m.State().elapsed);
+                }
+                if (crossed.size() == waiting.size()) break;
+            }
+            Check(openedAt >= 0 && crossed.size() == waiting.size(), "every physically blocked paid member resumes and crosses its own bridge after real expiry");
+            double latest = 0;
+            for (const auto &[id, time] : crossed) {
+                Check(time - openedAt <= 20, "expiry recovery respects the original twenty-second travel bound");
+                latest = std::max(latest, time - openedAt);
+                std::cout << "SEALED_BRIDGE_RECOVERY id=" << id << " opened_at=" << openedAt << " crossed_at=" << time
+                          << " recovery_seconds=" << time - openedAt << '\n';
+            }
+            std::cout << "SEALED_BRIDGE_SUMMARY paid_casts=16 ground=11 buildings=3 physically_sealed=3 grid_unrouted=5 recovered=5 latest_recovery=" << latest << '\n';
         });
         Test("collision crowd remains deterministic across fixed-step frame chunks", [] {
             auto options = CollisionOptions("twin_blades", "vampire_bats");
@@ -2786,8 +3180,8 @@ int main(int argc, char **argv) {
                 for (double z = -arena::LastTileZ; z <= arena::LastTileZ; z += 2)
                     for (double x = -arena::LastTileX; x <= arena::LastTileX; x += 2)
                         {++buildingRequests; if (m.Spawn(team, "archer_tower", {x, z})) ++buildings; else ++rejected;}
-                Check(buildingRequests == 204 && buildings == 188 && rejected == 16,
-                      "24x34 board has204 requests at two-tile pitch and188 radius-aware separated building placements");
+                Check(buildingRequests == 220 && buildings >= 190 && rejected == buildingRequests - buildings && rejected > 0,
+                      "22x40 board has220 requests and retains a dense radius-aware separated building field");
                 bool exhausted = false;
                 for (int n = 0; n < 100; ++n) {
                     if (!m.Spawn(team, "boulderback", drop)) {++rejected;exhausted = true;break;}

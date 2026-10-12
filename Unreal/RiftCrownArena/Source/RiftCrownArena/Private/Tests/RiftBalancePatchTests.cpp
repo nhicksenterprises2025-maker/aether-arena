@@ -37,11 +37,11 @@ const FBalanceCard ExpectedCards[] = {
     {"bullet_burst",2,1,0,175,0,0,0,1,0,0,0,0,false,false,false,true,false,0},
     {"nova_flask",4,1,0,375,0,0,0,1,0,0,0,0,false,false,false,true,false,0},
     {"mini_stampede",2,5,111,20,.9,3.5,1,1.3,0,0,0,0,false,false,false,false,false,20/.9},
-    {"stampede",7,15,111,20,1,3,.8,.85,0,0,0,0,false,false,true,false,false,20},
-    {"pulverizer",3,1,700,65,.9,0,4,.95,0,4,45,1.65,false,false,false,false,true,65/.9},
-    {"bone_warden",6,1,1526,101,1.5,1,1.75,1.5,0,.5,0,0,false,false,false,false,false,101/1.5},
-    {"aether_reaper",4,1,445,95,1.05,1.85,1.4,1.1,0,1.5,0,0,true,true,false,false,false,95/1.05},
-    {"iron_giant",3,1,1000,85,1.3,1.55,1.35,1,0,0,0,0,false,false,true,false,false,85/1.3},
+    {"stampede",7,15,111,20,1,3,.8,.90,0,0,0,0,false,false,true,false,false,20},
+    {"pulverizer",3,1,700,65,.9,0,4,1.05,0,4,45,1.65,false,false,false,false,true,65/.9},
+    {"bone_warden",6,1,1526,101,1.5,1,1.75,1.65,0,.5,0,0,false,false,false,false,false,101/1.5},
+    {"aether_reaper",4,1,445,95,1.05,1.85,1.4,1.35,0,1.5,0,0,true,true,false,false,false,95/1.05},
+    {"iron_giant",3,1,1000,85,1.3,1.55,1.35,1.65,0,0,0,0,false,false,true,false,false,85/1.3},
     {"shadow_surge",3,1,0,100,0,0,0,1,0,0,0,0,false,true,false,true,false,0}
 };
 }
@@ -54,11 +54,14 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
     {AddError(TEXT("Balance patch fixture requires isolated RiftSaveRoot/UserDir and RiftAutomationSandbox."));return false;}
     TestEqual(TEXT("All twenty-one approved playable cards exist"),int32(rift::Cards().size()),int32(UE_ARRAY_COUNT(ExpectedCards)));
     TestNotNull(TEXT("Pulverizer remains in the approved playable roster"),rift::FindCard("pulverizer"));
-    // The requested visual alignment also moves the actual collision/target
-    // bodies. Keep tower depths, body radii and the expanded arena unchanged.
-    TestEqual(TEXT("Approved arena is twenty-four tiles across"),rift::arena::Width,24);
-    TestEqual(TEXT("Approved arena is thirty-four tiles deep"),rift::arena::Height,34);
-    TestEqual(TEXT("Larger tiles preserve physical bridge center"),rift::arena::BridgeCenterX,5.76);
+    // The 1.7 design moves actual collision/target bodies with their visuals:
+    // three more rear tiles and two more lateral tiles on each bridge axis.
+    TestEqual(TEXT("Approved arena is twenty-two tiles across"),rift::arena::Width,22);
+    TestEqual(TEXT("Approved arena is forty tiles deep"),rift::arena::Height,40);
+    TestEqual(TEXT("Each bridge is two more tiles away from the Core axis"),rift::arena::BridgeCenterX,7.76);
+    TestEqual(TEXT("Both Guard axes use the approved lateral position"),rift::arena::GuardX,7.76);
+    TestEqual(TEXT("Core depth adds exactly three rear tiles"),rift::arena::CoreDepth,16.84);
+    TestEqual(TEXT("Guard depth adds exactly three rear tiles"),rift::arena::GuardDepth,13.72);
     rift::MatchOptions GeometryOptions;GeometryOptions.aiEnabled={false,false};
     rift::Match Geometry(GeometryOptions);
     TestEqual(TEXT("Tower alignment retains six actual initial tower bodies"),int32(Geometry.State().entities.size()),6);
@@ -73,7 +76,7 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
         TestTrue(Label+TEXT(" remains a Core or Guard body"),Core||Guard);
         TestTrue(Label+TEXT(" occupies one unique team/lane slot"),TowerSlots.insert({int(Tower.team),Tower.lane}).second);
         TestTrue(Label+TEXT(" retains its tower lane"),Core?Tower.lane==0:(Tower.lane==-1||Tower.lane==1));
-        TestTrue(Label+TEXT(" retains its symmetric rear depth"),std::abs(Tower.position.z-Sign*(Core?13.84:10.72))<1.e-9);
+        TestTrue(Label+TEXT(" uses its shifted symmetric rear depth"),std::abs(Tower.position.z-Sign*(Core?16.84:13.72))<1.e-9);
         TestTrue(Label+TEXT(" retains its collision radius"),std::abs(Tower.radius-(Core?1.35:1.15))<1.e-9);
         TestTrue(Label+TEXT(" has the requested arena/bridge center"),std::abs(Tower.position.x-(Core?0.:Tower.lane*rift::arena::BridgeCenterX))<1.e-9);
         CoreCount+=Core;GuardCount+=Guard;
@@ -148,6 +151,7 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
         CHECK_IMPORTED(ChargedMoveSpeed,chargedMoveSpeed);CHECK_IMPORTED(HPDecayPerSecond,hpDecayPerSecond);
         CHECK_IMPORTED(InitialAttackCooldown,initialAttackCooldown);CHECK_IMPORTED(ShieldHP,shieldHP);
         CHECK_IMPORTED(InvisibilityDuration,invisibilityDuration);CHECK_IMPORTED(DotStructureDamage,dotStructureDamage);
+        CHECK_IMPORTED(HealthCloakThreshold,healthCloakThreshold);
 #undef CHECK_IMPORTED
         Imported(TEXT("FrontSight"),A->FrontSight,8);Imported(TEXT("RearSight"),A->RearSight,5);
         TestEqual(*(Id+TEXT(" imported visual round count")),A->Rounds,C->rounds);
@@ -168,6 +172,8 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
     for(const auto& C:rift::Cards())
     {
         TestTrue(TEXT("Every playable card is covered by the independent approved contract"),IDs.count(C.id)==1);
+        TestTrue(TEXT("Only the Reaper receives the half-health cloak trigger"),
+            std::abs(C.healthCloakThreshold-(C.id=="aether_reaper"?.5:0.))<.000001);
         if(C.id=="pulverizer")continue; // Its independent full contract is tested by Pulverizer.
         TestEqual(TEXT("Existing cards gain no shockwave attack"),C.shockwaveSpeed,0.);
         const FString Id=UTF8_TO_TCHAR(C.id.c_str());
@@ -189,11 +195,11 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
         Ability(TEXT("explicit Archer decay"),C.hpDecayPerSecond,C.id=="archer_tower"?25:0);
         Ability(TEXT("initial attack cooldown"),C.initialAttackCooldown,C.id=="archer_tower"?.35:0);
         Ability(TEXT("initial Giant shield"),C.shieldHP,C.id=="iron_giant"?310:0);
-        Ability(TEXT("local cloak duration"),C.invisibilityDuration,C.id=="shadow_surge"?1:0);
+        Ability(TEXT("local cloak duration"),C.invisibilityDuration,C.id=="shadow_surge"||C.id=="aether_reaper"?1:0);
         TestEqual(*(Id+TEXT(" hard expiry policy")),C.hardExpiry,C.id=="archer_tower");
         TestEqual(*(Id+TEXT(" shield overflow policy")),C.shieldOverflowProtected,C.id=="iron_giant");
         TestFalse(*(Id+TEXT(" cloak is local rather than global")),C.globalFriendlyInvisibility);
-        TestEqual(*(Id+TEXT(" cloak drops enemy locks")),C.breakExistingLocks,C.id=="shadow_surge");
+        TestEqual(*(Id+TEXT(" cloak drops enemy locks")),C.breakExistingLocks,C.id=="shadow_surge"||C.id=="aether_reaper");
         TestEqual(*(Id+TEXT(" child count")),C.deathSpawnCount,C.id=="bone_warden"?4:0);
         TestEqual(*(Id+TEXT(" child subordinate id")),FString(UTF8_TO_TCHAR(C.deathSpawnId.c_str())),
                   C.id=="bone_warden"?FString(TEXT("bone_warden_skeleton")):FString());

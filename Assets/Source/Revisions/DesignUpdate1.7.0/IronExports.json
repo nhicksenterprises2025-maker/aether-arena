@@ -1,0 +1,488 @@
+{
+  "schema": 1,
+  "scope": "Actual Iron Giant Source and exported four skeletal FBX LODs; imported shield-bone visibility and pose renders, no native gameplay claim",
+  "source": {
+    "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
+    "bytes": 22388572,
+    "sha256": "83d7708acad6c12c9f6dcf1cf29fad3222fc2fdfc1e509766a0eb18d6f6f6877"
+  },
+  "manifest": {
+    "file": "Assets/asset_manifest.json",
+    "bytes": 363913,
+    "sha256": "b6e89f5a3116b4c5687d1b51f67bedef04ae17cab42d7ed610544d3772f8a564"
+  },
+  "verifier": {
+    "file": "Artifacts/QA/Design170/verify_iron_giant_exports.py",
+    "bytes": 9049,
+    "sha256": "02015bbe756c0648706a71bf86d45ce293c57d8f1a65b1c86ed89584222a9180"
+  },
+  "checks": [
+    {
+      "name": "Source raw bytes equal manifest",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Exactly 34 authored bones and six chest-owned shield bones",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "All Source vertices have finite positive owning deform weights",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Source studio retains exact pre-replacement timing",
+      "passed": true,
+      "detail": 30
+    },
+    {
+      "name": "All nine actual clip exports declare 100 FPS",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Nine clips remain in place with single attack contact and 0.8 second death",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Entire detailed shell exclusively follows shield_panel_0",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Editable panel stays attached to shield_panel_0",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Entire detailed shell exclusively follows shield_panel_1",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Editable panel stays attached to shield_panel_1",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Entire detailed shell exclusively follows shield_panel_2",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Editable panel stays attached to shield_panel_2",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Entire detailed shell exclusively follows shield_panel_3",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Editable panel stays attached to shield_panel_3",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Entire detailed shell exclusively follows shield_panel_4",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Editable panel stays attached to shield_panel_4",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Entire detailed shell exclusively follows shield_panel_5",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Editable panel stays attached to shield_panel_5",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Idle exported bytes are current",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Idle has one real animation stack and full bone curves",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Locomotion exported bytes are current",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Locomotion has one real animation stack and full bone curves",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Attack exported bytes are current",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Attack has one real animation stack and full bone curves",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Hit exported bytes are current",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Hit has one real animation stack and full bone curves",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Death exported bytes are current",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Death has one real animation stack and full bone curves",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Deploy exported bytes are current",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Deploy has one real animation stack and full bone curves",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Status exported bytes are current",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Status has one real animation stack and full bone curves",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Turn exported bytes are current",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Turn has one real animation stack and full bone curves",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Acquire exported bytes are current",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Acquire has one real animation stack and full bone curves",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LOD0 exact current exported pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LOD0 actual explicit meter units",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LOD0 every actual exported vertex is positively skinned",
+      "passed": true,
+      "detail": {
+        "vertices": 19828,
+        "covered": 19828,
+        "invalid": 0
+      }
+    },
+    {
+      "name": "LOD0 actual polygon triangle total",
+      "passed": true,
+      "detail": 38740
+    },
+    {
+      "name": "LOD0 finite actual vertices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LOD0 empirical FBX size stays in meters",
+      "passed": true,
+      "detail": [
+        1.4144186973571777,
+        0.7233999967575073,
+        1.3680000305175781
+      ]
+    },
+    {
+      "name": "LOD0 body persists after all shield bones shrink",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LOD1 exact current exported pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LOD1 actual explicit meter units",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LOD1 every actual exported vertex is positively skinned",
+      "passed": true,
+      "detail": {
+        "vertices": 10143,
+        "covered": 10143,
+        "invalid": 0
+      }
+    },
+    {
+      "name": "LOD1 actual polygon triangle total",
+      "passed": true,
+      "detail": 19370
+    },
+    {
+      "name": "LOD1 finite actual vertices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LOD1 empirical FBX size stays in meters",
+      "passed": true,
+      "detail": [
+        1.4141364097595215,
+        0.7230045199394226,
+        1.3677597045898438
+      ]
+    },
+    {
+      "name": "LOD2 exact current exported pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LOD2 actual explicit meter units",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LOD2 every actual exported vertex is positively skinned",
+      "passed": true,
+      "detail": {
+        "vertices": 5300,
+        "covered": 5300,
+        "invalid": 0
+      }
+    },
+    {
+      "name": "LOD2 actual polygon triangle total",
+      "passed": true,
+      "detail": 9684
+    },
+    {
+      "name": "LOD2 finite actual vertices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LOD2 empirical FBX size stays in meters",
+      "passed": true,
+      "detail": [
+        1.4109752178192139,
+        0.7204777002334595,
+        1.3677362203598022
+      ]
+    },
+    {
+      "name": "LOD2 body persists after all shield bones shrink",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LOD3 exact current exported pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LOD3 actual explicit meter units",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LOD3 every actual exported vertex is positively skinned",
+      "passed": true,
+      "detail": {
+        "vertices": 2782,
+        "covered": 2782,
+        "invalid": 0
+      }
+    },
+    {
+      "name": "LOD3 actual polygon triangle total",
+      "passed": true,
+      "detail": 4628
+    },
+    {
+      "name": "LOD3 finite actual vertices",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LOD3 empirical FBX size stays in meters",
+      "passed": true,
+      "detail": [
+        1.4086112976074219,
+        0.7196875214576721,
+        1.3690530061721802
+      ]
+    },
+    {
+      "name": "Source unchanged during focused exported review",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Manifest unchanged during focused exported review",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "errors": [],
+  "exports": [
+    {
+      "level": 0,
+      "vertices": 19828,
+      "triangles": 38740,
+      "skinClusters": 34,
+      "file": "Assets/Export/Characters/iron_giant/SK_iron_giant.fbx",
+      "bytes": 962396,
+      "sha256": "d58978c0a003fa1ce8e7f76d99ed027fef79b015aa33ab83fe4d5974b5a01eef"
+    },
+    {
+      "level": 1,
+      "vertices": 10143,
+      "triangles": 19370,
+      "skinClusters": 34,
+      "file": "Assets/Export/Characters/iron_giant/SK_iron_giant_LOD1.fbx",
+      "bytes": 646492,
+      "sha256": "4d4f24307239a8deeebe6a4a61a5a4715a12fa4d0d28664244f00c036d2db3a1"
+    },
+    {
+      "level": 2,
+      "vertices": 5300,
+      "triangles": 9684,
+      "skinClusters": 34,
+      "file": "Assets/Export/Characters/iron_giant/SK_iron_giant_LOD2.fbx",
+      "bytes": 415516,
+      "sha256": "d87a321ef90894bbe184f8fb3c9061fb30c4c300027f28d14b50dcff967cadc0"
+    },
+    {
+      "level": 3,
+      "vertices": 2782,
+      "triangles": 4628,
+      "skinClusters": 34,
+      "file": "Assets/Export/Characters/iron_giant/SK_iron_giant_LOD3.fbx",
+      "bytes": 264620,
+      "sha256": "d7f41c69870d327148f0a07c44e7297312bcb251360b05705de8e9aa612bace4"
+    }
+  ],
+  "renders": [
+    {
+      "label": "LOD0-intact-front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ExportReviewFinal/LOD0-intact-front.png",
+      "bytes": 480302,
+      "sha256": "388bdae441b4ef0b1448302b8ec21fccbc977f6f310d8362f8805468b3c3ee2b"
+    },
+    {
+      "label": "LOD0-intact-rear",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ExportReviewFinal/LOD0-intact-rear.png",
+      "bytes": 474196,
+      "sha256": "90c1b4bb4770fa2b2a71f67c93bc33e65f83066f3d94f5ee306de0f4ac3e1c07"
+    },
+    {
+      "label": "LOD0-intact-left",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ExportReviewFinal/LOD0-intact-left.png",
+      "bytes": 488965,
+      "sha256": "eecc95a20eca9dd8654d1dcbafb045f910fc19ebc6ff8563cb10ab10b9de5596"
+    },
+    {
+      "label": "LOD0-intact-right",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ExportReviewFinal/LOD0-intact-right.png",
+      "bytes": 486647,
+      "sha256": "89201eb131c019b04d7541806b3a796bda94af943178dfea8135917877382f4c"
+    },
+    {
+      "label": "LOD0-shield-broken-front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ExportReviewFinal/LOD0-shield-broken-front.png",
+      "bytes": 467552,
+      "sha256": "172d7584b61a13b960d252e4acb4d9f49bd7b1a9da02baa016b6a82a32499de4"
+    },
+    {
+      "label": "LOD0-shield-broken-rear",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ExportReviewFinal/LOD0-shield-broken-rear.png",
+      "bytes": 457346,
+      "sha256": "1ec00ea6ae4c56df3aa7d92b405c5caa23a5972c707c6229dac0674681ee700d"
+    },
+    {
+      "label": "LOD2-intact-front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ExportReviewFinal/LOD2-intact-front.png",
+      "bytes": 478740,
+      "sha256": "e873eb85896eef2514b4fb2594afafd91dcfa93589c58bf7e9a05c9db271a688"
+    },
+    {
+      "label": "LOD2-intact-rear",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ExportReviewFinal/LOD2-intact-rear.png",
+      "bytes": 473975,
+      "sha256": "3391402bbeda6ae056f01c8297bed1e72e74065f0d8d53e844977e62a4bdf503"
+    },
+    {
+      "label": "LOD2-intact-left",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ExportReviewFinal/LOD2-intact-left.png",
+      "bytes": 487459,
+      "sha256": "e614e827fec7ed594dd3a15d50ae15f961d0870ae4b40c5f0babb6a652fee9cc"
+    },
+    {
+      "label": "LOD2-intact-right",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ExportReviewFinal/LOD2-intact-right.png",
+      "bytes": 484531,
+      "sha256": "d4d56258eb5960402048296db496fa1efbc5bda1ba7a87dcb0fea0ad9d209d9d"
+    },
+    {
+      "label": "LOD2-shield-broken-front",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ExportReviewFinal/LOD2-shield-broken-front.png",
+      "bytes": 466795,
+      "sha256": "9c5362d05c5409b889bf6a5abdb456f63a9755d0e2f942e8bb10bf9267ce9076"
+    },
+    {
+      "label": "LOD2-shield-broken-rear",
+      "file": "Artifacts/QA/Design170/IronGiant-5eae16eab37245399f4f3925c07e504c/ExportReviewFinal/LOD2-shield-broken-rear.png",
+      "bytes": 457609,
+      "sha256": "e85f12b9ae92aa94879429046c803f6868be63d58cb9d0c22212d010849a369e"
+    }
+  ],
+  "passed": true,
+  "checkCount": 64
+}

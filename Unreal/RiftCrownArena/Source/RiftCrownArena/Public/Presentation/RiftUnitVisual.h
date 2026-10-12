@@ -48,6 +48,8 @@ public:
     int32 FormationDustCount() const;
     int32 DeathFleckCount() const;
     int32 SlowRippleCount() const;
+    int32 ReaperAuraCount() const;
+    int32 PulverizerPulseCount() const;
     void ActivateCore();
     bool IsExpired(double Time) const;
     FVector HealthLocation() const;
@@ -78,10 +80,13 @@ private:
     void UpdateStructureAim(double Time);
     void UpdateDamageHistory(const rift::Entity& Entity, double Time);
     UInstancedStaticMeshComponent* MakeSurfaceBatch(FName Name,FLinearColor Color,float Emissive);
+    UInstancedStaticMeshComponent* MakeAuraBatch(FName Name,FName MeshId,FLinearColor Color);
     void UpdateSurfaceMotes(double Time);
     void EmitDeploySurfaceDust(double Time);
     void EmitHoofDust(double Time,double PreviousPhase,double CurrentPhase);
     void UpdatePulverizerSlow(const rift::Entity& Entity,double Time);
+    void UpdateReaperAura(double Time,bool Moving);
+    void UpdatePulverizerPulse(double Time,double ReleasedAt);
     void UpdateSelectedGlow(double Time,double Cooldown,bool Anticipating);
     void UpdateCloak(const rift::Entity& Entity,double Time);
     void UpdateShield(const rift::Entity& Entity,double Time);
@@ -100,6 +105,9 @@ private:
     UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> CopperFlecks;
     UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> GrayFlecks;
     UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> SlowRipple;
+    UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> ReaperAuraRibbons;
+    UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> ReaperAuraWisps;
+    UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> PulverizerPulse;
     UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> ShieldFragments;
     UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> ShieldEdges;
     UPROPERTY() TArray<TObjectPtr<UMaterialInterface>> OriginalCharacterMaterials;

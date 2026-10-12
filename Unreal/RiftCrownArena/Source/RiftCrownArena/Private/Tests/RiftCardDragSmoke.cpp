@@ -4,8 +4,11 @@
 #include "RiftMatchSubsystem.h"
 #include "RiftProfileSubsystem.h"
 #include "RiftReplaySubsystem.h"
+#include "Presentation/RiftArenaPresentation.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Blueprint/WidgetTree.h"
+#include "Components/PanelWidget.h"
+#include "Components/TextBlock.h"
 #include "Engine/Engine.h"
 #include "Engine/GameInstance.h"
 #include "Engine/GameViewportClient.h"
@@ -71,6 +74,20 @@ void ARiftPlayerController::RunCardDragSmoke(const FString& ReportPath)
     TArray<URiftHandButton*> Hand;
     Interface->WidgetTree->ForEachWidget([&](UWidget* Widget){if(auto* Button=Cast<URiftHandButton>(Widget))Hand.Add(Button);});
     Check(TEXT("four production Slate hand buttons"),Hand.Num()==4);
+    bool HandLabelsCorrect=Hand.Num()==4;
+    for(auto* HandButton:Hand)
+    {
+        TArray<FString> Labels;
+        TFunction<void(UWidget*)> CollectText=[&](UWidget* Widget)
+        {
+            if(auto* Text=Cast<UTextBlock>(Widget))Labels.Add(Text->GetText().ToString());
+            if(auto* Panel=Cast<UPanelWidget>(Widget))for(int32 Index=0;Index<Panel->GetChildrenCount();++Index)CollectText(Panel->GetChildAt(Index));
+        };
+        CollectText(HandButton);
+        const auto* HandCard=HandButton->HandSlot>=0&&HandButton->HandSlot<4?rift::FindCard(Sim->State().hands[0][HandButton->HandSlot]):nullptr;
+        HandLabelsCorrect&=HandCard&&Labels.Num()==2&&Labels.Contains(UTF8_TO_TCHAR(HandCard->name.c_str()))&&Labels.Contains(FText::AsNumber(HandCard->cost).ToString());
+    }
+    Check(TEXT("hand cards show their names and Aether costs without hotkey number badges"),HandLabelsCorrect);
     URiftHandButton* Button=nullptr;
     for(auto* Candidate:Hand)
         if(Candidate->HandSlot>=0&&Candidate->HandSlot<4)
@@ -90,10 +107,40 @@ void ARiftPlayerController::RunCardDragSmoke(const FString& ReportPath)
     FVector2D LegalTile=FVector2D::ZeroVector;bool FoundLegal=false;
     for(double Z:{8.5,12.5,5.5,16.5})for(double X:{-6.5,6.5,-10.5,10.5,.5})
         if(!FoundLegal&&Match->CanPlace(Slot,FVector2D(X,Z))){LegalTile=FVector2D(X,Z);FoundLegal=true;}
-    const FVector2D Legal=TileToAbsolute(LegalTile),Enemy=TileToAbsolute(FVector2D(-6.5,-10.5));
+    FVector2D AlternateTile=FVector2D::ZeroVector;bool FoundAlternate=false;
+    for(int32 Z=3;Z<rift::arena::HalfHeight;++Z)for(int32 X=-rift::arena::HalfWidth;X<rift::arena::HalfWidth;++X)
+    {
+        const FVector2D Candidate(X+.5,Z+.5);
+        if(!FoundAlternate&&!Candidate.Equals(LegalTile,.001)&&Match->CanPlace(Slot,Candidate)){AlternateTile=Candidate;FoundAlternate=true;}
+    }
+    const FVector2D Legal=TileToAbsolute(LegalTile),Alternate=TileToAbsolute(AlternateTile),Enemy=TileToAbsolute(FVector2D(-6.5,-10.5));
     FVector2D Resolved;
     Check(TEXT("legal arena target projects to its actual board tile"),FoundLegal&&ScreenPointToTile(Legal,Resolved)&&Resolved.Equals(LegalTile,.001));
     Check(TEXT("hand geometry is arranged and lies outside deployment area"),CardGeometry.GetLocalSize().X>40&&CardGeometry.GetLocalSize().Y>40&&!ScreenPointToTile(Origin,Resolved));
+    auto Projection=MakeShared<FJsonObject>();Report->SetObjectField(TEXT("placementAccuracy"),Projection);
+    Projection->SetNumberField(TEXT("viewportSlateWidth"),Viewport.GetLocalSize().X);Projection->SetNumberField(TEXT("viewportSlateHeight"),Viewport.GetLocalSize().Y);
+    Projection->SetNumberField(TEXT("viewportDpiScale"),UWidgetLayoutLibrary::GetViewportScale(this));
+    int32 CentersChecked=0,EdgesChecked=0;bool CentersCorrect=true,EdgesCorrect=true;
+    TArray<TSharedPtr<FJsonValue>> ProjectionFailures;
+    auto CheckProjection=[&](FVector2D Point,FVector2D Expected)
+    {
+        FVector2D Actual=FVector2D::ZeroVector;const bool Correct=ScreenPointToTile(TileToAbsolute(Point),Actual)&&Actual.Equals(Expected,.001);
+        if(!Correct&&ProjectionFailures.Num()<16)
+        {auto Failure=MakeShared<FJsonObject>();Failure->SetStringField(TEXT("point"),Point.ToString());Failure->SetStringField(TEXT("expected"),Expected.ToString());Failure->SetStringField(TEXT("actual"),Actual.ToString());ProjectionFailures.Add(MakeShared<FJsonValueObject>(Failure));}
+        return Correct;
+    };
+    for(int32 Z=-rift::arena::HalfHeight;Z<rift::arena::HalfHeight;++Z)for(int32 X=-rift::arena::HalfWidth;X<rift::arena::HalfWidth;++X)
+    {
+        const FVector2D Center(X+.5,Z+.5);++CentersChecked;CentersCorrect&=CheckProjection(Center,Center);
+        // Close to each real tile edge, with a small margin greater than ray
+        // roundoff. This covers the outer board edges as well as lane changes.
+        for(const FVector2D Offset:{FVector2D(-.49,0),FVector2D(.49,0),FVector2D(0,-.49),FVector2D(0,.49)})
+        {++EdgesChecked;EdgesCorrect&=CheckProjection(Center+Offset,Center);}
+    }
+    Projection->SetNumberField(TEXT("boardCellCentersChecked"),CentersChecked);Projection->SetNumberField(TEXT("tileEdgeSamplesChecked"),EdgesChecked);
+    Projection->SetArrayField(TEXT("failures"),ProjectionFailures);
+    Check(TEXT("every board cell center resolves exactly through actual viewport and DPI geometry"),CentersCorrect&&CentersChecked==rift::arena::Width*rift::arena::Height);
+    Check(TEXT("samples beside every tile and outer board edge keep the correct deployment cell"),EdgesCorrect&&EdgesChecked==4*rift::arena::Width*rift::arena::Height);
     if(!Passed){Profile->Settings.DragDeploy=OriginalDrag;Profile->Settings.ConfirmDeploy=OriginalConfirm;Save();return;}
     FVector2D Previous=Origin;TSet<FKey> Buttons;
     auto Event=[&](FVector2D Point,FKey Key)
@@ -172,6 +219,11 @@ void ARiftPlayerController::RunCardDragSmoke(const FString& ReportPath)
     const bool BatchedReleasePreserved=HasPendingCardDrag()&&Interface->SelectedHand()==Slot&&Digest()==Initial;
     Report->SetBoolField(TEXT("batchedViewportReleasePreserved"),BatchedReleasePreserved);
     Move(Legal);Check(TEXT("drag threshold and ghost survive an earlier queued viewport release"),BatchedReleasePreserved&&IsDraggingCard()&&Interface->IsCardDragGhostVisible());
+    const bool FirstPreviewCorrect=Arena&&Arena->HasPlacementPreview()&&Arena->PreviewIsValid()&&Arena->PreviewTile().Equals(LegalTile,.001);
+    Move(Alternate);
+    const bool AlternatePreviewCorrect=FoundAlternate&&Arena&&Arena->HasPlacementPreview()&&Arena->PreviewIsValid()&&Arena->PreviewTile().Equals(AlternateTile,.001);
+    Projection->SetBoolField(TEXT("previewUpdatesBetweenPlayerTicks"),FirstPreviewCorrect&&AlternatePreviewCorrect);
+    Check(TEXT("captured pointer moves refresh the exact placement preview before another player tick"),FirstPreviewCorrect&&AlternatePreviewCorrect);
     Move(Origin);Check(TEXT("returning to original hand card remains a drag"),IsDraggingCard());
     Up(Origin);Check(TEXT("return to hand cancels and preserves full match state"),!HasPendingCardDrag()&&Interface->SelectedHand()==INDEX_NONE&&!Interface->IsCardDragGhostVisible()&&Digest()==Initial);
     Down(Origin);Move(Legal);Move(PixelToAbsolute(FVector2D(Width-60,30)));Up(Previous);
@@ -192,17 +244,43 @@ void ARiftPlayerController::RunCardDragSmoke(const FString& ReportPath)
     Down(Origin);Move(Legal);Interface->ToggleBattleMenu();Up(Legal);
     Check(TEXT("opening pause modal cancels before its later release"),Interface->SelectedHand()==INDEX_NONE&&!HasPendingCardDrag()&&!Interface->CanAcceptBattleInput()&&Digest()==Initial);
     Interface->ToggleBattleMenu();
-    Sim->SetAether(rift::Team::Player,0);const FString EmptyBank=Digest();Down(Origin);Move(Legal);Up(Legal);
-    Check(TEXT("unaffordable drag returns to hand without mutation"),Interface->SelectedHand()==INDEX_NONE&&!HasPendingCardDrag()&&Digest()==EmptyBank);
-    Sim->SetAether(rift::Team::Player,10);
-    Profile->Settings.DragDeploy=false;Down(Origin);Move(Legal);Up(Legal);
-    Check(TEXT("click deployment preference does not accidentally drag deploy"),Interface->SelectedHand()==Slot&&!HasPendingCardDrag()&&Digest()==Initial);
+    // The fixture resumes and presses again within one synchronous engine
+    // frame. Let the production UMG wrapper refresh the reopened battle HUD,
+    // as it does between real player gestures, before sampling the next press.
+    RefreshHover();
+    Sim->SetAether(rift::Team::Player,0);const FString EmptyBank=Digest();Down(Origin);
+    const bool UnaffordablePressCaptured=HasPendingCardDrag()&&Interface->SelectedHand()==Slot&&Button->GetCachedWidget()->HasMouseCapture();
+    Report->SetBoolField(TEXT("unaffordablePressCaptured"),UnaffordablePressCaptured);Move(Legal);Up(Legal);
+    Check(TEXT("unaffordable drag returns to hand without mutation"),UnaffordablePressCaptured&&Interface->SelectedHand()==INDEX_NONE&&!HasPendingCardDrag()&&Digest()==EmptyBank);
+    Sim->SetAether(rift::Team::Player,10);RefreshHover();
+    auto ClickPreference=MakeShared<FJsonObject>();Report->SetObjectField(TEXT("clickPreference"),ClickPreference);
+    auto ClickStage=[&](const TCHAR* Name)
+    {
+        auto Stage=MakeShared<FJsonObject>();Stage->SetNumberField(TEXT("selectedHand"),Interface->SelectedHand());
+        Stage->SetBoolField(TEXT("pendingDrag"),HasPendingCardDrag());Stage->SetBoolField(TEXT("activeDrag"),IsDraggingCard());
+        Stage->SetBoolField(TEXT("pointerCapture"),Button->GetCachedWidget()->HasMouseCapture());
+        Stage->SetBoolField(TEXT("buttonEnabled"),Button->GetIsEnabled());Stage->SetBoolField(TEXT("slateButtonEnabled"),Button->GetCachedWidget()->IsEnabled());
+        Stage->SetBoolField(TEXT("battleInputAllowed"),Interface->CanAcceptBattleInput());
+        Stage->SetBoolField(TEXT("dragDeploy"),Profile->Settings.DragDeploy);Stage->SetNumberField(TEXT("transactionHand"),CardDragHand);
+        Stage->SetBoolField(TEXT("selectionIsCurrent"),CardDragSelectionIsCurrent());Stage->SetBoolField(TEXT("combatUnchanged"),Digest()==Initial);
+        ClickPreference->SetObjectField(Name,Stage);
+    };
+    Profile->Settings.DragDeploy=false;ClickStage(TEXT("beforePress"));Down(Origin);ClickStage(TEXT("afterPress"));
+    const bool ClickPreferencePressCaptured=HasPendingCardDrag()&&Interface->SelectedHand()==Slot&&Button->GetCachedWidget()->HasMouseCapture()&&!IsDraggingCard();
+    ClickPreference->SetBoolField(TEXT("pressCaptured"),ClickPreferencePressCaptured);Move(Legal);ClickStage(TEXT("afterMove"));Up(Legal);ClickStage(TEXT("afterRelease"));
+    Check(TEXT("click deployment preference does not accidentally drag deploy"),ClickPreferencePressCaptured&&Interface->SelectedHand()==Slot&&!HasPendingCardDrag()&&!IsDraggingCard()&&Digest()==Initial);
     Profile->Settings.DragDeploy=true;CancelCardDrag();
     Down(Origin);Move(Legal);Key(EKeys::Two);Up(Legal);
     Check(TEXT("changing keyboard selection cancels the old pointer transaction"),!HasPendingCardDrag()&&Digest()==Initial);
     CancelCardDrag();
     const auto Before=Sim->State();const auto OldId=Before.hands[0][Slot];const auto Next=Before.queues[0].front();const double Cost=Card->cost;
-    Down(Origin);Move(Legal);Up(Legal);
+    int32 CardPlayEvents=0;FVector2D PaidTile=FVector2D::ZeroVector;
+    const FDelegateHandle DropObserver=Match->OnEvent.AddLambda([&](const rift::Event& Event)
+    {if(Event.type=="card_play"&&Event.team==rift::Team::Player&&Event.cardId==OldId){++CardPlayEvents;PaidTile=FVector2D(Event.position.x,Event.position.z);}});
+    Down(Origin);Move(Legal);Up(Alternate);
+    Match->OnEvent.Remove(DropObserver);
+    Projection->SetStringField(TEXT("lastMoveTile"),LegalTile.ToString());Projection->SetStringField(TEXT("releaseTile"),AlternateTile.ToString());Projection->SetStringField(TEXT("paidCardPlayTile"),PaidTile.ToString());
+    Check(TEXT("release uses its final pointer sample rather than the earlier move preview"),CardPlayEvents==1&&PaidTile.Equals(AlternateTile,.001));
     const auto After=Sim->State();
     Check(TEXT("legal drop spends exactly one card cost"),FMath::IsNearlyEqual(After.aether[0],Before.aether[0]-Cost,1e-9)&&FMath::IsNearlyEqual(After.spent[0],Before.spent[0]+Cost,1e-9));
     Check(TEXT("legal drop cycles the selected slot exactly once"),After.hands[0][Slot]==Next&&After.queues[0].size()==Before.queues[0].size()&&After.queues[0].back()==OldId);

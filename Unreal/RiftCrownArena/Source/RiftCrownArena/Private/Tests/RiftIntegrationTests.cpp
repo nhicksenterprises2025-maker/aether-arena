@@ -669,28 +669,32 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRiftSnapshotRoundtripTest, "Rift.Integration.S
 bool FRiftSnapshotRoundtripTest::RunTest(const FString &Parameters) {
     rift::MatchOptions Options;
     Options.aiEnabled = {false, false};
-    TestEqual(TEXT("Arena has exactly 24 columns"), rift::arena::Width, 24);
-    TestEqual(TEXT("Arena has exactly 34 rows"), rift::arena::Height, 34);
+    TestEqual(TEXT("Arena has exactly 22 columns"), rift::arena::Width, 22);
+    TestEqual(TEXT("Arena has exactly 40 rows"), rift::arena::Height, 40);
     TSet<double> Columns, Rows;
-    int32 Centers = 0;
-    for (int32 Row = 0; Row < 34; ++Row)
-        for (int32 Column = 0; Column < 24; ++Column) {
-            const rift::Vec2 Center{-11.5 + Column, -16.5 + Row};
+    int32 Centers = 0, FloorCenters = 0, RiverCenters = 0;
+    for (int32 Row = 0; Row < 40; ++Row)
+        for (int32 Column = 0; Column < 22; ++Column) {
+            const rift::Vec2 Center{-10.5 + Column, -19.5 + Row};
             const auto Snapped = rift::SnapToTile(Center);
             TestTrue(TEXT("Every authored tile center snaps to itself"),
                      Snapped.x == Center.x && Snapped.z == Center.z);
             Columns.Add(Snapped.x); Rows.Add(Snapped.z); ++Centers;
+            if (FMath::Abs(Center.z) <= 1.65) ++RiverCenters;
+            else ++FloorCenters;
         }
-    TestEqual(TEXT("All 816 tile centers exist"), Centers, 816);
-    TestEqual(TEXT("Tile centers occupy 24 distinct columns"), Columns.Num(), 24);
-    TestEqual(TEXT("Tile centers occupy 34 distinct rows"), Rows.Num(), 34);
+    TestEqual(TEXT("All 880 tile centers exist"), Centers, 880);
+    TestEqual(TEXT("Tile centers occupy 22 distinct columns"), Columns.Num(), 22);
+    TestEqual(TEXT("Tile centers occupy 40 distinct rows"), Rows.Num(), 40);
+    TestEqual(TEXT("The unchanged four river rows contain exactly 88 centers"), RiverCenters, 88);
+    TestEqual(TEXT("The narrower, longer arena supplies exactly 792 floor centers"), FloorCenters, 792);
     for (const auto Team : {rift::Team::Player, rift::Team::Enemy})
         for (const int32 Side : {-1, 1}) {
             rift::Match Edge(Options);
             const double Sign = Team == rift::Team::Player ? 1. : -1.;
             Edge.SetAether(Team, 10);
             TestTrue(TEXT("Actual paid hand accepts each mirrored outer tile"),
-                     Edge.Play(Team, 0, {Side * 11.5, Sign * 16.5}));
+                     Edge.Play(Team, 0, {Side * 10.5, Sign * 19.5}));
             const auto Encoded = URiftReplaySubsystem::SnapshotJSON(Edge.State());
             rift::Snapshot EdgeParsed;
             TestTrue(TEXT("New-edge paid snapshots remain valid"),
@@ -698,9 +702,9 @@ bool FRiftSnapshotRoundtripTest::RunTest(const FString &Parameters) {
             TestEqual(TEXT("New-edge snapshots preserve actual deployment coordinates"),
                       Serialize(URiftReplaySubsystem::SnapshotJSON(EdgeParsed)), Serialize(Encoded));
             TestFalse(TEXT("Paid deployment rejects outside the new across boundary"),
-                      Edge.Play(Team, 1, {Side * 12.001, Sign * 8.5}));
+                      Edge.Play(Team, 1, {Side * 11.001, Sign * 8.5}));
             TestFalse(TEXT("Paid deployment rejects outside the new Core-to-Core boundary"),
-                      Edge.Play(Team, 1, {0, Sign * 17.001}));
+                      Edge.Play(Team, 1, {0, Sign * 20.001}));
         }
     rift::Match Match(Options);
     Match.Spawn(rift::Team::Player, "frost_fang", {1, 5});
@@ -1580,7 +1584,9 @@ bool FRiftFullReplayIntegrationTest::RunTest(const FString &Parameters) {
         rift::MatchOptions AIOptions;
         // Record a complete populated paid match under the current balance. The
         // Developer fixture separately holds towers alive for overtime/congestion.
-        AIOptions.seed = Congestion ? 32 : 11;
+        // Seed10 keeps the ordinary paid replay fixture populated after the
+        // arena/pathfinding update; seed11 now peaks at19 recorded bodies.
+        AIOptions.seed = Congestion ? 32 : 10;
         AIOptions.aiEnabled = {true, true};
         AIOptions.aiStyles = {"control", "counter"};
         const std::vector<std::string> SwarmDeck{"ironclad",    "twin_blades",  "archer_tower",
@@ -1905,16 +1911,16 @@ bool FRiftExpansionMechanicsIntegrationTest::RunTest(const FString& Parameters) 
     auto Id=[](const rift::Match& Match,const char* Card,rift::Team Team)->uint64 {
         for(const auto& Body:Match.State().entities)if(Body.cardId==Card&&Body.team==Team&&!Body.dead)return Body.id;return 0;
     };
-    for(int32 Scenario=0;Scenario<5;++Scenario) {
+    for(int32 Scenario=0;Scenario<6;++Scenario) {
         rift::MatchOptions Options;Options.seed=69000+Scenario;Options.aiEnabled={false,false};
-        const char* Card=Scenario==0?"iron_giant":Scenario==1?"bone_warden":Scenario==2?"shadow_surge":Scenario==3?"archer_tower":"rambeast";
+        const char* Card=Scenario==0?"iron_giant":Scenario==1?"bone_warden":Scenario==2?"shadow_surge":Scenario==3?"archer_tower":Scenario==4?"rambeast":"aether_reaper";
         Options.decks[0]={Card,"ironclad","ember_archer","twin_blades","arc_mage","sky_manta","bullet_burst","nova_flask"};
         if(Card==std::string("archer_tower"))Options.decks[0][7]="meteor_shards";
         Options.decks[1]=rift::DefaultDeck();rift::Match Match(Options);
         for(auto& Body:const_cast<rift::Snapshot&>(Match.State()).entities)Body.stunUntil=100;
         Replay->BeginRecording(Options,true);Replay->Sample(Match.State());
         Match.SetAether(rift::Team::Player,10);
-        uint64 Subject=0,Enemy=0,Crown=0;double Duration=Scenario==3?25.1:Scenario==4?2.:1.6;
+        uint64 Subject=0,Enemy=0,Crown=0;double Duration=Scenario==3?25.1:Scenario==4?2.:Scenario==5?1.8:1.6;
         if(Scenario==2) {
             TestTrue(TEXT("Local cloak paid fixture creates friendly body"),Match.Spawn(rift::Team::Player,"ironclad",{.5,8.5}));
             Subject=Id(Match,"ironclad",rift::Team::Player);Mutable(Match,Subject)->stunUntil=100;
@@ -1935,18 +1941,20 @@ bool FRiftExpansionMechanicsIntegrationTest::RunTest(const FString& Parameters) 
                 Mutable(Match,Subject)->hp=1;
                 TestTrue(TEXT("Actual delayed lethal child-spawn packet"),Match.Spawn(rift::Team::Enemy,"bullet_burst",{.5,8.5}));
             }
+            if(Scenario==5)TestTrue(TEXT("Actual first175 health-cloak packet"),Match.Spawn(rift::Team::Enemy,"bullet_burst",{.5,8.5}));
         }
         auto Feed=[&]() {for(const auto& Event:Match.DrainEvents())Replay->RecordEvent(Event);Replay->Sample(Match.State());};
-        Feed();double Probe=Scenario==0?.9:Scenario==1?.35:Scenario==2?.3:Scenario==3?24.9:1.8;
+        Feed();double Probe=Scenario==0?.9:Scenario==1?.35:Scenario==2?.3:Scenario==3?24.9:Scenario==5?.7:1.8;
         rift::Snapshot LiveProbe;bool Probed=false;
         for(int32 Tick=0;Tick<int32(Duration*60+.5);++Tick) {
+            if(Scenario==5&&Tick==20)TestTrue(TEXT("Actual second175 packet crosses Reaper half health"),Match.Spawn(rift::Team::Enemy,"bullet_burst",{.5,8.5}));
             Match.Step(1./60.);Feed();
             if(!Probed&&Match.State().elapsed+1e-8>=Probe){LiveProbe=Match.State();Probed=true;}
         }
         Replay->EndRecording(Match.State(),true);
         if(!TestTrue(TEXT("Actual expansion recording writes"),Replay->FlushPendingWrites())||
-           !TestTrue(TEXT("Captured schema2 expansion recording opens"),Replay->OpenReplay(Replay->LatestFilename)))continue;
-        TestEqual(TEXT("Replay captured expansion mechanics schema"),int32(Replay->ReconstructionDiagnostics()->GetNumberField(TEXT("balanceSchema"))),2);
+           !TestTrue(TEXT("Captured schema3 expansion recording opens"),Replay->OpenReplay(Replay->LatestFilename)))continue;
+        TestEqual(TEXT("Replay captured current expansion mechanics schema"),int32(Replay->ReconstructionDiagnostics()->GetNumberField(TEXT("balanceSchema"))),3);
         Replay->Seek(float(LiveProbe.elapsed));const auto* Live=Find(LiveProbe,Subject);const auto* Restored=Find(Replay->View,Subject);
         if(Scenario==0) {
             if(TestNotNull(TEXT("Shield live body remains"),Live)&&TestNotNull(TEXT("Shield replay body remains"),Restored)) {
@@ -1983,11 +1991,65 @@ bool FRiftExpansionMechanicsIntegrationTest::RunTest(const FString& Parameters) 
             TestTrue(TEXT("Replay committed projectile damages invisible subject"),Restored&&Restored->hp==822-152&&Restored->invisibleUntil>Replay->TimelinePosition());
             Replay->Seek(1.3f);Restored=Find(Replay->View,Subject);
             TestTrue(TEXT("Replay local cloak expires without borrowing current targeting"),Restored&&Restored->invisibleUntil==0);
+            // Normalize the real saved area-cloak recording into a declared
+            // synthetic schema2 compatibility fixture. Its current arena and
+            // numerical balance are retained; this is not a historical archive.
+            FString SavedBytes,Error;
+            const FString SavedPath=FPaths::Combine(URiftProfileSubsystem::SaveRoot(),TEXT("Replays"),FGuid::NewGuid().ToString(EGuidFormats::Digits)+TEXT("-area-cloak-controls.json"));
+            if(TestTrue(TEXT("Area-cloak controls export the actual compressed recording"),Replay->ExportReplay(Replay->LatestFilename,SavedPath))&&
+               TestTrue(TEXT("Area-cloak controls read the actual exported JSON"),FFileHelper::LoadFileToString(SavedBytes,*SavedPath))) {
+                const auto Saved=Json(SavedBytes);
+                if(TestTrue(TEXT("Actual saved area-cloak recording validates before mutations"),Saved.IsValid()&&Replay->ValidateRecording(Saved,Error))) {
+                    auto Definition=[](const TSharedRef<FJsonObject>& Recording,const TCHAR* CardId)->TSharedPtr<FJsonObject> {
+                        for(const auto& Value:Recording->GetObjectField(TEXT("balance"))->GetArrayField(TEXT("cards"))) {
+                            const auto Body=Value->AsObject();
+                            if(Body->GetStringField(TEXT("id"))==CardId)return Body;
+                        }
+                        return nullptr;
+                    };
+                    auto Legacy=Clone(Saved.ToSharedRef());Legacy->GetObjectField(TEXT("balance"))->SetNumberField(TEXT("schema"),2);
+                    for(const auto& Value:Legacy->GetObjectField(TEXT("balance"))->GetArrayField(TEXT("cards")))
+                        Value->AsObject()->RemoveField(TEXT("healthCloakThreshold"));
+                    const auto LegacyReaper=Definition(Legacy,TEXT("aether_reaper"));
+                    if(TestTrue(TEXT("Compatibility fixture retains a recorded Reaper definition"),LegacyReaper.IsValid())) {
+                        LegacyReaper->SetNumberField(TEXT("invisibilityDuration"),0);
+                        LegacyReaper->SetBoolField(TEXT("breakExistingLocks"),false);
+                        TestTrue(TEXT("Synthetic schema2 area-cloak recording remains readable"),Replay->ValidateRecording(Legacy,Error));
+                        auto Broken=Clone(Legacy);Definition(Broken,TEXT("aether_reaper"))->SetNumberField(TEXT("invisibilityDuration"),1);
+                        TestFalse(TEXT("Schema2 cannot acquire troop invisibility from a missing threshold"),Replay->ValidateRecording(Broken,Error));
+                        Broken=Clone(Legacy);const auto OldTroop=Definition(Broken,TEXT("aether_reaper"));
+                        OldTroop->SetNumberField(TEXT("invisibilityDuration"),1);OldTroop->SetNumberField(TEXT("healthCloakThreshold"),.5);
+                        TestFalse(TEXT("Schema2 cannot borrow the schema3 self-cloak exception"),Replay->ValidateRecording(Broken,Error));
+                    }
+                    auto Broken=Clone(Saved.ToSharedRef());Definition(Broken,TEXT("aether_reaper"))->SetNumberField(TEXT("healthCloakThreshold"),0);
+                    TestFalse(TEXT("Schema3 troop invisibility requires an actual health trigger"),Replay->ValidateRecording(Broken,Error));
+                    Broken=Clone(Saved.ToSharedRef());Definition(Broken,TEXT("aether_reaper"))->SetNumberField(TEXT("invisibilityDuration"),0);
+                    TestFalse(TEXT("Schema3 health trigger requires positive cloak duration"),Replay->ValidateRecording(Broken,Error));
+                    Broken=Clone(Saved.ToSharedRef());Definition(Broken,TEXT("shadow_surge"))->SetNumberField(TEXT("healthCloakThreshold"),.5);
+                    TestFalse(TEXT("Schema3 area spells cannot masquerade as health-triggered troops"),Replay->ValidateRecording(Broken,Error));
+                    Broken=Clone(Saved.ToSharedRef());Definition(Broken,TEXT("aether_reaper"))->SetNumberField(TEXT("healthCloakThreshold"),1.01);
+                    TestFalse(TEXT("Schema3 rejects a self-cloak threshold above full health"),Replay->ValidateRecording(Broken,Error));
+                }
+            }
         } else if(Scenario==3) {
             if(TestNotNull(TEXT("Live Archer before hard expiry"),Live)&&TestNotNull(TEXT("Replay Archer before hard expiry"),Restored))
                 TestTrue(TEXT("Replay uses captured25HP per second decay"),FMath::IsNearlyEqual(Restored->hp,Live->hp,.005));
             Replay->Seek(25.05f);Restored=Find(Replay->View,Subject);
             TestTrue(TEXT("Replay hard expiry kills Archer while body HP would remain"),Restored&&Restored->dead&&Restored->hp==0);
+        } else if(Scenario==5) {
+            if(TestNotNull(TEXT("Live health-cloaked Reaper"),Live)&&TestNotNull(TEXT("Replay health-cloaked Reaper"),Restored)) {
+                TestEqual(TEXT("Replay keeps actual two175 packets"),Restored->hp,95.);
+                TestTrue(TEXT("Replay retains exact self-cloak timer and spent trigger"),Restored->healthCloakTriggered&&
+                    FMath::IsNearlyEqual(Restored->invisibleUntil,Live->invisibleUntil,1e-7)&&Restored->invisibleUntil>Replay->TimelinePosition());
+                TestTrue(TEXT("Replay self-cloak attribution belongs to the paid body"),Restored->invisibilitySource==Subject&&
+                    Restored->invisibilityPlayId==Restored->playId&&Restored->invisibilityCardId=="aether_reaper");
+            }
+            rift::Snapshot Roundtrip;
+            TestTrue(TEXT("Active self-cloak snapshot also accepts current-definition roundtrip"),Replay->SnapshotFromJSON(Replay->SnapshotJSON(LiveProbe),Roundtrip));
+            Replay->Seek(1.75f);Restored=Find(Replay->View,Subject);
+            TestTrue(TEXT("Expired self-cloak recording retains spent trigger and attribution"),Restored&&Restored->healthCloakTriggered&&
+                Restored->invisibleUntil==0&&Restored->invisibilityCardId=="aether_reaper");
+            TestTrue(TEXT("Expired self-cloak snapshot also roundtrips"),Replay->SnapshotFromJSON(Replay->SnapshotJSON(Match.State()),Roundtrip));
         } else if(TestNotNull(TEXT("Live charged Ram"),Live)&&TestNotNull(TEXT("Replay charged Ram"),Restored)) {
             TestTrue(TEXT("Actual Ram movement accumulates approved1.5second threshold"),Live->charged&&Live->chargeTime>1.5);
             TestTrue(TEXT("Replay carries actual charged movement state"),Restored->charged&&Restored->chargeTime>1.5);
@@ -2014,6 +2076,7 @@ bool FRiftCardDataIntegrationTest::RunTest(const FString &Parameters) {
         METRIC(AttackSpeed, attackInterval)
         METRIC(MoveSpeed, moveSpeed)
         METRIC(AttackRange, range)
+        METRIC(BaseModelScale, scale)
         METRIC(ProjectileSpeed, projectileSpeed)
         METRIC(ShockwaveSpeed, shockwaveSpeed)
         METRIC(SplashRadius, splash)
@@ -2025,6 +2088,7 @@ bool FRiftCardDataIntegrationTest::RunTest(const FString &Parameters) {
         METRIC(ChargedMoveSpeed, chargedMoveSpeed) METRIC(HPDecayPerSecond, hpDecayPerSecond)
         METRIC(InitialAttackCooldown, initialAttackCooldown) METRIC(ShieldHP, shieldHP)
         METRIC(InvisibilityDuration, invisibilityDuration) METRIC(DotStructureDamage, dotStructureDamage)
+        METRIC(HealthCloakThreshold, healthCloakThreshold)
             METRIC(SlowPct, slowPct) METRIC(SlowDuration, slowDuration) METRIC(AuraDamage, auraDamage)
                 METRIC(AuraInterval, auraInterval) METRIC(AuraRadius, auraRadius)
                     METRIC(StunDuration, stunDuration) METRIC(DotDamage, dotDamage)

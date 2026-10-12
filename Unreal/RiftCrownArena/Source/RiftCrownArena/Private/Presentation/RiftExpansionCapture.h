@@ -22,6 +22,8 @@ public:
 private:
     bool BuildWardenDeath(URiftMatchSubsystem* Match,const TSharedRef<FJsonObject>& Report);
     bool SampleWardenDeath(const TSharedRef<FJsonObject>& Report) const;
+    bool BuildReaperDesign(URiftMatchSubsystem* Match,const TSharedRef<FJsonObject>& Report);
+    bool SampleReaperDesign(const TSharedRef<FJsonObject>& Report) const;
     std::unique_ptr<rift::Match> Fixture;
     TWeakObjectPtr<URiftMatchSubsystem> View;
     TSet<uint64> SelectedIds;
@@ -42,4 +44,12 @@ private:
     TSet<uint64> WardenChildIds;
     TArray<TSharedPtr<FJsonValue>> WardenChildBirthVisuals;
     TArray<TSharedPtr<FJsonValue>> WardenCaptiveMotion;
+    bool ReaperDesignCapture=false,ReaperAuraMotionObserved=false,ReaperAuraSampled=false,ReaperEventAttributionPassed=true;
+    FString ReaperStage=TEXT("idle");
+    uint64 ReaperId=0,ReaperPlayId=0;
+    int32 ReaperFixedSteps=0,ReaperCleaveEvents=0,ReaperCleaveVictims=0,ReaperDamagePackets=0,ReaperCloakEvents=0,ReaperExpireEvents=0;
+    double ReaperCleaveAt=-1,ReaperCloakAt=-1,ReaperFirstPacketHP=-1;
+    rift::Vec2 ReaperInitialPosition;
+    FTransform ReaperFirstAuraTransform;
+    TArray<TSharedPtr<FJsonValue>> ReaperIncomingPackets;
 };

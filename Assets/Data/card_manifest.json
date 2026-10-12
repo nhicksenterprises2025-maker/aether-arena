@@ -1,10 +1,8 @@
 {
-  "schema": 2,
-  "version": "1.6.0",
+  "schema": 3,
+  "version": "1.7.0",
   "status": "approved",
-  "sourceCommit": "7c25b46e8c6d7dd1326dee60960141da3774bcd1",
-  "liveCaptureSHA256": "e341671ef0d57e37dd20965a3ca4526411139152ccb48335ffeeaeb068c7ac1a",
-  "capturePath": "Artifacts/QA/ExpansionBaseline/capture-503dbbf1ffec46baa2cfb7b4f7c3701d",
+  "sourceCommit": "31a19eb06dec0d415712f4691305ccac079eb7f5",
   "cards": [
     {
       "id": "ironclad",
@@ -55,7 +53,8 @@
       "shieldOverflowProtected": false,
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
-      "deathSpawnId": ""
+      "deathSpawnId": "",
+      "healthCloakThreshold": 0
     },
     {
       "id": "ember_archer",
@@ -106,7 +105,8 @@
       "shieldOverflowProtected": false,
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
-      "deathSpawnId": ""
+      "deathSpawnId": "",
+      "healthCloakThreshold": 0
     },
     {
       "id": "twin_blades",
@@ -157,7 +157,8 @@
       "shieldOverflowProtected": false,
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
-      "deathSpawnId": ""
+      "deathSpawnId": "",
+      "healthCloakThreshold": 0
     },
     {
       "id": "boulderback",
@@ -208,7 +209,8 @@
       "shieldOverflowProtected": false,
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
-      "deathSpawnId": ""
+      "deathSpawnId": "",
+      "healthCloakThreshold": 0
     },
     {
       "id": "arc_mage",
@@ -259,7 +261,8 @@
       "shieldOverflowProtected": false,
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
-      "deathSpawnId": ""
+      "deathSpawnId": "",
+      "healthCloakThreshold": 0
     },
     {
       "id": "rambeast",
@@ -310,7 +313,8 @@
       "shieldOverflowProtected": false,
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
-      "deathSpawnId": ""
+      "deathSpawnId": "",
+      "healthCloakThreshold": 0
     },
     {
       "id": "sky_manta",
@@ -361,7 +365,8 @@
       "shieldOverflowProtected": false,
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
-      "deathSpawnId": ""
+      "deathSpawnId": "",
+      "healthCloakThreshold": 0
     },
     {
       "id": "vampire_bats",
@@ -412,7 +417,8 @@
       "shieldOverflowProtected": false,
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
-      "deathSpawnId": ""
+      "deathSpawnId": "",
+      "healthCloakThreshold": 0
     },
     {
       "id": "frost_fang",
@@ -463,7 +469,8 @@
       "shieldOverflowProtected": false,
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
-      "deathSpawnId": ""
+      "deathSpawnId": "",
+      "healthCloakThreshold": 0
     },
     {
       "id": "storm_raven",
@@ -514,7 +521,8 @@
       "shieldOverflowProtected": false,
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
-      "deathSpawnId": ""
+      "deathSpawnId": "",
+      "healthCloakThreshold": 0
     },
     {
       "id": "meteor_shards",
@@ -565,7 +573,8 @@
       "shieldOverflowProtected": false,
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
-      "deathSpawnId": ""
+      "deathSpawnId": "",
+      "healthCloakThreshold": 0
     },
     {
       "id": "archer_tower",
@@ -616,7 +625,8 @@
       "shieldOverflowProtected": false,
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
-      "deathSpawnId": ""
+      "deathSpawnId": "",
+      "healthCloakThreshold": 0
     },
     {
       "id": "bullet_burst",
@@ -667,7 +677,8 @@
       "shieldOverflowProtected": false,
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
-      "deathSpawnId": ""
+      "deathSpawnId": "",
+      "healthCloakThreshold": 0
     },
     {
       "id": "nova_flask",
@@ -718,7 +729,8 @@
       "shieldOverflowProtected": false,
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
-      "deathSpawnId": ""
+      "deathSpawnId": "",
+      "healthCloakThreshold": 0
     },
     {
       "id": "mini_stampede",
@@ -769,7 +781,8 @@
       "shieldOverflowProtected": false,
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
-      "deathSpawnId": ""
+      "deathSpawnId": "",
+      "healthCloakThreshold": 0
     },
     {
       "id": "stampede",
@@ -781,7 +794,7 @@
       "attackInterval": 1,
       "moveSpeed": 3,
       "range": 0.8,
-      "scale": 0.85,
+      "scale": 0.9,
       "projectileSpeed": 0,
       "shockwaveSpeed": 0,
       "splash": 0,
@@ -806,7 +819,7 @@
       "structuresOnly": true,
       "spell": false,
       "building": false,
-      "collisionRadius": 0.5720000000000001,
+      "collisionRadius": 0.42,
       "targetMask": 4,
       "chargeMoveSeconds": 0,
       "chargedMoveSpeed": 0,
@@ -820,7 +833,8 @@
       "shieldOverflowProtected": false,
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
-      "deathSpawnId": ""
+      "deathSpawnId": "",
+      "healthCloakThreshold": 0
     },
     {
       "id": "pulverizer",
@@ -832,7 +846,7 @@
       "attackInterval": 0.9,
       "moveSpeed": 0,
       "range": 4,
-      "scale": 0.95,
+      "scale": 1.05,
       "projectileSpeed": 0,
       "shockwaveSpeed": 8,
       "splash": 4,
@@ -871,7 +885,8 @@
       "shieldOverflowProtected": false,
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
-      "deathSpawnId": ""
+      "deathSpawnId": "",
+      "healthCloakThreshold": 0
     },
     {
       "cost": 6,
@@ -881,7 +896,7 @@
       "attackInterval": 1.5,
       "moveSpeed": 1,
       "range": 1.75,
-      "scale": 1.5,
+      "scale": 1.65,
       "projectileSpeed": 0,
       "shockwaveSpeed": 0,
       "splash": 0.5,
@@ -922,7 +937,8 @@
       "breakExistingLocks": false,
       "deathSpawnId": "bone_warden_skeleton",
       "id": "bone_warden",
-      "name": "Bone Warden"
+      "name": "Bone Warden",
+      "healthCloakThreshold": 0
     },
     {
       "cost": 4,
@@ -932,7 +948,7 @@
       "attackInterval": 1.05,
       "moveSpeed": 1.85,
       "range": 1.4,
-      "scale": 1.1,
+      "scale": 1.35,
       "projectileSpeed": 0,
       "shockwaveSpeed": 0,
       "splash": 1.5,
@@ -965,15 +981,16 @@
       "initialAttackCooldown": 0,
       "shieldHP": 0,
       "deathSpawnCount": 0,
-      "invisibilityDuration": 0,
+      "invisibilityDuration": 1,
       "dotStructureDamage": 0,
       "hardExpiry": false,
       "shieldOverflowProtected": false,
       "globalFriendlyInvisibility": false,
-      "breakExistingLocks": false,
+      "breakExistingLocks": true,
       "deathSpawnId": "",
       "id": "aether_reaper",
-      "name": "Aether Reaper"
+      "name": "Aether Reaper",
+      "healthCloakThreshold": 0.5
     },
     {
       "cost": 3,
@@ -983,7 +1000,7 @@
       "attackInterval": 1.3,
       "moveSpeed": 1.55,
       "range": 1.35,
-      "scale": 1,
+      "scale": 1.65,
       "projectileSpeed": 0,
       "shockwaveSpeed": 0,
       "splash": 0,
@@ -1003,7 +1020,7 @@
       "dotDuration": 0,
       "dotInterval": 0,
       "rounds": 0,
-      "collisionRadius": 0.44,
+      "collisionRadius": 0.7,
       "targetMask": 4,
       "flying": false,
       "canHitAir": false,
@@ -1024,7 +1041,8 @@
       "breakExistingLocks": false,
       "deathSpawnId": "",
       "id": "iron_giant",
-      "name": "Iron Giant"
+      "name": "Iron Giant",
+      "healthCloakThreshold": 0
     },
     {
       "cost": 3,
@@ -1075,7 +1093,8 @@
       "breakExistingLocks": true,
       "deathSpawnId": "",
       "id": "shadow_surge",
-      "name": "Shadow Surge"
+      "name": "Shadow Surge",
+      "healthCloakThreshold": 0
     }
   ],
   "entities": [
@@ -1128,33 +1147,32 @@
       "breakExistingLocks": false,
       "deathSpawnId": "",
       "id": "bone_warden_skeleton",
-      "name": "Bone Warden Skeleton"
+      "name": "Bone Warden Skeleton",
+      "healthCloakThreshold": 0
     }
   ],
   "rules": {
-    "combatRevision": 3,
-    "navigationRevision": 8,
+    "combatRevision": 4,
+    "navigationRevision": 9,
     "targetHardLock": "first authoritative attack against a Crown Tower",
     "frontSight": 8,
     "rearSight": 5,
-    "arenaWidth": 24,
-    "arenaHeight": 34,
+    "arenaWidth": 22,
+    "arenaHeight": 40,
     "riverHalfWidth": 1.65,
-    "bridgeCenterX": 5.76,
+    "bridgeCenterX": 7.76,
     "bridgeWidth": 4.2,
-    "guardDepth": 10.72,
-    "coreDepth": 13.84,
+    "guardDepth": 13.72,
+    "coreDepth": 16.84,
     "cloakLockException": "Approved Shadow Surge drops enemy locks, including committed Crown Tower locks; committed damage and projectiles still resolve"
   },
-  "balanceHash": "e87244ec5b4629688bfdf83e5ef3888f3ad61b96848e9f117e3af12b96b236d5",
-  "baseline": "Assets/Data/Baselines/1.5.0-expanded-schema.json",
+  "balanceHash": "7d23c5e1d5bb848cb887fec350fd814753210a9a81bfcf6a561d5a42d3fa15f4",
+  "baseline": "Assets/Data/Baselines/1.6.0.json",
   "approval": {
     "sourceResolution": "Assets/Data/source_resolution.json",
-    "answer": "Use all proposed choices (Recommended)",
-    "questionCall": "call_GLkgkb9kfsR1Nfo3JqSQj9h8",
-    "arenaAnswer": "34 long × 24 wide (Recommended)",
-    "arenaQuestionCall": "call_b579df8afd2d4b77a67d9fc7868e6650",
-    "releaseAcceptance": "Numerical approval only. Runtime and package acceptance are recorded separately in the versioned QA report."
+    "source": "Direct user design, collision and Reaper ability revision on 2026-10-12",
+    "arenaAnswer": "Extend each rear by3 tiles; reduce each side by1 tile; towers3 tiles back; bridge and Guards2 tiles outward",
+    "releaseAcceptance": "Runtime and Windows package acceptance are measured separately."
   },
   "baselineRuntimePins": [
     {
@@ -1165,5 +1183,10 @@
       "path": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArenaEditor.dll",
       "sha256": "2cfb31aa17d1396895e5e106272412c2b0753d073b27a18e6f8e1e256e547cfb"
     }
-  ]
+  ],
+  "baselineProvenance": {
+    "tag": "v1.6.0",
+    "sourceCommit": "31a19eb06dec0d415712f4691305ccac079eb7f5",
+    "canonicalFileSHA256": "67229363a030a17491d04a9c1fecc991be2cb52903c5b0aba849db421203547e"
+  }
 }

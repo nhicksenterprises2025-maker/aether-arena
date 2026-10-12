@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "path": "Assets/asset_manifest.json",
+      "sha256": "68333849b6484108ce96217859b19b869a169bc0cd647307f4eb4742bd762cf4",
+      "bytes": 363875
+    },
+    {
+      "path": "Assets/Source/Revisions/ArtPolishBefore1.6.0/FinalWeightRepair1.6.0/SavedScenePreservation.json",
+      "sha256": "e5b7f9d8faa9bbed7c6da45e905c41f6c4cd28e8220259225b12e7228232bf81",
+      "bytes": 32246
+    },
+    {
+      "path": "Assets/Source/Revisions/ArtPolishBefore1.6.0/FinalWeightRepair1.6.0/FinalMatrixSafety.json",
+      "sha256": "1fa23b3367eb09d7ed7c311a72c2cc439d1d10357eccdb48bec7ec984bdc8629",
+      "bytes": 272840
+    },
+    {
+      "path": "Assets/Source/Revisions/ArtPolishBefore1.6.0/FinalWeightRepair1.6.0/FinalArtQuality.json",
+      "sha256": "e6cbdf61fcb5b594065a21a7ad7092e2070414d6bd1d9a80b852bd4c519d24a0",
+      "bytes": 764577
+    },
+    {
+      "path": "Assets/Source/Revisions/ArtPolishBefore1.6.0/FinalWeightRepair1.6.0/AfterArtManifestBeforeProvenance.json",
+      "sha256": "da187cf659e849db20807e3de657e9696fc4da83edb243032c247cec7389e3ec",
+      "bytes": 337909
+    },
+    {
+      "path": "Assets/Source/Revisions/ArtPolishBefore1.6.0/FinalWeightRepair1.6.0/Supersession.json",
+      "sha256": "5b8d270610834788264f75e84867c83d85ff6766d1932e69518426394f9147ef",
+      "bytes": 4772
+    }
+  ],
+  "producerPins": [
+    {
+      "path": "Build/finalize_art_polish_provenance.py",
+      "sha256": "a258213fee05bddd1aec33dd5a6ff965365de810002b7d47763f9cfa161c9b13",
+      "bytes": 49579
+    },
+    {
+      "path": "Build/portrait_source_revision.py",
+      "sha256": "ce9c9dba48463d355ba15c751d3ff130930f9b9482ceffe1a710e56fdedf69ec",
+      "bytes": 23185
+    },
+    {
+      "path": "Build/validate_expansion_assets.py",
+      "sha256": "d414ee281acc8456e63e7f7b14c0a1718bb34c78b48cb9b29781399265354b6c",
+      "bytes": 12729
+    },
+    {
+      "path": "Build/Tests/Test-ApprovedAssetProvenance.py",
+      "sha256": "e135592e77272124c12e0ed69c3af3f17a4de794a5927f311f5099a0026281da",
+      "bytes": 17046
+    },
+    {
+      "path": "Build/validate_expansion_art_quality.py",
+      "sha256": "7b2cff1cc9775834edabb78fceccf0b1cdb1017b4525639e7267aa1379dde194",
+      "bytes": 71204
+    },
+    {
+      "path": "Build/generate_assets.py",
+      "sha256": "bccfbedb3e5f0daca8d687cb087efc0c54f8c5f3b7abb5c952ea11c463b76dcf",
+      "bytes": 85340
+    },
+    {
+      "path": "Build/expansion_asset_models.py",
+      "sha256": "c103dceb1a2468bb7aa9fd146acec288a64479fe263bfde0866402fb08486a1d",
+      "bytes": 44988
+    },
+    {
+      "path": "Build/expansion_new_models.py",
+      "sha256": "04e5b62b84baf712acadbfa0acae7aa738f86a2d65c480673e815776fe15064a",
+      "bytes": 65863
+    }
+  ]
+}

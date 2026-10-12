@@ -28,12 +28,19 @@ ARGS.add_argument('--preview-frame', type=int, default=16)
 ARGS.add_argument('--preview-scene', action='store_true', help='Save the isolated QA scene for multiview and animation review')
 ARGS.add_argument('--polish-expansion-surfaces', action='store_true', help='Rebuild only the two expansion material atlases with the crafted surface finish')
 ARGS.add_argument('--production-proof',type=Path,help='Tracked read-only preservation signatures for an additive source revision')
+ARGS.add_argument('--replacement-proof',type=Path,help='Tracked preservation proof for an explicit selected-model replacement; keeps other source objects, actions, materials and asset files unchanged')
 opts=ARGS.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
 PREVIEW = set(opts.preview_models.split(',')) if opts.preview_models else None
 UPDATE = set(opts.update_models.split(',')) if opts.update_models else None
 if PREVIEW and UPDATE: ARGS.error('--preview-models and --update-models are mutually exclusive')
 if opts.preview_action and not PREVIEW: ARGS.error('--preview-action requires --preview-models')
 if opts.preview_scene and not PREVIEW: ARGS.error('--preview-scene requires --preview-models')
+if opts.replacement_proof and (not UPDATE or PREVIEW or opts.production_proof or opts.polish_expansion_surfaces or not opts.no_renders):
+    ARGS.error('--replacement-proof requires --update-models --no-renders, without preview, additive proof or atlas polish')
+if opts.replacement_proof:
+    replacement_proof_path=opts.replacement_proof.resolve()
+    replacement_proof_path.relative_to((ROOT/'Assets/Source/Revisions').resolve())
+    if replacement_proof_path.exists():raise ValueError('Replacement preservation proof cannot be overwritten')
 if opts.polish_expansion_surfaces and not (UPDATE or PREVIEW): ARGS.error('Surface polish requires explicit selected expansion models')
 if opts.polish_expansion_surfaces and not (UPDATE or PREVIEW).issubset(set(expansion_models.CONTRACTS)|set(new_models.CONTRACTS)|set(new_models.STATIC_IDS)):
     ARGS.error('Surface polish cannot rebuild legacy models or their atlas')
@@ -47,7 +54,7 @@ for d in (SRC, OUT, RENDER, SRC/'Textures'): d.mkdir(parents=True, exist_ok=True
 random.seed(15082026)
 previous_manifest=None
 preserved_signatures=None
-def source_signatures(names=None,action_names=None):
+def source_signatures(names=None,action_names=None,full_objects=False):
     objects={}
     for obj in bpy.data.objects:
         if names is not None and obj.name not in names:continue
@@ -61,7 +68,11 @@ def source_signatures(names=None,action_names=None):
         elif obj.type=='ARMATURE':
             payload['bones']={bone.name:{'parent':bone.parent.name if bone.parent else None,
                 'matrix':[list(row) for row in bone.matrix_local]} for bone in obj.data.bones}
-        else:continue
+        elif not full_objects:continue
+        if full_objects:
+            payload.update({'parent':obj.parent.name if obj.parent else None,'parentType':obj.parent_type,
+                            'parentBone':obj.parent_bone,'hideRender':obj.hide_render,
+                            'collections':sorted(c.name for c in obj.users_collection)})
         objects[obj.name]=hashlib.sha256(json.dumps(payload,sort_keys=True,separators=(',',':')).encode()).hexdigest()
     actions={}
     for action in bpy.data.actions:
@@ -71,6 +82,40 @@ def source_signatures(names=None,action_names=None):
                   'keys':[[list(k.co),k.interpolation,list(k.handle_left),list(k.handle_right)] for k in curve.keyframe_points]} for curve in curves]
         actions[action.name]=hashlib.sha256(json.dumps(payload,sort_keys=True,separators=(',',':')).encode()).hexdigest()
     return {'objects':objects,'actions':actions}
+
+def replacement_material_signatures():
+    """Actual packed atlas bytes and connected material values, not names alone."""
+    def value(v):
+        if isinstance(v,(str,int,float,bool,type(None))):return v
+        try:return list(v)
+        except TypeError:return str(v)
+    materials={}
+    for material in bpy.data.materials:
+        payload={'useNodes':material.use_nodes,'diffuseColor':list(material.diffuse_color)}
+        if material.node_tree:
+            payload['nodes']=[{'name':node.name,'type':node.bl_idname,
+                'inputs':[(socket.name,value(socket.default_value)) for socket in node.inputs if hasattr(socket,'default_value')],
+                'image':node.image.name if hasattr(node,'image') and node.image else None,
+                'attributes':{key:value(getattr(node,key)) for key in ('operation','blend_type','interpolation','extension') if hasattr(node,key)}}
+                for node in material.node_tree.nodes]
+            payload['links']=[(link.from_node.name,link.from_socket.identifier,link.to_node.name,link.to_socket.identifier)
+                              for link in material.node_tree.links]
+        materials[material.name]=hashlib.sha256(json.dumps(payload,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+    images={}
+    for image in bpy.data.images:
+        if not image.packed_file:continue
+        images[image.name]={'sha256':hashlib.sha256(bytes(image.packed_file.data)).hexdigest(),
+                            'colorspace':image.colorspace_settings.name,'size':list(image.size)}
+    return {'materials':materials,'packedImages':images}
+
+def replacement_asset_signatures(source_file):
+    result={}
+    for path in sorted((ROOT/'Assets').rglob('*')):
+        if not path.is_file() or path==ROOT/'Assets/asset_manifest.json' or path==source_file or path==replacement_proof_path:continue
+        rel=path.relative_to(ROOT).as_posix()
+        if any(rel.startswith('Assets/Export/Characters/'+name+'/') for name in UPDATE):continue
+        result[rel]={'bytes':path.stat().st_size,'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
+    return result
 if UPDATE:
     previous_manifest=json.loads((ROOT/'Assets/asset_manifest.json').read_text(encoding='utf-8'))
     # Existing card renders/data assets belong to their actual authored scene.
@@ -78,6 +123,18 @@ if UPDATE:
     for illustration in previous_manifest.get('illustrations',{}).values():
         illustration.setdefault('sourceSceneSHA256',previous_manifest['source']['sha256'])
     bpy.ops.wm.open_mainfile(filepath=str(ROOT/previous_manifest['source']['file']))
+    if opts.replacement_proof:
+        missing=UPDATE-set(previous_manifest['characters'])
+        if missing:raise ValueError('Replacement mode requires existing selected characters: '+', '.join(sorted(missing)))
+        replaced_objects={obj.name for name in UPDATE for obj in bpy.data.collections[name].all_objects}
+        kept_objects={obj.name for obj in bpy.data.objects}-replaced_objects
+        kept_actions={action.name for action in bpy.data.actions if not any(action.name.startswith('AN_'+name+'_') for name in UPDATE)}
+        replacement_before=source_signatures(kept_objects,kept_actions,True)
+        replacement_materials_before=replacement_material_signatures()
+        replacement_assets_before=replacement_asset_signatures(ROOT/previous_manifest['source']['file'])
+        replacement_scene_before={'fps':bpy.context.scene.render.fps,'fpsBase':bpy.context.scene.render.fps_base,
+            'frameStart':bpy.context.scene.frame_start,'frameEnd':bpy.context.scene.frame_end,
+            'frameCurrent':bpy.context.scene.frame_current}
     if opts.production_proof:
         if UPDATE.intersection(previous_manifest['characters']):raise ValueError('Additive proof cannot replace an existing character')
         preserved_signatures=source_signatures()
@@ -97,12 +154,13 @@ else:
         if c.name!='Collection': bpy.data.collections.remove(c)
 scene=bpy.context.scene; scene.unit_settings.system='METRIC'; scene.unit_settings.scale_length=1
 bpy.context.preferences.filepaths.save_version=0
-scene.render.engine='BLENDER_EEVEE'; scene.render.resolution_x=1024; scene.render.resolution_y=1024
-scene.render.resolution_percentage=100; scene.render.image_settings.file_format='PNG'
-scene.render.film_transparent=False; scene.render.fps=30
-scene.world.use_nodes=True; scene.world.node_tree.nodes['Background'].inputs[0].default_value=(.045,.065,.095,1)
-scene.world.node_tree.nodes['Background'].inputs[1].default_value=.55
-scene.view_settings.view_transform='AgX'
+if not opts.replacement_proof:
+    scene.render.engine='BLENDER_EEVEE'; scene.render.resolution_x=1024; scene.render.resolution_y=1024
+    scene.render.resolution_percentage=100; scene.render.image_settings.file_format='PNG'
+    scene.render.film_transparent=False; scene.render.fps=30
+    scene.world.use_nodes=True; scene.world.node_tree.nodes['Background'].inputs[0].default_value=(.045,.065,.095,1)
+    scene.world.node_tree.nodes['Background'].inputs[1].default_value=.55
+    scene.view_settings.view_transform='AgX'
 
 PALETTE={
  'iron':(.14,.21,.26,.72,.38), 'steel':(.32,.43,.50,.82,.30),
@@ -218,9 +276,14 @@ if not PREVIEW or PREVIEW.intersection(expansion_models.CONTRACTS):
         if old and UPDATE and not opts.polish_expansion_surfaces:return old
         if old:bpy.data.materials.remove(old,do_unlink=True)
         return make_material(name,glow=glow,glass=glass)
-    EXPANSION_MATERIALS=(expansion_material('M_RiftExpansionSurface'),
-                         expansion_material('M_RiftExpansionGlow',glow=True),
-                         expansion_material('M_RiftExpansionGlass',glass=True))
+    if opts.replacement_proof:
+        EXPANSION_MATERIALS=(bpy.data.materials['M_RiftExpansionSurface'],
+                            bpy.data.materials['M_RiftExpansionGlow'],
+                            bpy.data.materials.get('M_RiftExpansionGlass') or bpy.data.materials['M_RiftExpansionSurface'])
+    else:
+        EXPANSION_MATERIALS=(expansion_material('M_RiftExpansionSurface'),
+                             expansion_material('M_RiftExpansionGlow',glow=True),
+                             expansion_material('M_RiftExpansionGlass',glass=True))
     PALETTE.clear();PALETTE.update(saved_palette);TEX=saved_tex
 
 # New designs own a separate atlas. No accepted legacy/boar palette is changed.
@@ -237,14 +300,21 @@ if (UPDATE and UPDATE.intersection(set(new_models.CONTRACTS)|set(new_models.STAT
                         'ivory':(.83,.78,.64,0,.52),'cloth_indigo':(.09,.13,.21,0,.88),
                         'cloth_purple':(.19,.145,.24,0,.88),'black':(.022,.032,.045,0,.88),
                         'teal_light':(.13,.50,.255,0,.42),'glass':(.15,.10,.25,.03,.36)})
-    TEX=textures('T_RiftAscensionAtlas')
-    for name in ('M_RiftExpansionAscensionSurface','M_RiftExpansionAscensionGlow','M_RiftExpansionAscensionGlass'):
-        old_material=bpy.data.materials.get(name)
-        if old_material:bpy.data.materials.remove(old_material,do_unlink=True)
-    NEW_MATERIALS=tuple(make_material(name,glow=glow,glass=glass) for name,glow,glass in (
-        ('M_RiftExpansionAscensionSurface',False,False),
-        ('M_RiftExpansionAscensionGlow',True,False),
-        ('M_RiftExpansionAscensionGlass',False,True)))
+    if opts.replacement_proof:
+        TEX={channel:bpy.data.images['T_RiftAscensionAtlas_'+channel]
+             for channel in ('BaseColor','ORM','Normal')}
+        NEW_MATERIALS=(bpy.data.materials['M_RiftExpansionAscensionSurface'],
+                       bpy.data.materials['M_RiftExpansionAscensionGlow'],
+                       bpy.data.materials.get('M_RiftExpansionAscensionGlass') or bpy.data.materials['M_RiftExpansionAscensionSurface'])
+    else:
+        TEX=textures('T_RiftAscensionAtlas')
+        for name in ('M_RiftExpansionAscensionSurface','M_RiftExpansionAscensionGlow','M_RiftExpansionAscensionGlass'):
+            old_material=bpy.data.materials.get(name)
+            if old_material:bpy.data.materials.remove(old_material,do_unlink=True)
+        NEW_MATERIALS=tuple(make_material(name,glow=glow,glass=glass) for name,glow,glass in (
+            ('M_RiftExpansionAscensionSurface',False,False),
+            ('M_RiftExpansionAscensionGlow',True,False),
+            ('M_RiftExpansionAscensionGlass',False,True)))
     PALETTE.clear();PALETTE.update(saved_palette);TEX=saved_tex
 
 manifest=json.loads(json.dumps(previous_manifest)) if previous_manifest else {'schema':1,'source':'original procedural sculpt and rig authored for Rift Crown Arena',
@@ -256,11 +326,11 @@ manifest=json.loads(json.dumps(previous_manifest)) if previous_manifest else {'s
                'teamMask':Path(TEX['TeamMask'].filepath_raw).relative_to(ROOT).as_posix()} for m in (SURFACE,GLOW,GLASS)],
  'characters':{},'statics':{},'illustrations':{},'renders':[]}
 manifest['build']='UE-balance-expansion-source'
-if EXPANSION_MATERIALS:
+if EXPANSION_MATERIALS and not opts.replacement_proof:
     manifest['expansionMaterials']=[{'name':m.name,'baseColor':'Assets/Source/Textures/T_RiftExpansionAtlas_BaseColor.png',
         'orm':'Assets/Source/Textures/T_RiftExpansionAtlas_ORM.png','normal':'Assets/Source/Textures/T_RiftExpansionAtlas_Normal.png',
         'teamMask':'Assets/Source/Textures/T_RiftExpansionAtlas_TeamMask.png'} for m in EXPANSION_MATERIALS]
-if NEW_MATERIALS:
+if NEW_MATERIALS and not opts.replacement_proof:
     new_material_records=[{'name':m.name,
         'baseColor':'Assets/Source/Textures/T_RiftAscensionAtlas_BaseColor.png',
         'orm':'Assets/Source/Textures/T_RiftAscensionAtlas_ORM.png',
@@ -1179,12 +1249,29 @@ if PREVIEW:
     (opts.preview_output/'preview-manifest.json').write_text(json.dumps(previewReport,indent=2),encoding='utf-8')
     print('RIFT_MODEL_PREVIEW_FINISHED',len(forges),flush=True)
     sys.exit(0)
-for col in bpy.data.collections:col.hide_render=False
-scene.frame_start=1;scene.frame_end=60;scene.frame_set(1)
+if opts.replacement_proof:
+    scene.render.fps=replacement_scene_before['fps'];scene.render.fps_base=replacement_scene_before['fpsBase']
+    scene.frame_start=replacement_scene_before['frameStart'];scene.frame_end=replacement_scene_before['frameEnd']
+    scene.frame_set(replacement_scene_before['frameCurrent'])
+    replacement_after=source_signatures(kept_objects,kept_actions,True)
+    selected_after={obj.name for name in UPDATE for obj in bpy.data.collections[name].all_objects}
+    if {obj.name for obj in bpy.data.objects}-selected_after!=kept_objects:
+        raise RuntimeError('Non-selected source object inventory changed during replacement')
+    if {action.name for action in bpy.data.actions if not any(action.name.startswith('AN_'+name+'_') for name in UPDATE)}!=kept_actions:
+        raise RuntimeError('Non-selected source action inventory changed during replacement')
+    replacement_materials_after=replacement_material_signatures()
+    replacement_assets_after=replacement_asset_signatures(ROOT/previous_manifest['source']['file'])
+    if replacement_after!=replacement_before:raise RuntimeError('Non-selected source object or animation changed during replacement')
+    if replacement_materials_after!=replacement_materials_before:raise RuntimeError('Existing material connections or packed atlas changed during replacement')
+    if replacement_assets_after!=replacement_assets_before:raise RuntimeError('Non-selected asset file or inventory changed during replacement')
+else:
+    for col in bpy.data.collections:col.hide_render=False
+    scene.frame_start=1;scene.frame_end=60;scene.frame_set(1)
 if preserved_signatures:
     after=source_signatures(preserved_signatures['objects'],preserved_signatures['actions'])
     if after!=preserved_signatures:raise RuntimeError('Existing model, material, UV, rest joint or animation changed during additions')
-blend=SRC/'RiftCrown_ProductionAssets.blend';bpy.ops.wm.save_as_mainfile(filepath=str(blend))
+blend=ROOT/previous_manifest['source']['file'] if opts.replacement_proof else SRC/'RiftCrown_ProductionAssets.blend'
+bpy.ops.wm.save_as_mainfile(filepath=str(blend),compress=bool(opts.replacement_proof))
 manifest['source']=file_info(blend)
 card_bindings={
  'ironclad':{'skeletal':'ironclad'},'ember_archer':{'skeletal':'ember_archer'},
@@ -1226,5 +1313,14 @@ if opts.production_proof:
         'addedCharacters':sorted(UPDATE.intersection(new_models.CONTRACTS)),
         'addedStatics':sorted(UPDATE.intersection(new_models.STATIC_IDS)),
         'before':preserved_signatures,'after':after,
+        'producer':file_info(Path(__file__)),'modelBuilder':file_info(ROOT/'Build/expansion_new_models.py')},indent=2),encoding='utf-8')
+if opts.replacement_proof:
+    replacement_proof_path.parent.mkdir(parents=True,exist_ok=True)
+    replacement_proof_path.write_text(json.dumps({'schema':1,'passed':True,'kind':'selected-model-replacement',
+        'fromSource':previous_manifest['source'],'toSource':manifest['source'],'replacedCharacters':sorted(UPDATE),
+        'before':replacement_before,'after':replacement_after,
+        'materialsBefore':replacement_materials_before,'materialsAfter':replacement_materials_after,
+        'untouchedAssetsBefore':replacement_assets_before,'untouchedAssetsAfter':replacement_assets_after,
+        'preservedSceneTiming':replacement_scene_before,
         'producer':file_info(Path(__file__)),'modelBuilder':file_info(ROOT/'Build/expansion_new_models.py')},indent=2),encoding='utf-8')
 print('RIFT_ASSET_FINISHED',len(manifest['characters']),len(manifest['statics']),flush=True)
