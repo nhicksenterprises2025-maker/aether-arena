@@ -84,8 +84,7 @@ int32 URiftBattleOverlay::NativePaint(const FPaintArgs& Args,const FGeometry& Ge
         const bool ShowHealth=Visual->HasBeenDamaged();
         if(!ShowHealth)++UndamagedCount;
         const FString StatusText=Entity.stunUntil>State->elapsed?TEXT("STUN"):
-            Entity.slowUntil>State->elapsed&&Entity.slowPct>0?FString::Printf(TEXT("-%d%%"),FMath::RoundToInt(Entity.slowPct*100)):
-            Entity.charged?TEXT("CHARGE"):Entity.invisibleUntil>State->elapsed?TEXT("VEIL"):TEXT("");
+            Entity.charged?TEXT("CHARGE"):TEXT("");
         const auto* LifetimeCard=Entity.kind==rift::EntityKind::Building?rift::FindCard(Entity.cardId):nullptr;
         const bool ShowLifetime=LifetimeCard && LifetimeCard->lifetime>0;
         // First-damage visibility applies only to HP, not independent state
@@ -194,7 +193,6 @@ int32 URiftBattleOverlay::NativePaint(const FPaintArgs& Args,const FGeometry& Ge
         }
         if(!StatusText.IsEmpty())
             Text(Position+StatusOffset,StatusText,Entity.stunUntil>State->elapsed?FLinearColor(.95f,.86f,.42f):
-                Entity.slowUntil>State->elapsed&&Entity.slowPct>0?FLinearColor(.48f,.86f,1.f):
                 FLinearColor(.98f,.75f,.36f));
     }
     FString CapturePath;

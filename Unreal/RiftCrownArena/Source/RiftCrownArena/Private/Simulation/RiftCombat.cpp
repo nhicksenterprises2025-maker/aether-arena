@@ -554,7 +554,26 @@ void Match::UpdateEntity(EntityId id, double dt) {
         return;
     bool moved = false;
     auto arrival = engagementSlots_.find(s->id);
+    const bool inReach = CombatDistance(*s, *target) <= AttackReach(*s, *target) + 1e-9;
+    const bool friendlyYield = arrival != engagementSlots_.end() &&
+        arrival->second.target == target->id && arrival->second.yieldingToFriend;
+    const bool holdSwarmContact = arena::NavigationRevision >= 10 && c && c->projectileSpeed <= 0 &&
+        s->kind == EntityKind::Troop && target->kind == EntityKind::Troop &&
+        target->team != s->team && (s->memberCount > 1 || target->memberCount > 1) &&
+        inReach && !friendlyYield;
+    if (holdSwarmContact) {
+        // Opposing fighters do not orbit an ideal arrival goal after contact.
+        // Reserve the actual legal stance so neighbours route around its body.
+        // A deliberate same-team slot exchange can still make room for a friend.
+        engagementSlots_[s->id] = {target->id,
+            {s->position.x - target->position.x, s->position.z - target->position.z},
+            s->position, 0, state_.elapsed};
+        s->path.clear();
+        s->repathClock = 0;
+        arrival = engagementSlots_.find(s->id);
+    }
     if (s->kind == EntityKind::Troop && c && c->count > 1 && c->projectileSpeed <= 0 &&
+        !holdSwarmContact &&
         (arrival == engagementSlots_.end() || arrival->second.target != target->id) &&
         CombatDistance(*s, *target) <= AttackReach(*s, *target) + 1e-9) {
         // The front row can enter melee reach during a bridge exit, or be
@@ -566,7 +585,7 @@ void Match::UpdateEntity(EntityId id, double dt) {
         arrival = engagementSlots_.find(s->id);
     }
     if (s->kind == EntityKind::Troop && arrival != engagementSlots_.end() &&
-        arrival->second.target == target->id &&
+        arrival->second.target == target->id && !holdSwarmContact &&
         CombatDistance(*s, *target) <= AttackReach(*s, *target) + 1e-9) {
         const Vec2 point{target->position.x + arrival->second.offset.x,
                           target->position.z + arrival->second.offset.z};
@@ -576,7 +595,7 @@ void Match::UpdateEntity(EntityId id, double dt) {
             // This is one normal swept movement, followed by a fresh reach test.
             Move(*s, *target, dt);
             moved = true;
-        }
+        } else arrival->second.yieldingToFriend = false;
     }
     const double distance = CombatDistance(*s, *target);
     if (distance <= AttackReach(*s, *target) + 1e-9) {

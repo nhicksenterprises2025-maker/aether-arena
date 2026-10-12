@@ -3,6 +3,12 @@
 Original Windows card battler: twenty-one cards, two lanes, deterministic combat,
 seven AI personalities, deck workshop, Meta Lab, replays and developer training.
 
+Version 1.7.1 fixes swarm troops shuffling around their targets during combat.
+Friendly troops can make room for one another while opposing troops hold their
+combat positions. Overhead slow percentage text and VEIL labels are removed;
+all card stats, abilities, visuals and arena dimensions retain their 1.7.0 values.
+See [the hotfix notes](Docs/PATCH_NOTES_1.7.1.md).
+
 Version 1.7.0 reshapes the arena to 40 tiles long by 22 tiles wide, moves all
 towers three tiles rearward, and moves the Guard Towers, bridges and stone paths
 two tiles outward per lane. Five cards receive larger model scales. Iron Giant
