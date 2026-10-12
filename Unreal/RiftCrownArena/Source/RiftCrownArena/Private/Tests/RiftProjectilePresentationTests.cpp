@@ -2,6 +2,7 @@
 #include "Misc/AutomationTest.h"
 #include "Engine/StaticMesh.h"
 #include "Presentation/RiftArenaPresentation.h"
+#include "Presentation/RiftArenaGeometry.h"
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRiftProjectilePresentationTest,"Rift.Integration.ProjectilePresentation",
     EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
@@ -35,7 +36,7 @@ bool FRiftProjectilePresentationTest::RunTest(const FString& Parameters)
             const FVector Paused=ARiftArenaPresentation::ProjectilePathPoint(Binding.first,Launch,Target,.375);
             TestTrue(Label+TEXT(" paused/replayed progress reconstructs identical position"),Paused==ARiftArenaPresentation::ProjectilePathPoint(Binding.first,Launch,Target,.375));
             TestTrue(Label+TEXT(" has finite paths even for coincident anchors"),!Paused.ContainsNaN());
-            TestTrue(Label+TEXT(" arc remains below one tile above interpolation"),Paused.Z-FMath::Lerp(Launch,Target,.375).Z<=100.);
+            TestTrue(Label+TEXT(" arc remains below one tile above interpolation"),Paused.Z-FMath::Lerp(Launch,Target,.375).Z<=RiftArenaGeometry::UnitsPerTile);
         }
     }
     auto* Trail=LoadObject<UStaticMesh>(nullptr,TEXT("/Game/Rift/Environment/SM_projectile_trail.SM_projectile_trail"));

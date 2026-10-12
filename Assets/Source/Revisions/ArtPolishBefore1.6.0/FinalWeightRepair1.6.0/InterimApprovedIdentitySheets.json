@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "sourceBlend": {
+    "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
+    "sha256": "6e5d91490a984b4601ad9c12ee92f13ce567ae6ac06e09fb877c6b08f7099902",
+    "bytes": 22081077
+  },
+  "method": "Actual model/effect orthographic review renders; documentation layout, no baked game UI",
+  "sheets": {
+    "bone_warden": {
+      "file": "Assets/Renders/Expansion/Identity/bone_warden_IdentitySheet.png",
+      "bytes": 601579,
+      "sha256": "85cd2f8ad6d79aa20e943454d5de2a4aaf7128af519e786ea117e0eaf9d31464"
+    },
+    "bone_warden_skeleton": {
+      "file": "Assets/Renders/Expansion/Identity/bone_warden_skeleton_IdentitySheet.png",
+      "bytes": 558648,
+      "sha256": "ee454c3c88e11483415184a3d89ed9f0553709816910bd6fb8efe03568cbf342"
+    },
+    "aether_reaper": {
+      "file": "Assets/Renders/Expansion/Identity/aether_reaper_IdentitySheet.png",
+      "bytes": 537528,
+      "sha256": "2cc832ff5a6a508d8c31a83ed400a35b1301aa59d0ed61a65fcf552b51bf3f93"
+    },
+    "iron_giant": {
+      "file": "Assets/Renders/Expansion/Identity/iron_giant_IdentitySheet.png",
+      "bytes": 662009,
+      "sha256": "664a2e4752ab42b99287692c3c488c7ebd6cb0d37990cb3aab373b519773b225"
+    },
+    "shadow_surge": {
+      "file": "Assets/Renders/Expansion/Identity/shadow_surge_IdentitySheet.png",
+      "bytes": 502344,
+      "sha256": "6669897b180e20d8fda9516f142baa9136c0b5185bad8161938a81b502d5f9cf"
+    }
+  }
+}

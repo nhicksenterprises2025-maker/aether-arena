@@ -7,6 +7,7 @@
 #include "Engine/World.h"
 #include "Misc/CommandLine.h"
 #include "Misc/Parse.h"
+#include "Misc/Paths.h"
 
 void URiftMatchSubsystem::Initialize(FSubsystemCollectionBase& Collection){Super::Initialize(Collection);}
 void URiftMatchSubsystem::Deinitialize()
@@ -38,6 +39,29 @@ void URiftMatchSubsystem::StartMatch(bool Training,bool BothAI)
     Replay->BeginRecording(Options,Training);
     Replay->Sample(Match->State());
     FlushEvents();OnChanged.Broadcast();
+}
+bool URiftMatchSubsystem::StartPerformanceMatch(const rift::MatchOptions& Options)
+{
+    FString SaveRoot,Report;
+    if(!FParse::Param(FCommandLine::Get(),TEXT("RiftPerfExpansionStress"))
+       || !FParse::Value(FCommandLine::Get(),TEXT("RiftSaveRoot="),SaveRoot)||SaveRoot.IsEmpty()||FPaths::IsRelative(SaveRoot)
+       || !FParse::Value(FCommandLine::Get(),TEXT("RiftPerfReport="),Report)||Report.IsEmpty()||FPaths::IsRelative(Report))
+    {RIFT_LOG(LogRift,Error,TEXT("Paid expansion performance fixture requires its explicit flag, isolated absolute save root and report."));return false;}
+    TArray<FString> LiveRoots;
+    const FString LocalAppData=FPlatformMisc::GetEnvironmentVariable(TEXT("LOCALAPPDATA"));
+    if(!LocalAppData.IsEmpty())LiveRoots.Add(FPaths::Combine(LocalAppData,TEXT("RiftCrownArena")));
+    for(const TCHAR* Variable:{TEXT("RIFT_SAVE_ROOT"),TEXT("RIFT_CROWN_SAVE_ROOT")})
+    {const FString Root=FPlatformMisc::GetEnvironmentVariable(Variable);if(!Root.IsEmpty())LiveRoots.Add(FPaths::ConvertRelativePathToFull(Root));}
+    for(const auto& Root:LiveRoots)if(FPaths::IsSamePath(SaveRoot,Root)||FPaths::IsUnderDirectory(SaveRoot,Root)||FPaths::IsUnderDirectory(Root,SaveRoot))
+    {RIFT_LOG(LogRift,Error,TEXT("Paid expansion fixture save root overlaps ordinary user data."));return false;}
+    if(Options.aiEnabled[0]||Options.aiEnabled[1]||!rift::ValidateDeck(Options.decks[0])||!rift::ValidateDeck(Options.decks[1]))
+    {RIFT_LOG(LogRift,Error,TEXT("Paid expansion fixture requires two legal eight-card decks and disabled AI."));return false;}
+    auto* GI=GetWorld()->GetGameInstance();auto* Replay=GI->GetSubsystem<URiftReplaySubsystem>();
+    if(Replay->IsPlaying())Replay->CloseReplay();
+    LeaveMatch();bTraining=true;bResultSaved=false;ReplayView=nullptr;Speed=1;ReplaySampleClock=0;
+    Match=std::make_unique<rift::Match>(Options);
+    GI->GetSubsystem<URiftMetaSimulationSubsystem>()->SetBattleActive(true);
+    Replay->BeginRecording(Options,true);Replay->Sample(Match->State());FlushEvents();OnChanged.Broadcast();return true;
 }
 void URiftMatchSubsystem::LeaveMatch()
 {
@@ -116,7 +140,7 @@ FString URiftAISubsystem::Readout(int32 Team)const
     FString Cycle;const int32 Start=FMath::Max(0,int32(AI.observedCycle.size())-5);
     for(int32 I=Start;I<int32(AI.observedCycle.size());++I)
     {
-        if(!Cycle.IsEmpty())Cycle+=TEXT(" → ");
+        if(!Cycle.IsEmpty())Cycle+=TEXT(" > ");
         const auto* Card=rift::FindCard(AI.observedCycle[I]);Cycle+=UTF8_TO_TCHAR((Card?Card->name:AI.observedCycle[I]).c_str());
     }
     if(Cycle.IsEmpty())Cycle=TEXT("No cards observed");

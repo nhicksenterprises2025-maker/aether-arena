@@ -1,6 +1,8 @@
 # Windows launcher and release operations
 
-Current player release: **1.4.0**. Download the [installer](https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.4.0/RiftCrownArena-Setup.msi) or [complete portable game](https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.4.0/RiftCrownArena-Windows-x64-1.4.0.zip). Run `RiftCrownArena.exe` from the extracted folder, or use Play in the installed launcher. The versioned sections below preserve earlier executed build evidence.
+Release **1.6.0 is in preparation** with approved balance data, 21 playable cards plus one subordinate definition, and a 34-tile-long × 24-tile-wide arena using 125 cm tiles. Its 86 portable scenarios and 21 complete AI matches passed against the captured approved inputs; native/GPU, Meta, audio, performance and Shipping/installer acceptance remain pending. See [the expansion preparation report](QA/BALANCE_EXPANSION_PREPARATION.md) for exact evidence and remaining work. No 1.6.0 download is announced here.
+
+The last recorded player release is **1.5.0**, verified by the retained public-download and launcher-update reports. Its [installer](https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.5.0/RiftCrownArena-Setup.msi) and [complete portable game](https://github.com/nhicksenterprises2025-maker/aether-arena/releases/download/v1.5.0/RiftCrownArena-Windows-x64-1.5.0.zip) remain version-pinned references. Run `RiftCrownArena.exe` from the extracted folder, or use Play in the installed launcher. Earlier measured release sections remain historical.
 
 The Windows distribution contains the native Unreal game and a self-contained .NET 8 WPF launcher. The launcher does not require an end-user .NET installation. Its controls are connected to the same verified update library used by the isolated integration suite.
 
@@ -48,14 +50,21 @@ The release pipeline stages the compiler's matching x64 release CRT DLLs beside 
 Run these scripts from PowerShell 7 with the repository as the working directory:
 
 ```powershell
+# First complete the current native, visual, Meta, audio and performance gates.
+./Build/Validate-BalanceRelease.ps1 -Version 1.6.0
+./Build/Build-Unreal.ps1 -Configuration Shipping -Package -ArchiveDirectory ./Artifacts/Game-1.6.0
+# Run actual Shipping acceptance against this packaged tree before distribution.
 ./Build/Build-Launcher.ps1
-# Run the repository's Unreal Shipping build/cook/stage procedure first.
-./Build/Package-WindowsRelease.ps1 -Version 1.2.0 -GamePackage ./Artifacts/Game-1.2.0/Windows -BuildLog ./Artifacts/model12-shipping-final9-build.log -PatchNotesFile ./Docs/PATCH_NOTES_1.2.0.md
+./Build/Package-WindowsRelease.ps1 -Version 1.6.0 -GamePackage ./Artifacts/Game-1.6.0/Windows -BuildLog $ActualShippingBuildLog -PatchNotesFile $VerifiedHumanReadablePatchNotes
 ./Build/Test-LauncherPlay.ps1
-./Installer/Build-Installer.ps1 -Version 1.2.0
+./Installer/Build-Installer.ps1 -Version 1.6.0
 ./Installer/Test-Installer.ps1 -Msi $PreviousSameFamilyMsi -UpgradeMsi ./Artifacts/Installer/RiftCrownArena-Setup.msi
-./Build/Finalize-WindowsRelease.ps1 -Version 1.2.0
+./Build/Finalize-WindowsRelease.ps1 -Version 1.6.0
 ```
+
+This is the intended 1.6.0 sequence, not a record of completed commands. The Shipping build log and human-readable notes variables must point to the actual final files. Preserve the existing previous-version MSI before rebuilding the fixed installer path. Supply `-ExpectedVersion 1.6.0` to Shipping QA wrappers when invoking them explicitly; their default now reads `DefaultGame.ini`. The packaging and finalization guard requires requested version, project version, approved canonical hash/generated definitions and exact regenerated notes to agree. Use `-PythonExecutable` if the bundled Codex Python path is unavailable.
+
+The final workbook is `outputs/balance-expansion/Rift_Crown_Arena_Balance_Reference_1.6.0.xlsx`. It is generated only after actual current native acceptance, with current manifest version/mechanical hash plus raw input hashes, and independently checked before the Downloads copy. The older 1.4.0 balance evidence packager retains its historical geometry and must not be used to certify the resized 1.6.0 release.
 
 `Build-Launcher.ps1` publishes the real self-contained launcher, runs the isolated update integration suite and launches the published executable's noninteractive WPF smoke check. The smoke check requires explicit isolated install and save paths and renders an actual WPF preview.
 
@@ -97,6 +106,6 @@ The archive's manifest URL is version-pinned to `releases/download/v<version>/..
 
 After the final release is public and selected as GitHub's latest release, run `./Build/Test-PublishedUpdate.ps1`. It invokes the actual released launcher's Check for Updates routed event against the default HTTPS endpoint, matches the complete final local manifest, verifies displayed patch notes and Install availability, and confirms unchanged isolated game/save data. It does not download or install the game. Record its actual result from `Artifacts/QA/published-update-check.json` separately from pre-publication build checks.
 
-The actual v1.2.0 publication at 2026-10-09 16:23:03 UTC is latest stable, after all seven server asset digests matched. [Complete anonymous-download proof](QA/public-download-verification.json) verifies the full public ZIP/MSI against the exact tested 396,373,442-byte / `63d02e6f…` archive and 382,181,376-byte / `77efc44d…` installer. [Actual released-launcher update proof](QA/published-update-check.json) verifies `CheckButton.Click` against the default latest HTTPS endpoint in 0.609123 seconds, matching version 1.2.0, 48 files, archive identity and displayed notes with Install enabled. The manifest check preserved isolated game/save data without downloading or installing the game. The separately published QA archive has 311 verified entries and SHA-256 `9a6c309837a35855bf9238002905148dcd18943b98042987ae1c47bfe65a5776`.
+The historical v1.2.0 publication at 2026-10-09 16:23:03 UTC was selected as latest stable at that time, after all seven server asset digests matched. [Complete anonymous-download proof](QA/public-download-verification.json) verifies the full public ZIP/MSI against the exact tested 396,373,442-byte / `63d02e6f…` archive and 382,181,376-byte / `77efc44d…` installer. [Actual released-launcher update proof](QA/published-update-check.json) verifies `CheckButton.Click` against the default latest HTTPS endpoint in 0.609123 seconds, matching version 1.2.0, 48 files, archive identity and displayed notes with Install enabled. The manifest check preserved isolated game/save data without downloading or installing the game. The separately published QA archive has 311 verified entries and SHA-256 `9a6c309837a35855bf9238002905148dcd18943b98042987ae1c47bfe65a5776`.
 
 The MSI installs the launcher and bundled game together. The standalone launcher can install the release through its update endpoint; its default managed `Game` folder sits beside that executable, and Settings can select another location. The game ZIP can also be extracted and started directly with `RiftCrownArena.exe`. Keep its complete directory tree together.

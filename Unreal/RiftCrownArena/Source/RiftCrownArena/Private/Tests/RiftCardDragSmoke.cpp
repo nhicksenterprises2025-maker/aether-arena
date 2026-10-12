@@ -137,45 +137,27 @@ void ARiftPlayerController::RunCardDragSmoke(const FString& ReportPath)
         Interface->TakeWidget()->Tick(Interface->GetCachedGeometry(),FPlatformTime::Seconds(),.11f);
         Slate.Tick(ESlateTickType::Widgets);Slate.UpdateToolTip(true);
     };
-    auto TooltipText=[](const TSharedPtr<IToolTip>& Tip)
+    auto HasNoBattleTooltip=[&]()
     {
-        return Tip&&Tip->AsWidget()->GetTypeAsString()==TEXT("SToolTip")
-            ?StaticCastSharedRef<SToolTip>(Tip->AsWidget())->GetTextTooltip().ToString():FString();
+        const auto Tip=Button->GetCachedWidget()->GetToolTip();
+        return Button->GetToolTipText().IsEmpty() && (!Tip || Tip->IsEmpty());
     };
-    auto OpenHover=[&](const TSharedPtr<IToolTip>& Tip)
-    {
-        Slate.UsePlatformCursorForCursorUser(false);Slate.CloseToolTip();HoverMove(Origin);TSharedPtr<SWindow> Window;
-        for(int32 I=0;I<80;++I)
-        {
-            FPlatformProcess::SleepNoStats(.025f);RefreshHover();
-            if(Tip)Window=Slate.FindWidgetWindow(Tip->AsWidget());
-            if(Window&&Window->IsVisible()&&Window->GetOpacity()>.99f)break;
-        }
-        return Window;
-    };
-    const auto InitialTooltip=Button->GetCachedWidget()->GetToolTip();
-    const FString InitialTooltipText=Button->GetToolTipText().ToString();const auto InitialTooltipWindow=OpenHover(InitialTooltip);
-    const bool InitialTooltipOpened=InitialTooltip&&!InitialTooltip->IsEmpty()
-        &&InitialTooltipText.Contains(UTF8_TO_TCHAR(Card->name.c_str()))&&TooltipText(InitialTooltip)==InitialTooltipText
-        &&InitialTooltipWindow&&InitialTooltipWindow->IsVisible()&&InitialTooltipWindow->GetOpacity()>.99f;
+    Slate.UsePlatformCursorForCursorUser(false);Slate.CloseToolTip();HoverMove(Origin);RefreshHover();
+    const bool InitialTooltipAbsent=HasNoBattleTooltip();
     TooltipLifecycle->SetStringField(TEXT("initialCardId"),UTF8_TO_TCHAR(Card->id.c_str()));
-    TooltipLifecycle->SetStringField(TEXT("initialText"),InitialTooltipText);TooltipLifecycle->SetBoolField(TEXT("initialOpened"),InitialTooltipOpened);
-    Check(TEXT("hovering hand card opens its production Slate stats tooltip"),InitialTooltipOpened);
-    bool HoverIdentityStable=true,HoverWindowStable=true;float MinimumHoverOpacity=1.f;
+    TooltipLifecycle->SetBoolField(TEXT("initialAbsent"),InitialTooltipAbsent);
+    Check(TEXT("hovering a battle hand card does not open a stats window"),InitialTooltipAbsent);
+    bool HoverAbsentThroughout=true;
     constexpr int32 HoverRefreshes=12;
     for(int32 I=0;I<HoverRefreshes;++I)
     {
         FPlatformProcess::SleepNoStats(.035f);RefreshHover();
-        HoverIdentityStable&=Button->GetCachedWidget()->GetToolTip()==InitialTooltip;
-        const auto Window=InitialTooltip?Slate.FindWidgetWindow(InitialTooltip->AsWidget()):TSharedPtr<SWindow>();
-        HoverWindowStable&=Window&&Window==InitialTooltipWindow&&Window->IsVisible();
-        MinimumHoverOpacity=FMath::Min(MinimumHoverOpacity,Window?Window->GetOpacity():0.f);
+        HoverAbsentThroughout&=HasNoBattleTooltip();
     }
     TooltipLifecycle->SetNumberField(TEXT("unchangedRefreshCount"),HoverRefreshes);
-    TooltipLifecycle->SetBoolField(TEXT("unchangedIdentityStable"),HoverIdentityStable);TooltipLifecycle->SetBoolField(TEXT("unchangedWindowStable"),HoverWindowStable);
-    TooltipLifecycle->SetNumberField(TEXT("minimumUnchangedOpacity"),MinimumHoverOpacity);
-    Check(TEXT("unchanged hand hover keeps the same tooltip open through twelve HUD refreshes"),
-        InitialTooltipOpened&&HoverIdentityStable&&HoverWindowStable&&MinimumHoverOpacity>.99f&&TooltipText(InitialTooltip)==InitialTooltipText&&Digest()==Initial);
+    TooltipLifecycle->SetBoolField(TEXT("absentThroughRefreshes"),HoverAbsentThroughout);
+    Check(TEXT("battle HUD refreshes never recreate a hover stats window or mutate combat"),
+        InitialTooltipAbsent&&HoverAbsentThroughout&&Digest()==Initial);
     Slate.CloseToolTip();HoverMove(PixelToAbsolute(FVector2D(-100,-100)));Slate.UsePlatformCursorForCursorUser(true);
     Down(Origin);Check(TEXT("hand press selects and owns pointer capture"),HasPendingCardDrag()&&Interface->SelectedHand()==Slot&&Button->GetCachedWidget()->HasMouseCapture());
     Move(Origin+FVector2D(3,0));Check(TEXT("small pointer motion remains a selection click"),!IsDraggingCard()&&!Interface->IsCardDragGhostVisible());
@@ -228,21 +210,16 @@ void ARiftPlayerController::RunCardDragSmoke(const FString& ReportPath)
     Check(TEXT("legal drop clears capture selection ghost and preview transaction"),!HasPendingCardDrag()&&Interface->SelectedHand()==INDEX_NONE&&!Interface->IsCardDragGhostVisible());
     const FString Deployed=Digest();Up(Legal);
     Check(TEXT("duplicate mouse release cannot spend or cycle again"),Digest()==Deployed);
-    Slate.UsePlatformCursorForCursorUser(false);RefreshHover();const auto CycledTooltip=Button->GetCachedWidget()->GetToolTip();
-    const auto* CycledCard=rift::FindCard(After.hands[0][Slot]);const FString CycledText=Button->GetToolTipText().ToString();
-    const auto CycledWindow=OpenHover(CycledTooltip);bool CycledStable=true;
+    Slate.UsePlatformCursorForCursorUser(false);HoverMove(Origin);bool CycledTooltipAbsent=true;
     for(int32 I=0;I<6;++I)
     {
         FPlatformProcess::SleepNoStats(.035f);RefreshHover();
-        const auto Window=CycledTooltip?Slate.FindWidgetWindow(CycledTooltip->AsWidget()):TSharedPtr<SWindow>();
-        CycledStable&=Button->GetCachedWidget()->GetToolTip()==CycledTooltip&&Window&&Window==CycledWindow&&Window->IsVisible()&&Window->GetOpacity()>.99f;
+        CycledTooltipAbsent&=HasNoBattleTooltip();
     }
-    const bool CycledTooltipCorrect=CycledCard&&CycledTooltip&&CycledTooltip!=InitialTooltip&&CycledText!=InitialTooltipText
-        &&CycledText.Contains(UTF8_TO_TCHAR(CycledCard->name.c_str()))&&TooltipText(CycledTooltip)==CycledText;
     TooltipLifecycle->SetStringField(TEXT("cycledCardId"),UTF8_TO_TCHAR(After.hands[0][Slot].c_str()));
-    TooltipLifecycle->SetStringField(TEXT("cycledText"),CycledText);TooltipLifecycle->SetBoolField(TEXT("cycleTextAndIdentityCorrect"),CycledTooltipCorrect);
-    TooltipLifecycle->SetNumberField(TEXT("cycledRefreshCount"),6);TooltipLifecycle->SetBoolField(TEXT("cycledOpenedAndStable"),CycledStable);
-    Check(TEXT("cycling a hand card refreshes its stats tooltip once and keeps the new hover open"),CycledTooltipCorrect&&CycledStable&&Digest()==Deployed);
+    TooltipLifecycle->SetNumberField(TEXT("cycledRefreshCount"),6);
+    TooltipLifecycle->SetBoolField(TEXT("cycledAbsent"),CycledTooltipAbsent);
+    Check(TEXT("cycling a battle hand card never rearms a hover stats window"),CycledTooltipAbsent&&Digest()==Deployed);
     Slate.CloseToolTip();HoverMove(PixelToAbsolute(FVector2D(-100,-100)));Slate.UsePlatformCursorForCursorUser(true);
     // Phase termination is checked last, so it cannot conceal failed earlier
     // deployment assertions. This is fixture state, never a gameplay override.

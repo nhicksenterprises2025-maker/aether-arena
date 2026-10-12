@@ -1,4 +1,5 @@
 #include "Presentation/RiftBattleOverlay.h"
+#include "Presentation/RiftArenaGeometry.h"
 #include "Presentation/RiftArenaPresentation.h"
 #include "Presentation/RiftUnitVisual.h"
 #include "RiftGameMode.h"
@@ -52,7 +53,7 @@ int32 URiftBattleOverlay::NativePaint(const FPaintArgs& Args,const FGeometry& Ge
     {FSlateDrawElement::MakeText(Elements,Top+3,Geometry.ToPaintGeometry(FVector2D(100,20),FSlateLayoutTransform(Position)),Value,Tower?TowerFont:Small,ESlateDrawEffect::None,Color);};
     FVector ViewLocation;FRotator ViewRotation;Player->GetPlayerViewPoint(ViewLocation,ViewRotation);
     FVector2D FieldOrigin,FieldStep;
-    if(!Project(FVector::ZeroVector,FieldOrigin)||!Project(ViewRotation.RotateVector(FVector(0,100,0)),FieldStep))return Top;
+    if(!Project(FVector::ZeroVector,FieldOrigin)||!Project(ViewRotation.RotateVector(FVector(0,RiftArenaGeometry::UnitsPerTile,0)),FieldStep))return Top;
     const float FieldPitch=FMath::Max(.1f,float((FieldStep-FieldOrigin).Size())*ViewScale);
     const float NormalWidth=FMath::Clamp(2.6f*FieldPitch,12.f,64.f);
     const float PairWidth=FMath::Clamp(2.f*FieldPitch,10.f,48.f);
@@ -61,11 +62,11 @@ int32 URiftBattleOverlay::NativePaint(const FPaintArgs& Args,const FGeometry& Ge
     for (const auto& Hazard:State->hazards)
     {
         TArray<FVector2D> Boundary;
-        const FVector Center(Hazard.position.x*100,Hazard.position.z*100,10);
+        const FVector Center(Hazard.position.x*RiftArenaGeometry::UnitsPerTile,Hazard.position.z*RiftArenaGeometry::UnitsPerTile,10);
         for (int32 Index=0;Index<=64;++Index)
         {
             const float Angle=Index*UE_TWO_PI/64;FVector2D Point;
-            if (Project(Center+FVector(FMath::Cos(Angle),FMath::Sin(Angle),0)*Hazard.radius*100,Point)) Boundary.Add(Point);
+            if (Project(Center+FVector(FMath::Cos(Angle),FMath::Sin(Angle),0)*Hazard.radius*RiftArenaGeometry::UnitsPerTile,Point)) Boundary.Add(Point);
         }
         if (Boundary.Num()>1) FSlateDrawElement::MakeLines(Elements,Top+1,Geometry.ToPaintGeometry(),Boundary,
             ESlateDrawEffect::None,FLinearColor(.94f,.42f,.16f,.50f),true,1.f);
@@ -79,12 +80,13 @@ int32 URiftBattleOverlay::NativePaint(const FPaintArgs& Args,const FGeometry& Ge
         const int32 EntityPriority=Entity.kind==rift::EntityKind::Troop?2:Entity.kind==rift::EntityKind::Building?1:0;
         if (EntityPriority!=LabelPriority) continue;
         if (Entity.dead) continue;const auto* Visual=Presentation->Visual(Entity.id);if (!Visual) continue;
+        if(Entity.team==rift::Team::Enemy && Entity.invisibleUntil>State->elapsed)continue;
         const bool ShowHealth=Visual->HasBeenDamaged();
         if(!ShowHealth)++UndamagedCount;
         const bool Dormant=Entity.kind==rift::EntityKind::Core && !Entity.active;
         const FString StatusText=Entity.stunUntil>State->elapsed?TEXT("STUN"):
             Entity.slowUntil>State->elapsed&&Entity.slowPct>0?FString::Printf(TEXT("-%d%%"),FMath::RoundToInt(Entity.slowPct*100)):
-            Entity.charged?TEXT("CHARGE"):TEXT("");
+            Entity.charged?TEXT("CHARGE"):Entity.invisibleUntil>State->elapsed?TEXT("VEIL"):TEXT("");
         const auto* LifetimeCard=Entity.kind==rift::EntityKind::Building?rift::FindCard(Entity.cardId):nullptr;
         const bool ShowLifetime=LifetimeCard && LifetimeCard->lifetime>0;
         // First-damage visibility applies only to HP, not independent state
@@ -94,7 +96,9 @@ int32 URiftBattleOverlay::NativePaint(const FPaintArgs& Args,const FGeometry& Ge
         if (Position.X<0 || Position.Y<0 || Position.X>Extent.X || Position.Y>Extent.Y) continue;
         const bool Tower=Entity.kind!=rift::EntityKind::Troop;
         const float Width=(Tower?StructureWidth:Entity.memberCount>=5?SwarmWidth:Entity.memberCount>1?PairWidth:NormalWidth)*Pixel;
-        const float Height=ShowHealth?(Tower?5.f:Entity.memberCount>=5?2.5f:3.f)*Pixel:0.f;
+        const bool ShowShield=ShowHealth && Entity.maxShieldHP>0 && Entity.shieldHP>0;
+        const float BodyHeight=(Tower?5.f:Entity.memberCount>=5?2.5f:3.f)*Pixel;
+        const float Height=ShowHealth?BodyHeight+(ShowShield?3.f*Pixel:0.f):0.f;
         Position-=FVector2D(Width*.5f,10.f*Pixel);
         const FVector2D Anchor=Position;
         const FString Value=Tower && ShowHealth?FString::Printf(TEXT("%d"),FMath::CeilToInt(Entity.hp)):FString();
@@ -177,7 +181,13 @@ int32 URiftBattleOverlay::NativePaint(const FPaintArgs& Args,const FGeometry& Ge
             Box(Position-FVector2D(Pixel,Pixel),FVector2D(Width+2.f*Pixel,Height+2.f*Pixel),FLinearColor(.025f,.038f,.045f,.95f));
             Box(Position,FVector2D(Width,Height),FLinearColor(.15f,.19f,.21f,.9f));
             const float Fraction=float(FMath::Clamp(Entity.hp/FMath::Max(1.,Entity.maxHp),0.,1.));
-            Box(Position,FVector2D(Width*Fraction,Height),Color,1);
+            Box(Position,FVector2D(Width*Fraction,BodyHeight),Color,1);
+            if(ShowShield)
+            {
+                const FVector2D ShieldPosition=Position+FVector2D(0,BodyHeight+Pixel);
+                Box(ShieldPosition,FVector2D(Width,2.f*Pixel),FLinearColor(.19f,.23f,.30f,.9f),1);
+                Box(ShieldPosition,FVector2D(Width*float(FMath::Clamp(Entity.shieldHP/Entity.maxShieldHP,0.,1.)),2.f*Pixel),FLinearColor(.70f,.81f,.93f),2);
+            }
             if(Tower)Text(Position+ValueOffset,Value,FLinearColor(.94f,.96f,.97f),true);
         }
         if(ShowLifetime)
@@ -205,7 +215,7 @@ int32 URiftBattleOverlay::NativePaint(const FPaintArgs& Args,const FGeometry& Ge
     }
     if (Presentation->HasPlacementPreview())
     {
-        const FVector2D Tile=Presentation->PreviewTile();const FVector Center(Tile.X*100,Tile.Y*100,12);
+        const FVector2D Tile=Presentation->PreviewTile();const FVector Center(Tile.X*RiftArenaGeometry::UnitsPerTile,Tile.Y*RiftArenaGeometry::UnitsPerTile,12);
         const FLinearColor Color=Presentation->PreviewIsValid()?FLinearColor(.22f,.8f,.96f,.9f):FLinearColor(.98f,.3f,.2f,.95f);
         TArray<FVector2D> Points;
         if (Presentation->PreviewIsSpell())
@@ -213,12 +223,12 @@ int32 URiftBattleOverlay::NativePaint(const FPaintArgs& Args,const FGeometry& Ge
             for (int32 Index=0;Index<=64;++Index)
             {
                 const float Angle=Index*UE_TWO_PI/64;FVector2D Point;
-                if (Project(Center+FVector(FMath::Cos(Angle),FMath::Sin(Angle),0)*Presentation->PreviewRadius()*100,Point)) Points.Add(Point);
+                if (Project(Center+FVector(FMath::Cos(Angle),FMath::Sin(Angle),0)*Presentation->PreviewRadius()*RiftArenaGeometry::UnitsPerTile,Point)) Points.Add(Point);
             }
         }
         else
         {
-            const float Half=FMath::Max(1.f,Presentation->PreviewFootprint())*50;
+            const float Half=FMath::Max(1.f,Presentation->PreviewFootprint())*RiftArenaGeometry::UnitsPerTile*.5f;
             for (FVector2D Corner:{FVector2D(-Half,-Half),FVector2D(Half,-Half),FVector2D(Half,Half),FVector2D(-Half,Half),FVector2D(-Half,-Half)})
             {FVector2D Point;if (Project(Center+FVector(Corner.X,Corner.Y,0),Point)) Points.Add(Point);}
         }

@@ -2,6 +2,7 @@
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "Simulation/RiftSimulation.h"
+#include "Presentation/RiftArenaGeometry.h"
 #include <memory>
 #include "RiftMatchSubsystem.generated.h"
 
@@ -19,6 +20,8 @@ public:
     TStatId GetStatId()const override;
     bool IsTickable()const override;
     UFUNCTION(BlueprintCallable) void StartMatch(bool Training=false,bool BothAI=false);
+    // Explicit isolated performance QA only; normal match/deck selection is unchanged.
+    bool StartPerformanceMatch(const rift::MatchOptions& Options);
     UFUNCTION(BlueprintCallable) void LeaveMatch();
     UFUNCTION(BlueprintCallable) bool PlayCard(int32 HandIndex,FVector2D Tile);
     UFUNCTION(BlueprintCallable) void SetSpeed(float Value);
@@ -36,8 +39,8 @@ public:
     void SampleBeforeMutation();
     FRiftSimulationEvent OnEvent;
     FRiftMatchChanged OnChanged;
-    static FVector WorldPoint(rift::Vec2 Point,float Height=0){return FVector(Point.x*100.0,Point.z*100.0,Height);}
-    static rift::Vec2 TilePoint(FVector Point){return {Point.X/100.0,Point.Y/100.0};}
+    static FVector WorldPoint(rift::Vec2 Point,float Height=0){return FVector(Point.x*RiftArenaGeometry::UnitsPerTile,Point.z*RiftArenaGeometry::UnitsPerTile,Height*RiftArenaGeometry::WorldScale);}
+    static rift::Vec2 TilePoint(FVector Point){return {Point.X/RiftArenaGeometry::UnitsPerTile,Point.Y/RiftArenaGeometry::UnitsPerTile};}
 private:
     std::unique_ptr<rift::Match> Match;
     const rift::Snapshot* ReplayView=nullptr;

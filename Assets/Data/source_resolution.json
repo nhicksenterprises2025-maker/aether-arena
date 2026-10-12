@@ -1,0 +1,132 @@
+{
+  "schema": 1,
+  "status": "approved",
+  "briefAttachment": "c494829f-1fc2-4169-9f28-ae0726453489",
+  "numericalSourceNamedInBrief": "Pasted text(20261010-190331).txt",
+  "numericalSourceLocated": false,
+  "startingCommit": "7c25b46e8c6d7dd1326dee60960141da3774bcd1",
+  "baseline": "Assets/Data/Baselines/1.5.0-expanded-schema.json",
+  "baselineBalanceHash": "788ad800fe0dbc5e6b8a62ca7388f749995e96abbd6c87d83a6b07827e21cb7f",
+  "clarificationRequested": [
+    "selected playable scope",
+    "Arc Mage damage/interval/splash",
+    "Rambeast damage/charge movement",
+    "Archer Tower decay/hard expiry",
+    "Meteor troop DOT and structure eligibility",
+    "Bullet Burst radius",
+    "Nova Flask timing/radius",
+    "new target masks and Reaper melee",
+    "Iron Giant shield overflow",
+    "Shadow Surge scope and target state",
+    "Pulverizer slow stacking"
+  ],
+  "unresolved": false,
+  "releaseBlocked": false,
+  "note": "All consolidated proposals and the 34-long × 24-wide arena orientation are approved. Runtime and release acceptance are recorded separately in the versioned QA report. The separately named numerical file was not located; the user explicitly approved using the tables transcribed in this brief.",
+  "numericalSourceUsed": "Tables transcribed in the active balance expansion brief",
+  "numericalSourceUseApproved": true,
+  "allProposedChoicesApproved": true,
+  "confirmation": {
+    "source": "Direct user reply to the consolidated source clarification",
+    "answer": "Use all proposed choices (Recommended)",
+    "questionCall": "call_GLkgkb9kfsR1Nfo3JqSQj9h8",
+    "arenaAnswer": "34 long × 24 wide (Recommended)",
+    "arenaQuestionCall": "call_b579df8afd2d4b77a67d9fc7868e6650"
+  },
+  "selectedPlayableCandidates": [
+    "mini_stampede",
+    "stampede",
+    "pulverizer",
+    "bone_warden",
+    "aether_reaper",
+    "iron_giant",
+    "shadow_surge"
+  ],
+  "newPlayableIds": [
+    "bone_warden",
+    "aether_reaper",
+    "iron_giant",
+    "shadow_surge"
+  ],
+  "subordinateIds": [
+    "bone_warden_skeleton"
+  ],
+  "resolvedChoices": {
+    "arc_mage": {
+      "damage": 108,
+      "attackInterval": 1.15,
+      "splash": 2.25
+    },
+    "rambeast": {
+      "damage": 156,
+      "chargeDamage": 302,
+      "chargeMoveSeconds": 1.5,
+      "threshold": "strictly greater than",
+      "moveSpeed": 2,
+      "chargedMoveSpeed": 3.2
+    },
+    "archer_tower": {
+      "hpDecayPerSecond": 25,
+      "hardExpiry": true,
+      "lifetime": 25,
+      "initialAttackCooldown": 0.35
+    },
+    "meteor_shards": {
+      "damage": 262,
+      "towerDamage": 143,
+      "dotDamage": 40,
+      "dotStructureDamage": 15,
+      "dotInterval": 1,
+      "dotDuration": 5,
+      "targetMask": 7
+    },
+    "bullet_burst": {
+      "spellRadius": 2.5,
+      "castDelay": 0.3
+    },
+    "nova_flask": {
+      "spellRadius": 3,
+      "castDelay": 0.85
+    },
+    "targetMasks": {
+      "pulverizer": 1,
+      "bone_warden": 5,
+      "bone_warden_skeleton": 5,
+      "aether_reaper": 7,
+      "iron_giant": 4
+    },
+    "reaperAttack": "direct melee scythe",
+    "iron_giant": {
+      "hp": 1000,
+      "shieldHP": 310,
+      "shieldOverflowProtected": true,
+      "regeneration": false
+    },
+    "shadow_surge": {
+      "spellRadius": 2,
+      "castDelay": 0.25,
+      "invisibilityDuration": 1,
+      "globalFriendlyInvisibility": false,
+      "breakExistingLocks": true,
+      "existingEnemyTroopAndTowerLocks": "drop",
+      "newEnemyAcquisition": "prevent",
+      "committedHitsAndInFlightProjectiles": "resolve",
+      "areaSpells": "resolve",
+      "damageImmunity": false
+    },
+    "pulverizer": {
+      "slowPct": 0.1,
+      "slowDuration": 1.5,
+      "stacking": false,
+      "refresh": true,
+      "frostFang": "independent stronger slow expiry preserved"
+    },
+    "arena": {
+      "arenaWidth": 24,
+      "arenaHeight": 34,
+      "worldUnitsPerTile": 125
+    }
+  },
+  "originalBaseline": "Assets/Data/Baselines/1.5.0.json",
+  "originalBaselineBalanceHash": "8894147131d8c1a510d549e81de60f36161b856c8807c2dbcadce6c2359a2f34"
+}

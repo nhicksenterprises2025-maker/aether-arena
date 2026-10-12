@@ -11,6 +11,8 @@ from mathutils import Vector, Quaternion, Matrix
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT/'Build'))
+import expansion_asset_models as expansion_models
+import expansion_new_models as new_models
 from split_guard_cannon import split_guard_mesh, guard_socket_metadata
 from upgrade_card_models import (PALETTE_ADDITIONS, humanoid_costume, clean_creature_details,
                                  nova_flask, meteor_shard, bullet_round, archer_tower,
@@ -23,11 +25,18 @@ ARGS.add_argument('--preview-models', help='Comma-separated model IDs; renders o
 ARGS.add_argument('--preview-output', type=Path, default=ROOT/'Artifacts/QA/model-upgrade-preview')
 ARGS.add_argument('--preview-action', help='Optional existing animation name for isolated pose review')
 ARGS.add_argument('--preview-frame', type=int, default=16)
+ARGS.add_argument('--preview-scene', action='store_true', help='Save the isolated QA scene for multiview and animation review')
+ARGS.add_argument('--polish-expansion-surfaces', action='store_true', help='Rebuild only the two expansion material atlases with the crafted surface finish')
+ARGS.add_argument('--production-proof',type=Path,help='Tracked read-only preservation signatures for an additive source revision')
 opts=ARGS.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
 PREVIEW = set(opts.preview_models.split(',')) if opts.preview_models else None
 UPDATE = set(opts.update_models.split(',')) if opts.update_models else None
 if PREVIEW and UPDATE: ARGS.error('--preview-models and --update-models are mutually exclusive')
 if opts.preview_action and not PREVIEW: ARGS.error('--preview-action requires --preview-models')
+if opts.preview_scene and not PREVIEW: ARGS.error('--preview-scene requires --preview-models')
+if opts.polish_expansion_surfaces and not (UPDATE or PREVIEW): ARGS.error('Surface polish requires explicit selected expansion models')
+if opts.polish_expansion_surfaces and not (UPDATE or PREVIEW).issubset(set(expansion_models.CONTRACTS)|set(new_models.CONTRACTS)|set(new_models.STATIC_IDS)):
+    ARGS.error('Surface polish cannot rebuild legacy models or their atlas')
 if PREVIEW:
     preview_root=opts.preview_output.resolve()
     if not preview_root.is_relative_to(ROOT.resolve()):raise ValueError('Preview output escaped the repository')
@@ -37,6 +46,31 @@ else:
 for d in (SRC, OUT, RENDER, SRC/'Textures'): d.mkdir(parents=True, exist_ok=True)
 random.seed(15082026)
 previous_manifest=None
+preserved_signatures=None
+def source_signatures(names=None,action_names=None):
+    objects={}
+    for obj in bpy.data.objects:
+        if names is not None and obj.name not in names:continue
+        payload={'type':obj.type,'transform':[list(row) for row in obj.matrix_world]}
+        if obj.type=='MESH':
+            payload.update({'vertices':[list(v.co) for v in obj.data.vertices],
+                'faces':[list(p.vertices) for p in obj.data.polygons],
+                'uv':[[list(item.uv) for item in layer.data] for layer in obj.data.uv_layers],
+                'weights':[[(item.group,item.weight) for item in v.groups] for v in obj.data.vertices],
+                'materials':[material.name if material else None for material in obj.data.materials]})
+        elif obj.type=='ARMATURE':
+            payload['bones']={bone.name:{'parent':bone.parent.name if bone.parent else None,
+                'matrix':[list(row) for row in bone.matrix_local]} for bone in obj.data.bones}
+        else:continue
+        objects[obj.name]=hashlib.sha256(json.dumps(payload,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+    actions={}
+    for action in bpy.data.actions:
+        if action_names is not None and action.name not in action_names:continue
+        curves=list(action.fcurves) if hasattr(action,'fcurves') else [curve for layer in action.layers for strip in layer.strips for bag in strip.channelbags for curve in bag.fcurves]
+        payload=[{'path':curve.data_path,'index':curve.array_index,
+                  'keys':[[list(k.co),k.interpolation,list(k.handle_left),list(k.handle_right)] for k in curve.keyframe_points]} for curve in curves]
+        actions[action.name]=hashlib.sha256(json.dumps(payload,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+    return {'objects':objects,'actions':actions}
 if UPDATE:
     previous_manifest=json.loads((ROOT/'Assets/asset_manifest.json').read_text(encoding='utf-8'))
     # Existing card renders/data assets belong to their actual authored scene.
@@ -44,6 +78,9 @@ if UPDATE:
     for illustration in previous_manifest.get('illustrations',{}).values():
         illustration.setdefault('sourceSceneSHA256',previous_manifest['source']['sha256'])
     bpy.ops.wm.open_mainfile(filepath=str(ROOT/previous_manifest['source']['file']))
+    if opts.production_proof:
+        if UPDATE.intersection(previous_manifest['characters']):raise ValueError('Additive proof cannot replace an existing character')
+        preserved_signatures=source_signatures()
     # Preserve unchanged models, atlas, architectural meshes and named actions.
     # Rebuilding the selected collection also prevents .001 suffixes from
     # silently binding a new export to an old source rig.
@@ -92,11 +129,14 @@ assert len(PALETTE) <= 64, 'The shared atlas has 64 material tiles'
 COLOR_INDEX={k:i for i,k in enumerate(PALETTE)}
 ATLAS=1024; CELLS=8; CELL=ATLAS//CELLS
 
-def textures():
+def textures(prefix='T_RiftAtlas'):
     # Tile-specific grain/pores and edge wear; texture coordinates remain shared at all LODs.
     images={}
     for channel in ('BaseColor','ORM','Normal','TeamMask'):
-        im=bpy.data.images.new('T_RiftAtlas_'+channel,ATLAS,ATLAS,alpha=False)
+        if opts.polish_expansion_surfaces and prefix != 'T_RiftAtlas':
+            old_image=bpy.data.images.get(prefix+'_'+channel)
+            if old_image:bpy.data.images.remove(old_image,do_unlink=True)
+        im=bpy.data.images.new(prefix+'_'+channel,ATLAS,ATLAS,alpha=False)
         pix=[0.0]*(ATLAS*ATLAS*4)
         for key,index in COLOR_INDEX.items():
             base=PALETTE[key]; cx,cy=index%CELLS,index//CELLS
@@ -122,7 +162,7 @@ def textures():
                     else: col=[1,1,1] if key=='team' else [0,0,0]
                     off=(((cy*CELL+yy)*ATLAS)+(cx*CELL+xx))*4
                     pix[off:off+4]=col+[1]
-        im.pixels.foreach_set(pix); im.filepath_raw=str(SRC/'Textures'/('T_RiftAtlas_'+channel+'.png'))
+        im.pixels.foreach_set(pix); im.filepath_raw=str(SRC/'Textures'/(prefix+'_'+channel+'.png'))
         im.file_format='PNG'; im.save(); im.pack()
         if channel!='BaseColor': im.colorspace_settings.name='Non-Color'
         images[channel]=im
@@ -155,7 +195,59 @@ def make_material(name,glow=False,glass=False):
 SURFACE=bpy.data.materials['M_RiftSurface'] if UPDATE else make_material('M_RiftSurface')
 GLOW=bpy.data.materials['M_RiftGlow'] if UPDATE else make_material('M_RiftGlow',glow=True)
 GLASS=bpy.data.materials['M_RiftGlass'] if UPDATE else make_material('M_RiftGlass',glass=True)
-manifest=previous_manifest or {'schema':1,'source':'original procedural sculpt and rig authored for Rift Crown Arena',
+# Expansion materials are owned only by the three locked revised designs.
+# The accepted atlas and every unrelated source/export keep their original bytes.
+EXPANSION_MATERIALS = None
+NEW_MATERIALS = None
+if not PREVIEW or PREVIEW.intersection(expansion_models.CONTRACTS):
+    saved_palette, saved_tex = dict(PALETTE), TEX
+    PALETTE.update({'fur':(.235,.275,.30,.0,.88), 'fur_dark':(.105,.13,.15,.0,.94),
+                    'fur_cream':(.67,.35,.07,.0,.90), 'cloth_ember':(.70,.12,.025,.0,.88)})
+    if opts.polish_expansion_surfaces:
+        PALETTE.update({'iron':(.18,.22,.255,.54,.49),'steel':(.37,.45,.50,.64,.40),
+                        'brass':(.62,.40,.17,.58,.43),'fur_dark':(.14,.165,.18,0,.91),
+                        'stone_dark':(.115,.15,.155,0,.91),'stone':(.27,.32,.315,0,.91),
+                        'glass':(.235,.085,.38,.05,.27)})
+    if UPDATE and not opts.polish_expansion_surfaces:
+        TEX={channel:bpy.data.images.get('T_RiftExpansionAtlas_'+channel) or
+             bpy.data.images.load(str(SRC/'Textures'/('T_RiftExpansionAtlas_'+channel+'.png')))
+             for channel in ('BaseColor','ORM','Normal','TeamMask')}
+    else:TEX = textures('T_RiftExpansionAtlas')
+    def expansion_material(name, glow=False, glass=False):
+        old=bpy.data.materials.get(name)
+        if old and UPDATE and not opts.polish_expansion_surfaces:return old
+        if old:bpy.data.materials.remove(old,do_unlink=True)
+        return make_material(name,glow=glow,glass=glass)
+    EXPANSION_MATERIALS=(expansion_material('M_RiftExpansionSurface'),
+                         expansion_material('M_RiftExpansionGlow',glow=True),
+                         expansion_material('M_RiftExpansionGlass',glass=True))
+    PALETTE.clear();PALETTE.update(saved_palette);TEX=saved_tex
+
+# New designs own a separate atlas. No accepted legacy/boar palette is changed.
+if (UPDATE and UPDATE.intersection(set(new_models.CONTRACTS)|set(new_models.STATIC_IDS))) or \
+   (PREVIEW and PREVIEW.intersection(set(new_models.CONTRACTS)|set(new_models.STATIC_IDS))) or not (UPDATE or PREVIEW):
+    saved_palette,saved_tex=dict(PALETTE),TEX
+    PALETTE.update({'iron':(.065,.073,.08,.76,.43),'ivory':(.79,.73,.59,0,.48),
+                    'cloth_indigo':(.025,.039,.105,0,.84),'cloth_purple':(.235,.15,.29,0,.88),
+                    'teal_light':(.15,.64,.22,0,.34),'glass':(.12,.06,.20,.05,.33),
+                    'ember':(.95,.43,.08,0,.30)})
+    if opts.polish_expansion_surfaces:
+        PALETTE.update({'iron':(.17,.205,.24,.54,.48),'steel':(.37,.44,.50,.65,.39),
+                        'silver':(.76,.82,.85,.67,.30),'brass':(.62,.40,.17,.58,.44),
+                        'ivory':(.83,.78,.64,0,.52),'cloth_indigo':(.09,.13,.21,0,.88),
+                        'cloth_purple':(.19,.145,.24,0,.88),'black':(.022,.032,.045,0,.88),
+                        'teal_light':(.13,.50,.255,0,.42),'glass':(.15,.10,.25,.03,.36)})
+    TEX=textures('T_RiftAscensionAtlas')
+    for name in ('M_RiftExpansionAscensionSurface','M_RiftExpansionAscensionGlow','M_RiftExpansionAscensionGlass'):
+        old_material=bpy.data.materials.get(name)
+        if old_material:bpy.data.materials.remove(old_material,do_unlink=True)
+    NEW_MATERIALS=tuple(make_material(name,glow=glow,glass=glass) for name,glow,glass in (
+        ('M_RiftExpansionAscensionSurface',False,False),
+        ('M_RiftExpansionAscensionGlow',True,False),
+        ('M_RiftExpansionAscensionGlass',False,True)))
+    PALETTE.clear();PALETTE.update(saved_palette);TEX=saved_tex
+
+manifest=json.loads(json.dumps(previous_manifest)) if previous_manifest else {'schema':1,'source':'original procedural sculpt and rig authored for Rift Crown Arena',
  'units':{'blender':'meter','fbx':'meter','fbxCentimetersPerUnit':100,'unrealImportUniformScale':1,'convertSceneUnit':True,
           'exportAxisForward':'-Y','exportAxisUp':'Z','unrealForceFrontXAxis':True,'designForward':'-Y in Blender; +X in Unreal'},
  'materials':[{'name':m.name,'baseColor':Path(TEX['BaseColor'].filepath_raw).relative_to(ROOT).as_posix(),
@@ -163,12 +255,26 @@ manifest=previous_manifest or {'schema':1,'source':'original procedural sculpt a
                'normal':Path(TEX['Normal'].filepath_raw).relative_to(ROOT).as_posix(),
                'teamMask':Path(TEX['TeamMask'].filepath_raw).relative_to(ROOT).as_posix()} for m in (SURFACE,GLOW,GLASS)],
  'characters':{},'statics':{},'illustrations':{},'renders':[]}
-manifest['build']='UE-1.4.0'
+manifest['build']='UE-balance-expansion-source'
+if EXPANSION_MATERIALS:
+    manifest['expansionMaterials']=[{'name':m.name,'baseColor':'Assets/Source/Textures/T_RiftExpansionAtlas_BaseColor.png',
+        'orm':'Assets/Source/Textures/T_RiftExpansionAtlas_ORM.png','normal':'Assets/Source/Textures/T_RiftExpansionAtlas_Normal.png',
+        'teamMask':'Assets/Source/Textures/T_RiftExpansionAtlas_TeamMask.png'} for m in EXPANSION_MATERIALS]
+if NEW_MATERIALS:
+    new_material_records=[{'name':m.name,
+        'baseColor':'Assets/Source/Textures/T_RiftAscensionAtlas_BaseColor.png',
+        'orm':'Assets/Source/Textures/T_RiftAscensionAtlas_ORM.png',
+        'normal':'Assets/Source/Textures/T_RiftAscensionAtlas_Normal.png',
+        'teamMask':'Assets/Source/Textures/T_RiftAscensionAtlas_TeamMask.png'} for m in NEW_MATERIALS]
+    declared={record['name']:record for record in manifest.get('expansionMaterials',[])}
+    declared.update({record['name']:record for record in new_material_records})
+    manifest['expansionMaterials']=list(declared.values())
 
 class Forge:
     def __init__(self,name):
         self.name=name; self.collection=bpy.data.collections.new(name); scene.collection.children.link(self.collection)
         self.parts=[]; self.bones={}; self.sockets={}; self.rig=None; self.mesh=None; self.family='static'
+        self.materials=NEW_MATERIALS if name in set(new_models.CONTRACTS)|set(new_models.STATIC_IDS) else EXPANSION_MATERIALS if name in expansion_models.CONTRACTS else (SURFACE,GLOW,GLASS)
     def add(self,obj,key='steel',bone=None,bevel=0,smooth=True,glow=False):
         for c in list(obj.users_collection): c.objects.unlink(obj)
         self.collection.objects.link(obj); obj.name=self.name+'_'+obj.name
@@ -177,7 +283,7 @@ class Forge:
             bpy.context.view_layer.objects.active=obj; obj.select_set(True)
             bpy.ops.object.modifier_apply(modifier=mod.name)
         for p in obj.data.polygons: p.use_smooth=smooth
-        obj.data.materials.clear(); obj.data.materials.append(GLOW if glow else GLASS if key=='glass' else SURFACE)
+        obj.data.materials.clear(); obj.data.materials.append(self.materials[1] if glow else self.materials[2] if key=='glass' else self.materials[0])
         # Preserve per-part UV islands within material palette tile, with a safe padded border.
         if not obj.data.uv_layers:
             uv=obj.data.uv_layers.new(name='UVMap')
@@ -374,82 +480,7 @@ def quadruped(name):
     return f.finish(True)
 
 def hog(name):
-    """Two recognizable wild boars, with fitted royal tack on the premium herd."""
-    f=Forge(name);f.family='quadruped';royal=name=='stampede'
-    f.bone('root',(0,0,0),(0,0,.10))
-    f.bone('pelvis',(0,.24,.56),(0,.04,.63),'root')
-    f.bone('spine',(0,.04,.63),(0,-.30,.68),'pelvis')
-    f.bone('neck',(0,-.30,.68),(0,-.49,.70),'spine')
-    f.bone('head',(0,-.49,.70),(0,-.70,.65),'neck')
-    f.bone('jaw',(0,-.61,.57),(0,-.88,.54),'head')
-    f.bone('tail',(0,.52,.60),(0,.75,.66),'pelvis')
-    for s,side in ((-1,'l'),(1,'r')):
-        for y,leg in ((-.27,'front'),(.28,'back')):
-            bn=leg+'_'+side
-            f.bone(bn+'_upper',(s*.23,y,.54),(s*.25,y+.025,.30),'spine' if leg=='front' else 'pelvis')
-            f.bone(bn+'_lower',(s*.25,y+.025,.30),(s*.26,y-.01,.075),bn+'_upper')
-            f.bone(bn+'_foot',(s*.26,y-.01,.075),(s*.26,y-.10,.05),bn+'_lower')
-            f.socket(bn+'_contact',(s*.26,y-.045,.012),bn+'_foot')
-            f.tube('powerful_upper_leg',[(s*.23,y,.54),(s*.25,y+.025,.40),(s*.25,y+.025,.30)],
-                   [.115,.105,.070],'fur',bn+'_upper',14)
-            f.tube('tapered_lower_leg',[(s*.25,y+.025,.30),(s*.26,y-.01,.18),(s*.26,y-.01,.075)],
-                   [.071,.058,.055],'fur_dark',bn+'_lower',12)
-            # The hoof cleft is a real separation between its two keratin toes.
-            for toe in (-1,1):
-                f.ellipsoid('cloven_hoof',(s*.26+toe*.041,y-.045,.052),(.038,.087,.052),'black',bn+'_foot',16)
-    f.ellipsoid('barrel_body',(0,.06,.62),(.34,.53,.255),'fur','spine',32)
-    f.ellipsoid('shoulder_muscle',(0,-.27,.66),(.315,.29,.28),'fur','spine',28)
-    f.ellipsoid('round_haunches',(0,.36,.59),(.31,.27,.23),'fur','pelvis',28)
-    f.ellipsoid('powerful_neck',(0,-.41,.70),(.24,.255,.22),'fur','neck',24)
-    f.ellipsoid('wedge_head',(0,-.59,.69),(.23,.26,.21),'fur','head',28)
-    f.ellipsoid('long_boar_snout',(0,-.80,.565),(.176,.185,.125),'leather','jaw',24)
-    f.ellipsoid('broad_snout_disk',(0,-.960,.565),(.142,.026,.091),'skin_shade','jaw',24)
-    for s in (-1,1):
-        f.ellipsoid('nostril',(s*.055,-.983,.577),(.025,.009,.017),'black','jaw',16)
-        f.ellipsoid('recessed_eye_socket',(s*.177,-.728,.759),(.052,.040,.045),'fur_dark','head',20)
-        f.ellipsoid('eye_white',(s*.195,-.752,.765),(.031,.020,.023),'ivory','head',16)
-        f.ellipsoid('watchful_eye',(s*.199,-.770,.765),(.016,.007,.018),'black','head',16)
-        f.tube('heavy_brow',[(s*.144,-.735,.803),(s*.188,-.746,.817),(s*.224,-.705,.796)],
-               [.035,.038,.014],'fur_dark','head',10)
-        f.tube('outer_ear',[(s*.169,-.51,.842),(s*.272,-.477,.988),(s*.299,-.560,.958)],
-               [.085,.062,.004],'fur','head',12)
-        f.tube('inner_ear',[(s*.201,-.539,.872),(s*.267,-.513,.955)], [.037,.004],'skin_shade','head',10)
-        f.tube('curved_boar_tusk',[(s*.148,-.847,.528),(s*.208,-.905,.515),(s*.238,-.926,.586),(s*.229,-.933,.671)],
-               [.043,.035,.024,.002],'ivory','jaw',12)
-    # Sculpted bristle ridge follows the silhouette; it never crosses the tack.
-    for j in range(10):
-        y=-.36+j*.086;z=.85+.045*math.cos(j*.30)
-        f.tube('bristle_crest',[(0,y,z),(0,y+.025,z+.096),(0,y+.064,z+.125)],
-               [.052,.037,.001],'fur_dark','spine',8)
-    points=[(0,.55,.63)]
-    for j in range(13):
-        a=j*math.pi/6;points.append((math.sin(a)*.055,.64+j*.006,.675+math.cos(a)*.054))
-    f.tube('curled_tail',points,[.031]+[.025-j*.0014 for j in range(13)],'fur','tail',10)
-    if royal:
-        # No rider: a tailored saddlecloth, raised shoulder plates and a small
-        # open crown distinguish the seven-Aether herd at the game camera.
-        for s in (-1,1):
-            f.panel('royal_side_cloth',(s*.329,.13,.68),(.024,.48,.205),'cloth_blue','spine',bevel=.018)
-            f.panel('cloth_gold_edge',(s*.346,.13,.589),(.018,.49,.024),'brass','spine',bevel=.006)
-            f.ellipsoid('fitted_shoulder_plate',(s*.263,-.275,.735),(.110,.177,.124),'steel_edge','spine',20)
-            f.rivet((s*.333,-.276,.765),'spine','brass',.027)
-            f.tube('fitted_royal_harness',[(s*.21,-.37,.847),(s*.331,-.329,.710),(s*.272,-.308,.448)],
-                   [.022,.026,.018],'leather','spine',10)
-            f.tube('team_harness_trim',[(s*.221,-.38,.854),(s*.344,-.339,.711)],.012,'team','spine',8)
-        f.ring('open_crown_band',(0,-.548,.914),.151,.024,'brass','head')
-        for j in range(5):
-            a=j*2*math.pi/5;x=math.cos(a)*.147;y=-.548+math.sin(a)*.147
-            f.tube('crown_point',[(x,y,.92),(x*.86,-.548+(y+.548)*.86,1.066)], [.025,.003],'brass','head',8)
-        f.ellipsoid('royal_team_crest',(0,-.723,.924),(.043,.019,.047),'team','head',16)
-    else:
-        f.tube('plain_team_collar',[(-.217,-.455,.70),(0,-.554,.791),(.217,-.455,.70)],
-               .024,'team','neck',10)
-        f.ellipsoid('small_iron_collar_tag',(0,-.573,.783),(.035,.012,.033),'iron','neck',16)
-    f.socket('attack_origin',(0,-.97,.57),'jaw')
-    f.socket('impact_origin',(0,-.38,.66),'spine')
-    f.socket('hp_anchor',(0,0,1.18 if royal else 1.05),'spine')
-    f.socket('status_anchor',(0,-.30,1.10),'neck')
-    return f.finish(True)
+    return expansion_models.boarlet(Forge,name)
 
 def flyer_rig(f):
     f.family='flyer'; f.bone('root',(0,0,0),(0,0,.10)); f.bone('body',(0,0,1),(0,-.27,1.09),'root')
@@ -550,118 +581,11 @@ def flyer(name):
     return f.finish(True)
 
 def pulverizer():
-    """A stationary hydraulic press; all moving parts stay on their own drivers."""
-    f=Forge('pulverizer');f.family='mechanism'
-    f.bone('root',(0,0,0),(0,0,.12))
-    f.bone('hammer',(0,0,1.62),(0,0,1.91),'root')
-    f.bone('crystal',(0,0,.73),(0,0,1.27),'root')
-    for i in range(3):
-        a=math.tau*i/3+math.pi/6;x,y=.54*math.cos(a),.54*math.sin(a)
-        f.bone('piston_'+str(i),(x,y,1.03),(x,y,1.60),'hammer')
-    f.socket('attack_origin',(0,0,.15),'root')
-    f.socket('impact_origin',(0,0,.15),'root')
-    f.socket('hp_anchor',(0,0,2.28),'root')
-    f.socket('status_anchor',(0,0,2.10),'root')
-    def plinth(name,rings,key,bone='root'):
-        # Broad square foundation with clipped corners and authored bevels.
-        verts=[]
-        for z,size in rings:
-            c=size*.27
-            verts.extend((x,y,z) for x,y in ((-size+c,-size),(size-c,-size),(size,-size+c),(size,size-c),
-                                           (size-c,size),(-size+c,size),(-size,size-c),(-size,-size+c)))
-        faces=[tuple(reversed(range(8))),tuple((len(rings)-1)*8+i for i in range(8))]
-        for row in range(len(rings)-1):
-            for i in range(8):faces.append((row*8+i,row*8+(i+1)%8,(row+1)*8+(i+1)%8,(row+1)*8+i))
-        return f.mesh_data(name,verts,faces,key,bone,smooth=False)
-    plinth('chamfered_stone_foundation',[(0,.765),(.035,.825),(.18,.825),(.235,.77)],'stone_dark')
-    plinth('limestone_cap_course',[(.235,.765),(.25,.785),(.33,.785),(.355,.735)],'limestone')
-    plinth('steel_pulse_dais',[(.355,.69),(.38,.715),(.43,.715),(.46,.65)],'steel_shadow')
-    # Four fitted stone shoulders support the press rather than floating gear.
-    for x,y in ((-.63,-.63),(.63,-.63),(.63,.63),(-.63,.63)):
-        f.panel('anchored_stone_shoulder',(x,y,.40),(.21,.21,.22),'stone', 'root',bevel=.027)
-        f.panel('steel_corner_clamp',(x,y,.52),(.19,.19,.05),'steel_edge','root',bevel=.018)
-        f.rivet((x,y,.552),'root','brass',.025)
-    f.tube('fixed_crystal_socket',[(0,0,.46),(0,0,.58)],[.35,.35],'iron','root',32)
-    f.ring('socket_brass_lip',(0,0,.58),.345,.025,'brass','root')
-    # Faceted crystal chamber is restrained and readable against the steel.
-    f.tube('amethyst_pressure_crystal',[(0,0,.61),(0,0,.76),(0,0,1.18),(0,0,1.38)],
-           [.19,.285,.24,.075],'violet','crystal',8,True)
-    for z,r in ((.71,.294),(1.18,.25)):
-        f.ring('crystal_retaining_band',(0,0,z),r,.022,'brass','crystal')
-    f.ring('purple_pulse_emitter',(0,0,.455),.49,.022,'violet','root',glow=True)
-    for i in range(3):
-        a=math.tau*i/3+math.pi/6;x,y=.54*math.cos(a),.54*math.sin(a);bone='piston_'+str(i)
-        f.tube('bolted_piston_foot',[(x,y,.44),(x,y,.55)],[.14,.14],'steel_shadow','root',16)
-        f.ring('piston_foot_rim',(x,y,.51),.138,.016,'brass','root')
-        f.tube('fixed_hydraulic_cylinder',[(x,y,.55),(x,y,1.08)],[.097,.097],'steel','root',20)
-        f.ring('cylinder_upper_gland',(x,y,1.065),.103,.018,'brass','root')
-        f.tube('telescoping_polished_rod',[(x,y,1.00),(x,y,1.66)],[.044,.044],'silver',bone,16)
-        f.tube('moving_hammer_coupler',[(x,y,1.57),(x,y,1.71)],[.08,.08],'steel_shadow',bone,16)
-        f.ring('coupler_brass_edge',(x,y,1.60),.078,.012,'brass',bone)
-        # A fixed bent hydraulic line ends at the gland, never crosses the core.
-        outer=Vector((math.cos(a),math.sin(a),0))
-        points=[Vector((x,y,.51))+outer*.08,Vector((x,y,.69))+outer*.15,
-                Vector((x,y,.96))+outer*.15,Vector((x,y,1.035))+outer*.08]
-        f.tube('fitted_hydraulic_hose',points,.022,'black','root',10)
-    f.tube('compression_head',[(0,0,1.59),(0,0,1.74),(0,0,1.82)],
-           [.65,.65,.57],'steel_shadow','hammer',32)
-    f.ring('compression_head_lower_lip',(0,0,1.615),.647,.024,'steel_edge','hammer')
-    f.ring('compression_head_brass_trim',(0,0,1.77),.60,.023,'brass','hammer')
-    f.tube('stone_press_crown',[(0,0,1.82),(0,0,1.99),(0,0,2.055)],
-           [.49,.49,.425],'stone','hammer',12)
-    f.tube('upper_pressure_cap',[(0,0,2.055),(0,0,2.10)],[.285,.245],'steel','hammer',24)
-    f.ring('crown_crystal_lens',(0,0,2.102),.17,.018,'violet','hammer',glow=True)
-    # Modest team panels are fitted to three flat sectors on the fixed base.
-    for a in (0,math.tau/3,math.tau*2/3):
-        x,y=.666*math.sin(a),-.666*math.cos(a)
-        f.panel('fitted_team_inlay',(x,y,.40),(.20,.016,.035),'team','root',rotation=(0,0,a),bevel=.004)
-    return f.finish(True)
-
-def mechanism_actions(f):
-    """Compression anticipation, fast pulse contact and hydraulic recovery."""
-    made=[]
-    clips={'Idle':60,'Locomotion':60,'Attack':28,'Hit':16,'Death':45,
-           'Deploy':24,'Status':30,'Turn':24,'Acquire':18}
-    def smooth(v):
-        v=max(0,min(1,v));return v*v*(3-2*v)
-    for name,length in clips.items():
-        act=bpy.data.actions.new('AN_'+f.name+'_'+name)
-        f.rig.animation_data_create();f.rig.animation_data.action=act
-        for frame in range(1,length+1):
-            scene.frame_set(frame);t=(frame-1)/(length-1);cycle=t*math.tau
-            for pb in f.rig.pose.bones:
-                pb.rotation_mode='XYZ';pb.rotation_euler=(0,0,0);pb.location=(0,0,0);pb.scale=(1,1,1)
-            hammer=f.rig.pose.bones['hammer'];crystal=f.rig.pose.bones['crystal']
-            stroke=.012*math.sin(cycle);crystal.rotation_euler.y=.018*math.sin(cycle)
-            if name=='Attack':
-                anticipation=smooth(t/.34)
-                contact=smooth((t-.34)/.14)
-                recovery=smooth((t-.52)/.48)
-                stroke=.10*anticipation-.38*contact+.28*recovery
-                crystal.scale=(1+.085*contact*(1-recovery),)*3
-            elif name=='Deploy':stroke=-.24*(1-smooth(t/.72))+.035*math.sin(t*math.pi)*math.exp(-t*3)
-            elif name=='Hit':
-                stroke=-.065*math.sin(t*math.pi);hammer.rotation_euler.x=.035*math.sin(t*math.pi)
-            elif name=='Death':
-                e=smooth(t/.8);stroke=-.38*e;hammer.rotation_euler.x=.08*e
-                crystal.scale=(1-.40*e,)*3;crystal.rotation_euler.z=.18*e
-            elif name=='Status':crystal.scale=(1+.045*math.sin(cycle*2),)*3
-            elif name in ('Turn','Acquire'):crystal.rotation_euler.y=.07*math.sin(t*math.pi)
-            hammer.location=hammer.bone.matrix_local.to_3x3().inverted()@Vector((0,0,stroke))
-            for pb in f.rig.pose.bones:
-                pb.keyframe_insert('rotation_euler',frame=frame,group=pb.name)
-                pb.keyframe_insert('location',frame=frame,group=pb.name)
-                pb.keyframe_insert('scale',frame=frame,group=pb.name)
-        act.use_fake_user=True
-        made.append({'name':name,'action':act.name,'frames':length,'seconds':(length-1)/30,
-                     'releaseNormalized':.48 if name=='Attack' else None,
-                     'loop':name in ('Idle','Locomotion','Status'),'strideMeters':None,'object':act})
-    f.rig.animation_data.action=None;scene.frame_set(1)
-    for pb in f.rig.pose.bones:pb.rotation_euler=(0,0,0);pb.location=(0,0,0);pb.scale=(1,1,1)
-    return made
+    return expansion_models.pulse_machine(Forge)
 
 def actions(f):
-    if f.family=='mechanism':return mechanism_actions(f)
+    if f.name in new_models.CONTRACTS:return new_models.actions(f,scene,set_world_rotation,aim_leg,aim_arm)
+    if hasattr(f,'expansion_design'):return expansion_models.actions(f,scene,set_world_rotation,aim_leg)
     standard={'Idle':60,'Locomotion':30,'Attack':30,'Hit':16,'Death':45,'Deploy':24,'Status':30,'Turn':24,'Acquire':18}
     special={'rambeast':{'Charge':30},'frost_fang':{'FrostAttack':24,'Breath':60},
              'storm_raven':{'AuraCharge':45,'Pulse':18,'StunDischarge':18,'WingCycle':36},
@@ -811,7 +735,7 @@ def export_character(f):
     rec={'id':f.name,'rigFamily':f.family,'mesh':file_info(meshpath),'bones':list(f.bones),'boneCount':len(f.bones),
          'sockets':f.sockets,'triangles':triangles(f.mesh),'materials':[m.name for m in f.mesh.data.materials],
          'boundsMeters':list(f.mesh.dimensions),'lods':[],'animations':[],
-         'modelDesign':model_design_metadata(f),
+         'modelDesign':getattr(f,'expansion_design',None) or model_design_metadata(f),
          'physics':{'type':'capsule','simulationCollisionAuthoritative':False,'autoCreatePhysicsAsset':True}}
     for level,ratio in ((1,.50),(2,.25),(3,.12)):
         lod=f.mesh.copy();lod.data=f.mesh.data.copy();f.collection.objects.link(lod);lod.name='SK_'+f.name+'_LOD'+str(level)
@@ -820,9 +744,10 @@ def export_character(f):
         p=directory/(lod.name+'.fbx');export_selected(p,[lod,f.rig]);rec['lods'].append({'level':level,'triangles':triangles(lod),**file_info(p)})
         bpy.data.objects.remove(lod,do_unlink=True)
     for clip in clips:
+        scene.render.fps=clip.get('fps',30)
         f.rig.animation_data.action=clip['object'];p=directory/(clip['action']+'.fbx')
         export_selected(p,[f.rig],True,1,clip['frames']);rec['animations'].append({k:v for k,v in clip.items() if k!='object'}|file_info(p))
-    f.rig.animation_data.action=None;scene.frame_set(1)
+    f.rig.animation_data.action=None;scene.render.fps=30;scene.frame_set(1)
     for pb in f.rig.pose.bones:pb.rotation_euler=(0,0,0);pb.location=(0,0,0);pb.scale=(1,1,1)
     manifest['characters'][f.name]=rec
     return f
@@ -1000,7 +925,9 @@ def render_rig():
 def render_asset(f,stage,camera):
     for col in bpy.data.collections:
         if col!=stage: col.hide_render=col!=f.collection
-    for o in f.collection.objects:o.hide_render=False
+    # Editable collision proxies and auxiliary source meshes are never portraits.
+    for o in f.collection.objects:
+        if o in (f.mesh,getattr(f,'rig',None)):o.hide_render=False
     height=max(1.2,f.mesh.dimensions.z);width=max(f.mesh.dimensions.x,f.mesh.dimensions.y)
     target=Vector((0,0,sum(corner[2] for corner in f.mesh.bound_box)/8 if f.name=='guard_cannon' else height*.48));camera.location=target+Vector((4.5,-7.0,4.0))
     camera.rotation_euler=(target-camera.location).to_track_quat('-Z','Y').to_euler();camera.data.ortho_scale=max(height*1.5,width*1.38)
@@ -1200,14 +1127,15 @@ def contact_gait(f,phase,charge=False):
 forges=[]
 knownModels={'ironclad','ember_archer','twin_blades','arc_mage','tower_archer','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven','mini_stampede','stampede','pulverizer',
              'tower_guard','tower_core','archer_tower','nova_flask','bridge','floor_tile','lane_paver','bank_segment','boundary_stone','grass_tuft','shrub','tree','crystal_plinth','banner','ruin','distant_island','meteor_shard','bullet_round','tower_rubble','arrow_projectile','arc_projectile','manta_projectile','storm_projectile','projectile_trail'}
+knownModels.update(new_models.CONTRACTS);knownModels.update(new_models.STATIC_IDS)
 if PREVIEW and PREVIEW-knownModels:raise ValueError('Unknown preview models: '+', '.join(sorted(PREVIEW-knownModels)))
-characterIds=('ironclad','ember_archer','twin_blades','arc_mage','tower_archer','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven','mini_stampede','stampede','pulverizer')
-if UPDATE and UPDATE-set(characterIds):raise ValueError('Unknown update characters: '+', '.join(sorted(UPDATE-set(characterIds))))
+characterIds=('ironclad','ember_archer','twin_blades','arc_mage','tower_archer','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven','mini_stampede','stampede','pulverizer')+tuple(new_models.CONTRACTS)
+if UPDATE and UPDATE-(set(characterIds)|set(new_models.STATIC_IDS)):raise ValueError('Unknown update models: '+', '.join(sorted(UPDATE-set(characterIds)-set(new_models.STATIC_IDS))))
 for name in characterIds:
     if PREVIEW and name not in PREVIEW:continue
     if UPDATE and name not in UPDATE:continue
     print('RIFT_ASSET_BEGIN',name,flush=True)
-    f=pulverizer() if name=='pulverizer' else humanoid(name) if name in ('ironclad','ember_archer','twin_blades','arc_mage','tower_archer') else hog(name) if name in ('mini_stampede','stampede') else quadruped(name) if name in ('boulderback','rambeast','frost_fang') else flyer(name)
+    f=new_models.build(Forge,name) if name in new_models.CONTRACTS else pulverizer() if name=='pulverizer' else humanoid(name) if name in ('ironclad','ember_archer','twin_blades','arc_mage','tower_archer') else hog(name) if name in ('mini_stampede','stampede') else quadruped(name) if name in ('boulderback','rambeast','frost_fang') else flyer(name)
     if PREVIEW:
         if opts.preview_action:
             clips=actions(f)
@@ -1231,11 +1159,19 @@ for name in ('tower_guard','tower_core','archer_tower','nova_flask','bridge','fl
     if cannon:
         if not PREVIEW:export_static(cannon)
         forges.append(cannon);print('RIFT_ASSET_COMPLETE','guard_cannon',flush=True)
+for name in new_models.STATIC_IDS:
+    if PREVIEW and name not in PREVIEW:continue
+    if UPDATE and name not in UPDATE:continue
+    f=new_models.effect_static(Forge,name)
+    if not PREVIEW:export_static(f)
+    forges.append(f);print('RIFT_ASSET_COMPLETE',name,flush=True)
 if not opts.no_renders:
     stage,camera=render_rig()
     for f in forges:render_asset(f,stage,camera)
     stage.hide_render=True
 if PREVIEW:
+    if opts.preview_scene:
+        bpy.ops.wm.save_as_mainfile(filepath=str(opts.preview_output/'PreviewAssets.blend'))
     previewReport={'schema':1,'build':manifest['build'],'models':[
         {'id':f.name,'triangles':triangles(f.mesh),'boundsMeters':list(f.mesh.dimensions)} for f in forges],
         'action':opts.preview_action,'frame':opts.preview_frame if opts.preview_action else None,
@@ -1245,6 +1181,9 @@ if PREVIEW:
     sys.exit(0)
 for col in bpy.data.collections:col.hide_render=False
 scene.frame_start=1;scene.frame_end=60;scene.frame_set(1)
+if preserved_signatures:
+    after=source_signatures(preserved_signatures['objects'],preserved_signatures['actions'])
+    if after!=preserved_signatures:raise RuntimeError('Existing model, material, UV, rest joint or animation changed during additions')
 blend=SRC/'RiftCrown_ProductionAssets.blend';bpy.ops.wm.save_as_mainfile(filepath=str(blend))
 manifest['source']=file_info(blend)
 card_bindings={
@@ -1259,7 +1198,14 @@ card_bindings={
                  'decorationBaseMeters':[0,0,1.94],'decorationScale':.40},
  'bullet_burst':{'static':'bullet_round'},'nova_flask':{'static':'nova_flask'},
  'meteor_shards':{'static':'meteor_shard'}}
+card_bindings.update({'bone_warden':{'skeletal':'bone_warden','summon':'bone_warden_skeleton'},
+                     'aether_reaper':{'skeletal':'aether_reaper'},'iron_giant':{'skeletal':'iron_giant'},
+                     'shadow_surge':{'spell':True,'effectStatics':['shadow_surge_wisp','shadow_surge_ribbon']}})
+if previous_manifest:
+    # Retain accepted binding details exactly; the source revision proves additions.
+    card_bindings={**previous_manifest['cards'],**{name:value for name,value in card_bindings.items() if name not in previous_manifest['cards']}}
 manifest['cards']=card_bindings
+manifest['entities']={'bone_warden_skeleton':{'skeletal':'bone_warden_skeleton','deckCard':False,'parentCard':'bone_warden'}}
 for card in card_bindings:
     illustration=SRC/'CardArt'/(card+'.png')
     if illustration.exists():
@@ -1272,4 +1218,13 @@ manifest['statics'].get('tower_core',{}).update({'sockets':{'muzzle':{'positionM
 manifest['statics'].get('archer_tower',{}).update({'sockets':{'archer_base':{'positionMeters':[0,0,1.94]},'hp_anchor':{'positionMeters':[0,0,2.9]}}})
 manifestPath=ROOT/'Assets/asset_manifest.json'
 manifestPath.write_text(json.dumps(manifest,indent=2),encoding='utf-8')
+if opts.production_proof:
+    proof=opts.production_proof.resolve();proof.relative_to((ROOT/'Assets/Source/Revisions').resolve())
+    if proof.exists():raise ValueError('Production preservation evidence cannot be overwritten')
+    proof.write_text(json.dumps({'schema':1,'passed':True,'kind':'additive-model-production',
+        'fromSource':previous_manifest['source'],'toSource':manifest['source'],
+        'addedCharacters':sorted(UPDATE.intersection(new_models.CONTRACTS)),
+        'addedStatics':sorted(UPDATE.intersection(new_models.STATIC_IDS)),
+        'before':preserved_signatures,'after':after,
+        'producer':file_info(Path(__file__)),'modelBuilder':file_info(ROOT/'Build/expansion_new_models.py')},indent=2),encoding='utf-8')
 print('RIFT_ASSET_FINISHED',len(manifest['characters']),len(manifest['statics']),flush=True)

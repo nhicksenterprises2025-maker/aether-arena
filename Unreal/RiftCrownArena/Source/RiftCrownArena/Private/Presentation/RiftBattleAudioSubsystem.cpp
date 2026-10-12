@@ -344,6 +344,13 @@ FString URiftBattleAudioSubsystem::RunAudioSmokeJSON(URiftUIWidget* Interface)
     const TCHAR* SoundNames[]={TEXT("aether_three"),TEXT("aether_two"),TEXT("arc_cast"),TEXT("arc_impact"),TEXT("arrow_flight"),TEXT("arrow_hit"),TEXT("bat_bite"),TEXT("bow_release"),TEXT("building_hit"),TEXT("bullet_burst"),TEXT("charge"),TEXT("core_awaken"),TEXT("defeat"),TEXT("deploy"),TEXT("dual_attack"),TEXT("frost_attack"),TEXT("frost_slow"),TEXT("heavy_slam"),TEXT("manta_cast"),TEXT("manta_impact"),TEXT("meteor_impact"),TEXT("meteor_tick"),TEXT("music_rift"),TEXT("nova_impact"),TEXT("overtime"),TEXT("river_ambience"),TEXT("shield_hit"),TEXT("storm_bolt"),TEXT("storm_pulse"),TEXT("stun"),TEXT("sword_attack"),TEXT("sword_hit"),TEXT("tiebreaker"),TEXT("tower_destroy"),TEXT("tower_hit"),TEXT("ui_click"),TEXT("ui_error"),TEXT("ui_hover"),TEXT("ui_save"),TEXT("victory"),TEXT("wing_air")};
     int32 Loaded=0;for(const auto* Name:SoundNames)if(auto* Asset=Sound(FName(Name)))if(Asset->GetDuration()>0)++Loaded;
     Report->SetNumberField(TEXT("loadedSounds"),Loaded);Check(TEXT("all41ImportedSoundsLoad"),Loaded==41);
+    int32 ExpansionSounds=0;for(const auto* Name:{TEXT("shield_break"),TEXT("shadow_surge")})
+    {
+        auto* Asset=Cast<USoundWave>(Sound(FName(Name)));const bool Valid=Asset&&Asset->GetDuration()>0&&!Asset->bLooping;
+        Check(FString(Name)==TEXT("shield_break")?TEXT("shieldBreakSoundLoadsWithoutLoop"):TEXT("shadowSurgeSoundLoadsWithoutLoop"),Valid);
+        if(Valid)++ExpansionSounds;
+    }
+    Report->SetNumberField(TEXT("loadedExpansionSounds"),ExpansionSounds);Check(TEXT("all2ExpansionSoundsLoadWithoutLoops"),ExpansionSounds==2);
     int32 Variations=0;for(const auto* Cue:VariedCues)for(int32 Variant=2;Variant<=3;++Variant)
         if(auto* Asset=Sound(FName(*FString::Printf(TEXT("%s_v%d"),Cue,Variant))))if(Asset->GetDuration()>0)++Variations;
     Report->SetNumberField(TEXT("loadedCombatVariations"),Variations);Check(TEXT("all20CombatVariationsLoad"),Variations==20);

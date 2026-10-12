@@ -36,6 +36,13 @@ def production_sources(root, manifest):
     for suffix in ("BaseColor", "Normal", "ORM", "TeamMask"):
         record = pin(root, "Assets/Source/Textures/T_RiftAtlas_" + suffix + ".png")
         paths[record["file"]] = record
+    for material in manifest.get("expansionMaterials", []):
+        for key in ("baseColor", "normal", "orm", "teamMask"):
+            record = pin(root, material[key])
+            paths[record["file"]] = record
+    for material in manifest.get('presentationMaterials',[]):
+        for source in (material['shaderProducer'],material['contractProducer'],material['opacity']['atlasSource']):
+            add(source)
     return [paths[path] for path in sorted(paths)]
 
 
@@ -76,6 +83,10 @@ def expected_assets(manifest):
     for suffix in ("BaseColor", "Normal", "ORM", "TeamMask"):
         add("/Game/Rift/Textures/T_RiftAtlas_" + suffix,
             {"file": "Assets/Source/Textures/T_RiftAtlas_" + suffix + ".png"})
+    for material in manifest.get("expansionMaterials", []):
+        for key in ("baseColor", "normal", "orm", "teamMask"):
+            filename = material[key]
+            add("/Game/Rift/Textures/" + Path(filename).stem, {"file":filename})
     return assets
 
 

@@ -23,11 +23,89 @@ struct FRiftReplayWriteJob {
     int32 Events = 0, Samples = 0, Characters = 0, StoredBytes = 0;
 };
 
+struct FRiftReplayBalanceContext {
+    bool HasCapturedDefinitions = false;
+    int Schema = 0;
+    FString ManifestHash, ManifestVersion;
+    std::map<std::string, rift::Card> Definitions;
+    std::map<std::string, double> BuildingDecayRates;
+    TSet<FString> PlayableIds, Limitations;
+    TMap<uint64, rift::Entity> Entities;
+    TSet<uint64> ProjectileIds,WaveIds;
+    TArray<rift::Projectile> Projectiles;
+    TArray<rift::Shockwave> Waves;
+    TMap<uint64, rift::Hazard> Hazards;
+    TMap<uint64, double> HazardIntervals;
+};
+
 namespace {
 constexpr int64 ReplayLimit = 64 * 1024 * 1024;
 constexpr int32 DecodedLimit = 256 * 1024 * 1024, ArchiveHeaderSize = 24;
 constexpr uint8 ArchiveMagic[] = {'R', 'I', 'F', 'T', 'R', 'E', 'P', '1'};
 constexpr double MaxTime = 3600;
+const TCHAR* ReplaySizeError = TEXT("Replay exceeds the 256 MB decoded JSON limit.");
+
+// Count a lower bound without formatting numbers or allocating a second JSON document.
+// Every field is included, including persistent per-body telemetry. UTF-8 strings,
+// escaping and multi-digit numbers can only make the final document larger.
+bool MinimumJSONValueBytes(const TSharedPtr<FJsonValue>& Value, int64& Bytes, int64 Limit, int Depth);
+bool AddMinimumBytes(int64 Amount, int64& Bytes, int64 Limit) {
+    if (Amount < 0 || Amount > Limit - Bytes) return false;
+    Bytes += Amount;
+    return true;
+}
+bool MinimumJSONObjectBytes(const TSharedPtr<FJsonObject>& Object, int64& Bytes, int64 Limit, int Depth=0) {
+    if (!Object || Depth > 64 || !AddMinimumBytes(2, Bytes, Limit)) return false;
+    bool First=true;
+    for (const auto& Pair : Object->Values) {
+        if (!AddMinimumBytes(int64(Pair.Key.Len())+3+(First?0:1),Bytes,Limit) ||
+            !MinimumJSONValueBytes(Pair.Value,Bytes,Limit,Depth+1)) return false;
+        First=false;
+    }
+    return true;
+}
+bool MinimumJSONValueBytes(const TSharedPtr<FJsonValue>& Value, int64& Bytes, int64 Limit, int Depth) {
+    if (!Value || Depth > 64) return false;
+    switch (Value->Type) {
+    case EJson::Object: return MinimumJSONObjectBytes(Value->AsObject(),Bytes,Limit,Depth);
+    case EJson::Array: {
+        if (!AddMinimumBytes(2,Bytes,Limit)) return false;
+        bool First=true;
+        for (const auto& Element : Value->AsArray()) {
+            if ((!First&&!AddMinimumBytes(1,Bytes,Limit)) ||
+                !MinimumJSONValueBytes(Element,Bytes,Limit,Depth+1)) return false;
+            First=false;
+        }
+        return true;
+    }
+    case EJson::String: return AddMinimumBytes(int64(Value->AsString().Len())+2,Bytes,Limit);
+    case EJson::Number: return AddMinimumBytes(1,Bytes,Limit);
+    case EJson::Boolean: return AddMinimumBytes(Value->AsBool()?4:5,Bytes,Limit);
+    case EJson::Null: return AddMinimumBytes(4,Bytes,Limit);
+    default: return false;
+    }
+}
+
+// The normal FString writer internally grows a 32-bit FMemoryWriter before the
+// compression limit is checked. Write UTF-8 directly, with a hard allocation cap.
+class FRiftBoundedReplayWriter final : public FArchive {
+public:
+    FRiftBoundedReplayWriter(TArray<uint8>& InBytes,int64 InLimit):Bytes(InBytes),Limit(InLimit) {
+        SetIsSaving(true);
+    }
+    void Serialize(void* Data,int64 Length) override {
+        if (IsError()) return;
+        if (Length<0 || Length>Limit-Bytes.Num()) {SetError();return;}
+        if (Length>0) {
+            const int64 Required=Bytes.Num()+Length;
+            if (Required>Bytes.Max()) Bytes.Reserve(int32(FMath::Min(Limit,FMath::Max(Required,FMath::Max<int64>(65536,int64(Bytes.Max())*2)))));
+            Bytes.Append(static_cast<const uint8*>(Data),int32(Length));
+        }
+    }
+private:
+    TArray<uint8>& Bytes;
+    int64 Limit;
+};
 void ArchiveUInt32(uint8 *At, uint32 Value) {
     for (int I = 0; I < 4; ++I)
         At[I] = uint8(Value >> (8 * I));
@@ -38,9 +116,8 @@ uint32 ReadArchiveUInt32(const uint8 *At) {
         Value |= uint32(At[I]) << (8 * I);
     return Value;
 }
-bool EncodeRecording(const FString &Text, TArray<uint8> &Archive, FString &Error) {
-    FTCHARToUTF8 UTF8(*Text);
-    const int32 RawBytes = UTF8.Length();
+bool EncodeRecording(TConstArrayView<uint8> Raw, TArray<uint8> &Archive, FString &Error) {
+    const int32 RawBytes = Raw.Num();
     if (RawBytes <= 0 || RawBytes > DecodedLimit) {
         Error = TEXT("Replay exceeds the 256 MB decoded JSON limit.");
         return false;
@@ -52,7 +129,7 @@ bool EncodeRecording(const FString &Text, TArray<uint8> &Archive, FString &Error
     }
     Archive.SetNumUninitialized(ArchiveHeaderSize + CompressedBytes);
     if (!FCompression::CompressMemory(NAME_Zlib, Archive.GetData() + ArchiveHeaderSize, CompressedBytes,
-                                      UTF8.Get(), RawBytes) ||
+                                      Raw.GetData(), RawBytes) ||
         int64(CompressedBytes) + ArchiveHeaderSize > ReplayLimit) {
         Archive.Reset();
         Error = TEXT("Replay compression failed or exceeds the 64 MB native archive limit.");
@@ -61,12 +138,16 @@ bool EncodeRecording(const FString &Text, TArray<uint8> &Archive, FString &Error
     Archive.SetNum(ArchiveHeaderSize + CompressedBytes, EAllowShrinking::No);
     FMemory::Memcpy(Archive.GetData(), ArchiveMagic, UE_ARRAY_COUNT(ArchiveMagic));
     ArchiveUInt32(Archive.GetData() + 8, uint32(RawBytes));
-    ArchiveUInt32(Archive.GetData() + 12, FCrc::MemCrc32(UTF8.Get(), RawBytes));
+    ArchiveUInt32(Archive.GetData() + 12, FCrc::MemCrc32(Raw.GetData(), RawBytes));
     ArchiveUInt32(Archive.GetData() + 16, uint32(CompressedBytes));
     ArchiveUInt32(Archive.GetData() + 20,
                   FCrc::MemCrc32(Archive.GetData() + ArchiveHeaderSize, CompressedBytes));
     Error.Empty();
     return true;
+}
+bool EncodeRecording(const FString &Text, TArray<uint8> &Archive, FString &Error) {
+    FTCHARToUTF8 UTF8(*Text);
+    return EncodeRecording(TConstArrayView<uint8>(reinterpret_cast<const uint8*>(UTF8.Get()),UTF8.Length()),Archive,Error);
 }
 FString FS(const std::string &S) {
     return UTF8_TO_TCHAR(S.c_str());
@@ -97,10 +178,36 @@ TArray<TSharedPtr<FJsonValue>> Strings(const std::vector<std::string> &Values) {
         A.Add(MakeShared<FJsonValueString>(FS(V)));
     return A;
 }
+const rift::Card* RecordedCard(const FRiftReplayBalanceContext* Context, const std::string& Id) {
+    if (!Context || !Context->HasCapturedDefinitions) return nullptr;
+    const auto Found=Context->Definitions.find(Id);
+    return Found==Context->Definitions.end()?nullptr:&Found->second;
+}
+bool KnownCard(const FRiftReplayBalanceContext* Context,const std::string& Id) {
+    return Context && Context->HasCapturedDefinitions ? RecordedCard(Context,Id)!=nullptr : rift::FindEntityDefinition(Id)!=nullptr;
+}
+bool PlayableCard(const FRiftReplayBalanceContext* Context,const std::string& Id) {
+    return Context && Context->HasCapturedDefinitions ? Context->PlayableIds.Contains(UTF8_TO_TCHAR(Id.c_str())) : rift::FindCard(Id)!=nullptr;
+}
+bool SpellCard(const FRiftReplayBalanceContext* Context,const std::string& Id) {
+    const auto* Card=Context && Context->HasCapturedDefinitions ? RecordedCard(Context,Id) : rift::FindEntityDefinition(Id);
+    return Card&&Card->spell;
+}
+bool RecordedDeck(const FRiftReplayBalanceContext* Context,const std::vector<std::string>& Deck) {
+    if (Deck.size()!=8) return false;
+    TSet<FString> Unique;
+    for (const auto& Id:Deck) {if (!PlayableCard(Context,Id)||Unique.Contains(UTF8_TO_TCHAR(Id.c_str()))) return false;Unique.Add(UTF8_TO_TCHAR(Id.c_str()));}
+    return true;
+}
+void MissingMechanic(FRiftReplayBalanceContext* Context,const TCHAR* Detail) {
+    if (Context && !Context->HasCapturedDefinitions) Context->Limitations.Add(Detail);
+}
 struct Reader {
     TSharedPtr<FJsonObject> O;
+    const FRiftReplayBalanceContext* Context=nullptr;
     bool Valid = true;
-    explicit Reader(TSharedPtr<FJsonObject> Object) : O(Object), Valid(Object.IsValid()) {}
+    explicit Reader(TSharedPtr<FJsonObject> Object,const FRiftReplayBalanceContext* Balance=nullptr)
+        : O(Object), Context(Balance), Valid(Object.IsValid()) {}
     template <class T>
     void Number(const TCHAR *Key, T &Out, double Min = -1e12, double Max = 1e12, bool Required = false) {
         if (!O) {
@@ -203,7 +310,7 @@ struct Reader {
         Out.clear();
         for (const auto &V : *A) {
             FString Id;
-            if (!V || !V->TryGetString(Id) || !rift::FindCard(TCHAR_TO_UTF8(*Id))) {
+            if (!V || !V->TryGetString(Id) || !PlayableCard(Context,TCHAR_TO_UTF8(*Id))) {
                 Valid = false;
                 return;
             }
@@ -211,6 +318,97 @@ struct Reader {
         }
     }
 };
+#define CARD_NUMBERS(X) \
+    X(cost) X(count) X(hp) X(damage) X(attackInterval) X(moveSpeed) X(range) X(scale) \
+    X(projectileSpeed) X(splash) X(lifetime) X(footprint) X(shockwaveSpeed) X(collisionRadius) X(targetMask) \
+    X(towerDamage) X(spellRadius) X(chargeDamage) X(castDelay) X(slowPct) X(slowDuration) \
+    X(auraDamage) X(auraInterval) X(auraRadius) X(stunDuration) X(dotDamage) X(dotDuration) X(dotInterval) X(rounds)
+#define CARD_FLAGS(X) X(flying) X(canHitAir) X(structuresOnly) X(spell) X(building)
+#define EXPANSION_CARD_NUMBERS(X) X(chargeMoveSeconds) X(chargedMoveSpeed) X(initialAttackCooldown) X(shieldHP) X(deathSpawnCount) X(invisibilityDuration) X(dotStructureDamage)
+#define EXPANSION_CARD_FLAGS(X) X(hardExpiry) X(shieldOverflowProtected) X(globalFriendlyInvisibility) X(breakExistingLocks)
+TSharedRef<FJsonObject> BalanceJSON() {
+    auto Balance=MakeShared<FJsonObject>();
+    Balance->SetNumberField(TEXT("schema"),2);
+    Balance->SetStringField(TEXT("manifestHash"),FS(rift::CardManifestHash()));
+    Balance->SetStringField(TEXT("manifestVersion"),FS(rift::CardManifestVersion()));
+    TArray<TSharedPtr<FJsonValue>> Cards;
+    auto Add=[&](const rift::Card& Card,bool Playable) {
+        auto C=MakeShared<FJsonObject>();C->SetStringField(TEXT("id"),FS(Card.id));C->SetStringField(TEXT("name"),FS(Card.name));C->SetBoolField(TEXT("playable"),Playable);
+        C->SetNumberField(TEXT("hpDecayPerSecond"),Card.hpDecayPerSecond);
+        C->SetStringField(TEXT("deathSpawnId"),FS(Card.deathSpawnId));
+#define FIELD(K) C->SetNumberField(TEXT(#K),double(Card.K));
+        CARD_NUMBERS(FIELD)
+        EXPANSION_CARD_NUMBERS(FIELD)
+#undef FIELD
+#define FIELD(K) C->SetBoolField(TEXT(#K),Card.K);
+        CARD_FLAGS(FIELD)
+        EXPANSION_CARD_FLAGS(FIELD)
+#undef FIELD
+        Cards.Add(MakeShared<FJsonValueObject>(C));
+    };
+    for (const auto& Card:rift::Cards()) Add(Card,true);
+    for (const auto& Card:rift::EntityDefinitions()) Add(Card,false);
+    Balance->SetArrayField(TEXT("cards"),Cards);
+    return Balance;
+}
+bool ReadBalance(const TSharedPtr<FJsonObject>& Recording,FRiftReplayBalanceContext& Context) {
+    if (!Recording) return false;
+    if (!Recording->HasField(TEXT("balance"))) return true;
+    const TSharedPtr<FJsonObject>* B=nullptr;
+    if (!Recording->TryGetObjectField(TEXT("balance"),B)) return false;
+    Reader R(*B);int Schema=0;std::string Hash,Version;
+    R.Number(TEXT("schema"),Schema,1,2,true);R.Text(TEXT("manifestHash"),Hash,true);R.Text(TEXT("manifestVersion"),Version,true);
+    if (Hash.size()!=64||Version.empty()||Version.size()>128) return false;
+    for (char C:Hash) if (!(C>='0'&&C<='9')&&!(C>='a'&&C<='f')) return false;
+    const TArray<TSharedPtr<FJsonValue>>* Cards=nullptr;
+    if (!R.Valid||!R.List(TEXT("cards"),Cards,512,true)||Cards->Num()<8) return false;
+    for (const auto& Value:*Cards) {
+        rift::Card C;Reader CR(Obj(Value));bool Playable=false;double Decay=0;
+        CR.Text(TEXT("id"),C.id,true);CR.Text(TEXT("name"),C.name,true);
+#define FIELD(K) CR.Number(TEXT(#K),C.K,0,1e9,true);
+        CARD_NUMBERS(FIELD)
+#undef FIELD
+        CR.Number(TEXT("hpDecayPerSecond"),Decay,0,1e9,true);
+        C.hpDecayPerSecond=Decay;
+#define FIELD(K) CR.Number(TEXT(#K),C.K,0,1e9,Schema>=2);
+        EXPANSION_CARD_NUMBERS(FIELD)
+#undef FIELD
+        CR.Text(TEXT("deathSpawnId"),C.deathSpawnId,Schema>=2);
+#define FIELD(K) if (!CR.O||!CR.O->HasField(TEXT(#K))) CR.Valid=false;else CR.Flag(TEXT(#K),C.K);
+        CARD_FLAGS(FIELD)
+#undef FIELD
+#define FIELD(K) if (Schema>=2&&(!CR.O||!CR.O->HasField(TEXT(#K)))) CR.Valid=false;else CR.Flag(TEXT(#K),C.K);
+        EXPANSION_CARD_FLAGS(FIELD)
+#undef FIELD
+        if (!CR.O||!CR.O->HasField(TEXT("playable"))) CR.Valid=false;else CR.Flag(TEXT("playable"),Playable);
+        bool SafeId=!C.id.empty()&&C.id.size()<=128;
+        for (char Ch:C.id) SafeId &= (Ch>='a'&&Ch<='z')||(Ch>='0'&&Ch<='9')||Ch=='_';
+        if (!CR.Valid||!SafeId||C.name.empty()||Context.Definitions.count(C.id)||
+            C.cost>10||C.count<1||C.count>100||C.rounds>1000||C.targetMask<1||C.targetMask>7||
+            C.scale<=0||C.scale>100||C.collisionRadius>100||C.range>100||C.splash>100||C.spellRadius>100||C.auraRadius>100||
+            C.moveSpeed>100||C.projectileSpeed>1000||C.shockwaveSpeed>100||
+            C.attackInterval>MaxTime||C.lifetime>MaxTime||C.castDelay>10||C.slowDuration>10||C.slowPct>1||
+            C.auraInterval>MaxTime||C.stunDuration>10||C.dotDuration>MaxTime||C.dotInterval>MaxTime||
+            (C.spell&&C.building)||(!C.building&&Decay>0)||(!C.spell&&(C.hp<=0||C.collisionRadius<=0||C.attackInterval<=0))||
+            (C.building&&C.lifetime<=0)||((C.dotDamage>0||C.dotStructureDamage>0)&&(C.dotInterval<=0||C.dotDuration<=0))||
+            (C.auraDamage>0&&(C.auraInterval<=0||C.auraRadius<=0))||
+            (C.shockwaveSpeed>0&&C.splash<=0)||(C.slowPct>0&&C.slowDuration<=0)||
+            C.chargeMoveSeconds>MaxTime||C.chargedMoveSpeed>100||C.initialAttackCooldown>MaxTime||C.invisibilityDuration>10||
+            C.deathSpawnCount>100||((C.deathSpawnCount>0)!=!C.deathSpawnId.empty())||
+            (C.hardExpiry&&!C.building)||(C.shieldHP>0&&C.spell)||(C.invisibilityDuration>0&&!C.spell)||(!Playable&&C.cost!=0)) return false;
+        if (Playable) Context.PlayableIds.Add(FS(C.id));
+        Context.BuildingDecayRates.emplace(C.id,Decay);
+        Context.Definitions.emplace(C.id,MoveTemp(C));
+    }
+    for (const auto& Entry:Context.Definitions) if (Entry.second.deathSpawnCount>0) {
+        const auto Child=Context.Definitions.find(Entry.second.deathSpawnId);
+        if (Child==Context.Definitions.end()||Context.PlayableIds.Contains(FS(Child->first))||Child->second.spell||Child->second.building) return false;
+    }
+    if (Context.PlayableIds.Num()<8) return false;
+    Context.Schema=Schema;Context.HasCapturedDefinitions=true;Context.ManifestHash=FS(Hash);Context.ManifestVersion=FS(Version);
+    if (Schema==1) Context.Limitations.Add(TEXT("Captured balance schema1 predates full expansion metadata. Missing shield, cloak, death-spawn, charge-speed and hard-expiry fields are unavailable; current definitions are not substituted."));
+    return true;
+}
 #define TELEMETRY_DOUBLES(X)                                                                                 \
     X(spent)                                                                                                 \
     X(troopDamage)                                                                                           \
@@ -221,14 +419,14 @@ struct Reader {
     X(deaths)                                                                                                \
     X(killValue) X(lifetime) X(slowTime) X(stunTime) X(initialDamage) X(dotDamage) X(auraDamage) X(overkill) \
         X(prevented) X(spellValue) X(zoneOccupancy) X(zoneSeconds) X(crownContribution) X(buildingLifetime)  \
-            X(buildingCapacity) X(slowTrackedSeconds) X(stunTrackedSeconds)
+            X(buildingCapacity) X(slowTrackedSeconds) X(stunTrackedSeconds) X(shieldDamage) X(shieldDamageTaken) X(shieldAbsorbed) X(overflowPrevented)
 #define TELEMETRY_COUNTS(X)                                                                                  \
     X(plays)                                                                                                 \
     X(spawns)                                                                                                \
     X(surviving)                                                                                             \
     X(pulls)                                                                                                 \
     X(connected)                                                                                             \
-    X(targets) X(openingPlays) X(firstPlays) X(overtimePlays) X(stunned) X(dotTicks) X(openingEligible)
+    X(targets) X(openingPlays) X(firstPlays) X(overtimePlays) X(stunned) X(dotTicks) X(openingEligible) X(childSpawns) X(childDeaths) X(childSurviving)
 TSharedRef<FJsonObject> Telemetry(const rift::CardTelemetry &T) {
     auto O = MakeShared<FJsonObject>();
 #define FIELD(K) O->SetNumberField(TEXT(#K), double(T.K));
@@ -259,7 +457,7 @@ bool ReadTelemetry(const TSharedPtr<FJsonObject> &O, rift::CardTelemetry &T) {
     X(stunSource)                                                                                            \
     X(hp) X(maxHp) X(radius) X(cooldown) X(born) X(died) X(slowPct) X(slowUntil) X(stunUntil) X(forcedUntil) \
         X(chargeTime) X(auraClock) X(repathClock) X(scanClock) X(stuckClock) X(stuckTime) X(stuckDistance)   \
-            X(slowTrackedFrom) X(stunTrackedFrom) X(lane) X(bridge) X(memberCount)
+            X(slowTrackedFrom) X(stunTrackedFrom) X(lane) X(bridge) X(memberCount) X(shieldHP) X(maxShieldHP) X(shieldBrokenAt) X(invisibleUntil) X(invisibilitySource) X(invisibilityPlayId) X(parentEntityId)
 #define EVENT_NUMBERS(X)                                                                                     \
     X(sequence)                                                                                              \
     X(time)                                                                                                  \
@@ -269,13 +467,14 @@ bool ReadTelemetry(const TSharedPtr<FJsonObject> &O, rift::CardTelemetry &T) {
     X(amount)                                                                                                \
     X(requested)                                                                                             \
     X(overkill) X(hp) X(maxHp) X(aetherBefore) X(aetherAfter) X(until) X(targetCost) X(handIndex) X(count)   \
-        X(crowns)
+        X(crowns) X(parentEntityId) X(shieldHP) X(maxShieldHP) X(shieldOverflowBlocked)
 TSharedRef<FJsonObject> EventJSON(const rift::Event &E) {
     auto O = MakeShared<FJsonObject>();
     O->SetStringField(TEXT("type"), FS(E.type));
     O->SetStringField(TEXT("reason"), FS(E.reason));
     O->SetStringField(TEXT("cardId"), FS(E.cardId));
     O->SetStringField(TEXT("damageKind"), FS(E.damageKind));
+    O->SetStringField(TEXT("attributionCardId"), FS(E.attributionCardId));
 #define FIELD(K) O->SetNumberField(TEXT(#K), double(E.K));
     EVENT_NUMBERS(FIELD)
     FIELD(team)
@@ -293,12 +492,13 @@ TSharedRef<FJsonObject> EventJSON(const rift::Event &E) {
     O->SetArrayField(TEXT("handAfter"), Hand);
     return O;
 }
-bool ReadEvent(const TSharedPtr<FJsonObject> &O, rift::Event &E) {
-    Reader R(O);
+bool ReadEvent(const TSharedPtr<FJsonObject> &O, rift::Event &E,const FRiftReplayBalanceContext* Context=nullptr) {
+    Reader R(O,Context);
     R.Text(TEXT("type"), E.type, true);
     R.Text(TEXT("reason"), E.reason);
     R.Text(TEXT("cardId"), E.cardId);
     R.Text(TEXT("damageKind"), E.damageKind);
+    R.Text(TEXT("attributionCardId"), E.attributionCardId);
 #define FIELD(K) R.Number(TEXT(#K), E.K);
     EVENT_NUMBERS(FIELD)
 #undef FIELD
@@ -317,19 +517,19 @@ bool ReadEvent(const TSharedPtr<FJsonObject> &O, rift::Event &E) {
         else
             for (int32 I = 0; I < 4; ++I) {
                 FString Id;
-                if (!(*Hand)[I] || !(*Hand)[I]->TryGetString(Id))
+                if (!(*Hand)[I] || !(*Hand)[I]->TryGetString(Id) || (!Id.IsEmpty()&&!PlayableCard(Context,TCHAR_TO_UTF8(*Id))))
                     R.Valid = false;
                 else
                     E.handAfter[I] = TCHAR_TO_UTF8(*Id);
             }
     }
-    const auto *Card = rift::FindCard(E.cardId);
+    const auto *Card = RecordedCard(Context,E.cardId);
     if (E.type == "spell_cast" || E.type == "spell_impact") {
-        if (!Card || !Card->spell || Card->castDelay <= 0 || E.playId == 0)
+        if (!SpellCard(Context,E.cardId) || (Card&&Card->castDelay<=0) || E.playId == 0)
             R.Valid = false;
         if (E.type == "spell_cast" &&
-            (!Card || E.until <= E.time || E.until > MaxTime + 1 ||
-             FMath::Abs(E.until - E.time - Card->castDelay) > 1e-6))
+            (E.until <= E.time || E.until > MaxTime + 10 ||
+             (Card&&FMath::Abs(E.until - E.time - Card->castDelay) > 1e-6)))
             R.Valid = false;
     }
     if (E.type == "shockwave_launch") {
@@ -342,13 +542,35 @@ bool ReadEvent(const TSharedPtr<FJsonObject> &O, rift::Event &E) {
         R.Number(TEXT("amount"),E.amount,0,1e12,true);
         R.Number(TEXT("until"),E.until,0,MaxTime+10,true);
         R.Vec(TEXT("position"),E.position,true);
-        if (!Card || Card->shockwaveSpeed<=0 || Card->splash<=0 || E.until<=E.time ||
-            FMath::Abs(E.amount-Card->damage)>1e-6 ||
-            FMath::Abs(E.until-E.time-Card->splash/Card->shockwaveSpeed)>1e-6)
+        if (!KnownCard(Context,E.cardId) || E.until<=E.time ||
+            (Card&&(Card->shockwaveSpeed<=0 || Card->splash<=0 ||
+                FMath::Abs(E.amount-Card->damage)>1e-6 ||
+                FMath::Abs(E.until-E.time-Card->splash/Card->shockwaveSpeed)>1e-6)))
             R.Valid=false;
     }
+    if (E.type=="slow" && (E.amount<=0||E.amount>1||E.until<=E.time||E.until>E.time+10||
+        (Card&&(FMath::Abs(E.amount-Card->slowPct)>1e-6||FMath::Abs(E.until-E.time-Card->slowDuration)>1e-6)))) R.Valid=false;
+    if (E.type=="card_play" && (!PlayableCard(Context,E.cardId)||E.amount<0||E.amount>10||E.aetherBefore<0||E.aetherBefore>10||E.aetherAfter<0||E.aetherAfter>10||
+        (!E.sandbox&&(FMath::Abs(E.aetherBefore-E.aetherAfter-E.amount)>1e-6||(Card&&FMath::Abs(E.amount-Card->cost)>1e-6))))) R.Valid=false;
+    if (E.type=="projectile_launch" && (E.until<=E.time||E.until>E.time+MaxTime||E.amount<0||E.source==0||E.target==0)) R.Valid=false;
+    if (!E.attributionCardId.empty()&&!PlayableCard(Context,E.attributionCardId)) R.Valid=false;
+    if (E.type=="shield_damage" && (E.target==0||E.amount<=0||E.requested<E.amount||E.shieldHP<0||E.maxShieldHP<E.shieldHP||E.shieldOverflowBlocked<0||E.amount+E.shieldOverflowBlocked>E.requested+1e-6)) R.Valid=false;
+    if (E.type=="invisibility_apply" && (E.target==0||E.playId==0||E.until<=E.time||E.until>E.time+10||
+        (Card&&(Card->invisibilityDuration<=0||FMath::Abs(E.until-E.time-Card->invisibilityDuration)>1e-6)))) R.Valid=false;
+    if(E.type=="charge_ready"||E.type=="charge_spent") {
+        if(E.source==0||E.playId==0||!KnownCard(Context,E.cardId))R.Valid=false;
+        if(Context&&Context->Schema>=2&&Card) {
+            const auto* Body=Context->Entities.Find(E.source);
+            if(!Body||Body->cardId!=E.cardId||Body->playId!=E.playId||Body->team!=E.team||
+               Body->parentEntityId!=E.parentEntityId||Body->attributionCardId!=E.attributionCardId)R.Valid=false;
+            if(Card->chargeDamage<=0)R.Valid=false;
+            if(E.type=="charge_ready"&&(E.requested<=Card->chargeMoveSeconds||E.requested>MaxTime||
+                FMath::Abs(E.amount-(Card->chargedMoveSpeed>0?Card->chargedMoveSpeed:Card->moveSpeed))>1e-6))R.Valid=false;
+            if(E.type=="charge_spent"&&(E.target==0||FMath::Abs(E.amount-Card->chargeDamage)>1e-6))R.Valid=false;
+        }
+    }
     return R.Valid && !E.type.empty() && E.sequence > 0 && E.time >= 0 && E.time <= MaxTime &&
-           (E.cardId.empty() || E.type == "ai_decision" || rift::FindCard(E.cardId));
+           (E.cardId.empty() || E.type == "ai_decision" || KnownCard(Context,E.cardId));
 }
 FString SafeReplayPath(const FString &Name) {
     return FPaths::Combine(URiftProfileSubsystem::SaveRoot(), TEXT("Replays"),
@@ -455,6 +677,15 @@ TSharedRef<FJsonObject> URiftReplaySubsystem::SnapshotJSON(const rift::Snapshot 
         for (const auto &Pair : State.telemetry[I])
             Metrics->SetObjectField(FS(Pair.first), Telemetry(Pair.second));
         T->SetObjectField(TEXT("telemetry"), Metrics);
+        TArray<TSharedPtr<FJsonValue>> BodyMetrics;
+        for (const auto& Pair:State.entityTelemetry[I]) {
+            const auto& Body=Pair.second;auto B=MakeShared<FJsonObject>();
+            B->SetNumberField(TEXT("id"),double(Body.id));B->SetNumberField(TEXT("parentEntityId"),double(Body.parentEntityId));
+            B->SetNumberField(TEXT("playId"),double(Body.playId));B->SetStringField(TEXT("cardId"),FS(Body.cardId));
+            B->SetStringField(TEXT("attributionCardId"),FS(Body.attributionCardId));B->SetObjectField(TEXT("observed"),Telemetry(Body.observed));
+            BodyMetrics.Add(MakeShared<FJsonValueObject>(B));
+        }
+        T->SetArrayField(TEXT("entityTelemetry"),BodyMetrics);
         Teams.Add(MakeShared<FJsonValueObject>(T));
     }
     O->SetArrayField(TEXT("teams"), Teams);
@@ -462,6 +693,8 @@ TSharedRef<FJsonObject> URiftReplaySubsystem::SnapshotJSON(const rift::Snapshot 
     for (const auto &E : State.entities) {
         auto R = MakeShared<FJsonObject>();
         R->SetStringField(TEXT("cardId"), FS(E.cardId));
+        R->SetStringField(TEXT("attributionCardId"),FS(E.attributionCardId));
+        R->SetStringField(TEXT("invisibilityCardId"),FS(E.invisibilityCardId));
         Point(R, TEXT("position"), E.position);
         Point(R, TEXT("facing"), E.facing);
         Point(R, TEXT("pathTarget"), E.pathTarget);
@@ -559,9 +792,9 @@ TSharedRef<FJsonObject> URiftReplaySubsystem::SnapshotJSON(const rift::Snapshot 
     O->SetArrayField(TEXT("hazards"), Hazards);
     return O;
 }
-bool URiftReplaySubsystem::SnapshotFromJSON(const TSharedPtr<FJsonObject> &O, rift::Snapshot &State) {
+static bool ReadSnapshot(const TSharedPtr<FJsonObject> &O, rift::Snapshot &State,const FRiftReplayBalanceContext* Context=nullptr) {
     rift::Snapshot Parsed;
-    Reader R(O);
+    Reader R(O,Context);
     uint64 EventSequence = 0;
     R.Number(TEXT("eventSequence"), EventSequence, 0, 1e12);
     R.Number(TEXT("time"), Parsed.elapsed, 0, MaxTime, true);
@@ -576,7 +809,7 @@ bool URiftReplaySubsystem::SnapshotFromJSON(const TSharedPtr<FJsonObject> &O, ri
     if (!R.List(TEXT("teams"), Teams, 2, true) || Teams->Num() != 2)
         return false;
     for (int32 I = 0; I < 2; ++I) {
-        Reader T(Obj((*Teams)[I]));
+        Reader T(Obj((*Teams)[I]),Context);
         T.Number(TEXT("aether"), Parsed.aether[I], 0, 10, true);
         T.Number(TEXT("spent"), Parsed.spent[I], 0, 1e9);
         T.Number(TEXT("leaked"), Parsed.leaked[I], 0, 1e9);
@@ -589,7 +822,7 @@ bool URiftReplaySubsystem::SnapshotFromJSON(const TSharedPtr<FJsonObject> &O, ri
             std::copy(Hand.begin(), Hand.end(), Parsed.hands[I].begin());
         std::vector<std::string> Cycle = Hand;
         Cycle.insert(Cycle.end(), Parsed.queues[I].begin(), Parsed.queues[I].end());
-        if (!rift::ValidateDeck(Parsed.decks[I]) || !rift::ValidateDeck(Cycle))
+        if (!RecordedDeck(Context,Parsed.decks[I]) || !RecordedDeck(Context,Cycle))
             T.Valid = false;
         auto DeckIds = Parsed.decks[I];
         std::sort(DeckIds.begin(), DeckIds.end());
@@ -612,27 +845,43 @@ bool URiftReplaySubsystem::SnapshotFromJSON(const TSharedPtr<FJsonObject> &O, ri
         T.CardList(TEXT("observedCycle"), AI.observedCycle, -1, 12);
         if (T.O && T.O->HasField(TEXT("telemetry"))) {
             const TSharedPtr<FJsonObject> *Metrics = nullptr;
-            if (!T.O->TryGetObjectField(TEXT("telemetry"), Metrics) || (*Metrics)->Values.Num() > int32(rift::Cards().size()))
+            if (!T.O->TryGetObjectField(TEXT("telemetry"), Metrics) || (*Metrics)->Values.Num() > 512)
                 T.Valid = false;
             else
                 for (const auto &Pair : (*Metrics)->Values) {
                     rift::CardTelemetry Tele;
-                    if (!rift::FindCard(TCHAR_TO_UTF8(*Pair.Key)) || !ReadTelemetry(Obj(Pair.Value), Tele))
+                    if (!KnownCard(Context,TCHAR_TO_UTF8(*Pair.Key)) || !ReadTelemetry(Obj(Pair.Value), Tele))
                         T.Valid = false;
                     else
                         Parsed.telemetry[I].emplace(TCHAR_TO_UTF8(*Pair.Key), Tele);
                 }
         }
+        const TArray<TSharedPtr<FJsonValue>>* Bodies=nullptr;
+        if(T.List(TEXT("entityTelemetry"),Bodies,50000,Context&&Context->Schema>=2)) for(const auto& Value:*Bodies) {
+            rift::EntityTelemetry Body;Reader B(Obj(Value),Context);
+            B.Number(TEXT("id"),Body.id,1,1e12,true);B.Number(TEXT("parentEntityId"),Body.parentEntityId,0,1e12,true);
+            B.Number(TEXT("playId"),Body.playId,1,1e12,true);B.Text(TEXT("cardId"),Body.cardId,true);
+            B.Text(TEXT("attributionCardId"),Body.attributionCardId,true);
+            const TSharedPtr<FJsonObject>* Observed=nullptr;
+            if(!B.O||!B.O->TryGetObjectField(TEXT("observed"),Observed)||!ReadTelemetry(*Observed,Body.observed))B.Valid=false;
+            if(!KnownCard(Context,Body.cardId)||!PlayableCard(Context,Body.attributionCardId)||
+               Body.id==Body.parentEntityId||Parsed.entityTelemetry[I].count(Body.id)||
+               Body.observed.plays||Body.observed.spent||Body.observed.spawns!=1||
+               (!Body.parentEntityId&&Body.attributionCardId!=Body.cardId))B.Valid=false;
+            T.Valid &= B.Valid;Parsed.entityTelemetry[I].emplace(Body.id,std::move(Body));
+        }
         R.Valid &= T.Valid;
     }
     const TArray<TSharedPtr<FJsonValue>> *A = nullptr;
-    TSet<uint64> EntityIds;
+    TSet<uint64> EntityIds,EntityPlayIdsCaptured;
     if (!R.List(TEXT("entities"), A, 5000, true))
         return false;
     for (const auto &V : *A) {
         rift::Entity E;
         Reader T(Obj(V));
         T.Text(TEXT("cardId"), E.cardId, true);
+        T.Text(TEXT("attributionCardId"),E.attributionCardId);
+        T.Text(TEXT("invisibilityCardId"),E.invisibilityCardId);
         T.Vec(TEXT("position"), E.position, true);
         T.Vec(TEXT("facing"), E.facing);
         T.Vec(TEXT("pathTarget"), E.pathTarget);
@@ -640,6 +889,7 @@ bool URiftReplaySubsystem::SnapshotFromJSON(const TSharedPtr<FJsonObject> &O, ri
 #define FIELD(K) T.Number(TEXT(#K), E.K);
         ENTITY_NUMBERS(FIELD)
 #undef FIELD
+        if(T.O&&T.O->HasField(TEXT("playId")))EntityPlayIdsCaptured.Add(E.id);
         T.Number(TEXT("team"), E.team, 0, 1, true);
         T.Number(TEXT("kind"), E.kind, 0, 3, true);
         T.Flag(TEXT("active"), E.active);
@@ -656,8 +906,8 @@ bool URiftReplaySubsystem::SnapshotFromJSON(const TSharedPtr<FJsonObject> &O, ri
             SR.Number(TEXT("pct"),Slow.pct,0,1,true);SR.Number(TEXT("born"),Slow.born,0,MaxTime,true);
             SR.Number(TEXT("until"),Slow.until,0,MaxTime+10,true);
             const FString CardId=FS(Slow.cardId);
-            const auto* SlowCard=rift::FindCard(Slow.cardId);
-            if (!SlowCard||SlowCards.Contains(CardId)||Slow.until<Slow.born||
+            const auto* SlowCard=RecordedCard(Context,Slow.cardId);
+            if (!KnownCard(Context,Slow.cardId)||SlowCards.Contains(CardId)||Slow.pct<=0||Slow.until<=Slow.born||
                 (SlowCard&&(SlowCard->slowPct<=0||FMath::Abs(Slow.pct-SlowCard->slowPct)>1e-6||
                     FMath::Abs(Slow.until-Slow.born-SlowCard->slowDuration)>1e-6))) SR.Valid=false;
             SlowCards.Add(CardId);T.Valid &= SR.Valid;E.slows.push_back(Slow);
@@ -675,12 +925,41 @@ bool URiftReplaySubsystem::SnapshotFromJSON(const TSharedPtr<FJsonObject> &O, ri
             }
         if (E.id == 0 || EntityIds.Contains(E.id) || E.hp < 0 || E.maxHp <= 0 || E.hp > E.maxHp + .001 ||
             E.radius < 0 || E.slowPct < 0 || E.slowPct > 1 || E.memberCount < 1 || E.memberCount > 100 ||
-            (!E.cardId.empty() && !rift::FindCard(E.cardId)) ||
+            E.shieldHP<0||E.maxShieldHP<0||E.shieldHP>E.maxShieldHP+.001||E.shieldBrokenAt < -1||
+            E.shieldBrokenAt>Parsed.elapsed+1e-6||E.invisibleUntil<0||E.invisibleUntil>MaxTime+10||
+            (!E.attributionCardId.empty()&&!PlayableCard(Context,E.attributionCardId))||
+            (!E.invisibilityCardId.empty()&&!SpellCard(Context,E.invisibilityCardId))||
+            (E.parentEntityId&&(E.parentEntityId==E.id||E.attributionCardId.empty()))||
+            (!E.cardId.empty() && !KnownCard(Context,E.cardId)) ||
             (E.cardId.empty() && E.kind < rift::EntityKind::Guard))
             T.Valid = false;
         EntityIds.Add(E.id);
         R.Valid &= T.Valid;
         Parsed.entities.push_back(E);
+    }
+    for(int Team=0;Team<2;++Team) for(const auto& Entry:Parsed.entityTelemetry[Team]) {
+        const auto& Body=Entry.second;
+        if(Parsed.entityTelemetry[1-Team].count(Body.id))R.Valid=false;
+        if(Body.parentEntityId) {
+            const auto Parent=Parsed.entityTelemetry[Team].find(Body.parentEntityId);
+            if(Parent==Parsed.entityTelemetry[Team].end()||Parent->second.parentEntityId||Parent->second.playId!=Body.playId||
+               Parent->second.attributionCardId!=Body.attributionCardId)R.Valid=false;
+            const auto* Definition=RecordedCard(Context,Body.attributionCardId);
+            if(Context&&Context->Schema>=2&&(!Definition||Definition->deathSpawnId!=Body.cardId))R.Valid=false;
+        }
+    }
+    for(auto& Entity:Parsed.entities) {
+        const auto Found=Parsed.entityTelemetry[int(Entity.team)].find(Entity.id);
+        // Older entity records may omit playId. A persistent body observation is
+        // still an authoritative captured identity; use it rather than comparing
+        // its recorded cast against an invented zero or today's definitions.
+        if(Found!=Parsed.entityTelemetry[int(Entity.team)].end()&&!EntityPlayIdsCaptured.Contains(Entity.id)) {
+            Entity.playId=Found->second.playId;
+            EntityPlayIdsCaptured.Add(Entity.id);
+        }
+        if(Found!=Parsed.entityTelemetry[int(Entity.team)].end()&&
+           (Found->second.cardId!=Entity.cardId||Found->second.parentEntityId!=Entity.parentEntityId||
+            Found->second.playId!=Entity.playId||Found->second.attributionCardId!=Entity.attributionCardId))R.Valid=false;
     }
     if (R.List(TEXT("projectiles"), A, 10000))
         for (const auto &V : *A) {
@@ -699,7 +978,7 @@ bool URiftReplaySubsystem::SnapshotFromJSON(const TSharedPtr<FJsonObject> &O, ri
             FIELD(duration)
 #undef FIELD
                 T.Number(TEXT("team"), P.team, 0, 1, true);
-            if (!P.cardId.empty() && !rift::FindCard(P.cardId))
+            if ((!P.cardId.empty() && !KnownCard(Context,P.cardId)) || P.id==0||P.source==0||P.target==0||P.duration<=0||P.remaining>P.duration+1e-6)
                 T.Valid = false;
             R.Valid &= T.Valid;
             Parsed.projectiles.push_back(P);
@@ -715,8 +994,13 @@ bool URiftReplaySubsystem::SnapshotFromJSON(const TSharedPtr<FJsonObject> &O, ri
         W.Number(TEXT("radius"),Wave.radius,0,100,true);W.Number(TEXT("speed"),Wave.speed,0,100,true);
         W.Number(TEXT("progress"),Wave.progress,0,100,true);W.Number(TEXT("born"),Wave.born,0,MaxTime,true);
         W.Number(TEXT("expires"),Wave.expires,0,MaxTime+10,true);
-        const auto* Card=rift::FindCard(Wave.cardId);
-        if (!Card||Card->shockwaveSpeed<=0||WaveIds.Contains(Wave.id)||Wave.speed<=0||Wave.radius<=0||
+        const auto* Card=RecordedCard(Context,Wave.cardId);
+        // The source may have died and been removed while its wave travels.
+        // A source that is still recorded must describe this same deployment.
+        const auto Source=std::find_if(Parsed.entities.begin(),Parsed.entities.end(),[&](const auto& Entity){return Entity.id==Wave.source;});
+        if(Source!=Parsed.entities.end()&&(Source->cardId!=Wave.cardId||Source->team!=Wave.team||
+            (EntityPlayIdsCaptured.Contains(Source->id)&&Source->playId!=Wave.playId)))W.Valid=false;
+        if (!KnownCard(Context,Wave.cardId)||(Card&&Card->shockwaveSpeed<=0)||WaveIds.Contains(Wave.id)||Wave.speed<=0||Wave.radius<=0||
             Wave.progress>Wave.radius+1e-7||Wave.born>Parsed.elapsed+1e-7||Wave.expires<Parsed.elapsed-1e-7||
             FMath::Abs(Wave.expires-Wave.born-Wave.radius/FMath::Max(.001,Wave.speed))>1e-6||
             FMath::Abs(Wave.progress-FMath::Clamp((Parsed.elapsed-Wave.born)*Wave.speed,0.,Wave.radius))>1e-6||
@@ -742,9 +1026,9 @@ bool URiftReplaySubsystem::SnapshotFromJSON(const TSharedPtr<FJsonObject> &O, ri
             T.Text(TEXT("cardId"), C.cardId, true);
             T.Vec(TEXT("position"), C.position, true);
             T.Number(TEXT("born"), C.born, 0, MaxTime, true);
-            T.Number(TEXT("impactAt"), C.impactAt, 0, MaxTime + 1, true);
-            const auto *Card = rift::FindCard(C.cardId);
-            if (!Card || !Card->spell || Card->castDelay <= 0 || CastIds.Contains(C.playId) ||
+            T.Number(TEXT("impactAt"), C.impactAt, 0, MaxTime + 10, true);
+            const auto *Card = RecordedCard(Context,C.cardId);
+            if (!SpellCard(Context,C.cardId) || (Card&&Card->castDelay<=0) || CastIds.Contains(C.playId) ||
                 C.born > Parsed.elapsed + 1e-7 || C.impactAt < Parsed.elapsed - 1e-7 ||
                 C.impactAt <= C.born ||
                 (Card && FMath::Abs(C.impactAt - C.born - Card->castDelay) > 1e-6) ||
@@ -769,7 +1053,9 @@ bool URiftReplaySubsystem::SnapshotFromJSON(const TSharedPtr<FJsonObject> &O, ri
             FIELD(ticks)
 #undef FIELD
             T.Number(TEXT("team"), H.team, 0, 1, true);
-            if (!rift::FindCard(H.cardId))
+            const auto* Card=RecordedCard(Context,H.cardId);
+            if (!KnownCard(Context,H.cardId)||H.playId==0||H.radius<=0||H.radius>100||H.born>Parsed.elapsed+1e-7||H.expires<H.born||H.expires>MaxTime+MaxTime||H.nextTick<H.born||H.nextTick>H.expires+MaxTime||
+                (Card&&(Card->dotDamage<=0||FMath::Abs(H.radius-Card->spellRadius)>1e-6||FMath::Abs(H.expires-H.born-Card->dotDuration)>1e-6||FMath::Abs(H.nextTick-H.born-(H.ticks+1)*Card->dotInterval)>1e-6)))
                 T.Valid = false;
             R.Valid &= T.Valid;
             Parsed.hazards.push_back(H);
@@ -779,8 +1065,18 @@ bool URiftReplaySubsystem::SnapshotFromJSON(const TSharedPtr<FJsonObject> &O, ri
     State = MoveTemp(Parsed);
     return true;
 }
+bool URiftReplaySubsystem::SnapshotFromJSON(const TSharedPtr<FJsonObject>& O,rift::Snapshot& State) {
+    return ReadSnapshot(O,State);
+}
 bool URiftReplaySubsystem::ValidateRecording(const TSharedPtr<FJsonObject> &O, FString &Error) {
-    Reader R(O);
+    int64 MinimumBytes=0;
+    if (!MinimumJSONObjectBytes(O,MinimumBytes,DecodedLimit)) {
+        Error=ReplaySizeError;
+        return false;
+    }
+    FRiftReplayBalanceContext Context;
+    if (!ReadBalance(O,Context)) {Error=TEXT("Replay captured balance definitions are invalid.");return false;}
+    Reader R(O,&Context);
     int32 Version = 0;
     double Duration = 0;
     std::string Model;
@@ -797,11 +1093,17 @@ bool URiftReplaySubsystem::ValidateRecording(const TSharedPtr<FJsonObject> &O, F
     double Previous = -1;
     for (const auto &V : *States) {
         rift::Snapshot State;
-        if (!SnapshotFromJSON(Obj(V), State) || State.elapsed < Previous || State.elapsed > Duration + .001) {
+        if (!ReadSnapshot(Obj(V), State,&Context) || State.elapsed < Previous || State.elapsed > Duration + .001) {
             Error = TEXT("Replay contains invalid or out-of-order snapshots.");
             return false;
         }
         Previous = State.elapsed;
+        for(const auto& Entity:State.entities)Context.Entities.Add(Entity.id,Entity);
+        for(int Team=0;Team<2;++Team)for(const auto& Entry:State.entityTelemetry[Team])if(!Context.Entities.Contains(Entry.first)) {
+            const auto& Body=Entry.second;rift::Entity Identity;Identity.id=Body.id;Identity.team=static_cast<rift::Team>(Team);
+            Identity.cardId=Body.cardId;Identity.playId=Body.playId;Identity.parentEntityId=Body.parentEntityId;
+            Identity.attributionCardId=Body.attributionCardId;Context.Entities.Add(Identity.id,std::move(Identity));
+        }
     }
     if (FMath::Abs(N(Obj((*States)[0]), TEXT("time"))) > 1e-7) {
         Error = TEXT("Replay is missing its initial snapshot.");
@@ -815,7 +1117,7 @@ bool URiftReplaySubsystem::ValidateRecording(const TSharedPtr<FJsonObject> &O, F
     Previous = -1;
     for (const auto &V : *Events) {
         rift::Event E;
-        if (!ReadEvent(Obj(V), E) || E.time < Previous || E.time > Duration + .001 ||
+        if (!ReadEvent(Obj(V), E,&Context) || E.time < Previous || E.time > Duration + .001 ||
             E.sequence <= Sequence) {
             Error = TEXT("Replay contains invalid or out-of-order events.");
             return false;
@@ -843,7 +1145,7 @@ bool URiftReplaySubsystem::ValidateRecording(const TSharedPtr<FJsonObject> &O, F
     const TSharedPtr<FJsonObject> *Result = nullptr;
     rift::Snapshot Final;
     if (O->HasField(TEXT("result")) &&
-        (!O->TryGetObjectField(TEXT("result"), Result) || !SnapshotFromJSON(*Result, Final))) {
+        (!O->TryGetObjectField(TEXT("result"), Result) || !ReadSnapshot(*Result, Final,&Context))) {
         Error = TEXT("Replay analysis is invalid.");
         return false;
     }
@@ -855,6 +1157,22 @@ bool URiftReplaySubsystem::ValidateRecording(const TSharedPtr<FJsonObject> &O, F
     return true;
 }
 namespace {
+void CaptureRecordedState(FRiftReplayBalanceContext& Context,const rift::Snapshot& State) {
+    for (const auto& Entity:State.entities)
+        if (!Context.Entities.Contains(Entity.id)) Context.Entities.Add(Entity.id,Entity);
+    if(Context.Schema>=2)for(int Team=0;Team<2;++Team)for(const auto& Entry:State.entityTelemetry[Team])if(!Context.Entities.Contains(Entry.first)) {
+        const auto& Body=Entry.second;rift::Entity Identity;Identity.id=Body.id;Identity.team=static_cast<rift::Team>(Team);
+        Identity.cardId=Body.cardId;Identity.playId=Body.playId;Identity.parentEntityId=Body.parentEntityId;
+        Identity.attributionCardId=Body.attributionCardId;Context.Entities.Add(Identity.id,std::move(Identity));
+    }
+    for (const auto& P:State.projectiles) if (!Context.ProjectileIds.Contains(P.id)) {Context.ProjectileIds.Add(P.id);Context.Projectiles.Add(P);}
+    for (const auto& Wave:State.shockwaves) if (!Context.WaveIds.Contains(Wave.id)) {Context.WaveIds.Add(Wave.id);Context.Waves.Add(Wave);}
+    for (const auto& H:State.hazards) if (!Context.Hazards.Contains(H.playId)) {
+        Context.Hazards.Add(H.playId,H);
+        const double Interval=(H.nextTick-H.born)/(H.ticks+1);
+        if (Interval>0&&FMath::IsFinite(Interval)) Context.HazardIntervals.Add(H.playId,Interval);
+    }
+}
 rift::Entity *EntityById(rift::Snapshot &State, rift::EntityId Id) {
     for (auto &E : State.entities)
         if (E.id == Id)
@@ -875,7 +1193,7 @@ void RefreshReplaySlow(rift::Entity& Entity,double Time)
         Entity.slowPct=Dominant->pct;Entity.slowUntil=Dominant->until;Entity.slowSource=Dominant->playId;
     }
 }
-void AdvanceSnapshot(rift::Snapshot &State, double To) {
+void AdvanceSnapshot(rift::Snapshot &State, double To,FRiftReplayBalanceContext* Context) {
     const double Dt = FMath::Max(0.0, To - State.elapsed);
     if (State.phase == rift::Phase::Regulation || State.phase == rift::Phase::Overtime) {
         const double Generated = rift::Match::AetherGenerated(State.elapsed, FMath::Min(To, 300.0));
@@ -885,9 +1203,17 @@ void AdvanceSnapshot(rift::Snapshot &State, double To) {
             State.leaked[I] += Generated - Added;
         }
         for (auto &E : State.entities)
-            if (!E.dead && E.kind == rift::EntityKind::Building)
-                if (const auto* Card=rift::FindCard(E.cardId);Card&&Card->lifetime>0)
-                    E.hp = FMath::Max(0.0, E.hp - E.maxHp/Card->lifetime * Dt);
+            if (!E.dead && E.kind == rift::EntityKind::Building) {
+                if (Context&&Context->HasCapturedDefinitions) {
+                    const auto Decay=Context->BuildingDecayRates.find(E.cardId);
+                    if (Decay!=Context->BuildingDecayRates.end()) E.hp=FMath::Max(0.,E.hp-Decay->second*Dt);
+                    const auto* Definition=RecordedCard(Context,E.cardId);
+                    if(Definition&&Context->Schema>=2&&Definition->hardExpiry&&Definition->lifetime>0&&To+1e-9>=E.born+Definition->lifetime)E.hp=0;
+                } else if (Dt>0) MissingMechanic(Context,TEXT("Legacy building HP decay between snapshots is unavailable; recorded HP and damage events remain authoritative."));
+                if(!E.cardId.empty())State.telemetry[int(E.team)][E.attributionCardId.empty()?E.cardId:E.attributionCardId].buildingLifetime+=Dt;
+                auto Body=State.entityTelemetry[int(E.team)].find(E.id);
+                if(Body!=State.entityTelemetry[int(E.team)].end())Body->second.observed.buildingLifetime+=Dt;
+            }
         State.timeRemaining = FMath::Max(0.0, State.timeRemaining - Dt);
     } else if (State.phase == rift::Phase::Tiebreaker) {
         const double Drain = 180 * (FMath::Max(0.0, State.phaseElapsed + Dt - .85) -
@@ -910,33 +1236,48 @@ void AdvanceSnapshot(rift::Snapshot &State, double To) {
     State.shockwaves.erase(std::remove_if(State.shockwaves.begin(),State.shockwaves.end(),
         [&](const auto& Wave){return To>=Wave.expires;}),State.shockwaves.end());
     State.elapsed = To;
-    for (auto& Entity:State.entities) if (!Entity.slows.empty()) RefreshReplaySlow(Entity,To);
+    for (auto& Entity:State.entities) {
+        if (!Entity.slows.empty()) RefreshReplaySlow(Entity,To);
+        if(Entity.invisibleUntil>0&&To+1e-9>=Entity.invisibleUntil)Entity.invisibleUntil=0;
+    }
 }
-void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E) {
+void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E,FRiftReplayBalanceContext* Context) {
     const int Team = int(E.team);
     auto *Target = EntityById(State, E.target);
     auto *Source = EntityById(State, E.source);
-    const auto *Card = rift::FindCard(E.cardId);
+    const auto *Card = RecordedCard(Context,E.cardId);
+    auto SourceRecord=State.entityTelemetry[Team].find(E.source);
+    const std::string Credit=!E.attributionCardId.empty()?E.attributionCardId:
+        SourceRecord!=State.entityTelemetry[Team].end()?SourceRecord->second.attributionCardId:E.cardId;
+    auto VictimCredit=[](const rift::Entity& Body)->const std::string& {return Body.attributionCardId.empty()?Body.cardId:Body.attributionCardId;};
     auto AddSpellHazard = [&]() {
-        if (!Card || Card->dotDamage <= 0 ||
-            std::any_of(State.hazards.begin(), State.hazards.end(),
+        if (!SpellCard(Context,E.cardId)) return;
+        if (std::any_of(State.hazards.begin(), State.hazards.end(),
                         [&](const auto &H) { return H.playId == E.playId; }))
             return;
         rift::Hazard H;
+        if (Card) {
+            if (Card->dotDamage<=0) return;
+            H.radius=Card->spellRadius;H.nextTick=E.time+Card->dotInterval;H.expires=E.time+Card->dotDuration;
+        } else if (Context) {
+            const auto* Captured=Context->Hazards.Find(E.playId);
+            const auto* Interval=Context->HazardIntervals.Find(E.playId);
+            if (!Captured||!Interval) {
+                MissingMechanic(Context,TEXT("Legacy spell-zone geometry or tick interval absent from snapshots; unavailable zones are omitted between snapshots."));return;
+            }
+            H.radius=Captured->radius;H.nextTick=E.time+*Interval;H.expires=Captured->expires;
+        } else return;
         H.playId = E.playId;
         H.team = E.team;
         H.cardId = E.cardId;
         H.position = E.position;
-        H.radius = Card->spellRadius;
         H.born = E.time;
-        H.nextTick = E.time + Card->dotInterval;
-        H.expires = E.time + Card->dotDuration;
         State.hazards.push_back(H);
     };
     if (E.type == "card_play") {
-        if (!E.sandbox && Card) {
+        if (!E.sandbox) {
             State.aether[Team] = E.aetherAfter;
-            State.spent[Team] += Card->cost;
+            State.spent[Team] += E.amount;
             State.hands[Team] = E.handAfter;
             if (!State.queues[Team].empty()) {
                 State.queues[Team].erase(State.queues[Team].begin());
@@ -944,7 +1285,7 @@ void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E) {
             }
             auto &T = State.telemetry[Team][E.cardId];
             ++T.plays;
-            T.spent += Card->cost;
+            T.spent += E.amount;
             T.placementX += E.position.x;
             T.placementZ += E.position.z;
             if (E.openingHand)
@@ -957,7 +1298,7 @@ void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E) {
         // Legacy Meteor recordings created their zone at the instant card play.
         if (E.until <= E.time)
             AddSpellHazard();
-    } else if (E.type == "spell_cast" && Card &&
+    } else if (E.type == "spell_cast" &&
                std::none_of(State.spellCasts.begin(), State.spellCasts.end(),
                             [&](const auto &C) { return C.playId == E.playId; })) {
         rift::SpellCast C;
@@ -973,32 +1314,48 @@ void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E) {
                                             [&](const auto &C) { return C.playId == E.playId; }),
                               State.spellCasts.end());
         AddSpellHazard();
-    } else if (E.type == "entity_spawn" && Card && !Source) {
+    } else if (E.type == "entity_spawn" && !Source) {
         rift::Entity R;
+        if (Card) {
+            R.kind=Card->building?rift::EntityKind::Building:rift::EntityKind::Troop;
+            R.flying=Card->flying;R.memberCount=E.parentEntityId&&E.count>0?E.count:Card->count;R.radius=Card->collisionRadius;
+            if(Context&&Context->Schema>=2)R.cooldown=Card->initialAttackCooldown;
+        } else if (Context) {
+            const auto* Captured=Context->Entities.Find(E.source);
+            if (!Captured||Captured->cardId!=E.cardId||Captured->team!=E.team||Captured->playId!=E.playId) {
+                MissingMechanic(Context,TEXT("Legacy spawned entity collision or mobility absent from snapshots; unavailable bodies are omitted between snapshots."));return;
+            }
+            R.kind=Captured->kind;R.flying=Captured->flying;R.memberCount=Captured->memberCount;R.radius=Captured->radius;
+        } else return;
         R.id = E.source;
         R.team = E.team;
-        R.kind = Card->building ? rift::EntityKind::Building : rift::EntityKind::Troop;
         R.cardId = E.cardId;
         R.playId = E.playId;
+        R.parentEntityId=E.parentEntityId;R.attributionCardId=E.attributionCardId;
+        if(Context&&Context->Schema>=2&&R.attributionCardId.empty())R.attributionCardId=R.cardId;
         R.position = E.position;
         R.facing = {0, E.team == rift::Team::Player ? -1. : 1.};
         R.hp = E.hp;
         R.maxHp = E.maxHp;
+        R.shieldHP=E.shieldHP;R.maxShieldHP=E.maxShieldHP;
         R.born = E.time;
-        R.flying = Card->flying;
-        R.memberCount = Card->count;
-        R.radius = Card->building ? .9 : Card->flying ? .43 : Card->count > 1 ? .36 : Card->scale * .43;
         R.lane = E.position.x < 0 ? -1 : 1;
         State.entities.push_back(R);
-        ++State.telemetry[Team][E.cardId].spawns;
+        auto& Aggregate=State.telemetry[Team][VictimCredit(R)];
+        if(R.parentEntityId)++Aggregate.childSpawns;else ++Aggregate.spawns;
+        if(Card&&Card->building)Aggregate.buildingCapacity+=Card->lifetime;
+        if(Context&&Context->Schema>=2) {
+            rift::EntityTelemetry Record;Record.id=R.id;Record.parentEntityId=R.parentEntityId;Record.playId=R.playId;
+            Record.cardId=R.cardId;Record.attributionCardId=R.attributionCardId;Record.observed.spawns=1;
+            State.entityTelemetry[Team].emplace(R.id,std::move(Record));
+        }
     } else if (E.type == "damage" && Target) {
         Target->hp = E.hp;
         if (E.damageKind=="shockwave") for (auto& Wave:State.shockwaves)
             if (Wave.source==E.source&&Wave.playId==E.playId&&Wave.cardId==E.cardId&&
                 std::find(Wave.hitTargets.begin(),Wave.hitTargets.end(),E.target)==Wave.hitTargets.end())
                 Wave.hitTargets.push_back(E.target);
-        if (Card) {
-            auto &T = State.telemetry[Team][E.cardId];
+        auto CreditDamage=[&](rift::CardTelemetry& T) {
             if (E.targetKind >= rift::EntityKind::Guard)
                 T.towerDamage += E.amount;
             else if (E.targetKind == rift::EntityKind::Building)
@@ -1012,10 +1369,34 @@ void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E) {
                 T.dotDamage += E.amount;
             if (E.damageKind == "aura")
                 T.auraDamage += E.amount;
+        };
+        if(!Credit.empty())CreditDamage(State.telemetry[Team][Credit]);
+        if(SourceRecord!=State.entityTelemetry[Team].end())CreditDamage(SourceRecord->second.observed);
+        if (!Target->cardId.empty()) {
+            auto Taken=[&](rift::CardTelemetry& T){T.damageTaken+=E.amount;if(Target->kind==rift::EntityKind::Building)T.prevented+=E.amount;};
+            Taken(State.telemetry[int(Target->team)][VictimCredit(*Target)]);
+            auto Record=State.entityTelemetry[int(Target->team)].find(Target->id);
+            if(Record!=State.entityTelemetry[int(Target->team)].end())Taken(Record->second.observed);
         }
-        if (!Target->cardId.empty())
-            State.telemetry[int(Target->team)][Target->cardId].damageTaken += E.amount;
+    } else if(E.type=="shield_damage"&&Target) {
+        Target->shieldHP=E.shieldHP;Target->maxShieldHP=E.maxShieldHP;
+        if(E.shieldHP<=1e-9)Target->shieldBrokenAt=E.time;
+        auto Taken=[&](rift::CardTelemetry& T){T.shieldDamageTaken+=E.amount;T.shieldAbsorbed+=E.amount+E.shieldOverflowBlocked;T.overflowPrevented+=E.shieldOverflowBlocked;};
+        if(!Target->cardId.empty())Taken(State.telemetry[int(Target->team)][VictimCredit(*Target)]);
+        auto Record=State.entityTelemetry[int(Target->team)].find(Target->id);
+        if(Record!=State.entityTelemetry[int(Target->team)].end())Taken(Record->second.observed);
+        if(!Credit.empty())State.telemetry[Team][Credit].shieldDamage+=E.amount;
+        if(SourceRecord!=State.entityTelemetry[Team].end())SourceRecord->second.observed.shieldDamage+=E.amount;
     } else if ((E.type == "death" || E.type == "tower_destroy") && Target) {
+        if(E.type=="death"&&!Target->dead&&!Target->cardId.empty()) {
+            auto& Victim=State.telemetry[int(Target->team)][VictimCredit(*Target)];
+            if(Target->parentEntityId)++Victim.childDeaths;else ++Victim.deaths;
+            Victim.lifetime+=FMath::Max(0.,E.time-Target->born);
+            auto Record=State.entityTelemetry[int(Target->team)].find(Target->id);
+            if(Record!=State.entityTelemetry[int(Target->team)].end()) {++Record->second.observed.deaths;Record->second.observed.lifetime+=FMath::Max(0.,E.time-Target->born);}
+            if(!Credit.empty()) {++State.telemetry[Team][Credit].kills;State.telemetry[Team][Credit].killValue+=E.targetCost;}
+            if(SourceRecord!=State.entityTelemetry[Team].end()) {++SourceRecord->second.observed.kills;SourceRecord->second.observed.killValue+=E.targetCost;}
+        }
         Target->dead = true;
         Target->hp = 0;
         Target->died = E.time;
@@ -1047,14 +1428,34 @@ void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E) {
     } else if (E.type == "stun" && Target) {
         Target->stunUntil = E.until;
         Target->stunSource = E.playId;
+    } else if(E.type=="invisibility_apply"&&Target) {
+        Target->invisibleUntil=E.until;Target->invisibilitySource=E.source;
+        Target->invisibilityPlayId=E.playId;Target->invisibilityCardId=E.cardId;
+    } else if(E.type=="invisibility_expire"&&Target) {
+        if(Target->invisibilityPlayId==E.playId)Target->invisibleUntil=0;
+    } else if(E.type=="target_drop"&&Source) {
+        Source->target=Source->hardLock=Source->forcedTarget=0;Source->forcedUntil=0;
+        Source->path.clear();Source->repathClock=Source->scanClock=0;
+    } else if(E.type=="charge_ready"&&Source) {
+        Source->charged=true;Source->chargeTime=E.requested;
+    } else if(E.type=="charge_spent"&&Source) {
+        Source->charged=false;Source->chargeTime=0;
     } else if ((E.type == "target_pull" || E.type == "building_pull") && Target) {
         Target->target = E.source;
+        Target->hardLock = 0;
         if (E.type == "target_pull") {
             Target->forcedTarget = E.source;
             Target->forcedUntil = E.until;
         }
     } else if (E.type == "attack" && Source) {
-        Source->target = Source->hardLock = E.target;
+        Source->target=E.target;
+        const auto* SourceCard=RecordedCard(Context,Source->cardId);
+        const bool CrownTarget=Target&&(Target->kind==rift::EntityKind::Guard||Target->kind==rift::EntityKind::Core);
+        const bool StructureOnly=SourceCard&&rift::TargetMaskFor(*SourceCard)==rift::targets::Structure;
+        Source->hardLock=Source->kind==rift::EntityKind::Troop&&Target&&(CrownTarget||(StructureOnly&&Target->kind==rift::EntityKind::Building))?E.target:0;
+        if (Source->hardLock) Source->forcedTarget=0;
+        if (!SourceCard&&Source->kind==rift::EntityKind::Troop&&Target&&Target->kind==rift::EntityKind::Building)
+            MissingMechanic(Context,TEXT("Legacy structures-only target policy absent from captured definitions; between-snapshot building attacks retain a soft target."));
         if (Target) {
             const double X = Target->position.x - Source->position.x,
                          Z = Target->position.z - Source->position.z, L = FMath::Sqrt(X * X + Z * Z);
@@ -1071,19 +1472,39 @@ void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E) {
         P.cardId = E.cardId;
         P.origin = E.position;
         P.damage = E.amount;
-        P.splash = Card ? Card->splash : 0;
+        if (Card) P.splash=Card->splash;
+        else if (Context) {
+            const auto Found=std::find_if(Context->Projectiles.begin(),Context->Projectiles.end(),[&](const auto& Recorded) {
+                return Recorded.source==E.source&&Recorded.target==E.target&&Recorded.playId==E.playId&&Recorded.cardId==E.cardId&&
+                    FMath::Abs(Recorded.duration-(E.until-E.time))<1e-6;
+            });
+            if (Found!=Context->Projectiles.end()) P.splash=Found->splash;
+            else MissingMechanic(Context,TEXT("Legacy projectile splash absent from snapshots; projectile flight and recorded damage remain authoritative."));
+        }
         P.duration = P.remaining = FMath::Max(0.0, E.until - E.time);
         State.projectiles.push_back(P);
-    } else if (E.type == "shockwave_launch" && Card) {
+    } else if (E.type == "shockwave_launch") {
         rift::Shockwave Wave;Wave.id=E.sequence;Wave.source=E.source;Wave.playId=E.playId;
         Wave.team=E.team;Wave.cardId=E.cardId;Wave.origin=E.position;
-        Wave.radius=Card->splash;Wave.speed=Card->shockwaveSpeed;Wave.born=E.time;Wave.expires=E.until;
+        if (Card) {Wave.radius=Card->splash;Wave.speed=Card->shockwaveSpeed;}
+        else if (Context) {
+            const auto Found=std::find_if(Context->Waves.begin(),Context->Waves.end(),[&](const auto& Recorded) {
+                return Recorded.source==E.source&&Recorded.playId==E.playId&&Recorded.cardId==E.cardId&&FMath::Abs(Recorded.born-E.time)<1e-6;
+            });
+            if (Found==Context->Waves.end()) {MissingMechanic(Context,TEXT("Legacy shockwave radius and speed absent from snapshots; unavailable wave geometry is omitted between snapshots."));return;}
+            Wave.radius=Found->radius;Wave.speed=Found->speed;
+        } else return;
+        Wave.born=E.time;Wave.expires=E.until;
         State.shockwaves.push_back(Wave);
     } else if (E.type == "hazard_tick") {
         for (auto &H : State.hazards)
             if (H.playId == E.playId) {
                 ++H.ticks;
-                H.nextTick += 1;
+                const auto* HazardCard=RecordedCard(Context,H.cardId);
+                const auto* Interval=Context?Context->HazardIntervals.Find(H.playId):nullptr;
+                if (HazardCard) H.nextTick+=HazardCard->dotInterval;
+                else if (Interval) H.nextTick+=*Interval;
+                else MissingMechanic(Context,TEXT("Legacy hazard tick interval absent from captured fields; recorded ticks and damage remain authoritative."));
                 break;
             }
     } else if (E.type == "phase") {
@@ -1097,6 +1518,13 @@ void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E) {
             State.hazards.clear();
         }
     } else if (E.type == "match_end") {
+        for(const auto& Body:State.entities)if(!Body.dead&&!Body.cardId.empty()) {
+            auto& T=State.telemetry[int(Body.team)][VictimCredit(Body)];
+            if(Body.parentEntityId)++T.childSurviving;else ++T.surviving;
+            T.lifetime+=FMath::Max(0.,E.time-Body.born);
+            auto Record=State.entityTelemetry[int(Body.team)].find(Body.id);
+            if(Record!=State.entityTelemetry[int(Body.team)].end()) {++Record->second.observed.surviving;Record->second.observed.lifetime+=FMath::Max(0.,E.time-Body.born);}
+        }
         State.shockwaves.clear();
         State.spellCasts.clear();
         State.phase = rift::Phase::Finished;
@@ -1123,6 +1551,7 @@ void URiftReplaySubsystem::Deinitialize() {
     CompleteWrites(true, false);
     Recording.Reset();
     Loaded.Reset();
+    PlaybackBalance.Reset();
     RecordedEvents.Reset();
     RecordedSamples.Reset();
     PlaybackEvents.Reset();
@@ -1183,8 +1612,11 @@ void URiftReplaySubsystem::BeginRecording(const rift::MatchOptions &Options, boo
     RecordedSamples.Reset();
     LastSample = -1;
     RecordedSequence = 0;
+    RecordedMinimumBytes = 0;
+    RecordingBudgetError.Empty();
     Recording->SetNumberField(TEXT("formatVersion"), 1);
     Recording->SetStringField(TEXT("model"), TEXT("rift-native-1"));
+    Recording->SetObjectField(TEXT("balance"),BalanceJSON());
     Recording->SetStringField(TEXT("id"), FGuid::NewGuid().ToString(EGuidFormats::Digits));
     Recording->SetStringField(TEXT("createdAt"), FDateTime::UtcNow().ToIso8601());
     Recording->SetBoolField(TEXT("training"), Training);
@@ -1201,29 +1633,76 @@ void URiftReplaySubsystem::BeginRecording(const rift::MatchOptions &Options, boo
     }
     Recording->SetArrayField(TEXT("decks"), Decks);
 }
+void URiftReplaySubsystem::RejectRecording(const FString& Error) {
+    RecordingBudgetError=Error;
+    // Reject the whole oversized archive. Never publish a truncated replay; the
+    // live match and its analytical counters remain owned by the simulation.
+    RecordedEvents.Reset();
+    RecordedSamples.Reset();
+}
+bool URiftReplaySubsystem::AccountRecordingObject(const TSharedPtr<FJsonObject>& Object) {
+    int64 Bytes=RecordedMinimumBytes;
+    if (!MinimumJSONObjectBytes(Object,Bytes,DecodedLimit) || !AddMinimumBytes(1,Bytes,DecodedLimit)) {
+        RejectRecording(ReplaySizeError);
+        return false;
+    }
+    // The omitted outer field names/brackets exceed these per-element separators,
+    // so this remains a lower bound and cannot reject a document that fits.
+    RecordedMinimumBytes=Bytes;
+    return true;
+}
 void URiftReplaySubsystem::RecordEvent(const rift::Event &E) {
-    if (Recording) {
-        RecordedEvents.Add(MakeShared<FJsonValueObject>(EventJSON(E)));
+    if (Recording && RecordingBudgetError.IsEmpty()) {
+        if (RecordedEvents.Num()>=200000) {RejectRecording(TEXT("Replay exceeds its 200,000 event limit."));return;}
+        auto Object=EventJSON(E);
+        if (!AccountRecordingObject(Object)) return;
+        RecordedEvents.Add(MakeShared<FJsonValueObject>(Object));
         RecordedSequence = E.sequence;
     }
 }
 void URiftReplaySubsystem::Sample(const rift::Snapshot &State) {
-    if (Recording && State.elapsed >= LastSample) {
+    if (Recording && RecordingBudgetError.IsEmpty() && State.elapsed >= LastSample) {
+        if (RecordedSamples.Num()>=20000) {RejectRecording(TEXT("Replay exceeds its 20,000 snapshot limit."));return;}
         auto O = SnapshotJSON(State);
         O->SetNumberField(TEXT("eventSequence"), double(RecordedSequence));
+        if (!AccountRecordingObject(O)) return;
         RecordedSamples.Add(MakeShared<FJsonValueObject>(O));
         LastSample = State.elapsed;
     }
+}
+bool URiftReplaySubsystem::SerializeRecording(const TSharedPtr<FJsonObject>& Object,TArray<uint8>& UTF8Bytes,
+                                              FString& Error,int64 ByteLimit) {
+    UTF8Bytes.Reset();
+    int64 MinimumBytes=0;
+    if (ByteLimit<=0 || ByteLimit>DecodedLimit || !MinimumJSONObjectBytes(Object,MinimumBytes,ByteLimit)) {
+        Error=ReplaySizeError;
+        return false;
+    }
+    FRiftBoundedReplayWriter Stream(UTF8Bytes,ByteLimit);
+    const bool Serialized=FJsonSerializer::Serialize(Object.ToSharedRef(),
+        TJsonWriterFactory<UTF8CHAR,TCondensedJsonPrintPolicy<UTF8CHAR>>::Create(&Stream));
+    if (Stream.IsError() || !Serialized) {
+        UTF8Bytes.Reset();
+        Error=Stream.IsError()?ReplaySizeError:TEXT("Replay JSON could not be serialized.");
+        return false;
+    }
+    Error.Empty();
+    return true;
 }
 void URiftReplaySubsystem::EndRecording(const rift::Snapshot &State, bool Abandoned) {
     if (!Recording)
         return;
     Sample(State);
-    Recording->SetNumberField(TEXT("duration"), State.elapsed);
-    Recording->SetBoolField(TEXT("abandoned"), Abandoned);
-    Recording->SetObjectField(TEXT("result"), SnapshotJSON(State));
-    Recording->SetArrayField(TEXT("events"), RecordedEvents);
-    Recording->SetArrayField(TEXT("states"), RecordedSamples);
+    if (RecordingBudgetError.IsEmpty()) {
+        auto Result=SnapshotJSON(State);
+        if (AccountRecordingObject(Result)) {
+            Recording->SetNumberField(TEXT("duration"), State.elapsed);
+            Recording->SetBoolField(TEXT("abandoned"), Abandoned);
+            Recording->SetObjectField(TEXT("result"),Result);
+            Recording->SetArrayField(TEXT("events"), RecordedEvents);
+            Recording->SetArrayField(TEXT("states"), RecordedSamples);
+        }
+    }
     auto Job = MakeShared<FRiftReplayWriteJob, ESPMode::ThreadSafe>();
     Job->Filename = S(Recording, TEXT("id")) + TEXT(".riftreplay");
     Job->Path = SafeReplayPath(Job->Filename);
@@ -1232,30 +1711,29 @@ void URiftReplaySubsystem::EndRecording(const rift::Snapshot &State, bool Abando
     Job->Samples = RecordedSamples.Num();
     // Transfer the completed JSON tree. No UObject, live recording or profile is read by the worker.
     auto Document = MoveTemp(Recording);
+    auto BudgetError=MoveTemp(RecordingBudgetError);
     RecordedEvents.Reset();
     RecordedSamples.Reset();
     LatestFilename.Empty();
     LastError.Empty();
-    Job->Work = Async(EAsyncExecution::ThreadPool, [Job, Document = MoveTemp(Document)]() {
-        FString Text;
+    Job->Work = Async(EAsyncExecution::ThreadPool, [Job, Document = MoveTemp(Document),BudgetError=MoveTemp(BudgetError)]() {
+        if (!BudgetError.IsEmpty()) {Job->Error=BudgetError;return;}
+        TArray<uint8> UTF8Bytes;
         double Started = FPlatformTime::Seconds();
         const bool Valid = URiftReplaySubsystem::ValidateRecording(Document, Job->Error);
         Job->ValidateMS = (FPlatformTime::Seconds() - Started) * 1000;
         if (!Valid)
             return;
         Started = FPlatformTime::Seconds();
-        const bool Serialized = FJsonSerializer::Serialize(
-            Document.ToSharedRef(),
-            TJsonWriterFactory<TCHAR, TCondensedJsonPrintPolicy<TCHAR>>::Create(&Text));
+        const bool Serialized = URiftReplaySubsystem::SerializeRecording(Document,UTF8Bytes,Job->Error);
         Job->SerializeMS = (FPlatformTime::Seconds() - Started) * 1000;
-        Job->Characters = Text.Len();
         if (!Serialized) {
-            Job->Error = TEXT("Replay JSON could not be serialized.");
             return;
         }
+        Job->Characters = FPlatformString::ConvertedLength<TCHAR>(reinterpret_cast<const UTF8CHAR*>(UTF8Bytes.GetData()),UTF8Bytes.Num());
         TArray<uint8> Archive;
         Started = FPlatformTime::Seconds();
-        const bool Encoded = EncodeRecording(Text, Archive, Job->Error);
+        const bool Encoded = EncodeRecording(UTF8Bytes, Archive, Job->Error);
         Job->CompressMS = (FPlatformTime::Seconds() - Started) * 1000;
         if (!Encoded)
             return;
@@ -1271,12 +1749,24 @@ bool URiftReplaySubsystem::OpenReplay(const FString &Filename) {
     TSharedPtr<FJsonObject> O;
     if (!ReadRecordingFile(SafeReplayPath(Filename), O, Text, LastError))
         return false;
+    TSharedPtr<FRiftReplayBalanceContext> Balance=MakeShared<FRiftReplayBalanceContext>();
+    if (!ReadBalance(O,*Balance)) {LastError=TEXT("Replay captured balance definitions are invalid.");return false;}
+    const TArray<TSharedPtr<FJsonValue>>* RecordedStates=nullptr;
+    if (!O->TryGetArrayField(TEXT("states"),RecordedStates)) return false;
+    // Legacy archives need sparse captured fields; schema2 also retains stable
+    // source identities after corpse removal for charge/child event validation.
+    if (!Balance->HasCapturedDefinitions||Balance->Schema>=2) for (const auto& Value:*RecordedStates) {
+        rift::Snapshot State;
+        if (!ReadSnapshot(Obj(Value),State,Balance.Get())) return false;
+        CaptureRecordedState(*Balance,State);
+    }
+    if (!Balance->HasCapturedDefinitions) Balance->Limitations.Add(TEXT("Legacy recording has no captured mechanical definitions. Full snapshots and recorded event amounts are authoritative; absent between-snapshot mechanics cannot be recovered from current balance."));
     const TArray<TSharedPtr<FJsonValue>> *Events = nullptr;
     O->TryGetArrayField(TEXT("events"), Events);
     TArray<rift::Event> ParsedEvents;
     for (const auto &V : *Events) {
         rift::Event E;
-        if (!ReadEvent(Obj(V), E))
+        if (!ReadEvent(Obj(V), E,Balance.Get()))
             return false;
         ParsedEvents.Add(MoveTemp(E));
     }
@@ -1285,6 +1775,7 @@ bool URiftReplaySubsystem::OpenReplay(const FString &Filename) {
     if (M)
         M->LeaveMatch();
     Loaded = O;
+    PlaybackBalance=MoveTemp(Balance);
     PlaybackEvents = MoveTemp(ParsedEvents);
     FirstDamageTimes.Reset();
     // Crown structures exist in the initial snapshot, including their native
@@ -1292,7 +1783,7 @@ bool URiftReplaySubsystem::OpenReplay(const FString &Filename) {
     TMap<uint64,double> CrownMaxHP;
     const TArray<TSharedPtr<FJsonValue>>* States=nullptr;
     rift::Snapshot Initial;
-    if(O->TryGetArrayField(TEXT("states"),States) && !States->IsEmpty() && SnapshotFromJSON(Obj((*States)[0]),Initial))
+    if(O->TryGetArrayField(TEXT("states"),States) && !States->IsEmpty() && ReadSnapshot(Obj((*States)[0]),Initial,PlaybackBalance.Get()))
         for(const auto& Entity:Initial.entities)
             if(Entity.kind==rift::EntityKind::Guard || Entity.kind==rift::EntityKind::Core)
                 CrownMaxHP.Add(Entity.id,Entity.maxHp);
@@ -1323,6 +1814,7 @@ void URiftReplaySubsystem::CloseReplay() {
     if (M)
         M->SetReplayView(nullptr);
     Loaded.Reset();
+    PlaybackBalance.Reset();
     PlaybackEvents.Reset();
     FirstDamageTimes.Reset();
     EventCursor = 0;
@@ -1385,7 +1877,7 @@ void URiftReplaySubsystem::UpdateView() {
     }
     auto Base = Obj((*States)[Low]);
     rift::Snapshot Current;
-    if (!SnapshotFromJSON(Base, Current))
+    if (!ReadSnapshot(Base, Current,PlaybackBalance.Get()))
         return;
     const double BaseTime = Current.elapsed;
     const bool HasSequence = Base->HasField(TEXT("eventSequence"));
@@ -1403,13 +1895,13 @@ void URiftReplaySubsystem::UpdateView() {
         const auto &E = PlaybackEvents[I];
         if (E.time > PlaybackTime + 1e-7)
             break;
-        AdvanceSnapshot(Current, E.time);
-        ApplyReplayEvent(Current, E);
+        AdvanceSnapshot(Current, E.time,PlaybackBalance.Get());
+        ApplyReplayEvent(Current, E,PlaybackBalance.Get());
     }
-    AdvanceSnapshot(Current, PlaybackTime);
+    AdvanceSnapshot(Current, PlaybackTime,PlaybackBalance.Get());
     if (Low + 1 < States->Num()) {
         rift::Snapshot Next;
-        if (SnapshotFromJSON(Obj((*States)[Low + 1]), Next)) {
+        if (ReadSnapshot(Obj((*States)[Low + 1]), Next,PlaybackBalance.Get())) {
             TMap<uint64, const rift::Entity *> NextEntities;
             for (const auto &E : Next.entities)
                 NextEntities.Add(E.id, &E);
@@ -1433,6 +1925,21 @@ void URiftReplaySubsystem::UpdateView() {
 TSharedPtr<FJsonObject> URiftReplaySubsystem::CurrentAnalysis() const {
     const TSharedPtr<FJsonObject> *R = nullptr;
     return Loaded && Loaded->TryGetObjectField(TEXT("result"), R) ? *R : nullptr;
+}
+TSharedRef<FJsonObject> URiftReplaySubsystem::ReconstructionDiagnostics() const {
+    auto Result=MakeShared<FJsonObject>();
+    Result->SetBoolField(TEXT("hasCapturedDefinitions"),PlaybackBalance&&PlaybackBalance->HasCapturedDefinitions);
+    Result->SetNumberField(TEXT("balanceSchema"),PlaybackBalance?PlaybackBalance->Schema:0);
+    Result->SetStringField(TEXT("manifestHash"),PlaybackBalance?PlaybackBalance->ManifestHash:FString());
+    Result->SetStringField(TEXT("manifestVersion"),PlaybackBalance?PlaybackBalance->ManifestVersion:FString());
+    Result->SetStringField(TEXT("hashMeaning"),TEXT("Recorded canonical-manifest provenance; not archive authentication or a digest of the mechanical subset."));
+    TArray<FString> Limits;
+    if (PlaybackBalance) for (const auto& Limit:PlaybackBalance->Limitations) Limits.Add(Limit);
+    Limits.Sort();TArray<TSharedPtr<FJsonValue>> Values;
+    for (const auto& Limit:Limits) Values.Add(MakeShared<FJsonValueString>(Limit));
+    Result->SetArrayField(TEXT("limitations"),Values);
+    Result->SetNumberField(TEXT("capturedEntityTemplates"),PlaybackBalance?PlaybackBalance->Entities.Num():0);
+    return Result;
 }
 TArray<TSharedPtr<FJsonObject>> URiftReplaySubsystem::EventsNear(double Time, double Window) const {
     TArray<TSharedPtr<FJsonObject>> Out;

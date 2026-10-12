@@ -171,12 +171,16 @@ FString URiftEditorAssetLibrary::InspectImportedAssetsJSON()
 {
     auto Report=MakeShared<FJsonObject>();TArray<TSharedPtr<FJsonValue>> Entries,Errors;
     TArray<TSharedPtr<FJsonValue>> Definitions;FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(URiftAssetLibrary::CardDefinitionsJSON()),Definitions);
+    TArray<TSharedPtr<FJsonValue>> Children;FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(URiftAssetLibrary::EntityDefinitionsJSON()),Children);
+    TSet<FString> ChildIds;for(const auto& Child:Children)ChildIds.Add(Child->AsObject()->GetStringField(TEXT("id")));Definitions.Append(Children);
     for(const auto& Card:Definitions)
     {
         FString Id=Card->AsObject()->GetStringField(TEXT("id"));auto O=MakeShared<FJsonObject>();O->SetStringField(TEXT("id"),Id);
-        auto* Asset=LoadObject<URiftCardData>(nullptr,*FString::Printf(TEXT("/Game/Rift/Cards/DA_%s.DA_%s"),*Id,*Id));
+        const TCHAR* Folder=ChildIds.Contains(Id)?TEXT("Entities"):TEXT("Cards");
+        auto* Asset=LoadObject<URiftCardData>(nullptr,*FString::Printf(TEXT("/Game/Rift/%s/DA_%s.DA_%s"),Folder,*Id,*Id));
         if(!Asset){Errors.Add(MakeShared<FJsonValueString>(TEXT("Missing card DataAsset ")+Id));continue;}
         O->SetBoolField(TEXT("illustration"),Asset->Illustration!=nullptr);O->SetNumberField(TEXT("animations"),Asset->Animations.Num());O->SetNumberField(TEXT("effects"),Asset->Effects.Num());O->SetNumberField(TEXT("sounds"),Asset->Sounds.Num());
+        O->SetBoolField(TEXT("subordinate"),ChildIds.Contains(Id));
         if(auto* Mesh=Asset->CharacterMesh.Get())
         {
             FVector Bounds=Mesh->GetBounds().BoxExtent*2;O->SetNumberField(TEXT("widthCm"),Bounds.Y);O->SetNumberField(TEXT("lengthCm"),Bounds.X);O->SetNumberField(TEXT("heightCm"),Bounds.Z);
@@ -198,11 +202,19 @@ FString URiftEditorAssetLibrary::InspectImportedAssetsJSON()
 FString URiftEditorAssetLibrary::FinalizeImportedPhysicsAssetsJSON()
 {
     auto Report=MakeShared<FJsonObject>();TArray<TSharedPtr<FJsonValue>> Entries,Errors;
-    const TCHAR* Ids[]={TEXT("ironclad"),TEXT("ember_archer"),TEXT("twin_blades"),TEXT("boulderback"),TEXT("arc_mage"),TEXT("rambeast"),TEXT("sky_manta"),TEXT("vampire_bats"),TEXT("frost_fang"),TEXT("storm_raven"),TEXT("mini_stampede"),TEXT("stampede"),TEXT("tower_archer"),TEXT("pulverizer")};
-    for(const auto* Id:Ids)
+    TArray<TSharedPtr<FJsonValue>> Definitions,Children;
+    FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(URiftAssetLibrary::CardDefinitionsJSON()),Definitions);
+    FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(URiftAssetLibrary::EntityDefinitionsJSON()),Children);Definitions.Append(Children);
+    TArray<FString> Ids{TEXT("tower_archer")};
+    for(const auto& Value:Definitions)
+    {const auto Definition=Value->AsObject();if(!Definition->GetBoolField(TEXT("spell")) && (!Definition->GetBoolField(TEXT("building")) || Definition->GetNumberField(TEXT("shockwaveSpeed"))>0))Ids.Add(Definition->GetStringField(TEXT("id")));}
+    FString SelectedString;TArray<FString> Selected;
+    if(FParse::Value(FCommandLine::Get(),TEXT("RiftSelectedModels="),SelectedString))SelectedString.ParseIntoArray(Selected,TEXT(","),true);
+    for(const FString& Id:Ids)
     {
         if(FParse::Param(FCommandLine::Get(),TEXT("RiftPulverizerOnly")) && FString(Id)!=TEXT("pulverizer"))continue;
-        auto* Mesh=LoadObject<USkeletalMesh>(nullptr,*FString::Printf(TEXT("/Game/Rift/Characters/%s/SK_%s.SK_%s"),Id,Id,Id));
+        if(!Selected.IsEmpty() && !Selected.Contains(Id))continue;
+        auto* Mesh=LoadObject<USkeletalMesh>(nullptr,*FString::Printf(TEXT("/Game/Rift/Characters/%s/SK_%s.SK_%s"),*Id,*Id,*Id));
         auto* Physics=Mesh?Mesh->GetPhysicsAsset():nullptr;
         if(!Physics||Physics->SkeletalBodySetups.IsEmpty()){Errors.Add(MakeShared<FJsonValueString>(FString(TEXT("Missing generated physics bodies: "))+Id));continue;}
         auto Entry=MakeShared<FJsonObject>();Entry->SetStringField(TEXT("id"),Id);Entry->SetNumberField(TEXT("originalFlags"),uint32(Physics->GetFlags()));

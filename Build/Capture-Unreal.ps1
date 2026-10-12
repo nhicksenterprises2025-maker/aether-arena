@@ -2,19 +2,21 @@ param(
     [string]$EngineRoot = 'C:\Program Files\Epic Games\UE_5.8',
     [string]$Executable = '',
     [string]$Page = 'Battle',
-    [ValidateSet('','roster','congestion','effects','effects17','placement','projectiles','spells','tower_pathing','unit_collision','swarm_split','pulverizer')][string]$Scenario = '',
+    [ValidateSet('','roster','expansion_roster','expansion_new_roster','expansion_effects','expansion_warden_death','congestion','effects','effects17','placement','projectiles','spells','tower_pathing','unit_collision','swarm_split','pulverizer')][string]$Scenario = '',
     [ValidateRange(0,8)][float]$PulverizerAge = .35,
     [ValidateSet('crowd','contact','layers')][string]$CollisionCase = 'crowd',
     [ValidateRange(0,12)][float]$CollisionAge = 3,
     [ValidateSet('mini_stampede','stampede','twin_blades','vampire_bats')][string]$SwarmCard = 'stampede',
     [ValidateRange(0,12)][float]$SwarmAge = 3,
     [ValidateScript({ [math]::Abs($_) -eq .5 })][float]$SwarmX = .5,
-    [ValidateRange(2.5,11.5)][float]$SwarmZ = 8.5,
+    [ValidateRange(2.5,9.5)][float]$SwarmZ = 6.5,
     [switch]$SwarmLeftGuardDown,
     [ValidateRange(0,6)][float]$PathingAge = 0,
     [ValidateSet('clearance','left_pocket','right_pocket')][string]$RouteCase = 'clearance',
     [ValidateSet('player','enemy')][string]$RouteTeam = 'player',
     [ValidateRange(0.05,2)][float]$EffectAge = 0.12,
+    [ValidateSet('cast','impact','shield')][string]$ExpansionEffectStage = 'shield',
+    [ValidateSet('before','death','children','cleanup')][string]$WardenDeathStage='children',
     [ValidateRange(0.25,4)][float]$Speed = 1,
     [switch]$BreathSmoke,
     [ValidateRange(-1,3)][int]$Hand=-1,
@@ -30,6 +32,7 @@ param(
     [float]$PreviewX = 0,
     [float]$PreviewY = 7,
     [string]$InspectCard = '',
+    [ValidateRange(-1,3)][int]$Quality=-1,
     [int]$Width = 1920,
     [int]$Height = 1080,
     [float]$Delay = 6,
@@ -51,8 +54,10 @@ $isEditor = [System.IO.Path]::GetFileNameWithoutExtension($Executable) -in @('Un
 if($Scenario -eq 'tower_pathing' -and ($Page -ne 'Battle' -or $Phase -or $RecordedMatch -or $BreathSmoke)) { throw 'Tower pathing requires its live Battle fixture without another phase, recorded-match or breath fixture.' }
 if($Scenario -eq 'unit_collision' -and ($Page -ne 'Battle' -or $Phase -or $RecordedMatch -or $BreathSmoke)) { throw 'Unit collision requires its live paid Battle fixture without another phase, recorded-match or breath fixture.' }
 if($Scenario -eq 'swarm_split' -and ($Page -ne 'Battle' -or $Phase -or $RecordedMatch -or $BreathSmoke)) { throw 'Swarm splitting requires its live paid Battle fixture without another phase, recorded-match or breath fixture.' }
-$riftTowerSources=@(Get-ChildItem -LiteralPath (Join-Path $repoRoot 'Unreal/RiftCrownArena/Source'),(Join-Path $repoRoot 'Unreal/RiftCrownArena/Config') -File -Recurse | Where-Object Extension -in @('.cpp','.h','.cs','.ini') | ForEach-Object FullName)+@($projectPath,$PSCommandPath)
+if($Scenario -eq 'expansion_warden_death' -and ($Page -ne 'Battle' -or $Phase -or $RecordedMatch -or $BreathSmoke -or $Developer)) { throw 'Warden death requires its isolated paid Battle fixture without another phase, replay, breath or developer fixture.' }
+$riftTowerSources=@(Get-ChildItem -LiteralPath (Join-Path $repoRoot 'Unreal/RiftCrownArena/Source'),(Join-Path $repoRoot 'Unreal/RiftCrownArena/Config') -File -Recurse | Where-Object Extension -in @('.cpp','.h','.cs','.ini','.inc') | ForEach-Object FullName)+@($projectPath,$PSCommandPath,(Join-Path $repoRoot 'Assets/Data/card_manifest.json'),(Join-Path $repoRoot 'Build/generate_card_manifest.py'))
 if($isEditor) { $riftTowerSources+=@('Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArena.dll','Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArenaEditor.dll') | ForEach-Object { Join-Path $repoRoot $_ } }
+if($isEditor) { $riftTowerSources+=@(Get-ChildItem -LiteralPath (Join-Path $repoRoot 'Unreal/RiftCrownArena/Content') -File -Recurse | Where-Object Extension -in @('.uasset','.umap') | ForEach-Object FullName) }
 $riftTowerSourcePins=@($riftTowerSources | Sort-Object -Unique | ForEach-Object { [ordered]@{path=[IO.Path]::GetRelativePath($repoRoot,$_).Replace('\','/');sha256=(Get-FileHash -LiteralPath $_ -Algorithm SHA256).Hash.ToLowerInvariant();bytes=(Get-Item -LiteralPath $_).Length} })
 $workingDirectory = if ($isEditor) { $repoRoot } else { Split-Path -Parent $Executable }
 if (!$Name) { $Name = ($Page.ToLowerInvariant() -replace '[^a-z0-9]+','-') + $(if ($Scenario) { '-' + $Scenario } else { '' }) + "-${Width}x${Height}" }
@@ -61,11 +66,11 @@ $runRoot = Join-Path $repoRoot ('Artifacts/QA/VisualRuns/' + $Name + '-' + [Guid
 $saveRoot = Join-Path $runRoot 'Save'
 $engineUserRoot = Join-Path $runRoot 'EngineUser'
 New-Item -ItemType Directory -Path $captureRoot,$saveRoot,$engineUserRoot -Force | Out-Null
-$capturePath = Join-Path $captureRoot ($Name + '.png')
-$logPath = Join-Path $captureRoot ($Name + '.log')
-$stdoutPath = Join-Path $captureRoot ($Name + '.stdout.log')
-$stderrPath = Join-Path $captureRoot ($Name + '.stderr.log')
-$reportPath = Join-Path $captureRoot ($Name + '.json')
+$capturePath = Join-Path $runRoot ($Name + '.png')
+$logPath = Join-Path $runRoot ($Name + '.log')
+$stdoutPath = Join-Path $runRoot ($Name + '.stdout.log')
+$stderrPath = Join-Path $runRoot ($Name + '.stderr.log')
+$reportPath = Join-Path $runRoot ($Name + '.json')
 $started = Get-Date
 $arguments = @(
     '/Game/Rift/Maps/Arena',
@@ -79,7 +84,10 @@ $arguments = @(
     ('-abslog="' + $logPath + '"')
 )
 if ($isEditor) { $arguments = @(('"' + $projectPath + '"')) + $arguments }
+if ($Quality -ge 0) { $arguments += "-RiftQAQuality=$Quality" }
 if ($Scenario) { $arguments += "-RiftVisualScenario=$Scenario" }
+if ($Scenario -eq 'expansion_effects') { $arguments += "-RiftExpansionEffectStage=$ExpansionEffectStage" }
+if ($Scenario -eq 'expansion_warden_death') { $arguments += "-RiftWardenDeathStage=$WardenDeathStage" }
 if ($Scenario -eq 'tower_pathing') { $arguments += '-RiftPathingAge=' + $PathingAge.ToString([System.Globalization.CultureInfo]::InvariantCulture);$arguments += "-RiftRouteCase=$RouteCase";$arguments += "-RiftRouteTeam=$RouteTeam" }
 if ($Scenario -eq 'unit_collision') { $arguments += '-RiftCollisionAge=' + $CollisionAge.ToString([System.Globalization.CultureInfo]::InvariantCulture);$arguments += "-RiftCollisionCase=$CollisionCase" }
 if ($Scenario -eq 'swarm_split') {
@@ -139,6 +147,7 @@ $resolutionMatches = $actualWidth -eq $Width -and $actualHeight -eq $Height
 $statePath = [System.IO.Path]::ChangeExtension($capturePath,'state.json')
 $stateCaptured = (Test-Path -LiteralPath $statePath) -and ((Get-Item -LiteralPath $statePath).LastWriteTime -ge $started.AddSeconds(-1))
 $riftCaptureState = if ($stateCaptured) { Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json } else { $null }
+$riftCaptureQualityPassed = $Quality -lt 0 -or ($null -ne $riftCaptureState -and $riftCaptureState.observedQualityPreset -eq $Quality)
 $riftCameraFraming = if ($stateCaptured) { $riftCaptureState.cameraFraming } else { $null }
 $riftCameraFramingRequired = $Page -in @('Battle','ReplayView')
 $riftCameraFramingPassed = !$riftCameraFramingRequired -or (
@@ -158,27 +167,70 @@ $riftArenaGeometryRequired=$riftCameraFramingRequired -and [version]$ExpectedVer
 $riftArenaGeometryPassed=$true
 if($riftArenaGeometryRequired) {
     $geometry=$riftCaptureState.arenaGeometry
-    $riftArenaGeometryPassed=$null -ne $geometry -and $geometry.passed -eq $true -and $geometry.floorPassed -eq $true -and $geometry.riverPassed -eq $true -and
-        $geometry.bridgesPassed -eq $true -and $geometry.borderPassed -eq $true -and $geometry.widthTiles -eq 30 -and $geometry.heightTiles -eq 44 -and
-        $geometry.playableFloorTiles -eq 1200 -and $geometry.decorativeFloorTiles -eq 640 -and $geometry.riverWidthTiles -eq 30 -and [math]::Abs($geometry.riverDepthTiles-3.3) -lt .00001 -and
+    # Retain the public pre-1.6 geometry contract. Current captures instead use
+    # the approved manifest already pinned with the capture's producer inputs.
+    $riftArenaWidth=30;$riftArenaHeight=44;$riftArenaFloor=1200;$riftArenaDecoration=640
+    $riftArenaBridgeX=7.2;$riftArenaGuardDepth=13.4;$riftArenaCoreDepth=17.3;$riftArenaRiverDepth=3.3
+    $riftArenaPlayerRows=5;$riftArenaEnemyRows=4;$riftArenaPavers=36;$riftArenaManifestPassed=$true
+    $riftArenaCurrent=[version]$ExpectedVersion -ge [version]'1.6.0'
+    if($riftArenaCurrent) {
+        $riftArenaManifestPath=Join-Path $repoRoot 'Assets/Data/card_manifest.json'
+        $riftArenaManifest=Get-Content -LiteralPath $riftArenaManifestPath -Raw | ConvertFrom-Json
+        $riftArenaManifestPin=@($riftTowerSourcePins | Where-Object path -eq 'Assets/Data/card_manifest.json')
+        $riftArenaRules=$riftArenaManifest.rules
+        $riftArenaManifestPassed=$riftArenaManifest.schema -eq 2 -and $riftArenaManifest.status -eq 'approved' -and
+            $riftArenaManifest.version -eq $ExpectedVersion -and $riftArenaManifestPin.Count -eq 1 -and
+            $riftArenaManifestPin[0].sha256 -eq (Get-FileHash -LiteralPath $riftArenaManifestPath -Algorithm SHA256).Hash.ToLowerInvariant() -and
+            @(@($riftArenaRules.arenaWidth,$riftArenaRules.arenaHeight,$riftArenaRules.riverHalfWidth,$riftArenaRules.bridgeCenterX,$riftArenaRules.guardDepth,$riftArenaRules.coreDepth) |
+                Where-Object { $_ -isnot [ValueType] -or ![double]::IsFinite([double]$_) -or $_ -le 0 }).Count -eq 0
+        if($riftArenaManifestPassed) {
+            $riftArenaWidth=[int]$riftArenaRules.arenaWidth;$riftArenaHeight=[int]$riftArenaRules.arenaHeight
+            $riftArenaBridgeX=[double]$riftArenaRules.bridgeCenterX;$riftArenaGuardDepth=[double]$riftArenaRules.guardDepth;$riftArenaCoreDepth=[double]$riftArenaRules.coreDepth
+            $riftArenaRiverDepth=2*[double]$riftArenaRules.riverHalfWidth
+            $riftArenaRiverRows=0;$riftArenaPlayerRows=0;$riftArenaEnemyRows=0
+            for($riftArenaRow=0;$riftArenaRow -lt $riftArenaHeight;++$riftArenaRow) {
+                $riftArenaRowZ=$riftArenaRow-($riftArenaHeight-1)/2.
+                if([math]::Abs($riftArenaRowZ) -lt $riftArenaRules.riverHalfWidth) {++$riftArenaRiverRows;continue}
+                # Native stone paths use two columns and every second board row
+                # inside the 11.5-tile path envelope. Its parity changes with
+                # the approved board height: player4/enemy5 for the34-row field.
+                if([math]::Abs($riftArenaRowZ) -lt 11.5 -and $riftArenaRow%2 -eq 0) {
+                    if($riftArenaRowZ -gt 0){++$riftArenaPlayerRows}else{++$riftArenaEnemyRows}
+                }
+            }
+            $riftArenaFloor=$riftArenaWidth*($riftArenaHeight-$riftArenaRiverRows)
+            $riftArenaDecoration=($riftArenaWidth+10)*($riftArenaHeight+6-$riftArenaRiverRows)-$riftArenaFloor
+            $riftArenaPavers=4*($riftArenaPlayerRows+$riftArenaEnemyRows)
+        }
+    }
+    $riftArenaGeometryPassed=$riftArenaManifestPassed -and $null -ne $geometry -and $geometry.passed -eq $true -and $geometry.floorPassed -eq $true -and $geometry.riverPassed -eq $true -and
+        $geometry.bridgesPassed -eq $true -and $geometry.borderPassed -eq $true -and $geometry.widthTiles -eq $riftArenaWidth -and $geometry.heightTiles -eq $riftArenaHeight -and
+        $geometry.playableFloorTiles -eq $riftArenaFloor -and $geometry.decorativeFloorTiles -eq $riftArenaDecoration -and $geometry.riverWidthTiles -eq $riftArenaWidth -and [math]::Abs($geometry.riverDepthTiles-$riftArenaRiverDepth) -lt .00001 -and
         @($geometry.bridges).Count -eq 2
+    if($riftArenaCurrent) {
+        $riftArenaGeometryPassed=$riftArenaGeometryPassed -and $geometry.worldUnitsPerTile -eq 125 -and $geometry.authoredModelScale -eq 1.25 -and
+            $geometry.gridShaderPassed -eq $true -and [math]::Abs($geometry.gridShaderTileSize-125) -lt .001 -and
+            $geometry.expectedPlayableFloorTiles -eq $riftArenaFloor -and $geometry.expectedDecorativeFloorTiles -eq $riftArenaDecoration -and
+            @($geometry.bridges | Where-Object { [math]::Abs([math]::Abs($_.x)-$riftArenaBridgeX) -gt .000001 -or [math]::Abs($_.z) -gt .000001 }).Count -eq 0 -and
+            @($geometry.bridges.x | Sort-Object -Unique).Count -eq 2
+    }
     if([version]$ExpectedVersion -ge [version]'1.4.0') {
         $riftArenaGeometryPassed=$riftArenaGeometryPassed -and $geometry.lanePathsPassed -eq $true -and
-            $geometry.lanePaverCount -eq 36 -and $geometry.expectedLanePaverCount -eq 36 -and @($geometry.lanePavers).Count -eq 36 -and
+            $geometry.lanePaverCount -eq $riftArenaPavers -and $geometry.expectedLanePaverCount -eq $riftArenaPavers -and @($geometry.lanePavers).Count -eq $riftArenaPavers -and
             @($geometry.lanePaths).Count -eq 4 -and @($geometry.lanePaths|ForEach-Object{"$($_.team),$($_.lane)"}|Sort-Object -Unique).Count -eq 4 -and
             @($geometry.lanePaths|Where-Object{
                 $_.alignmentPassed -ne $true -or $_.lane -notin @(-1,1) -or $_.team -notin @('player','enemy') -or
-                [math]::Abs($_.centerX-$_.lane*7.2) -gt .000001 -or [math]::Abs(($_.minimumX+$_.maximumX)/2-$_.centerX) -gt .000001 -or
+                [math]::Abs($_.centerX-$_.lane*$riftArenaBridgeX) -gt .000001 -or [math]::Abs(($_.minimumX+$_.maximumX)/2-$_.centerX) -gt .000001 -or
                 [math]::Abs($_.maximumX-$_.minimumX-1) -gt .000001 -or $_.pavers -ne $_.rows*2 -or
-                ($_.team -eq 'player' -and $_.rows -ne 5) -or ($_.team -eq 'enemy' -and $_.rows -ne 4)
+                ($_.team -eq 'player' -and $_.rows -ne $riftArenaPlayerRows) -or ($_.team -eq 'enemy' -and $_.rows -ne $riftArenaEnemyRows)
             }).Count -eq 0 -and
             $geometry.towerSnapshotAvailable -eq $true -and $geometry.towerAlignmentPassed -eq $true -and
             $geometry.guardsAligned -eq 4 -and $geometry.coresCentered -eq 2 -and @($geometry.towers).Count -eq 6 -and
             @($geometry.towers.id|Sort-Object -Unique).Count -eq 6 -and
             @($geometry.towers|Where-Object{
                 $_.alignmentPassed -ne $true -or $_.team -notin @('player','enemy') -or $_.kind -notin @('core','guard') -or
-                [math]::Abs($_.x-$(if($_.kind -eq 'core'){0}else{$_.lane*7.2})) -gt .000001 -or
-                [math]::Abs($_.z-$(if($_.team -eq 'player'){1}else{-1})*$(if($_.kind -eq 'core'){17.3}else{13.4})) -gt .000001 -or
+                [math]::Abs($_.x-$(if($_.kind -eq 'core'){0}else{$_.lane*$riftArenaBridgeX})) -gt .000001 -or
+                [math]::Abs($_.z-$(if($_.team -eq 'player'){1}else{-1})*$(if($_.kind -eq 'core'){$riftArenaCoreDepth}else{$riftArenaGuardDepth})) -gt .000001 -or
                 ($_.kind -eq 'core' -and $_.lane -ne 0) -or ($_.kind -eq 'guard' -and $_.lane -notin @(-1,1)) -or
                 ($_.dead -ne $true -and $_.visualAvailable -ne $true) -or
                 ($_.visualAvailable -eq $true -and ([math]::Abs($_.visualX-$_.x) -gt .000001 -or [math]::Abs($_.visualZ-$_.z) -gt .000001))
@@ -201,6 +253,136 @@ if ($Phase) {
 $riftTowerPathingPassed=$true
 $riftUnitCollisionPassed=$true
 $riftSwarmSplitPassed=$true
+function Test-RiftWardenDeathCapture($Capture,[string]$Stage) {
+    function Test-RiftWardenNumber($Value) { return $null -ne $Value -and $Value -is [ValueType] -and $Value -isnot [bool] -and [double]::IsFinite([double]$Value) }
+    if($Stage -notin @('before','death','children','cleanup')){return $false}
+    if(!$Capture -or $Capture.schema -ne 1 -or $Capture.profile -cne 'expansion_warden_death' -or $Capture.stage -cne $Stage -or
+        $Capture.passed -ne $true -or $Capture.setupPassed -ne $true -or $Capture.paused -ne $true -or $Capture.paidCostAndCyclePassed -ne $true -or
+        $Capture.deterministicDeathTimingPassed -ne $true -or $Capture.parentPaidAttributionPassed -ne $true -or $Capture.actualLifecyclePassed -ne $true -or
+        $Capture.childBirthModelsAndAnimationsPassed -ne $true -or $Capture.actualLivingSecondaryMotionPassed -ne $true -or
+        $Capture.referenceLethalCardId -cne 'vampire_bats' -or @($Capture.plays).Count -ne 2 -or @($Capture.captiveMotion).Count -ne 8){return $false}
+    foreach($field in @('wardenId','wardenPlayId','referenceDeathStep','referenceDeathSeconds','fixedSteps','cleanupSeconds','sampledAgeSeconds','actualWardenDeaths','actualChildSpawnEvents','soulThreadInstances','livingChildren','livingChildVisuals','wardenAnimationPosition')) {
+        if(!(Test-RiftWardenNumber $Capture.$field)){return $false}
+    }
+    foreach($field in @('wardenId','wardenPlayId','referenceDeathStep','fixedSteps','actualWardenDeaths','actualChildSpawnEvents','soulThreadInstances','livingChildren','livingChildVisuals')){if([math]::Truncate($Capture.$field) -ne $Capture.$field){return $false}}
+    if($Capture.wardenId -le 0 -or $Capture.wardenPlayId -le 0 -or $Capture.referenceDeathStep -lt 2 -or $Capture.referenceDeathStep -gt 1800 -or
+        [math]::Abs($Capture.referenceDeathSeconds-$Capture.referenceDeathStep/60) -gt 1.e-8 -or [math]::Abs($Capture.sampledAgeSeconds-$Capture.fixedSteps/60) -gt 1.e-8 -or
+        $Capture.cleanupSeconds -lt .1 -or $Capture.cleanupSeconds -gt 1.05){return $false}
+    foreach($id in @('bone_warden','vampire_bats')) {
+        $play=@($Capture.plays | Where-Object cardId -CEQ $id)
+        if($play.Count -ne 1){return $false}
+        foreach($field in @('team','playId','fixtureAetherGrant','cost','spentDelta','actualMembers','expectedMembers')){if(!(Test-RiftWardenNumber $play[0].$field)){return $false}}
+        if($play.Count -ne 1 -or $play[0].accepted -ne $true -or $play[0].sandbox -ne $false -or $play[0].passed -ne $true -or
+            $play[0].handCycledOnce -ne $true -or $play[0].playId -le 0 -or $play[0].spentDelta -ne $play[0].cost -or
+            $play[0].cost -ne $(if($id -eq 'bone_warden'){6}else{5}) -or $play[0].team -ne $(if($id -eq 'bone_warden'){0}else{1}) -or $play[0].fixtureAetherGrant -lt 0 -or
+            $play[0].actualMembers -ne $(if($id -eq 'bone_warden'){1}else{5}) -or $play[0].expectedMembers -ne $play[0].actualMembers -or
+            @($play[0].memberIds).Count -ne $play[0].actualMembers -or @($play[0].memberIds|Sort-Object -Unique).Count -ne $play[0].actualMembers -or
+            @($play[0].memberIds|Where-Object {!(Test-RiftWardenNumber $_) -or $_ -le 0 -or [math]::Truncate($_) -ne $_}).Count -gt 0){return $false}
+        if($id -eq 'bone_warden' -and ($play[0].playId -ne $Capture.wardenPlayId -or $play[0].memberIds[0] -ne $Capture.wardenId)){return $false}
+    }
+    foreach($role in @('head','arm')) {foreach($index in 0..3) {
+        $bone=@($Capture.captiveMotion | Where-Object bone -CEQ "captive_${role}_$index")
+        if($bone.Count -ne 1){return $false}
+        foreach($field in @('livingSamples','relativeTranslationChangeCm','relativeRotationChangeDegrees')){if(!(Test-RiftWardenNumber $bone[0].$field)){return $false}}
+        if($bone.Count -ne 1 -or $bone[0].present -ne $true -or $bone[0].actualLivingSecondaryMotionObserved -ne $true -or $bone[0].livingSamples -lt 2 -or
+            !$bone[0].parent -or ($bone[0].relativeTranslationChangeCm -le .001 -and $bone[0].relativeRotationChangeDegrees -le .01)){return $false}
+    }}
+    $before=$Stage -eq 'before';$expected=if($before){0}else{4}
+    if($Capture.actualWardenDeaths -ne $(if($before){0}else{1}) -or $Capture.actualChildSpawnEvents -ne $expected -or @($Capture.childBirthVisuals).Count -ne $expected -or
+        @($Capture.childBirthVisuals.id | Sort-Object -Unique).Count -ne $expected){return $false}
+    foreach($child in $Capture.childBirthVisuals) {
+        foreach($field in @('id','parentEntityId','playId','bornSeconds','animationPosition')){if(!(Test-RiftWardenNumber $child.$field)){return $false}}
+        if($child.id -le 0 -or $child.id -eq $Capture.wardenId -or $child.parentEntityId -ne $Capture.wardenId -or $child.playId -ne $Capture.wardenPlayId -or
+            $child.cardId -cne 'bone_warden_skeleton' -or $child.attributionCardId -cne 'bone_warden' -or $child.modelId -cne 'bone_warden_skeleton' -or
+            $child.dead -ne $false -or $child.actualImportedModelBound -ne $true -or $child.noncollidingVisual -ne $true -or $child.actualDeployAnimationBound -ne $true -or
+            $child.animation -cne 'Deploy' -or !$child.expectedDeployAnimationAsset -or $child.animationAsset -cne $child.expectedDeployAnimationAsset -or
+            $child.animationPosition -lt 0 -or [math]::Abs($child.bornSeconds-$Capture.referenceDeathSeconds) -gt 1.e-8){return $false}
+    }
+    if(@($Capture.children).Count -gt $expected -or @($Capture.children.id|Sort-Object -Unique).Count -ne @($Capture.children).Count){return $false}
+    foreach($child in $Capture.children) {
+        foreach($field in @('id','parentEntityId','playId','animationPosition')){if(!(Test-RiftWardenNumber $child.$field)){return $false}}
+        if($child.id -notin @($Capture.childBirthVisuals.id) -or $child.parentEntityId -ne $Capture.wardenId -or $child.playId -ne $Capture.wardenPlayId -or
+            $child.cardId -cne 'bone_warden_skeleton' -or $child.attributionCardId -cne 'bone_warden' -or $child.dead -isnot [bool]){return $false}
+        if(!$child.dead -and ($child.visualPresent -ne $true -or !$child.animationAsset -or !$child.animation -or $child.animationPosition -lt 0)){return $false}
+    }
+    if($Capture.livingChildren -ne @($Capture.children|Where-Object dead -EQ $false).Count -or
+        $Capture.livingChildVisuals -ne @($Capture.children|Where-Object {$_.dead -eq $false -and $_.visualPresent -eq $true}).Count){return $false}
+    if($before){return $Capture.fixedSteps -eq ($Capture.referenceDeathStep-1) -and $Capture.wardenVisualPresent -eq $true -and $Capture.wardenBodyPresent -eq $true -and $Capture.wardenDead -eq $false -and $Capture.soulThreadInstances -eq 0 -and @($Capture.children).Count -eq 0}
+    if($Capture.actualDeathAnimationObservedAtLethalStep -ne $true){return $false}
+    if($Stage -eq 'cleanup'){return $Capture.fixedSteps -eq ($Capture.referenceDeathStep+[math]::Ceiling($Capture.cleanupSeconds*60)+3) -and
+        $Capture.wardenVisualPresent -eq $false -and $Capture.sampledAgeSeconds -gt ($Capture.referenceDeathSeconds+$Capture.cleanupSeconds) -and $Capture.soulThreadInstances -eq 0}
+    return $Capture.fixedSteps -eq ($Capture.referenceDeathStep+$(if($Stage -eq 'death'){1}else{6})) -and $Capture.wardenVisualPresent -eq $true -and
+        $Capture.wardenDead -eq $true -and $Capture.actualWardenDeathAnimationBound -eq $true -and !!$Capture.wardenAnimationAsset -and $Capture.soulThreadInstances -eq 20 -and
+        $Capture.livingChildren -eq 4 -and $Capture.livingChildVisuals -eq 4 -and @($Capture.children).Count -eq 4 -and
+        $Capture.sampledAgeSeconds -lt ($Capture.referenceDeathSeconds+.3) -and @($Capture.children|Where-Object {$_.parentEntityId -ne $Capture.wardenId -or $_.playId -ne $Capture.wardenPlayId -or $_.dead -ne $false -or !$_.animationAsset}).Count -eq 0
+}
+$riftExpansionRosterPassed=$true
+if($Scenario -eq 'expansion_warden_death') {$riftExpansionRosterPassed=$stateCaptured -and (Test-RiftWardenDeathCapture $riftCaptureState.expansionRoster $WardenDeathStage)}
+if($Scenario -in @('expansion_roster','expansion_new_roster','expansion_effects')) {
+    $riftRoster=$riftCaptureState.expansionRoster
+    $riftRosterNew=$Scenario -ne 'expansion_roster'
+    $riftRosterEffects=$Scenario -eq 'expansion_effects'
+    $riftExpansionEffectAdvance=switch($ExpansionEffectStage){'cast'{.12};'impact'{.37};default{.95}}
+    $riftExpansionEffectAdvanceSteps=[math]::Round($riftExpansionEffectAdvance*60)
+    $riftRosterSteps=if($riftRosterEffects){21+$riftExpansionEffectAdvanceSteps}else{21}
+    $riftRosterAge=$riftRosterSteps/60
+    $riftRosterTotal=if($riftRosterNew){6}else{42}
+    $riftRosterTeamTotal=if($riftRosterNew){3}else{21}
+    $riftRosterSpent=if($riftRosterNew){26}else{24}
+    $riftRosterIds=if($riftRosterNew){@('bone_warden','aether_reaper','iron_giant')}else{@('mini_stampede','stampede','pulverizer')}
+    $riftExpansionRosterPassed=$stateCaptured -and $null -ne $riftRoster -and $riftRoster.passed -eq $true -and
+        $riftRoster.schema -eq 1 -and $riftRoster.setupPassed -eq $true -and $riftRoster.paidCostAndCyclePassed -eq $true -and
+        $riftRoster.fixedSteps -eq $riftRosterSteps -and [math]::Abs($riftRoster.sampledAgeSeconds-$riftRosterAge) -lt 1.e-8 -and
+        $riftRoster.expectedSelectedCount -eq $riftRosterTotal -and $riftRoster.actualSelectedCount -eq $riftRosterTotal -and $riftRoster.distinctMemberIds -eq $riftRosterTotal -and
+        $riftRoster.playerMembers -eq $riftRosterTeamTotal -and $riftRoster.enemyMembers -eq $riftRosterTeamTotal -and $riftRoster.distinctPlayIds -eq 6 -and
+        $riftRoster.paused -eq $true -and $riftRoster.allImportedModelsBound -eq $true -and $riftRoster.allTroopsWalking -eq $true -and $riftRoster.friendlyRearEnemyFrontPassed -eq $true -and
+        @($riftRoster.members).Count -eq $riftRosterTotal -and @($riftRoster.members.id | Sort-Object -Unique).Count -eq $riftRosterTotal -and @($riftRoster.plays).Count -eq 6 -and
+        @($riftRoster.plays | Where-Object { $_.accepted -ne $true -or $_.sandbox -ne $false -or $_.handCycledOnce -ne $true -or $_.spentDelta -ne $_.cost }).Count -eq 0 -and
+        ($riftRoster.plays | Measure-Object -Property spentDelta -Sum).Sum -eq $riftRosterSpent -and @($riftRoster.cards).Count -eq 3 -and
+        @($riftRoster.members | Where-Object { $_.dead -ne $false -or $_.actualImportedModelBound -ne $true -or $_.friendlyRearEnemyFront -ne $true -or $_.facingAlignmentDot -le .6 }).Count -eq 0
+    foreach($riftRosterId in $riftRosterIds) {
+        $riftRosterCount=switch($riftRosterId){'mini_stampede'{5};'stampede'{15};default{1}}
+        foreach($riftRosterTeam in @(0,1)) {
+            $riftRosterMembers=@($riftRoster.members | Where-Object { $_.cardId -eq $riftRosterId -and $_.team -eq $riftRosterTeam })
+            $riftExpansionRosterPassed=$riftExpansionRosterPassed -and $riftRosterMembers.Count -eq $riftRosterCount -and
+                @($riftRosterMembers | Where-Object { $_.modelId -ne $riftRosterId -or ($riftRosterId -ne 'pulverizer' -and $_.animation -ne 'Locomotion') }).Count -eq 0
+        }
+        $riftRosterCard=@($riftRoster.cards | Where-Object cardId -eq $riftRosterId)
+        $riftRosterBones=switch($riftRosterId){'pulverizer'{16};'bone_warden'{40};'aether_reaper'{29};'iron_giant'{35};default{30}}
+        $riftExpansionRosterPassed=$riftExpansionRosterPassed -and $riftRosterCard.Count -eq 1 -and $riftRosterCard[0].bones -eq $riftRosterBones -and $riftRosterCard[0].lods -eq 4 -and
+            $riftRosterCard[0].forwardAxisIsX -eq $true -and @($riftRosterCard[0].clips).Count -eq 9 -and
+            @($riftRosterCard[0].clips | Where-Object { [math]::Abs($_.targetSamplingFPS-100) -gt .001 -or ($isEditor -and [math]::Abs($_.sourceFPS-100) -gt .001) }).Count -eq 0
+        if($riftRosterId -eq 'bone_warden') {
+            $riftExpansionRosterPassed=$riftExpansionRosterPassed -and $riftRosterCard[0].allCaptiveBonesPresent -eq $true -and @($riftRosterCard[0].captiveBones).Count -eq 8
+            foreach($role in @('head','arm')) {foreach($index in 0..3) {
+                $riftExpansionRosterPassed=$riftExpansionRosterPassed -and @($riftRosterCard[0].captiveBones|Where-Object {$_.bone -ceq "captive_${role}_$index" -and $_.present -eq $true}).Count -eq 1
+            }}
+        }
+    }
+    if($riftRosterEffects) {
+        $riftExpansionRosterPassed=$riftExpansionRosterPassed -and $riftRoster.actualMechanicVisualsPassed -eq $true -and
+            $riftRoster.effectStage -eq $ExpansionEffectStage -and $riftRoster.effectFixedAdvanceSteps -eq $riftExpansionEffectAdvanceSteps -and
+            [math]::Abs($riftRoster.effectCastAgeSeconds-.35) -lt 1.e-8 -and
+            [math]::Abs($riftRoster.effectRequestedAdvanceSeconds-$riftExpansionEffectAdvance) -lt 1.e-8 -and
+            [math]::Abs($riftRoster.effectFixedAdvanceSeconds-$riftExpansionEffectAdvanceSteps/60) -lt 1.e-8 -and
+            [math]::Abs($riftRoster.requestedAgeSeconds-(.35+$riftExpansionEffectAdvance)) -lt 1.e-8 -and
+            $riftRoster.actualNativeSourceEffectsPassed -eq $true -and
+            @($riftRoster.effectPaidCasts).Count -eq 3 -and @($riftRoster.effectPaidCasts|Where-Object passed -ne $true).Count -eq 0
+        if($ExpansionEffectStage -eq 'cast') {
+            $riftExpansionRosterPassed=$riftExpansionRosterPassed -and $riftRoster.nativeSourceEffectsRequired -eq $true -and
+                $riftRoster.actualNativeSourceEffect -eq 'ShadowWisps' -and $riftRoster.actualNativeSourceEffectCount -gt 0 -and
+                @($riftRoster.members|Where-Object {$_.cardId -eq 'iron_giant' -and $_.bodyHP -eq 1000 -and $_.shieldHP -eq 310 -and $_.shieldFragments -eq 0 -and $_.cloaked -eq $false -and $_.hiddenFromViewer -eq $false}).Count -eq 2
+        } elseif($ExpansionEffectStage -eq 'impact') {
+            $riftExpansionRosterPassed=$riftExpansionRosterPassed -and $riftRoster.nativeSourceEffectsRequired -eq $true -and
+                $riftRoster.actualNativeSourceEffect -eq 'ShadowGroundRibbon' -and $riftRoster.actualNativeSourceEffectCount -gt 0 -and
+                @($riftRoster.members|Where-Object {$_.cardId -eq 'iron_giant' -and $_.bodyHP -eq 1000 -and $_.shieldHP -eq 310 -and $_.shieldFragments -eq 0 -and $_.cloaked -eq $true -and $_.hiddenFromViewer -eq ($_.team -eq 1)}).Count -eq 2
+        } else {
+            $riftExpansionRosterPassed=$riftExpansionRosterPassed -and $riftRoster.nativeSourceEffectsRequired -eq $false -and
+                @($riftRoster.members|Where-Object {$_.cardId -eq 'iron_giant' -and $_.team -eq 0 -and $_.bodyHP -eq 1000 -and $_.shieldHP -eq 0 -and $_.shieldFragments -eq 6 -and $_.cloaked -eq $true -and $_.hiddenFromViewer -eq $false}).Count -eq 1 -and
+                @($riftRoster.members|Where-Object {$_.cardId -eq 'iron_giant' -and $_.team -eq 1 -and $_.bodyHP -eq 1000 -and $_.shieldHP -eq 310 -and $_.shieldFragments -eq 0 -and $_.cloaked -eq $true -and $_.hiddenFromViewer -eq $true}).Count -eq 1
+        }
+    }
+}
 $riftTowerSourcesUnchanged=$true
 if($Scenario -eq 'tower_pathing') {
     $pathing=$riftCaptureState.towerPathing
@@ -255,6 +437,14 @@ if($Scenario -eq 'swarm_split') {
     $swarmCount=switch($SwarmCard){'stampede'{15};'twin_blades'{2};default{5}}
     $swarmCost=switch($SwarmCard){'stampede'{7};'vampire_bats'{5};default{2}}
     $swarmSlot=switch($SwarmCard){'mini_stampede'{0};'stampede'{1};'twin_blades'{2};default{3}}
+    $riftSwarmFormationPassed = if ($SwarmCard -eq 'stampede') {
+        $riftExpectedLeft = if ($SwarmX -lt 0) { 9 } else { 6 }
+        $riftExpectedRight = 15 - $riftExpectedLeft
+        $null -ne $swarm -and $swarm.formationGridPassed -eq $true -and
+            $swarm.expectedLeftMembers -eq $riftExpectedLeft -and $swarm.expectedRightMembers -eq $riftExpectedRight -and
+            $swarm.leftMembers -eq $riftExpectedLeft -and $swarm.rightMembers -eq $riftExpectedRight -and
+            @($swarm.units.spawnX | Sort-Object -Unique).Count -eq 5 -and @($swarm.units.spawnZ | Sort-Object -Unique).Count -eq 3
+    } else { $null -ne $swarm -and [math]::Abs($swarm.leftMembers-$swarm.rightMembers) -le 1 }
     $riftSwarmSplitPassed=$stateCaptured -and $null -ne $swarm -and $swarm.schemaVersion -eq 1 -and $swarm.passed -eq $true -and
         $swarm.cardId -eq $SwarmCard -and $swarm.team -eq 'player' -and $swarm.paidPlayOnly -eq $true -and $swarm.paidCostAndCyclePassed -eq $true -and
         $swarm.cost -eq $swarmCost -and $swarm.aetherBefore -eq 10 -and $swarm.aetherAfter -eq (10-$swarmCost) -and $swarm.spentDelta -eq $swarmCost -and
@@ -262,7 +452,7 @@ if($Scenario -eq 'swarm_split') {
         $swarm.requestedX -eq $SwarmX -and $swarm.requestedZ -eq $SwarmZ -and $swarm.leftGuardDestroyed -eq [bool]$SwarmLeftGuardDown -and
         $swarm.expectedUnitCount -eq $swarmCount -and $swarm.actualUnitCount -eq $swarmCount -and @($swarm.units).Count -eq $swarmCount -and
         @($swarm.units.id | Sort-Object -Unique).Count -eq $swarmCount -and @($swarm.units.playId | Sort-Object -Unique).Count -eq 1 -and
-        ($swarm.leftMembers+$swarm.rightMembers) -eq $swarmCount -and $swarm.leftMembers -gt 0 -and $swarm.rightMembers -gt 0 -and [math]::Abs($swarm.leftMembers-$swarm.rightMembers) -le 1 -and
+        ($swarm.leftMembers+$swarm.rightMembers) -eq $swarmCount -and $swarm.leftMembers -gt 0 -and $swarm.rightMembers -gt 0 -and $riftSwarmFormationPassed -and
         $swarm.spawnLegalPassed -eq $true -and $swarm.allMembersAccounted -eq $true -and $swarm.allClearancePassed -eq $true -and $swarm.allSweptClearancePassed -eq $true -and
         $swarm.allSpeedLimitsPassed -eq $true -and $swarm.allLaneTargetsPassed -eq $true -and $swarm.allBridgeHistoriesPassed -eq $true -and
         $swarm.minimumGap -ge -1.e-8 -and $swarm.minimumSweptGap -ge -1.e-8 -and $swarm.tolerance -eq 1.e-8 -and $swarm.collisionSkin -eq .02 -and $swarm.structurePadding -eq .22 -and
@@ -275,7 +465,12 @@ if($Scenario -eq 'swarm_split') {
     if($SwarmAge -ge 2) { $riftSwarmSplitPassed=$riftSwarmSplitPassed -and $swarm.progressRequired -eq $true -and $swarm.membersProgressed -eq $swarmCount -and @($swarm.visuals | Where-Object { $_.dead -ne $true -and $_.locomotionPhase -le 0 }).Count -eq 0 }
     if($SwarmAge -ge 12) { $riftSwarmSplitPassed=$riftSwarmSplitPassed -and $swarm.crossingRequired -eq $true -and $swarm.farBankMembers -eq $swarmCount -and @($swarm.units | Where-Object crossedFarBank -ne $true).Count -eq 0 }
 }
-foreach($pin in $riftTowerSourcePins) { $file=Join-Path $repoRoot $pin.path;if((Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $pin.sha256 -or (Get-Item -LiteralPath $file).Length -ne $pin.bytes) { $riftTowerSourcesUnchanged=$false } }
+foreach($pin in $riftTowerSourcePins) { $file=Join-Path $repoRoot $pin.path;if(!(Test-Path -LiteralPath $file -PathType Leaf) -or (Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $pin.sha256 -or (Get-Item -LiteralPath $file).Length -ne $pin.bytes) { $riftTowerSourcesUnchanged=$false } }
+$riftCaptureTreeRoots=@((Join-Path $repoRoot 'Unreal/RiftCrownArena/Source'),(Join-Path $repoRoot 'Unreal/RiftCrownArena/Config'))
+if($isEditor){$riftCaptureTreeRoots+=(Join-Path $repoRoot 'Unreal/RiftCrownArena/Content')}
+$riftCaptureTreePaths=@(Get-ChildItem -LiteralPath $riftCaptureTreeRoots -File -Recurse|Where-Object Extension -in @('.cpp','.h','.cs','.ini','.inc','.uasset','.umap')|ForEach-Object {[IO.Path]::GetRelativePath($repoRoot,$_.FullName).Replace('\','/')})
+$riftCapturePinnedTreePaths=@($riftTowerSourcePins.path|Where-Object {$_ -match '^Unreal/RiftCrownArena/(Source|Config|Content)/'})
+if(Compare-Object ($riftCapturePinnedTreePaths|Sort-Object -Unique) ($riftCaptureTreePaths|Sort-Object -Unique)){$riftTowerSourcesUnchanged=$false}
 $riftCaptureExecutableUnchanged=(Get-FileHash -LiteralPath $Executable -Algorithm SHA256).Hash.ToLowerInvariant() -eq $riftCaptureExecutableHash
 $errors = @()
 $errorPattern='LogRift: Error:|LogUIActionRouter: Error:|Fatal error[:!]?|Unhandled Exception:|Assertion failed:|Failed to load.*(/Game/Rift|Rift/)|Authored .* missing|LogMaterial: (Error:|Warning:.*(Failed to compile|Default Material|missing usage flag))|LogShaderCompilers: Error:'
@@ -288,10 +483,15 @@ if ($isEditor) {
     $diagnostics=Get-RiftShippingDiagnostics -RepoRoot $repoRoot -DestinationRoot $runRoot -SaveRoot $saveRoot -EngineUserRoot $engineUserRoot -ProcessId $process.Id -ExpectedVersion $ExpectedVersion -StartedUTC $started -FinishedUTC $finished -ErrorPattern $errorPattern
     $errors=@($diagnostics.errors); $diagnosticSource=$diagnostics.diagnosticSource; $nativeDiagnosticLogs=@($diagnostics.nativeDiagnosticLogs); $diagnosticVerification=$diagnostics.diagnosticVerification; $logPath=$diagnostics.engineLog
 }
-$riftCapturePassed=!$timedOut -and $freshCapture -and $stateCaptured -and $resolutionMatches -and $riftPhaseFixturePassed -and $riftCameraFramingPassed -and $riftModelEnvelopeCheckPassed -and $riftArenaGeometryPassed -and $riftTowerPathingPassed -and $riftUnitCollisionPassed -and $riftSwarmSplitPassed -and $riftTowerSourcesUnchanged -and $riftCaptureExecutableUnchanged -and $process.ExitCode -eq 0 -and $errors.Count -eq 0
+$riftCapturePassed=!$timedOut -and $freshCapture -and $stateCaptured -and $resolutionMatches -and $riftCaptureQualityPassed -and $riftPhaseFixturePassed -and $riftCameraFramingPassed -and $riftModelEnvelopeCheckPassed -and $riftArenaGeometryPassed -and $riftTowerPathingPassed -and $riftUnitCollisionPassed -and $riftSwarmSplitPassed -and $riftExpansionRosterPassed -and $riftTowerSourcesUnchanged -and $riftCaptureExecutableUnchanged -and $process.ExitCode -eq 0 -and $errors.Count -eq 0
 $report = [ordered]@{
     schema = 1; version=$ExpectedVersion; passed=[bool]$riftCapturePassed; name = $Name; page = $Page; scenario = $Scenario; inspectCard = $InspectCard; speed = $Speed; breathSmoke = [bool]$BreathSmoke; uiScale=$UIScale; zoom=$Zoom;
     state = $statePath; stateCaptured = $stateCaptured; phaseFixture = $Phase; phaseFixturePassed = $riftPhaseFixturePassed; allowExternalInput = [bool]$AllowExternalInput;
+    expansionRosterPassed = [bool]$riftExpansionRosterPassed;
+    expansionEffectStage = $(if($Scenario -eq 'expansion_effects'){$ExpansionEffectStage}else{$null});
+    wardenDeathStage = $(if($Scenario -eq 'expansion_warden_death'){$WardenDeathStage}else{$null});
+    expansionEffectRequestedAdvanceSeconds = $(if($Scenario -eq 'expansion_effects'){$riftExpansionEffectAdvance}else{$null});
+    expansionEffectFixedAdvanceSteps = $(if($Scenario -eq 'expansion_effects'){$riftExpansionEffectAdvanceSteps}else{$null});
     pathingAge = $(if($Scenario -eq 'tower_pathing'){$PathingAge}else{$null}); routeCase=$(if($Scenario -eq 'tower_pathing'){$RouteCase}else{$null}); routeTeam=$(if($Scenario -eq 'tower_pathing'){$RouteTeam}else{$null}); towerPathingPassed = $riftTowerPathingPassed;
     collisionAge=$(if($Scenario -eq 'unit_collision'){$CollisionAge}else{$null}); collisionCase=$(if($Scenario -eq 'unit_collision'){$CollisionCase}else{$null}); unitCollisionPassed=$riftUnitCollisionPassed;
     swarmAge=$(if($Scenario -eq 'swarm_split'){$SwarmAge}else{$null}); swarmCard=$(if($Scenario -eq 'swarm_split'){$SwarmCard}else{$null}); swarmX=$(if($Scenario -eq 'swarm_split'){$SwarmX}else{$null}); swarmZ=$(if($Scenario -eq 'swarm_split'){$SwarmZ}else{$null}); swarmLeftGuardDown=$(if($Scenario -eq 'swarm_split'){[bool]$SwarmLeftGuardDown}else{$null}); swarmSplitPassed=$riftSwarmSplitPassed;
@@ -300,6 +500,7 @@ $report = [ordered]@{
     modelEnvelopeAvailable = $riftModelEnvelopeAvailable; modelEnvelopePassed = $riftModelEnvelopePassed;
     arenaGeometryRequired=$riftArenaGeometryRequired; arenaGeometryPassed=$riftArenaGeometryPassed;
     width = $Width; height = $Height; actualWidth = $actualWidth; actualHeight = $actualHeight;
+    requestedQuality = $Quality; observedQualityPreset = $(if ($null -ne $riftCaptureState) { $riftCaptureState.observedQualityPreset } else { $null }); qualityPresetPassed = [bool]$riftCaptureQualityPassed;
     resolutionMatches = $resolutionMatches; delay = $Delay;
     screenshot = $capturePath; engineLog = $logPath; executable = $Executable; executableSha256 = $riftCaptureExecutableHash;
     diagnosticSource=$diagnosticSource; nativeDiagnosticLogs=$nativeDiagnosticLogs; diagnosticVerification=$diagnosticVerification;
@@ -310,5 +511,12 @@ $report = [ordered]@{
     errors = $errors; visualInspection = 'pending'
 }
 [System.IO.File]::WriteAllText($reportPath,($report | ConvertTo-Json -Depth 20),[System.Text.UTF8Encoding]::new($false))
+# Existing callers retain latest aliases; accepted screenshots, state and raw
+# logs always remain in the unique run directory referenced by the report.
+foreach($riftCaptureOutput in @($capturePath,$statePath,$logPath,$stdoutPath,$stderrPath,$reportPath)) {
+    if(Test-Path -LiteralPath $riftCaptureOutput -PathType Leaf) {
+        Copy-Item -LiteralPath $riftCaptureOutput -Destination (Join-Path $captureRoot ([IO.Path]::GetFileName($riftCaptureOutput))) -Force
+    }
+}
 Write-Output ($report | ConvertTo-Json -Depth 20)
 if (!$riftCapturePassed) { throw "Unreal capture failed; inspect $reportPath" }

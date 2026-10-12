@@ -36,10 +36,13 @@ public:
     TArray<TSharedPtr<FJsonObject>> Checkpoints()const;
     TArray<TSharedPtr<FJsonObject>> AlertRows(const FString& Style=TEXT("all"),const FString& Archetype=TEXT("all"))const;
     TArray<TSharedPtr<FJsonObject>> PatchRows(const FString& Baseline)const;
+    TSharedPtr<FJsonObject> ReportIdentity(const FString& Subject)const;
+    static bool CardRowMatches(const TSharedPtr<FJsonObject>& Row,const FString& Cost,const FString& Type,const FString& Trait,const FString& Search=TEXT(""));
     FString LastError;
     static FString Fingerprint();
 private:
     friend class FRiftMetaAggregationTest;
+    friend class FRiftMetaArchiveIdentityTest;
     friend class FRiftMetaWorkerPauseTest;
     TSharedPtr<FJsonObject> Data;
     TSharedPtr<FRiftMetaWorker,ESPMode::ThreadSafe> Worker;

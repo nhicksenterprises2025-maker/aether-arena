@@ -113,6 +113,14 @@ int Priority(const std::vector<std::string> &list, const std::string &id) {
     auto it = std::find(list.begin(), list.end(), id);
     return it == list.end() ? 0 : static_cast<int>(list.end() - it);
 }
+double PublicUnitValue(const Entity &body) {
+    const Card *definition = FindEntityDefinition(body.cardId);
+    if (!definition) return 0;
+    if (definition->cost > 0) return static_cast<double>(definition->cost) / std::max(1, definition->count);
+    const Card *parent = FindCard(body.attributionCardId);
+    return parent && parent->deathSpawnCount > 0
+               ? static_cast<double>(parent->cost) / (parent->deathSpawnCount + parent->count) : 0;
+}
 } // namespace
 void Match::Decision(Team team, const std::string &label, const std::string &reason) {
     auto &ai = state_.ai[I(team)];
@@ -162,13 +170,13 @@ void Match::UpdateAI(Team team, double dt) {
     double bestThreat = -1;
     for (const auto &e : state_.entities)
         if (!e.dead && e.kind == EntityKind::Troop) {
-            const auto *c = FindCard(e.cardId);
+            const auto *c = FindEntityDefinition(e.cardId);
             if (!c)
                 continue;
             if (e.team != team && e.position.z * sign > .35) {
                 threats.push_back(e);
                 const double depth = Clamp((e.position.z * sign - 1.5) / 12, 0, 1.35);
-                const double value = c->cost * (.65 + depth * 1.45) * (c->structuresOnly ? 1.45 : 1) *
+                const double value = PublicUnitValue(e) * (.65 + depth * 1.45) * (c->structuresOnly ? 1.45 : 1) *
                                      (.55 + .45 * e.hp / e.maxHp);
                 laneScores[e.lane < 0 ? 0 : 1] += value;
                 threatTotal += value;
@@ -192,6 +200,38 @@ void Match::UpdateAI(Team team, double dt) {
     for (int h = 0; h < 4; ++h)
         if (const auto *c = FindCard(state_.hands[side][h]); c && c->cost <= bank + 1e-9)
             available.push_back({h, c});
+    // Cloak is valued only against observable future attacks whose locks it
+    // can drop. Existing projectiles, aura packets and spells are not avoided.
+    for (const auto choice : available) {
+        const auto &spell = *choice.card;
+        if (spell.invisibilityDuration <= 0 || !spell.breakExistingLocks) continue;
+        Vec2 point;
+        double best = 0;
+        for (const auto &center : state_.entities) {
+            if (center.dead || center.team != team || center.kind != EntityKind::Troop) continue;
+            const Vec2 cast = SnapToTile(center.position);
+            double value = 0;
+            for (const auto &enemy : state_.entities) {
+                const Entity *victim = Get(enemy.target);
+                const double attackReady = std::max(enemy.cooldown, enemy.stunUntil - state_.elapsed);
+                if (enemy.dead || enemy.team == team || !victim || victim->dead || victim->team != team ||
+                    victim->kind != EntityKind::Troop || victim->invisibleUntil > state_.elapsed ||
+                    (!spell.globalFriendlyInvisibility && D(victim->position, cast) > spell.spellRadius) ||
+                    attackReady < spell.castDelay || attackReady >= spell.castDelay + spell.invisibilityDuration)
+                    continue;
+                const Card *attacker = FindEntityDefinition(enemy.cardId);
+                const double packet = Crown(enemy) ? (enemy.kind == EntityKind::Core ? 112 : 86)
+                                                   : attacker ? attacker->damage : 0;
+                value += PublicUnitValue(*victim) * std::min(1., packet / std::max(1., victim->hp + victim->shieldHP));
+            }
+            if (value > best) {best = value;point = cast;}
+        }
+        if (best >= spell.cost * style.trade && best > 0 &&
+            AIPlay(team, choice.index, point, "cloak_defense")) {
+            Decision(team, "CLOAK DEFENSE", "observed enemy locks during the cloak window");
+            return;
+        }
+    }
     auto observedCounter = [&](const Card &candidate) {
         std::set<std::string> seen;
         for (std::size_t n = ai.observedCycle.size(); n-- > 0;) {
@@ -220,8 +260,8 @@ void Match::UpdateAI(Team team, double dt) {
     auto pocket = [&](int lane, const Card &c, bool deep, Vec2 &point) {
         for (const auto &e : state_.entities)
             if (e.team != team && e.kind == EntityKind::Guard && e.lane == lane && e.dead) {
-                point =
-                    SnapToTile({lane * (2 + (arena::PocketOuterX - 2) * (deep ? .62 : .42)), -sign * (deep ? 8.25 : 3.25)});
+                point = SnapToTile({lane * (2 + (arena::PocketOuterX - 2) * (deep ? .62 : .42)),
+                                    -sign * (deep ? arena::PocketMaxDepth - 2 : 3.25)});
                 return CanPlace(team, c, point);
             }
         return false;
@@ -250,12 +290,25 @@ void Match::UpdateAI(Team team, double dt) {
                     int count = 0;
                     double value = 0;
                     for (const auto &v : targets)
-                        if (D(v.position, center.position) <= choice.card->spellRadius) {
+                        if (CanHit(*choice.card, v) &&
+                            D(v.position, center.position) <= choice.card->spellRadius) {
                             ++count;
-                            const auto *c = FindCard(v.cardId);
-                            double potential =
-                                choice.card->damage + choice.card->dotDamage * choice.card->dotDuration * .72;
-                            value += (c ? c->cost : 3) * std::min(1., potential / std::max(1., v.hp));
+                            const auto *c = FindEntityDefinition(v.cardId);
+                            double shield = v.shieldHP, potential = 0;
+                            auto packet = [&](double damage) {
+                                if (shield > 0) {
+                                    const double used = std::min(shield, damage);
+                                    shield -= used;
+                                    damage = c && c->shieldOverflowProtected ? 0 : damage - used;
+                                }
+                                potential += damage;
+                            };
+                            packet(v.kind == EntityKind::Troop ? choice.card->damage : choice.card->towerDamage);
+                            if (choice.card->dotInterval > 0)
+                                for (int tick = 0; tick < static_cast<int>(choice.card->dotDuration * .72 /
+                                                                         choice.card->dotInterval); ++tick)
+                                    packet(v.kind == EntityKind::Troop ? choice.card->dotDamage : choice.card->dotStructureDamage);
+                            value += PublicUnitValue(v) * std::min(1., potential / std::max(1., v.hp));
                         }
                     for (const auto &t : state_.entities)
                         if (!t.dead && t.team == team && Crown(t) &&
@@ -279,7 +332,7 @@ void Match::UpdateAI(Team team, double dt) {
             if (low || (ai.style == "spell_cycle" && bank >= 8.8)) {
                 Choice best{-1, nullptr};
                 for (auto ch : available)
-                    if (ch.card->spell && ch.card->towerDamage > 0 &&
+                    if (ch.card->spell && ch.card->towerDamage > 0 && CanHit(*ch.card, *weak) &&
                         (!best.card ||
                          ch.card->towerDamage / ch.card->cost > best.card->towerDamage / best.card->cost))
                         best = ch;
@@ -323,12 +376,25 @@ void Match::UpdateAI(Team team, double dt) {
         bool tank = false;
         for (const auto &e : threats)
             if (e.lane == threatLane) {
-                const auto *c = FindCard(e.cardId);
+                const auto *c = FindEntityDefinition(e.cardId);
                 tank |= (c && c->structuresOnly) || e.hp > 850;
             }
         for (auto ch : available)
             if (ch.card->building && (tank || threatTotal >= 6)) {
-                Vec2 p{threatLane * 7., sign * Clamp(primary.position.z * sign + 3.4, 4, 12.8)};
+                const bool canCover = std::any_of(threats.begin(), threats.end(), [&](const Entity &enemy) {
+                    if (CanHit(*ch.card, enemy))
+                        return true;
+                    const auto *attacker = FindEntityDefinition(enemy.cardId);
+                    // A building may still divert a structure-only attacker
+                    // that it cannot shoot; this is a pull, not invented DPS.
+                    return attacker && TargetMaskFor(*attacker) == targets::Structure;
+                });
+                if (!canCover)
+                    continue;
+                // Keep the defensive footprint ahead of its Guard instead of
+                // requesting a center inside the tower on a shallower arena.
+                Vec2 p{threatLane * (arena::BridgeCenterX - .2),
+                       sign * Clamp(primary.position.z * sign + 3.4, 4, arena::GuardDepth - 3)};
                 if (CanPlace(team, *ch.card, SnapToTile(p)) &&
                     AIPlay(team, ch.index, p, "building_defense")) {
                     ai.phase = "defend";
@@ -343,13 +409,14 @@ void Match::UpdateAI(Team team, double dt) {
                 const auto &c = *ch.card;
                 double score = std::max(0, 7 - c.cost) * .52 - c.cost * .18;
                 bool compatible = false;
-                int air = 0;
+                int air = 0, directTargets = 0;
                 for (const auto &t : threats) {
-                    const auto *tc = FindCard(t.cardId);
+                    const auto *tc = FindEntityDefinition(t.cardId);
                     if (!tc)
                         continue;
                     double answer = CounterScore(c, *tc);
                     compatible |= answer > 0;
+                    directTargets += CanHit(c, t);
                     score += answer / 100 * 2.4;
                     air += t.flying;
                     if (tc->structuresOnly &&
@@ -359,14 +426,15 @@ void Match::UpdateAI(Team team, double dt) {
                 if (!compatible)
                     continue;
                 if (c.building) {
-                    const auto *pc = FindCard(primary.cardId);
+                    const auto *pc = FindEntityDefinition(primary.cardId);
                     score += pc && pc->structuresOnly ? 3.4 : 1.1;
                 }
                 if (c.splash > 0)
-                    score += std::max(0, static_cast<int>(threats.size()) - 1) * 1.2;
-                if (air && c.canHitAir)
+                    score += std::max(0, directTargets - 1) * 1.2;
+                const bool hitsAir = (TargetMaskFor(c) & targets::AirTroop) != 0;
+                if (air && hitsAir)
                     score += air * 1.15;
-                if (air && !c.canHitAir)
+                if (air && !hitsAir)
                     score -= 4;
                 if (threats.size() > static_cast<std::size_t>(air) && c.id == "frost_fang")
                     score += 1.2;
@@ -376,8 +444,8 @@ void Match::UpdateAI(Team team, double dt) {
                 }
             }
         if (best.card) {
-            Vec2 p{primary.lane * 7 + (Random() - .5) * 1.15,
-                   sign * Clamp(primary.position.z * sign + 2.35, 3.35, 13.6)};
+            Vec2 p{primary.lane * (arena::BridgeCenterX - .2) + (Random() - .5) * 1.15,
+                   sign * Clamp(primary.position.z * sign + 2.35, 3.35, arena::CoreDepth - 3.7)};
             if (AIPlay(team, best.index, p, "defend")) {
                 ai.phase = "defend";
                 Decision(team, "DEFEND", best.card->name);
@@ -396,7 +464,7 @@ void Match::UpdateAI(Team team, double dt) {
             return false;
         }
         const Entity copy = *anchor;
-        const auto *ac = FindCard(copy.cardId);
+        const auto *ac = FindEntityDefinition(copy.cardId);
         if (!ac)
             return false;
         const double advance = -copy.position.z * sign;
@@ -430,7 +498,7 @@ void Match::UpdateAI(Team team, double dt) {
             if (!ch.card->spell && !ch.card->building && !ch.card->structuresOnly) {
                 double value = PairSynergy(*ac, *ch.card) / 15 + Priority(style.support, ch.card->id) * .35;
                 for (const auto &e : defenders)
-                    if (const auto *c = FindCard(e.cardId))
+                    if (const auto *c = FindEntityDefinition(e.cardId))
                         value += CounterScore(*ch.card, *c) / 100 * 2;
                 if (value > score) {
                     score = value;
@@ -440,7 +508,8 @@ void Match::UpdateAI(Team team, double dt) {
         if (!best.card)
             return false;
         const double reserve = advance < -5.5 ? style.reserve : 0;
-        Vec2 p{ai.pushLane * 6.8 + (Random() - .5), -sign * Clamp(advance - 2.5, -14.7, -3.5)};
+        Vec2 p{ai.pushLane * (arena::BridgeCenterX - .4) + (Random() - .5),
+               -sign * Clamp(advance - 2.5, -arena::CoreDepth + 2.6, -3.5)};
         if (advance > 5.5)
             pocket(ai.pushLane, *best.card, true, p);
         if (AIPlay(team, best.index, p, "support", reserve)) {
@@ -458,7 +527,7 @@ void Match::UpdateAI(Team team, double dt) {
             if (!e.dead && e.team == team && e.kind == EntityKind::Troop &&
                 e.hp / e.maxHp > (ai.style == "counter" ? .26 : .38) && -e.position.z * sign > -11.5 &&
                 -e.position.z * sign < 1.2) {
-                const auto *c = FindCard(e.cardId);
+                const auto *c = FindEntityDefinition(e.cardId);
                 if (c && !c->structuresOnly && (!survivor || e.hp / e.maxHp > survivor->hp / survivor->maxHp))
                     survivor = &e;
             }
@@ -485,7 +554,7 @@ void Match::UpdateAI(Team team, double dt) {
         for (auto ch : available)
             if (ch.card->id == "rambeast" || ch.card->id == "vampire_bats" || ch.card->id == "twin_blades" ||
                 ch.card->id == "sky_manta" || ch.card->id == "ironclad")
-                if (AIPlay(team, ch.index, {lane * 6.6, sign * 12.6}, "split", 1)) {
+                if (AIPlay(team, ch.index, {lane * (arena::BridgeCenterX - .6), sign * (arena::GuardDepth - .8)}, "split", 1)) {
                     Decision(team, "SPLIT-LANE PRESSURE", ch.card->name);
                     return;
                 }
@@ -502,7 +571,7 @@ void Match::UpdateAI(Team team, double dt) {
         if (!best.card)
             return false;
         const int lane = attackLane();
-        Vec2 p{lane * 6.7 + (Random() - .5) * .7, sign * 14.5};
+        Vec2 p{lane * (arena::BridgeCenterX - .5) + (Random() - .5) * .7, sign * (arena::CoreDepth - 2.8)};
         if (ai.style == "aggro")
             pocket(lane, *best.card, false, p);
         return AIPlay(team, best.index, p, "overflow");
@@ -530,10 +599,10 @@ void Match::UpdateAI(Team team, double dt) {
             }
         if (!best.card)
             return false;
-        Vec2 p{lane * (best.card->id == "rambeast" ? 6.9 : 6.5) + (Random() - .5) * .55,
-               sign * (best.card->id == "rambeast"      ? 13.1
-                       : best.card->id == "boulderback" ? 14.65
-                                                        : 14.)};
+        Vec2 p{lane * (arena::BridgeCenterX - (best.card->id == "rambeast" ? .3 : .7)) + (Random() - .5) * .55,
+               sign * (best.card->id == "rambeast"      ? arena::GuardDepth - .3
+                       : best.card->id == "boulderback" ? arena::CoreDepth - 2.65
+                                                        : arena::CoreDepth - 3.3)};
         const double chance = ai.style == "aggro" ? .72 : ai.style == "control" ? .46 : .36;
         if (best.card->id != "boulderback" && Random() < chance)
             pocket(lane, *best.card, best.card->id != "rambeast", p);

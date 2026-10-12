@@ -16,6 +16,7 @@ from pathlib import Path
 import struct
 import sys
 import zlib
+from portrait_source_revision import validate_revision
 
 
 CARD_IDS = frozenset((
@@ -23,6 +24,7 @@ CARD_IDS = frozenset((
     "twin_blades", "boulderback", "arc_mage", "rambeast", "sky_manta",
     "frost_fang", "storm_raven", "bullet_burst", "nova_flask",
     "meteor_shards", "mini_stampede", "stampede", "pulverizer",
+    "bone_warden", "aether_reaper", "iron_giant", "shadow_surge",
 ))
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 
@@ -119,17 +121,25 @@ class PortraitAudit:
         ):
             self.report["provenance"][label] = self.file_info(relative)
 
-        self.check("Manifest contains exactly the seventeen canonical cards",
+        self.check("Manifest contains exactly the twenty-one approved playable cards",
                    set(manifest.get("cards", {})) == CARD_IDS)
-        self.check("Manifest illustrations contain exactly the seventeen cards",
+        self.check("Manifest illustrations contain exactly the twenty-one cards",
                    set(manifest.get("illustrations", {})) == CARD_IDS)
-        self.check("Portrait report contains exactly the seventeen cards",
+        self.check("Portrait report contains exactly the twenty-one cards",
                    set(portraits.get("cards", {})) == CARD_IDS)
-        self.check("Portrait PNG inventory contains exactly the seventeen cards",
+        self.check("Portrait PNG inventory contains exactly the twenty-one deck cards (child excluded)",
                    {p.stem for p in (self.root / "Assets/Source/CardArt").glob("*.png")} == CARD_IDS)
         self.check("Portrait resolution is 768 by 960", portraits.get("resolution") == [768, 960])
-        self.check("Portrait sourceBlend equals final export source",
-                   portraits.get("sourceBlend") == manifest.get("source"))
+        same_source = portraits.get("sourceBlend") == manifest.get("source")
+        if same_source:
+            self.check("Portrait sourceBlend equals final export source", True)
+        else:
+            try:
+                revision = validate_revision(self.root, manifest, portraits.get("sourceBlend"))
+                self.check("Historical portrait source has verified exact repair and additive revisions", True)
+                self.report["provenance"]["verifiedSourceRevisions"] = revision
+            except (OSError, ValueError, KeyError, TypeError) as error:
+                self.check("Historical portrait source has verified exact repair and additive revisions", False, str(error))
         source_info = self.verify_file(manifest.get("source"), "Production Blender source")
         if source_info:
             self.report["provenance"]["sourceBlend"] = source_info
@@ -175,8 +185,9 @@ class PortraitAudit:
                                zlib.crc32(raw[12:29]) == struct.unpack(">I", raw[29:33])[0])
             pose = record.get("poseFrame")
             self.check(card_id + " positive integer pose frame", type(pose) is int and pose >= 1)
-            scale = record.get("cameraOrthoScale")
-            self.check(card_id + " finite positive camera scale", finite_number(scale) and scale > 0)
+            perspective = record.get("cameraProjection") == "Perspective"
+            scale = record.get("cameraDistance") if perspective else record.get("cameraOrthoScale")
+            self.check(card_id + " finite positive camera distance or orthographic scale", finite_number(scale) and scale > 0)
             bounds = record.get("boundsMeters")
             bounds_ok = isinstance(bounds, list) and len(bounds) == 2 and all(
                 isinstance(point, list) and len(point) == 3 and all(finite_number(v) for v in point)
@@ -187,6 +198,9 @@ class PortraitAudit:
             if not self.check(card_id + " production subjects exist", isinstance(sources, list) and bool(sources)):
                 continue
             expected_models = {binding[key] for key in ("skeletal", "static", "skeletalDecoration") if key in binding}
+            if card_id=='bone_warden':expected_models.add('bone_warden_skeleton')
+            if card_id=='shadow_surge':
+                expected_models={'ironclad','twin_blades','bone_warden_skeleton','shadow_surge_wisp','shadow_surge_ribbon'}
             observed_models = set()
             validated_sources = []
             for index, subject in enumerate(sources):
@@ -209,7 +223,14 @@ class PortraitAudit:
                     self.check(label + " normalized finite action phase", phase_ok)
                     if clip is not None and phase_ok:
                         expected_frame = 1 + round((clip["frames"] - 1) * phase)
-                        self.check(label + " pose frame matches action phase", pose == expected_frame)
+                        if "phaseOffsetFrames" in subject:
+                            offset=subject.get("phaseOffsetFrames")
+                            self.check(label + " staged phase offset matches source action",
+                                       type(offset) is int and offset==expected_frame-1 and
+                                       subject.get("poseSourceFrame")==expected_frame and
+                                       subject.get("evaluatedAtFrame")==pose==1 and
+                                       isinstance(subject.get("stagedAction"),str))
+                        else:self.check(label + " pose frame matches action phase", pose == expected_frame)
                         source.update({"action": action, "phase": phase, "poseFrame": expected_frame})
                 else:
                     self.check(label + " static subject has no skeletal pose",
@@ -217,6 +238,22 @@ class PortraitAudit:
                 validated_sources.append(source)
             self.check(card_id + " subjects match native card model bindings", observed_models == expected_models,
                        {"expected": sorted(expected_models), "observed": sorted(observed_models)})
+            if perspective:
+                count={"mini_stampede":5,"stampede":15,"pulverizer":1,"bone_warden":5,"aether_reaper":1,"iron_giant":1,"shadow_surge":7}.get(card_id)
+                if count is not None:
+                    self.check(card_id+" exact production subject count",len(sources)==count and record.get("subjectCount")==count)
+                for key,size in (("master",(1024,1280)),("smallReview",(96,120))):
+                    entry=self.verify_file(record.get(key),card_id+" "+key)
+                    if entry:
+                        raw=self.raw(entry["file"])
+                        self.check(card_id+" "+key+" dimensions",len(raw)>=24 and raw[:8]==PNG_SIGNATURE and struct.unpack(">II",raw[16:24])==size)
+                self.verify_file(record.get("editableScene"),card_id+" editable staged Blender scene")
+                if card_id in {'bone_warden','aether_reaper','iron_giant','shadow_surge'}:
+                    self.verify_file(record.get('rendererScript'),card_id+' actual recorded producer')
+                    if card_id=='shadow_surge':
+                        allies=[s for s in sources if s.get('illustrationOnlyAffectedAlly')]
+                        self.check('Shadow Surge illustrates exactly three affected allies, with no creature binding',
+                            len(allies)==3 and binding.get('spell') is True and not binding.get('skeletal') and not binding.get('static'))
             if validated_sources and all(source["kind"] == "static" for source in validated_sources):
                 self.check(card_id + " static portrait uses the base frame", pose == 1)
             self.report["cards"][card_id] = {

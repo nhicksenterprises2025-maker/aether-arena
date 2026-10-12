@@ -11,6 +11,7 @@ class RIFTCROWNARENA_API URiftAssetLibrary : public UBlueprintFunctionLibrary
     GENERATED_BODY()
 public:
     UFUNCTION(BlueprintCallable) static FString CardDefinitionsJSON();
+    UFUNCTION(BlueprintCallable) static FString EntityDefinitionsJSON();
 };
 
 UCLASS()

@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "reason": "User requested revised detail, overlap fixes and animation quality before release",
+  "pins": [
+    {
+      "source": "Assets/Source/CardArt/model_portraits.json",
+      "snapshot": "Assets/Source/Revisions/ArtPolishBefore1.6.0/BeforePortraits.json",
+      "sha256": "c5964e22dde3c5e785418ceb613954602c2af9f50f629b65d312ee22956f2dda",
+      "bytes": 73630
+    },
+    {
+      "source": "Assets/Source/RiftCrown_ProductionAssets.blend",
+      "snapshot": "Assets/Source/Revisions/ArtPolishBefore1.6.0/BeforeSource.blend",
+      "sha256": "46fbbcf748d5b023987a33d2bdba08c19d4cc488dd591b0aacec313cc0c58914",
+      "bytes": 18955574
+    },
+    {
+      "source": "Build/expansion_asset_models.py",
+      "snapshot": "Assets/Source/Revisions/ArtPolishBefore1.6.0/BeforeExpansionModels.py",
+      "sha256": "bb79d2b3817bf4e96d00fa24b6e7e05c71770e9c2275b7236782e1d144448e65",
+      "bytes": 22138
+    },
+    {
+      "source": "Assets/asset_manifest.json",
+      "snapshot": "Assets/Source/Revisions/ArtPolishBefore1.6.0/BeforeManifest.json",
+      "sha256": "b8a4175ee0f4eef084bf29ae08af4dbf23d75a87cf32a728568c010e4c38e7e2",
+      "bytes": 228066
+    },
+    {
+      "source": "Build/expansion_new_models.py",
+      "snapshot": "Assets/Source/Revisions/ArtPolishBefore1.6.0/BeforeNewModels.py",
+      "sha256": "2bab6ae4d92615e187a978761be068e91a696e5409250e7fb26e267ba1c8627f",
+      "bytes": 29601
+    },
+    {
+      "source": "Build/generate_assets.py",
+      "snapshot": "Assets/Source/Revisions/ArtPolishBefore1.6.0/BeforeGenerateAssets.py",
+      "sha256": "0b5adc878febc747459209f0dd29ad911b83db560e8fb3e45e3b3f9788e3f0ee",
+      "bytes": 82759
+    }
+  ]
+}

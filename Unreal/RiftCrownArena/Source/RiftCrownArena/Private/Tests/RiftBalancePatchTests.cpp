@@ -22,22 +22,27 @@ struct FBalanceCard
 // Independent requested balance contract. DPS is derived from damage and the
 // requested hit interval; aura, charge, splash and travel time are separate.
 const FBalanceCard ExpectedCards[] = {
-    {"ironclad",3,1,822,93,1,2.25,1.35,1,0,0,0,0,false,false,false,false,false,93},
-    {"ember_archer",3,1,374,152,1.55,2.35,6,.95,16,0,0,0,false,true,false,false,false,98.06451612903226},
-    {"twin_blades",2,2,262,55,.75,3.35,1.2,.82,0,0,0,0,false,false,false,false,false,73.33333333333333},
+    {"ironclad",3,1,822,93,1.1,2.25,1.35,1,0,0,0,0,false,false,false,false,false,93/1.1},
+    {"ember_archer",3,1,374,152,1.75,2.35,6,.95,16,0,0,0,false,true,false,false,false,152/1.75},
+    {"twin_blades",2,2,262,55,.75,3.35,1.2,.82,0,0,0,0,false,false,false,false,false,55/.75},
     {"boulderback",5,1,1620,118,2,1.3,1.5,1.22,0,0,0,0,false,false,true,false,false,59},
-    {"arc_mage",4,1,547,120,1.15,1.7,6,.96,17,2.25,0,0,false,true,false,false,false,104.34782608695652},
-    {"rambeast",4,1,880,140,1.4,2.6,1.45,1.06,0,0,0,0,false,false,true,false,false,100},
-    {"sky_manta",3,1,480,77,.92,3.05,3.4,1.05,15,0,0,0,true,true,false,false,false,83.69565217391305},
-    {"vampire_bats",5,5,174,86,1.05,1.95,2,.68,0,0,0,0,true,true,false,false,false,81.9047619047619},
+    {"arc_mage",4,1,512,108,1.15,1.7,6,.96,17,2.25,0,0,false,true,false,false,false,108/1.15},
+    {"rambeast",4,1,934,156,1.25,2,1.45,1.06,0,0,0,0,false,false,true,false,false,156/1.25},
+    {"sky_manta",3,1,480,77,.92,3.05,3.4,1.05,15,0,0,0,true,true,false,false,false,77/.92},
+    {"vampire_bats",5,5,174,86,1.05,1.95,2,.68,0,0,0,0,true,true,false,false,false,86/1.05},
     {"frost_fang",5,1,1265,72,.75,2.5,1.1,1.02,0,0,0,0,false,false,false,false,false,96},
-    {"storm_raven",6,1,1337,251,1.7,1.18,4.3,1.2,18,0,0,0,true,false,true,false,false,147.64705882352942},
+    {"storm_raven",6,1,1222,251,1.7,1.18,4.3,1.2,18,0,0,0,true,false,true,false,false,251/1.7},
     {"meteor_shards",5,1,0,262,0,0,0,1,0,0,0,0,false,false,false,true,false,0},
-    {"archer_tower",4,1,850,75,1,0,7,1,18,0,25,1.65,false,true,false,false,true,75},
+    {"archer_tower",4,1,850,75,.9,0,7,1,18,0,25,1.65,false,true,false,false,true,75/.9},
     {"bullet_burst",2,1,0,175,0,0,0,1,0,0,0,0,false,false,false,true,false,0},
     {"nova_flask",4,1,0,375,0,0,0,1,0,0,0,0,false,false,false,true,false,0},
-    {"mini_stampede",2,5,95,18,.9,3.5,1,.85,0,0,0,0,false,false,false,false,false,20},
-    {"stampede",7,15,95,18,1,3,.9,1.3,0,0,0,0,false,false,true,false,false,18}
+    {"mini_stampede",2,5,111,20,.9,3.5,1,1.3,0,0,0,0,false,false,false,false,false,20/.9},
+    {"stampede",7,15,111,20,1,3,.8,.85,0,0,0,0,false,false,true,false,false,20},
+    {"pulverizer",3,1,700,65,.9,0,4,.95,0,4,45,1.65,false,false,false,false,true,65/.9},
+    {"bone_warden",6,1,1526,101,1.5,1,1.75,1.5,0,.5,0,0,false,false,false,false,false,101/1.5},
+    {"aether_reaper",4,1,445,95,1.05,1.85,1.4,1.1,0,1.5,0,0,true,true,false,false,false,95/1.05},
+    {"iron_giant",3,1,1000,85,1.3,1.55,1.35,1,0,0,0,0,false,false,true,false,false,85/1.3},
+    {"shadow_surge",3,1,0,100,0,0,0,1,0,0,0,0,false,true,false,true,false,0}
 };
 }
 
@@ -47,13 +52,13 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
 {
     if(!FParse::Param(FCommandLine::Get(),TEXT("RiftAutomationSandbox")))
     {AddError(TEXT("Balance patch fixture requires isolated RiftSaveRoot/UserDir and RiftAutomationSandbox."));return false;}
-    TestEqual(TEXT("All sixteen first-patch cards remain alongside the single new Pulverizer"),int32(rift::Cards().size()),int32(UE_ARRAY_COUNT(ExpectedCards))+1);
-    TestNotNull(TEXT("Pulverizer is the only added card outside the preserved balance contract"),rift::FindCard("pulverizer"));
+    TestEqual(TEXT("All twenty-one approved playable cards exist"),int32(rift::Cards().size()),int32(UE_ARRAY_COUNT(ExpectedCards)));
+    TestNotNull(TEXT("Pulverizer remains in the approved playable roster"),rift::FindCard("pulverizer"));
     // The requested visual alignment also moves the actual collision/target
     // bodies. Keep tower depths, body radii and the expanded arena unchanged.
-    TestEqual(TEXT("Tower alignment retains the thirty-tile arena width"),rift::arena::Width,30);
-    TestEqual(TEXT("Tower alignment retains the forty-four-tile arena depth"),rift::arena::Height,44);
-    TestEqual(TEXT("Bridge center remains seven point two tiles from arena center"),rift::arena::BridgeCenterX,7.2);
+    TestEqual(TEXT("Approved arena is twenty-four tiles across"),rift::arena::Width,24);
+    TestEqual(TEXT("Approved arena is thirty-four tiles deep"),rift::arena::Height,34);
+    TestEqual(TEXT("Larger tiles preserve physical bridge center"),rift::arena::BridgeCenterX,5.76);
     rift::MatchOptions GeometryOptions;GeometryOptions.aiEnabled={false,false};
     rift::Match Geometry(GeometryOptions);
     TestEqual(TEXT("Tower alignment retains six actual initial tower bodies"),int32(Geometry.State().entities.size()),6);
@@ -68,7 +73,7 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
         TestTrue(Label+TEXT(" remains a Core or Guard body"),Core||Guard);
         TestTrue(Label+TEXT(" occupies one unique team/lane slot"),TowerSlots.insert({int(Tower.team),Tower.lane}).second);
         TestTrue(Label+TEXT(" retains its tower lane"),Core?Tower.lane==0:(Tower.lane==-1||Tower.lane==1));
-        TestTrue(Label+TEXT(" retains its symmetric rear depth"),std::abs(Tower.position.z-Sign*(Core?17.3:13.4))<1.e-9);
+        TestTrue(Label+TEXT(" retains its symmetric rear depth"),std::abs(Tower.position.z-Sign*(Core?13.84:10.72))<1.e-9);
         TestTrue(Label+TEXT(" retains its collision radius"),std::abs(Tower.radius-(Core?1.35:1.15))<1.e-9);
         TestTrue(Label+TEXT(" has the requested arena/bridge center"),std::abs(Tower.position.x-(Core?0.:Tower.lane*rift::arena::BridgeCenterX))<1.e-9);
         CoreCount+=Core;GuardCount+=Guard;
@@ -76,6 +81,22 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
     TestEqual(TEXT("Both Core Towers stay centered"),CoreCount,2);
     TestEqual(TEXT("All four Guard Towers align with their bridge centers"),GuardCount,4);
     std::set<std::string> IDs;
+    TestEqual(TEXT("Death child has one separate subordinate definition"),int32(rift::EntityDefinitions().size()),1);
+    const auto* Child=rift::FindEntityDefinition("bone_warden_skeleton");
+    TestNull(TEXT("Death child never enters playable card pool"),rift::FindCard("bone_warden_skeleton"));
+    if(TestNotNull(TEXT("Bone Warden child mechanical definition exists"),Child)) {
+        TestEqual(TEXT("Child body HP"),Child->hp,50.);TestEqual(TEXT("Child damage"),Child->damage,36.);
+        TestEqual(TEXT("Child interval"),Child->attackInterval,.75);TestEqual(TEXT("Child movement"),Child->moveSpeed,2.);
+        TestEqual(TEXT("Child range"),Child->range,.7);TestEqual(TEXT("Child visual scale"),Child->scale,.65);
+        TestEqual(TEXT("Child ground troop/structure target mask"),int32(Child->targetMask),5);
+        auto* Asset=LoadObject<URiftCardData>(nullptr,TEXT("/Game/Rift/Entities/DA_bone_warden_skeleton.DA_bone_warden_skeleton"));
+        if(TestNotNull(TEXT("Child subordinate model data is imported"),Asset)) {
+            TestTrue(TEXT("Child imported HP/damage/interval match subordinate definition"),
+                Asset->HP==50&&Asset->Damage==36&&FMath::IsNearlyEqual(Asset->AttackSpeed,.75f));
+            TestNotNull(TEXT("Child actual skeletal body is bound"),Asset->CharacterMesh.Get());
+            TestTrue(TEXT("Child complete animation set is bound"),Asset->Animations.Num()>=6);
+        }
+    }
     for(const auto& E:ExpectedCards)
     {
         IDs.insert(E.Id);
@@ -88,12 +109,16 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
         TestEqual(*(Id+TEXT(" members per paid cast")),C->count,E.Count);
         Near(TEXT("HP per member"),C->hp,E.HP);Near(TEXT("damage per basic hit"),C->damage,E.Damage);
         Near(TEXT("seconds per basic hit"),C->attackInterval,E.Interval);Near(TEXT("movement tiles per second"),C->moveSpeed,E.Speed);
-        Near(TEXT("range in tiles"),C->range,E.Range);Near(TEXT("canonical model/collision scale"),C->scale,E.Scale);
+        Near(TEXT("range in tiles"),C->range,E.Range);Near(TEXT("canonical visual model scale"),C->scale,E.Scale);
         Near(TEXT("projectile tiles per second"),C->projectileSpeed,E.Projectile);Near(TEXT("splash radius"),C->splash,E.Splash);
         Near(TEXT("building lifetime"),C->lifetime,E.Lifetime);Near(TEXT("building footprint"),C->footprint,E.Footprint);
         TestEqual(*(Id+TEXT(" flying")),C->flying,E.Flying);TestEqual(*(Id+TEXT(" basic air targeting")),C->canHitAir,E.AirTargets);
         TestEqual(*(Id+TEXT(" structure-only basic targeting")),C->structuresOnly,E.StructuresOnly);
         TestEqual(*(Id+TEXT(" spell identity")),C->spell,E.Spell);TestEqual(*(Id+TEXT(" building identity")),C->building,E.Building);
+        // Spell effect eligibility is independent of the preserved legacy
+        // basic-attack air flag. All approved spells affect both troop layers
+        // and structures through their explicit mask.
+        if(C->spell)TestEqual(*(Id+TEXT(" explicit ground/air/structure effect mask")),int32(C->targetMask),7);
         if(!C->spell)
         {
             Near(TEXT("basic DPS per member excludes special effects"),C->damage/C->attackInterval,E.BasicDPS);
@@ -119,6 +144,10 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
         CHECK_IMPORTED(AuraDamage,auraDamage);CHECK_IMPORTED(AuraRadius,auraRadius);CHECK_IMPORTED(AuraInterval,auraInterval);
         CHECK_IMPORTED(StunDuration,stunDuration);CHECK_IMPORTED(DotDamage,dotDamage);CHECK_IMPORTED(DotDuration,dotDuration);
         CHECK_IMPORTED(DotInterval,dotInterval);
+        CHECK_IMPORTED(CollisionRadius,collisionRadius);CHECK_IMPORTED(ChargeMoveSeconds,chargeMoveSeconds);
+        CHECK_IMPORTED(ChargedMoveSpeed,chargedMoveSpeed);CHECK_IMPORTED(HPDecayPerSecond,hpDecayPerSecond);
+        CHECK_IMPORTED(InitialAttackCooldown,initialAttackCooldown);CHECK_IMPORTED(ShieldHP,shieldHP);
+        CHECK_IMPORTED(InvisibilityDuration,invisibilityDuration);CHECK_IMPORTED(DotStructureDamage,dotStructureDamage);
 #undef CHECK_IMPORTED
         Imported(TEXT("FrontSight"),A->FrontSight,8);Imported(TEXT("RearSight"),A->RearSight,5);
         TestEqual(*(Id+TEXT(" imported visual round count")),A->Rounds,C->rounds);
@@ -127,17 +156,24 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
         TestEqual(*(Id+TEXT(" imported structure targeting")),A->StructuresOnly,C->structuresOnly);
         TestEqual(*(Id+TEXT(" imported spell flag")),A->Spell,C->spell);
         TestEqual(*(Id+TEXT(" imported building flag")),A->Building,C->building);
+        TestEqual(*(Id+TEXT(" imported target mask")),A->TargetMask,int32(C->targetMask));
+        TestEqual(*(Id+TEXT(" imported child count")),A->DeathSpawnCount,C->deathSpawnCount);
+        TestEqual(*(Id+TEXT(" imported child definition")),A->DeathSpawnId,FString(UTF8_TO_TCHAR(C->deathSpawnId.c_str())));
+        TestEqual(*(Id+TEXT(" imported hard expiry")),A->HardExpiry,C->hardExpiry);
+        TestEqual(*(Id+TEXT(" imported protected shield overflow")),A->ShieldOverflowProtected,C->shieldOverflowProtected);
+        TestEqual(*(Id+TEXT(" imported cloak scope")),A->GlobalFriendlyInvisibility,C->globalFriendlyInvisibility);
+        TestEqual(*(Id+TEXT(" imported cloak target drop")),A->BreakExistingLocks,C->breakExistingLocks);
         TestNotNull(*(Id+TEXT(" actual model portrait is available")),A->Illustration.Get());
     }
     for(const auto& C:rift::Cards())
     {
-        TestTrue(TEXT("Every card is an exact retained balance card or the one new Pulverizer"),IDs.count(C.id)==1||C.id=="pulverizer");
+        TestTrue(TEXT("Every playable card is covered by the independent approved contract"),IDs.count(C.id)==1);
         if(C.id=="pulverizer")continue; // Its independent full contract is tested by Pulverizer.
         TestEqual(TEXT("Existing cards gain no shockwave attack"),C.shockwaveSpeed,0.);
         const FString Id=UTF8_TO_TCHAR(C.id.c_str());
         auto Ability=[&](const TCHAR* Field,double Actual,double Expected)
         {TestTrue(*(Id+TEXT(" preserved ")+Field),std::abs(Actual-Expected)<.000001);};
-        Ability(TEXT("charge damage"),C.chargeDamage,C.id=="rambeast"?255:0);
+        Ability(TEXT("charge damage"),C.chargeDamage,C.id=="rambeast"?302:0);
         Ability(TEXT("movement slow fraction"),C.slowPct,C.id=="frost_fang"?.30:0);
         Ability(TEXT("slow duration"),C.slowDuration,C.id=="frost_fang"?2:0);
         Ability(TEXT("aura damage"),C.auraDamage,C.id=="storm_raven"?82:0);
@@ -147,9 +183,23 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
         Ability(TEXT("DOT damage"),C.dotDamage,C.id=="meteor_shards"?40:0);
         Ability(TEXT("DOT duration"),C.dotDuration,C.id=="meteor_shards"?5:0);
         Ability(TEXT("DOT interval"),C.dotInterval,C.id=="meteor_shards"?1:0);
-        Ability(TEXT("spell delay"),C.castDelay,C.id=="meteor_shards"?.75:C.id=="bullet_burst"?.30:0);
-        Ability(TEXT("spell radius"),C.spellRadius,C.id=="meteor_shards"?4.5:C.id=="bullet_burst"?2.2:C.id=="nova_flask"?3.25:0);
-        Ability(TEXT("spell structure damage"),C.towerDamage,C.id=="bullet_burst"?55:C.id=="nova_flask"?185:0);
+        Ability(TEXT("structure DOT damage"),C.dotStructureDamage,C.id=="meteor_shards"?15:0);
+        Ability(TEXT("charge movement threshold"),C.chargeMoveSeconds,C.id=="rambeast"?1.5:0);
+        Ability(TEXT("charged movement speed"),C.chargedMoveSpeed,C.id=="rambeast"?3.2:0);
+        Ability(TEXT("explicit Archer decay"),C.hpDecayPerSecond,C.id=="archer_tower"?25:0);
+        Ability(TEXT("initial attack cooldown"),C.initialAttackCooldown,C.id=="archer_tower"?.35:0);
+        Ability(TEXT("initial Giant shield"),C.shieldHP,C.id=="iron_giant"?310:0);
+        Ability(TEXT("local cloak duration"),C.invisibilityDuration,C.id=="shadow_surge"?1:0);
+        TestEqual(*(Id+TEXT(" hard expiry policy")),C.hardExpiry,C.id=="archer_tower");
+        TestEqual(*(Id+TEXT(" shield overflow policy")),C.shieldOverflowProtected,C.id=="iron_giant");
+        TestFalse(*(Id+TEXT(" cloak is local rather than global")),C.globalFriendlyInvisibility);
+        TestEqual(*(Id+TEXT(" cloak drops enemy locks")),C.breakExistingLocks,C.id=="shadow_surge");
+        TestEqual(*(Id+TEXT(" child count")),C.deathSpawnCount,C.id=="bone_warden"?4:0);
+        TestEqual(*(Id+TEXT(" child subordinate id")),FString(UTF8_TO_TCHAR(C.deathSpawnId.c_str())),
+                  C.id=="bone_warden"?FString(TEXT("bone_warden_skeleton")):FString());
+        Ability(TEXT("spell delay"),C.castDelay,C.id=="meteor_shards"?.75:C.id=="bullet_burst"?.30:C.id=="nova_flask"?.85:C.id=="shadow_surge"?.25:0);
+        Ability(TEXT("spell radius"),C.spellRadius,C.id=="meteor_shards"?4.5:C.id=="bullet_burst"?2.5:C.id=="nova_flask"?3:C.id=="shadow_surge"?2:0);
+        Ability(TEXT("spell structure damage"),C.towerDamage,C.id=="meteor_shards"?143:C.id=="bullet_burst"?55:C.id=="nova_flask"?185:C.id=="shadow_surge"?50:0);
         TestEqual(*(Id+TEXT(" preserves Bullet Burst's seven visual rounds")),C.rounds,C.id=="bullet_burst"?7:0);
     }
 
@@ -169,7 +219,7 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
         int Members=0;
         for(const auto& E:M.State().entities)if(E.cardId==Hog)
         {
-            ++Members;TestEqual(*(Id+TEXT(" each live member receives patched HP")),E.hp,95.);
+            ++Members;TestEqual(*(Id+TEXT(" each live member receives patched HP")),E.hp,111.);
             TestEqual(*(Id+TEXT(" each member records complete cast size")),E.memberCount,C->count);
         }
         TestEqual(*(Id+TEXT(" spawns the full requested swarm")),Members,C->count);
@@ -227,7 +277,7 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
     }
     TestTrue(TEXT("Mini Stampede is actually selected by AI and Meta generated-deck policy"),MiniAppearances>0);
     TestTrue(TEXT("Stampede is actually selected by AI and Meta generated-deck policy"),StampedeAppearances>0);
-    AddInfo(TEXT("Retained balance contract: six aligned tower bodies, exact stats/abilities/imports for all sixteen existing cards, zero new wave attacks on existing cards, paid hog counts/costs/targets, derived DPS and current-roster replay telemetry verified. Pulverizer has a separate focused contract."));
+    AddInfo(TEXT("Retained balance contract: six aligned tower bodies, exact stats/abilities/imports for all twenty-one approved cards, zero new wave attacks on existing cards, paid hog counts/costs/targets, derived DPS and current-roster replay telemetry verified. Pulverizer has a separate focused contract."));
     return !HasAnyErrors();
 }
 #endif

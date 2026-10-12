@@ -1,0 +1,618 @@
+{
+  "schema": 1,
+  "sourceBlend": {
+    "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
+    "sha256": "6e5d91490a984b4601ad9c12ee92f13ce567ae6ac06e09fb877c6b08f7099902",
+    "bytes": 22081077
+  },
+  "renderer": {
+    "file": "Build/render_expansion_portraits.py",
+    "sha256": "eb5438d1ef41465b7d71f91279ccdba649b927f249c99b989e1f3d7152b11eff",
+    "bytes": 16097
+  },
+  "cards": {
+    "mini_stampede": {
+      "file": "Assets/Source/CardArt/mini_stampede.png",
+      "sha256": "1bd041592802b85026543761cb8a57716a3097161260626ab09cd8c80690d288",
+      "bytes": 911920,
+      "sourceSceneSHA256": "6e5d91490a984b4601ad9c12ee92f13ce567ae6ac06e09fb877c6b08f7099902",
+      "rendererScript": {
+        "file": "Build/render_expansion_portraits.py",
+        "sha256": "eb5438d1ef41465b7d71f91279ccdba649b927f249c99b989e1f3d7152b11eff",
+        "bytes": 16097
+      },
+      "sources": [
+        {
+          "model": {
+            "file": "Assets/Export/Characters/mini_stampede/SK_mini_stampede.fbx",
+            "sha256": "98d78e53662f99ab42089e8339957f81ce06b9b34f29dc9b3e5364eff6089e85",
+            "bytes": 729500
+          },
+          "action": "Locomotion",
+          "phase": 0.09,
+          "instance": "1",
+          "scale": 1.3,
+          "positionMeters": [
+            0,
+            -1.14,
+            0
+          ],
+          "phaseOffsetFrames": 4,
+          "poseSourceFrame": 5,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_mini_stampede_Rig_1_PortraitPose"
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/mini_stampede/SK_mini_stampede.fbx",
+            "sha256": "98d78e53662f99ab42089e8339957f81ce06b9b34f29dc9b3e5364eff6089e85",
+            "bytes": 729500
+          },
+          "action": "Locomotion",
+          "phase": 0.155,
+          "instance": "2",
+          "scale": 1.3,
+          "positionMeters": [
+            -0.58,
+            0.04,
+            0
+          ],
+          "phaseOffsetFrames": 7,
+          "poseSourceFrame": 8,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_mini_stampede_Rig_2_PortraitPose"
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/mini_stampede/SK_mini_stampede.fbx",
+            "sha256": "98d78e53662f99ab42089e8339957f81ce06b9b34f29dc9b3e5364eff6089e85",
+            "bytes": 729500
+          },
+          "action": "Locomotion",
+          "phase": 0.22,
+          "instance": "3",
+          "scale": 1.3,
+          "positionMeters": [
+            0.58,
+            0.04,
+            0
+          ],
+          "phaseOffsetFrames": 9,
+          "poseSourceFrame": 10,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_mini_stampede_Rig_3_PortraitPose"
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/mini_stampede/SK_mini_stampede.fbx",
+            "sha256": "98d78e53662f99ab42089e8339957f81ce06b9b34f29dc9b3e5364eff6089e85",
+            "bytes": 729500
+          },
+          "action": "Locomotion",
+          "phase": 0.28500000000000003,
+          "instance": "4",
+          "scale": 1.3,
+          "positionMeters": [
+            -0.64,
+            1.24,
+            0
+          ],
+          "phaseOffsetFrames": 12,
+          "poseSourceFrame": 13,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_mini_stampede_Rig_4_PortraitPose"
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/mini_stampede/SK_mini_stampede.fbx",
+            "sha256": "98d78e53662f99ab42089e8339957f81ce06b9b34f29dc9b3e5364eff6089e85",
+            "bytes": 729500
+          },
+          "action": "Locomotion",
+          "phase": 0.35,
+          "instance": "5",
+          "scale": 1.3,
+          "positionMeters": [
+            0.64,
+            1.24,
+            0
+          ],
+          "phaseOffsetFrames": 15,
+          "poseSourceFrame": 16,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_mini_stampede_Rig_5_PortraitPose"
+        }
+      ],
+      "boundsMeters": [
+        [
+          -0.9834309220314026,
+          -1.9901013374328613,
+          0.005199985112994909
+        ],
+        [
+          0.962803304195404,
+          1.9616512060165405,
+          0.7447189092636108
+        ]
+      ],
+      "poseFrame": 1,
+      "cameraProjection": "Perspective",
+      "cameraDistance": 6.584045184817016,
+      "composition": "Five boarlets in a diagonal charge",
+      "subjectCount": 5,
+      "master": {
+        "file": "Assets/Source/CardArt/Masters/mini_stampede.png",
+        "sha256": "ba6f91b705737947ccdb16d467bf13852e095f98f320267d05479602e99737c4",
+        "bytes": 1584035
+      },
+      "editableScene": {
+        "file": "Assets/Source/CardArt/Scenes/mini_stampede_Portrait.blend",
+        "sha256": "97e2391d765edad52bba1d4eb7e0775373dc37fe5dce91699e9e099d26a35a55",
+        "bytes": 4800798
+      },
+      "smallReview": {
+        "file": "Assets/Renders/Expansion/Small/mini_stampede_96x120.png",
+        "sha256": "406d2bf7fb3aee5c59b9daa25597f56e9e1fccd6c3813ab10ed4ce5e79513122",
+        "bytes": 19750
+      },
+      "runtimeResolution": [
+        768,
+        960
+      ],
+      "masterResolution": [
+        1024,
+        1280
+      ],
+      "lighting": {
+        "key": "warm copper",
+        "rim": "cool teal/violet"
+      },
+      "safeZones": {
+        "topLeftBadge": 0.2,
+        "bottomName": 0.14
+      }
+    },
+    "stampede": {
+      "file": "Assets/Source/CardArt/stampede.png",
+      "sha256": "7daca6a73a841cdbba485eb8d760c312b795a29d36f84cc72e7febb155647b73",
+      "bytes": 925122,
+      "sourceSceneSHA256": "6e5d91490a984b4601ad9c12ee92f13ce567ae6ac06e09fb877c6b08f7099902",
+      "rendererScript": {
+        "file": "Build/render_expansion_portraits.py",
+        "sha256": "eb5438d1ef41465b7d71f91279ccdba649b927f249c99b989e1f3d7152b11eff",
+        "bytes": 16097
+      },
+      "sources": [
+        {
+          "model": {
+            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
+            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
+            "bytes": 741884
+          },
+          "action": "Locomotion",
+          "phase": 0.09,
+          "instance": "1",
+          "scale": 0.85,
+          "positionMeters": [
+            -1.09,
+            -1.34,
+            0
+          ],
+          "phaseOffsetFrames": 4,
+          "poseSourceFrame": 5,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_stampede_Rig_1_PortraitPose"
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
+            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
+            "bytes": 741884
+          },
+          "action": "Locomotion",
+          "phase": 0.137,
+          "instance": "2",
+          "scale": 0.85,
+          "positionMeters": [
+            -0.59,
+            -1.34,
+            0
+          ],
+          "phaseOffsetFrames": 6,
+          "poseSourceFrame": 7,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_stampede_Rig_2_PortraitPose"
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
+            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
+            "bytes": 741884
+          },
+          "action": "Locomotion",
+          "phase": 0.184,
+          "instance": "3",
+          "scale": 0.85,
+          "positionMeters": [
+            -0.09,
+            -1.34,
+            0
+          ],
+          "phaseOffsetFrames": 8,
+          "poseSourceFrame": 9,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_stampede_Rig_3_PortraitPose"
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
+            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
+            "bytes": 741884
+          },
+          "action": "Locomotion",
+          "phase": 0.231,
+          "instance": "4",
+          "scale": 0.85,
+          "positionMeters": [
+            0.41000000000000003,
+            -1.34,
+            0
+          ],
+          "phaseOffsetFrames": 11,
+          "poseSourceFrame": 12,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_stampede_Rig_4_PortraitPose"
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
+            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
+            "bytes": 741884
+          },
+          "action": "Locomotion",
+          "phase": 0.278,
+          "instance": "5",
+          "scale": 0.85,
+          "positionMeters": [
+            0.91,
+            -1.34,
+            0
+          ],
+          "phaseOffsetFrames": 13,
+          "poseSourceFrame": 14,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_stampede_Rig_5_PortraitPose"
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
+            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
+            "bytes": 741884
+          },
+          "action": "Locomotion",
+          "phase": 0.09,
+          "instance": "6",
+          "scale": 0.85,
+          "positionMeters": [
+            -1.0,
+            0.0,
+            0
+          ],
+          "phaseOffsetFrames": 4,
+          "poseSourceFrame": 5,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_stampede_Rig_6_PortraitPose"
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
+            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
+            "bytes": 741884
+          },
+          "action": "Locomotion",
+          "phase": 0.137,
+          "instance": "7",
+          "scale": 0.85,
+          "positionMeters": [
+            -0.5,
+            0.0,
+            0
+          ],
+          "phaseOffsetFrames": 6,
+          "poseSourceFrame": 7,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_stampede_Rig_7_PortraitPose"
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
+            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
+            "bytes": 741884
+          },
+          "action": "Locomotion",
+          "phase": 0.184,
+          "instance": "8",
+          "scale": 0.85,
+          "positionMeters": [
+            0.0,
+            0.0,
+            0
+          ],
+          "phaseOffsetFrames": 8,
+          "poseSourceFrame": 9,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_stampede_Rig_8_PortraitPose"
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
+            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
+            "bytes": 741884
+          },
+          "action": "Locomotion",
+          "phase": 0.231,
+          "instance": "9",
+          "scale": 0.85,
+          "positionMeters": [
+            0.5,
+            0.0,
+            0
+          ],
+          "phaseOffsetFrames": 11,
+          "poseSourceFrame": 12,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_stampede_Rig_9_PortraitPose"
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
+            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
+            "bytes": 741884
+          },
+          "action": "Locomotion",
+          "phase": 0.278,
+          "instance": "10",
+          "scale": 0.85,
+          "positionMeters": [
+            1.0,
+            0.0,
+            0
+          ],
+          "phaseOffsetFrames": 13,
+          "poseSourceFrame": 14,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_stampede_Rig_10_PortraitPose"
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
+            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
+            "bytes": 741884
+          },
+          "action": "Locomotion",
+          "phase": 0.09,
+          "instance": "11",
+          "scale": 0.85,
+          "positionMeters": [
+            -0.91,
+            1.34,
+            0
+          ],
+          "phaseOffsetFrames": 4,
+          "poseSourceFrame": 5,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_stampede_Rig_11_PortraitPose"
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
+            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
+            "bytes": 741884
+          },
+          "action": "Locomotion",
+          "phase": 0.137,
+          "instance": "12",
+          "scale": 0.85,
+          "positionMeters": [
+            -0.41000000000000003,
+            1.34,
+            0
+          ],
+          "phaseOffsetFrames": 6,
+          "poseSourceFrame": 7,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_stampede_Rig_12_PortraitPose"
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
+            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
+            "bytes": 741884
+          },
+          "action": "Locomotion",
+          "phase": 0.184,
+          "instance": "13",
+          "scale": 0.85,
+          "positionMeters": [
+            0.09,
+            1.34,
+            0
+          ],
+          "phaseOffsetFrames": 8,
+          "poseSourceFrame": 9,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_stampede_Rig_13_PortraitPose"
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
+            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
+            "bytes": 741884
+          },
+          "action": "Locomotion",
+          "phase": 0.231,
+          "instance": "14",
+          "scale": 0.85,
+          "positionMeters": [
+            0.59,
+            1.34,
+            0
+          ],
+          "phaseOffsetFrames": 11,
+          "poseSourceFrame": 12,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_stampede_Rig_14_PortraitPose"
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
+            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
+            "bytes": 741884
+          },
+          "action": "Locomotion",
+          "phase": 0.278,
+          "instance": "15",
+          "scale": 0.85,
+          "positionMeters": [
+            1.09,
+            1.34,
+            0
+          ],
+          "phaseOffsetFrames": 13,
+          "poseSourceFrame": 14,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_stampede_Rig_15_PortraitPose"
+        }
+      ],
+      "boundsMeters": [
+        [
+          -1.312098741531372,
+          -1.8971071243286133,
+          0.003400026820600033
+        ],
+        [
+          1.3145819902420044,
+          1.823384165763855,
+          0.4874908924102783
+        ]
+      ],
+      "poseFrame": 1,
+      "cameraProjection": "Perspective",
+      "cameraDistance": 9.612506586791516,
+      "composition": "Fifteen boarlets, five across and three deep",
+      "subjectCount": 15,
+      "master": {
+        "file": "Assets/Source/CardArt/Masters/stampede.png",
+        "sha256": "51c8d71d91da44b6f66fa2bc93986a70484ef60a76170f7cccea9f4c0be9a814",
+        "bytes": 1609069
+      },
+      "editableScene": {
+        "file": "Assets/Source/CardArt/Scenes/stampede_Portrait.blend",
+        "sha256": "8cd5d8facfdfaa4c8290448e67602b8ed8e8ec103cb22ff59ec67e97e68971df",
+        "bytes": 10110816
+      },
+      "smallReview": {
+        "file": "Assets/Renders/Expansion/Small/stampede_96x120.png",
+        "sha256": "ab6f96898cde8e92fa116b231cb72810d0a34159b05350a9bd7b5c838edd62c2",
+        "bytes": 19525
+      },
+      "runtimeResolution": [
+        768,
+        960
+      ],
+      "masterResolution": [
+        1024,
+        1280
+      ],
+      "lighting": {
+        "key": "warm copper",
+        "rim": "cool teal/violet"
+      },
+      "safeZones": {
+        "topLeftBadge": 0.2,
+        "bottomName": 0.14
+      }
+    },
+    "pulverizer": {
+      "file": "Assets/Source/CardArt/pulverizer.png",
+      "sha256": "dddde107ff16b0e1856fce35b4ba013da3861de6f279198292365ecc05e20126",
+      "bytes": 909231,
+      "sourceSceneSHA256": "6e5d91490a984b4601ad9c12ee92f13ce567ae6ac06e09fb877c6b08f7099902",
+      "rendererScript": {
+        "file": "Build/render_expansion_portraits.py",
+        "sha256": "eb5438d1ef41465b7d71f91279ccdba649b927f249c99b989e1f3d7152b11eff",
+        "bytes": 16097
+      },
+      "sources": [
+        {
+          "model": {
+            "file": "Assets/Export/Characters/pulverizer/SK_pulverizer.fbx",
+            "sha256": "f4bf2578c5d8d7a025335257854f0dd017580c7719c1f0818d9aae155587d40e",
+            "bytes": 683548
+          },
+          "action": "Attack",
+          "phase": 0.5263157894736842,
+          "instance": "impact",
+          "scale": 0.95,
+          "positionMeters": [
+            0,
+            0,
+            0
+          ],
+          "phaseOffsetFrames": 20,
+          "poseSourceFrame": 21,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "Portrait_pulverizer_Rig_impact_PortraitPose"
+        }
+      ],
+      "boundsMeters": [
+        [
+          -0.7904000282287598,
+          -0.7904000282287598,
+          0.0
+        ],
+        [
+          0.7904000282287598,
+          0.7904000282287598,
+          1.0602000951766968
+        ]
+      ],
+      "poseFrame": 1,
+      "cameraProjection": "Perspective",
+      "cameraDistance": 5.0,
+      "composition": "Four-brace compression machine at its authoritative contact pose",
+      "subjectCount": 1,
+      "master": {
+        "file": "Assets/Source/CardArt/Masters/pulverizer.png",
+        "sha256": "0b12c4dbc7ed6d27a6367328b3a1ea80d59a22082b1f5aa16d8fd8415defbcdd",
+        "bytes": 1568710
+      },
+      "editableScene": {
+        "file": "Assets/Source/CardArt/Scenes/pulverizer_Portrait.blend",
+        "sha256": "e27bdb396e040daa4d029243fa21ca2cfa1e943c16c42ec25c4af5684c6e8ed3",
+        "bytes": 2699019
+      },
+      "smallReview": {
+        "file": "Assets/Renders/Expansion/Small/pulverizer_96x120.png",
+        "sha256": "bf820dae3b25eea5b79ce6f2fd7669914be295c9e081a9197735b2832de71714",
+        "bytes": 19426
+      },
+      "runtimeResolution": [
+        768,
+        960
+      ],
+      "masterResolution": [
+        1024,
+        1280
+      ],
+      "lighting": {
+        "key": "warm copper",
+        "rim": "cool teal/violet"
+      },
+      "safeZones": {
+        "topLeftBadge": 0.2,
+        "bottomName": 0.14
+      }
+    }
+  }
+}

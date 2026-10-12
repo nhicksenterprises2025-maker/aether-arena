@@ -47,6 +47,15 @@ rift::MatchOptions TowerOptions(const std::string& First="ironclad")
     for(const auto& Id:rift::DefaultDeck())if(Id!=First&&Deck.size()<8)Deck.push_back(Id);
     Options.decks={Deck,Deck};return Options;
 }
+void SuppressTowerFire(rift::Match& Match)
+{
+    // This matrix measures navigation around live Crown bodies, not survival
+    // under their attacks. A real stun preserves their HP, location, radius,
+    // target eligibility and collision while removing the firing confound.
+    for(auto& Entity:const_cast<rift::Snapshot&>(Match.State()).entities)
+        if(Entity.kind==rift::EntityKind::Guard||Entity.kind==rift::EntityKind::Core)
+            Entity.stunUntil=100;
+}
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRiftTowerPathingIntegrationTest,"Rift.Integration.TowerPathing",
@@ -58,11 +67,13 @@ bool FRiftTowerPathingIntegrationTest::RunTest(const FString& Parameters)
 
     int32 PaidCases=0,Members=0;
     // Every ground troop uses its real paid hand, unmodified body radius and
-    // ordinary fixed-step movement. Each case begins with only the six towers.
+    // ordinary fixed-step movement. Each case begins with only the six live
+    // tower obstacles; firing is suppressed so low-HP swarm deaths cannot be
+    // mistaken for a failed route or remove a member before its deadline.
     for(const auto& Card:rift::Cards())if(!Card.spell&&!Card.building&&!Card.flying)
         for(const auto Team:{rift::Team::Player,rift::Team::Enemy})for(const int32 Lane:{0,-1,1})for(const int32 RearDrop:{0,1})
         {
-            rift::Match Match(TowerOptions(Card.id));const int32 T=int32(Team);
+            rift::Match Match(TowerOptions(Card.id));SuppressTowerFire(Match);const int32 T=int32(Team);
             rift::Vec2 Drop;uint64 TowerId=0;
             for(const auto& Entity:Match.State().entities)if(Entity.team==Team&&Entity.lane==Lane)
             {Drop=Entity.position;TowerId=Entity.id;break;}
@@ -113,20 +124,20 @@ bool FRiftTowerPathingIntegrationTest::RunTest(const FString& Parameters)
             }
             TestEqual(Label+TEXT(" emits one paid play"),Plays,1);TestEqual(Label+TEXT(" emits one spawn per member"),Spawns,Card.count);
         }
-    TestEqual(TEXT("Both teams' three towers and rear-edge tiles cover all nine ground cards"),PaidCases,108);
-    TestEqual(TEXT("All paid single, twin and swarm ground members are exercised"),Members,336);
+    TestEqual(TEXT("Both teams' three towers and rear-edge tiles cover all eleven ground cards"),PaidCases,132);
+    TestEqual(TEXT("All paid single, twin and swarm ground members are exercised"),Members,360);
 
     // Legal hand drops on the outer rows must also begin inside the movement
     // envelope. Continuous segment checks cannot rescue an invalid origin.
     int32 BoundaryCases=0,BoundaryMembers=0;
-    const double Side=rift::arena::HalfWidth-1.5;
+    const double Side=rift::arena::DeploymentMaxX;
     const rift::Vec2 BoundaryDrops[]={{.5,rift::arena::LastTileZ},{-Side,rift::arena::LastTileZ},{Side,rift::arena::LastTileZ},
         {-rift::arena::LastTileX,rift::arena::LastTileZ},{rift::arena::LastTileX,rift::arena::LastTileZ},{-Side,8.5},{Side,8.5}};
     for(const auto& Card:rift::Cards())if(!Card.spell&&!Card.building&&!Card.flying)
         for(const auto Team:{rift::Team::Player,rift::Team::Enemy})for(auto Drop:BoundaryDrops)
         {
             const int32 T=int32(Team);Drop.z*=Team==rift::Team::Player?1.:-1.;
-            rift::Match Match(TowerOptions(Card.id));Match.SetAether(Team,10);
+            rift::Match Match(TowerOptions(Card.id));SuppressTowerFire(Match);Match.SetAether(Team,10);
             const auto Hand=Match.State().hands[T];const auto Queue=Match.State().queues[T];
             const FString Label=FString::Printf(TEXT("Boundary %s team %d tile %.1f,%.1f"),UTF8_TO_TCHAR(Card.id.c_str()),T,Drop.x,Drop.z);
             TestTrue(Label+TEXT(" remains a legal paid placement"),Match.CanPlace(Team,Card,Drop));
@@ -157,26 +168,26 @@ bool FRiftTowerPathingIntegrationTest::RunTest(const FString& Parameters)
             for(const auto& Start:Starts)
             {
                 const auto* Entity=TowerEntity(Match.State(),Start.id);
-                TestTrue(Label+TEXT(" moves inward within five seconds rather than remaining at the rear wall"),Entity&&
+                TestTrue(Label+TEXT(" remains alive and moves inward within five seconds rather than remaining at the rear wall"),Entity&&!Entity->dead&&
                     TowerDistance(Entity->position,Start.position)>.5&&
                     (Start.position.z-Entity->position.z)*(Team==rift::Team::Player?1.:-1.)>.25);
             }
         }
-    TestEqual(TEXT("Both teams' rear rows, side rows and extreme corners cover all nine ground cards"),BoundaryCases,126);
-    TestEqual(TEXT("Rear/side/corner paid deployments retain all single, twin and swarm members"),BoundaryMembers,392);
+    TestEqual(TEXT("Both teams' rear rows, side rows and extreme corners cover all eleven ground cards"),BoundaryCases,154);
+    TestEqual(TEXT("Rear/side/corner paid deployments retain all single, twin and swarm members"),BoundaryMembers,420);
 
-    TestEqual(TEXT("The requested larger arena is thirty tiles wide"),rift::arena::Width,30);
-    TestEqual(TEXT("The requested larger arena is forty-four tiles deep"),rift::arena::Height,44);
-    TestEqual(TEXT("Core towers move one tile toward the rear"),rift::arena::CoreDepth,17.3);
-    TestEqual(TEXT("Guard towers move one tile toward the rear"),rift::arena::GuardDepth,13.4);
+    TestEqual(TEXT("The approved arena is twenty-four tiles wide"),rift::arena::Width,24);
+    TestEqual(TEXT("The approved arena is thirty-four tiles deep"),rift::arena::Height,34);
+    TestEqual(TEXT("Larger tiles retain the Core physical depth"),rift::arena::CoreDepth,13.84);
+    TestEqual(TEXT("Larger tiles retain the Guard physical depth"),rift::arena::GuardDepth,10.72);
     TestEqual(TEXT("Guard centers share the unchanged bridge axis"),rift::arena::GuardX,rift::arena::BridgeCenterX);
     rift::Match AlignedTowers(TowerOptions());int32 AlignedGuards=0,CenteredCores=0;
     for(const auto& Tower:AlignedTowers.State().entities)
     {
         const bool Core=Tower.kind==rift::EntityKind::Core;const double Sign=Tower.team==rift::Team::Player?1.:-1.;
-        TestEqual(TEXT("Every actual tower retains its rear depth"),Tower.position.z,Sign*(Core?17.3:13.4));
+        TestEqual(TEXT("Every actual tower retains its rear depth"),Tower.position.z,Sign*(Core?13.84:10.72));
         TestEqual(TEXT("Every actual tower retains its original body radius"),Tower.radius,Core?1.35:1.15);
-        TestEqual(TEXT("Every actual Guard follows its bridge and every Core stays centered"),Tower.position.x,Core?0.:Tower.lane*7.2);
+        TestEqual(TEXT("Every actual Guard follows its bridge and every Core stays centered"),Tower.position.x,Core?0.:Tower.lane*5.76);
         if(Core)++CenteredCores;else ++AlignedGuards;
     }
     TestEqual(TEXT("All four actual Guard bodies align with their stone-path and bridge axes"),AlignedGuards,4);
@@ -184,7 +195,7 @@ bool FRiftTowerPathingIntegrationTest::RunTest(const FString& Parameters)
     rift::Match Geometry(TowerOptions());
     for(const auto& Tower:Geometry.State().entities)
         TestTrue(TEXT("All six actual towers use the shifted symmetric depths"),
-            FMath::IsNearlyEqual(FMath::Abs(Tower.position.z),Tower.kind==rift::EntityKind::Core?17.3:13.4,1.e-9));
+            FMath::IsNearlyEqual(FMath::Abs(Tower.position.z),Tower.kind==rift::EntityKind::Core?13.84:10.72,1.e-9));
 
     int32 RouteCases=0,RouteMembers=0;
     for(const auto& Card:rift::Cards())if(!Card.spell&&!Card.building&&!Card.flying)
@@ -230,8 +241,8 @@ bool FRiftTowerPathingIntegrationTest::RunTest(const FString& Parameters)
             for(const auto& Start:Starts)if(const auto* Unit=TowerEntity(Match.State(),Start.id))
                 TestTrue(Label+TEXT(" actually advances toward the Core"),TowerDistance(Start.position,Unit->position)>.5);
         }
-    TestEqual(TEXT("All nine ground cards cover both teams, both lanes, own-half and enemy pocket deployments"),RouteCases,72);
-    TestEqual(TEXT("Destroyed-Guard routing retains every single, twin and swarm member"),RouteMembers,224);
+    TestEqual(TEXT("All eleven ground cards cover both teams, both lanes, own-half and enemy pocket deployments"),RouteCases,88);
+    TestEqual(TEXT("Destroyed-Guard routing retains every single, twin and swarm member"),RouteMembers,240);
 
     auto* GI=NewObject<UGameInstance>(GEngine);GI->InitializeStandalone(FName(*FGuid::NewGuid().ToString(EGuidFormats::Digits)));
     auto* World=GI->GetWorld();auto* Replay=GI->GetSubsystem<URiftReplaySubsystem>();

@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "passed": true,
+  "scope": "Exact raw pre-Art identity-summary recovery from retained three sheet pins and original source pin/serializer; cryptographic match to recorded original bytes, no rendered content or historical producer inferred",
+  "expectedOriginal": {
+    "file": "Assets/Renders/Expansion/Identity/identity-sheets.json",
+    "bytes": 972,
+    "sha256": "5e4ba181a38cadf23b2d65a223430a102e82f3e85e8c2249c836087f43fb08b4"
+  },
+  "recovered": {
+    "file": "Artifacts/QA/ExpansionArtRework/IdentitySummaryRecovery-27cda9dee44d42328c1d6ac9e3dde35e/identity-sheets.json",
+    "bytes": 972,
+    "sha256": "5e4ba181a38cadf23b2d65a223430a102e82f3e85e8c2249c836087f43fb08b4"
+  },
+  "retainedManifest": {
+    "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/BeforeManifest.json",
+    "bytes": 228066,
+    "sha256": "b8a4175ee0f4eef084bf29ae08af4dbf23d75a87cf32a728568c010e4c38e7e2"
+  },
+  "retainedPortraits": {
+    "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/BeforePortraits.json",
+    "bytes": 73630,
+    "sha256": "c5964e22dde3c5e785418ceb613954602c2af9f50f629b65d312ee22956f2dda"
+  },
+  "retainedInventory": {
+    "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/RetainedProductionInventory.json",
+    "bytes": 175661,
+    "sha256": "ca8aa54f8cbd1551bb45f80a0a5624cc316ab197fe22ddd1e0e640b7233c4f3c"
+  },
+  "sourceBlendPinAsRecorded": {
+    "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
+    "sha256": "6799847a62fba2340ef86dc64967c8235f11ad3d9403ddd32dc890bdac5b8ce6",
+    "bytes": 15209481
+  },
+  "observedComposer": {
+    "file": "Build/compose_expansion_identity.py",
+    "bytes": 6037,
+    "sha256": "d6d3434643dd1496982c97e2abb4730867f9c522a4ea8cc60d2df1cabc674a15"
+  },
+  "observedComposerScope": "Current unchanged composer is contextual evidence only; BeforeCapture did not archive it and this is not claimed as a historical producer pin",
+  "serialization": {
+    "outerKeyOrder": [
+      "schema",
+      "method",
+      "sourceBlend",
+      "sheets"
+    ],
+    "sheetOrder": [
+      "mini_stampede",
+      "stampede",
+      "pulverizer"
+    ],
+    "indent": 2,
+    "encoding": "utf-8",
+    "newline": "CRLF",
+    "trailingNewline": false
+  },
+  "trackedFilesMutated": false
+}

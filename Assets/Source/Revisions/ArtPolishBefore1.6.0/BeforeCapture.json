@@ -1,0 +1,1200 @@
+{
+  "schema": 1,
+  "kind": "art-polish-before-capture",
+  "source": {
+    "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
+    "sha256": "46fbbcf748d5b023987a33d2bdba08c19d4cc488dd591b0aacec313cc0c58914",
+    "bytes": 18955574
+  },
+  "beforeManifest": {
+    "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/BeforeManifest.json",
+    "bytes": 228066,
+    "sha256": "b8a4175ee0f4eef084bf29ae08af4dbf23d75a87cf32a728568c010e4c38e7e2"
+  },
+  "beforePortraits": {
+    "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/BeforePortraits.json",
+    "bytes": 73630,
+    "sha256": "c5964e22dde3c5e785418ceb613954602c2af9f50f629b65d312ee22956f2dda"
+  },
+  "preservedBeforeArt": {
+    "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/PreservedBeforeArt.json",
+    "bytes": 1725,
+    "sha256": "937d27f0441066ebe5af94e435f002d802cec35908c6037b500d8ea2f7baf1de"
+  },
+  "archivedFiles": {
+    "Assets/Export/Characters/aether_reaper/AN_aether_reaper_Acquire.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/AN_aether_reaper_Acquire.fbx",
+      "bytes": 212796,
+      "sha256": "1155f042e2a010d2b442e6ad03faeeea1d6191934cf5ceac69614f4b1950201c"
+    },
+    "Assets/Export/Characters/aether_reaper/AN_aether_reaper_Attack.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/AN_aether_reaper_Attack.fbx",
+      "bytes": 296380,
+      "sha256": "3de86de89619f00f5c34681e676f24a461c8d6f37f75ec1acef04d5b20891f34"
+    },
+    "Assets/Export/Characters/aether_reaper/AN_aether_reaper_Death.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/AN_aether_reaper_Death.fbx",
+      "bytes": 320428,
+      "sha256": "4c5cadb5a6cdccc89f6ff240a044cbec038532d03e31d337a9a5d3f39d3ccc9f"
+    },
+    "Assets/Export/Characters/aether_reaper/AN_aether_reaper_Deploy.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/AN_aether_reaper_Deploy.fbx",
+      "bytes": 254828,
+      "sha256": "e898e00a95b58df7cf7a27cd6736ddee65f6c5bb983d0c06848f12a6bffeb960"
+    },
+    "Assets/Export/Characters/aether_reaper/AN_aether_reaper_Hit.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/AN_aether_reaper_Hit.fbx",
+      "bytes": 218284,
+      "sha256": "744940e8f223fe445dd8f991b634da50e722268dfb598d124e4396802873d97c"
+    },
+    "Assets/Export/Characters/aether_reaper/AN_aether_reaper_Idle.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/AN_aether_reaper_Idle.fbx",
+      "bytes": 511020,
+      "sha256": "c953b250132f06c44ba84955f1fc58c5935015cbacffb933feeb5540862fd58b"
+    },
+    "Assets/Export/Characters/aether_reaper/AN_aether_reaper_Locomotion.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/AN_aether_reaper_Locomotion.fbx",
+      "bytes": 372236,
+      "sha256": "1047fe07e37bf2ed56565206d7949a5eca17ebcc5d1995380e2497d9d59ee93d"
+    },
+    "Assets/Export/Characters/aether_reaper/AN_aether_reaper_Status.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/AN_aether_reaper_Status.fbx",
+      "bytes": 353308,
+      "sha256": "c7c3b69e035667579b44459edb01f6f3800ad9a7911f24873bd721a9dc67b0e2"
+    },
+    "Assets/Export/Characters/aether_reaper/AN_aether_reaper_Turn.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/AN_aether_reaper_Turn.fbx",
+      "bytes": 223756,
+      "sha256": "b4574eb1148be8b1e0078347562fdc6c6b1ca1a14dab518704997f706ec45ff6"
+    },
+    "Assets/Export/Characters/aether_reaper/SK_aether_reaper.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/SK_aether_reaper.fbx",
+      "bytes": 145388,
+      "sha256": "465ef9dea6cefef0a3f8526e125acccdbd22f5c07f5363acbf61ae38681b36d8"
+    },
+    "Assets/Export/Characters/aether_reaper/SK_aether_reaper_LOD1.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/SK_aether_reaper_LOD1.fbx",
+      "bytes": 122428,
+      "sha256": "2735fecf0da34620f9050a3bb284b2c48fbc0ba39412e659feea4907139fd74b"
+    },
+    "Assets/Export/Characters/aether_reaper/SK_aether_reaper_LOD2.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/SK_aether_reaper_LOD2.fbx",
+      "bytes": 103804,
+      "sha256": "cbd2c707c3568716fca6db35237bb6cfd7ae288b82cd4af451a0160d8858ca89"
+    },
+    "Assets/Export/Characters/aether_reaper/SK_aether_reaper_LOD3.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/SK_aether_reaper_LOD3.fbx",
+      "bytes": 91676,
+      "sha256": "38dd1409f880ec80021407312682ce2f92af6ce4b3cb66b0de8ec2087bba8880"
+    },
+    "Assets/Export/Characters/bone_warden/AN_bone_warden_Acquire.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/AN_bone_warden_Acquire.fbx",
+      "bytes": 233580,
+      "sha256": "e61c6d466b07d28e508618f0debf4e593f96832a8b33e2c0230a3a5541c8b96d"
+    },
+    "Assets/Export/Characters/bone_warden/AN_bone_warden_Attack.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/AN_bone_warden_Attack.fbx",
+      "bytes": 348828,
+      "sha256": "8c60dd2bc5bc93be88c3876cbffd5bd733ddeeb2ea00061fb6d90f6984d51172"
+    },
+    "Assets/Export/Characters/bone_warden/AN_bone_warden_Death.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/AN_bone_warden_Death.fbx",
+      "bytes": 369292,
+      "sha256": "a17d20492278e999081000b2bed5a9e112e77a071cd4e6d8d8fb249083374723"
+    },
+    "Assets/Export/Characters/bone_warden/AN_bone_warden_Deploy.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/AN_bone_warden_Deploy.fbx",
+      "bytes": 279948,
+      "sha256": "5f98c6e8be21f6e74a74ce66e58effbee8be34609ce82c03cf348d1e1defeec7"
+    },
+    "Assets/Export/Characters/bone_warden/AN_bone_warden_Hit.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/AN_bone_warden_Hit.fbx",
+      "bytes": 239628,
+      "sha256": "0f6bc5bdbf2906836642d7d99e749bc1460e947f7aafe82f23cb21c4ab62dbfb"
+    },
+    "Assets/Export/Characters/bone_warden/AN_bone_warden_Idle.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/AN_bone_warden_Idle.fbx",
+      "bytes": 520460,
+      "sha256": "a9334c927adc9669c7ca1eea5734c42111853b816da83ea5f443a2ca42e5468a"
+    },
+    "Assets/Export/Characters/bone_warden/AN_bone_warden_Locomotion.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/AN_bone_warden_Locomotion.fbx",
+      "bytes": 413068,
+      "sha256": "3f7c440a7090d084b00b4f900b210d4531a3d4900cc379e9543983dbd398557b"
+    },
+    "Assets/Export/Characters/bone_warden/AN_bone_warden_Status.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/AN_bone_warden_Status.fbx",
+      "bytes": 356108,
+      "sha256": "dfaede99a0db5e3fa443f9495bc2f155864eebe282a1fdc61cf9854d1bab73a7"
+    },
+    "Assets/Export/Characters/bone_warden/AN_bone_warden_Turn.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/AN_bone_warden_Turn.fbx",
+      "bytes": 245676,
+      "sha256": "e547670aa018fb14877154ff7eff072305360670ced524debeec00740fd328f2"
+    },
+    "Assets/Export/Characters/bone_warden/SK_bone_warden.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/SK_bone_warden.fbx",
+      "bytes": 396812,
+      "sha256": "6c742a86ed164d6ff6214e5b2ba39dff5c09e6382e54b99c04521654e008106b"
+    },
+    "Assets/Export/Characters/bone_warden/SK_bone_warden_LOD1.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/SK_bone_warden_LOD1.fbx",
+      "bytes": 292508,
+      "sha256": "ac47403ad662e64fa84dc8a31eae4abdba2390e78f3f4372e8a30bdbd7aa1e56"
+    },
+    "Assets/Export/Characters/bone_warden/SK_bone_warden_LOD2.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/SK_bone_warden_LOD2.fbx",
+      "bytes": 209484,
+      "sha256": "3b62d9566393ea2233df732c66b69a470590a00906cc82017f5401c6f0c999a1"
+    },
+    "Assets/Export/Characters/bone_warden/SK_bone_warden_LOD3.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/SK_bone_warden_LOD3.fbx",
+      "bytes": 149868,
+      "sha256": "c31678903fd2dafa9a15c173c7f79639c2edc96c916ed34f75e3a95d8dc89232"
+    },
+    "Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Acquire.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Acquire.fbx",
+      "bytes": 205820,
+      "sha256": "6658830cefd4d88179ef9248e97d18ec7bd5cee69d997f0eb899f68efd710346"
+    },
+    "Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Attack.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Attack.fbx",
+      "bytes": 224140,
+      "sha256": "d0d055b267c109ffafc31435bb3c8e2a4c590a00696155dfc8c08abaef919c6b"
+    },
+    "Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Death.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Death.fbx",
+      "bytes": 254412,
+      "sha256": "4fcfe10ac2580a26ffd13f4e8cabe912b380f13a3b5882d9bdc7dfa446e9caba"
+    },
+    "Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Deploy.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Deploy.fbx",
+      "bytes": 246396,
+      "sha256": "e6f5f0775e7beddd8a018016d0571e2da605ed1546cc8fac6fd3175b94ca072f"
+    },
+    "Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Hit.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Hit.fbx",
+      "bytes": 211116,
+      "sha256": "52aed6c8d46323001871417abcd76373ca30754d18803f08c2e0f332dee409e4"
+    },
+    "Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Idle.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Idle.fbx",
+      "bytes": 453436,
+      "sha256": "b18bfec22ec7d17dd5e7a7c9d469ee1fcef5f91b766ed81726d9a35b6b18d53c"
+    },
+    "Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Locomotion.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Locomotion.fbx",
+      "bytes": 279276,
+      "sha256": "4fcfbf9e80adf99b0ae60d7e6e42fcb61c2db895abc75742b73ee827cce22075"
+    },
+    "Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Status.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Status.fbx",
+      "bytes": 313244,
+      "sha256": "dc779228a0b52cc31c88a22f2016cba8a6a6e34f4435da270087ed0e2a3c8e63"
+    },
+    "Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Turn.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Turn.fbx",
+      "bytes": 216412,
+      "sha256": "5c3641787d4c426a269eb37b117af903c05e9aca724dc2ed68c5b6e644ecfda9"
+    },
+    "Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton.fbx",
+      "bytes": 171356,
+      "sha256": "d62e499cc25e3c0ae67b2d41b5afa0187ebceb621590a6ce0ea3800a145fabf2"
+    },
+    "Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton_LOD1.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton_LOD1.fbx",
+      "bytes": 137196,
+      "sha256": "e44d55a5a490286ffeaac2832c4dd8c17f1523aaf5aba24c890034e88793aa8c"
+    },
+    "Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton_LOD2.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton_LOD2.fbx",
+      "bytes": 111292,
+      "sha256": "a1bb903963eb693251ce4694801ee26b549ede7cc34188a7ee874cbf35d42adf"
+    },
+    "Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton_LOD3.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton_LOD3.fbx",
+      "bytes": 92076,
+      "sha256": "261f464246beee049adfef346d84ea7d59d3af2fcafafcb2020f6c9989307c0c"
+    },
+    "Assets/Export/Characters/iron_giant/AN_iron_giant_Acquire.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/AN_iron_giant_Acquire.fbx",
+      "bytes": 254444,
+      "sha256": "b18606c8b4ceef4d2f9205ca6b1e3ec7acbee223f359f6ebfad0de4184000a26"
+    },
+    "Assets/Export/Characters/iron_giant/AN_iron_giant_Attack.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/AN_iron_giant_Attack.fbx",
+      "bytes": 331596,
+      "sha256": "c331232897d2539c373b34e9900d10122ae86d49e6f34ab8de867a9d81f63e05"
+    },
+    "Assets/Export/Characters/iron_giant/AN_iron_giant_Death.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/AN_iron_giant_Death.fbx",
+      "bytes": 383340,
+      "sha256": "a27d4f33754fe4368cd66437c69fd28db560da6384217bf70df9732a217fcff3"
+    },
+    "Assets/Export/Characters/iron_giant/AN_iron_giant_Deploy.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/AN_iron_giant_Deploy.fbx",
+      "bytes": 305164,
+      "sha256": "beb27255999e0d0374818ec9d1406ddfcb06b8c9981366ab3dd173b1683493c8"
+    },
+    "Assets/Export/Characters/iron_giant/AN_iron_giant_Hit.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/AN_iron_giant_Hit.fbx",
+      "bytes": 261068,
+      "sha256": "fffc4fef2011fc580fed1e7acc234f802aec062cbab405aaa98e12e0bf57e801"
+    },
+    "Assets/Export/Characters/iron_giant/AN_iron_giant_Idle.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/AN_iron_giant_Idle.fbx",
+      "bytes": 561260,
+      "sha256": "c048e9e4da63ee3293d6e38478eee456bb609ab671c7a3577644b0c5c35b6c04"
+    },
+    "Assets/Export/Characters/iron_giant/AN_iron_giant_Locomotion.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/AN_iron_giant_Locomotion.fbx",
+      "bytes": 411868,
+      "sha256": "eb06e5e1eabd79c6a7b00be7fc6820f0401923249be2992198a7714c9ab83451"
+    },
+    "Assets/Export/Characters/iron_giant/AN_iron_giant_Status.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/AN_iron_giant_Status.fbx",
+      "bytes": 388556,
+      "sha256": "7b3a6bf74d19113cec0470116f32a34d8486c458e5930f457089191528d72c83"
+    },
+    "Assets/Export/Characters/iron_giant/AN_iron_giant_Turn.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/AN_iron_giant_Turn.fbx",
+      "bytes": 267676,
+      "sha256": "5a6d3f4d3df5a6c0809e135deab16e4971a4692de95d154177e1c50fa4bcc517"
+    },
+    "Assets/Export/Characters/iron_giant/SK_iron_giant.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/SK_iron_giant.fbx",
+      "bytes": 248780,
+      "sha256": "c9b48905814272f5c936983a3ba0fa174f927b68619df3eb92247a7f6e1052d0"
+    },
+    "Assets/Export/Characters/iron_giant/SK_iron_giant_LOD1.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/SK_iron_giant_LOD1.fbx",
+      "bytes": 196364,
+      "sha256": "d44949258cb59f62b2b6bfb72beefe2861820fe0613f4bc9ca0e1a666ae606d7"
+    },
+    "Assets/Export/Characters/iron_giant/SK_iron_giant_LOD2.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/SK_iron_giant_LOD2.fbx",
+      "bytes": 149932,
+      "sha256": "68726de285dc51dee46c8c48378376f478695c19359679ca3f5c45a12094332c"
+    },
+    "Assets/Export/Characters/iron_giant/SK_iron_giant_LOD3.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/SK_iron_giant_LOD3.fbx",
+      "bytes": 112268,
+      "sha256": "85ac927482885f64d1f2802556827713dce8241b7f72bec5b68681aafdfa4e37"
+    },
+    "Assets/Export/Characters/ironclad/SK_ironclad.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/ironclad/SK_ironclad.fbx",
+      "bytes": 635180,
+      "sha256": "b6443334658ea634575bdcb650bfdc4d2857131eea521699d96c092b3a4e65cc"
+    },
+    "Assets/Export/Characters/mini_stampede/AN_mini_stampede_Acquire.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/AN_mini_stampede_Acquire.fbx",
+      "bytes": 219804,
+      "sha256": "79b442804579fac07b4171208778a4d39ede9b92455a10d52a8d9dadb8b49a5d"
+    },
+    "Assets/Export/Characters/mini_stampede/AN_mini_stampede_Attack.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/AN_mini_stampede_Attack.fbx",
+      "bytes": 261164,
+      "sha256": "ef1f799c9a0cf6df37ae05e02b809d0ea23b7011c592944e0f5fd5ef9f8fa1f0"
+    },
+    "Assets/Export/Characters/mini_stampede/AN_mini_stampede_Death.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/AN_mini_stampede_Death.fbx",
+      "bytes": 304140,
+      "sha256": "49d9d1e863b79f535543da4d44a08bb9eea29afd69c1b87cec4857471fb4313b"
+    },
+    "Assets/Export/Characters/mini_stampede/AN_mini_stampede_Deploy.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/AN_mini_stampede_Deploy.fbx",
+      "bytes": 263276,
+      "sha256": "36c898d015c3be8173bed36db639e8dfa4ca4c700896ca421075f2c1f654563e"
+    },
+    "Assets/Export/Characters/mini_stampede/AN_mini_stampede_Hit.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/AN_mini_stampede_Hit.fbx",
+      "bytes": 225484,
+      "sha256": "75d437d7550347bd6591ef746a7003e5efea38b961d761ea497ade49b5e65e57"
+    },
+    "Assets/Export/Characters/mini_stampede/AN_mini_stampede_Idle.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/AN_mini_stampede_Idle.fbx",
+      "bytes": 482204,
+      "sha256": "136951f1bd5e8f39b2e1e198b3f98cbbb41ca24c04e11956e17071fec1a6fb20"
+    },
+    "Assets/Export/Characters/mini_stampede/AN_mini_stampede_Locomotion.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/AN_mini_stampede_Locomotion.fbx",
+      "bytes": 268332,
+      "sha256": "10fe9a1583e8dcd22d66d0bdc3fe4698593f9bb297f3189191e9655e36c6e88d"
+    },
+    "Assets/Export/Characters/mini_stampede/AN_mini_stampede_Status.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/AN_mini_stampede_Status.fbx",
+      "bytes": 337932,
+      "sha256": "d4d61fc04a7770123f01e07db643897d1758f0f45e49a41b788b27971c4fcf22"
+    },
+    "Assets/Export/Characters/mini_stampede/AN_mini_stampede_Turn.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/AN_mini_stampede_Turn.fbx",
+      "bytes": 231148,
+      "sha256": "2dcf2eecd56cb533877beae9828f82cf5ba06dfddf88062508ca76cbb952bea6"
+    },
+    "Assets/Export/Characters/mini_stampede/SK_mini_stampede.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/SK_mini_stampede.fbx",
+      "bytes": 296988,
+      "sha256": "99b57c4059c7d71ac5084bf34d9c15bc5739098749e2d828ed700eafeb0f0caf"
+    },
+    "Assets/Export/Characters/mini_stampede/SK_mini_stampede_LOD1.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/SK_mini_stampede_LOD1.fbx",
+      "bytes": 219084,
+      "sha256": "01b17414fea28fcdf5e784d921217d50c0a1c37572d9e9c9c14e74779377f119"
+    },
+    "Assets/Export/Characters/mini_stampede/SK_mini_stampede_LOD2.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/SK_mini_stampede_LOD2.fbx",
+      "bytes": 162972,
+      "sha256": "0b1ccf9834d77dbdc5f1f046e77a843d96592191174c7880f6a2ee5f4873a752"
+    },
+    "Assets/Export/Characters/mini_stampede/SK_mini_stampede_LOD3.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/SK_mini_stampede_LOD3.fbx",
+      "bytes": 123580,
+      "sha256": "597d4d9c84692b37ccdcff274690177a151d1ace47dd649b6eb9e51ea68df950"
+    },
+    "Assets/Export/Characters/pulverizer/AN_pulverizer_Acquire.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/AN_pulverizer_Acquire.fbx",
+      "bytes": 122636,
+      "sha256": "fb12aa6a7e2d3606f8865b0176a137670976c65c30035df789656c77ad830baa"
+    },
+    "Assets/Export/Characters/pulverizer/AN_pulverizer_Attack.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/AN_pulverizer_Attack.fbx",
+      "bytes": 137356,
+      "sha256": "2c9f9732b596a029f992af3e532bdcadc152f588264798a5f15bf1155694d230"
+    },
+    "Assets/Export/Characters/pulverizer/AN_pulverizer_Death.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/AN_pulverizer_Death.fbx",
+      "bytes": 179996,
+      "sha256": "8bbf1f2944e88a31decc8e48b936fd14b8d6f8343c067439c6622575c6ec7c51"
+    },
+    "Assets/Export/Characters/pulverizer/AN_pulverizer_Deploy.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/AN_pulverizer_Deploy.fbx",
+      "bytes": 145820,
+      "sha256": "4b2df87e0301a8b73bfecee77dbf84e640fe8940cd7be962423c31aef130684e"
+    },
+    "Assets/Export/Characters/pulverizer/AN_pulverizer_Hit.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/AN_pulverizer_Hit.fbx",
+      "bytes": 125660,
+      "sha256": "a35e4299edb50df0849ffa815e182b79d8df7943dcbfb59080c600ed1909ba33"
+    },
+    "Assets/Export/Characters/pulverizer/AN_pulverizer_Idle.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/AN_pulverizer_Idle.fbx",
+      "bytes": 256044,
+      "sha256": "9a6234d33a422f9f9dd48d9a71a6b03b55b1c898b936d62784d110331de9fcea"
+    },
+    "Assets/Export/Characters/pulverizer/AN_pulverizer_Locomotion.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/AN_pulverizer_Locomotion.fbx",
+      "bytes": 256044,
+      "sha256": "ef21f43c5455ceb7cda3fb01fb9e4a2ab9b81cd8aa44157dd05f4febbb98b028"
+    },
+    "Assets/Export/Characters/pulverizer/AN_pulverizer_Status.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/AN_pulverizer_Status.fbx",
+      "bytes": 184108,
+      "sha256": "612eae618cbbdf07d9cda6fdb822dc9937e1de4347e8331a18b32c781f7ff3a3"
+    },
+    "Assets/Export/Characters/pulverizer/AN_pulverizer_Turn.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/AN_pulverizer_Turn.fbx",
+      "bytes": 128684,
+      "sha256": "14bcdfd862322c1d778c7c06daa1c824e28f23ba23704c6b929826a20092d863"
+    },
+    "Assets/Export/Characters/pulverizer/SK_pulverizer.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/SK_pulverizer.fbx",
+      "bytes": 338492,
+      "sha256": "5e6b82449a6e955008bcac1601e1b65d47a5513df004ee1b63521215ce938348"
+    },
+    "Assets/Export/Characters/pulverizer/SK_pulverizer_LOD1.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/SK_pulverizer_LOD1.fbx",
+      "bytes": 246924,
+      "sha256": "63a6a3c31a7b2d72c5f29484de267efc4661075fc5028a9184a6e8ce65c034e3"
+    },
+    "Assets/Export/Characters/pulverizer/SK_pulverizer_LOD2.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/SK_pulverizer_LOD2.fbx",
+      "bytes": 168220,
+      "sha256": "adf791d995c08fa6c04fc8e7f78088b355dc38e74dec5ba0b13926110d690011"
+    },
+    "Assets/Export/Characters/pulverizer/SK_pulverizer_LOD3.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/SK_pulverizer_LOD3.fbx",
+      "bytes": 114156,
+      "sha256": "0b3fad236edca849a71281120773e6003e597950f21ce9b44f13c26ed859fd8f"
+    },
+    "Assets/Export/Characters/stampede/AN_stampede_Acquire.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/AN_stampede_Acquire.fbx",
+      "bytes": 219804,
+      "sha256": "20c9955a235ea49e5ec86f4eac2812ca5829bc982f196e57c07672613f521d23"
+    },
+    "Assets/Export/Characters/stampede/AN_stampede_Attack.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/AN_stampede_Attack.fbx",
+      "bytes": 273484,
+      "sha256": "aff344150cab1317c4b44d1e35cae25a353569ec27c2c4e0abf1d418af3ec0aa"
+    },
+    "Assets/Export/Characters/stampede/AN_stampede_Death.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/AN_stampede_Death.fbx",
+      "bytes": 296268,
+      "sha256": "4f1b2c9bb31bdad77081532845f6173f920af3b265d64f9e7bc6abe638ac483b"
+    },
+    "Assets/Export/Characters/stampede/AN_stampede_Deploy.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/AN_stampede_Deploy.fbx",
+      "bytes": 263260,
+      "sha256": "466140d1cb2cc813b42547427b991db91e5e7a9e474900fb6e76ee62ee444323"
+    },
+    "Assets/Export/Characters/stampede/AN_stampede_Hit.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/AN_stampede_Hit.fbx",
+      "bytes": 225468,
+      "sha256": "5ba8945df170a3f5b02205e3a7e6d23bb05a6267c7f218b066c7f32354a48f69"
+    },
+    "Assets/Export/Characters/stampede/AN_stampede_Idle.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/AN_stampede_Idle.fbx",
+      "bytes": 482188,
+      "sha256": "ea1d0765bc62663dd29076caaea57edc5edebb73e5d97618a57b9bcdec8b6c72"
+    },
+    "Assets/Export/Characters/stampede/AN_stampede_Locomotion.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/AN_stampede_Locomotion.fbx",
+      "bytes": 276220,
+      "sha256": "fb33fe10be832aab8b3db357c5a4a45d39c512b2bcd745a555a6f1df2e5ab104"
+    },
+    "Assets/Export/Characters/stampede/AN_stampede_Status.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/AN_stampede_Status.fbx",
+      "bytes": 337916,
+      "sha256": "a978ae144b759150588f32a0c14935df4f6014ebc17fdc181716024b5060a0b1"
+    },
+    "Assets/Export/Characters/stampede/AN_stampede_Turn.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/AN_stampede_Turn.fbx",
+      "bytes": 231132,
+      "sha256": "aa913ad0620cf26802a25b12098af01938f4a7bdc5788cc6a086088d413d07bb"
+    },
+    "Assets/Export/Characters/stampede/SK_stampede.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/SK_stampede.fbx",
+      "bytes": 306444,
+      "sha256": "38d6f14fc8969ee3966db990d50529eb086828e6c93616ddb7e2742faea9149d"
+    },
+    "Assets/Export/Characters/stampede/SK_stampede_LOD1.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/SK_stampede_LOD1.fbx",
+      "bytes": 224924,
+      "sha256": "fea1472ae65fefa2bd998471a95a9280fd5a7247a7e39369ab9419aa6bd02af7"
+    },
+    "Assets/Export/Characters/stampede/SK_stampede_LOD2.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/SK_stampede_LOD2.fbx",
+      "bytes": 166492,
+      "sha256": "2066dc256e7a9b58d65e139c7744b723ed5968cc4c2fcc08cb0febb666c049ff"
+    },
+    "Assets/Export/Characters/stampede/SK_stampede_LOD3.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/SK_stampede_LOD3.fbx",
+      "bytes": 125452,
+      "sha256": "413bcbb7ef3e3081e76fde5cabf990d4da8ecea2cab3ab41f5e9450ef08f5a50"
+    },
+    "Assets/Export/Characters/twin_blades/SK_twin_blades.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/twin_blades/SK_twin_blades.fbx",
+      "bytes": 727212,
+      "sha256": "48499afbc90f1fab3b4d57dcc33919db042f13636cc3dd243d70a5e51b3731c4"
+    },
+    "Assets/Export/Environment/SM_iron_shield_fragment.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Environment/SM_iron_shield_fragment.fbx",
+      "bytes": 31724,
+      "sha256": "b0781376a5a7dd56171626d4b16599b2dcc1fd3c5bd513b3bfd3c7d3b4e6512f"
+    },
+    "Assets/Export/Environment/SM_iron_shield_fragment_LOD1.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Environment/SM_iron_shield_fragment_LOD1.fbx",
+      "bytes": 27948,
+      "sha256": "41b114c649bbe828bd0f130f372d4a5f4fba21a1fbf13bd95eb0e16ad66e1586"
+    },
+    "Assets/Export/Environment/SM_iron_shield_fragment_LOD2.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Environment/SM_iron_shield_fragment_LOD2.fbx",
+      "bytes": 24476,
+      "sha256": "c2fbf9a3fb7acbc2a0bfa2dde9e30fed2f21b0594c44bc655cbbcfb54731a61e"
+    },
+    "Assets/Export/Environment/SM_shadow_surge_ribbon.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Environment/SM_shadow_surge_ribbon.fbx",
+      "bytes": 24300,
+      "sha256": "74a71bb411858e6b637060d11dee92845d203f0f99f95f47a6b35ff1cad3629b"
+    },
+    "Assets/Export/Environment/SM_shadow_surge_ribbon_LOD1.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Environment/SM_shadow_surge_ribbon_LOD1.fbx",
+      "bytes": 23820,
+      "sha256": "34be061435dddd5e7101bd08fadb55cd223f95f48ef6d40d5fe2224279feb10c"
+    },
+    "Assets/Export/Environment/SM_shadow_surge_ribbon_LOD2.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Environment/SM_shadow_surge_ribbon_LOD2.fbx",
+      "bytes": 22636,
+      "sha256": "8799693da31a28d7a9cc5b825673561c6534f1a8d463f5d49449f865f6c55d9d"
+    },
+    "Assets/Export/Environment/SM_shadow_surge_wisp.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Environment/SM_shadow_surge_wisp.fbx",
+      "bytes": 25660,
+      "sha256": "78b849bf9eec7e6ece63cc42b62a419c7167cd0f6ca3ceb7851ba442b78cba94"
+    },
+    "Assets/Export/Environment/SM_shadow_surge_wisp_LOD1.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Environment/SM_shadow_surge_wisp_LOD1.fbx",
+      "bytes": 23740,
+      "sha256": "81379239984284fde5417ce9ccb0fc570237e13a01d3cd6db51c190566f9f130"
+    },
+    "Assets/Export/Environment/SM_shadow_surge_wisp_LOD2.fbx": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Environment/SM_shadow_surge_wisp_LOD2.fbx",
+      "bytes": 22572,
+      "sha256": "fe372cb9d0f3a04a962b1824da43a77641d9aa388cf565c8cfbad8d3f5b79f57"
+    },
+    "Assets/Renders/Expansion/Identity/aether_reaper_IdentitySheet.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/aether_reaper_IdentitySheet.png",
+      "bytes": 513362,
+      "sha256": "9c59e2af99f7600abdba95677c9cc5b74bb22ef5dc56a660f4a6d58f5949f8c1"
+    },
+    "Assets/Renders/Expansion/Identity/aether_reaper_front.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/aether_reaper_front.png",
+      "bytes": 275875,
+      "sha256": "0034fb0eb349b4190ad7db81321b782f8d618626c2ce0bb21d1a1af44b3c7874"
+    },
+    "Assets/Renders/Expansion/Identity/aether_reaper_rear.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/aether_reaper_rear.png",
+      "bytes": 270301,
+      "sha256": "a1308582d75fe880daf1d92c96b5e657847bd73b158a4f4e228c628ba5c59a16"
+    },
+    "Assets/Renders/Expansion/Identity/aether_reaper_side.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/aether_reaper_side.png",
+      "bytes": 265373,
+      "sha256": "8b1385fd4f1f6e05610b567742519a313bec32a8524056a03599b81647e59c64"
+    },
+    "Assets/Renders/Expansion/Identity/aether_reaper_silhouette.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/aether_reaper_silhouette.png",
+      "bytes": 266469,
+      "sha256": "b445bbca82b44ef02eb4179d976774277f7a40359e642b0ddbe37b67ec6e00a7"
+    },
+    "Assets/Renders/Expansion/Identity/aether_reaper_threequarter.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/aether_reaper_threequarter.png",
+      "bytes": 272625,
+      "sha256": "e2852fc1da8fabf03cb85454668a4fe16c15b6b4c41544ea876f5c07aeaa5444"
+    },
+    "Assets/Renders/Expansion/Identity/bone_warden_IdentitySheet.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/bone_warden_IdentitySheet.png",
+      "bytes": 541593,
+      "sha256": "b0c4472c5cdad2026feed3acc74cf78210c3cfe7fac333314de9d3456e6034f3"
+    },
+    "Assets/Renders/Expansion/Identity/bone_warden_front.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/bone_warden_front.png",
+      "bytes": 278132,
+      "sha256": "d611d0728a09111016dffe4c20cdeef0bf04fecee895d88829b9f2d7454c53a3"
+    },
+    "Assets/Renders/Expansion/Identity/bone_warden_rear.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/bone_warden_rear.png",
+      "bytes": 278865,
+      "sha256": "62c47b216a28aafb272192b809e4b1e423dafad3a1472e769be46a25cb9f25a1"
+    },
+    "Assets/Renders/Expansion/Identity/bone_warden_side.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/bone_warden_side.png",
+      "bytes": 268240,
+      "sha256": "77c6d5ebbdabb359e309ba63a5568a7c06c7c0bcdab93c8c20196216a8b95ae0"
+    },
+    "Assets/Renders/Expansion/Identity/bone_warden_silhouette.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/bone_warden_silhouette.png",
+      "bytes": 272779,
+      "sha256": "8503810bfbdd666313339d401b3ba851f550c2f9b0384c2aa938451fd8241115"
+    },
+    "Assets/Renders/Expansion/Identity/bone_warden_skeleton_IdentitySheet.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/bone_warden_skeleton_IdentitySheet.png",
+      "bytes": 532414,
+      "sha256": "b730f61fb3e3de0a8e12a84533548d294a59251e75973d259c0c1aa14c79d0ff"
+    },
+    "Assets/Renders/Expansion/Identity/bone_warden_skeleton_front.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/bone_warden_skeleton_front.png",
+      "bytes": 286262,
+      "sha256": "4793f82f6adc2267bc501889a6cb1be1515fdb8b5434264d2d78952eb49a05b6"
+    },
+    "Assets/Renders/Expansion/Identity/bone_warden_skeleton_rear.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/bone_warden_skeleton_rear.png",
+      "bytes": 286060,
+      "sha256": "23b9507f9866f8255c8511c2b2aa0063b6593d7769530f996b80da0b290a142b"
+    },
+    "Assets/Renders/Expansion/Identity/bone_warden_skeleton_side.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/bone_warden_skeleton_side.png",
+      "bytes": 275401,
+      "sha256": "a8fbe417406dfae6b810b06b90ad03c14e9bcef59db26b8f46a816217be5220d"
+    },
+    "Assets/Renders/Expansion/Identity/bone_warden_skeleton_silhouette.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/bone_warden_skeleton_silhouette.png",
+      "bytes": 273447,
+      "sha256": "ddb402c38bc6778195b3eb49e41d36c6a9a4dd6e6e7369683f382ed4efdd9307"
+    },
+    "Assets/Renders/Expansion/Identity/bone_warden_skeleton_threequarter.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/bone_warden_skeleton_threequarter.png",
+      "bytes": 288217,
+      "sha256": "e03e9fa1059c152071c7ced4a2e9ed8ba18070df8c7ae2ae8387f5479269432c"
+    },
+    "Assets/Renders/Expansion/Identity/bone_warden_threequarter.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/bone_warden_threequarter.png",
+      "bytes": 273381,
+      "sha256": "feedc14e24aa6f609a183c0305c538e8fcc6cb6b669f34d8ac01dd9411e7b10a"
+    },
+    "Assets/Renders/Expansion/Identity/iron_giant_IdentitySheet.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/iron_giant_IdentitySheet.png",
+      "bytes": 610009,
+      "sha256": "57ead23a3f0882d022a72626c44fda93c0e915f5b4220598f5428b1f8330625d"
+    },
+    "Assets/Renders/Expansion/Identity/iron_giant_front.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/iron_giant_front.png",
+      "bytes": 282959,
+      "sha256": "abad9e3e6b64c2794b53d9231cbc449300422a646e45149a8a248cd4cc00f8d8"
+    },
+    "Assets/Renders/Expansion/Identity/iron_giant_rear.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/iron_giant_rear.png",
+      "bytes": 273943,
+      "sha256": "3b1ab6cdd8d2b106f37c51f1b5f087f56bc9a40ec31168cae0f98ca2cde040b2"
+    },
+    "Assets/Renders/Expansion/Identity/iron_giant_side.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/iron_giant_side.png",
+      "bytes": 264835,
+      "sha256": "21020e8eec594521d53bc920ddbc3bcfb9f2fbdfa0fd1af00573fcab276fb5b6"
+    },
+    "Assets/Renders/Expansion/Identity/iron_giant_silhouette.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/iron_giant_silhouette.png",
+      "bytes": 292284,
+      "sha256": "4ad90a63d6daa5a36930dbe4b0bbe103307034cfd06a6e5c54ec20e08a7336d4"
+    },
+    "Assets/Renders/Expansion/Identity/iron_giant_threequarter.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/iron_giant_threequarter.png",
+      "bytes": 300335,
+      "sha256": "d4269ecafeffbd96b24945d2a972c94c123489fa6245e54b6b5abb524b06a86a"
+    },
+    "Assets/Renders/Expansion/Identity/mini_stampede_IdentitySheet.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/mini_stampede_IdentitySheet.png",
+      "bytes": 753606,
+      "sha256": "4e9f8741454ef050e3f2f70a0308cdd3085db73a883c1eeacba270a3e8c36e0b"
+    },
+    "Assets/Renders/Expansion/Identity/mini_stampede_front.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/mini_stampede_front.png",
+      "bytes": 285136,
+      "sha256": "f3eb4052bf6946b17fc1d1b0c46d04843f3933989305a5c33198e4809451aecf"
+    },
+    "Assets/Renders/Expansion/Identity/mini_stampede_rear.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/mini_stampede_rear.png",
+      "bytes": 285841,
+      "sha256": "a489c9f94afb374bfd13f6b43afa4ca34e87d8b27faeeef920e490dbdd2b1624"
+    },
+    "Assets/Renders/Expansion/Identity/mini_stampede_side.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/mini_stampede_side.png",
+      "bytes": 290733,
+      "sha256": "221579bb87257dff3b5bd77cf3ce03b72b725b01314b008457e0d4815a4b08a0"
+    },
+    "Assets/Renders/Expansion/Identity/mini_stampede_silhouette.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/mini_stampede_silhouette.png",
+      "bytes": 286109,
+      "sha256": "196abcfae464c4bffa395c5ff21b1679fca3c8c725f97b2db7a8537a856aa320"
+    },
+    "Assets/Renders/Expansion/Identity/mini_stampede_threequarter.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/mini_stampede_threequarter.png",
+      "bytes": 293507,
+      "sha256": "cbdee05652d71d6fc95d80cfc2cf9df5e8842d511be285a21bcb870a1a844f66"
+    },
+    "Assets/Renders/Expansion/Identity/pulverizer_IdentitySheet.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/pulverizer_IdentitySheet.png",
+      "bytes": 894335,
+      "sha256": "3495cdceb3e9c468b54d5ce507b75829913c51172a26e58cd91ce3dce9332c0b"
+    },
+    "Assets/Renders/Expansion/Identity/pulverizer_front.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/pulverizer_front.png",
+      "bytes": 344117,
+      "sha256": "12a48a8436f5c1ae9b9ce56e72051d7ae3435aede26d3c61b17d673e769d293a"
+    },
+    "Assets/Renders/Expansion/Identity/pulverizer_rear.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/pulverizer_rear.png",
+      "bytes": 346220,
+      "sha256": "a5093eae3713c79cdcae79509d111a4a7b848e5691fd149ed1aa41ba65a98a50"
+    },
+    "Assets/Renders/Expansion/Identity/pulverizer_side.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/pulverizer_side.png",
+      "bytes": 345462,
+      "sha256": "3d9963b291786637f04060f3df7b87844264a3a067d875b1875b5f03a60e2dc0"
+    },
+    "Assets/Renders/Expansion/Identity/pulverizer_silhouette.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/pulverizer_silhouette.png",
+      "bytes": 329392,
+      "sha256": "af03617d115b9526bcda4714e60c6fdcb5674f5a820222ebcb2685a02e5c155b"
+    },
+    "Assets/Renders/Expansion/Identity/pulverizer_threequarter.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/pulverizer_threequarter.png",
+      "bytes": 375706,
+      "sha256": "b762b05cf8efa8674ce57443fef1fcfe5dfb7e8557d01e5113a92b2970292913"
+    },
+    "Assets/Renders/Expansion/Identity/shadow_surge_IdentitySheet.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/shadow_surge_IdentitySheet.png",
+      "bytes": 502413,
+      "sha256": "0116058b4873f074c008bb6b546a9f00fe2af10c7a19e2134e5741d82b1c9dd1"
+    },
+    "Assets/Renders/Expansion/Identity/shadow_surge_front.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/shadow_surge_front.png",
+      "bytes": 259405,
+      "sha256": "39bf80136f0a35b1a8cd13b0f5c48eecf7672b047b758453bf2323a2633b1149"
+    },
+    "Assets/Renders/Expansion/Identity/shadow_surge_rear.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/shadow_surge_rear.png",
+      "bytes": 260327,
+      "sha256": "fdce8fbc23d7356a58c86aae845cad04f0457ce46481464502eb6b07663b3958"
+    },
+    "Assets/Renders/Expansion/Identity/shadow_surge_side.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/shadow_surge_side.png",
+      "bytes": 261003,
+      "sha256": "0ef6bc023b19593f1201e019cab51d159ce92d4bf6affe642c4cceb8a17f9e4d"
+    },
+    "Assets/Renders/Expansion/Identity/shadow_surge_silhouette.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/shadow_surge_silhouette.png",
+      "bytes": 259754,
+      "sha256": "1216ed38e8efb2bf04efede4bed468100f7a39114ebf4988907773ca2cfe3066"
+    },
+    "Assets/Renders/Expansion/Identity/shadow_surge_threequarter.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/shadow_surge_threequarter.png",
+      "bytes": 266362,
+      "sha256": "74cdec486a77c1ba63d097ccb4221db014560ac3fb14c2a92d4fc680a3d27c84"
+    },
+    "Assets/Renders/Expansion/Identity/stampede_IdentitySheet.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/stampede_IdentitySheet.png",
+      "bytes": 764299,
+      "sha256": "a159c5fb7aa79956bd9410f34a4a631b5c7c4be00f4129437c10872895ed5b61"
+    },
+    "Assets/Renders/Expansion/Identity/stampede_front.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/stampede_front.png",
+      "bytes": 283959,
+      "sha256": "3094dc969d72548254aa9ebeed952f020c3be526734d2eb112bf29e39596c0bb"
+    },
+    "Assets/Renders/Expansion/Identity/stampede_rear.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/stampede_rear.png",
+      "bytes": 286846,
+      "sha256": "df5f092a6b991a8a3828431deee523e6aff619e22243d47a3eb64adb82b60837"
+    },
+    "Assets/Renders/Expansion/Identity/stampede_side.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/stampede_side.png",
+      "bytes": 289979,
+      "sha256": "1a15eb5f55faa6af2b42db2ed820c676a088ec15e42a3b47c590b3d5c4fe1051"
+    },
+    "Assets/Renders/Expansion/Identity/stampede_silhouette.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/stampede_silhouette.png",
+      "bytes": 286287,
+      "sha256": "ca59cf1124cc5a7f05bfaeb71e0ec57f62027cedddb7a4b3c82134ddded39909"
+    },
+    "Assets/Renders/Expansion/Identity/stampede_threequarter.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/stampede_threequarter.png",
+      "bytes": 294418,
+      "sha256": "379622d1b5309aaabcd17ad3f994d7c878543d739d5384c308dce66437c18876"
+    },
+    "Assets/Renders/Expansion/Small/aether_reaper_96x120.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Small/aether_reaper_96x120.png",
+      "bytes": 15847,
+      "sha256": "297bd1c1efce8e7b6c008fa20041b43e3d97f3fc6d14267a8dc4f379b54a5f50"
+    },
+    "Assets/Renders/Expansion/Small/bone_warden_96x120.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Small/bone_warden_96x120.png",
+      "bytes": 17704,
+      "sha256": "36ee633bc8fc8330abd490c5b88620cb0a13decf2822fa588182e4eb495d7e69"
+    },
+    "Assets/Renders/Expansion/Small/iron_giant_96x120.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Small/iron_giant_96x120.png",
+      "bytes": 19029,
+      "sha256": "89639f6a3f295814bc6f26a3f3f7774bdde4c432a95712796f40e7ba8111093d"
+    },
+    "Assets/Renders/Expansion/Small/mini_stampede_96x120.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Small/mini_stampede_96x120.png",
+      "bytes": 19688,
+      "sha256": "7b29a7dc8c6b1bf88b4ce79f337ff6acbc8f77e91896d8a9f7b0942d6d8fe683"
+    },
+    "Assets/Renders/Expansion/Small/pulverizer_96x120.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Small/pulverizer_96x120.png",
+      "bytes": 19088,
+      "sha256": "4f31d6420ed0be3f4481364614ea50c87f7f865029b2232e1bd9d348e3c3a0a2"
+    },
+    "Assets/Renders/Expansion/Small/shadow_surge_96x120.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Small/shadow_surge_96x120.png",
+      "bytes": 19332,
+      "sha256": "f40d36f8879d36d07835c5b285ea451e087968f781585a5eeb8f5db0c997b1bf"
+    },
+    "Assets/Renders/Expansion/Small/stampede_96x120.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Small/stampede_96x120.png",
+      "bytes": 19398,
+      "sha256": "4155c3fb076f7870971cac0084bbc8dde9335cc882e86c34114474dd2baef12f"
+    },
+    "Assets/Renders/mini_stampede.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/mini_stampede.png",
+      "bytes": 1165025,
+      "sha256": "91f1bdb25d32a37ed2a7ec20448bb7b38f9d3ac0494e3b81ca3f9b4c8fd19b2d"
+    },
+    "Assets/Renders/pulverizer.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/pulverizer.png",
+      "bytes": 1286402,
+      "sha256": "a73eaafee566a27d87def8dad14bebca5f96ef0bbde3b329530b4fe3fde84b00"
+    },
+    "Assets/Renders/stampede.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/stampede.png",
+      "bytes": 1191818,
+      "sha256": "b6b6fc6c25d72d10148126bc9d0bda9a8473d0295fdb7997d481a835988042f0"
+    },
+    "Assets/Source/CardArt/Masters/aether_reaper.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Masters/aether_reaper.png",
+      "bytes": 1389653,
+      "sha256": "ba9c39043ca33c14a4e4e533f1b94c85861f09b84b83f18c7305d6b40104cabb"
+    },
+    "Assets/Source/CardArt/Masters/bone_warden.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Masters/bone_warden.png",
+      "bytes": 1474615,
+      "sha256": "52df13eed933b0a4d95503a8e03e854af6ace5cf6e4288a7b5edf70acdd0c504"
+    },
+    "Assets/Source/CardArt/Masters/iron_giant.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Masters/iron_giant.png",
+      "bytes": 1459093,
+      "sha256": "2b06367fca2dc29c86e83d3d1f9d5cb21afee52e7f179d3f86dbf9d96bea24b7"
+    },
+    "Assets/Source/CardArt/Masters/mini_stampede.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Masters/mini_stampede.png",
+      "bytes": 1538596,
+      "sha256": "b3b1392a542cd7af2246a8c62eb38f651236577d6203165d7c36fc944b50d74e"
+    },
+    "Assets/Source/CardArt/Masters/pulverizer.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Masters/pulverizer.png",
+      "bytes": 1544645,
+      "sha256": "272163d13c517a34732438ef1969655abd136ee17cc0e259a52578661c45a3a0"
+    },
+    "Assets/Source/CardArt/Masters/shadow_surge.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Masters/shadow_surge.png",
+      "bytes": 1522599,
+      "sha256": "33e7e5a74f0b11062586cbb12058675141406ac75bb155b373ed5942e4fbfbb6"
+    },
+    "Assets/Source/CardArt/Masters/stampede.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Masters/stampede.png",
+      "bytes": 1580355,
+      "sha256": "fdcc6bb8a6a849f1b1f59cf25d82d67b5c64c16b787af8768a8457adea6f5556"
+    },
+    "Assets/Source/CardArt/Scenes/aether_reaper_Portrait.blend": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Scenes/aether_reaper_Portrait.blend",
+      "bytes": 19033688,
+      "sha256": "1985de69ef62f49350b67adcf187de60031cef0e5dec17e763eeab50e932e46d"
+    },
+    "Assets/Source/CardArt/Scenes/bone_warden_Portrait.blend": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Scenes/bone_warden_Portrait.blend",
+      "bytes": 19402390,
+      "sha256": "303f9d95e4e41b42975b53648c1122d985f505a7a765544696e0cbdbf76d8ae4"
+    },
+    "Assets/Source/CardArt/Scenes/iron_giant_Portrait.blend": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Scenes/iron_giant_Portrait.blend",
+      "bytes": 19155954,
+      "sha256": "dfc89e24ad52dc09d6347bf6a0b5d08218c4be9616e30583cc2e37f4b97a3c3b"
+    },
+    "Assets/Source/CardArt/Scenes/mini_stampede_Portrait.blend": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Scenes/mini_stampede_Portrait.blend",
+      "bytes": 2860942,
+      "sha256": "63c7cd0501febcf3352cbb5eb5907a103350797b241886a1d618de5b51a97bf4"
+    },
+    "Assets/Source/CardArt/Scenes/pulverizer_Portrait.blend": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Scenes/pulverizer_Portrait.blend",
+      "bytes": 2459968,
+      "sha256": "554e2cf8e1036702ce9ad9dad87cbe0e8fdcf3f6a9b52e8148607e601d76e15b"
+    },
+    "Assets/Source/CardArt/Scenes/shadow_surge_Portrait.blend": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Scenes/shadow_surge_Portrait.blend",
+      "bytes": 19840367,
+      "sha256": "bee61e7189e6703dd964a80eaa8af93f0e681df074a80697b4af30ee4154261e"
+    },
+    "Assets/Source/CardArt/Scenes/stampede_Portrait.blend": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Scenes/stampede_Portrait.blend",
+      "bytes": 4023420,
+      "sha256": "c85519f9520983d491b465302b4d0d91f59a6e5bb2dcc05e7f1ad4103036fbf4"
+    },
+    "Assets/Source/CardArt/aether_reaper.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/aether_reaper.png",
+      "bytes": 793507,
+      "sha256": "28fe9afa3b78f290da6e1dec0d7b3922aa8c03c4fa232feb09cd6404af23794b"
+    },
+    "Assets/Source/CardArt/bone_warden.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/bone_warden.png",
+      "bytes": 851402,
+      "sha256": "059a22ca38c5406e8ff80c972149455e504bc9e67eef84db5099a197c0e333b1"
+    },
+    "Assets/Source/CardArt/iron_giant.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/iron_giant.png",
+      "bytes": 838644,
+      "sha256": "12d1c628023d799bbd34e2623a3b3e710e3c8e93baad211cf6121c512ff6826c"
+    },
+    "Assets/Source/CardArt/mini_stampede.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/mini_stampede.png",
+      "bytes": 886734,
+      "sha256": "ff7ce346fa6e216c41019bcfc9a11d1b0619631377560b09fa78b62657430844"
+    },
+    "Assets/Source/CardArt/pulverizer.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/pulverizer.png",
+      "bytes": 892436,
+      "sha256": "9f9175b47a5cf88b01ccf3e655cc088b814daab801e9bed3e1a7594da7c01642"
+    },
+    "Assets/Source/CardArt/shadow_surge.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/shadow_surge.png",
+      "bytes": 876487,
+      "sha256": "d55fb6e8fe5dbe8b5ba99203f9ae55940b8f56bcff784951a96f1112e0870ad1"
+    },
+    "Assets/Source/CardArt/stampede.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/stampede.png",
+      "bytes": 909906,
+      "sha256": "f9cda67ee2e708c105f4a702cad28b26bc464102e7a4a9160070a88b688df6f9"
+    },
+    "Assets/Source/Textures/T_RiftAscensionAtlas_BaseColor.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/Textures/T_RiftAscensionAtlas_BaseColor.png",
+      "bytes": 809242,
+      "sha256": "277ec60b931c0d351d15d225cf0434aafdc77361276f6a8509b7044c34fefc7a"
+    },
+    "Assets/Source/Textures/T_RiftAscensionAtlas_Normal.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/Textures/T_RiftAscensionAtlas_Normal.png",
+      "bytes": 183659,
+      "sha256": "69863677590fe90e5e26b7d30ef99c2ecaad6b354badad7adb0593a920847ec6"
+    },
+    "Assets/Source/Textures/T_RiftAscensionAtlas_ORM.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/Textures/T_RiftAscensionAtlas_ORM.png",
+      "bytes": 1152949,
+      "sha256": "6e92199f888dc5e526f81bd93dd09e09840cc34383e245daf16531e14b5ff415"
+    },
+    "Assets/Source/Textures/T_RiftAscensionAtlas_TeamMask.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/Textures/T_RiftAscensionAtlas_TeamMask.png",
+      "bytes": 14458,
+      "sha256": "f0750d38b0f709fdadf9bb815b3de1b37fc4a831c81d67864e44b117a53bd6ec"
+    },
+    "Assets/Source/Textures/T_RiftExpansionAtlas_BaseColor.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/Textures/T_RiftExpansionAtlas_BaseColor.png",
+      "bytes": 837238,
+      "sha256": "9e4c14b2aba166297772fb4b7ca398917c840146b66d1c8ac54ed7c8550e9d2e"
+    },
+    "Assets/Source/Textures/T_RiftExpansionAtlas_Normal.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/Textures/T_RiftExpansionAtlas_Normal.png",
+      "bytes": 183659,
+      "sha256": "69863677590fe90e5e26b7d30ef99c2ecaad6b354badad7adb0593a920847ec6"
+    },
+    "Assets/Source/Textures/T_RiftExpansionAtlas_ORM.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/Textures/T_RiftExpansionAtlas_ORM.png",
+      "bytes": 1152684,
+      "sha256": "b75432377b96a2b7dfcc45fda8e1e2dcff9eb87dc32e509b88804d26bc8aa161"
+    },
+    "Assets/Source/Textures/T_RiftExpansionAtlas_TeamMask.png": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/Textures/T_RiftExpansionAtlas_TeamMask.png",
+      "bytes": 14458,
+      "sha256": "f0750d38b0f709fdadf9bb815b3de1b37fc4a831c81d67864e44b117a53bd6ec"
+    },
+    "Build/finalize_expansion_art_scenes.py": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Build/finalize_expansion_art_scenes.py",
+      "bytes": 2162,
+      "sha256": "9f2b0e01fc0551b378303fa1bb2a27439d894faea494a0b2e25a15f1890dadee"
+    },
+    "Build/render_approved_expansion.py": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Build/render_approved_expansion.py",
+      "bytes": 16291,
+      "sha256": "b4af33dfe3d5413a465df4078d940b494b33f50965293710ac75df89b942d714"
+    },
+    "Build/render_card_portraits.py": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Build/render_card_portraits.py",
+      "bytes": 13004,
+      "sha256": "8c4e0a81896850a5dd901995f67d9dd56819b6a0f4a3d739a179f0c2155f3f48"
+    },
+    "Build/render_expansion_portraits.py": {
+      "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Build/render_expansion_portraits.py",
+      "bytes": 15995,
+      "sha256": "83f91c97553de3c226dcb1b708a6ad9a64427fcaf4795314d67e4317fa3bb593"
+    }
+  },
+  "historicalOverrides": {
+    "Assets/Source/CardArt/model_portraits.json": "Assets/Source/Revisions/ArtPolishBefore1.6.0/BeforePortraits.json",
+    "Assets/Source/RiftCrown_ProductionAssets.blend": "Assets/Source/Revisions/ArtPolishBefore1.6.0/BeforeSource.blend",
+    "Build/expansion_asset_models.py": "Assets/Source/Revisions/ArtPolishBefore1.6.0/BeforeExpansionModels.py",
+    "Assets/asset_manifest.json": "Assets/Source/Revisions/ArtPolishBefore1.6.0/BeforeManifest.json",
+    "Build/expansion_new_models.py": "Assets/Source/Revisions/ArtPolishBefore1.6.0/BeforeNewModels.py",
+    "Build/generate_assets.py": "Assets/Source/Revisions/ArtPolishBefore1.6.0/BeforeGenerateAssets.py",
+    "Assets/Export/Characters/aether_reaper/AN_aether_reaper_Acquire.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/AN_aether_reaper_Acquire.fbx",
+    "Assets/Export/Characters/aether_reaper/AN_aether_reaper_Attack.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/AN_aether_reaper_Attack.fbx",
+    "Assets/Export/Characters/aether_reaper/AN_aether_reaper_Death.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/AN_aether_reaper_Death.fbx",
+    "Assets/Export/Characters/aether_reaper/AN_aether_reaper_Deploy.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/AN_aether_reaper_Deploy.fbx",
+    "Assets/Export/Characters/aether_reaper/AN_aether_reaper_Hit.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/AN_aether_reaper_Hit.fbx",
+    "Assets/Export/Characters/aether_reaper/AN_aether_reaper_Idle.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/AN_aether_reaper_Idle.fbx",
+    "Assets/Export/Characters/aether_reaper/AN_aether_reaper_Locomotion.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/AN_aether_reaper_Locomotion.fbx",
+    "Assets/Export/Characters/aether_reaper/AN_aether_reaper_Status.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/AN_aether_reaper_Status.fbx",
+    "Assets/Export/Characters/aether_reaper/AN_aether_reaper_Turn.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/AN_aether_reaper_Turn.fbx",
+    "Assets/Export/Characters/aether_reaper/SK_aether_reaper.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/SK_aether_reaper.fbx",
+    "Assets/Export/Characters/aether_reaper/SK_aether_reaper_LOD1.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/SK_aether_reaper_LOD1.fbx",
+    "Assets/Export/Characters/aether_reaper/SK_aether_reaper_LOD2.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/SK_aether_reaper_LOD2.fbx",
+    "Assets/Export/Characters/aether_reaper/SK_aether_reaper_LOD3.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/aether_reaper/SK_aether_reaper_LOD3.fbx",
+    "Assets/Export/Characters/bone_warden/AN_bone_warden_Acquire.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/AN_bone_warden_Acquire.fbx",
+    "Assets/Export/Characters/bone_warden/AN_bone_warden_Attack.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/AN_bone_warden_Attack.fbx",
+    "Assets/Export/Characters/bone_warden/AN_bone_warden_Death.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/AN_bone_warden_Death.fbx",
+    "Assets/Export/Characters/bone_warden/AN_bone_warden_Deploy.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/AN_bone_warden_Deploy.fbx",
+    "Assets/Export/Characters/bone_warden/AN_bone_warden_Hit.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/AN_bone_warden_Hit.fbx",
+    "Assets/Export/Characters/bone_warden/AN_bone_warden_Idle.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/AN_bone_warden_Idle.fbx",
+    "Assets/Export/Characters/bone_warden/AN_bone_warden_Locomotion.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/AN_bone_warden_Locomotion.fbx",
+    "Assets/Export/Characters/bone_warden/AN_bone_warden_Status.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/AN_bone_warden_Status.fbx",
+    "Assets/Export/Characters/bone_warden/AN_bone_warden_Turn.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/AN_bone_warden_Turn.fbx",
+    "Assets/Export/Characters/bone_warden/SK_bone_warden.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/SK_bone_warden.fbx",
+    "Assets/Export/Characters/bone_warden/SK_bone_warden_LOD1.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/SK_bone_warden_LOD1.fbx",
+    "Assets/Export/Characters/bone_warden/SK_bone_warden_LOD2.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/SK_bone_warden_LOD2.fbx",
+    "Assets/Export/Characters/bone_warden/SK_bone_warden_LOD3.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden/SK_bone_warden_LOD3.fbx",
+    "Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Acquire.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Acquire.fbx",
+    "Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Attack.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Attack.fbx",
+    "Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Death.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Death.fbx",
+    "Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Deploy.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Deploy.fbx",
+    "Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Hit.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Hit.fbx",
+    "Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Idle.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Idle.fbx",
+    "Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Locomotion.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Locomotion.fbx",
+    "Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Status.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Status.fbx",
+    "Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Turn.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/AN_bone_warden_skeleton_Turn.fbx",
+    "Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton.fbx",
+    "Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton_LOD1.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton_LOD1.fbx",
+    "Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton_LOD2.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton_LOD2.fbx",
+    "Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton_LOD3.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton_LOD3.fbx",
+    "Assets/Export/Characters/iron_giant/AN_iron_giant_Acquire.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/AN_iron_giant_Acquire.fbx",
+    "Assets/Export/Characters/iron_giant/AN_iron_giant_Attack.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/AN_iron_giant_Attack.fbx",
+    "Assets/Export/Characters/iron_giant/AN_iron_giant_Death.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/AN_iron_giant_Death.fbx",
+    "Assets/Export/Characters/iron_giant/AN_iron_giant_Deploy.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/AN_iron_giant_Deploy.fbx",
+    "Assets/Export/Characters/iron_giant/AN_iron_giant_Hit.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/AN_iron_giant_Hit.fbx",
+    "Assets/Export/Characters/iron_giant/AN_iron_giant_Idle.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/AN_iron_giant_Idle.fbx",
+    "Assets/Export/Characters/iron_giant/AN_iron_giant_Locomotion.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/AN_iron_giant_Locomotion.fbx",
+    "Assets/Export/Characters/iron_giant/AN_iron_giant_Status.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/AN_iron_giant_Status.fbx",
+    "Assets/Export/Characters/iron_giant/AN_iron_giant_Turn.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/AN_iron_giant_Turn.fbx",
+    "Assets/Export/Characters/iron_giant/SK_iron_giant.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/SK_iron_giant.fbx",
+    "Assets/Export/Characters/iron_giant/SK_iron_giant_LOD1.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/SK_iron_giant_LOD1.fbx",
+    "Assets/Export/Characters/iron_giant/SK_iron_giant_LOD2.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/SK_iron_giant_LOD2.fbx",
+    "Assets/Export/Characters/iron_giant/SK_iron_giant_LOD3.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/iron_giant/SK_iron_giant_LOD3.fbx",
+    "Assets/Export/Characters/ironclad/SK_ironclad.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/ironclad/SK_ironclad.fbx",
+    "Assets/Export/Characters/mini_stampede/AN_mini_stampede_Acquire.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/AN_mini_stampede_Acquire.fbx",
+    "Assets/Export/Characters/mini_stampede/AN_mini_stampede_Attack.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/AN_mini_stampede_Attack.fbx",
+    "Assets/Export/Characters/mini_stampede/AN_mini_stampede_Death.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/AN_mini_stampede_Death.fbx",
+    "Assets/Export/Characters/mini_stampede/AN_mini_stampede_Deploy.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/AN_mini_stampede_Deploy.fbx",
+    "Assets/Export/Characters/mini_stampede/AN_mini_stampede_Hit.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/AN_mini_stampede_Hit.fbx",
+    "Assets/Export/Characters/mini_stampede/AN_mini_stampede_Idle.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/AN_mini_stampede_Idle.fbx",
+    "Assets/Export/Characters/mini_stampede/AN_mini_stampede_Locomotion.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/AN_mini_stampede_Locomotion.fbx",
+    "Assets/Export/Characters/mini_stampede/AN_mini_stampede_Status.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/AN_mini_stampede_Status.fbx",
+    "Assets/Export/Characters/mini_stampede/AN_mini_stampede_Turn.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/AN_mini_stampede_Turn.fbx",
+    "Assets/Export/Characters/mini_stampede/SK_mini_stampede.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/SK_mini_stampede.fbx",
+    "Assets/Export/Characters/mini_stampede/SK_mini_stampede_LOD1.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/SK_mini_stampede_LOD1.fbx",
+    "Assets/Export/Characters/mini_stampede/SK_mini_stampede_LOD2.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/SK_mini_stampede_LOD2.fbx",
+    "Assets/Export/Characters/mini_stampede/SK_mini_stampede_LOD3.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/mini_stampede/SK_mini_stampede_LOD3.fbx",
+    "Assets/Export/Characters/pulverizer/AN_pulverizer_Acquire.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/AN_pulverizer_Acquire.fbx",
+    "Assets/Export/Characters/pulverizer/AN_pulverizer_Attack.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/AN_pulverizer_Attack.fbx",
+    "Assets/Export/Characters/pulverizer/AN_pulverizer_Death.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/AN_pulverizer_Death.fbx",
+    "Assets/Export/Characters/pulverizer/AN_pulverizer_Deploy.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/AN_pulverizer_Deploy.fbx",
+    "Assets/Export/Characters/pulverizer/AN_pulverizer_Hit.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/AN_pulverizer_Hit.fbx",
+    "Assets/Export/Characters/pulverizer/AN_pulverizer_Idle.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/AN_pulverizer_Idle.fbx",
+    "Assets/Export/Characters/pulverizer/AN_pulverizer_Locomotion.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/AN_pulverizer_Locomotion.fbx",
+    "Assets/Export/Characters/pulverizer/AN_pulverizer_Status.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/AN_pulverizer_Status.fbx",
+    "Assets/Export/Characters/pulverizer/AN_pulverizer_Turn.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/AN_pulverizer_Turn.fbx",
+    "Assets/Export/Characters/pulverizer/SK_pulverizer.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/SK_pulverizer.fbx",
+    "Assets/Export/Characters/pulverizer/SK_pulverizer_LOD1.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/SK_pulverizer_LOD1.fbx",
+    "Assets/Export/Characters/pulverizer/SK_pulverizer_LOD2.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/SK_pulverizer_LOD2.fbx",
+    "Assets/Export/Characters/pulverizer/SK_pulverizer_LOD3.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/pulverizer/SK_pulverizer_LOD3.fbx",
+    "Assets/Export/Characters/stampede/AN_stampede_Acquire.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/AN_stampede_Acquire.fbx",
+    "Assets/Export/Characters/stampede/AN_stampede_Attack.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/AN_stampede_Attack.fbx",
+    "Assets/Export/Characters/stampede/AN_stampede_Death.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/AN_stampede_Death.fbx",
+    "Assets/Export/Characters/stampede/AN_stampede_Deploy.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/AN_stampede_Deploy.fbx",
+    "Assets/Export/Characters/stampede/AN_stampede_Hit.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/AN_stampede_Hit.fbx",
+    "Assets/Export/Characters/stampede/AN_stampede_Idle.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/AN_stampede_Idle.fbx",
+    "Assets/Export/Characters/stampede/AN_stampede_Locomotion.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/AN_stampede_Locomotion.fbx",
+    "Assets/Export/Characters/stampede/AN_stampede_Status.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/AN_stampede_Status.fbx",
+    "Assets/Export/Characters/stampede/AN_stampede_Turn.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/AN_stampede_Turn.fbx",
+    "Assets/Export/Characters/stampede/SK_stampede.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/SK_stampede.fbx",
+    "Assets/Export/Characters/stampede/SK_stampede_LOD1.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/SK_stampede_LOD1.fbx",
+    "Assets/Export/Characters/stampede/SK_stampede_LOD2.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/SK_stampede_LOD2.fbx",
+    "Assets/Export/Characters/stampede/SK_stampede_LOD3.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/stampede/SK_stampede_LOD3.fbx",
+    "Assets/Export/Characters/twin_blades/SK_twin_blades.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Characters/twin_blades/SK_twin_blades.fbx",
+    "Assets/Export/Environment/SM_iron_shield_fragment.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Environment/SM_iron_shield_fragment.fbx",
+    "Assets/Export/Environment/SM_iron_shield_fragment_LOD1.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Environment/SM_iron_shield_fragment_LOD1.fbx",
+    "Assets/Export/Environment/SM_iron_shield_fragment_LOD2.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Environment/SM_iron_shield_fragment_LOD2.fbx",
+    "Assets/Export/Environment/SM_shadow_surge_ribbon.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Environment/SM_shadow_surge_ribbon.fbx",
+    "Assets/Export/Environment/SM_shadow_surge_ribbon_LOD1.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Environment/SM_shadow_surge_ribbon_LOD1.fbx",
+    "Assets/Export/Environment/SM_shadow_surge_ribbon_LOD2.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Environment/SM_shadow_surge_ribbon_LOD2.fbx",
+    "Assets/Export/Environment/SM_shadow_surge_wisp.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Environment/SM_shadow_surge_wisp.fbx",
+    "Assets/Export/Environment/SM_shadow_surge_wisp_LOD1.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Environment/SM_shadow_surge_wisp_LOD1.fbx",
+    "Assets/Export/Environment/SM_shadow_surge_wisp_LOD2.fbx": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Export/Environment/SM_shadow_surge_wisp_LOD2.fbx",
+    "Assets/Renders/Expansion/Identity/aether_reaper_IdentitySheet.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/aether_reaper_IdentitySheet.png",
+    "Assets/Renders/Expansion/Identity/aether_reaper_front.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/aether_reaper_front.png",
+    "Assets/Renders/Expansion/Identity/aether_reaper_rear.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/aether_reaper_rear.png",
+    "Assets/Renders/Expansion/Identity/aether_reaper_side.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/aether_reaper_side.png",
+    "Assets/Renders/Expansion/Identity/aether_reaper_silhouette.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/aether_reaper_silhouette.png",
+    "Assets/Renders/Expansion/Identity/aether_reaper_threequarter.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/aether_reaper_threequarter.png",
+    "Assets/Renders/Expansion/Identity/bone_warden_IdentitySheet.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/bone_warden_IdentitySheet.png",
+    "Assets/Renders/Expansion/Identity/bone_warden_front.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/bone_warden_front.png",
+    "Assets/Renders/Expansion/Identity/bone_warden_rear.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/bone_warden_rear.png",
+    "Assets/Renders/Expansion/Identity/bone_warden_side.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/bone_warden_side.png",
+    "Assets/Renders/Expansion/Identity/bone_warden_silhouette.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/bone_warden_silhouette.png",
+    "Assets/Renders/Expansion/Identity/bone_warden_skeleton_IdentitySheet.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/bone_warden_skeleton_IdentitySheet.png",
+    "Assets/Renders/Expansion/Identity/bone_warden_skeleton_front.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/bone_warden_skeleton_front.png",
+    "Assets/Renders/Expansion/Identity/bone_warden_skeleton_rear.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/bone_warden_skeleton_rear.png",
+    "Assets/Renders/Expansion/Identity/bone_warden_skeleton_side.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/bone_warden_skeleton_side.png",
+    "Assets/Renders/Expansion/Identity/bone_warden_skeleton_silhouette.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/bone_warden_skeleton_silhouette.png",
+    "Assets/Renders/Expansion/Identity/bone_warden_skeleton_threequarter.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/bone_warden_skeleton_threequarter.png",
+    "Assets/Renders/Expansion/Identity/bone_warden_threequarter.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/bone_warden_threequarter.png",
+    "Assets/Renders/Expansion/Identity/iron_giant_IdentitySheet.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/iron_giant_IdentitySheet.png",
+    "Assets/Renders/Expansion/Identity/iron_giant_front.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/iron_giant_front.png",
+    "Assets/Renders/Expansion/Identity/iron_giant_rear.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/iron_giant_rear.png",
+    "Assets/Renders/Expansion/Identity/iron_giant_side.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/iron_giant_side.png",
+    "Assets/Renders/Expansion/Identity/iron_giant_silhouette.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/iron_giant_silhouette.png",
+    "Assets/Renders/Expansion/Identity/iron_giant_threequarter.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/iron_giant_threequarter.png",
+    "Assets/Renders/Expansion/Identity/mini_stampede_IdentitySheet.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/mini_stampede_IdentitySheet.png",
+    "Assets/Renders/Expansion/Identity/mini_stampede_front.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/mini_stampede_front.png",
+    "Assets/Renders/Expansion/Identity/mini_stampede_rear.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/mini_stampede_rear.png",
+    "Assets/Renders/Expansion/Identity/mini_stampede_side.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/mini_stampede_side.png",
+    "Assets/Renders/Expansion/Identity/mini_stampede_silhouette.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/mini_stampede_silhouette.png",
+    "Assets/Renders/Expansion/Identity/mini_stampede_threequarter.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/mini_stampede_threequarter.png",
+    "Assets/Renders/Expansion/Identity/pulverizer_IdentitySheet.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/pulverizer_IdentitySheet.png",
+    "Assets/Renders/Expansion/Identity/pulverizer_front.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/pulverizer_front.png",
+    "Assets/Renders/Expansion/Identity/pulverizer_rear.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/pulverizer_rear.png",
+    "Assets/Renders/Expansion/Identity/pulverizer_side.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/pulverizer_side.png",
+    "Assets/Renders/Expansion/Identity/pulverizer_silhouette.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/pulverizer_silhouette.png",
+    "Assets/Renders/Expansion/Identity/pulverizer_threequarter.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/pulverizer_threequarter.png",
+    "Assets/Renders/Expansion/Identity/shadow_surge_IdentitySheet.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/shadow_surge_IdentitySheet.png",
+    "Assets/Renders/Expansion/Identity/shadow_surge_front.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/shadow_surge_front.png",
+    "Assets/Renders/Expansion/Identity/shadow_surge_rear.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/shadow_surge_rear.png",
+    "Assets/Renders/Expansion/Identity/shadow_surge_side.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/shadow_surge_side.png",
+    "Assets/Renders/Expansion/Identity/shadow_surge_silhouette.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/shadow_surge_silhouette.png",
+    "Assets/Renders/Expansion/Identity/shadow_surge_threequarter.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/shadow_surge_threequarter.png",
+    "Assets/Renders/Expansion/Identity/stampede_IdentitySheet.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/stampede_IdentitySheet.png",
+    "Assets/Renders/Expansion/Identity/stampede_front.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/stampede_front.png",
+    "Assets/Renders/Expansion/Identity/stampede_rear.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/stampede_rear.png",
+    "Assets/Renders/Expansion/Identity/stampede_side.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/stampede_side.png",
+    "Assets/Renders/Expansion/Identity/stampede_silhouette.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/stampede_silhouette.png",
+    "Assets/Renders/Expansion/Identity/stampede_threequarter.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Identity/stampede_threequarter.png",
+    "Assets/Renders/Expansion/Small/aether_reaper_96x120.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Small/aether_reaper_96x120.png",
+    "Assets/Renders/Expansion/Small/bone_warden_96x120.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Small/bone_warden_96x120.png",
+    "Assets/Renders/Expansion/Small/iron_giant_96x120.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Small/iron_giant_96x120.png",
+    "Assets/Renders/Expansion/Small/mini_stampede_96x120.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Small/mini_stampede_96x120.png",
+    "Assets/Renders/Expansion/Small/pulverizer_96x120.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Small/pulverizer_96x120.png",
+    "Assets/Renders/Expansion/Small/shadow_surge_96x120.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Small/shadow_surge_96x120.png",
+    "Assets/Renders/Expansion/Small/stampede_96x120.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/Expansion/Small/stampede_96x120.png",
+    "Assets/Renders/mini_stampede.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/mini_stampede.png",
+    "Assets/Renders/pulverizer.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/pulverizer.png",
+    "Assets/Renders/stampede.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Renders/stampede.png",
+    "Assets/Source/CardArt/Masters/aether_reaper.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Masters/aether_reaper.png",
+    "Assets/Source/CardArt/Masters/bone_warden.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Masters/bone_warden.png",
+    "Assets/Source/CardArt/Masters/iron_giant.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Masters/iron_giant.png",
+    "Assets/Source/CardArt/Masters/mini_stampede.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Masters/mini_stampede.png",
+    "Assets/Source/CardArt/Masters/pulverizer.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Masters/pulverizer.png",
+    "Assets/Source/CardArt/Masters/shadow_surge.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Masters/shadow_surge.png",
+    "Assets/Source/CardArt/Masters/stampede.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Masters/stampede.png",
+    "Assets/Source/CardArt/Scenes/aether_reaper_Portrait.blend": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Scenes/aether_reaper_Portrait.blend",
+    "Assets/Source/CardArt/Scenes/bone_warden_Portrait.blend": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Scenes/bone_warden_Portrait.blend",
+    "Assets/Source/CardArt/Scenes/iron_giant_Portrait.blend": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Scenes/iron_giant_Portrait.blend",
+    "Assets/Source/CardArt/Scenes/mini_stampede_Portrait.blend": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Scenes/mini_stampede_Portrait.blend",
+    "Assets/Source/CardArt/Scenes/pulverizer_Portrait.blend": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Scenes/pulverizer_Portrait.blend",
+    "Assets/Source/CardArt/Scenes/shadow_surge_Portrait.blend": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Scenes/shadow_surge_Portrait.blend",
+    "Assets/Source/CardArt/Scenes/stampede_Portrait.blend": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/Scenes/stampede_Portrait.blend",
+    "Assets/Source/CardArt/aether_reaper.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/aether_reaper.png",
+    "Assets/Source/CardArt/bone_warden.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/bone_warden.png",
+    "Assets/Source/CardArt/iron_giant.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/iron_giant.png",
+    "Assets/Source/CardArt/mini_stampede.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/mini_stampede.png",
+    "Assets/Source/CardArt/pulverizer.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/pulverizer.png",
+    "Assets/Source/CardArt/shadow_surge.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/shadow_surge.png",
+    "Assets/Source/CardArt/stampede.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/CardArt/stampede.png",
+    "Assets/Source/Textures/T_RiftAscensionAtlas_BaseColor.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/Textures/T_RiftAscensionAtlas_BaseColor.png",
+    "Assets/Source/Textures/T_RiftAscensionAtlas_Normal.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/Textures/T_RiftAscensionAtlas_Normal.png",
+    "Assets/Source/Textures/T_RiftAscensionAtlas_ORM.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/Textures/T_RiftAscensionAtlas_ORM.png",
+    "Assets/Source/Textures/T_RiftAscensionAtlas_TeamMask.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/Textures/T_RiftAscensionAtlas_TeamMask.png",
+    "Assets/Source/Textures/T_RiftExpansionAtlas_BaseColor.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/Textures/T_RiftExpansionAtlas_BaseColor.png",
+    "Assets/Source/Textures/T_RiftExpansionAtlas_Normal.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/Textures/T_RiftExpansionAtlas_Normal.png",
+    "Assets/Source/Textures/T_RiftExpansionAtlas_ORM.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/Textures/T_RiftExpansionAtlas_ORM.png",
+    "Assets/Source/Textures/T_RiftExpansionAtlas_TeamMask.png": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Assets/Source/Textures/T_RiftExpansionAtlas_TeamMask.png",
+    "Build/finalize_expansion_art_scenes.py": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Build/finalize_expansion_art_scenes.py",
+    "Build/render_approved_expansion.py": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Build/render_approved_expansion.py",
+    "Build/render_card_portraits.py": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Build/render_card_portraits.py",
+    "Build/render_expansion_portraits.py": "Assets/Source/Revisions/ArtPolishBefore1.6.0/OldFiles/Build/render_expansion_portraits.py"
+  },
+  "retainedInventory": {
+    "file": "Assets/Source/Revisions/ArtPolishBefore1.6.0/RetainedProductionInventory.json",
+    "bytes": 175661,
+    "sha256": "ca8aa54f8cbd1551bb45f80a0a5624cc316ab197fe22ddd1e0e640b7233c4f3c"
+  },
+  "inventoryFiles": 753,
+  "archivedFileCount": 193,
+  "archivedBytes": 152981556
+}

@@ -2,6 +2,7 @@
 #include "RiftAssetLibrary.h"
 #include "RiftCardData.h"
 #include "RiftMatchSubsystem.h"
+#include "RiftProfileSubsystem.h"
 #include "RiftReplaySubsystem.h"
 #include "Presentation/RiftArenaPresentation.h"
 #include "Presentation/RiftUnitVisual.h"
@@ -15,7 +16,9 @@
 #include "Engine/World.h"
 #include "Misc/AutomationTest.h"
 #include "Misc/CommandLine.h"
+#include "Misc/FileHelper.h"
 #include "Misc/Parse.h"
+#include "Misc/Paths.h"
 #include "Misc/ScopeExit.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
@@ -40,7 +43,7 @@ bool FRiftPulverizerTest::RunTest(const FString& Parameters)
     {AddError(TEXT("Pulverizer fixture requires isolated RiftSaveRoot/UserDir and RiftAutomationSandbox."));return false;}
     const auto* C=rift::FindCard("pulverizer");
     if(!TestNotNull(TEXT("Pulverizer exists in authoritative gameplay"),C))return false;
-    TestEqual(TEXT("The sixteen prior cards remain alongside Pulverizer"),int32(rift::Cards().size()),17);
+    TestEqual(TEXT("Approved expansion has twenty-one playable cards"),int32(rift::Cards().size()),21);
     TestEqual(TEXT("Pulverizer costs three Aether"),C->cost,3);
     TestEqual(TEXT("One building per paid Pulverizer cast"),C->count,1);
     auto Stat=[&](const TCHAR* Field,double Actual,double Expected)
@@ -53,6 +56,10 @@ bool FRiftPulverizerTest::RunTest(const FString& Parameters)
     Stat(TEXT("lifetime"),C->lifetime,45);Stat(TEXT("footprint"),C->footprint,1.65);
     Stat(TEXT("model scale"),C->scale,.95);Stat(TEXT("projectile speed"),C->projectileSpeed,0);
     Stat(TEXT("movement slow fraction"),C->slowPct,.10);Stat(TEXT("slow duration"),C->slowDuration,1.5);
+    Stat(TEXT("explicit natural HP decay"),C->hpDecayPerSecond,700./45.);
+    Stat(TEXT("initial attack cooldown"),C->initialAttackCooldown,.35);
+    TestFalse(TEXT("Pulverizer retains natural expiry rather than a hard expiry"),C->hardExpiry);
+    TestEqual(TEXT("Pulverizer target mask is ground troops only"),int32(C->targetMask),1);
     TestTrue(TEXT("Pulverizer is a stationary ground defensive building"),C->building&&!C->spell&&!C->flying&&!C->canHitAir&&!C->structuresOnly);
     Stat(TEXT("charge damage"),C->chargeDamage,0);Stat(TEXT("aura damage"),C->auraDamage,0);
     Stat(TEXT("aura interval"),C->auraInterval,0);Stat(TEXT("aura radius"),C->auraRadius,0);
@@ -69,7 +76,7 @@ bool FRiftPulverizerTest::RunTest(const FString& Parameters)
     TArray<TSharedPtr<FJsonValue>> Definitions;
     if(!TestTrue(TEXT("Native card definition export is valid JSON"),FJsonSerializer::Deserialize(
         TJsonReaderFactory<>::Create(URiftAssetLibrary::CardDefinitionsJSON()),Definitions)))return false;
-    TestEqual(TEXT("Native export contains all seventeen definitions"),Definitions.Num(),17);
+    TestEqual(TEXT("Native export contains all twenty-one playable definitions"),Definitions.Num(),21);
     std::set<std::string> ExportedIds;
     for(const auto& Value:Definitions)
     {
@@ -103,10 +110,14 @@ bool FRiftPulverizerTest::RunTest(const FString& Parameters)
     PULVERIZER_STAT(AuraDamage,auraDamage);PULVERIZER_STAT(AuraInterval,auraInterval);PULVERIZER_STAT(AuraRadius,auraRadius);
     PULVERIZER_STAT(StunDuration,stunDuration);PULVERIZER_STAT(DotDamage,dotDamage);
     PULVERIZER_STAT(DotDuration,dotDuration);PULVERIZER_STAT(DotInterval,dotInterval);
+    PULVERIZER_STAT(CollisionRadius,collisionRadius);PULVERIZER_STAT(HPDecayPerSecond,hpDecayPerSecond);
+    PULVERIZER_STAT(InitialAttackCooldown,initialAttackCooldown);
 #undef PULVERIZER_STAT
     Imported(TEXT("front detection"),Card->FrontSight,rift::detection::Front);
     Imported(TEXT("rear detection"),Card->RearSight,rift::detection::Rear);
     TestTrue(TEXT("Imported classification matches gameplay"),Card->Building&&!Card->Spell&&!Card->Flying&&!Card->GroundAndAir&&!Card->StructuresOnly&&Card->Rounds==0);
+    TestEqual(TEXT("Imported ground-troop-only target mask"),Card->TargetMask,1);
+    TestFalse(TEXT("Imported natural expiry policy"),Card->HardExpiry);
     auto* Mesh=Card->CharacterMesh.Get();auto* Portrait=Card->Illustration.Get();
     if(!TestNotNull(TEXT("Pulverizer's whole machine is a skeletal model"),Mesh)||
        !TestNotNull(TEXT("Pulverizer has its actual-model card portrait"),Portrait))return false;
@@ -118,10 +129,10 @@ bool FRiftPulverizerTest::RunTest(const FString& Parameters)
     TestNotNull(TEXT("Whole mechanism has an imported physics asset"),Mesh->GetPhysicsAsset());
     TestTrue(TEXT("Whole mechanism retains its authored LOD hierarchy"),Mesh->GetLODNum()>=4);
     // The standard FBX path keeps the SKEL_<id> armature wrapper in UE, as it
-    // does for every prior skeletal card, in addition to the ten authored bones.
-    TestEqual(TEXT("Mechanism contains ten dedicated bones and its FBX armature root"),Mesh->GetRefSkeleton().GetNum(),11);
+    // does for every prior skeletal card, in addition to the fifteen authored bones.
+    TestEqual(TEXT("Mechanism contains fifteen dedicated bones and its FBX armature root"),Mesh->GetRefSkeleton().GetNum(),16);
     TestTrue(TEXT("Mechanism retains its standard imported armature wrapper"),Mesh->GetRefSkeleton().FindBoneIndex(TEXT("SKEL_pulverizer"))!=INDEX_NONE);
-    for(FName Bone:{FName(TEXT("root")),FName(TEXT("hammer")),FName(TEXT("crystal")),FName(TEXT("piston_0")),FName(TEXT("piston_1")),FName(TEXT("piston_2")),FName(TEXT("attack_origin")),FName(TEXT("impact_origin")),FName(TEXT("hp_anchor")),FName(TEXT("status_anchor"))})
+    for(FName Bone:{FName(TEXT("root")),FName(TEXT("hammer")),FName(TEXT("compression_ring")),FName(TEXT("crystal")),FName(TEXT("crystal_fractures")),FName(TEXT("ring_fragment_-1")),FName(TEXT("ring_fragment_1")),FName(TEXT("piston_0")),FName(TEXT("piston_1")),FName(TEXT("piston_2")),FName(TEXT("piston_3")),FName(TEXT("attack_origin")),FName(TEXT("impact_origin")),FName(TEXT("hp_anchor")),FName(TEXT("status_anchor"))})
         TestTrue(Bone.ToString()+TEXT(" is an actual imported mechanism bone"),Mesh->GetRefSkeleton().FindBoneIndex(Bone)!=INDEX_NONE);
     TestEqual(TEXT("Whole mechanism binds all nine standard clips"),Card->Animations.Num(),9);
     for(FName Clip:{FName(TEXT("Idle")),FName(TEXT("Locomotion")),FName(TEXT("Attack")),FName(TEXT("Hit")),FName(TEXT("Death")),FName(TEXT("Deploy")),FName(TEXT("Status")),FName(TEXT("Turn")),FName(TEXT("Acquire"))})
@@ -131,7 +142,7 @@ bool FRiftPulverizerTest::RunTest(const FString& Parameters)
         TestEqual(Clip.ToString()+TEXT(" uses Pulverizer's authored asset"),Animation->GetPathName(),FString::Printf(TEXT("/Game/Rift/Characters/pulverizer/Animations/AN_pulverizer_%s.AN_pulverizer_%s"),*Clip.ToString(),*Clip.ToString()));
         TestTrue(Clip.ToString()+TEXT(" shares the whole mechanism skeleton"),Animation->GetSkeleton()==Mesh->GetSkeleton());
         TestTrue(Clip.ToString()+TEXT(" has evaluated animation time"),Animation->GetPlayLength()>0);
-        if(Clip==TEXT("Attack"))TestTrue(TEXT("Attack preserves the authored nine-tenths-second cycle"),FMath::IsNearlyEqual(Animation->GetPlayLength(),.9f,.02f));
+        if(Clip==TEXT("Attack"))TestTrue(TEXT("Attack preserves the authored thirty-eight-hundredths-second clip"),FMath::IsNearlyEqual(Animation->GetPlayLength(),.38f,.001f));
     }
     for(const auto& Old:rift::Cards())if(Old.id!="pulverizer")
     {
@@ -163,7 +174,7 @@ bool FRiftPulverizerTest::RunTest(const FString& Parameters)
     TestTrue(TEXT("Wave building can target an enemy ground troop"),Match.CanTarget(Building,Target));
     Target.flying=true;TestFalse(TEXT("Wave building excludes air troops"),Match.CanTarget(Building,Target));Target.flying=false;
     for(auto Kind:{rift::EntityKind::Building,rift::EntityKind::Guard,rift::EntityKind::Core})
-    {Target.kind=Kind;TestFalse(TEXT("Wave building excludes structures and towers"),Match.CanTarget(Building,Target));}
+    {Target.kind=Kind;TestFalse(TEXT("Approved wave building excludes structures and towers"),Match.CanTarget(Building,Target));}
     Target.kind=rift::EntityKind::Troop;
     TestEqual(TEXT("Shared front detection is eight tiles"),rift::detection::Front,8.);
     TestEqual(TEXT("Shared rear detection is five tiles"),rift::detection::Rear,5.);
@@ -212,10 +223,29 @@ bool FRiftPulverizerTest::RunTest(const FString& Parameters)
     Malformed(TEXT("Replay rejects duplicate already-hit target identities"),[](auto JSON){auto W=JSON->GetArrayField(TEXT("shockwaves"))[0]->AsObject();auto Hits=W->GetArrayField(TEXT("hitTargets"));const auto Duplicate=Hits[0];Hits.Add(Duplicate);W->SetArrayField(TEXT("hitTargets"),Hits);});
     Malformed(TEXT("Replay rejects zero wave speed"),[](auto JSON){JSON->GetArrayField(TEXT("shockwaves"))[0]->AsObject()->SetNumberField(TEXT("speed"),0);});
     Malformed(TEXT("Replay rejects unknown wave cards"),[](auto JSON){JSON->GetArrayField(TEXT("shockwaves"))[0]->AsObject()->SetStringField(TEXT("cardId"),TEXT("unknown_card"));});
-    Malformed(TEXT("Replay rejects prior cards pretending to be wave cards"),[](auto JSON){JSON->GetArrayField(TEXT("shockwaves"))[0]->AsObject()->SetStringField(TEXT("cardId"),TEXT("ironclad"));});
+    Malformed(TEXT("Replay rejects a wave card identity that disagrees with its captured source"),[](auto JSON){JSON->GetArrayField(TEXT("shockwaves"))[0]->AsObject()->SetStringField(TEXT("cardId"),TEXT("ironclad"));});
+    Malformed(TEXT("Replay rejects a wave team that disagrees with its captured source"),[](auto JSON){JSON->GetArrayField(TEXT("shockwaves"))[0]->AsObject()->SetNumberField(TEXT("team"),1);});
+    Malformed(TEXT("Replay rejects a wave cast identity that disagrees with its captured source"),[](auto JSON){auto W=JSON->GetArrayField(TEXT("shockwaves"))[0]->AsObject();W->SetNumberField(TEXT("playId"),W->GetNumberField(TEXT("playId"))+1);});
     Malformed(TEXT("Replay rejects progress beyond the wave edge"),[](auto JSON){JSON->GetArrayField(TEXT("shockwaves"))[0]->AsObject()->SetNumberField(TEXT("progress"),4.01);});
     Malformed(TEXT("Replay rejects a fabricated wave travel lifetime"),[](auto JSON){JSON->GetArrayField(TEXT("shockwaves"))[0]->AsObject()->SetNumberField(TEXT("expires"),1.4);});
     Malformed(TEXT("Replay rejects duplicate per-card slow components"),[](auto JSON){auto E=JSON->GetArrayField(TEXT("entities")).Last()->AsObject();auto Slows=E->GetArrayField(TEXT("slows"));const auto Duplicate=Slows[0];Slows.Add(Duplicate);E->SetArrayField(TEXT("slows"),Slows);});
+    auto SourceRetired=URiftReplaySubsystem::SnapshotJSON(Snapshot);auto Remaining=SourceRetired->GetArrayField(TEXT("entities"));
+    Remaining.RemoveAll([&](const auto& Value){return uint64(Value->AsObject()->GetNumberField(TEXT("id")))==Building.id;});SourceRetired->SetArrayField(TEXT("entities"),Remaining);
+    if(TestTrue(TEXT("An already traveling wave remains readable after its source leaves the snapshot"),URiftReplaySubsystem::SnapshotFromJSON(SourceRetired,Restored)))
+        TestTrue(TEXT("Source retirement preserves captured wave identity and mechanics"),Restored.shockwaves.size()==1&&Restored.shockwaves[0].source==Building.id&&Restored.shockwaves[0].playId==Building.playId&&Restored.shockwaves[0].radius==4&&Restored.shockwaves[0].speed==8);
+    auto LegacySource=URiftReplaySubsystem::SnapshotJSON(Snapshot);
+    for(const auto& Value:LegacySource->GetArrayField(TEXT("entities")))if(uint64(Value->AsObject()->GetNumberField(TEXT("id")))==Building.id)Value->AsObject()->RemoveField(TEXT("playId"));
+    if(TestTrue(TEXT("A legacy source without an optional recorded cast ID does not invent an identity mismatch"),URiftReplaySubsystem::SnapshotFromJSON(LegacySource,Restored)))
+        for(const auto& E:Restored.entities)if(E.id==Building.id)TestEqual(TEXT("Missing legacy entity cast ID is recovered from its captured body observation"),E.playId,Building.playId);
+    auto ConflictingLegacy=URiftReplaySubsystem::SnapshotJSON(Snapshot);
+    for(const auto& Value:ConflictingLegacy->GetArrayField(TEXT("entities")))if(uint64(Value->AsObject()->GetNumberField(TEXT("id")))==Building.id)Value->AsObject()->RemoveField(TEXT("playId"));
+    ConflictingLegacy->GetArrayField(TEXT("shockwaves"))[0]->AsObject()->SetNumberField(TEXT("playId"),double(Building.playId+1));
+    TestFalse(TEXT("A legacy wave cannot contradict an available captured body cast ID"),URiftReplaySubsystem::SnapshotFromJSON(ConflictingLegacy,Restored));
+    auto UnavailableLegacy=URiftReplaySubsystem::SnapshotJSON(Snapshot);
+    for(const auto& Value:UnavailableLegacy->GetArrayField(TEXT("entities")))if(uint64(Value->AsObject()->GetNumberField(TEXT("id")))==Building.id)Value->AsObject()->RemoveField(TEXT("playId"));
+    for(const auto& Team:UnavailableLegacy->GetArrayField(TEXT("teams")))Team->AsObject()->RemoveField(TEXT("entityTelemetry"));
+    if(TestTrue(TEXT("Legacy wave stays readable when neither entity nor body observation captured a cast ID"),URiftReplaySubsystem::SnapshotFromJSON(UnavailableLegacy,Restored)))
+        for(const auto& E:Restored.entities)if(E.id==Building.id)TestEqual(TEXT("An unavailable legacy entity cast ID stays unknown"),E.playId,rift::PlayId(0));
     auto Legacy=URiftReplaySubsystem::SnapshotJSON(Snapshot);Legacy->RemoveField(TEXT("shockwaves"));
     for(const auto& E:Legacy->GetArrayField(TEXT("entities")))E->AsObject()->RemoveField(TEXT("slows"));
     if(TestTrue(TEXT("Legacy recordings without wave or slow-component arrays remain accepted"),URiftReplaySubsystem::SnapshotFromJSON(Legacy,Restored)))
@@ -234,15 +264,15 @@ bool FRiftPulverizerTest::RunTest(const FString& Parameters)
     TArray<UStaticMeshComponent*> StaticParts;Actor->GetComponents(StaticParts);
     for(auto* Part:StaticParts)TestNull(TEXT("Living Pulverizer has no duplicate static machinery"),Part->GetStaticMesh().Get());
     const FVector Extents=Mesh->GetBounds().BoxExtent*2;const FVector Scale=ActualMesh->GetRelativeScale3D();
-    TestTrue(TEXT("Visual XY fits the unchanged collision footprint"),FMath::IsNearlyEqual(FMath::Max(Extents.X,Extents.Y)*Scale.X,C->footprint*100,.01)&&FMath::IsNearlyEqual(Scale.X,Scale.Y,.00001));
-    TestTrue(TEXT("Whole mechanism retains its requested height scale"),FMath::IsNearlyEqual(Scale.Z,.95,.00001));
+    TestTrue(TEXT("Visual XY fits the unchanged collision footprint"),FMath::IsNearlyEqual(FMath::Max(Extents.X,Extents.Y)*Scale.X,C->footprint*RiftArenaGeometry::UnitsPerTile,.01)&&FMath::IsNearlyEqual(Scale.X,Scale.Y,.00001));
+    TestTrue(TEXT("Whole mechanism retains its requested height scale relative to the larger tile"),FMath::IsNearlyEqual(Scale.Z,C->scale*RiftArenaGeometry::WorldScale,.00001));
     auto VisualState=Match.State();VisualState.elapsed=1.;VisualState.entities={Building};Actor->Synchronize(Building,VisualState,0);
     const FTransform RootBefore=ActualMesh->GetSocketTransform(TEXT("root"),RTS_Component);
     const FVector HammerBefore=ActualMesh->GetSocketTransform(TEXT("hammer"),RTS_Component).GetLocation();
     Actor->AttackAt(1.3,65);
     const FVector HammerContact=ActualMesh->GetSocketTransform(TEXT("hammer"),RTS_Component).GetLocation();
     TestEqual(TEXT("Native wave release selects the authored Attack clip"),Actor->CurrentAnimation(),FName(TEXT("Attack")));
-    TestTrue(TEXT("Wave release uses the exact authored contact pose"),FMath::IsNearlyEqual(Actor->AnimationCycleFraction(),.48f,.00001f)&&Actor->AnimationBlendAlpha()==1.f);
+    TestTrue(TEXT("Wave release uses the exact imported authored contact pose"),FMath::IsNearlyEqual(Actor->AnimationCycleFraction(),Card->AttackContactNormalized,.00001f)&&Actor->AnimationBlendAlpha()==1.f);
     TestTrue(TEXT("Hydraulic hammer visibly compresses at release"),FVector::Distance(HammerBefore,HammerContact)>10.);
     TestTrue(TEXT("Stationary foundation does not move during the strike"),ActualMesh->GetSocketTransform(TEXT("root"),RTS_Component).Equals(RootBefore,.001));
     TestTrue(TEXT("Wave release follows the grounded attack socket"),Actor->AttackLocation().Equals(ActualMesh->GetSocketLocation(TEXT("attack_origin")),.001)&&Actor->AttackLocation().Z<Actor->GetActorLocation().Z+25.);
@@ -258,6 +288,14 @@ bool FRiftPulverizerTest::RunTest(const FString& Parameters)
     TestTrue(TEXT("Status marker clears the health marker"),Actor->StatusLocation().Z>=Actor->HealthLocation().Z+15.999);
     TestFalse(TEXT("Aging without a hit keeps building health hidden"),Actor->HasBeenDamaged());
     Actor->HitAt(VisualState.elapsed,1);TestTrue(TEXT("First real damage reveals the building health marker"),Actor->HasBeenDamaged());
+    if(TestTrue(TEXT("New mechanism imports its authored defeat cleanup duration"),Card->DeathCleanupSeconds>0))
+    {
+        const double Cleanup=Card->DeathCleanupSeconds;Actor->DieAt(0);Actor->AdvanceDeath(Cleanup*.5);
+        TestTrue(TEXT("Mechanism defeat retains its skeletal body through the middle of its authored clip"),Actor->CurrentAnimation()==TEXT("Death")&&FMath::IsNearlyEqual(Actor->AnimationCycleFraction(),.5f,.00001f)&&!Actor->IsExpired(Cleanup*.5));
+        for(auto* Part:StaticParts)TestNull(TEXT("Skeletal mechanism defeat never adds static tower rubble"),Part->GetStaticMesh().Get());
+        Actor->AdvanceDeath(Cleanup);
+        TestTrue(TEXT("Mechanism defeat finishes exactly at its authored cleanup deadline"),FMath::IsNearlyEqual(Actor->AnimationCycleFraction(),1.f,.00001f)&&Actor->IsExpired(Cleanup));
+    }
 
     // Record ordinary paid deployment and genuine native combat, with only the
     // initial and final snapshots. Every intermediate seek therefore exercises
@@ -306,16 +344,20 @@ bool FRiftPulverizerTest::RunTest(const FString& Parameters)
     Replay->EndRecording(Recorded.State(),true);
     if(!TestTrue(TEXT("Real paid wave/slow event archive saves"),Replay->FlushPendingWrites())||
        !TestTrue(TEXT("Real paid wave/slow event archive validates and loads"),Replay->OpenReplay(Replay->LatestFilename)))return false;
-    // Reuse actual archived snapshots/events to isolate new launch validation;
-    // no invented source, damage or timing is needed for the accepted control.
-    auto Archive=MakeShared<FJsonObject>();Archive->SetNumberField(TEXT("formatVersion"),1);
-    Archive->SetStringField(TEXT("model"),TEXT("rift-native-1"));Archive->SetNumberField(TEXT("duration"),Replay->TimelineDuration());
-    TArray<TSharedPtr<FJsonValue>> ArchivedStates,ArchivedEvents;
-    for(const auto& State:Replay->RecordedStates())ArchivedStates.Add(MakeShared<FJsonValueObject>(State));
-    for(const auto& Event:Replay->EventsNear(Replay->TimelineDuration(),Replay->TimelineDuration()+.01))ArchivedEvents.Add(MakeShared<FJsonValueObject>(Event));
-    Archive->SetArrayField(TEXT("states"),ArchivedStates);Archive->SetArrayField(TEXT("events"),ArchivedEvents);
+    // Keep the actual captured definitions as well as snapshots/events. New
+    // archives validate their own mechanics; legacy archives cannot be judged
+    // against today's values when their historical definitions were absent.
+    const FString ExportPath=FPaths::Combine(URiftProfileSubsystem::SaveRoot(),TEXT("AutomationFixtures"),FGuid::NewGuid().ToString(EGuidFormats::Digits)+TEXT("-pulverizer-context.json"));
+    if(!TestTrue(TEXT("The real paid archive exports with its captured mechanical context"),Replay->ExportReplay(Replay->LatestFilename,ExportPath)))return false;
+    FString ArchiveText;TSharedPtr<FJsonObject> Archive;
+    if(!TestTrue(TEXT("The real paid archive's exported JSON is readable"),FFileHelper::LoadFileToString(ArchiveText,*ExportPath))||
+       !TestTrue(TEXT("The real paid archive's exported JSON parses"),FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(ArchiveText),Archive)))return false;
+    TestTrue(TEXT("New paid recordings retain their captured balance definitions"),Archive->HasField(TEXT("balance")));
     FString ArchiveError;
     TestTrue(TEXT("The actual native event archive is the valid launch-parser control"),URiftReplaySubsystem::ValidateRecording(Archive,ArchiveError));
+    TSharedPtr<FJsonObject> LegacyArchive;
+    if(TestTrue(TEXT("Legacy compatibility control clones actual recorded numeric data"),FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(ArchiveText),LegacyArchive)))
+    {LegacyArchive->RemoveField(TEXT("balance"));TestTrue(TEXT("A real legacy archive without captured definitions remains valid"),URiftReplaySubsystem::ValidateRecording(LegacyArchive,ArchiveError));}
     auto MalformedLaunch=[&](const TCHAR* Label,auto Mutate)
     {
         FString Encoded;FJsonSerializer::Serialize(Archive,TJsonWriterFactory<>::Create(&Encoded));

@@ -1,4 +1,5 @@
 #include "Presentation/RiftBattleOverlay.h"
+#include "Presentation/RiftArenaGeometry.h"
 #include "Presentation/RiftArenaPresentation.h"
 #include "Presentation/RiftUnitVisual.h"
 #include "RiftMatchSubsystem.h"
@@ -42,15 +43,15 @@ int32 URiftBattleOverlay::PaintTrainingOverlay(const FGeometry& Geometry,FSlateW
     {
         const FLinearColor Grid(.63f,.77f,.88f,.30f);
         for(int32 X=-rift::arena::HalfWidth;X<=rift::arena::HalfWidth;++X)
-            Line(FVector(X*100,-rift::arena::HalfHeight*100,12),FVector(X*100,rift::arena::HalfHeight*100,12),Grid,.7f);
+            Line(FVector(X*RiftArenaGeometry::UnitsPerTile,-rift::arena::HalfHeight*RiftArenaGeometry::UnitsPerTile,12),FVector(X*RiftArenaGeometry::UnitsPerTile,rift::arena::HalfHeight*RiftArenaGeometry::UnitsPerTile,12),Grid,.7f);
         for(int32 Z=-rift::arena::HalfHeight;Z<=rift::arena::HalfHeight;++Z)
-            Line(FVector(-rift::arena::HalfWidth*100,Z*100,12),FVector(rift::arena::HalfWidth*100,Z*100,12),Grid,.7f);
+            Line(FVector(-rift::arena::HalfWidth*RiftArenaGeometry::UnitsPerTile,Z*RiftArenaGeometry::UnitsPerTile,12),FVector(rift::arena::HalfWidth*RiftArenaGeometry::UnitsPerTile,Z*RiftArenaGeometry::UnitsPerTile,12),Grid,.7f);
         const auto Font=RiftTypography::Font(TEXT("Regular"),9);
         const FSlateBrush* White=FCoreStyle::Get().GetBrush(TEXT("WhiteBrush"));
         for(double X=-rift::arena::HalfWidth+1.5;X<rift::arena::HalfWidth;X+=4)
             for(double Z=-rift::arena::HalfHeight+2.5;Z<rift::arena::HalfHeight;Z+=4)
         {
-            FVector2D Point;if(!Project(FVector(X*100,Z*100,20),Point))continue;
+            FVector2D Point;if(!Project(FVector(X*RiftArenaGeometry::UnitsPerTile,Z*RiftArenaGeometry::UnitsPerTile,20),Point))continue;
             Point-=FVector2D(28,7);
             FSlateDrawElement::MakeBox(Elements,Layer+2,Geometry.ToPaintGeometry(FVector2D(58,14),FSlateLayoutTransform(Point)),White,ESlateDrawEffect::None,FLinearColor(.025f,.035f,.055f,.72f));
             FSlateDrawElement::MakeText(Elements,Layer+3,Geometry.ToPaintGeometry(FVector2D(58,14),FSlateLayoutTransform(Point+FVector2D(3,1))),FString::Printf(TEXT("%.1f, %.1f"),X,Z),Font,ESlateDrawEffect::None,FLinearColor(.88f,.94f,1.f,.85f));
@@ -59,7 +60,7 @@ int32 URiftBattleOverlay::PaintTrainingOverlay(const FGeometry& Geometry,FSlateW
     }
     for(const auto& Current:State->entities)
     {
-        if(Current.dead)continue;
+        if(Current.dead || (Current.team==rift::Team::Enemy&&Current.invisibleUntil>State->elapsed))continue;
         const FVector Origin=URiftMatchSubsystem::WorldPoint(Current.position,25);
         FLinearColor Team=ARiftUnitVisual::TeamColor(Current.team);Team.A=.8f;
         if(Dev->ShowPaths&&Current.kind==rift::EntityKind::Troop&&!Current.flying)
@@ -71,14 +72,14 @@ int32 URiftBattleOverlay::PaintTrainingOverlay(const FGeometry& Geometry,FSlateW
         {
             const auto* Card=rift::FindCard(Current.cardId);
             const double Range=Card?Card->range:Current.kind==rift::EntityKind::Core?8.9:10.;
-            FLinearColor Color=Team;Color.A=.46f;Circle(Origin,Range*100,Color);
+            FLinearColor Color=Team;Color.A=.46f;Circle(Origin,Range*RiftArenaGeometry::UnitsPerTile,Color);
         }
         if(Dev->ShowSight&&(Current.kind==rift::EntityKind::Troop||Current.kind==rift::EntityKind::Building))
         {
             const FVector Forward(Current.facing.x,Current.facing.z,0),Side(-Current.facing.z,Current.facing.x,0);
             for(int32 Half=0;Half<2;++Half)
             {
-                const double Radius=Half==0?800.:500.;
+                const double Radius=(Half==0?8.:5.)*RiftArenaGeometry::UnitsPerTile;
                 const FLinearColor Color=Half==0?FLinearColor(.40f,.92f,.64f,.65f):FLinearColor(1.f,.77f,.35f,.65f);
                 const double Start=Half==0?-UE_PI/2:UE_PI/2;
                 FVector Previous=Origin+(Forward*FMath::Cos(Start)+Side*FMath::Sin(Start))*Radius;
