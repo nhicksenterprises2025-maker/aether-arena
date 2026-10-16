@@ -1,0 +1,4182 @@
+{
+  "schema": "rift.melee-hold.acceptance.v1",
+  "version": "1.8.1",
+  "passed": true,
+  "status": "verified-local-release",
+  "generatedUTC": "2026-10-16T12:00:46.975753+00:00",
+  "scope": "Actual local regression, Unreal, Shipping contact and Windows delivery evidence. Public publication requires a separate check.",
+  "facts": {
+    "balance": {
+      "baseline": {
+        "path": "Assets/Data/Baselines/1.8.0.json",
+        "bytes": 30647,
+        "sha256": "dc6c14f909029b0aa4e3ceb37983538b684375a1159846a01ca0a0c2edc168e0"
+      },
+      "canonical": {
+        "path": "Assets/Data/card_manifest.json",
+        "bytes": 30798,
+        "sha256": "136a226fb34aac6f215105ef5eb795f44d2e0babd3623ac7ec58188e872605b1"
+      },
+      "balanceHash": "253831ff25ff676070c0fddf89d2851172c9f25f2baa24dd3f70280877da31cd",
+      "cards": 21,
+      "entities": 1,
+      "cardAndEntityDefinitionsUnchanged": true,
+      "nonNavigationRulesUnchanged": true,
+      "navigationRevision": 11
+    },
+    "native": {
+      "scenarios": 95,
+      "executable": {
+        "path": "Artifacts/QA/MeleeHold181/After-Frozen/RiftSimulationTests.exe",
+        "bytes": 1092608,
+        "sha256": "751f9479d3a59b08344736265c2bb723a34bd997e35bf878b20d998f801c58bd"
+      },
+      "before": {
+        "fixtures": 4,
+        "contactFrames": 2220,
+        "movingContactFrames": 1490,
+        "maximumContactMove": 0.0416667,
+        "chaseFrames": 58,
+        "historicalExecutable": {
+          "path": "Artifacts/QA/MeleeHold181/Before/RiftSimulationTests.exe",
+          "bytes": 1092608,
+          "sha256": "5abfb646dc31b7a348b7254cfb9779576b6e92a7ab75fe5c757dd7c6d9d48abc"
+        }
+      },
+      "after": {
+        "fixtures": 4,
+        "contactFrames": 798,
+        "movingContactFrames": 0,
+        "maximumContactMove": 0.0,
+        "chaseFrames": 846
+      },
+      "collision": {
+        "paidFixtures": 169,
+        "paidPlays": 742,
+        "members": 2388,
+        "endpointPairChecks": 18373008,
+        "sweptPairChecks": 14878690,
+        "minimumBodyGap": 0.020000000555,
+        "minimumSweptGap": 0.0200000004644
+      }
+    },
+    "unreal": {
+      "tests": 33,
+      "succeeded": 29,
+      "succeededWithWarnings": 4,
+      "rendering": {
+        "requested": false,
+        "mode": "nullrhi",
+        "observedRhi": "NullRHI"
+      },
+      "runtimeModules": [
+        {
+          "path": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArena.dll",
+          "sha256": "43e3f6a8583cef601568be548da06ffabd8e286f5830149dd8b7da7e8f218d79"
+        },
+        {
+          "path": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArenaEditor.dll",
+          "sha256": "9b39240bcdcc65b30fd5564c115bc45dfd7cccdad61fb116d3ab77508b0b45e1"
+        }
+      ]
+    },
+    "shippingCollision": {
+      "executable": {
+        "path": "Artifacts/Game-1.8.1/Windows/RiftCrownArena/Binaries/Win64/RiftCrownArena-Win64-Shipping.exe",
+        "bytes": 168400896,
+        "sha256": "529b9d6b233cf410193e800f47bb6113da29a1be1b2bc23cedbfa272ab6d8a77"
+      },
+      "members": 10,
+      "fixedSteps": 180,
+      "minimumBodyGap": 4.717101327600393e-10,
+      "minimumSweptGap": 4.717101327600393e-10,
+      "visualInspection": "Machine capture only; visual inspection is not asserted by this collector."
+    },
+    "windows": {
+      "archive": {
+        "path": "Artifacts/Release/RiftCrownArena-Windows-x64-1.8.1.zip",
+        "bytes": 414695158,
+        "sha256": "107b59d2a2d08459d66071de5da3b1262c19e95185b6d6f2d38fbd727490a4e9"
+      },
+      "installer": {
+        "path": "Artifacts/Release/RiftCrownArena-Setup.msi",
+        "bytes": 398729216,
+        "sha256": "756dba23dddb01b7afcc8a8cb18abbe19b9054fba6971945eb7cdfe7c53ac12d"
+      },
+      "launcher": {
+        "path": "Artifacts/Release/RiftCrownLauncher.exe",
+        "bytes": 161820808,
+        "sha256": "db22378d75ee5466b190fe99507614e8051774065c98b2be5aab6eeb7e1de26d"
+      },
+      "manifest": {
+        "path": "Artifacts/Release/update-manifest.json",
+        "bytes": 10549,
+        "sha256": "87c77604c9350db4e17ea395babb3513e979653c72b5b0963b70458355054865"
+      },
+      "gameFiles": 50,
+      "launcherCoreChecks": 31,
+      "wpfControls": 10,
+      "installerChecks": 51
+    }
+  },
+  "sourcePins": [
+    {
+      "path": "Assets/Data/Baselines/1.8.0.json",
+      "bytes": 30647,
+      "sha256": "dc6c14f909029b0aa4e3ceb37983538b684375a1159846a01ca0a0c2edc168e0"
+    },
+    {
+      "path": "Assets/Data/card_manifest.json",
+      "bytes": 30798,
+      "sha256": "136a226fb34aac6f215105ef5eb795f44d2e0babd3623ac7ec58188e872605b1"
+    },
+    {
+      "path": "Assets/Data/patch_notes.json",
+      "bytes": 1357,
+      "sha256": "ee675fbb5402e71699011489d82560b0ed4b63d3a006d8393fade9759cd90481"
+    },
+    {
+      "path": "Assets/Data/source_resolution.json",
+      "bytes": 1659,
+      "sha256": "6d567ec49b3144de84bf621614de1e2393712ae4f2871c3e3aeaa1dbbdbc758d"
+    },
+    {
+      "path": "Assets/Source/Audio/Palette/sources.json",
+      "bytes": 36414,
+      "sha256": "8659b3262f8b580ebd4ee677dd801cf62d32670966b344eeb78c601b422fd723"
+    },
+    {
+      "path": "Assets/Source/Audio/aether_three.wav",
+      "bytes": 335204,
+      "sha256": "080062afc13b579ece470e524e456f14f2c4bcc9f64b7a6e3da9aa1c88202251"
+    },
+    {
+      "path": "Assets/Source/Audio/aether_two.wav",
+      "bytes": 291104,
+      "sha256": "f35fae823b57c3e43503511f84b09df4a41e3bd90998f638dd8476f63b62a688"
+    },
+    {
+      "path": "Assets/Source/Audio/arc_cast.wav",
+      "bytes": 84716,
+      "sha256": "ee7e7f433cb1228e21e444f76e8937ff8caf070d9079b472df8fa63aceb0bf39"
+    },
+    {
+      "path": "Assets/Source/Audio/arc_impact.wav",
+      "bytes": 98828,
+      "sha256": "b53b3d5064c5a0d5a434ca22ae3df60c0c5f97a3bd15da29bc2ba223cfde854b"
+    },
+    {
+      "path": "Assets/Source/Audio/arrow_flight.wav",
+      "bytes": 26504,
+      "sha256": "935a12cdbfa633a7a8455bdba99333eb17c5f6fd580c390c68e7de7c24d2b4ad"
+    },
+    {
+      "path": "Assets/Source/Audio/arrow_hit.wav",
+      "bytes": 30032,
+      "sha256": "cde5932b8bd4a1f324e98a1ac2ecba9ce2f05fcd6baea6d6871fd62b374c0ce3"
+    },
+    {
+      "path": "Assets/Source/Audio/arrow_hit_v2.wav",
+      "bytes": 30032,
+      "sha256": "2d4cc5d8825bec4dc94e303d551d809128cffb2a68b62b3bd1fabfab30cac715"
+    },
+    {
+      "path": "Assets/Source/Audio/arrow_hit_v3.wav",
+      "bytes": 30032,
+      "sha256": "5d8dd9f512281a44daba0cc4f0d5999f4385d4578a0cf76b37afb3cf65e78dcd"
+    },
+    {
+      "path": "Assets/Source/Audio/audio_manifest.json",
+      "bytes": 77136,
+      "sha256": "e9979aa20fc69888f9d0d33952d8e2f45ca597732d4ef6b272bda53b52e6877e"
+    },
+    {
+      "path": "Assets/Source/Audio/bat_bite.wav",
+      "bytes": 20330,
+      "sha256": "c0b3813ef7bed22b5146a6c252dc6aab944b7660a0a123cd1995f1383011522d"
+    },
+    {
+      "path": "Assets/Source/Audio/bat_bite_v2.wav",
+      "bytes": 20330,
+      "sha256": "de22f0acc57c50c12b34a3726d1acdd59002d436617e7d3dd3a00d7c94bb0afd"
+    },
+    {
+      "path": "Assets/Source/Audio/bat_bite_v3.wav",
+      "bytes": 20330,
+      "sha256": "4076733907c885d44d8823ce799381f721feadd27970aa10608400083be734a5"
+    },
+    {
+      "path": "Assets/Source/Audio/bow_release.wav",
+      "bytes": 31796,
+      "sha256": "ad0c16024926d4282048df69b417d19d00136a134647a585ada0478c68956108"
+    },
+    {
+      "path": "Assets/Source/Audio/bow_release_v2.wav",
+      "bytes": 31796,
+      "sha256": "d3c250c8fb97e2597c5cde3a86c82630820d2989a79130b9ba46fa61aa36e7be"
+    },
+    {
+      "path": "Assets/Source/Audio/bow_release_v3.wav",
+      "bytes": 31796,
+      "sha256": "e30951c03ad7fcef8d59d1aee0d5eb2bbd1e60ec2fd81b0afa83e1780b32cbe0"
+    },
+    {
+      "path": "Assets/Source/Audio/building_hit.wav",
+      "bytes": 44144,
+      "sha256": "54e26e90326358566468a33d0255960e1a0d857530cad19bdae0cafa2489592c"
+    },
+    {
+      "path": "Assets/Source/Audio/building_hit_v2.wav",
+      "bytes": 44144,
+      "sha256": "48a95537eb13ade5afd03242940d91384a04c47b9dd4e849369bd92311f92fd9"
+    },
+    {
+      "path": "Assets/Source/Audio/building_hit_v3.wav",
+      "bytes": 44144,
+      "sha256": "e3df4f9ebeff344a9e7c0c755481fdaaa02340c76afb07b3f8b2a01a82745086"
+    },
+    {
+      "path": "Assets/Source/Audio/bullet_burst.wav",
+      "bytes": 56492,
+      "sha256": "42555ce27bf83669b6f10ff3761a29238c0e5dc8824078d9d1dd13f6faba353d"
+    },
+    {
+      "path": "Assets/Source/Audio/charge.wav",
+      "bytes": 57374,
+      "sha256": "8a49e8784170eb0550087b460c53f9c60ffec58d8ff1376bfbd3beea604f73a9"
+    },
+    {
+      "path": "Assets/Source/Audio/core_awaken.wav",
+      "bytes": 441044,
+      "sha256": "a2991d1e5780332315f69fa14dff9d12efa5945473cf104be34895093f6f7d4b"
+    },
+    {
+      "path": "Assets/Source/Audio/defeat.wav",
+      "bytes": 423404,
+      "sha256": "7e117cabc92228e0d409fced53e63dc7794fe1167480efadc7a54b991697a846"
+    },
+    {
+      "path": "Assets/Source/Audio/deploy.wav",
+      "bytes": 77660,
+      "sha256": "5b83f01159a1f265e532f87e0d7fa4ff89c76963c5909b06c58e9fb657ca8387"
+    },
+    {
+      "path": "Assets/Source/Audio/dual_attack.wav",
+      "bytes": 36206,
+      "sha256": "ce5b4e44c64d6610ae180146a7f9699237ddfd7163b67a72d518b0b6a4290b5f"
+    },
+    {
+      "path": "Assets/Source/Audio/dual_attack_v2.wav",
+      "bytes": 36206,
+      "sha256": "3234b2003c8094a0ab887097d5c62345b709683753257fa22f5a93cc4455d0a8"
+    },
+    {
+      "path": "Assets/Source/Audio/dual_attack_v3.wav",
+      "bytes": 36206,
+      "sha256": "d2b8b33374b87e861195e5df81cca162b2084a88e42e0a31faebd20c41a88284"
+    },
+    {
+      "path": "Assets/Source/Audio/frost_attack.wav",
+      "bytes": 102356,
+      "sha256": "8dfe488388754fd4ad189a1d09817c80bac620ca430e28513b7b731349819d23"
+    },
+    {
+      "path": "Assets/Source/Audio/frost_slow.wav",
+      "bytes": 56492,
+      "sha256": "be7079aefa9340473d3aaa231fc62bb8872f337ffffeb1fbae5490e35e4a17d0"
+    },
+    {
+      "path": "Assets/Source/Audio/heavy_slam.wav",
+      "bytes": 75896,
+      "sha256": "8af5d95b97602b526f9b4463ccd45e4d511cc51cd051ea5fd27711756bc1575d"
+    },
+    {
+      "path": "Assets/Source/Audio/heavy_slam_v2.wav",
+      "bytes": 75896,
+      "sha256": "2d14279b7e4e1e46c6c62b19b572abbb6a394768c94487f61399a30a9aecbd33"
+    },
+    {
+      "path": "Assets/Source/Audio/heavy_slam_v3.wav",
+      "bytes": 75896,
+      "sha256": "d63face91ab79bd63fd350c56ed363b793814a85541b67864876c613f52d30c6"
+    },
+    {
+      "path": "Assets/Source/Audio/manta_cast.wav",
+      "bytes": 105884,
+      "sha256": "8220243deb1c9e886001fa8aafdfc7aedfde3ff70779497079c5fe8838ad88c7"
+    },
+    {
+      "path": "Assets/Source/Audio/manta_impact.wav",
+      "bytes": 119996,
+      "sha256": "827f884cc6714e6881cc4cb0078928d86f769505f0868f291dd1ef829a4d40f3"
+    },
+    {
+      "path": "Assets/Source/Audio/meteor_impact.wav",
+      "bytes": 308744,
+      "sha256": "a9f74f0311e88881da3c24412cdd044c4d8721cca72bc099e2f12e3bdc03d5d9"
+    },
+    {
+      "path": "Assets/Source/Audio/meteor_tick.wav",
+      "bytes": 84716,
+      "sha256": "f547c915369f78365f1396330125ac73e31b999cb487a88fbe6b18796249f645"
+    },
+    {
+      "path": "Assets/Source/Audio/music_rift.wav",
+      "bytes": 6272044,
+      "sha256": "972b3a720f78452e143e81e675e12da8d799b78fb2ebf6dc9aea174ece96e891"
+    },
+    {
+      "path": "Assets/Source/Audio/nova_impact.wav",
+      "bytes": 194084,
+      "sha256": "604b556c44a933c237cba80da87bd67da5e5ce504a7b7fb7c55c8225d264c085"
+    },
+    {
+      "path": "Assets/Source/Audio/overtime.wav",
+      "bytes": 405764,
+      "sha256": "e827a69366871045cf295693c1cd36b7d403ddb473eb702193ee2af3a5877366"
+    },
+    {
+      "path": "Assets/Source/Audio/river_ambience.wav",
+      "bytes": 2116844,
+      "sha256": "5a19fae69fe50ca052db0fd2ceda207fa81d6338b74a06a107aaf9a51104d028"
+    },
+    {
+      "path": "Assets/Source/Audio/shadow_surge.wav",
+      "bytes": 74132,
+      "sha256": "a509d98cae18fd8cf272a8e9c8354e52c255ce960aaa3443baec924585b01616"
+    },
+    {
+      "path": "Assets/Source/Audio/shield_break.wav",
+      "bytes": 44144,
+      "sha256": "71957557a26111ff4ddbdb2855826fef24845f171c2761eedb8caf46485a6455"
+    },
+    {
+      "path": "Assets/Source/Audio/shield_hit.wav",
+      "bytes": 45908,
+      "sha256": "deed0e6abbd020d189607825a65abd6c9e0f9ece66f3567b80ab95a7841ed315"
+    },
+    {
+      "path": "Assets/Source/Audio/shield_hit_v2.wav",
+      "bytes": 45908,
+      "sha256": "250ed830d01a38dbbe6660e4172bde26ac8efb64daeaea222c9cac705142c5fa"
+    },
+    {
+      "path": "Assets/Source/Audio/shield_hit_v3.wav",
+      "bytes": 45908,
+      "sha256": "e2afc027f074b2b2b983758bd6435e5934d1c9f2d7a62214e8518ebaac6804f6"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_aether_reaper.wav",
+      "bytes": 64650,
+      "sha256": "fc210221745dd3bae6ea6acaa05a64f9585e0e1e77d61879d90dd3678d5cfafa"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_aether_reaper_v2.wav",
+      "bytes": 64854,
+      "sha256": "8685209f78d430aad33537df083c20048cc8069d0ce9cb52408c9934f01f582b"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_aether_reaper_v3.wav",
+      "bytes": 65332,
+      "sha256": "48f5b9f371ff1106c63631bbd052013c2b61975051f1a999e60e8565f816dc13"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_arc_mage.wav",
+      "bytes": 79204,
+      "sha256": "9614940a3c75281fc493dfa6e5276b4cb58ed9cb04808f271e2f599bde1109de"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_arc_mage_v2.wav",
+      "bytes": 78930,
+      "sha256": "751860e89c6ac12c4e34f31f55c7252ec9fddf65b9be56748add8050d7015148"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_arc_mage_v3.wav",
+      "bytes": 69426,
+      "sha256": "7174fdc4103e71ff73619a31e7e103fe7e4ac1460ca14c9596ce04141b999af4"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_archer_tower.wav",
+      "bytes": 62842,
+      "sha256": "b0426a7969a9c0fd8022ade0c45f128f8730df6f1e1fa29132b0da188e77bfbf"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_archer_tower_v2.wav",
+      "bytes": 62890,
+      "sha256": "e0ac600008787c1690f6a41935b8c95cb5c13ea8312434544b8c99e1c777c98f"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_archer_tower_v3.wav",
+      "bytes": 62868,
+      "sha256": "1d331afbab64ecb3c582843e7c6bd57eb2f24fd82b8c60bd790c3569d82c58ed"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_bone_warden.wav",
+      "bytes": 60426,
+      "sha256": "adadd53ad5ef17a48571a6f21ae444428eea69dd8097273952b3a2360d6cb151"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_bone_warden_v2.wav",
+      "bytes": 64766,
+      "sha256": "eed03d611c2304a140e5a5c3a62b6d8e0dfb1074d59de5673b0f111315488455"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_bone_warden_v3.wav",
+      "bytes": 82538,
+      "sha256": "cf1465221f1f2aa1cd8d968a21d4d599c59d741dce8ef2b52b60f6b1d4af2e09"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_boulderback.wav",
+      "bytes": 95862,
+      "sha256": "3cf9ff60d51a8ada54d04a03ab58e937002cf0d033569c6a0b284b79d433fead"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_boulderback_v2.wav",
+      "bytes": 60422,
+      "sha256": "b677cfbdd2f6e42b60e1bbe368d57d342cbae48d7fd360d7f06307c0083621a8"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_boulderback_v3.wav",
+      "bytes": 60908,
+      "sha256": "30e8b70804e961aee101e63575075d8d6262ec12c8ee65d60c53b953ddf9cdc9"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_bullet_burst.wav",
+      "bytes": 30486,
+      "sha256": "295dbb63507f04e6a43802c271bedbdda97bfca80ff470923a676935ecf03d1d"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_bullet_burst_v2.wav",
+      "bytes": 30486,
+      "sha256": "e8a02d40bee2ba1290131728ffa53e2b1c6be69ce8cbb3d87d6b0d542de74e02"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_bullet_burst_v3.wav",
+      "bytes": 30486,
+      "sha256": "8fab2b715baa523a38c5cc2075f05c3b75b9f9156d8412e99fcdab362ca1fe57"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_ember_archer.wav",
+      "bytes": 64236,
+      "sha256": "6f48781403b43908c1ab72c725530723f824d96795e8e3ba43c0a65d5f029da7"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_ember_archer_v2.wav",
+      "bytes": 54656,
+      "sha256": "e74d095058cf595e2e7391e2df9b24c8d2366e60b21ebd16fdb4aee47df77929"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_ember_archer_v3.wav",
+      "bytes": 88084,
+      "sha256": "7543faa625743566b13e22f4ce6a2db1195b571b4a310b2d7f495d3e766e5d06"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_frost_fang.wav",
+      "bytes": 63516,
+      "sha256": "1ff6da6bf22ecba092e4cde6b01bdac8dd49efe27de69dd73925f2f29dc4c4ec"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_frost_fang_v2.wav",
+      "bytes": 62108,
+      "sha256": "d5463b71d6ec2c9346c583405a330e966f5511d7a50cdbd07db93aca83f753c6"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_frost_fang_v3.wav",
+      "bytes": 73904,
+      "sha256": "004870fbf3accce5c7351a413e5e3c829183d2c49ad08c221e515be2da6b011d"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_iron_giant.wav",
+      "bytes": 105342,
+      "sha256": "98db6dd133968aa538cab14b75f261a6c68e47cc831a1390571c3a27d1bf6f2f"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_iron_giant_v2.wav",
+      "bytes": 83656,
+      "sha256": "47c3988b349e0a2398d2dc83638130aae9c5b7b013ad0864598d3bda7cd124e9"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_iron_giant_v3.wav",
+      "bytes": 69420,
+      "sha256": "23c3207471e548568bc984ab86678e50db6672542f82e01d4d430ffece373272"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_ironclad.wav",
+      "bytes": 79396,
+      "sha256": "e9464e712dcfcf935ec3467d3df956da04b8e79ed5d63106cab48a94f2449ebd"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_ironclad_v2.wav",
+      "bytes": 60570,
+      "sha256": "a805e750ba4d173a443c16fe6db8d08c2417a951cdaf173c15203810209a9954"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_ironclad_v3.wav",
+      "bytes": 50674,
+      "sha256": "34aacea5e862abf63b2f9540d30a8a8a559facce00881e5a764f2ff1b10d6022"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_meteor_shards.wav",
+      "bytes": 57522,
+      "sha256": "25ddf03279dc31ec05253ffd7267ac04dfa18c1f1a3778ddb400c17d8c1c0d9b"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_meteor_shards_v2.wav",
+      "bytes": 57520,
+      "sha256": "fb38cf58579453dd350ab8eff445be34719b22ef43fe8c3ee677be660cc8d826"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_meteor_shards_v3.wav",
+      "bytes": 57526,
+      "sha256": "94c3100d016b04294c4ebcff2063893f8dc9a54118a274cbedb22c34f2ae0f05"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_mini_stampede.wav",
+      "bytes": 33522,
+      "sha256": "30175856e6dd26e6f5e937463567ed8006457a51c93381495d7d2d7e5aaa8ea9"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_mini_stampede_v2.wav",
+      "bytes": 35538,
+      "sha256": "83c8ef5654ca9c8a83093f4515f3d49c44350d45fa51b231e6df41fb4198a7af"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_mini_stampede_v3.wav",
+      "bytes": 37692,
+      "sha256": "c5fe1da4a385337832a69fedad56106eb25ea65a623fb6af6905456d843c8cb2"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_nova_flask.wav",
+      "bytes": 68374,
+      "sha256": "14595c532bb63e7d633e6f3c0f662033a05ea290c148797c014663780f0ead77"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_nova_flask_v2.wav",
+      "bytes": 68312,
+      "sha256": "ed36a0f11873c7a14ab6a3ef2bd8d7a259a902bb87e0601de406e7e87798d2ea"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_nova_flask_v3.wav",
+      "bytes": 68306,
+      "sha256": "ca81f7bc1e25db8f59e4c7d2e21b56664f066772aa6d643b825ae7cb7b51b675"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_pulverizer.wav",
+      "bytes": 64954,
+      "sha256": "cb891926f9c88ab490018e71ef182b7848d1b0edc10a4196369cd3f702ef716e"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_pulverizer_v2.wav",
+      "bytes": 64940,
+      "sha256": "674ea94b894c8d35824d49af8af3cfc4a45dc1fc2e770f641b5cf4d980415383"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_pulverizer_v3.wav",
+      "bytes": 64924,
+      "sha256": "f001072dd03bd2be522e1a38aff3cfc055612ae1edca59ce4355563ad944f322"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_rambeast.wav",
+      "bytes": 48236,
+      "sha256": "d06789dc1375bb66fd2143d236c57cbce04787f43494c6be6a2c79df9f1700f9"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_rambeast_v2.wav",
+      "bytes": 60092,
+      "sha256": "8e8cf76e518b4318d3240b1ef03bb86af07c7bde8929f2f1066340ad23c29cd4"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_rambeast_v3.wav",
+      "bytes": 62760,
+      "sha256": "3ac7fbd5d5565852b7201cd604d0506710d56e6bd70a74b398900930910e595b"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_shadow_surge.wav",
+      "bytes": 68444,
+      "sha256": "88cac6ec867bdeb5dce95f8c9a10ae944948310af88c8442764195cba2e2f86e"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_shadow_surge_v2.wav",
+      "bytes": 69078,
+      "sha256": "86f1c70a4a2521ab63dde06383bbdfff1c5627aca06c165f58825fd12c4253d1"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_shadow_surge_v3.wav",
+      "bytes": 68850,
+      "sha256": "829cb1bb904b6b24600c5d7d1dc23198cf63885a9bbf132138dca9b4bdc0723a"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_sky_manta.wav",
+      "bytes": 72254,
+      "sha256": "335b3bd0a7898fd0f599d6d5859f1b87b429607d5e5fb27b257c0b4a5f753783"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_sky_manta_v2.wav",
+      "bytes": 72270,
+      "sha256": "087ce48588ec3fd7d2576bd9496c6ac253869ada844b0cc27c4ab0851ce0d010"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_sky_manta_v3.wav",
+      "bytes": 72436,
+      "sha256": "6294cd3dcd446e7e2faa74ed3c366b0bc9d009b7360db476cf0f6aeb5ace90dd"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_stampede.wav",
+      "bytes": 41346,
+      "sha256": "f906e7e50183ad2e0eb082d28c8ed535311868da891fe9f5699971920cf60005"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_stampede_v2.wav",
+      "bytes": 35756,
+      "sha256": "64cc36c83a5f938f6b518a57d0522cc819b782ccc25c3268c7c2557a7cc1bb1e"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_stampede_v3.wav",
+      "bytes": 44804,
+      "sha256": "6990f30439ffcf6ec1a621efe053f4630c44c88d83bca4c6b702ddbe5ffb7db4"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_storm_raven.wav",
+      "bytes": 67812,
+      "sha256": "ae49371cdaf02264a2b4ddd09cbc20851938c0d04ee150b6c198134746f8d3bb"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_storm_raven_v2.wav",
+      "bytes": 51462,
+      "sha256": "0ca472fc858a317543b690a0767e86e002eff237bf7e8df9cb8fa10649f0a051"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_storm_raven_v3.wav",
+      "bytes": 51440,
+      "sha256": "9e016e41d6194f02cc167594b3b52c94dfa106ce2a18ae4daf062866c8ac2c92"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_twin_blades.wav",
+      "bytes": 78040,
+      "sha256": "c1b53803b2b96d10be483d197e7fe7647c5964a41d04e8fa48ff7897107657f9"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_twin_blades_v2.wav",
+      "bytes": 70332,
+      "sha256": "07286f389e7f0054ce0a5e16089a900df9cfdea653e9cd0ef853e9a9a330e203"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_twin_blades_v3.wav",
+      "bytes": 70252,
+      "sha256": "5efa1382da7906463c6c6f57b10f613feff42d90507df8857f0b5fc01504cc68"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_vampire_bats.wav",
+      "bytes": 68524,
+      "sha256": "91cb1b6556510315dfd4b73dfa140b379d2d9d71e80dd7c769852f010f9ba90e"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_vampire_bats_v2.wav",
+      "bytes": 68438,
+      "sha256": "5169ddf39502573d903cefc3736b981dbd6160481f4a3a914f6d418c5d3b3202"
+    },
+    {
+      "path": "Assets/Source/Audio/spawn_vampire_bats_v3.wav",
+      "bytes": 68432,
+      "sha256": "25e05f23f6c16f485615002e85890f3a1106b0354b15b35ec2cdb205383e44a6"
+    },
+    {
+      "path": "Assets/Source/Audio/storm_bolt.wav",
+      "bytes": 91772,
+      "sha256": "368e1342399c3a231bb2bab547bb7a9e102b9dd565913a4ac33d65c93ae75c35"
+    },
+    {
+      "path": "Assets/Source/Audio/storm_pulse.wav",
+      "bytes": 149984,
+      "sha256": "336c2d30bfa6115610811fafec283aa2c347c72f3506add9e94dbf9c492fa80f"
+    },
+    {
+      "path": "Assets/Source/Audio/stun.wav",
+      "bytes": 49436,
+      "sha256": "8571e723906b257243924deb31e7bd35707214d7afb509443b2a1e269420fcaf"
+    },
+    {
+      "path": "Assets/Source/Audio/sword_attack.wav",
+      "bytes": 27386,
+      "sha256": "191055bad1e9597533a6cde1938d0e2f99ce5afd117f8434ca4525191dd9cdd3"
+    },
+    {
+      "path": "Assets/Source/Audio/sword_attack_v2.wav",
+      "bytes": 27386,
+      "sha256": "8a939b658cefd4dae46c873511824ab38ee00062b55eb86a5ce0fa213a42e142"
+    },
+    {
+      "path": "Assets/Source/Audio/sword_attack_v3.wav",
+      "bytes": 27386,
+      "sha256": "af62f384598d0de87f578576bd135e421b01742e16e357e4fa0fd502b204357f"
+    },
+    {
+      "path": "Assets/Source/Audio/sword_hit.wav",
+      "bytes": 40616,
+      "sha256": "2316a030683163813cae493b0df89bc7a6f915f0d67754aac0e50282b62ddc49"
+    },
+    {
+      "path": "Assets/Source/Audio/sword_hit_v2.wav",
+      "bytes": 40616,
+      "sha256": "dfb25e25c35859d77d837c17cede4547c6cb2515600cb4d8af1263110fcb89f1"
+    },
+    {
+      "path": "Assets/Source/Audio/sword_hit_v3.wav",
+      "bytes": 40616,
+      "sha256": "af3385ae75bf5248b42da6fc9b9fcbdf6c746b4560cf3e2a66c124c838038f29"
+    },
+    {
+      "path": "Assets/Source/Audio/tiebreaker.wav",
+      "bytes": 405764,
+      "sha256": "c5cac3f54b153a4963fcb399267dbbd5211de96f3be379939ddcc6096b3d0f00"
+    },
+    {
+      "path": "Assets/Source/Audio/tower_destroy.wav",
+      "bytes": 361664,
+      "sha256": "3587d924dc5e791c299c0c2501d6ec5293832b1d9ec651bad196dd2ed092bf0d"
+    },
+    {
+      "path": "Assets/Source/Audio/tower_hit.wav",
+      "bytes": 57374,
+      "sha256": "21668eb3d7ad42c1ccf4a83d2e039bfde5433bd8a7b982921075d985c329a6bd"
+    },
+    {
+      "path": "Assets/Source/Audio/tower_hit_v2.wav",
+      "bytes": 57374,
+      "sha256": "7e51e5a63a2bef2616acde0fa89f0e7c22dddab6223103e0abcd6f468f38b3b7"
+    },
+    {
+      "path": "Assets/Source/Audio/tower_hit_v3.wav",
+      "bytes": 57374,
+      "sha256": "827e1588cba9bf1063110fd483a7bd57d458ac083cd5865abda81e6640ebbc25"
+    },
+    {
+      "path": "Assets/Source/Audio/ui_click.wav",
+      "bytes": 26504,
+      "sha256": "81f2e738bc40a6a6be271b6ce2ebdf1e46bb7225cdee1e9aedc661ffe51c1f87"
+    },
+    {
+      "path": "Assets/Source/Audio/ui_error.wav",
+      "bytes": 44144,
+      "sha256": "d1f203f31fc5ee10366f0f1eeb2b704effb6e01f91b68f36a3f666541b1604ba"
+    },
+    {
+      "path": "Assets/Source/Audio/ui_hover.wav",
+      "bytes": 19448,
+      "sha256": "121635860ae54e4e9003ad2035b8a554b2c0109fdd53b83a00ba3b6dce156357"
+    },
+    {
+      "path": "Assets/Source/Audio/ui_save.wav",
+      "bytes": 109412,
+      "sha256": "5b7f5e807c9f1033892dec2268377dd5c2f4f7cfa1953b91adfca62212af84b9"
+    },
+    {
+      "path": "Assets/Source/Audio/victory.wav",
+      "bytes": 441044,
+      "sha256": "54f1f98712552c7ecd12b5b6ab8dbf090037d894385fb5bcce8a9496ab3ab316"
+    },
+    {
+      "path": "Assets/Source/Audio/wing_air.wav",
+      "bytes": 57374,
+      "sha256": "73d849e2dd33a4cb17cff165446c43db8cd180be224a79e2b5babcd093e0ca64"
+    },
+    {
+      "path": "Build/Capture-Unreal.ps1",
+      "bytes": 66465,
+      "sha256": "ee8485eb9b7e61d6a30a44be0c9ea0209a1d13c79f050ed1e70046404caddf0a"
+    },
+    {
+      "path": "Build/Test-Unreal.ps1",
+      "bytes": 7686,
+      "sha256": "c6f7bccade0a61f5bda3aef54fb113c2a6c4fafa1424f644de06c2029ed98c8e"
+    },
+    {
+      "path": "Build/Tests/RiftSimulationTests.cpp",
+      "bytes": 244486,
+      "sha256": "e03a2f97d6b6c676dfe05f742a4dc5ad5e734b2ef494836af3a0ad2dbfa1d63d"
+    },
+    {
+      "path": "Build/Validate-BalanceRelease.ps1",
+      "bytes": 7599,
+      "sha256": "66f1c6c4272985d1ed7e3f50b2cca143db2b689899fe35cf7f49067687dd7819"
+    },
+    {
+      "path": "Build/balance_patch_notes.py",
+      "bytes": 17757,
+      "sha256": "48f86ebb7860c43ff17d1ab12fd855c843c27c69cbca93f19e820d2fce1ab8fa"
+    },
+    {
+      "path": "Build/generate_audio.py",
+      "bytes": 18790,
+      "sha256": "4c63fb8247ad348081ec1e8faf9a6de394eecfc58747ecc4e58d84322ec2bdb0"
+    },
+    {
+      "path": "Build/generate_card_manifest.py",
+      "bytes": 13646,
+      "sha256": "ceb4595ee1370cff593b3246ba061e697edf2f1052d9f79a7d499a5663391326"
+    },
+    {
+      "path": "Build/generate_expansion_audio.py",
+      "bytes": 2480,
+      "sha256": "bac4908a912b1c9b04d54a76d5ba2d6f094fcdde097829b46e7b3f3158958a95"
+    },
+    {
+      "path": "C:\\Users\\Noah\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+      "bytes": 107312,
+      "sha256": "b847bb9f4e48c19f585c8bf7d8b355f3f8c6d2125717ece9c9d7e16fb9f09de8"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArena.dll",
+      "bytes": 4286464,
+      "sha256": "43e3f6a8583cef601568be548da06ffabd8e286f5830149dd8b7da7e8f218d79"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArenaEditor.dll",
+      "bytes": 222720,
+      "sha256": "9b39240bcdcc65b30fd5564c115bc45dfd7cccdad61fb116d3ab77508b0b45e1"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Config/DefaultEngine.ini",
+      "bytes": 1379,
+      "sha256": "d203dc05bd1a8d857f7773eb44529ce45637647a5d5638f52b4e9ee21ffec885"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Config/DefaultGame.ini",
+      "bytes": 808,
+      "sha256": "4ab11fdb2a344e1ca44f39223678a4b504b46c29a09133dad78d8bb9f5032738"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Config/DefaultInput.ini",
+      "bytes": 9535,
+      "sha256": "40f9320c2416a85aa30c765ce1d9c62b45c6a9ad52ef998d102f05b8819679fd"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_aether_three.uasset",
+      "bytes": 181425,
+      "sha256": "8d80629aa097d17f6d57ecb0a08c3025f0f2a783da00e892c0e940a516ed46ec"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_aether_two.uasset",
+      "bytes": 156059,
+      "sha256": "db769bd10fc227e579ac3e2e0d0ad51631aefd28e868cd0280788a63bf665983"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_arc_cast.uasset",
+      "bytes": 41649,
+      "sha256": "12261a7406ae9049a45a4d0d2965d66467d0b18d8d8f56998f1ce88d31ae879c"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_arc_impact.uasset",
+      "bytes": 31210,
+      "sha256": "41e76539367641f557f4592bef66824177888128ffe41ce307a2d62766b8adbd"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_arrow_flight.uasset",
+      "bytes": 21381,
+      "sha256": "8212866e3bdddae5857a620d19229a43ce700de8edb42957e01e4b8ec35f1b64"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_arrow_hit.uasset",
+      "bytes": 15428,
+      "sha256": "f935ac80c3c1e1b19e58883cd11a4ffe358bbc70428a48e01dd231331ea467d9"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_arrow_hit_v2.uasset",
+      "bytes": 15727,
+      "sha256": "8b3d3407d4907071df260aa17824e7eefe4f2810436fb67aaae2bd105b8c1545"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_arrow_hit_v3.uasset",
+      "bytes": 15544,
+      "sha256": "051a3034a8bdde445f3a1a1658af96432d37f932fad410d19e31d56ca9b30921"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_bat_bite.uasset",
+      "bytes": 11871,
+      "sha256": "5cb623277cf6588cd57cda580c596747233aa8efa60d884df60b6347e1dc57ed"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_bat_bite_v2.uasset",
+      "bytes": 12031,
+      "sha256": "c265c22e3a819964e3212d85bf1ad444b0525a998917b891d0895dedf881cf6c"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_bat_bite_v3.uasset",
+      "bytes": 11983,
+      "sha256": "cfa2766248bc396694de9b5f633de4234ed7e4c50c44f188e402ac877fbb155c"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_bow_release.uasset",
+      "bytes": 23030,
+      "sha256": "5a0cfddae13d697064cdd40342cdb5438da6ed03d3b9ea8be0b111bfb11aae9e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_bow_release_v2.uasset",
+      "bytes": 23011,
+      "sha256": "5d2d427b9e9d8d4bd0ac87bfa6d446e1efa385e9aeca34024c0e5e9df49c2273"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_bow_release_v3.uasset",
+      "bytes": 22970,
+      "sha256": "b715314c7bff6e495287faba3923b4aed3f558447ed1fe4dc8b4e2f088956f5e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_building_hit.uasset",
+      "bytes": 17437,
+      "sha256": "4c4635d34a39a89bad9a75050bfb65358feaa69e53fc683795f7e442a3cd92ec"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_building_hit_v2.uasset",
+      "bytes": 17956,
+      "sha256": "8f1b8ba675f16102df75756858d46490ed3553f2c7eec06795694a186d759e0f"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_building_hit_v3.uasset",
+      "bytes": 17678,
+      "sha256": "203f7ed176ba07e7bcc733b792e9ca4891a39fa60982ff280d3407fced52075d"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_bullet_burst.uasset",
+      "bytes": 26840,
+      "sha256": "d968192684acf8013f3a0bc70891ac6e5a0eab3225f446192d8115e1a43a8907"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_charge.uasset",
+      "bytes": 18395,
+      "sha256": "77648ec816479f5781a11a1c6bef1834a2180bf10bd32f8bc3bb446b35784723"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_core_awaken.uasset",
+      "bytes": 189403,
+      "sha256": "4add5f5fc19980dbc3cdc8a346faa12b0b3cf960c11aa277ac72dd572557d7f2"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_defeat.uasset",
+      "bytes": 184491,
+      "sha256": "10f55dda73fb76b874628c3e8ae55badfaaaf6198b1c4ed694f570f06478c3eb"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_deploy.uasset",
+      "bytes": 28193,
+      "sha256": "574563588f1a524c9c4ad4671b9552a821a1d1a9659a57f2c29d643fc8c41906"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_dual_attack.uasset",
+      "bytes": 15851,
+      "sha256": "e241fbedd2e0048e44a5e33bb3e86d4d159cd2e53bdf12be2f4bca6e5e51aee5"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_dual_attack_v2.uasset",
+      "bytes": 15915,
+      "sha256": "903dd09f4d744ea36887968174ea4968c1d106d837966e390e73b5752c1b43d6"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_dual_attack_v3.uasset",
+      "bytes": 15906,
+      "sha256": "c45588499a4d4543b0f32cb2ff19f75db5abc6c92c112c87bcb6dc6ba441e1c0"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_frost_attack.uasset",
+      "bytes": 60073,
+      "sha256": "e01c7ebbe1a4c887b9d007d152c3cbd8a54516cb1c1f13933d399fa9663b333a"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_frost_slow.uasset",
+      "bytes": 26511,
+      "sha256": "ce60d258fbf341c6ed2b2aff3f0f15458ddd31bbcaa413eddfc568b63394a68b"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_heavy_slam.uasset",
+      "bytes": 28274,
+      "sha256": "06efc0bced5a18d23a318db6092a96287ba7843e669cb1eeaa4460dbd20db03c"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_heavy_slam_v2.uasset",
+      "bytes": 28619,
+      "sha256": "49a4354d99825f740c66b556054002ea3c4b68ffd2a3ebf28020bb436e5e3acf"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_heavy_slam_v3.uasset",
+      "bytes": 29594,
+      "sha256": "fd94a4687ca455096fd177b76ae3cbd2c5681c69f9be717e4d75a43909d1d370"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_manta_cast.uasset",
+      "bytes": 28448,
+      "sha256": "e4b29d3544e9eef6eee8e458ef08ffc95c2e021a111c8b74fe612f250c0f7ab0"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_manta_impact.uasset",
+      "bytes": 28835,
+      "sha256": "2bb0d8c81efeeaa8f5e06498bf7bca128aa705f6101eba258b318fe678da28dc"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_meteor_impact.uasset",
+      "bytes": 83754,
+      "sha256": "d957d018fc19331e717b990434951234cda4b0803a1b7ca6eb948595f0481aa2"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_meteor_tick.uasset",
+      "bytes": 18640,
+      "sha256": "5099e6ff520aab7f246ed40bebea0723d1e4079d5fa686dba8b19607bf851521"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_music_rift.uasset",
+      "bytes": 3669863,
+      "sha256": "82d73fc320228be9129f30d8d207cec714576dc61a8cd20016834d9063c92792"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_nova_impact.uasset",
+      "bytes": 43774,
+      "sha256": "de6a683e095740f435d1d9b2e5a758648ebf6f003fe19cc87e39ee09dd2edef6"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_overtime.uasset",
+      "bytes": 186091,
+      "sha256": "6d4d7d9bb9c720f7656c71b24b5d645e3e734616d93f2fe84b36abdca2649516"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_river_ambience.uasset",
+      "bytes": 765195,
+      "sha256": "071ad86629cee0fdba3a3cc02ced7805619d4eadc8b9ffb14c6bba7656b3af31"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_shadow_surge.uasset",
+      "bytes": 21987,
+      "sha256": "be157abb0c3909320be21bc28bd8fa0004f59810805b668fdaee33a633fd139b"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_shield_break.uasset",
+      "bytes": 32913,
+      "sha256": "749d53f8d6c99b37920d9763a541b509e5c59d806dca7be782e39d3d5811d346"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_shield_hit.uasset",
+      "bytes": 21018,
+      "sha256": "a26cc88abd5c2d14654ff1cced9bcdb88776710a2a0928933811a46b0e3d2da9"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_shield_hit_v2.uasset",
+      "bytes": 27708,
+      "sha256": "7503c00169702856a19b66a62391b15109653be0f1a38df29ae02a981d707637"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_shield_hit_v3.uasset",
+      "bytes": 23567,
+      "sha256": "3701c67356ba3ccf31cbae2ce72a47603d262cebd14f80a2e792f828d9f6cc97"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_aether_reaper.uasset",
+      "bytes": 23991,
+      "sha256": "3212baea53e74791717146e4b03aa8ffdc34ac207969787a0101c6a73215a476"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_aether_reaper_v2.uasset",
+      "bytes": 27658,
+      "sha256": "1dc2a9d5350b0ce5b16f327e6728f767bcc42eb90a812d8a02a1790d70f88bf4"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_aether_reaper_v3.uasset",
+      "bytes": 27023,
+      "sha256": "869c6d0274dd01ff6473e4383cffba215bb725ee9ac22e77f668aecdd95cc85d"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_arc_mage.uasset",
+      "bytes": 48312,
+      "sha256": "34c68465b1faafce2ec4d925322368539b52b94039edc02a774b15d7ff7489d5"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_arc_mage_v2.uasset",
+      "bytes": 47284,
+      "sha256": "d6aafe6972cd11f14295066de3b7268227566b887bd7781aa1a13cba1a973c40"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_arc_mage_v3.uasset",
+      "bytes": 39465,
+      "sha256": "be7e0355eb298ccfa6fa7e4d4475460690f52f5b39b72133151f63416acde5ce"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_archer_tower.uasset",
+      "bytes": 30094,
+      "sha256": "46bdf9f1afa1dff5cc00beb6d6d4472a91900b1a099c8523341ddd7e52193f19"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_archer_tower_v2.uasset",
+      "bytes": 28393,
+      "sha256": "7d6cc191a022778abfa01125b1743cb4c394781a4c7ba9d86de1494643cc7a6d"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_archer_tower_v3.uasset",
+      "bytes": 29677,
+      "sha256": "c5c214b0f3fb8e2524c586704926628470d628779864f4acce285b9d6e75cd6b"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_bone_warden.uasset",
+      "bytes": 34360,
+      "sha256": "7cc5605e239d069dba1df4cb637797a45aba6cc82dad1f7822761b45c393d765"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_bone_warden_v2.uasset",
+      "bytes": 36550,
+      "sha256": "0afe8a3c504c917874c85b79a3054df17acc1df1a431b516b548906593f2025a"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_bone_warden_v3.uasset",
+      "bytes": 45713,
+      "sha256": "154e6d3662a5bacb1857fa33b9850474ccafcc22e5a80b91b3d9e3186a8b6e15"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_boulderback.uasset",
+      "bytes": 52474,
+      "sha256": "74100b7906d8667fbd6582f65a45b578ed1d610b492d0820093b397b2421add6"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_boulderback_v2.uasset",
+      "bytes": 32796,
+      "sha256": "0352ffcda4ba7ebf070021aa8988a6e3f3c83b631cf0dc03425c135d98111f9e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_boulderback_v3.uasset",
+      "bytes": 32027,
+      "sha256": "f8549eada37f1627b62378f2046f3e44fd110a0fde491d47efaa466eaf152824"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_bullet_burst.uasset",
+      "bytes": 21234,
+      "sha256": "ab48e76535d0fc1eee5f939829792342dd1fa24e02623145ffee47cf32c8d18e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_bullet_burst_v2.uasset",
+      "bytes": 21068,
+      "sha256": "c053032eb6c0cbfacc4c03baad585a235b949ab266fafa9168e2f0c97d0dda28"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_bullet_burst_v3.uasset",
+      "bytes": 21172,
+      "sha256": "f3933151d3b4f43e4fb0d1c45cfafe81022a7a21ed825b98c45487fcdc7dda85"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_ember_archer.uasset",
+      "bytes": 38421,
+      "sha256": "402e7a6f7c8adcc630ed2a38a0e9dca9c918c6b48da1eed3ce011cd6a5182a89"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_ember_archer_v2.uasset",
+      "bytes": 30854,
+      "sha256": "d0453fdb4e52cf46bb1aadab71163bdfba21b735d4dc222f652aa70dd4c343b4"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_ember_archer_v3.uasset",
+      "bytes": 56733,
+      "sha256": "8422f5317ba2602380801b58f650d63e3b926878f6f66ddfde75ed0fcc4636b5"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_frost_fang.uasset",
+      "bytes": 34430,
+      "sha256": "f569cadcb395acf2b52f9ca2dd37b72776ba53712ac7395537d4684cf1ae4e62"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_frost_fang_v2.uasset",
+      "bytes": 32576,
+      "sha256": "42a8a597c1f0a959a02e70281ee1c11836e8774808dc6063cf486ed149d7be8b"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_frost_fang_v3.uasset",
+      "bytes": 37942,
+      "sha256": "7a4a7267bdd4367c4e288e92b50bf3b0dbd812b43800cbeb67b81872881ae534"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_iron_giant.uasset",
+      "bytes": 53551,
+      "sha256": "981d3bacd07b0b88296f5722a51a8f7c8067f441ed6be1113b942321f82d55d0"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_iron_giant_v2.uasset",
+      "bytes": 54919,
+      "sha256": "ca3b93f49046c9fd4ce0815c121831bab7deb76cc962aeda68f91983d05155ae"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_iron_giant_v3.uasset",
+      "bytes": 34229,
+      "sha256": "72b75b8f334a5e143d303f4ddebbbc6bca08dbe4e6d76f5681ca7d55536211d8"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_ironclad.uasset",
+      "bytes": 42644,
+      "sha256": "ba9d1177a7ab78825029d7dc5ec0458a57491e63cc4a91b312552b3045c6adc8"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_ironclad_v2.uasset",
+      "bytes": 43721,
+      "sha256": "6119f8ac9f9777703202b91d09e03d25b684cebdc1b80c3239ad8d8479cec8c8"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_ironclad_v3.uasset",
+      "bytes": 28553,
+      "sha256": "1f8ba2b1d41f4c442832a5d07460e3c239d9c37cb7aae86405b32ccbf7949c43"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_meteor_shards.uasset",
+      "bytes": 35428,
+      "sha256": "3595c7af4a5ab9ffd503464d18d6646b667ec0f4c2fdcab2de181235fe3b25c6"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_meteor_shards_v2.uasset",
+      "bytes": 36457,
+      "sha256": "ef02ea1a6490c0b63d366de5d386a74065f7ba6ad56cbf68527bb520b7a688ad"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_meteor_shards_v3.uasset",
+      "bytes": 35441,
+      "sha256": "ff5541247c6011650eba2c54d812558414a4f46d60f175bbe6856342020b9bba"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_mini_stampede.uasset",
+      "bytes": 19334,
+      "sha256": "e2747ace39e43d8fd8435283d9a0e90e3e1c582a3c97a0a4b9c557b9c8fa860c"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_mini_stampede_v2.uasset",
+      "bytes": 17569,
+      "sha256": "6382eebbfaa3affaa09f76eee12a2b06bb9f2ba0c4d7005b67c53d2845bbdb5a"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_mini_stampede_v3.uasset",
+      "bytes": 23691,
+      "sha256": "21b3683faf7f51821e280c494eb68178a5e962fb527f4102ec41e6a7c0c6fd06"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_nova_flask.uasset",
+      "bytes": 27478,
+      "sha256": "6d776128ebe77f9d203cdb18fc8e896fefc685379e4f2fec3ad8b6b8591a3ef9"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_nova_flask_v2.uasset",
+      "bytes": 26496,
+      "sha256": "0a624634089cfc0e8274762488240a0667a95bb4cb534a8dd53ea1a47a2e6801"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_nova_flask_v3.uasset",
+      "bytes": 27003,
+      "sha256": "838ca5d5779280861847042759a2e318949e2305820e90b90f838886c306f3b4"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_pulverizer.uasset",
+      "bytes": 25437,
+      "sha256": "6fa3261e5ed891f8cd1d80936482c240dedc1cc8fe3bf553a069a93d5be83894"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_pulverizer_v2.uasset",
+      "bytes": 24370,
+      "sha256": "34eb5d64bcd63cb2f6ed21e15d2a74cfa407f28a3f3ff89e6097833aaaef816c"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_pulverizer_v3.uasset",
+      "bytes": 25548,
+      "sha256": "d763e8cf1c4833fc7c54615e47de95892d72e019973256dfe22515e51f52acb7"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_rambeast.uasset",
+      "bytes": 28336,
+      "sha256": "d4eb7c9fc1db5255509c658dcd08a3948586a6948eb9c6239279bb5dc751e7f7"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_rambeast_v2.uasset",
+      "bytes": 33277,
+      "sha256": "ca98fe1fa3ff072a720f7885fece65d92d36489ee1a8ea9a59ed787f64dc495f"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_rambeast_v3.uasset",
+      "bytes": 38317,
+      "sha256": "98f726082edca54c32dac791b7c295453c934208c9929bfff028662a114c98c7"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_shadow_surge.uasset",
+      "bytes": 20873,
+      "sha256": "651cca2dcd105f2ff4656cf6222d73cf0a3e560bf17fed764bd1d1782100f233"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_shadow_surge_v2.uasset",
+      "bytes": 22775,
+      "sha256": "929975d325c0a85a1b416a7b42ce90b5f917f2a7e95ca07d4ad763c10ee96702"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_shadow_surge_v3.uasset",
+      "bytes": 21349,
+      "sha256": "66b29331a80cab86fcea7770ee9670b74f096802a317dbc2175c2c5ada594941"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_sky_manta.uasset",
+      "bytes": 30741,
+      "sha256": "6ff7745169e19a9e383c93adcfa3726f86baec41a6263464053c88cc95df64fc"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_sky_manta_v2.uasset",
+      "bytes": 33627,
+      "sha256": "061e243e586307432257dc46b4dcfc7d59bd41c33d95fb77f8b120693d82cc68"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_sky_manta_v3.uasset",
+      "bytes": 32170,
+      "sha256": "cf8d6569ba821cb58b6869d70f92ab30f93d9f7e045e85c62ee40232cf1a531e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_stampede.uasset",
+      "bytes": 23549,
+      "sha256": "bb1ba6feb099fffb02cf88954fbb954d1ad02aa3579d63eb9f1244b70e8062db"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_stampede_v2.uasset",
+      "bytes": 20353,
+      "sha256": "4e9b6ffb2956de1fff7c1c407417b08bf34435b7346c561b23d1dfb11db0058f"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_stampede_v3.uasset",
+      "bytes": 28317,
+      "sha256": "74273a83538358adaa5024dd6fcd00dd8dedf91fafd3f006e94a1f45592adae5"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_storm_raven.uasset",
+      "bytes": 43087,
+      "sha256": "9b29d1886da3a39a5d7cc662f8fa83670903be028bcadbe2f6195276fef5ea3e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_storm_raven_v2.uasset",
+      "bytes": 25494,
+      "sha256": "8f62dc4c98d92ad8b275bde8f48368060312b767e027870e5fbfc38193537423"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_storm_raven_v3.uasset",
+      "bytes": 21282,
+      "sha256": "71d93bc95aaa3e9ccdcbeb423dd137398a6abd4e6e2920e9f850205ca4d43a70"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_twin_blades.uasset",
+      "bytes": 52844,
+      "sha256": "be911ad0b9c9c2fdde07f6d139d9bb9742386ed15799767c5b14e894de0e67dd"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_twin_blades_v2.uasset",
+      "bytes": 47133,
+      "sha256": "fad73010cd340207cd406e40506039a727ff23b208b036d35c2bab6271656e94"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_twin_blades_v3.uasset",
+      "bytes": 48069,
+      "sha256": "3575453bc915b30ae6b75a450e5ce7eb92a4ae0afbf57de60477afbf2c38296b"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_vampire_bats.uasset",
+      "bytes": 47600,
+      "sha256": "bf0bac4535d30d2c6aa880008ac7073cdc686658f499e1c019332cefbdd8c6ed"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_vampire_bats_v2.uasset",
+      "bytes": 47995,
+      "sha256": "d43a732bc26660087b8961907d59b9319273915227333391db395af7a791f0bc"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_spawn_vampire_bats_v3.uasset",
+      "bytes": 47081,
+      "sha256": "df3b927bd3d062bf48a0a899c978bedf00108e9ed5cdd9a957098c15edc75218"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_storm_bolt.uasset",
+      "bytes": 24935,
+      "sha256": "b4dcecfc501085d650bdac14b9475d8fb24a4c78d8d7a9c9a8a853f5e9ec1ba6"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_storm_pulse.uasset",
+      "bytes": 32663,
+      "sha256": "4c04510e663e9d2cded43a33ea7a02c68c93c4952fd4d26a5bd30c026a3ea0ab"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_stun.uasset",
+      "bytes": 26174,
+      "sha256": "d00f09db16aca7f6bf1a00ff872f454f13b53c0b43858abc210312cee2d0f371"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_sword_attack.uasset",
+      "bytes": 11726,
+      "sha256": "31936b108baef3fa5ecccaed104bd8bc165c64c5ae45a674520412710d9daa09"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_sword_attack_v2.uasset",
+      "bytes": 12537,
+      "sha256": "d3daeb4256f6887ac9e5f67b1e97a16c5e94dc721f4710ed858c110348f1ab8f"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_sword_attack_v3.uasset",
+      "bytes": 11627,
+      "sha256": "610deefb4e9d57defe54e72c6a269646d947942d62f558a77dd935b951d32099"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_sword_hit.uasset",
+      "bytes": 23650,
+      "sha256": "e7332d02137eb4df896ae6b1ea5d4811fb2b3ba520eeb99c028760264dfb7510"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_sword_hit_v2.uasset",
+      "bytes": 31325,
+      "sha256": "fecae9e6c566349b7703d1cd17321587901dc39b9ae6bdd4169f788d9a909cc6"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_sword_hit_v3.uasset",
+      "bytes": 28549,
+      "sha256": "b9000f3e385dbf19a9294bc82c3784bc91b148a40fcb33b0dc4b755e631d9efb"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_tiebreaker.uasset",
+      "bytes": 183594,
+      "sha256": "f7bfdb33043061fbf338b164fb1007c3c70fc926d7df854d55529c6610f09208"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_tower_destroy.uasset",
+      "bytes": 123240,
+      "sha256": "b90dbf5bbc9bc207d79163296ed8d0e4ee9eb02740ac0d0f9792a0068b333704"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_tower_hit.uasset",
+      "bytes": 25105,
+      "sha256": "56ab3c66b4a011f9473d4c084b9fb979558b73f39850c91b815073cd66d7e3e0"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_tower_hit_v2.uasset",
+      "bytes": 25152,
+      "sha256": "77ce9c742cfbb93e511defe73c16ab9d1d65a3b2a7d3e6ae80bbfc8918bcacc1"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_tower_hit_v3.uasset",
+      "bytes": 25711,
+      "sha256": "722b2669acb35520cf1679d85e4261e5365a324c585d8f268f16e38c83d2234a"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_ui_click.uasset",
+      "bytes": 14791,
+      "sha256": "cfefed79a80f0d9e24a294972f1cbe49126a34fdde27473624dd170744ba6a19"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_ui_error.uasset",
+      "bytes": 10772,
+      "sha256": "f119e90b538e793a1126440b3b0cefc1cc424458bf1084c49b8e74cc8ba85fb1"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_ui_hover.uasset",
+      "bytes": 13927,
+      "sha256": "1a81937fb6b25ed37ff21f743d81610165b6264e447ca6d58096f74260e976fc"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_ui_save.uasset",
+      "bytes": 54476,
+      "sha256": "094edd23e6039b3544603acad9ca05484750f13309a14307c070e03ac8a49b59"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_victory.uasset",
+      "bytes": 210824,
+      "sha256": "b836bc62acff286c4208bd1ae7b3b469be3464fac4460a8da80a59d1aae88444"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Audio/SFX_wing_air.uasset",
+      "bytes": 40351,
+      "sha256": "05287af993d59a66cec52ef280e5b142fc2c8993b59862232171ff8e10d19938"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_aether_reaper.uasset",
+      "bytes": 648018,
+      "sha256": "9ace08e8675130dff8b1e3f996ef0862bf33a56e97d95ca8c8f1484cbf9e58dc"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_arc_mage.uasset",
+      "bytes": 758075,
+      "sha256": "2ce322659ce7ac4845f9c89fe7fab17f3c36f1c241f68c25965d177543b068c6"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_archer_tower.uasset",
+      "bytes": 759124,
+      "sha256": "f5173ada5f05417c01e06fb357ae7e96d85ca3f38a607b6dadc9c29b4aa3d4cf"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_bone_warden.uasset",
+      "bytes": 762130,
+      "sha256": "7ff0aa983822979f3d5a22fb45644af8455a103872cc9faa86397634687d954c"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_boulderback.uasset",
+      "bytes": 698270,
+      "sha256": "ec7d14a1ea5345e5aaccac084198dc7d56712941ada0165cafec8da3bbd3e478"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_bullet_burst.uasset",
+      "bytes": 696256,
+      "sha256": "943d40b123c6b15ea37c75332c4a884c687c2ce1521999774da4b676e69852e5"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_ember_archer.uasset",
+      "bytes": 763402,
+      "sha256": "9b7f252f0aad11ee5a3a6dd86995fc6c6696e16b81521094fd062f17a91891ea"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_frost_fang.uasset",
+      "bytes": 721151,
+      "sha256": "dca18081e6e5e0891de7a329287c4e83abf6fb768312e077f47a8a83beeb6af5"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_iron_giant.uasset",
+      "bytes": 771567,
+      "sha256": "5f8ccbf7b8bdf31a9724206ab05cff33ce7a12bf7c7d612bbdc04c02524efd49"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_ironclad.uasset",
+      "bytes": 793198,
+      "sha256": "9618de1561206b7b092f9954926844ea78d9e4bba112b4335a56352038cd7322"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_meteor_shards.uasset",
+      "bytes": 673297,
+      "sha256": "20b82849c73512a18df7484550ade699a3ca21ee6bbf5e6fd2cc8047feabd4ca"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_mini_stampede.uasset",
+      "bytes": 766429,
+      "sha256": "9f0d77bcb6a1d947c82f0e5301a62afb66d7417a25172cea4a1c076f695d6aa4"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_nova_flask.uasset",
+      "bytes": 783001,
+      "sha256": "ed8a38ae42f586156294e7abf92d76e2e94ab30c246e7174bd2d4ec56e698026"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_pulverizer.uasset",
+      "bytes": 799717,
+      "sha256": "62b8cf1504ff12cbc05c0527aa617d03a2955bd205a63f77521c394d63f83ff3"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_rambeast.uasset",
+      "bytes": 717512,
+      "sha256": "07515f43559e1557d361d5f6d6e0630419c4f79b077d20519720401d619cac83"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_shadow_surge.uasset",
+      "bytes": 723908,
+      "sha256": "b77d6753c444728789e30eed1207153818b2276f398b7e1e4e3a0bba0a445db7"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_sky_manta.uasset",
+      "bytes": 637986,
+      "sha256": "65ce5b85e1785e6eda1b0a67410f13807504b91369800557bc4ec86df1aaaaa2"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_stampede.uasset",
+      "bytes": 775303,
+      "sha256": "2832bf1019e04082b6a2794a393c79ed3085c9c4b0903bf9bf19ce8376ec2c47"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_storm_raven.uasset",
+      "bytes": 655773,
+      "sha256": "2de585ba43e25670bf9194c9d200e9259788338140dedb3c542d8d7a5da43731"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_twin_blades.uasset",
+      "bytes": 760930,
+      "sha256": "494210641b9082d847462dd6daa634829c993ff66410181202e729205c464aa8"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_vampire_bats.uasset",
+      "bytes": 660008,
+      "sha256": "e7bae5ab69862e45ae4b2cf33ba2fad7212f5b62648a6a5b40cb9edeb5fa2385"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_aether_reaper.uasset",
+      "bytes": 9270,
+      "sha256": "322d3e3e4976b2ee9e942d90c953e4cb761e32f7f67806746c4a15acd0a3e24f"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_arc_mage.uasset",
+      "bytes": 8690,
+      "sha256": "ecbf8f3e122bd7ca2b52cbd96a764f41c939960f9a5a718d586f1308f4ea2c2e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_archer_tower.uasset",
+      "bytes": 6853,
+      "sha256": "01feecc4292af7d5b78c7a770af4dfacb30168a628ad80731872adbd31690d12"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_bone_warden.uasset",
+      "bytes": 8979,
+      "sha256": "79ba4f184d6890c8fad7bfc6a26b709e90a4a2aff836f43ee47f7c4095e443a2"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_boulderback.uasset",
+      "bytes": 8752,
+      "sha256": "d1c183f4c16d94653fe607e4625651303eb44a4d56f21c0b9f5e5d07030d5842"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_bullet_burst.uasset",
+      "bytes": 6239,
+      "sha256": "39d65cfb0c216f99bff9618b219c092503988f3538d246a5614a310dceb798c2"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_ember_archer.uasset",
+      "bytes": 8851,
+      "sha256": "529557298df1f40f5ab561bfb57f57f2a1f692cbff98c1cf2fa83b2c287263d0"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_frost_fang.uasset",
+      "bytes": 8945,
+      "sha256": "2e4b5af9fcf210b2a714ff2a007a1f1eb8035f00ea0228e4b6e3c8f934c6b39b"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_iron_giant.uasset",
+      "bytes": 8934,
+      "sha256": "1dd19fe99ca4044f099ecab121e08ce7eb05b4dc2788333cac697a4e3f4400c5"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_ironclad.uasset",
+      "bytes": 8275,
+      "sha256": "cb327e467e728a4862ed0360d6a0586a065f5ceb8ffc71c7dc22fb9b7fab9e45"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_meteor_shards.uasset",
+      "bytes": 6411,
+      "sha256": "25e71fe63e219fb209fabcc93bad038e9527b43e0f332dd767429b16638c3c32"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_mini_stampede.uasset",
+      "bytes": 8934,
+      "sha256": "5793fd22f2eda2b967ee6284b387597027154f9b44ac1881ba666b2a7cc93047"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_nova_flask.uasset",
+      "bytes": 6167,
+      "sha256": "53ea8d006b3f67261c41825997ddb5a1ee7fa6f38bd26a0528e2015b68d417d0"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_pulverizer.uasset",
+      "bytes": 9169,
+      "sha256": "282e0be31394f55a02b8ee827865937beaac206118afd107225ae1c8e5bf442d"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_rambeast.uasset",
+      "bytes": 8750,
+      "sha256": "11bf95c95cf5709a5ab94557781cc46176ff40600ff8d29cbaa4ea8a3ef45af9"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_shadow_surge.uasset",
+      "bytes": 6343,
+      "sha256": "078630c6ef9e1aa6f4f256842712efd47dd26da8bd2186c2b6cbaaf97fddc9a0"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_sky_manta.uasset",
+      "bytes": 8745,
+      "sha256": "263ddf27672a7b6eae041ccaaa96ea0240ed50c4a25b434a39b75af1f92e893b"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_stampede.uasset",
+      "bytes": 8788,
+      "sha256": "645c3bead705bfc630a19d3fd71c97258799bcd0dc89897485d14e771d2ad2ef"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_storm_raven.uasset",
+      "bytes": 9701,
+      "sha256": "a4828ee9d7a2fcbe396d04f8f28832fd5584c4c6eb2469b16391f381299d7e62"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_twin_blades.uasset",
+      "bytes": 8740,
+      "sha256": "e093b71e4e036db6deaa9276b488babe85925e0b44ed73368b5e8677735df975"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Cards/DA_vampire_bats.uasset",
+      "bytes": 8869,
+      "sha256": "f834261483e80fc7bdb8dd4fa28db75f45bda2bc23e924b68617fd5603454433"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/aether_reaper/Animations/AN_aether_reaper_Acquire.uasset",
+      "bytes": 60789,
+      "sha256": "eb67539380cc2dd41e6a4061d74aa9148e9274fe3ec9a64eb104dc1a8bf68951"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/aether_reaper/Animations/AN_aether_reaper_Attack.uasset",
+      "bytes": 164239,
+      "sha256": "e10c861cd60e57c452a33d5de0b4ab1ef4cb869b0e2cc2228002268fc2ebe793"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/aether_reaper/Animations/AN_aether_reaper_Death.uasset",
+      "bytes": 188617,
+      "sha256": "cd05ae3ec41169264cf41765d9143912039bb90757954b8db6c727dc149f1308"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/aether_reaper/Animations/AN_aether_reaper_Deploy.uasset",
+      "bytes": 94927,
+      "sha256": "f274eca494706b3a3e82a246f4b50bae43ab889b3f2b8dc745d5e44b187d4136"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/aether_reaper/Animations/AN_aether_reaper_Hit.uasset",
+      "bytes": 67485,
+      "sha256": "4dfe0dd99af6d0ebac374c934ba91ef559e0e1677ae3ae1d6f8a32c170a6e407"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/aether_reaper/Animations/AN_aether_reaper_Idle.uasset",
+      "bytes": 408454,
+      "sha256": "bc8c44503fdee7676de94e665236eb9a7aa13bccbbfc5f10ef80572f1da836a9"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/aether_reaper/Animations/AN_aether_reaper_Locomotion.uasset",
+      "bytes": 275498,
+      "sha256": "b9268a317329b43af920023bdccc398eba854e7429ea1e3f9a329d3c9540f17c"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/aether_reaper/Animations/AN_aether_reaper_Status.uasset",
+      "bytes": 219634,
+      "sha256": "7142724513a1c33ccb10bb635910f331dfdd99a2a512f3ddbbf55f8dbdbe0c98"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/aether_reaper/Animations/AN_aether_reaper_Turn.uasset",
+      "bytes": 70051,
+      "sha256": "0aa51a107e07a29d784918e86a37666e9adc412806b41b4bfd2587c1daf0385e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/aether_reaper/SK_aether_reaper.uasset",
+      "bytes": 8797087,
+      "sha256": "ef566051574c928a9cf7c5770335e1c404719b1b28aafcdbeab2025bd49b85df"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/aether_reaper/SK_aether_reaper_PhysicsAsset.uasset",
+      "bytes": 5205,
+      "sha256": "9527214f94a9d4e3eecc4137c7529d1081783eadfb953684399d5605d0fba5fd"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/aether_reaper/SK_aether_reaper_Skeleton.uasset",
+      "bytes": 7601,
+      "sha256": "0c972ba50eaf4dbf031af13cfd2d179f6cb2769d2b41ad70be00ce3a9ef48b37"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/Animations/AN_arc_mage_Acquire.uasset",
+      "bytes": 42504,
+      "sha256": "9ac735e7854d5fe9c17fb9b98a0fb005432a64fa7bd479614acd0e68c9dd7b11"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/Animations/AN_arc_mage_Attack.uasset",
+      "bytes": 76962,
+      "sha256": "df4592ff9340e4b4ca340ee42627d9682fda24d2a9c0c57e64a9a1e60cecb406"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/Animations/AN_arc_mage_Cast.uasset",
+      "bytes": 76950,
+      "sha256": "1482d3481d7ca807e7092cf9a42fb5c46dac1c3a472af1ec2bdefbedbddb1009"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/Animations/AN_arc_mage_Death.uasset",
+      "bytes": 124668,
+      "sha256": "76dec86937d8701fcba4fc28930a29fae0896250cadc4d2a531662c9f053c971"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/Animations/AN_arc_mage_Deploy.uasset",
+      "bytes": 44066,
+      "sha256": "3345c08d919b8b422267f51fcfa41cdd0c3b95139cd23e1013e89bbb4d5da338"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/Animations/AN_arc_mage_Hit.uasset",
+      "bytes": 40464,
+      "sha256": "e93ccb4b0eb1c0b72f24b1d18f728245fcb03ff38063ec3b2b94d626db88b4c1"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/Animations/AN_arc_mage_Idle.uasset",
+      "bytes": 60185,
+      "sha256": "eaa356092740607fcd9e3d348c25974e19671a22f45197eea34a925aa3a2aaac"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/Animations/AN_arc_mage_Locomotion.uasset",
+      "bytes": 114746,
+      "sha256": "f026880e492fb48ff5fe0619d807fb2d696cac993bde3453f04392cb6bfa5fad"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/Animations/AN_arc_mage_Status.uasset",
+      "bytes": 48642,
+      "sha256": "806ff1aaaeba0e2190cd9cf50d9d5f0307a9bc39469e1e1a01bbc4b052e6293d"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/Animations/AN_arc_mage_Turn.uasset",
+      "bytes": 47062,
+      "sha256": "45626abe42153729a1f10e62afc1cb2923bebe079bf533b5dd33cde58f72601d"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/SK_arc_mage.uasset",
+      "bytes": 12817942,
+      "sha256": "65b37289c4e7eb768270a68e44b7faa89e3a045d6662cefe20023cf936339cd1"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/SK_arc_mage_PhysicsAsset.uasset",
+      "bytes": 6819,
+      "sha256": "69d3ae89517e067682b789ef289d003e45042ccc76a0904e67495047435e8164"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/arc_mage/SK_arc_mage_Skeleton.uasset",
+      "bytes": 7289,
+      "sha256": "6a4ea3a99870ddb8d5bb2aa8af99079d7cf35324275daaa28a0afe676e201c33"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/bone_warden/Animations/AN_bone_warden_Acquire.uasset",
+      "bytes": 74152,
+      "sha256": "c11cb1a47528351af64736909571a220e0f59252590aa7de18d43b4d8964c487"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/bone_warden/Animations/AN_bone_warden_Attack.uasset",
+      "bytes": 326562,
+      "sha256": "36380966143a0cd20c62cf7f8cfb988fc96c47b99ca76e1f42e727a57d321683"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/bone_warden/Animations/AN_bone_warden_Death.uasset",
+      "bytes": 243036,
+      "sha256": "08c7e00eca09388d0badc82369d7977dd8bd55c1680de3722ab1c737b8e242c6"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/bone_warden/Animations/AN_bone_warden_Deploy.uasset",
+      "bytes": 127362,
+      "sha256": "0861dec7e93676e6a7aee413f3945cdcabf4e059ed9d3b962047afabf7c5f60e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/bone_warden/Animations/AN_bone_warden_Hit.uasset",
+      "bytes": 91792,
+      "sha256": "8473a631860236052523f006b844eb8a5d308b7387702bc64c449b339e4bf4be"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/bone_warden/Animations/AN_bone_warden_Idle.uasset",
+      "bytes": 475961,
+      "sha256": "46db6298ff1eaa0c9dd311803a9d1707b4a603c1a540528adf51cba20ed73ac2"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/bone_warden/Animations/AN_bone_warden_Locomotion.uasset",
+      "bytes": 418013,
+      "sha256": "68df0f4e57e2d0770f9293b14aaa86547956c826aed5dd73d0f13afbfb819300"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/bone_warden/Animations/AN_bone_warden_Status.uasset",
+      "bytes": 251877,
+      "sha256": "2a4e951c1aa0842dee3b867a9e523272ce8df6ee6464c21d4fc611305d928ccc"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/bone_warden/Animations/AN_bone_warden_Turn.uasset",
+      "bytes": 96086,
+      "sha256": "0318e9c156b479f0e547a37afbb02bc336a67c00bfa3470890a51c6e01102bf3"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/bone_warden/SK_bone_warden.uasset",
+      "bytes": 24015892,
+      "sha256": "f47ba7c184a8ceb61705540e5dbe3f1175d1bf4b4a6baadefb32f77ac49e44b6"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/bone_warden/SK_bone_warden_PhysicsAsset.uasset",
+      "bytes": 5182,
+      "sha256": "d810ae56689bb36f016e42695e6c605d8c7f634ea742685f3c807392128f9c9c"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/bone_warden/SK_bone_warden_Skeleton.uasset",
+      "bytes": 9797,
+      "sha256": "4a4e5d6e12208efa40e90fab63c8db04a427107dfc2380f50a942b6ae3e81239"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/bone_warden_skeleton/Animations/AN_bone_warden_skeleton_Acquire.uasset",
+      "bytes": 37958,
+      "sha256": "95ec961ac09302a3de96f9d458faccce67fc0602cb93b293f647d4ea16eeb201"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/bone_warden_skeleton/Animations/AN_bone_warden_skeleton_Attack.uasset",
+      "bytes": 83200,
+      "sha256": "7ab9dfa0396962d9550a43407f3d9b7515f0467633176febbac6fec55a89bc55"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/bone_warden_skeleton/Animations/AN_bone_warden_skeleton_Death.uasset",
+      "bytes": 112634,
+      "sha256": "cd1d96c4693be2b335e8cb5f9b5648c1e639dc0e8a45d09e1de8dff95ec7e652"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/bone_warden_skeleton/Animations/AN_bone_warden_skeleton_Deploy.uasset",
+      "bytes": 55456,
+      "sha256": "c8398e391fc5516229a0ded7f3408346f69da1f34b4e47654d41e45c4f05c001"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/bone_warden_skeleton/Animations/AN_bone_warden_skeleton_Hit.uasset",
+      "bytes": 48206,
+      "sha256": "c514f96e36adbc19a261ab35bf6992521eaebbef65f49cc16add4fa58d5fc235"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/bone_warden_skeleton/Animations/AN_bone_warden_skeleton_Idle.uasset",
+      "bytes": 86071,
+      "sha256": "7f7622a5d58372de967c4780414449b5d2788112a4fc4991bd1d69b673c7e123"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/bone_warden_skeleton/Animations/AN_bone_warden_skeleton_Locomotion.uasset",
+      "bytes": 140376,
+      "sha256": "8d651bb8d2165e9ccd25bc90ef167871df12bd445d9614129172597ce8586f38"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/bone_warden_skeleton/Animations/AN_bone_warden_skeleton_Status.uasset",
+      "bytes": 41091,
+      "sha256": "a27054765cad1bb39a28b15d6957bbefdf1aeded25dde0b7a4b5b0abf832ae8b"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/bone_warden_skeleton/Animations/AN_bone_warden_skeleton_Turn.uasset",
+      "bytes": 48596,
+      "sha256": "606eabf1b4746019012a2168ae59d017030d0087257344f4c781044e8dcbcaaa"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/bone_warden_skeleton/SK_bone_warden_skeleton.uasset",
+      "bytes": 7681754,
+      "sha256": "736b4722af6698d902099e49db48fc393e8d4116eb9cd145d469db754a29dcf6"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/bone_warden_skeleton/SK_bone_warden_skeleton_PhysicsAsset.uasset",
+      "bytes": 3281,
+      "sha256": "8a231c2db493852bf8a0908576429bbde24f2c31d90973cc952c6e1a71536bd8"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/bone_warden_skeleton/SK_bone_warden_skeleton_Skeleton.uasset",
+      "bytes": 7572,
+      "sha256": "18773fd0aa35335b4636751315aa7da2b66f26e3398eac226c98a61683b77a1c"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/Animations/AN_boulderback_Acquire.uasset",
+      "bytes": 46860,
+      "sha256": "7ef49c728035740241de88e2d4bf65b3f78dd257c45ea4c229780d42211f0021"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/Animations/AN_boulderback_Attack.uasset",
+      "bytes": 64742,
+      "sha256": "9f84520cbefe2654284d6867209eb694f4f9060e6f7962b08040e1205c406be8"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/Animations/AN_boulderback_Death.uasset",
+      "bytes": 82944,
+      "sha256": "4ca5564b4b412eaa97c0ed79f72bda48673ee0983b1ec3c8038e82db73a33085"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/Animations/AN_boulderback_Deploy.uasset",
+      "bytes": 49574,
+      "sha256": "22ab55909189d082432a748619e7435512c4d3871bd7c4f5d55bf2ea43513351"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/Animations/AN_boulderback_HeavyImpact.uasset",
+      "bytes": 95495,
+      "sha256": "fa26b69f65ff734be4be047d5367dd643f8d989c323a8c6a2c053c0557acf121"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/Animations/AN_boulderback_Hit.uasset",
+      "bytes": 44436,
+      "sha256": "f530e817ba4f4a2781fc956b807d32adc459d24fabefacd6c7b459a46b41c297"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/Animations/AN_boulderback_Idle.uasset",
+      "bytes": 53565,
+      "sha256": "d4ee2cbb17d87b6d9a62ba71c7c403a3e921da2ae50cb8670778461f260bfa8d"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/Animations/AN_boulderback_Locomotion.uasset",
+      "bytes": 127070,
+      "sha256": "e273c94ef8dd9dd4dcb498cdc71899d8ccb805fdbb1f98f80c2f350d1611c470"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/Animations/AN_boulderback_Status.uasset",
+      "bytes": 55302,
+      "sha256": "c48fa6adf2211730bedb6dd906ec3f09f383f38a7d79b04daf228d116fd6bcff"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/Animations/AN_boulderback_Turn.uasset",
+      "bytes": 54074,
+      "sha256": "c4ac141cc5e8c17ebd2c5968d6d659d216cd49d5862379f2ed57901e782a9b6e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/SK_boulderback.uasset",
+      "bytes": 15780493,
+      "sha256": "2e08344e77a9539d1221cf43e483d659381c345aa562350ae2784deecc2b24d0"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/SK_boulderback_PhysicsAsset.uasset",
+      "bytes": 13701,
+      "sha256": "1a932e6786b30d1f67fb31e3776f9b6870ae4d3996cd7a43de7c33815dcecd22"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/boulderback/SK_boulderback_Skeleton.uasset",
+      "bytes": 7652,
+      "sha256": "432fd1fcdaa56cd7aaaf4c7e9d767c01ed16d8df9b8d95b905a2f991c330b620"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/Animations/AN_ember_archer_Acquire.uasset",
+      "bytes": 50802,
+      "sha256": "c451bbcbe7da26d71961d9046b8f99e8a74fab886ff9a314ca9c6748c6d2e30d"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/Animations/AN_ember_archer_Attack.uasset",
+      "bytes": 109868,
+      "sha256": "cadc7718198c21c187633974c3701a3da10e63978da6308e58ab161f91defb54"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/Animations/AN_ember_archer_Death.uasset",
+      "bytes": 147302,
+      "sha256": "388fb51dbac865fef804e92329a8ad9e5c48627b75f9a69594ac63eb5b9dc1bf"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/Animations/AN_ember_archer_Deploy.uasset",
+      "bytes": 51276,
+      "sha256": "c81595f1eb931bc0fd08f4fd56b7251d6c7b39b904ad70c7b5586731a76444a7"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/Animations/AN_ember_archer_DrawRelease.uasset",
+      "bytes": 149834,
+      "sha256": "280fbfe00057faae77c7c98c0da66018df0251ce6fe3f4a09507ff94db9ca786"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/Animations/AN_ember_archer_Hit.uasset",
+      "bytes": 48122,
+      "sha256": "caa7e4c5ecd523497320057bf0daf43bbca64df6d4dc7c401007ddcba9334887"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/Animations/AN_ember_archer_Idle.uasset",
+      "bytes": 81923,
+      "sha256": "ec6419282216e0ab5e6eed6658c56e02af15db751e4fb6f4de3cdbdf14c6f41d"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/Animations/AN_ember_archer_Locomotion.uasset",
+      "bytes": 126884,
+      "sha256": "2f8af47d58da359a34e5aaad3e3502a38bdd1e780d01920c8e6815230ddbed27"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/Animations/AN_ember_archer_Status.uasset",
+      "bytes": 60780,
+      "sha256": "a87097977c2f26ba63b041c5d54345a40866810855822a6ae9215e195fbb3efe"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/Animations/AN_ember_archer_Turn.uasset",
+      "bytes": 57280,
+      "sha256": "3e43ec7482a8671dcbabea93cee7ac014831fa20f058d8454a18d1e43f8609f2"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/SK_ember_archer.uasset",
+      "bytes": 11253649,
+      "sha256": "c43821d2c5d51e2ecd422047154467aeac4dbcd2546bb9ad69a8942eebf65f46"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/SK_ember_archer_PhysicsAsset.uasset",
+      "bytes": 6871,
+      "sha256": "36a9f5b357f7c38cd4d20344cc17d66191fe260e854c68b284098b9851e4741e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ember_archer/SK_ember_archer_Skeleton.uasset",
+      "bytes": 7928,
+      "sha256": "c772acf1772fb713bbec1569b705031d7e7662d2dbbb4d5b44c86dcf19a960e9"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/Animations/AN_frost_fang_Acquire.uasset",
+      "bytes": 48838,
+      "sha256": "c9a3bf7493ac4f3f31c71e618653c86bfdc272bc174b334d09ef6a43ecae2f11"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/Animations/AN_frost_fang_Attack.uasset",
+      "bytes": 67488,
+      "sha256": "bf8633d374e0b8953a777d25d8ae1f50220abe527ff9c22c229de86b11962f0a"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/Animations/AN_frost_fang_Breath.uasset",
+      "bytes": 62051,
+      "sha256": "b376ab5b6baf30bb455e5d7b7a83d0742827c2ac8fdec911f1343776383f3c98"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/Animations/AN_frost_fang_Death.uasset",
+      "bytes": 92346,
+      "sha256": "956404bdd8da62a8dafeaf32393a455a4206a3cd033a97b5b6f054ad30076446"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/Animations/AN_frost_fang_Deploy.uasset",
+      "bytes": 51936,
+      "sha256": "dc0c32b548708db94910a649cf2f3ee7ca08244a214e7d898301478df622da3d"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/Animations/AN_frost_fang_FrostAttack.uasset",
+      "bytes": 60990,
+      "sha256": "7273902ceeb033ab2fa282c344f4ed9494ecc12f450d53bc337512e55f8de052"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/Animations/AN_frost_fang_Hit.uasset",
+      "bytes": 46286,
+      "sha256": "36c6c0c7d157ad1c477c0c3f7b387ffe571d5ecc36b9e19bb2b02b4798a26334"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/Animations/AN_frost_fang_Idle.uasset",
+      "bytes": 58231,
+      "sha256": "abb7e448389fe496d5442a62a9c759941f0ffe306b088dc9b15cf7dea0497897"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/Animations/AN_frost_fang_Locomotion.uasset",
+      "bytes": 129816,
+      "sha256": "efc1697a30011462e3248ebb270b13350ab2f2f9df8c51ddc97ba1d2c1136fce"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/Animations/AN_frost_fang_Status.uasset",
+      "bytes": 58048,
+      "sha256": "1c8c2bea787e86141ffdc7fcdbd4b04e1616beb8cb618297577079f101d34273"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/Animations/AN_frost_fang_Turn.uasset",
+      "bytes": 59444,
+      "sha256": "745140aab9159905963f7159e0c7e52a6260845cb6850d4e1ee1ba4af42a5c19"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/SK_frost_fang.uasset",
+      "bytes": 14576429,
+      "sha256": "f57fd8889112745b1914dea4d0ccb17216e633f2cce064a91b7548306e24f369"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/SK_frost_fang_PhysicsAsset.uasset",
+      "bytes": 13689,
+      "sha256": "9c51563349b8141a06a40218591d4699f5f521d49c3e52b8f2ad5e54464556e8"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/frost_fang/SK_frost_fang_Skeleton.uasset",
+      "bytes": 7843,
+      "sha256": "8a731048db7df7b35afcea569761198b8177710fcaafb3dec3f7e34b61e47223"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/iron_giant/Animations/AN_iron_giant_Acquire.uasset",
+      "bytes": 44369,
+      "sha256": "11f5a288cd21e1da28a84259af6bd1ceae791d0fda94187561a88ebe40080ea6"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/iron_giant/Animations/AN_iron_giant_Attack.uasset",
+      "bytes": 136267,
+      "sha256": "6239672531f0daa1493b7635d0b4687c2ceedd623355b280f32aa4eccb33e75d"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/iron_giant/Animations/AN_iron_giant_Death.uasset",
+      "bytes": 183173,
+      "sha256": "0f01aa2d6e22198b580a8f89a893fd9e60461382d3f802bbf521e59cb0cd8642"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/iron_giant/Animations/AN_iron_giant_Deploy.uasset",
+      "bytes": 74347,
+      "sha256": "6f8c8aa339d5f78ba3d5f4c9b45fc482056722d48e8759e5d185dc7aec21547f"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/iron_giant/Animations/AN_iron_giant_Hit.uasset",
+      "bytes": 54201,
+      "sha256": "e98c3137fb56819fa178e57471c8e1fd3e07c507c161b74a2c21e66d37237165"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/iron_giant/Animations/AN_iron_giant_Idle.uasset",
+      "bytes": 117794,
+      "sha256": "920e8653051c8f33bbe6aee326146725d7e39827f79b47781b22e288df43a1bf"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/iron_giant/Animations/AN_iron_giant_Locomotion.uasset",
+      "bytes": 235747,
+      "sha256": "f069d97c59ffec5e77c275065567aa078ff57f7f74a265fbcab9d13f5cd1a812"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/iron_giant/Animations/AN_iron_giant_Status.uasset",
+      "bytes": 50318,
+      "sha256": "85433191fede553315c0944ca3a3b53465bee5120333b733527c8890372874e9"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/iron_giant/Animations/AN_iron_giant_Turn.uasset",
+      "bytes": 55199,
+      "sha256": "04ad1ee471120a7d80f12b77427247b1b1676e9e6428d20813e6c4abb3727056"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/iron_giant/SK_iron_giant.uasset",
+      "bytes": 25923333,
+      "sha256": "e03228269e55db5e6b928d49837476bcb8a55a13746241f276fc29db96256b50"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/iron_giant/SK_iron_giant_PhysicsAsset.uasset",
+      "bytes": 5260,
+      "sha256": "3477ae459bfa09a67062e06f0b1f3ffe0cee4adb8d0880f7e19819bcc7282cb1"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/iron_giant/SK_iron_giant_Skeleton.uasset",
+      "bytes": 8848,
+      "sha256": "4a39eddd97e9ba707ee4529709000942ffb186c31ccda3a6b85a58537c7c8b08"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ironclad/Animations/AN_ironclad_Acquire.uasset",
+      "bytes": 44500,
+      "sha256": "53b8e5d55151bb256f7639909901337075544cd27607bcb3b7b97aba9aeecf7b"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ironclad/Animations/AN_ironclad_Attack.uasset",
+      "bytes": 75950,
+      "sha256": "5710d21c00565144e45a529eeb801e52225df34031ce74cd62f17b357160494b"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ironclad/Animations/AN_ironclad_Death.uasset",
+      "bytes": 134088,
+      "sha256": "22c70876de9eb321fb8c31a560db69aed7b74b67afaa0f54170ae2aca5cecb55"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ironclad/Animations/AN_ironclad_Deploy.uasset",
+      "bytes": 46446,
+      "sha256": "c8ca126ad3cc6f5e4f223feb42ec9e4b52c6916122639bd0d933c32e85ce4929"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ironclad/Animations/AN_ironclad_Hit.uasset",
+      "bytes": 42332,
+      "sha256": "26304dbb2a825ed82597fce95eafd1163abfabc60b96653a0c358304338e50e4"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ironclad/Animations/AN_ironclad_Idle.uasset",
+      "bytes": 64869,
+      "sha256": "7d638d1055325c218b8ea643d4cda3cd7409e6d693c5110e90a996bf5887737a"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ironclad/Animations/AN_ironclad_Locomotion.uasset",
+      "bytes": 117510,
+      "sha256": "b8fdeefb6fa8cdea7cf5d7e3b44564fc484d59c5e8cc1a85bb7d9cc3dc7545f7"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ironclad/Animations/AN_ironclad_Status.uasset",
+      "bytes": 51406,
+      "sha256": "71cef7037d45d5725092d7dc651e148861dd99942400457b6665ed31028f7e58"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ironclad/Animations/AN_ironclad_Turn.uasset",
+      "bytes": 49442,
+      "sha256": "b88728c602836da683182f6c23d3e223d766bc170ebb4415d53082f7431145d0"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ironclad/SK_ironclad.uasset",
+      "bytes": 12859527,
+      "sha256": "2e3a7432b506bec8a03f031ab83b7f46fa566ddcd35f5011e1d1e6bfe72f8b1c"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ironclad/SK_ironclad_PhysicsAsset.uasset",
+      "bytes": 8478,
+      "sha256": "51d3fbf39bff890498ed51310bd9d00fa0fb6979ff967c73451d4e78b5596a4e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/ironclad/SK_ironclad_Skeleton.uasset",
+      "bytes": 7490,
+      "sha256": "9e61ca8c28132b733865d6c2a6b616de2bba7282323c69ecf1a917a79d31116c"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/mini_stampede/Animations/AN_mini_stampede_Acquire.uasset",
+      "bytes": 42147,
+      "sha256": "d94154bdaa5211e023605385b4714ed8d26ebed8105971713973595dd160f83e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/mini_stampede/Animations/AN_mini_stampede_Attack.uasset",
+      "bytes": 59357,
+      "sha256": "8b68ea2ec9cc933893b50376257460b7049cd4a6088f51a356d550da08693b64"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/mini_stampede/Animations/AN_mini_stampede_Death.uasset",
+      "bytes": 139799,
+      "sha256": "2868ef1c5493e7ad34bdedb2f078a0163b4b032fbe8b45c30cec86b92868e4fa"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/mini_stampede/Animations/AN_mini_stampede_Deploy.uasset",
+      "bytes": 48221,
+      "sha256": "682a26560b44c96026e7f0ebb9df9b6f8867d20a35f3eb673aa1f4c3de1102df"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/mini_stampede/Animations/AN_mini_stampede_Hit.uasset",
+      "bytes": 44459,
+      "sha256": "7cb25e879d1ab1a0f718ddb50f114742862a44fae00dc1b451fa98dc5987b0b1"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/mini_stampede/Animations/AN_mini_stampede_Idle.uasset",
+      "bytes": 119924,
+      "sha256": "05364f26b70a17e46525dd16358cf0e4fdd2cf6af68d3848796d6c39f182d2a7"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/mini_stampede/Animations/AN_mini_stampede_Locomotion.uasset",
+      "bytes": 125781,
+      "sha256": "31036ca91e2d4e31ab8b8ba181df98d87f2a768462a6f72010b05412e85eff4a"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/mini_stampede/Animations/AN_mini_stampede_Status.uasset",
+      "bytes": 68640,
+      "sha256": "999d2b4ac72fc4442a705d7115df6603f172681d72671a1d2dd1194c45a12a32"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/mini_stampede/Animations/AN_mini_stampede_Turn.uasset",
+      "bytes": 46033,
+      "sha256": "3ad1e29636fef055f300f5451501f761183e536cfdb487934c784c776e27226b"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/mini_stampede/SK_mini_stampede.uasset",
+      "bytes": 13765107,
+      "sha256": "509ee87b5e04ad47dc17f315a367099de9b9c8d908340dcf6442777d2f41b9a0"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/mini_stampede/SK_mini_stampede_PhysicsAsset.uasset",
+      "bytes": 7023,
+      "sha256": "dac8ccbe537dff83aa7c08601682ec39d7683ce8a834418af5a3b3efa609aab9"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/mini_stampede/SK_mini_stampede_Skeleton.uasset",
+      "bytes": 8054,
+      "sha256": "1de73f258ab67f6ff1f7e15a2fa3d078d6beb52b71b07ec07389c5c7960c870b"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/pulverizer/Animations/AN_pulverizer_Acquire.uasset",
+      "bytes": 25251,
+      "sha256": "e97ffe85ee2f49827909f9d95d5be225d1a30803a24ff422b578f7dd49c67038"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/pulverizer/Animations/AN_pulverizer_Attack.uasset",
+      "bytes": 27741,
+      "sha256": "36049e109e09e9f23e972fc5e687c9bb3ff018daf3a41accce3c73c570194282"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/pulverizer/Animations/AN_pulverizer_Death.uasset",
+      "bytes": 98295,
+      "sha256": "464ec8cc2156a45fb82f1a4a9c46495dad304ca223ef2d7348ca6bac9f33b7e7"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/pulverizer/Animations/AN_pulverizer_Deploy.uasset",
+      "bytes": 25981,
+      "sha256": "d0abe0045da0fd7f3a25b7a93137b76580d57f1248a05284775769d7c26ff5c3"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/pulverizer/Animations/AN_pulverizer_Hit.uasset",
+      "bytes": 25067,
+      "sha256": "e97e865b7533536158d7f06f58f6bb63c236104a4b01858dbe06536407a73bbc"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/pulverizer/Animations/AN_pulverizer_Idle.uasset",
+      "bytes": 36852,
+      "sha256": "70adf890c6c82f37c26f6f2a74c3ffc17428ba275299a399b558f014975b63d2"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/pulverizer/Animations/AN_pulverizer_Locomotion.uasset",
+      "bytes": 36888,
+      "sha256": "73b45ba23219159b76a2011ffe7a77b0c7697d8a8a40e5e0c6e25f3bf4cf8540"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/pulverizer/Animations/AN_pulverizer_Status.uasset",
+      "bytes": 30464,
+      "sha256": "b5986af0a75dda368b21dda93d48e6625d3585c3e70390589fde57886e857f82"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/pulverizer/Animations/AN_pulverizer_Turn.uasset",
+      "bytes": 25809,
+      "sha256": "c7cebd03d2b84eb626301e536b65bfe3146f69df0e70d2cebb0f1929e1a1f43b"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/pulverizer/SK_pulverizer.uasset",
+      "bytes": 18641348,
+      "sha256": "ad08f0f480ae9b5113c9a30421a519ee7747848729524d4aa929b20b49c458a9"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/pulverizer/SK_pulverizer_PhysicsAsset.uasset",
+      "bytes": 5169,
+      "sha256": "0feb8b070a003418c7aa195a840fa35eb5d0855788abc19e16fcab68e7a4d188"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/pulverizer/SK_pulverizer_Skeleton.uasset",
+      "bytes": 5151,
+      "sha256": "f10052e379265ab9ff4322f879455b0b61a100d9bba5a5a77219830f2745a0bf"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/Animations/AN_rambeast_Acquire.uasset",
+      "bytes": 48804,
+      "sha256": "2628c74b9c8d8b453a2c308ca69f6a82c424dd7ab294d5d69c16a498e5da0dd2"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/Animations/AN_rambeast_Attack.uasset",
+      "bytes": 67454,
+      "sha256": "ddf6fbd0c10e5c4d36de1bb645e4b90567de5a1d60b011b47082262c3154f30c"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/Animations/AN_rambeast_Charge.uasset",
+      "bytes": 129758,
+      "sha256": "bf64faf7ee6e703e27f76b807a177d62feaba17f83be94ff8f1100e16cafc1e8"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/Animations/AN_rambeast_Death.uasset",
+      "bytes": 92312,
+      "sha256": "d001cbc70e8cfa634cc394f716696b0e3e4ad800b746ad8f43dafce5a5b6bbc6"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/Animations/AN_rambeast_Deploy.uasset",
+      "bytes": 51902,
+      "sha256": "011ec797a86a9b1124bf653263ce76e1a6a2b28fc27f62648e93924b002f88b0"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/Animations/AN_rambeast_Hit.uasset",
+      "bytes": 46252,
+      "sha256": "566ddea9d3c4e7f79fc83f1438f4681307e521b629774041cd5e982f290390d9"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/Animations/AN_rambeast_Idle.uasset",
+      "bytes": 58197,
+      "sha256": "f8d1bb0cda474f64dd3b46f7613c12dab6346ff12870c04369ccc648d7e07eb7"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/Animations/AN_rambeast_Locomotion.uasset",
+      "bytes": 129782,
+      "sha256": "47a224d95199aacb007ff2bcb9ae0176dfef1b305bd7b93f4dcdb6e48ba0faab"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/Animations/AN_rambeast_Status.uasset",
+      "bytes": 58014,
+      "sha256": "01d5fea41a84fb21ddf3ac636266daef0a131dc5f44ae34ee319632f35c20af3"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/Animations/AN_rambeast_Turn.uasset",
+      "bytes": 59410,
+      "sha256": "dd2e4f3c47d11c221be26642a01f0cda7ebb62794863a0f8e160d3d614673132"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/SK_rambeast.uasset",
+      "bytes": 15783626,
+      "sha256": "7419d8e48d94ebc5b4b0cb203cafecef72a9cfcab01af194aea926fc813bd7d2"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/SK_rambeast_PhysicsAsset.uasset",
+      "bytes": 13665,
+      "sha256": "97400ba9c810a24da9e660a6086e209ce76f0318393f6887c8c3f00b1927bbf3"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/rambeast/SK_rambeast_Skeleton.uasset",
+      "bytes": 7827,
+      "sha256": "509d96b194ed88ea3c6759aaefcd73948cdf313d846c97993ebb5881d073a5e3"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/Animations/AN_sky_manta_Acquire.uasset",
+      "bytes": 57450,
+      "sha256": "f10eaf991359ffe45444d710e248a3bcdcf2ec9b76a210c14c9925e6f6f6445d"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/Animations/AN_sky_manta_Attack.uasset",
+      "bytes": 77412,
+      "sha256": "b598d791242a9f0b72568af187fba3993f9d2485a318f3a98db2bb8c24fe1d43"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/Animations/AN_sky_manta_Death.uasset",
+      "bytes": 119454,
+      "sha256": "0280b44cdaf74f4728428388a9a5331adc8a891546709df70e31a1ae436bf820"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/Animations/AN_sky_manta_Deploy.uasset",
+      "bytes": 64420,
+      "sha256": "d605003a5925bc05324ba1d2f03ea48b3e142df5870a295e6f7548c33a051cd0"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/Animations/AN_sky_manta_Hit.uasset",
+      "bytes": 52114,
+      "sha256": "ae56ea69477cc714d5fbe25d522fb89a986f7b8f7d2d82d49fb37935079e6e8c"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/Animations/AN_sky_manta_Idle.uasset",
+      "bytes": 112091,
+      "sha256": "83eb3f6270cc86759f76b7d8cfa0678eb72f5a0daa9e83a49ad8688ec87f157e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/Animations/AN_sky_manta_Locomotion.uasset",
+      "bytes": 69884,
+      "sha256": "8285f95aee88afda7b9979e507fb21abeed65d5c05858da38571ce6dcff10476"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/Animations/AN_sky_manta_Status.uasset",
+      "bytes": 77412,
+      "sha256": "e34ac3fd27c1e272c96af3e3247ff581960bc289aa0b6535f1afb9deef739a10"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/Animations/AN_sky_manta_Turn.uasset",
+      "bytes": 70424,
+      "sha256": "6ea4dc1273036d2afc61b45056d25ec633b8a0c8bb81ff73cf617e3dd7bd0b17"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/Animations/AN_sky_manta_WingCycle.uasset",
+      "bytes": 89430,
+      "sha256": "70086694e6f5d4b2b7213a43c4cd199796cf2f627263944d25e54487999099a2"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/SK_sky_manta.uasset",
+      "bytes": 6846073,
+      "sha256": "57ca8d3ce1bd6f6934cb570c72aa56381ea3b64fd6f270e2d4097fc59e538e25"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/SK_sky_manta_PhysicsAsset.uasset",
+      "bytes": 6988,
+      "sha256": "8664d82794c2b4b72dbf968d00e0757c337114478d851f63ee483d63e89717d2"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/sky_manta/SK_sky_manta_Skeleton.uasset",
+      "bytes": 6141,
+      "sha256": "a57a27af0b48f232aeae698431ed383ef4093c07e8624b3f2725113e257bfbcc"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/stampede/Animations/AN_stampede_Acquire.uasset",
+      "bytes": 42062,
+      "sha256": "1b839a6beb8677f40330dd008dcdd7cdf5e216dc756eb5b3d64325518cb5806f"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/stampede/Animations/AN_stampede_Attack.uasset",
+      "bytes": 63368,
+      "sha256": "9d85a80e0a212a2e0d6fed1f1fa00c1bcfc91ee094423d718ea05dfd65a89330"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/stampede/Animations/AN_stampede_Death.uasset",
+      "bytes": 131874,
+      "sha256": "1739350ae95bb6e0f2e7721de1be9b901d4fb70c88b6406c3f49b68bff20a513"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/stampede/Animations/AN_stampede_Deploy.uasset",
+      "bytes": 48136,
+      "sha256": "a3a565e79d31feaa6d177fbb1ca2afde010dfbe3fb0509d5cc70af45328a63c8"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/stampede/Animations/AN_stampede_Hit.uasset",
+      "bytes": 44374,
+      "sha256": "78ca7efd32267b2cecb5f1bce7e55850ab4e70a6311b85cd25852c5510bae582"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/stampede/Animations/AN_stampede_Idle.uasset",
+      "bytes": 119839,
+      "sha256": "ed6b0fb91fae3b068036336411862ba956e880bded9264fc322cff89d247420b"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/stampede/Animations/AN_stampede_Locomotion.uasset",
+      "bytes": 134016,
+      "sha256": "cda6ce857a00e1021a01ec5d22f7d3f6c3d89c3cc036ff0a0b5d107a61efa563"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/stampede/Animations/AN_stampede_Status.uasset",
+      "bytes": 68555,
+      "sha256": "aa1b439e069be0c860f500ce15e826822ec56195883128dd7eb1150d609f420d"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/stampede/Animations/AN_stampede_Turn.uasset",
+      "bytes": 45948,
+      "sha256": "00f944b63d466cb0691ec47b526c9973af599c4ccfe13954224d84ed75a17b47"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/stampede/SK_stampede.uasset",
+      "bytes": 13874921,
+      "sha256": "09d7778786bf6866997d558731c0bc4fb423e57470c1663b8c9a0888fdfd0b86"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/stampede/SK_stampede_PhysicsAsset.uasset",
+      "bytes": 6963,
+      "sha256": "bf42e263f9132c33f88dd7e263b58b9eb32a8a8fb66c1cf6c17f6b381213d92c"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/stampede/SK_stampede_Skeleton.uasset",
+      "bytes": 8014,
+      "sha256": "cdf6e354070e68b3d137d44a62a5b6bba6d1912c94cead32f1120f932d7ee5b8"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_Acquire.uasset",
+      "bytes": 57484,
+      "sha256": "6bf1d6b3b4294a5455f24f5fdfe5928e16a1860c089680dbc7195392b4bbf8ef"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_Attack.uasset",
+      "bytes": 77446,
+      "sha256": "0930fe120f60818de689aa56aaaa0444d6356cffcb762ad235ef004d7573811d"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_AuraCharge.uasset",
+      "bytes": 96734,
+      "sha256": "98197f46ad7d85dc1e54630f6af27906c00155d0c62f152aa34c3633a3440155"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_Death.uasset",
+      "bytes": 119488,
+      "sha256": "02bc89765a52ee61503140572d3c720381e1f6dfcea3c6532509371b480a74bb"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_Deploy.uasset",
+      "bytes": 64454,
+      "sha256": "e73117206cb0b7406a86b8563c1b1a5008d95926dea13c1f72239f9e6c0e1965"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_Hit.uasset",
+      "bytes": 52148,
+      "sha256": "adbb818a9e07231de75f278af625dae460ffe6eb97859602579fc09a0c757080"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_Idle.uasset",
+      "bytes": 112125,
+      "sha256": "3a4aee540df451fcd6de1c4da9688a0306508490f2bdc8ae39a0acd8cc359422"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_Locomotion.uasset",
+      "bytes": 69918,
+      "sha256": "bd9d2c063131ea86a0e4a402f9623522a3e1fd94d28b090cf3e194a6dc7e24a7"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_Pulse.uasset",
+      "bytes": 54112,
+      "sha256": "3ac183b77c44a9a3f45b40405c439d0d37e465987064b9710faabc0f7117cd7d"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_Status.uasset",
+      "bytes": 77446,
+      "sha256": "577ed2efd127929dbc56ddfeff2bce0f4ad6d971fbdeb7bd38bf87e3662ca6a9"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_StunDischarge.uasset",
+      "bytes": 54160,
+      "sha256": "2b9ec2fc96f93dc9e50da8c6fe8219efebadc3d5b635a7fa2c343fb77fadceca"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_Turn.uasset",
+      "bytes": 70458,
+      "sha256": "32137d0ed9ddfaa3aee9a35143cc8a4945e9b1e300609bdf55b2333e182b6b2c"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/Animations/AN_storm_raven_WingCycle.uasset",
+      "bytes": 76088,
+      "sha256": "fca9de42e8f3da8f2e1d4826386e3b4c894f048af94435b96d3747f7490e2430"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/SK_storm_raven.uasset",
+      "bytes": 9645575,
+      "sha256": "2626ec779395006a96f72ee9372e50e56cf46b705640a7fc9538a64ddda90836"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/SK_storm_raven_PhysicsAsset.uasset",
+      "bytes": 7012,
+      "sha256": "91c97df221a3696c761c2a806765e9dbd0a096f1b27de96b219c44961a155f92"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/storm_raven/SK_storm_raven_Skeleton.uasset",
+      "bytes": 6157,
+      "sha256": "81ba98a9c297bb4af575e973d6e613c5e7748f193c10aabd8b09624d3a4342c6"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/Animations/AN_tower_archer_Acquire.uasset",
+      "bytes": 50802,
+      "sha256": "5314c653006fec29b6d369e32786f599a537a4f3ec8c4910e069641ec0296218"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/Animations/AN_tower_archer_Attack.uasset",
+      "bytes": 109868,
+      "sha256": "c68e9699b33dd1d4468d97117b7e6dab04fb9a424ae610507cb52602b6238dd8"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/Animations/AN_tower_archer_Death.uasset",
+      "bytes": 147302,
+      "sha256": "c1018b219b35f5589678bc195220f03206d40f563d91d1b54b27a3b0ef18f47e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/Animations/AN_tower_archer_Deploy.uasset",
+      "bytes": 51276,
+      "sha256": "0377c4fbe2c35dafcc61dce2359ff37547ce2f08f99b09e4e69057689548d858"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/Animations/AN_tower_archer_DrawRelease.uasset",
+      "bytes": 117386,
+      "sha256": "64a5dc9ec0b9152ffb217853a4186cd904e0dada1f00176b62935a69d5b1898c"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/Animations/AN_tower_archer_Hit.uasset",
+      "bytes": 48122,
+      "sha256": "edb8c165e2295e15d795b0d33b8bd6769e26cb214012cf13e5ff44996e52fa97"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/Animations/AN_tower_archer_Idle.uasset",
+      "bytes": 81923,
+      "sha256": "e361a2adcef1fc5db3ed3346d834e2efb27c1b15852b73c8bf6ce75bf78487c4"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/Animations/AN_tower_archer_Locomotion.uasset",
+      "bytes": 126884,
+      "sha256": "3d807c44878f67384005b83d49e7817332e6f6388a25e7df486b17fb60344cf4"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/Animations/AN_tower_archer_Status.uasset",
+      "bytes": 60780,
+      "sha256": "4c1020528a8cbfbd3525c3ac237a8d7050d6d71c6880f966b255d66fe4509535"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/Animations/AN_tower_archer_Turn.uasset",
+      "bytes": 57280,
+      "sha256": "cc880c37841e9bcec9b0f4289166dfe8b5102f497ce3c9c1dbf46b27df587d9f"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/SK_tower_archer.uasset",
+      "bytes": 11251809,
+      "sha256": "30b488c01cf64553a9ebc932bd27eb88900898e381673477709d45516895e07f"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/SK_tower_archer_PhysicsAsset.uasset",
+      "bytes": 6871,
+      "sha256": "653088b26f27c29016c0c28efb6ec6ce4b5c87a468a00d4f233953cac60f22ef"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/tower_archer/SK_tower_archer_Skeleton.uasset",
+      "bytes": 7928,
+      "sha256": "2f2c900643c1c692caeb93174c27b731146066452445dca28b4b01b8be05eb1f"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/Animations/AN_twin_blades_Acquire.uasset",
+      "bytes": 42555,
+      "sha256": "318e389c7476f0b5574c6a3fadd9dd783c9cda74ef80b2498c16669678eb6b23"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/Animations/AN_twin_blades_AlternateStrike.uasset",
+      "bytes": 117163,
+      "sha256": "31ee6e752e6db148fe0ec597dc54b63664de65303bfc48dab16e1e94c471e7f1"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/Animations/AN_twin_blades_Attack.uasset",
+      "bytes": 88341,
+      "sha256": "b839032bce15fc8eb163c1c4b22b28d5f3efda8ff28cf058759c9c7343575972"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/Animations/AN_twin_blades_Death.uasset",
+      "bytes": 127567,
+      "sha256": "2636c8230693136557ac065f37c5689d19837e1c6a9f171d529eb126f8b99e9f"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/Animations/AN_twin_blades_Deploy.uasset",
+      "bytes": 44117,
+      "sha256": "adfe32f07a22c5de4148a8a8a1dc2a1713ef73fb0d0a098529ee1ad3d311cb76"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/Animations/AN_twin_blades_Hit.uasset",
+      "bytes": 40515,
+      "sha256": "9332e3d9f411966586abde48bde9e43eb3b46e925ada3d6a384215f0af7c9a7a"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/Animations/AN_twin_blades_Idle.uasset",
+      "bytes": 60236,
+      "sha256": "b1b817fb98cb771fc514ba9ad10108b0be3cbc52886bf9438885ac7cadc808d0"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/Animations/AN_twin_blades_Locomotion.uasset",
+      "bytes": 114797,
+      "sha256": "dff9794bbf5feb994db3afefd1d4b09483bf0e0bdf6e3595a94b88e9eb1712b3"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/Animations/AN_twin_blades_Status.uasset",
+      "bytes": 48693,
+      "sha256": "7354ab59a82d9d9e65cc2cb0a8ade982eafaf4018b85aafebd4aa478ac52bd79"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/Animations/AN_twin_blades_Turn.uasset",
+      "bytes": 47113,
+      "sha256": "18e4e8c3259733dd899ad4932cd3495353b36d4d41f7816cbf92ecdda5b56412"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/SK_twin_blades.uasset",
+      "bytes": 12664180,
+      "sha256": "8f9661f8c4671c699da114d37fffd689bf505a3aaf2be202a77fcc9d39825232"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/SK_twin_blades_PhysicsAsset.uasset",
+      "bytes": 5182,
+      "sha256": "d4b556e97155c6f2c5b3eb9049649b89ca34f4ffe649fbb93ff153bfb04974c3"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/twin_blades/SK_twin_blades_Skeleton.uasset",
+      "bytes": 7313,
+      "sha256": "549ebad1e23e9f997014032264c47da1744adf28e8b36ddd1128b56611d395c2"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/Animations/AN_vampire_bats_Acquire.uasset",
+      "bytes": 57501,
+      "sha256": "66fc46d1bd45e777abcfd69227b7bf0b99b6b1e4c8f664a92c0cc526733c33f7"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/Animations/AN_vampire_bats_Attack.uasset",
+      "bytes": 77463,
+      "sha256": "3639537055a9b3fb33db9c80e8b35cddd70ec1a3be631234ede9cbf7d20c5e3a"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/Animations/AN_vampire_bats_Death.uasset",
+      "bytes": 119505,
+      "sha256": "a6772ab89c786385a4ac5a813d33dbd54cc29667893f5524a0200ded85ffa1da"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/Animations/AN_vampire_bats_Deploy.uasset",
+      "bytes": 64471,
+      "sha256": "7d14207a64c1d4786e4a77076ba0108b5a917815e530323fa652a4cd30328ff0"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/Animations/AN_vampire_bats_Hit.uasset",
+      "bytes": 52165,
+      "sha256": "d2724cfb7e4932d3815354d384bbed55b24ad7b07a5cd58ec08e1eda8a081abf"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/Animations/AN_vampire_bats_Idle.uasset",
+      "bytes": 112142,
+      "sha256": "dce77c5afe9761dea433b5ca30d9b21e12d2882df3368a6d1c45be17c46b447d"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/Animations/AN_vampire_bats_Locomotion.uasset",
+      "bytes": 69935,
+      "sha256": "5895a61c8a73451e4cd1a325e0840867341201b70c23fe4078e02f4c8590ade3"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/Animations/AN_vampire_bats_Status.uasset",
+      "bytes": 77463,
+      "sha256": "810629b783ad88301cb39a4514ba913f34eed9e14639cd65ab8379cfbde014d8"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/Animations/AN_vampire_bats_Turn.uasset",
+      "bytes": 70475,
+      "sha256": "5eaffe73d616eabe5c3b924191910929424440e3255d09178cd3b347229be395"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/Animations/AN_vampire_bats_WingCycle.uasset",
+      "bytes": 49225,
+      "sha256": "815efb10e8b0d1630ecb0300e5b66d2c152c2ad8e8f994c6e5066c15fff06c50"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/SK_vampire_bats.uasset",
+      "bytes": 5629397,
+      "sha256": "970817c1a9f4dab7649b72ae3ef4ab84a1e5f6f0d12af381eb84275a07f37e15"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/SK_vampire_bats_PhysicsAsset.uasset",
+      "bytes": 3184,
+      "sha256": "497743bdff02ed8667b8a52842279f2840b50d3c8fc5173419ec704cf0dc77fe"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Characters/vampire_bats/SK_vampire_bats_Skeleton.uasset",
+      "bytes": 6165,
+      "sha256": "4f4c7fa94220553d78470ad18f5c8647462079b21c704d252561ef526189ddc5"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Entities/DA_bone_warden_skeleton.uasset",
+      "bytes": 8722,
+      "sha256": "1006fa4d4446fd45fc77d579ebe08b2d630f0e20a8900546a412de17a85bef72"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_arc_projectile.uasset",
+      "bytes": 57051,
+      "sha256": "17528a647e3ceff7157943325ac096c9d617cd6e493b8b4d1a71fc0a730d7b03"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_archer_tower.uasset",
+      "bytes": 774565,
+      "sha256": "582dc9bd462925f54d62229ab311e4f4549f320ee41c53670884b3046e16caa5"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_arrow_projectile.uasset",
+      "bytes": 91032,
+      "sha256": "74b7f027a02346e706c86684b4100ce822bd833436842b5e5ff5784310dca8d9"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_bank_segment.uasset",
+      "bytes": 187391,
+      "sha256": "81f9a2ce785de8432d53ae0233871b39e8e4603fad2bd1f5004aa63ea7b5b4da"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_banner.uasset",
+      "bytes": 88769,
+      "sha256": "08ef20c0891ffd058f4c472f63f019331c993283e7186d022f03dac2b9b51acf"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_boundary_stone.uasset",
+      "bytes": 86381,
+      "sha256": "0664bbbbbc4d6519c04a27bff626355f6fb080109a495920a62eff4cf6e3d4f6"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_bridge.uasset",
+      "bytes": 469852,
+      "sha256": "5ed8773c7a578f724582ab2aa950e91b3423e19f9dec477170bfe92199bd57e3"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_bullet_round.uasset",
+      "bytes": 189841,
+      "sha256": "ffa74fc5c0bd27e33def2c0c2e3eae8321bd9a31ce6a88182cc72b6668b2ba91"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_crystal_plinth.uasset",
+      "bytes": 74837,
+      "sha256": "48855282ed088814488c532599efe15fd236140018fa6cc97a7a98f89dbf4091"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_distant_island.uasset",
+      "bytes": 95104,
+      "sha256": "753159b5bf7c81e4b353e3cce0b2bdaedc0870566c5d66146806430bf56e327c"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_floor_tile.uasset",
+      "bytes": 110057,
+      "sha256": "14f4d58a605ccf1da558fc010c6b8388ba581e0fad0115904db06e4f7853a060"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_grass_tuft.uasset",
+      "bytes": 85022,
+      "sha256": "9bd3c7e404ae2bc15c7099b5e25651beb8941c26d2be4e468ad08bbb28e5d553"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_guard_cannon.uasset",
+      "bytes": 210774,
+      "sha256": "0efba6cb6d3a2b83b3d57811937cc4201b9f541b58c4007a59ebc6684bde24f2"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_iron_shield_fragment.uasset",
+      "bytes": 91812,
+      "sha256": "1c6a1f2e8265ae65d04173502d66e7c064e81ee62b193252fd1d1d3db49fd501"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_lane_paver.uasset",
+      "bytes": 61984,
+      "sha256": "dded8cfd3fc996477d1155bcf1f26b6215bf1c34092ec4382c1986e7358410b7"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_manta_projectile.uasset",
+      "bytes": 55312,
+      "sha256": "3d9df53dbdcb0b1e91281de032f9f1919eee7ad5989ff8fa0cff7c5035758174"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_meteor_shard.uasset",
+      "bytes": 62994,
+      "sha256": "717a97a09820e62df5b180f598fd7a4c45e91f39d477a35dd75e77ba4c62d99f"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_nova_flask.uasset",
+      "bytes": 354327,
+      "sha256": "ffe5062d9bcc07e0593f0c58ce3b72b03acb0396d79535d66281867f2258a232"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_projectile_trail.uasset",
+      "bytes": 49127,
+      "sha256": "9c32e7a691ee83ab27134ed747773b8096f56e70615110d00e2559bc3f9fd38f"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_ruin.uasset",
+      "bytes": 154757,
+      "sha256": "cfcd697e8b7432f6d7dd1a1ba6fb1882f99dc37ef05d5a6e8c86c081287e76be"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_shadow_surge_ribbon.uasset",
+      "bytes": 47799,
+      "sha256": "e6c2b97115559df1a39ded1523a10a2cd6c00ab5888f3f75f6d76aff0bf8c832"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_shadow_surge_wisp.uasset",
+      "bytes": 59357,
+      "sha256": "e8d8962bb8b412ea9344a9bde83948b696b100c5178151af9e776015e8276485"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_shrub.uasset",
+      "bytes": 125839,
+      "sha256": "e77b65cbfddfe6ac205ea1e228e66cf88ebb0417fe08d8e514a8cbb88ccb81bf"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_storm_projectile.uasset",
+      "bytes": 61062,
+      "sha256": "dff552cc83c05ceebb0c811b48e1ff4f47dcc5043f043ed751d1d327bff38b2b"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_tower_core.uasset",
+      "bytes": 1912343,
+      "sha256": "9ce203bb0faf606d171a09e487c8bf3e8ce04b2a4753fe2b2d3cb0de3bf51967"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_tower_guard.uasset",
+      "bytes": 1329619,
+      "sha256": "b0aad19730dfc2ba4fe1ea8ce09c9f7e7813245db9c203a71ac4609fa3a2a7d4"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_tower_rubble.uasset",
+      "bytes": 359299,
+      "sha256": "a6ed6f8585c8dd2c79caabf7f8245d5921e00b3d2038ceecba6801c8cb8fabd7"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Environment/SM_tree.uasset",
+      "bytes": 445883,
+      "sha256": "a039655ce4e8758db4bdfeeb1d1201258bea2ab01eebdd9d42bb2f13427ae785"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Fonts/FF_BarlowSemiCondensed_Bold.uasset",
+      "bytes": 172495,
+      "sha256": "58097e672ffbd5ee709ee330fcd12d3f6eec2b4cb33573932907ce4e7d5b7951"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Fonts/FF_BarlowSemiCondensed_Medium.uasset",
+      "bytes": 165895,
+      "sha256": "361ba07fe4743cf97d397fe0d3646663c73a7f9f336ab9a85b7f0594a1cf2656"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Fonts/FF_BarlowSemiCondensed_Regular.uasset",
+      "bytes": 166073,
+      "sha256": "40d0884510c106e6a7fed08d020bd2272a76cb047110f659cfc0adf2dda949a5"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Fonts/FF_BarlowSemiCondensed_SemiBold.uasset",
+      "bytes": 170415,
+      "sha256": "cbd822c6463565845bbf5f42db4c7de08fdb1346fe0d222aee49d92cdac6e82d"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Fonts/F_RiftUI.uasset",
+      "bytes": 3977,
+      "sha256": "79d4556b4434781bc969a82c75c283ffbe74229f151f2a240641e4ee04d713ea"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Maps/Arena.umap",
+      "bytes": 8395,
+      "sha256": "d93889e2e85c7da9fdc89a61ac65803517643ef672fbad61224914c737d54777"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Materials/M_RiftArena.uasset",
+      "bytes": 24306,
+      "sha256": "e9d82b8a0272753605ebe6879eb9ce6fa04cfd74ec1c3bae1a8a1a2614d661b2"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Materials/M_RiftCloak.uasset",
+      "bytes": 12174,
+      "sha256": "57a177aa1aae42350c5e5f5670426c150bffcfb74ac4412393a02c7e81a195fa"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Materials/M_RiftExpansionAscensionGlass.uasset",
+      "bytes": 25996,
+      "sha256": "5c4c4d7fceabc0cd68bcc7606220b4bd9ab66f046a9cd7fe154a1ce663e9ac86"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Materials/M_RiftExpansionAscensionGlow.uasset",
+      "bytes": 25343,
+      "sha256": "3697f77f2b6c0254ddeb7e9b130745741a74b1b28fb4c21cceb489cc3da7d17c"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Materials/M_RiftExpansionAscensionSurface.uasset",
+      "bytes": 24587,
+      "sha256": "b18c5f5832e7093543b0d94010a5c762d076fa960aacf3e22829b5c7baa06283"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Materials/M_RiftExpansionFX.uasset",
+      "bytes": 13879,
+      "sha256": "bc27bd96b632eee805c058195df8d2fc3e1f829b023258c0dc6861d8a43188d1"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Materials/M_RiftExpansionGlass.uasset",
+      "bytes": 22904,
+      "sha256": "efe152951981c846891e7c9c58bed7858c4be84119eed25bb86857d1fce5531f"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Materials/M_RiftExpansionGlow.uasset",
+      "bytes": 25298,
+      "sha256": "6e48cb879187ab1f35b2d707052761e7a0ba8f423057f091c102c509ef52c694"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Materials/M_RiftExpansionSurface.uasset",
+      "bytes": 24542,
+      "sha256": "759abf3d3e98d6853c18e6fd761dee7df24b8b5b706173e45094a04573227349"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Materials/M_RiftGlass.uasset",
+      "bytes": 20200,
+      "sha256": "c85469c31b3ca729cc38fe66981951d490ce8766204bfad2c40dd2fb70b25386"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Materials/M_RiftGlow.uasset",
+      "bytes": 25065,
+      "sha256": "64b6981abf0cdad3da18e80f082dc1e4b8583420f72ebaf34faa8995f2668165"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Materials/M_RiftGroundRing.uasset",
+      "bytes": 8027,
+      "sha256": "f04e7d18445b74ad95ccd98da60c18195e16b91fbc92fe3a8a45084c6491d493"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Materials/M_RiftParticle.uasset",
+      "bytes": 12813,
+      "sha256": "4c3c78263a77a0fc1343ab758dbde6d5d8abc504824efca729e01ba66f3a5242"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Materials/M_RiftPlacement.uasset",
+      "bytes": 8051,
+      "sha256": "671a79ea5aafcf0ccb7b07fd66da6d66f78a8600a611f6347ae1e87e9d4412c3"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Materials/M_RiftShockwave.uasset",
+      "bytes": 17473,
+      "sha256": "52430c18ba588352202a398680ecaba091ad91da1a1c3326b9191ca5b605af61"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Materials/M_RiftSurface.uasset",
+      "bytes": 21852,
+      "sha256": "2e3b7e5f0edc2d1e43de113b8afe6bd302ad9a3e44cff262c7ff2277c26bd57e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Materials/M_RiftWater.uasset",
+      "bytes": 7249,
+      "sha256": "4842c9bebcc06c150222c52c5f937c16d829a640068562065c176195343725ac"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Textures/T_RiftAscensionAtlas_BaseColor.uasset",
+      "bytes": 779266,
+      "sha256": "4c5af44fc6491c9c75ecbe9b85e5497d2a2e2fbe995a822319d4f05d6e8b589b"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Textures/T_RiftAscensionAtlas_Normal.uasset",
+      "bytes": 62747,
+      "sha256": "6771250bc8dc3e0a8a49a9078cada45db0fab00c15483234c78eaa8dcaf14444"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Textures/T_RiftAscensionAtlas_ORM.uasset",
+      "bytes": 1078282,
+      "sha256": "1e2e9a1e36a557a67861cb97de8d060e780c440a40dd3347138d62fda9b350ee"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Textures/T_RiftAscensionAtlas_TeamMask.uasset",
+      "bytes": 12602,
+      "sha256": "316beb6a984ee10685fdd9570a0db85b2def6f5bffcd2d224ba3cfba983ab7cb"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Textures/T_RiftAtlas_BaseColor.uasset",
+      "bytes": 780770,
+      "sha256": "74a04a9abbcacbb900da6eff3920a601783962d29c2a80c814646b776e6abf3a"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Textures/T_RiftAtlas_Normal.uasset",
+      "bytes": 62547,
+      "sha256": "48bb19902ec2bdd05b4566c90abe04f1cc6aa136d934ac2ee19da0e19ed7304b"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Textures/T_RiftAtlas_ORM.uasset",
+      "bytes": 1077596,
+      "sha256": "8e991f2aa55da1949d671a312a3285f139b472719ad3dbd52dc2eff20d0bf364"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Textures/T_RiftAtlas_TeamMask.uasset",
+      "bytes": 12403,
+      "sha256": "07aa3cc63cc2f6e06ed0a94d208cd24ed26acba36dbef241f4f4c5f4049b74c2"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Textures/T_RiftExpansionAtlas_BaseColor.uasset",
+      "bytes": 788123,
+      "sha256": "d8514a6a3bb4f8c6d9493d9d5488546d76aee7c4be7f62c251981c0ee55d3bc3"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Textures/T_RiftExpansionAtlas_Normal.uasset",
+      "bytes": 62747,
+      "sha256": "4ae262b09659966279de025a248a9cb358de171c2067535972bc9d0ca819096e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Textures/T_RiftExpansionAtlas_ORM.uasset",
+      "bytes": 1078040,
+      "sha256": "aaaef134259df8170b5fc9cd9a623408cbc9b0ab7d643c952afa4a991c5b3ef3"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/Textures/T_RiftExpansionAtlas_TeamMask.uasset",
+      "bytes": 12602,
+      "sha256": "18d8b67a88b9fb46dfb085e14eb0712cffef12733cba3d01e901cdb2605dd5aa"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/VFX/NS_RiftArcFlight.uasset",
+      "bytes": 207816,
+      "sha256": "3cd9e651dd2efaa803b12aad4fbe3b489730ffa0174ee4f01fe4f5090c4467be"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/VFX/NS_RiftArrowFlight.uasset",
+      "bytes": 207840,
+      "sha256": "3535cf6a81dc031e1f82e66cb8cf76cf39a226a8bf3d43c494c25185e0290253"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/VFX/NS_RiftAura.uasset",
+      "bytes": 225618,
+      "sha256": "8052807e5da8fae684a15f935dddab28aaf93365ef2caa395b683541b323059a"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/VFX/NS_RiftBulletBurst.uasset",
+      "bytes": 291565,
+      "sha256": "f3fb388775d4ec1af740717235297fac3599d2b40f93e8610a6c37787dcfbeb0"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/VFX/NS_RiftCoreAwaken.uasset",
+      "bytes": 225690,
+      "sha256": "9c1b86e66271bf0e90b63f615d4175d2dba6fc69c7ec89da60cff672b083c170"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/VFX/NS_RiftDeploy.uasset",
+      "bytes": 225642,
+      "sha256": "677743e1fbccedb8272b4b8c416eee6ba4e9e051878e80e90ca15fab04487d63"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/VFX/NS_RiftFrost.uasset",
+      "bytes": 291493,
+      "sha256": "14b8c48eae6ba35d5d7490d34dbf29ce74a6a99b9e444fc8dae47a87ff87852c"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/VFX/NS_RiftImpact.uasset",
+      "bytes": 291505,
+      "sha256": "af7cffc5d568532daeb78eff5d55d79a1de671e0a80ad8214d469f18687654fd"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/VFX/NS_RiftMantaFlight.uasset",
+      "bytes": 207840,
+      "sha256": "517a4a288f1ada3ee2a63163a5b9bee586fdfc3c78a34d0fa53457d7117037ff"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/VFX/NS_RiftMeteor.uasset",
+      "bytes": 291505,
+      "sha256": "fe3fc20c77bca6b69a40c6fc1c4d96b2b8cb474b32deeb2a1fe332322b1f291f"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/VFX/NS_RiftMeteorTick.uasset",
+      "bytes": 225564,
+      "sha256": "dc382b5e4a1a57ef7a0a5467a9d6077e693ac80864736bb44cceff4a13397dd2"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/VFX/NS_RiftNova.uasset",
+      "bytes": 307915,
+      "sha256": "cae2c3a64a93e7b003887cd10c51f656ef26b52fe3205378ce249eb6568b066a"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/VFX/NS_RiftSlow.uasset",
+      "bytes": 207756,
+      "sha256": "3740ad6d809f9f4388c5b4d0c984effeeccf5209ebf99aafc9f2a449d57db67f"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/VFX/NS_RiftStormFlight.uasset",
+      "bytes": 207840,
+      "sha256": "4f7e1a5b850e348c9b71718ef90858fe95453afa85007c8caa58b8d03d7697c1"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/VFX/NS_RiftStun.uasset",
+      "bytes": 207756,
+      "sha256": "d798fd8f820fb56750bedee447b58b5bb7de5286aea4756a9f2520bdb2adf2fc"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/VFX/NS_RiftTowerDestroy.uasset",
+      "bytes": 308011,
+      "sha256": "45519e0539250d30ff52d8dabaf8c6cffff5b98388789bf854b473f71326b591"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Content/Rift/VFX/NS_RiftTowerFlight.uasset",
+      "bytes": 207840,
+      "sha256": "c183b029f7b579c01645831bd8a24ddf89b2fc9a8d09c6e099455ec0c982f0d8"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/RiftCrownArena.uproject",
+      "bytes": 745,
+      "sha256": "39fc040329e6d46e5087c74c0765c626ac16940daee8e662f67b7b2033acda4b"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena.Target.cs",
+      "bytes": 493,
+      "sha256": "283ee32c736fcdae9c0bf3f9c5fe8f26f5261a827db4db5a12a740a8138d5e17"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftArenaPresentation.cpp",
+      "bytes": 120410,
+      "sha256": "148d98360d3d095da6b7c9d4cb6955ad7fe167cb9fe96212de70ede300405d70"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftBattleAudioSubsystem.cpp",
+      "bytes": 43411,
+      "sha256": "8bf2f07e20a7697438bf819af2440b796920819ef2e0d3c8547cfb3dcb9e9d40"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftBattleOverlay.cpp",
+      "bytes": 16356,
+      "sha256": "37c264168df41782d475954d64a92cc0cf28414690b0ba75f68cd48058520ee8"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftExpansionCapture.cpp",
+      "bytes": 65119,
+      "sha256": "ec268bd21e801df14e227869c80f36fb4fb674b27052453096fbe23be58681b5"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftExpansionCapture.h",
+      "bytes": 2410,
+      "sha256": "b9c343d832ad25c95b6f606f2a71a443293ec0fd8025a7c9d9208e790236f736"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftTrainingOverlay.cpp",
+      "bytes": 6884,
+      "sha256": "cfbae8034b004bbe32986b91b89351edd9f44133a3e3f68f283aa07346a0d2bc"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftUnitVisual.cpp",
+      "bytes": 80910,
+      "sha256": "5928fd4066582fbdad769083377ac75b3e75dd7bf62fcb93485e562e5071098e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftAssetLibrary.cpp",
+      "bytes": 6281,
+      "sha256": "acbb76e9bb43ad0df80812713254a495e0db6ca89ab2d2e1c0948c49d82dde1e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftBalancePatchNotes.cpp",
+      "bytes": 6815,
+      "sha256": "ab502361ec865adcdaf7795239317f38987ac4991eed970236c73e441f033777"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftBattleHUD.cpp",
+      "bytes": 24367,
+      "sha256": "cfff5ce7d958fb38bf23086423ba71a5478ab09332a72c70c7f6aac264d1cef8"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftCollectionUI.cpp",
+      "bytes": 22596,
+      "sha256": "4eadb078fca2df035407132e63888f8ab1f84368abc5aaba2a1e5f4aea96fab3"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftCrownArena.cpp",
+      "bytes": 124,
+      "sha256": "b3cecae7f7bcb962f9e9729951b2c79b56aad833b7fde79dba1a6e209188e90e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftDiagnostics.cpp",
+      "bytes": 4750,
+      "sha256": "bdfd03a5c9b8f31098ebf73f62a81f12bffcbd6a05ccfd559461585d85b851d4"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftFieldManual.cpp",
+      "bytes": 8689,
+      "sha256": "1cbe10cabedf5825118d9d0f7dffdb07ebdf62eb9bc0d4606f9246fc7b7c2bde"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftGameMode.cpp",
+      "bytes": 141704,
+      "sha256": "8eceaf62c36b8a9100d58cc14e3ff8c466b2f50f911e7ee0f440815ee1eaf152"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftHandButton.cpp",
+      "bytes": 4962,
+      "sha256": "b4f6815780b662b5a8950c7831c5e709d92862622f5276b6d1d35480959c059a"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftMatchSubsystem.cpp",
+      "bytes": 11864,
+      "sha256": "d0bbefd8691d42c1219768e2c9f58e443e4159e1a7a4d47b85267e43d01f60ca"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftMetaSimulationSubsystem.cpp",
+      "bytes": 85336,
+      "sha256": "105b73ef72cc33eb375bbdbd9d0d53d13980a2ee07e5c99dc6ba083c198fb9ca"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftPatchNotes.generated.inc",
+      "bytes": 1416,
+      "sha256": "825dc52937a622d804744692201e1fc31f8ed90afe70f06410b38316b2a5ea5e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftPerformanceCapture.cpp",
+      "bytes": 51927,
+      "sha256": "fe4c9795b16a3588411048b2848bdfe243ca4329c97eb63f94070691c7769005"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftProfileSubsystem.cpp",
+      "bytes": 30017,
+      "sha256": "969f67f25608541746cee08ad04b180b7071a45526dba7aac3ac266b330dd23e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftReplaySubsystem.cpp",
+      "bytes": 105605,
+      "sha256": "d7dd0806106cddfdf0063db46c3d33efce64085e50183ac038104b1f5a609885"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftReplayUI.cpp",
+      "bytes": 30477,
+      "sha256": "77199b01e7db0e8108f94347d4a7b39a7b257cec9c7dc719b59f20e0616812d6"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftTrainingPanel.cpp",
+      "bytes": 9350,
+      "sha256": "f24527c664a3108d500fed5cf4722845f37e0cd1bbdb31009f6aa2bf9d88d49c"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftTypography.cpp",
+      "bytes": 1761,
+      "sha256": "8d6f45373e0991955576bace26dad66a19ffabd1aa6090da76aa2ff6f52215d2"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftUIPrimitives.cpp",
+      "bytes": 5597,
+      "sha256": "07354e1ca550415c1c888ea43261fb7bce507c9df4bf38c84d7f8965bf339ea7"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftUIWidget.cpp",
+      "bytes": 73973,
+      "sha256": "d1eedd3614cf98254a690c50484356994e0a605006b51321bee6c4c82b2761eb"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftAI.cpp",
+      "bytes": 28741,
+      "sha256": "e572b43bbf9d0f2b4a7c6bc8dcb769bfc1a10d0e50f14590bf34fce1cb18751e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftCardManifest.generated.inc",
+      "bytes": 36973,
+      "sha256": "0b45eb715605f972c5a22766179e9b2f47b613c58ca16df6c292c9662cdcfb0d"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftCombat.cpp",
+      "bytes": 26010,
+      "sha256": "543292f82c7a99d3b670aa4c6ddded2c5030c4a1da07eccb8231680eed61d0a6"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftDeckAnalysis.cpp",
+      "bytes": 35301,
+      "sha256": "7da541ba13a1468b44c14088882674268aedefa6e4b1df96e2f99f2daeb3f562"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftPathfinding.cpp",
+      "bytes": 65652,
+      "sha256": "af0b246d17a90828eea57cd99042a1ce4a4146ebfc65351853c3f1f1f437552e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftSimulation.cpp",
+      "bytes": 54279,
+      "sha256": "885a7294a0ceea1fe10837199a611acb8b267b50390942576fbc52de840d3396"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftBalancePatchTests.cpp",
+      "bytes": 22811,
+      "sha256": "0b06607849579af4123fbb71e8a4b08b70e5657a80365db0f8053f6154632742"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftBattleInputTests.cpp",
+      "bytes": 18070,
+      "sha256": "85c1311afb79e2d0d376898c0f093e4d19faf034a73fdd7d4ee9d828b456e339"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftCardDragSmoke.cpp",
+      "bytes": 26284,
+      "sha256": "47d2a89f9bae9a65e732b49975cb33f278974c35d1d679117a3ca13d0ad54209"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftCloakEffectsTests.cpp",
+      "bytes": 16395,
+      "sha256": "247fa343f89f771d6d5fca6a0e1ff823ff76c31bf5b86dcdeaaf524cb39d4314"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftIntegrationTests.cpp",
+      "bytes": 139631,
+      "sha256": "6acd68cb132753ce5bdc4736ad08d3d5b4a4f2d013daf38d1c12ace3cc0eff09"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftPresentationTests.cpp",
+      "bytes": 10568,
+      "sha256": "514a306c7a9f3fde221257ffcd4fdc85e4715ee44c762231b02cb37255d81350"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftProjectilePresentationTests.cpp",
+      "bytes": 3602,
+      "sha256": "b1faa97cc6c0098a7f58c1ccfeda27090c65aaebceffe16acf379c7a84e36bbc"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftPulverizerTests.cpp",
+      "bytes": 41149,
+      "sha256": "c69ae20ba708b5450305b8ec120485336c1fc15f5a861df8b87e27b25f0fd022"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftReaperAITests.cpp",
+      "bytes": 5641,
+      "sha256": "95c7398f38cd6cd94b4aa921f7527a1d6718a9eb27946de809bd9a415bf081f4"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftReaperTests.cpp",
+      "bytes": 8803,
+      "sha256": "d643b6f1caa82411e812d23cacc6e0f921071fe47ef88a3f5033bc7cb716afdc"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftTowerPathingTests.cpp",
+      "bytes": 21508,
+      "sha256": "77c779b731e2f2ea7051d936860d3b33b491e0b33aa01f37e17678c60eaa6eaf"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftTypographyTests.cpp",
+      "bytes": 5577,
+      "sha256": "cfe1166bf1f92b5bc198078c316c7c741ce831fc0449d45b982beba0530921de"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftUnitCollisionTests.cpp",
+      "bytes": 31106,
+      "sha256": "a529f1ad8dcbc27a583ceaa2c3ac1a350e6c8c661433ccfeb9be1880a9597025"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftUnitMotionTests.cpp",
+      "bytes": 30639,
+      "sha256": "6dd7b96ab28f71fe8559f5c7ebb2b863bfafa6d2f93c4cd7fbec7beaefe5ecfb"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftArenaGeometry.h",
+      "bytes": 1005,
+      "sha256": "57be85e0a168ea63800ee22cec8713af4ff4a29dc75def7d184af9fa80ddd1fa"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftArenaPresentation.h",
+      "bytes": 7401,
+      "sha256": "d437e54d4e3ac71ecf1b87652ccc2ad1a3608a48f42bb2f6e2e86d551045d9cd"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleAudioSubsystem.h",
+      "bytes": 2244,
+      "sha256": "78deba946c2420b05aebf0e5f47ce81241e539fa8fbfc1dc1b6902274b791366"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleLayout.h",
+      "bytes": 799,
+      "sha256": "0d953944dccba5ffdd20cea601240a157769de54c929ba804fcef12f0ec4dd27"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleOverlay.h",
+      "bytes": 1025,
+      "sha256": "ecc4bbd6d9a9a9e2729e51eaaa4fb64f5ea1ab712d6c44a389686876bb57187d"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftUnitVisual.h",
+      "bytes": 7121,
+      "sha256": "e090ef7d34927e859ac8bf36cf56f00ea907507388907fde01af4ebfc11f07e0"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftAssetLibrary.h",
+      "bytes": 808,
+      "sha256": "302fbe8f7b014ebdfa90e339221aa55f6af3f3b097fe29399c7ba90489cafee7"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftCardData.h",
+      "bytes": 5458,
+      "sha256": "2b53dc69a5fd4dce8ce26e2beee75dd879c3cb971a1608462f027aa1a58da301"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftDiagnostics.h",
+      "bytes": 522,
+      "sha256": "93d91726c726127c03b310972a8482906dc45ec9936cc48adab01599f7750b42"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftGameMode.h",
+      "bytes": 3099,
+      "sha256": "ead94cbaa686d4d230ab21f7cf57af0df928b9bf01545624951958ad166b72aa"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftHandButton.h",
+      "bytes": 604,
+      "sha256": "4ba3b6c2c352b8ebdc399cab258bdd26f0cecc8bfb2421edbfd2866a22e4488d"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftMatchSubsystem.h",
+      "bytes": 3956,
+      "sha256": "d44115c4852e39fa726a792d17d9eda214a4bd1408b9da11a9086cacbbf42ea4"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftMetaSimulationSubsystem.h",
+      "bytes": 2939,
+      "sha256": "ec1ab3256faab909696e862d156d158615fa55433ee3b95cfee7eded16eab369"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftPerformanceCapture.h",
+      "bytes": 3069,
+      "sha256": "de8139ad8ecf44d2930eb0973c7c91cfa90f7ec8d0054855548d8fb40c6e5f54"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftProfileSubsystem.h",
+      "bytes": 4074,
+      "sha256": "9a94ff3fb118194b4c296187b47e0f42bc1fae2d8d4187c58e1fb38ee9f22af6"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftReplaySubsystem.h",
+      "bytes": 4497,
+      "sha256": "18e89aa2e38cf24c49243d656db5bce952a04cfaf60ad0ac6c9bd4a202792f4e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftTypography.h",
+      "bytes": 381,
+      "sha256": "7cac7b91d1224aea7555b932c24635ba369c3aae1209782e05f2c13f6119f840"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftUIPrimitives.h",
+      "bytes": 1566,
+      "sha256": "aa4f43e886a3de0b9e403daa7abdc623a1ea9de2abe32d9aa191a0ce9330878e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftUIWidget.h",
+      "bytes": 8982,
+      "sha256": "da1a7e2480ba062624b184298ff05e6053f5cdfda9db946cf155765ccea5fa68"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Simulation/RiftArenaRules.generated.inc",
+      "bytes": 657,
+      "sha256": "cf3efc6fb8c7ff80610b314c8029b4e5b217e11909e6f3c483569a8939508085"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Simulation/RiftSimulation.h",
+      "bytes": 17131,
+      "sha256": "f78f377bb73813f85e4599a0ec315cacccb7a75ee05758621e7a636d432616f4"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/RiftCrownArena.Build.cs",
+      "bytes": 860,
+      "sha256": "2f629214df393aa0a385784eb9a752d1e47c9803f471ed69d7107f8a4e7866a3"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor.Target.cs",
+      "bytes": 417,
+      "sha256": "d8cad02a8fb12c7d19cb31a6da6ef8b7aa872415bf9860e7146541238b277e95"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Private/RiftCrownArenaEditor.cpp",
+      "bytes": 95,
+      "sha256": "487f1f731292b9b76e5e77d85ba045cac11b2045579faa5c421f57f682125e28"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Private/RiftEditorAssetLibrary.cpp",
+      "bytes": 17393,
+      "sha256": "4d3baca4d77238bceb480c38b0187033f7eb324a1466f9a06a4e991def56b2e3"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Public/RiftEditorAssetLibrary.h",
+      "bytes": 814,
+      "sha256": "3ed46978d15e2f9b279601a6e5339f1e89e983cb75dfa173e6410c75dfb5c372"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/RiftCrownArenaEditor.Build.cs",
+      "bytes": 517,
+      "sha256": "7f5d7d8cc4cda35f3d38ddce7d82e00f4d28cfac4c42d6c44be1eb146b954a2f"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "Artifacts/QA/MeleeHold181/After-Frozen/RiftSimulationTests.exe",
+      "bytes": 1092608,
+      "sha256": "751f9479d3a59b08344736265c2bb723a34bd997e35bf878b20d998f801c58bd"
+    },
+    {
+      "path": "Artifacts/QA/MeleeHold181/After-Frozen/moving-enemy.log",
+      "bytes": 985,
+      "sha256": "0f408731b5cef351dc28f8120221d103842d8a3117af2e80c417d7358f2796b2"
+    },
+    {
+      "path": "Artifacts/QA/MeleeHold181/After-Frozen/native-all.log",
+      "bytes": 72521,
+      "sha256": "0ffffd123ba565f3972c9801cfa339fd34d365176b011c0eebb5e12b97feb307"
+    },
+    {
+      "path": "Artifacts/QA/MeleeHold181/After-Frozen/proof.json",
+      "bytes": 2993,
+      "sha256": "b631b0839f5742b910ab4d1f6e9ce36b37a5769bf5c79598afab33827a74e206"
+    },
+    {
+      "path": "Artifacts/QA/MeleeHold181/Before/RiftSimulationTests.exe",
+      "bytes": 1092608,
+      "sha256": "5abfb646dc31b7a348b7254cfb9779576b6e92a7ab75fe5c757dd7c6d9d48abc"
+    },
+    {
+      "path": "Artifacts/QA/MeleeHold181/Before/moving-enemy.log",
+      "bytes": 634,
+      "sha256": "45e29467c0ed1ee89f693da6522deacde03b3111672c3acb9d8bfdca60903dc2"
+    },
+    {
+      "path": "Artifacts/QA/MeleeHold181/balance-validation.json",
+      "bytes": 3723,
+      "sha256": "d8ebbece8d5c1d1f537a4fdd290a0645d1b7a4abf0720c5034b165a8d3fb71bf"
+    },
+    {
+      "path": "Artifacts/QA/MeleeHold181/collect_release_qa.py",
+      "bytes": 23967,
+      "sha256": "c76c9ad3a2691efbd8645b65174464e65c647ac158c3d9019ab0897a46a453dc"
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/melee181-shipping-final-contact-48d029250e4a419baee45698908a7d42/Diagnostics/RiftGame-2026-10-16-31336-11-58-08-0.log",
+      "bytes": 2409,
+      "sha256": "5dfb6491d2d419a1f31912a5e82403b1950360cb77b3885165e86a933e3a08ad"
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/melee181-shipping-final-contact-48d029250e4a419baee45698908a7d42/melee181-shipping-final-contact.json",
+      "bytes": 34384,
+      "sha256": "64715926282d80af0a62ec77facc54d42ea5e8f910d5cacba61ae7264823b7f0"
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/melee181-shipping-final-contact-48d029250e4a419baee45698908a7d42/melee181-shipping-final-contact.png",
+      "bytes": 2459562,
+      "sha256": "fd685723bbcbd1b597ee6046eee29205637f493d058a456eac90f302909b5e4b"
+    },
+    {
+      "path": "Artifacts/QA/VisualRuns/melee181-shipping-final-contact-48d029250e4a419baee45698908a7d42/melee181-shipping-final-contact.state.json",
+      "bytes": 629354,
+      "sha256": "b8bb377921caf41534113423aeaa15489a388d8e75e75a24546446a166410e88"
+    },
+    {
+      "path": "Artifacts/QA/app-local-runtime.json",
+      "bytes": 6106,
+      "sha256": "e8ce1b5df60bf6bcc5323542f65a04a7b47db9d7f2094645381120b945ae8a16"
+    },
+    {
+      "path": "Artifacts/QA/installer-build.json",
+      "bytes": 933,
+      "sha256": "c1eb14c3a65401ce71872b84a48d2e6994fa69713a110f2a033a991a953ec5eb"
+    },
+    {
+      "path": "Artifacts/QA/installer-tests.json",
+      "bytes": 5376,
+      "sha256": "7aedd9fb3506f00fc91a5ef3da528e6a793384a1a9ec5daf4bd0a90336f42299"
+    },
+    {
+      "path": "Artifacts/QA/launcher-core-tests.json",
+      "bytes": 4550,
+      "sha256": "b6d401fb9ecc7337cd5f8850fd45745470e58a2c2e2857623fb09d539302c276"
+    },
+    {
+      "path": "Artifacts/QA/launcher-play-smoke.json",
+      "bytes": 2103,
+      "sha256": "5e498cd3b7ada56c790fa0507d94fd0b54fc0d280b6c456e203d2c230d50cd08"
+    },
+    {
+      "path": "Artifacts/QA/launcher-published-smoke.json",
+      "bytes": 337,
+      "sha256": "401ab2b95e653d01115267bd3d2f298560400428106f59dfd90445674d585fce"
+    },
+    {
+      "path": "Artifacts/Release/update-manifest.json",
+      "bytes": 10549,
+      "sha256": "87c77604c9350db4e17ea395babb3513e979653c72b5b0963b70458355054865"
+    },
+    {
+      "path": "Artifacts/Release/windows-release-verification.json",
+      "bytes": 1082,
+      "sha256": "9dc1fb4f8044d2171dc3e16697f94f281692fd8c1efc4eb0735db13eb0b25199"
+    },
+    {
+      "path": "Assets/Data/Baselines/1.8.0.json",
+      "bytes": 30647,
+      "sha256": "dc6c14f909029b0aa4e3ceb37983538b684375a1159846a01ca0a0c2edc168e0"
+    },
+    {
+      "path": "Assets/Data/card_manifest.json",
+      "bytes": 30798,
+      "sha256": "136a226fb34aac6f215105ef5eb795f44d2e0babd3623ac7ec58188e872605b1"
+    },
+    {
+      "path": "Assets/Data/patch_notes.json",
+      "bytes": 1357,
+      "sha256": "ee675fbb5402e71699011489d82560b0ed4b63d3a006d8393fade9759cd90481"
+    },
+    {
+      "path": "Assets/Data/source_resolution.json",
+      "bytes": 1659,
+      "sha256": "6d567ec49b3144de84bf621614de1e2393712ae4f2871c3e3aeaa1dbbdbc758d"
+    },
+    {
+      "path": "Build/Automation/20261016-075822-e6b1dfd72c8d4e4289a11b022fbba040/Report/index.json",
+      "bytes": 34687,
+      "sha256": "ea07a2149f4bba0407503addfae56b2ab1defa2fdb21f0a40235d9414ee21786"
+    },
+    {
+      "path": "Build/Automation/20261016-075822-e6b1dfd72c8d4e4289a11b022fbba040/UnrealIntegration.log",
+      "bytes": 345850,
+      "sha256": "ef9ac7071bc4e31a919695290e8e389c8dbac34798cae63810f7e2bd56ccba5e"
+    },
+    {
+      "path": "Build/Automation/20261016-075822-e6b1dfd72c8d4e4289a11b022fbba040/context.json",
+      "bytes": 132370,
+      "sha256": "8c5ef3d8dfa622268c6724aab1aa28a527b046af5a6e26245d907bfc4f04874c"
+    },
+    {
+      "path": "Build/Tests/RiftSimulationTests.cpp",
+      "bytes": 244486,
+      "sha256": "e03a2f97d6b6c676dfe05f742a4dc5ad5e734b2ef494836af3a0ad2dbfa1d63d"
+    },
+    {
+      "path": "Build/balance_patch_notes.py",
+      "bytes": 17757,
+      "sha256": "48f86ebb7860c43ff17d1ab12fd855c843c27c69cbca93f19e820d2fce1ab8fa"
+    },
+    {
+      "path": "Build/generate_card_manifest.py",
+      "bytes": 13646,
+      "sha256": "ceb4595ee1370cff593b3246ba061e697edf2f1052d9f79a7d499a5663391326"
+    },
+    {
+      "path": "Docs/AUDIO_CREDITS_1.8.1.md",
+      "bytes": 2124,
+      "sha256": "a11cad2aba4a350526b498ab8788627f1573fa40311fd58aa5d6ccfb4b35525c"
+    },
+    {
+      "path": "Docs/PATCH_NOTES_1.8.1.md",
+      "bytes": 969,
+      "sha256": "134ad4c4083d12b53b048b3f095fd0b678ee0de6e380f36b79940f88fbb4f424"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Config/DefaultEngine.ini",
+      "bytes": 1379,
+      "sha256": "d203dc05bd1a8d857f7773eb44529ce45637647a5d5638f52b4e9ee21ffec885"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Config/DefaultGame.ini",
+      "bytes": 808,
+      "sha256": "4ab11fdb2a344e1ca44f39223678a4b504b46c29a09133dad78d8bb9f5032738"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Config/DefaultInput.ini",
+      "bytes": 9535,
+      "sha256": "40f9320c2416a85aa30c765ce1d9c62b45c6a9ad52ef998d102f05b8819679fd"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena.Target.cs",
+      "bytes": 493,
+      "sha256": "283ee32c736fcdae9c0bf3f9c5fe8f26f5261a827db4db5a12a740a8138d5e17"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftArenaPresentation.cpp",
+      "bytes": 120410,
+      "sha256": "148d98360d3d095da6b7c9d4cb6955ad7fe167cb9fe96212de70ede300405d70"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftBattleAudioSubsystem.cpp",
+      "bytes": 43411,
+      "sha256": "8bf2f07e20a7697438bf819af2440b796920819ef2e0d3c8547cfb3dcb9e9d40"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftBattleOverlay.cpp",
+      "bytes": 16356,
+      "sha256": "37c264168df41782d475954d64a92cc0cf28414690b0ba75f68cd48058520ee8"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftExpansionCapture.cpp",
+      "bytes": 65119,
+      "sha256": "ec268bd21e801df14e227869c80f36fb4fb674b27052453096fbe23be58681b5"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftExpansionCapture.h",
+      "bytes": 2410,
+      "sha256": "b9c343d832ad25c95b6f606f2a71a443293ec0fd8025a7c9d9208e790236f736"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftTrainingOverlay.cpp",
+      "bytes": 6884,
+      "sha256": "cfbae8034b004bbe32986b91b89351edd9f44133a3e3f68f283aa07346a0d2bc"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Presentation/RiftUnitVisual.cpp",
+      "bytes": 80910,
+      "sha256": "5928fd4066582fbdad769083377ac75b3e75dd7bf62fcb93485e562e5071098e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftAssetLibrary.cpp",
+      "bytes": 6281,
+      "sha256": "acbb76e9bb43ad0df80812713254a495e0db6ca89ab2d2e1c0948c49d82dde1e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftBalancePatchNotes.cpp",
+      "bytes": 6815,
+      "sha256": "ab502361ec865adcdaf7795239317f38987ac4991eed970236c73e441f033777"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftBattleHUD.cpp",
+      "bytes": 24367,
+      "sha256": "cfff5ce7d958fb38bf23086423ba71a5478ab09332a72c70c7f6aac264d1cef8"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftCollectionUI.cpp",
+      "bytes": 22596,
+      "sha256": "4eadb078fca2df035407132e63888f8ab1f84368abc5aaba2a1e5f4aea96fab3"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftCrownArena.cpp",
+      "bytes": 124,
+      "sha256": "b3cecae7f7bcb962f9e9729951b2c79b56aad833b7fde79dba1a6e209188e90e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftDiagnostics.cpp",
+      "bytes": 4750,
+      "sha256": "bdfd03a5c9b8f31098ebf73f62a81f12bffcbd6a05ccfd559461585d85b851d4"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftFieldManual.cpp",
+      "bytes": 8689,
+      "sha256": "1cbe10cabedf5825118d9d0f7dffdb07ebdf62eb9bc0d4606f9246fc7b7c2bde"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftGameMode.cpp",
+      "bytes": 141704,
+      "sha256": "8eceaf62c36b8a9100d58cc14e3ff8c466b2f50f911e7ee0f440815ee1eaf152"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftHandButton.cpp",
+      "bytes": 4962,
+      "sha256": "b4f6815780b662b5a8950c7831c5e709d92862622f5276b6d1d35480959c059a"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftMatchSubsystem.cpp",
+      "bytes": 11864,
+      "sha256": "d0bbefd8691d42c1219768e2c9f58e443e4159e1a7a4d47b85267e43d01f60ca"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftMetaSimulationSubsystem.cpp",
+      "bytes": 85336,
+      "sha256": "105b73ef72cc33eb375bbdbd9d0d53d13980a2ee07e5c99dc6ba083c198fb9ca"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftPatchNotes.generated.inc",
+      "bytes": 1416,
+      "sha256": "825dc52937a622d804744692201e1fc31f8ed90afe70f06410b38316b2a5ea5e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftPerformanceCapture.cpp",
+      "bytes": 51927,
+      "sha256": "fe4c9795b16a3588411048b2848bdfe243ca4329c97eb63f94070691c7769005"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftProfileSubsystem.cpp",
+      "bytes": 30017,
+      "sha256": "969f67f25608541746cee08ad04b180b7071a45526dba7aac3ac266b330dd23e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftReplaySubsystem.cpp",
+      "bytes": 105605,
+      "sha256": "d7dd0806106cddfdf0063db46c3d33efce64085e50183ac038104b1f5a609885"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftReplayUI.cpp",
+      "bytes": 30477,
+      "sha256": "77199b01e7db0e8108f94347d4a7b39a7b257cec9c7dc719b59f20e0616812d6"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftTrainingPanel.cpp",
+      "bytes": 9350,
+      "sha256": "f24527c664a3108d500fed5cf4722845f37e0cd1bbdb31009f6aa2bf9d88d49c"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftTypography.cpp",
+      "bytes": 1761,
+      "sha256": "8d6f45373e0991955576bace26dad66a19ffabd1aa6090da76aa2ff6f52215d2"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftUIPrimitives.cpp",
+      "bytes": 5597,
+      "sha256": "07354e1ca550415c1c888ea43261fb7bce507c9df4bf38c84d7f8965bf339ea7"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/RiftUIWidget.cpp",
+      "bytes": 73973,
+      "sha256": "d1eedd3614cf98254a690c50484356994e0a605006b51321bee6c4c82b2761eb"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftAI.cpp",
+      "bytes": 28741,
+      "sha256": "e572b43bbf9d0f2b4a7c6bc8dcb769bfc1a10d0e50f14590bf34fce1cb18751e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftCardManifest.generated.inc",
+      "bytes": 36973,
+      "sha256": "0b45eb715605f972c5a22766179e9b2f47b613c58ca16df6c292c9662cdcfb0d"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftCombat.cpp",
+      "bytes": 26010,
+      "sha256": "543292f82c7a99d3b670aa4c6ddded2c5030c4a1da07eccb8231680eed61d0a6"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftDeckAnalysis.cpp",
+      "bytes": 35301,
+      "sha256": "7da541ba13a1468b44c14088882674268aedefa6e4b1df96e2f99f2daeb3f562"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftPathfinding.cpp",
+      "bytes": 65652,
+      "sha256": "af0b246d17a90828eea57cd99042a1ce4a4146ebfc65351853c3f1f1f437552e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftSimulation.cpp",
+      "bytes": 54279,
+      "sha256": "885a7294a0ceea1fe10837199a611acb8b267b50390942576fbc52de840d3396"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftBalancePatchTests.cpp",
+      "bytes": 22811,
+      "sha256": "0b06607849579af4123fbb71e8a4b08b70e5657a80365db0f8053f6154632742"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftBattleInputTests.cpp",
+      "bytes": 18070,
+      "sha256": "85c1311afb79e2d0d376898c0f093e4d19faf034a73fdd7d4ee9d828b456e339"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftCardDragSmoke.cpp",
+      "bytes": 26284,
+      "sha256": "47d2a89f9bae9a65e732b49975cb33f278974c35d1d679117a3ca13d0ad54209"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftCloakEffectsTests.cpp",
+      "bytes": 16395,
+      "sha256": "247fa343f89f771d6d5fca6a0e1ff823ff76c31bf5b86dcdeaaf524cb39d4314"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftIntegrationTests.cpp",
+      "bytes": 139631,
+      "sha256": "6acd68cb132753ce5bdc4736ad08d3d5b4a4f2d013daf38d1c12ace3cc0eff09"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftPresentationTests.cpp",
+      "bytes": 10568,
+      "sha256": "514a306c7a9f3fde221257ffcd4fdc85e4715ee44c762231b02cb37255d81350"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftProjectilePresentationTests.cpp",
+      "bytes": 3602,
+      "sha256": "b1faa97cc6c0098a7f58c1ccfeda27090c65aaebceffe16acf379c7a84e36bbc"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftPulverizerTests.cpp",
+      "bytes": 41149,
+      "sha256": "c69ae20ba708b5450305b8ec120485336c1fc15f5a861df8b87e27b25f0fd022"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftReaperAITests.cpp",
+      "bytes": 5641,
+      "sha256": "95c7398f38cd6cd94b4aa921f7527a1d6718a9eb27946de809bd9a415bf081f4"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftReaperTests.cpp",
+      "bytes": 8803,
+      "sha256": "d643b6f1caa82411e812d23cacc6e0f921071fe47ef88a3f5033bc7cb716afdc"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftTowerPathingTests.cpp",
+      "bytes": 21508,
+      "sha256": "77c779b731e2f2ea7051d936860d3b33b491e0b33aa01f37e17678c60eaa6eaf"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftTypographyTests.cpp",
+      "bytes": 5577,
+      "sha256": "cfe1166bf1f92b5bc198078c316c7c741ce831fc0449d45b982beba0530921de"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftUnitCollisionTests.cpp",
+      "bytes": 31106,
+      "sha256": "a529f1ad8dcbc27a583ceaa2c3ac1a350e6c8c661433ccfeb9be1880a9597025"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Tests/RiftUnitMotionTests.cpp",
+      "bytes": 30639,
+      "sha256": "6dd7b96ab28f71fe8559f5c7ebb2b863bfafa6d2f93c4cd7fbec7beaefe5ecfb"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftArenaGeometry.h",
+      "bytes": 1005,
+      "sha256": "57be85e0a168ea63800ee22cec8713af4ff4a29dc75def7d184af9fa80ddd1fa"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftArenaPresentation.h",
+      "bytes": 7401,
+      "sha256": "d437e54d4e3ac71ecf1b87652ccc2ad1a3608a48f42bb2f6e2e86d551045d9cd"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleAudioSubsystem.h",
+      "bytes": 2244,
+      "sha256": "78deba946c2420b05aebf0e5f47ce81241e539fa8fbfc1dc1b6902274b791366"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleLayout.h",
+      "bytes": 799,
+      "sha256": "0d953944dccba5ffdd20cea601240a157769de54c929ba804fcef12f0ec4dd27"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftBattleOverlay.h",
+      "bytes": 1025,
+      "sha256": "ecc4bbd6d9a9a9e2729e51eaaa4fb64f5ea1ab712d6c44a389686876bb57187d"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Presentation/RiftUnitVisual.h",
+      "bytes": 7121,
+      "sha256": "e090ef7d34927e859ac8bf36cf56f00ea907507388907fde01af4ebfc11f07e0"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftAssetLibrary.h",
+      "bytes": 808,
+      "sha256": "302fbe8f7b014ebdfa90e339221aa55f6af3f3b097fe29399c7ba90489cafee7"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftCardData.h",
+      "bytes": 5458,
+      "sha256": "2b53dc69a5fd4dce8ce26e2beee75dd879c3cb971a1608462f027aa1a58da301"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftDiagnostics.h",
+      "bytes": 522,
+      "sha256": "93d91726c726127c03b310972a8482906dc45ec9936cc48adab01599f7750b42"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftGameMode.h",
+      "bytes": 3099,
+      "sha256": "ead94cbaa686d4d230ab21f7cf57af0df928b9bf01545624951958ad166b72aa"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftHandButton.h",
+      "bytes": 604,
+      "sha256": "4ba3b6c2c352b8ebdc399cab258bdd26f0cecc8bfb2421edbfd2866a22e4488d"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftMatchSubsystem.h",
+      "bytes": 3956,
+      "sha256": "d44115c4852e39fa726a792d17d9eda214a4bd1408b9da11a9086cacbbf42ea4"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftMetaSimulationSubsystem.h",
+      "bytes": 2939,
+      "sha256": "ec1ab3256faab909696e862d156d158615fa55433ee3b95cfee7eded16eab369"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftPerformanceCapture.h",
+      "bytes": 3069,
+      "sha256": "de8139ad8ecf44d2930eb0973c7c91cfa90f7ec8d0054855548d8fb40c6e5f54"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftProfileSubsystem.h",
+      "bytes": 4074,
+      "sha256": "9a94ff3fb118194b4c296187b47e0f42bc1fae2d8d4187c58e1fb38ee9f22af6"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftReplaySubsystem.h",
+      "bytes": 4497,
+      "sha256": "18e89aa2e38cf24c49243d656db5bce952a04cfaf60ad0ac6c9bd4a202792f4e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftTypography.h",
+      "bytes": 381,
+      "sha256": "7cac7b91d1224aea7555b932c24635ba369c3aae1209782e05f2c13f6119f840"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftUIPrimitives.h",
+      "bytes": 1566,
+      "sha256": "aa4f43e886a3de0b9e403daa7abdc623a1ea9de2abe32d9aa191a0ce9330878e"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/RiftUIWidget.h",
+      "bytes": 8982,
+      "sha256": "da1a7e2480ba062624b184298ff05e6053f5cdfda9db946cf155765ccea5fa68"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Simulation/RiftArenaRules.generated.inc",
+      "bytes": 657,
+      "sha256": "cf3efc6fb8c7ff80610b314c8029b4e5b217e11909e6f3c483569a8939508085"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Simulation/RiftSimulation.h",
+      "bytes": 17131,
+      "sha256": "f78f377bb73813f85e4599a0ec315cacccb7a75ee05758621e7a636d432616f4"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArena/RiftCrownArena.Build.cs",
+      "bytes": 860,
+      "sha256": "2f629214df393aa0a385784eb9a752d1e47c9803f471ed69d7107f8a4e7866a3"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor.Target.cs",
+      "bytes": 417,
+      "sha256": "d8cad02a8fb12c7d19cb31a6da6ef8b7aa872415bf9860e7146541238b277e95"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Private/RiftCrownArenaEditor.cpp",
+      "bytes": 95,
+      "sha256": "487f1f731292b9b76e5e77d85ba045cac11b2045579faa5c421f57f682125e28"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Private/RiftEditorAssetLibrary.cpp",
+      "bytes": 17393,
+      "sha256": "4d3baca4d77238bceb480c38b0187033f7eb324a1466f9a06a4e991def56b2e3"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/Public/RiftEditorAssetLibrary.h",
+      "bytes": 814,
+      "sha256": "3ed46978d15e2f9b279601a6e5339f1e89e983cb75dfa173e6410c75dfb5c372"
+    },
+    {
+      "path": "Unreal/RiftCrownArena/Source/RiftCrownArenaEditor/RiftCrownArenaEditor.Build.cs",
+      "bytes": 517,
+      "sha256": "7f5d7d8cc4cda35f3d38ddce7d82e00f4d28cfac4c42d6c44be1eb146b954a2f"
+    }
+  ],
+  "pending": []
+}

@@ -2416,6 +2416,74 @@ int main(int argc, char **argv) {
                 }
             }
         });
+        Test("single melee cards hold attack stance while an actual enemy moves within reach", [] {
+            int fixtures = 0, contactFrames = 0, movingContactFrames = 0, chaseFrames = 0;
+            double maximumContactMove = 0;
+            for (const auto *id : {"ironclad", "frost_fang"})
+                for (const Team team : {Team::Player, Team::Enemy}) {
+                    Match m(CollisionOptions(id, "boulderback"));FreezeCrowns(m);
+                    const int sign = team == Team::Player ? 1 : -1;
+                    const Team opponent = team == Team::Player ? Team::Enemy : Team::Player;
+                    Check(m.SetTowerHP(Tower(m, team, EntityKind::Guard, 1).id, 0),
+                          "Guard loss unlocks the real opponent's same-bank deployment pocket");
+                    const auto source = PaidCollisionCard(m, team, id, {7.5, sign * 8.5}).front().id;
+                    const auto target = PaidCollisionCard(m, opponent, "boulderback", {7.5, sign * 5.5}).front().id;
+                    int hits = 0, observed = 0, resumedChaseFrames = 0, replants = 0;
+                    bool chasingAfterContact = false;
+                    double targetTravel = 0;
+                    std::size_t cursor = m.Events().size();
+                    for (int frame = 0; frame < 12 * 60; ++frame) {
+                        // HP-only observation keeps the real paid moving target
+                        // alive. Targets, positions, cooldowns and paths remain
+                        // entirely authoritative; Boulderback walks toward Core.
+                        auto &enemy = MutableEntity(m, target);enemy.hp = enemy.maxHp;
+                        const auto before = m.State().entities;
+                        const auto old = ById(m, source), oldTarget = ById(m, target);
+                        m.Step(1. / 60.);
+                        SweptBodyClearance(m, before, "moving enemy melee stance");
+                        const auto &now = ById(m, source), &nowTarget = ById(m, target);
+                        const double moved = std::hypot(now.position.x - old.position.x, now.position.z - old.position.z);
+                        const double enemyMoved = std::hypot(nowTarget.position.x - oldTarget.position.x,
+                                                            nowTarget.position.z - oldTarget.position.z);
+                        targetTravel += enemyMoved;
+                        const bool wasInReach = old.target == target &&
+                            m.CombatDistance(old, oldTarget) <= m.AttackReach(old, oldTarget) + 1e-9;
+                        if (hits && wasInReach && now.target == target && enemyMoved > 1e-7 &&
+                            m.CombatDistance(old, nowTarget) <= m.AttackReach(old, nowTarget) + 1e-9) {
+                            ++observed;++contactFrames;
+                            maximumContactMove = std::max(maximumContactMove, moved);
+                            movingContactFrames += moved > 1e-8;
+                        }
+                        if (!wasInReach && now.target == target && moved > .001) {
+                            ++chaseFrames;
+                            if (hits) {++resumedChaseFrames;chasingAfterContact = true;}
+                        }
+                        if (wasInReach && chasingAfterContact) {++replants;chasingAfterContact = false;}
+                        for (; cursor < m.Events().size(); ++cursor) {
+                            const auto &event = m.Events()[cursor];
+                            if (event.type == "damage" && event.source == source && event.target == target &&
+                                event.damageKind == "attack") {
+                                Near(event.requested, FindCard(id)->damage, 0, "moving-target stance retains authored hit damage");
+                                ++hits;
+                            }
+                        }
+                    }
+                    std::cout << "MELEE_MOVING_TARGET card=" << id << " team=" << int(team)
+                              << " hits=" << hits << " moving_target_contact_frames=" << observed
+                              << " target_travel=" << targetTravel << " resumed_chase_frames=" << resumedChaseFrames
+                              << " replants=" << replants << '\n';
+                    Check(hits >= 3 && observed >= 30 && targetTravel > 2,
+                          "each melee card repeatedly attacks a real moving opponent for both teams");
+                    Check(resumedChaseFrames > 0 && replants > 0,
+                          "each melee card resumes pursuit after its target leaves reach and catches it again");
+                    ++fixtures;
+                }
+            std::cout << "MELEE_STANCE_STABILITY fixtures=" << fixtures << " contact_frames=" << contactFrames
+                      << " moving_contact_frames=" << movingContactFrames << " max_contact_move=" << maximumContactMove
+                      << " chase_frames=" << chaseFrames << '\n';
+            Check(chaseFrames > 30, "melee cards still pursue enemies outside attack reach");
+            Check(movingContactFrames == 0, "single melee fighters stay planted while their moving target remains in reach");
+        });
         Test("opposing paid swarm combat holds positions without friendly crowd pressure", [] {
             int fixtures = 0, contactFrames = 0, movingContactFrames = 0, hitMembers = 0;
             double maximumContactMove = 0;
