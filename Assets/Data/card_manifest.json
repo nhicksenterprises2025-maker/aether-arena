@@ -1,8 +1,8 @@
 {
   "schema": 3,
-  "version": "1.8.0",
+  "version": "1.8.1",
   "status": "approved",
-  "sourceCommit": "3e444fd0633514f37f6f67a6ed25893f27753573",
+  "sourceCommit": "3f5b06bc14b896e7a84d8486bad777b5c7db7ee9",
   "cards": [
     {
       "id": "ironclad",
@@ -1153,7 +1153,7 @@
   ],
   "rules": {
     "combatRevision": 4,
-    "navigationRevision": 10,
+    "navigationRevision": 11,
     "targetHardLock": "first authoritative attack against a Crown Tower",
     "frontSight": 8,
     "rearSight": 5,
@@ -1166,19 +1166,19 @@
     "coreDepth": 16.84,
     "cloakLockException": "Approved Shadow Surge drops enemy locks, including committed Crown Tower locks; committed damage and projectiles still resolve"
   },
-  "balanceHash": "88c28ff155ef5e63becb70515e0d30b1cef10c2d0f0b7cfc53ced371e4d9c90a",
-  "baseline": "Assets/Data/Baselines/1.7.1.json",
+  "balanceHash": "253831ff25ff676070c0fddf89d2851172c9f25f2baa24dd3f70280877da31cd",
+  "baseline": "Assets/Data/Baselines/1.8.0.json",
   "approval": {
     "sourceResolution": "Assets/Data/source_resolution.json",
-    "source": "Direct user approval of full presentation update on 2026-10-15",
-    "scope": "Complete roster models, animation, portraits, attack effects, deployment sound identities, interface and arena presentation. Verify existing troop routing and collision behavior.",
-    "balanceUnchanged": "All numerical card/entity definitions, abilities, collision radii, model scales and arena rules remain unchanged.",
-    "releaseAcceptance": "Native runtime, rendered presentation and Windows delivery require independent checks."
+    "source": "Direct user request to stop melee troops shuffling while attacking moving enemies on 2026-10-16",
+    "scope": "Melee troops chase enemies outside attack range, hold their position while an enemy remains in range, and resume pursuit after it leaves range. Preserve friendly yielding and swarm collision behavior.",
+    "balanceUnchanged": "All numerical card/entity definitions, abilities, collision radii, model scales and arena geometry remain unchanged from 1.8.0. Navigation revision advances from 10 to 11 for the movement correction.",
+    "releaseAcceptance": "Native movement regression, collision scenarios and Windows delivery require independent checks."
   },
   "baselineRuntimePins": [
     {
       "path": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArena.dll",
-      "sha256": "61fc67b17638e4d16df30deda73a5046cfb4de1707a4c8ec82d74fa665c9ec64"
+      "sha256": "4e2b33339d149fdfa24c47953978469ef95d83038d2588cf8c77182232805b51"
     },
     {
       "path": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArenaEditor.dll",
@@ -1186,8 +1186,8 @@
     }
   ],
   "baselineProvenance": {
-    "tag": "v1.7.1",
-    "sourceCommit": "3e444fd0633514f37f6f67a6ed25893f27753573",
-    "canonicalFileSHA256": "572392ffd09163d1f3757cca1764ade67ea272a01e31211a8487118f9862a035"
+    "tag": "v1.8.0",
+    "sourceCommit": "3f5b06bc14b896e7a84d8486bad777b5c7db7ee9",
+    "canonicalFileSHA256": "dc6c14f909029b0aa4e3ceb37983538b684375a1159846a01ca0a0c2edc168e0"
   }
 }

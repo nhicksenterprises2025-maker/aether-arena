@@ -1584,9 +1584,9 @@ bool FRiftFullReplayIntegrationTest::RunTest(const FString &Parameters) {
         rift::MatchOptions AIOptions;
         // Record a complete populated paid match under the current balance. The
         // Developer fixture separately holds towers alive for overtime/congestion.
-        // Seed2 reaches 22 recorded bodies (14 living troops) with ordinary
-        // paid casts. Seed10 peaks at18 under both 1.7.1 and 1.8.0 rules.
-        AIOptions.seed = Congestion ? 32 : 2;
+        // Seed121 reaches 25 recorded bodies (18 living troops) with ordinary
+        // paid casts under navigation11; no Developer commands are used.
+        AIOptions.seed = Congestion ? 32 : 121;
         AIOptions.aiEnabled = {true, true};
         AIOptions.aiStyles = {"control", "counter"};
         const std::vector<std::string> SwarmDeck{"ironclad",    "twin_blades",  "archer_tower",

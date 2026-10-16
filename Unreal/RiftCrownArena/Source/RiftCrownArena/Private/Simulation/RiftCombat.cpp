@@ -557,11 +557,12 @@ void Match::UpdateEntity(EntityId id, double dt) {
     const bool inReach = CombatDistance(*s, *target) <= AttackReach(*s, *target) + 1e-9;
     const bool friendlyYield = arrival != engagementSlots_.end() &&
         arrival->second.target == target->id && arrival->second.yieldingToFriend;
-    const bool holdSwarmContact = arena::NavigationRevision >= 10 && c && c->projectileSpeed <= 0 &&
+    const bool holdMeleeContact = arena::NavigationRevision >= 10 && c && c->projectileSpeed <= 0 &&
         s->kind == EntityKind::Troop && target->kind == EntityKind::Troop &&
-        target->team != s->team && (s->memberCount > 1 || target->memberCount > 1) &&
+        target->team != s->team &&
+        (arena::NavigationRevision >= 11 || s->memberCount > 1 || target->memberCount > 1) &&
         inReach && !friendlyYield;
-    if (holdSwarmContact) {
+    if (holdMeleeContact) {
         // Opposing fighters do not orbit an ideal arrival goal after contact.
         // Reserve the actual legal stance so neighbours route around its body.
         // A deliberate same-team slot exchange can still make room for a friend.
@@ -573,7 +574,7 @@ void Match::UpdateEntity(EntityId id, double dt) {
         arrival = engagementSlots_.find(s->id);
     }
     if (s->kind == EntityKind::Troop && c && c->count > 1 && c->projectileSpeed <= 0 &&
-        !holdSwarmContact &&
+        !holdMeleeContact &&
         (arrival == engagementSlots_.end() || arrival->second.target != target->id) &&
         CombatDistance(*s, *target) <= AttackReach(*s, *target) + 1e-9) {
         // The front row can enter melee reach during a bridge exit, or be
@@ -585,7 +586,7 @@ void Match::UpdateEntity(EntityId id, double dt) {
         arrival = engagementSlots_.find(s->id);
     }
     if (s->kind == EntityKind::Troop && arrival != engagementSlots_.end() &&
-        arrival->second.target == target->id && !holdSwarmContact &&
+        arrival->second.target == target->id && !holdMeleeContact &&
         CombatDistance(*s, *target) <= AttackReach(*s, *target) + 1e-9) {
         const Vec2 point{target->position.x + arrival->second.offset.x,
                           target->position.z + arrival->second.offset.z};

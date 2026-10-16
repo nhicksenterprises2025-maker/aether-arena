@@ -3,25 +3,23 @@
   "status": "approved",
   "unresolved": false,
   "releaseBlocked": false,
-  "baseline": "Assets/Data/Baselines/1.7.1.json",
+  "baseline": "Assets/Data/Baselines/1.8.0.json",
   "baselineBalanceHash": "88c28ff155ef5e63becb70515e0d30b1cef10c2d0f0b7cfc53ced371e4d9c90a",
-  "startingCommit": "3e444fd0633514f37f6f67a6ed25893f27753573",
-  "version": "1.8.0",
+  "startingCommit": "3f5b06bc14b896e7a84d8486bad777b5c7db7ee9",
+  "version": "1.8.1",
   "confirmation": {
-    "source": "Direct user approval of full presentation update on 2026-10-15",
-    "fullPresentationUpdate": true,
+    "source": "Direct user request to stop melee troops shuffling while attacking moving enemies on 2026-10-16",
+    "meleeAttackHoldFix": true,
     "preserveGameplayAndSaves": true
   },
   "resolvedChoices": {},
   "mechanicNotes": [
-    "Presentation update: all card models, character animations and actual-model card portraits receive a unified stylized fantasy pass.",
-    "Unit presentation interpolates between fixed simulation updates; attack impacts and gameplay timing remain authoritative.",
-    "Attack and ability effects emphasize card identity, readable travel and material-specific impacts.",
-    "Each playable card has three short deployment sound variations, with one cue per deployment including swarm cards.",
-    "Interface: carved metal frames, warm ivory typography and tactile controls; the hand remains centered behind the Core Tower.",
-    "Arena presentation: richer ground, bridge and environment detail without changing the 40 by 22 tile battlefield or 125 cm tiles.",
-    "Balance unchanged: all costs, unit counts, HP, damage, intervals, speeds, ranges, abilities, collision radii and model scales retain their 1.7.1 values."
+    "Melee troops, including Ironclad and Frost Fang, stop moving once their enemy is within melee attack range, even if that enemy continues moving inside the range.",
+    "Troops resume chasing when their target leaves attack range, then stop again when they catch it. Attack ranges and attack intervals are unchanged.",
+    "Existing friendly yielding, opposing collision, swarm contact spacing and tower approach behavior are preserved.",
+    "All 21 playable cards and the subordinate skeleton retain their 1.8.0 numerical stats, abilities, collision radii and model scales. Models, animation assets, audio, interface and arena geometry are unchanged.",
+    "Navigation revision advances from 10 to 11 so new Meta simulations use the corrected melee movement. Historical replays and recorded results retain their original identities."
   ],
-  "unchanged": "All numerical card/entity definitions, abilities, collision radii, model scales and arena rules remain unchanged.",
-  "priorResolution": "Assets/Data/History/source_resolution_1.7.1.json"
+  "unchanged": "All numerical card/entity definitions, abilities, collision radii, model scales, arena geometry and presentation assets remain unchanged from 1.8.0.",
+  "priorResolution": "Assets/Data/History/source_resolution_1.8.0.json"
 }
