@@ -1,0 +1,406 @@
+{
+  "schema": "rift.full-update.acceptance.v1",
+  "version": "1.8.0",
+  "status": "verified-local-release",
+  "passed": true,
+  "generatedUTC": "2026-10-16T03:59:15.785518+00:00",
+  "scope": "Curated local source, native, Shipping and Windows evidence. Public delivery is a separate post-publication check.",
+  "nativeExecutable": {
+    "path": "Artifacts/Game-1.8.0/Windows/RiftCrownArena/Binaries/Win64/RiftCrownArena-Win64-Shipping.exe",
+    "bytes": 168401408,
+    "sha256": "b3a26e39de015d8247862963f826fa7ea23d07340d21b9bac478b0b5fadb14e7"
+  },
+  "releaseArchive": {
+    "path": "Artifacts/Release/RiftCrownArena-Windows-x64-1.8.0.zip",
+    "bytes": 414695442,
+    "sha256": "bbf27b693240307b6ae50a02377becf99a5fa0b1beb8271aab85a76035e5d0d8",
+    "payloadFiles": 50
+  },
+  "installer": {
+    "path": "Artifacts/Installer/RiftCrownArena-Setup.msi",
+    "bytes": 398729216,
+    "sha256": "a8500692f2ce7c3010c4e42325956a22320c527d9e771761b31c034a736a3aaa"
+  },
+  "facts": {
+    "numericalBalanceUnchangedFrom": "1.7.1",
+    "balanceIdentity": "88c28ff155ef5e63becb70515e0d30b1cef10c2d0f0b7cfc53ced371e4d9c90a",
+    "playableCards": 21,
+    "subordinateDefinitions": 1,
+    "skeletalRigs": 18,
+    "staticModels": 28,
+    "animationClips": 176,
+    "FBXExports": 332,
+    "arena": {
+      "lengthTiles": 40,
+      "widthTiles": 22,
+      "tileCentimeters": 125
+    },
+    "artChecks": {
+      "structural": 1845,
+      "portrait": 776,
+      "matrix": 704,
+      "bow": 9,
+      "deepGripReproduction": 312,
+      "quarterFramePoses": 44316,
+      "matrixBoneSamples": 1178094,
+      "deepGripContacts": 4830,
+      "newClipReproductionMaximumDelta": 0.0
+    },
+    "nativeSimulationScenarios": 94,
+    "fullUnrealTests": 33,
+    "actualD3D12Tests": 2,
+    "nativeImport": {
+      "imported": 381,
+      "sourceImports": 491,
+      "nativeFileInventory": 479,
+      "nativeFilesRemoved": 0
+    },
+    "audio": {
+      "retainedOriginalMasters": 63,
+      "newDeploymentTakes": 63,
+      "deploymentTakesPerCard": 3,
+      "editorMixerChecks": 76,
+      "shippingMixerChecks": 76
+    },
+    "launcherFresh": {
+      "coreChecks": 31,
+      "liveWpfCommands": 10
+    },
+    "sourceBalanceFeatureChecks": 27,
+    "productionScene": {
+      "path": "Assets/Source/RiftCrown_ProductionAssets.blend",
+      "bytes": 24405773,
+      "sha256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7"
+    },
+    "shippingScreenshotReview": {
+      "images": 10,
+      "reviewer": "Primary agent direct screenshot inspection",
+      "humanApprovalClaimed": false
+    },
+    "shippingCardDragChecks": {
+      "1920x1080": 37,
+      "1280x720": 37,
+      "total": 74
+    },
+    "unrealWarnings": {
+      "testsWithWarnings": 3,
+      "observations": [
+        "Intentional backup recovery and oversized-replay rejection assertions",
+        "Engine HTTP connectivity-probe timeout"
+      ]
+    },
+    "expansionVisualFixture": {
+      "measuredSeconds": 45,
+      "peakEntities": 208,
+      "screenshotReadbacks": 8,
+      "frameMeanMs": 21.002,
+      "frameP95Ms": 26.007,
+      "frameP99Ms": 192.701,
+      "frameMaximumMs": 485.494,
+      "framesOver50Ms": 54,
+      "limitation": "Screenshot capture and readback are enabled; this run supplies visual evidence and its timing must not be compared with screenshot-disabled performance measurements."
+    },
+    "performanceObservations": {
+      "normal": {
+        "measuredSeconds": 45,
+        "screenshotCaptureEnabled": false,
+        "width": 1920,
+        "height": 1080,
+        "frameMeanMs": 16.6687,
+        "frameP99Ms": 16.922,
+        "frameMaximumMs": 17.7179,
+        "framesOver50Ms": 0,
+        "peakEntities": 10
+      },
+      "overload": {
+        "measuredSeconds": 45,
+        "screenshotCaptureEnabled": false,
+        "width": 1920,
+        "height": 1080,
+        "frameMeanMs": 20.5452,
+        "frameP99Ms": 176.1729,
+        "frameMaximumMs": 341.4629,
+        "framesOver50Ms": 53,
+        "peakEntities": 208
+      }
+    },
+    "performanceHardware": {
+      "cpu": "AMD Ryzen 7 5700",
+      "gpu": "NVIDIA GeForce RTX 5060",
+      "qualityPreset": 2,
+      "FPSCap": 60
+    },
+    "overloadFixture": {
+      "name": "expansion-paid-both-bridges-1",
+      "seed": 74021,
+      "matches": 1,
+      "waves": 11,
+      "waveCadenceSeconds": 5,
+      "paidPlays": 352,
+      "paidAether": 1408,
+      "fixtureGrantedAether": 1374.2857142857151,
+      "entitySpawns": 1160,
+      "economy": "real legal eight-card decks and paid Match::Play; explicit sandbox aether_grant replenishment is fixture input, not natural generation",
+      "ai": "Both AI disabled; fixed legal eight-card decks; 32 paid plays per wave at prescribed mirrored positions. Later Nova casts target observed herd centers.",
+      "towerControls": "No runtime tower HP/fire override exists in this measured paid-expansion harness; default Crown combat remains. SetTowerHP in RiftPerformanceCapture.cpp belongs to a separate automation cleanup fixture.",
+      "ordinaryDifference": "Repeated explicit Aether grants and scripted mass deployment exceed natural generation. The 208-body fixture measures controlled overload, distinct from the ordinary economy sample."
+    },
+    "windowsDelivery": {
+      "portablePlay": "Actual WPF routed Play launched nativeb3a26e39 and captured1280x720 Home; both exits0",
+      "priorMsiVersion": "1.7.1",
+      "installedVersion": "1.8.0",
+      "lifecycleChecks": 51,
+      "payloadFiles": 50,
+      "savePreservation": true,
+      "standardICEValidation": true
+    }
+  },
+  "evidence": [
+    {
+      "role": "source asset structure",
+      "path": "Artifacts/QA/RosterArt180/assets-final-import.json",
+      "bytes": 249153,
+      "sha256": "5c4e8221f7229e5f48849965ce5e6e9319c893a40c860964a09deb82742c56ed"
+    },
+    {
+      "role": "portrait source bindings",
+      "path": "Artifacts/QA/RosterArt180/portraits-final-import.json",
+      "bytes": 119372,
+      "sha256": "5541a8e539351bee9bd1d81d73e7f53fff53124890ec9a2338bce860ca08471b"
+    },
+    {
+      "role": "all clip matrix safety",
+      "path": "Artifacts/QA/RosterArt180/matrices-release.json",
+      "bytes": 273513,
+      "sha256": "be22777acf06a6e83f2f94b1bdea84919153a5409ca46a118efba6dbf57404f1"
+    },
+    {
+      "role": "actual archer bow mechanics",
+      "path": "Artifacts/QA/RosterArt180/bow-world-turn-draw.json",
+      "bytes": 4012,
+      "sha256": "d690781bb5d9562f4ab64103b40348d561ef035c8607d4b38b138cf4b227ec55"
+    },
+    {
+      "role": "actual weapon contact and builder reproduction",
+      "path": "Artifacts/QA/RosterArt180/grips-release.json",
+      "bytes": 81558,
+      "sha256": "5220f253237a50db69350c99ef387393518c005d9c4fa43f735b084fc3a33a59"
+    },
+    {
+      "role": "canonical source and release notes",
+      "path": "Assets/asset_manifest.json",
+      "bytes": 334471,
+      "sha256": "0ad095ded3b8b1d486c2bf667bb79f4a39702a66e026944d07e8a3a62a09b9b7"
+    },
+    {
+      "role": "canonical source and release notes",
+      "path": "Assets/Data/card_manifest.json",
+      "bytes": 30647,
+      "sha256": "dc6c14f909029b0aa4e3ceb37983538b684375a1159846a01ca0a0c2edc168e0"
+    },
+    {
+      "role": "canonical source and release notes",
+      "path": "Assets/Data/Baselines/1.7.1.json",
+      "bytes": 30601,
+      "sha256": "572392ffd09163d1f3757cca1764ade67ea272a01e31211a8487118f9862a035"
+    },
+    {
+      "role": "source balance and feature audit",
+      "path": "Artifacts/QA/Release180/source-balance-feature-audit.json",
+      "bytes": 14720,
+      "sha256": "1d11bf4f0627bad093af69d9d6f084a59cbfa3f6765b5942e00898ed45221927"
+    },
+    {
+      "role": "native simulation94",
+      "path": "Artifacts/QA/FullUpdate180/Native/proof.json",
+      "bytes": 985,
+      "sha256": "b9cb033823b39dcc7764958920c28307cee0a4aa947a80378a291f7c2db91c47"
+    },
+    {
+      "role": "native stats and DPS",
+      "path": "Artifacts/QA/Release180/NativeStats/proof.json",
+      "bytes": 2698,
+      "sha256": "533f9c763584994954fff1a72de1d05fef5ed43306b51aa86722d84f701e52e7"
+    },
+    {
+      "role": "fresh launcher core and WPF",
+      "path": "Artifacts/QA/Launcher180/fresh-78c3e76f8cb04475947c9669873bb6f4/proof.json",
+      "bytes": 5765,
+      "sha256": "a95ac79f7a8ecf653b34347179407e1132a1496048dd1ee1534fb14359e0dfc7"
+    },
+    {
+      "role": "source audio masters",
+      "path": "Artifacts/QA/RosterAudio/verification.json",
+      "bytes": 44388,
+      "sha256": "931b6fa69709349aee825132528aa2be85eeacd86adf6871af2ef02f3c98cba7"
+    },
+    {
+      "role": "full Unreal suite33",
+      "path": "Artifacts/QA/FullUpdate180/unreal-replay-final-proof.json",
+      "bytes": 1570,
+      "sha256": "70cb7982fecba7d0a8af34d1bbd47bc8689b70750c5deca6a60af609bdc30853"
+    },
+    {
+      "role": "actual D3D12 suite2",
+      "path": "Artifacts/QA/FullUpdate180/unreal-rendered-replay-final-proof.json",
+      "bytes": 1570,
+      "sha256": "e1268415c821b456bd727a6228cb35c95d4e9469ad72a8ec16dccd620341d991"
+    },
+    {
+      "role": "full current native import",
+      "path": "Artifacts/QA/FullUpdate180/Import-eb6e9713f1ee430686a02264e16d7797/import.json",
+      "bytes": 447129,
+      "sha256": "2261b8820ff6b2e0d5352b879a160b0ac283f9df5b4561a2265be1db3d3abb61"
+    },
+    {
+      "role": "Editor mixer76",
+      "path": "Artifacts/QA/Audio/forge180-editor-replay-audio/Runs/9883386e16cb4f6a972066008e4cb7d6/run.json",
+      "bytes": 283749,
+      "sha256": "fc4651dc042b97e6e48aa6de6f54e91190badee43a1c43c733aac70bcdbf2b9c"
+    },
+    {
+      "role": "Shipping mixer76",
+      "path": "Artifacts/QA/Audio/forge180-shipping-replay-audio/Runs/63ee553a92e34bdcba96c89bb9a8837c/run.json",
+      "bytes": 103854,
+      "sha256": "1da9463fce4976f5d4bf7476a83594e582150b9207e8a9bb757ef8ce0e41fc7a"
+    },
+    {
+      "role": "final Shipping screenshot review",
+      "path": "Artifacts/QA/Release180/shipping-visual-review.json",
+      "bytes": 9497,
+      "sha256": "3a23c97457477e363423752447c3d8d9d17b69130503c298b8948454bdbe9d7b"
+    },
+    {
+      "role": "final Shipping card drag",
+      "path": "Artifacts/QA/CardDrag/forge180-final-drag-1080-verification.json",
+      "bytes": 45114,
+      "sha256": "732bf8b3d361401584beb50a6228b2bbca3ac5e92195e1024c0f269cbde5a6df"
+    },
+    {
+      "role": "final Shipping card drag",
+      "path": "Artifacts/QA/CardDrag/forge180-final-drag-720-verification.json",
+      "bytes": 45106,
+      "sha256": "dd36c580c0428e5a7cf72b770cd626fad8da98d10889472f520dc9376c592a35"
+    },
+    {
+      "role": "final MSI build",
+      "path": "Artifacts/QA/Release180/WindowsReplayFinal-bdcedc11802444429867103fe54eaa07/installer-build.json",
+      "bytes": 932,
+      "sha256": "9411ea402d51e4639ea020cd7950b08405f3ae89916d07ddbb7c69274f4a717b"
+    },
+    {
+      "role": "Shipping expansion visual fixture",
+      "path": "Artifacts/QA/Performance/forge180-final-expansion-1080/run.json",
+      "bytes": 33912,
+      "sha256": "ca7997f0a643ab696b91b48478fe1dbeda9925b738ead1bc19c79a2012324080"
+    },
+    {
+      "role": "final Shipping performance",
+      "path": "Artifacts/QA/Performance/forge180-final-match-1080/run.json",
+      "bytes": 29855,
+      "sha256": "140a6e5bcc4bc5f2e4d4231f4f3de4700e5de6ce61474985fd40d1d2a567b527"
+    },
+    {
+      "role": "final Shipping performance",
+      "path": "Artifacts/QA/Performance/forge180-final-stress-no-captures/run.json",
+      "bytes": 30234,
+      "sha256": "79a37c3d9f8f9486a5c265fffe5c9c5b86a790c1ff560449cf465f70befc08b6"
+    },
+    {
+      "role": "final Shipping performance analysis",
+      "path": "Artifacts/QA/FullUpdate180/performance-analysis.json",
+      "bytes": 8768,
+      "sha256": "2a6eeac7447c292622f725e7a33a1a43d7ad83333c4406d52678b74729cfba01"
+    },
+    {
+      "role": "final local Windows delivery",
+      "path": "Artifacts/QA/Release180/WindowsReplayFinal-bdcedc11802444429867103fe54eaa07/proof.json",
+      "bytes": 4715,
+      "sha256": "94062b85713742bdeb9806b7f086f3bf20e5f624bbc3e17a56f2dfc5ecdfae7a"
+    },
+    {
+      "role": "final package WPF Play",
+      "path": "Artifacts/QA/Release180/WindowsReplayFinal-bdcedc11802444429867103fe54eaa07/launcher-play-smoke.json",
+      "bytes": 2102,
+      "sha256": "98f4297bacad0cdb316f4404c539970e38a75c8de517545ef1679c2f9751d81f"
+    },
+    {
+      "role": "final MSI lifecycle",
+      "path": "Artifacts/QA/Release180/WindowsReplayFinal-bdcedc11802444429867103fe54eaa07/installer-tests.json",
+      "bytes": 5477,
+      "sha256": "2a038f54ccc28346f2b710f177bb37720b9c77689e256fde23875e4fd8e4b182"
+    },
+    {
+      "role": "final Windows release verification",
+      "path": "Artifacts/QA/Release180/WindowsReplayFinal-bdcedc11802444429867103fe54eaa07/windows-release-verification.json",
+      "bytes": 1082,
+      "sha256": "b271fe7080d7ca59fd4938086576e9833d24d3e9c72724162ccf87ff752ea3bb"
+    },
+    {
+      "role": "current final Windows release receipt",
+      "path": "Artifacts/Release/windows-release-verification.json",
+      "bytes": 1082,
+      "sha256": "b271fe7080d7ca59fd4938086576e9833d24d3e9c72724162ccf87ff752ea3bb"
+    },
+    {
+      "role": "actual installed lifecycle evidence",
+      "path": "Artifacts/QA/installer-58ec433cb8074fed9d6fd40fdfad120f/installed-launcher-play.json",
+      "bytes": 2098,
+      "sha256": "5280dae101557147ad96c03cbc021b0ff336067c1c04051ca2d740bcda509400"
+    }
+  ],
+  "pending": [],
+  "historicalCandidates": [
+    {
+      "scope": "Rejected before current source freeze: missing Ascension material catalog",
+      "path": "Artifacts/QA/FullUpdate180/Import-53e661201b4b451398bab9e23ac0c341/import.json"
+    },
+    {
+      "scope": "Readbacks passed but process logged missing subordinate deployment cue; superseded after guarded audio fallback",
+      "path": "Artifacts/QA/FullUpdate180/Import-584d00bd220a4ddcbd096851344556c7/import.json"
+    },
+    {
+      "scope": "Initial two native fixture/transition failures, superseded by full33 source-pinned success",
+      "path": "Artifacts/QA/FullUpdate180/unreal-first-failure.json"
+    },
+    {
+      "scope": "Earlier successful native/rendered candidates precede replay audio fix; retained as historical only",
+      "paths": [
+        "Artifacts/QA/FullUpdate180/unreal-final-proof.json",
+        "Artifacts/QA/FullUpdate180/unreal-rendered-proof.json"
+      ]
+    },
+    {
+      "scope": "Earlier69-check Editor audio runs precede replay lifecycle fix",
+      "paths": [
+        "Artifacts/QA/Audio/forge180-editor-audio/run.json",
+        "Artifacts/QA/Audio/forge180-editor-audio-final/run.json"
+      ]
+    },
+    {
+      "scope": "Earlier 1.8 MSI candidate not accepted for Play/install; superseded by final replay-fixed package",
+      "path": "Artifacts/QA/Release180/Windows-c927398bc2b849b699d5783c4b897723/installer-build.json"
+    },
+    {
+      "scope": "Pre-correction/prefreeze source comparisons retained with their own actual results",
+      "paths": [
+        "Artifacts/QA/Release180/source-audit-before-explicit-test-source-LF-normalization.json",
+        "Artifacts/QA/Release180/source-audit-before-replay-audio-fix.json",
+        "Artifacts/QA/Release180/source-balance-feature-audit-before-final-freeze.json",
+        "Artifacts/QA/Release180/source-balance-feature-audit-first-strict-file-comparison.json",
+        "Artifacts/QA/Release180/source-balance-feature-audit-second-default-codepage-comparison.json"
+      ]
+    }
+  ],
+  "limits": [
+    "Automated audio waveform/mixer checks do not establish subjective listening approval.",
+    "Source geometry/animation checks and agent screenshot inspection have distinct scopes; neither is human approval.",
+    "Earlier candidates keep their original reports and do not establish current executable acceptance.",
+    "Performance observations describe the measured scene/hardware only.",
+    "No new large Meta balance cohort is claimed; actual native card/summon definitions and computed DPS match the unchanged canonical balance.",
+    "Public download/update verification and exact merged Git tree binding remain separate post-commit/post-publication receipts.",
+    "Frozen step reports retain their original phase-specific pending markers; the final matching receipts close those gates without rewriting earlier evidence.",
+    "The208-body sandbox overload retains53 frames above50ms and is not a smooth60FPS result; ordinary45s play has0 such hitches. No matched1.7.1 performance baseline was measured."
+  ],
+  "sourceTreeBinding": "Final merged Git tree is bound by a separate ignored release seal after commit; no self-referential sourceCommit claim."
+}

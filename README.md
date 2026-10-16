@@ -3,6 +3,15 @@
 Original Windows card battler: twenty-one cards, two lanes, deterministic combat,
 seven AI personalities, deck workshop, Meta Lab, replays and developer training.
 
+Version 1.8.0 refreshes the full roster with refined models, smoother animation,
+actual-model portraits and clearer attack effects. Every playable card has
+three short recorded deployment cue variations, played once per deployment.
+Crafted metal frames, warmer typography and richer arena presentation preserve
+the existing screens, centered hand and 40-by-22 battlefield. Numerical balance
+and existing music/combat masters remain unchanged. See
+[the update notes](Docs/PATCH_NOTES_1.8.0.md) and
+[recorded audio credits](Docs/AUDIO_CREDITS_1.8.0.md).
+
 Version 1.7.1 fixes swarm troops shuffling around their targets during combat.
 Friendly troops can make room for one another while opposing troops hold their
 combat positions. Overhead slow percentage text and VEIL labels are removed;

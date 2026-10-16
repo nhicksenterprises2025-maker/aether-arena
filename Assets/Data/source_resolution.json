@@ -3,27 +3,25 @@
   "status": "approved",
   "unresolved": false,
   "releaseBlocked": false,
-  "baseline": "Assets/Data/Baselines/1.7.0.json",
-  "baselineBalanceHash": "7d23c5e1d5bb848cb887fec350fd814753210a9a81bfcf6a561d5a42d3fa15f4",
-  "startingCommit": "e47a919223056aec843ab80309b6384b97750422",
-  "version": "1.7.1",
+  "baseline": "Assets/Data/Baselines/1.7.1.json",
+  "baselineBalanceHash": "88c28ff155ef5e63becb70515e0d30b1cef10c2d0f0b7cfc53ced371e4d9c90a",
+  "startingCommit": "3e444fd0633514f37f6f67a6ed25893f27753573",
+  "version": "1.8.0",
   "confirmation": {
-    "source": "Direct user quick hotfix request and swarm-only scope correction in this chat on 2026-10-12",
-    "swarmCombatShufflingOnly": true,
-    "friendlyTroopsMayPushOneAnother": true,
-    "opponentsHoldCombatPositions": true,
-    "removeOverheadSlowPercentageText": true,
-    "removeOverheadVeilText": true
+    "source": "Direct user approval of full presentation update on 2026-10-15",
+    "fullPresentationUpdate": true,
+    "preserveGameplayAndSaves": true
   },
-  "resolvedChoices": {
-    "navigationRevision": 10
-  },
+  "resolvedChoices": {},
   "mechanicNotes": [
-    "Swarm combat: friendly troops can make room for one another, while opponents hold their combat positions. This prevents collision movement from making swarm attackers continually shuffle around their targets.",
-    "Overhead slow percentage text and VEIL labels are removed. Slow and cloak abilities and their existing visual effects remain active.",
-    "Balance unchanged: all 21 playable cards and the subordinate skeleton retain their 1.7.0 stats, abilities, model scales and assets. The arena remains 40 tiles long by 22 tiles wide.",
-    "Navigation rules revision 9 -> 10: new match, replay and Meta data use the hotfix rules identity."
+    "Presentation update: all card models, character animations and actual-model card portraits receive a unified stylized fantasy pass.",
+    "Unit presentation interpolates between fixed simulation updates; attack impacts and gameplay timing remain authoritative.",
+    "Attack and ability effects emphasize card identity, readable travel and material-specific impacts.",
+    "Each playable card has three short deployment sound variations, with one cue per deployment including swarm cards.",
+    "Interface: carved metal frames, warm ivory typography and tactile controls; the hand remains centered behind the Core Tower.",
+    "Arena presentation: richer ground, bridge and environment detail without changing the 40 by 22 tile battlefield or 125 cm tiles.",
+    "Balance unchanged: all costs, unit counts, HP, damage, intervals, speeds, ranges, abilities, collision radii and model scales retain their 1.7.1 values."
   ],
-  "unchanged": "Every playable and subordinate definition is identical to 1.7.0. Costs, HP, damage, attack intervals, movement, ranges, projectiles, abilities, collision radii, model scales, assets and arena geometry are unchanged. Only the navigation revision identifies the corrected swarm combat rules.",
-  "priorResolution": "Assets/Data/History/source_resolution_1.7.0.json"
+  "unchanged": "All numerical card/entity definitions, abilities, collision radii, model scales and arena rules remain unchanged.",
+  "priorResolution": "Assets/Data/History/source_resolution_1.7.1.json"
 }

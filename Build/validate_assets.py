@@ -10,6 +10,8 @@ report_path=opts.report if opts.report.is_absolute() else ROOT/opts.report
 report_path=report_path.resolve()
 if not report_path.is_relative_to(ROOT.resolve()):raise ValueError('Asset QA report escaped the repository')
 M=json.loads((ROOT/'Assets/asset_manifest.json').read_text())
+sys.path.insert(0,str(ROOT/'Build'))
+from generate_expansion_fx_contract import definition as expansion_fx_contract
 def source_pin(path):
     raw=path.read_bytes()
     return {'file':path.relative_to(ROOT).as_posix(),'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}
@@ -35,6 +37,17 @@ def verified_file(entry,label):
     if path.exists():check(label+' SHA256',hashlib.sha256(path.read_bytes()).hexdigest()==entry['sha256'])
 
 verified_file(M['source'],'Production scene')
+catalogs=[entry for key in ('materials','expansionMaterials','presentationMaterials') for entry in M.get(key,[])]
+declared={entry['name'] for entry in catalogs}
+check('Material catalog has unique declarations',len(declared)==len(catalogs))
+for category in ('characters','statics'):
+    for name,record in M[category].items():
+        check(name+' every referenced material declared',set(record['materials'])<=declared,
+              {'referenced':record['materials'],'missing':sorted(set(record['materials'])-declared)})
+for entry in catalogs:
+    for key in ('baseColor','normal','orm','teamMask'):
+        if key in entry:check(entry['name']+' '+key+' source exists',(ROOT/entry[key]).is_file())
+check('Expansion FX contract matches current texture and shader producers',M.get('presentationMaterials')==[expansion_fx_contract(ROOT)])
 bpy.ops.wm.open_mainfile(filepath=str(ROOT/M['source']['file']))
 required={'Idle','Locomotion','Attack','Hit','Death','Deploy','Status','Turn','Acquire'}
 for name,record in M['characters'].items():

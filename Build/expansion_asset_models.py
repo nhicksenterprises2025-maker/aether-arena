@@ -507,6 +507,7 @@ def pulse_machine(Forge):
 
 
 def actions(f, scene, set_world_rotation, aim_leg, only=None):
+    from roster_art_direction import secondary_motion
     """Separate in-place anatomy/mechanism poses; one explicit contact marker."""
     c=CONTRACTS[f.name]; marker=c['windup']/(c['windup']+c['recover'])
     # Dense authoring samples make short contact envelopes stable after import.
@@ -657,6 +658,7 @@ def actions(f, scene, set_world_rotation, aim_leg, only=None):
                 minimum=min((evaluated.matrix_world@vertex.co).z for vertex in evaluated.data.vertices)
                 if minimum<.004:
                     move('pelvis',z=-.15*fold+.004-minimum)
+            secondary_motion(f,name,t)
             for pb in f.rig.pose.bones:
                 pb.keyframe_insert('rotation_euler',frame=frame,group=pb.name)
                 pb.keyframe_insert('location',frame=frame,group=pb.name)

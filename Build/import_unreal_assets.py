@@ -174,8 +174,9 @@ def material(name, base, normal, orm, mask, glow=False, glass=False):
     flash = unreal.MaterialEditingLibrary.create_material_expression(m, unreal.MaterialExpressionScalarParameter, -150, -300)
     flash.set_editor_property("parameter_name", "HitFlash")
     flash.set_editor_property("default_value", 0.0)
-    highlight = unreal.MaterialEditingLibrary.create_material_expression(m, unreal.MaterialExpressionConstant3Vector, -150, -180)
-    highlight.set_editor_property("constant", unreal.LinearColor(1,.82,.56,1))
+    highlight = unreal.MaterialEditingLibrary.create_material_expression(m, unreal.MaterialExpressionVectorParameter, -150, -180)
+    highlight.set_editor_property("parameter_name", "HitTint")
+    highlight.set_editor_property("default_value", unreal.LinearColor(1,.82,.56,1))
     flash_lerp = unreal.MaterialEditingLibrary.create_material_expression(m, unreal.MaterialExpressionLinearInterpolate, 70, 0)
     unreal.MaterialEditingLibrary.connect_material_expressions(frost_lerp, "", flash_lerp, "A")
     unreal.MaterialEditingLibrary.connect_material_expressions(highlight, "", flash_lerp, "B")
@@ -652,7 +653,9 @@ def card_data(only=None, stats_only=False):
         if c["building"] and c["id"] in REPORT["statics"]:
             data.set_editor_property("StructureMesh", LIB.load_asset(REPORT["statics"][c["id"]]))
         data.set_editor_property("Effects", {key:LIB.load_asset("/Game/Rift/VFX/NS_Rift"+key) for key in effects})
-        sounds = {"Attack": LIB.load_asset("/Game/Rift/Audio/SFX_" + attacks[c["id"]]), "Deploy":LIB.load_asset("/Game/Rift/Audio/SFX_deploy"), "Hit":LIB.load_asset("/Game/Rift/Audio/SFX_building_hit" if c["id"] == "pulverizer" else "/Game/Rift/Audio/SFX_sword_hit")}
+        deploy_path = "/Game/Rift/Audio/SFX_spawn_" + c["id"]
+        deploy = LIB.load_asset(deploy_path if LIB.does_asset_exist(deploy_path) else "/Game/Rift/Audio/SFX_deploy")
+        sounds = {"Attack": LIB.load_asset("/Game/Rift/Audio/SFX_" + attacks[c["id"]]), "Deploy":deploy, "Hit":LIB.load_asset("/Game/Rift/Audio/SFX_building_hit" if c["id"] == "pulverizer" else "/Game/Rift/Audio/SFX_sword_hit")}
         if any(v is None for v in sounds.values()):
             raise RuntimeError("Missing sound binding for " + c["id"])
         data.set_editor_property("Sounds", sounds)
@@ -958,7 +961,7 @@ def main():
         audio_spec = audio_manifest["sounds"][wav.stem]
         sound.set_editor_property("looping", audio_spec["loop"])
         sound.set_editor_property("compression_quality", 90)
-        sound.set_editor_property("priority", 100.0 if audio_spec["loop"] else 65.0 if audio_spec.get("role") in ("announcement", "interface") else 40.0)
+        sound.set_editor_property("priority", 100.0 if audio_spec["loop"] else 75.0 if audio_spec.get("role") == "deployment" else 65.0 if audio_spec.get("role") in ("announcement", "interface") else 40.0)
         sound.set_editor_property("loading_behavior", unreal.SoundWaveLoadingBehavior.RETAIN_ON_LOAD if audio_spec["loop"] else unreal.SoundWaveLoadingBehavior.FORCE_INLINE)
         save(sound)
     if not LIB.save_directory("/Game/Rift", False, True):

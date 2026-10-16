@@ -13,6 +13,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT/'Build'))
 import expansion_asset_models as expansion_models
 import expansion_new_models as new_models
+from roster_art_direction import polish_geometry, secondary_motion
+from asset_file_io import write_json
+from generate_expansion_fx_contract import definition as expansion_fx_contract
 from split_guard_cannon import split_guard_mesh, guard_socket_metadata
 from upgrade_card_models import (PALETTE_ADDITIONS, humanoid_costume, clean_creature_details,
                                  nova_flask, meteor_shard, bullet_round, archer_tower,
@@ -163,9 +166,9 @@ if not opts.replacement_proof:
     scene.view_settings.view_transform='AgX'
 
 PALETTE={
- 'iron':(.14,.21,.26,.72,.38), 'steel':(.32,.43,.50,.82,.30),
- 'silver':(.70,.82,.87,.88,.23), 'brass':(.65,.44,.16,.74,.38),
- 'cloth_blue':(.045,.19,.30,.0,.87), 'cloth_ember':(.43,.085,.044,.0,.9),
+ 'iron':(.18,.255,.31,.62,.43), 'steel':(.38,.51,.59,.70,.36),
+ 'silver':(.77,.86,.90,.80,.28), 'brass':(.78,.51,.16,.63,.40),
+ 'cloth_blue':(.055,.24,.38,.0,.85), 'cloth_ember':(.56,.105,.045,.0,.87),
  'cloth_purple':(.19,.066,.29,.0,.86), 'cloth_indigo':(.09,.12,.34,.0,.82),
  'leather':(.125,.057,.03,.0,.85), 'wood':(.25,.105,.044,.0,.91),
  'skin':(.67,.40,.25,.0,.78), 'stone':(.24,.30,.285,.0,.95),
@@ -179,7 +182,7 @@ PALETTE={
  'black':(.012,.018,.025,.0,.85), 'ivory':(.82,.87,.85,.0,.42),
  'cyan':(.025,.63,.85,.0,.24), 'violet':(.44,.055,.76,.0,.25),
  'ember':(.94,.22,.045,.0,.30), 'team':(.035,.45,.65,.2,.52),
- 'grass':(.11,.25,.08,.0,.94), 'grass_light':(.23,.36,.105,.0,.90),
+ 'grass':(.145,.30,.075,.0,.94), 'grass_light':(.28,.43,.105,.0,.90),
  'water':(.025,.21,.30,.15,.16), 'glass':(.235,.025,.43,.1,.14),
 }
 PALETTE.update(PALETTE_ADDITIONS)
@@ -214,9 +217,12 @@ def textures(prefix='T_RiftAtlas'):
                     elif key in ('wood','horn'):value=.98+.022*(noise-.5)+.050*(grain-.5)
                     elif 'stone' in key or key=='limestone' or key.startswith('meteor'):value=.97+.065*(noise-.5)+.025*stone
                     else:value=.99+.022*(noise-.5)+.010*texture
-                    if channel=='BaseColor': col=[min(1,max(0,b*value)) for b in base[:3]]
+                    # Broad painted light/edge variation survives the battle
+                    # camera; micro-noise stays restrained on large surfaces.
+                    paint=.955+.075*math.sin(math.pi*u)*math.sin(math.pi*v)+.025*(v-.5)
+                    if channel=='BaseColor': col=[min(1,max(0,b*value*paint)) for b in base[:3]]
                     elif channel=='ORM': col=[.88+.1*noise,min(1,max(.05,base[4]+.06*(noise-.5))),base[3]]
-                    elif channel=='Normal': col=[.5+.025*math.sin(u*55+v*11),.5+.025*math.cos(v*59-u*8),.998]
+                    elif channel=='Normal': col=[.5+.010*math.sin(u*55+v*11),.5+.010*math.cos(v*59-u*8),.999]
                     else: col=[1,1,1] if key=='team' else [0,0,0]
                     off=(((cy*CELL+yy)*ATLAS)+(cx*CELL+xx))*4
                     pix[off:off+4]=col+[1]
@@ -290,9 +296,9 @@ if not PREVIEW or PREVIEW.intersection(expansion_models.CONTRACTS):
 if (UPDATE and UPDATE.intersection(set(new_models.CONTRACTS)|set(new_models.STATIC_IDS))) or \
    (PREVIEW and PREVIEW.intersection(set(new_models.CONTRACTS)|set(new_models.STATIC_IDS))) or not (UPDATE or PREVIEW):
     saved_palette,saved_tex=dict(PALETTE),TEX
-    PALETTE.update({'iron':(.065,.073,.08,.76,.43),'ivory':(.79,.73,.59,0,.48),
-                    'cloth_indigo':(.025,.039,.105,0,.84),'cloth_purple':(.235,.15,.29,0,.88),
-                    'teal_light':(.15,.64,.22,0,.34),'glass':(.12,.06,.20,.05,.33),
+    PALETTE.update({'iron':(.17,.205,.24,.54,.48),'ivory':(.83,.78,.64,0,.52),
+                    'cloth_indigo':(.09,.13,.21,0,.88),'cloth_purple':(.19,.145,.24,0,.88),
+                    'teal_light':(.13,.50,.255,0,.42),'glass':(.15,.10,.25,.03,.36),
                     'ember':(.95,.43,.08,0,.30)})
     if opts.polish_expansion_surfaces:
         PALETTE.update({'iron':(.17,.205,.24,.54,.48),'steel':(.37,.44,.50,.65,.39),
@@ -325,11 +331,14 @@ manifest=json.loads(json.dumps(previous_manifest)) if previous_manifest else {'s
                'normal':Path(TEX['Normal'].filepath_raw).relative_to(ROOT).as_posix(),
                'teamMask':Path(TEX['TeamMask'].filepath_raw).relative_to(ROOT).as_posix()} for m in (SURFACE,GLOW,GLASS)],
  'characters':{},'statics':{},'illustrations':{},'renders':[]}
-manifest['build']='UE-balance-expansion-source'
+manifest['build']='UE-crafted-roster-1.8.0'
 if EXPANSION_MATERIALS and not opts.replacement_proof:
-    manifest['expansionMaterials']=[{'name':m.name,'baseColor':'Assets/Source/Textures/T_RiftExpansionAtlas_BaseColor.png',
+    expansion_material_records=[{'name':m.name,'baseColor':'Assets/Source/Textures/T_RiftExpansionAtlas_BaseColor.png',
         'orm':'Assets/Source/Textures/T_RiftExpansionAtlas_ORM.png','normal':'Assets/Source/Textures/T_RiftExpansionAtlas_Normal.png',
         'teamMask':'Assets/Source/Textures/T_RiftExpansionAtlas_TeamMask.png'} for m in EXPANSION_MATERIALS]
+    declared={record['name']:record for record in manifest.get('expansionMaterials',[])}
+    declared.update({record['name']:record for record in expansion_material_records})
+    manifest['expansionMaterials']=list(declared.values())
 if NEW_MATERIALS and not opts.replacement_proof:
     new_material_records=[{'name':m.name,
         'baseColor':'Assets/Source/Textures/T_RiftAscensionAtlas_BaseColor.png',
@@ -416,6 +425,7 @@ class Forge:
             self.tube('rift_rune',[(x-sign*size*.48,y,z-size*.64),(x+sign*size*.48,y,z+size*.64)],[.012,.012],key,bone,6,True)
     def finish(self,skinned=False):
         if skinned and self.family not in ('humanoid','mechanism'): clean_creature_details(self)
+        polish_geometry(self,skinned)
         bpy.ops.object.select_all(action='DESELECT')
         for o in self.parts:o.select_set(True)
         bpy.context.view_layer.objects.active=self.parts[0]; bpy.ops.object.join()
@@ -663,7 +673,8 @@ def actions(f):
              'ember_archer':{'DrawRelease':46},'arc_mage':{'Cast':30},'twin_blades':{'AlternateStrike':44},
              'boulderback':{'HeavyImpact':60},'tower_archer':{'DrawRelease':33}}
     standard.update(special.get(f.name,{})); made=[]
-    for name,length in standard.items():
+    for name,original_length in standard.items():
+        length=(original_length-1)*2+1
         act=bpy.data.actions.new('AN_'+f.name+'_'+name);f.rig.animation_data_create(); f.rig.animation_data.action=act
         for pb in f.rig.pose.bones:pb.rotation_mode='XYZ';pb.rotation_euler=(0,0,0);pb.location=(0,0,0);pb.scale=(1,1,1)
         for frame in range(1,length+1):
@@ -694,7 +705,9 @@ def actions(f):
                     if f.name in ('ember_archer','tower_archer'):
                         rot('upperarm_l',-1.20*wind,0,-.30*wind);rot('forearm_l',-.22*wind)
                         rot('upperarm_r',-.70*wind,0,.60*wind);rot('forearm_r',-1.15*wind+.50*strike)
-                        rot('chest',0,0,-.15*wind)
+                        chest=f.rig.pose.bones['chest']
+                        parent=chest.parent.matrix.to_quaternion()@chest.parent.bone.matrix_local.to_quaternion().inverted()
+                        set_world_rotation(chest,Quaternion(Vector((0,0,1)),.55*wind)@parent@chest.bone.matrix_local.to_quaternion())
                     elif f.name=='arc_mage':
                         rot('upperarm_r',-.78*wind-.42*strike);rot('forearm_r',-.47*wind+.35*strike)
                         rot('upperarm_l',-.42*wind);rot('chest',-.08*strike,0,.08*wind)
@@ -745,11 +758,30 @@ def actions(f):
             if attack and f.family=='humanoid':
                 if f.name in ('ember_archer','tower_archer'):
                     k=f.bones['head']['head'][2]/1.6
-                    aim_arm(f,'l',Vector((-.12*k,-.43,1.46*k)),wind)
-                    aim_arm(f,'r',Vector((-.12*k,-.242+.075*strike,1.46*k)),wind)
-                    # Keep bow and attached arrow vertical/forward while the shoulder draws.
-                    for side in ('l','r'):
-                        hand=f.rig.pose.bones['hand_'+side];set_world_rotation(hand,hand.bone.matrix_local.to_quaternion())
+                    aim_arm(f,'l',Vector((0,-.64,1.52*k)),wind)
+                    # Bow and string share the evaluated left-hand transform.
+                    # The right wrist follows the drawn nock itself instead
+                    # of an approximate point on the character's torso.
+                    left=f.rig.pose.bones['hand_l'];set_world_rotation(left,left.bone.matrix_local.to_quaternion())
+                    nock=f.rig.pose.bones['bow_nock']
+                    draw=Vector((0,.14*smooth((t-.16)/.21)*(1-strike),0))
+                    nock.location=nock.bone.matrix_local.to_3x3().inverted()@draw
+                    bpy.context.view_layer.update()
+                    transform=left.matrix@left.bone.matrix_local.inverted()
+                    nock_world=transform@(nock.bone.head_local+draw)
+                    right=f.bones['hand_r']
+                    grip=Vector(((right['head'][0]+right['tail'][0])*.5,-.162,
+                                 (right['head'][2]+right['tail'][2])*.5))
+                    pinch=grip+Vector((0,-.035,.0015))
+                    target=nock_world-(pinch-Vector(right['head']))
+                    strength=smooth(t/.18) if t<=.48 else wind
+                    upper=f.rig.pose.bones['upperarm_r'];fore=f.rig.pose.bones['forearm_r']
+                    parent=upper.parent.matrix@upper.parent.bone.matrix_local.inverted()
+                    rest=parent@fore.bone.tail_local
+                    arc=math.sin(math.pi*strength)
+                    travel=rest.lerp(target,strength)+Vector((0,-.20*arc,.035*arc))
+                    aim_arm(f,'r',travel,1.)
+                    hand=f.rig.pose.bones['hand_r'];set_world_rotation(hand,hand.bone.matrix_local.to_quaternion())
                 elif f.name in ('ironclad','twin_blades'):
                     side='r';raised=Vector((.32,-.18,1.61));contact=Vector((.30,-.47,1.20))
                     target=raised.lerp(contact,strike);aim_arm(f,side,target,wind)
@@ -760,12 +792,16 @@ def actions(f):
                         hand=f.rig.pose.bones['hand_l'];q=hand.bone.matrix_local.to_quaternion();set_world_rotation(hand,q.slerp(turn@q,alternate))
             if name in ('Locomotion','Charge') and f.family in ('humanoid','quadruped'):
                 contact_gait(f,t,name=='Charge')
+            secondary_motion(f,name,t)
             for pb in f.rig.pose.bones:
                 pb.keyframe_insert('rotation_euler',frame=frame,group=pb.name)
                 pb.keyframe_insert('location',frame=frame,group=pb.name)
                 pb.keyframe_insert('scale',frame=frame,group=pb.name)
+        curves=list(act.fcurves) if hasattr(act,'fcurves') else [curve for layer in act.layers for strip in layer.strips for bag in strip.channelbags for curve in bag.fcurves]
+        for curve in curves:
+            for point in curve.keyframe_points:point.interpolation='LINEAR'
         act.use_fake_user=True
-        made.append({'name':name,'action':act.name,'frames':length,'seconds':(length-1)/30,
+        made.append({'name':name,'action':act.name,'frames':length,'fps':60,'seconds':(length-1)/60,
                      'releaseNormalized':.48 if attack else None,'loop':name in ('Idle','Locomotion','Charge','WingCycle','Breath','Status'),
                      'strideMeters':gait_stride(f,name=='Charge') if name in ('Locomotion','Charge') and f.family in ('humanoid','quadruped') else None,
                      'object':act})
@@ -1271,7 +1307,7 @@ if preserved_signatures:
     after=source_signatures(preserved_signatures['objects'],preserved_signatures['actions'])
     if after!=preserved_signatures:raise RuntimeError('Existing model, material, UV, rest joint or animation changed during additions')
 blend=ROOT/previous_manifest['source']['file'] if opts.replacement_proof else SRC/'RiftCrown_ProductionAssets.blend'
-bpy.ops.wm.save_as_mainfile(filepath=str(blend),compress=bool(opts.replacement_proof))
+bpy.ops.wm.save_as_mainfile(filepath=str(blend),compress=True)
 manifest['source']=file_info(blend)
 card_bindings={
  'ironclad':{'skeletal':'ironclad'},'ember_archer':{'skeletal':'ember_archer'},
@@ -1304,7 +1340,8 @@ guard_socket_metadata(manifest['statics'])
 manifest['statics'].get('tower_core',{}).update({'sockets':{'muzzle':{'positionMeters':[0,0,3.88]},'hp_anchor':{'positionMeters':[0,0,4.55]}}})
 manifest['statics'].get('archer_tower',{}).update({'sockets':{'archer_base':{'positionMeters':[0,0,1.94]},'hp_anchor':{'positionMeters':[0,0,2.9]}}})
 manifestPath=ROOT/'Assets/asset_manifest.json'
-manifestPath.write_text(json.dumps(manifest,indent=2),encoding='utf-8')
+manifest['presentationMaterials']=[expansion_fx_contract(ROOT)]
+write_json(manifestPath,manifest)
 if opts.production_proof:
     proof=opts.production_proof.resolve();proof.relative_to((ROOT/'Assets/Source/Revisions').resolve())
     if proof.exists():raise ValueError('Production preservation evidence cannot be overwritten')

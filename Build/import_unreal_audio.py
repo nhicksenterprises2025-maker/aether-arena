@@ -37,7 +37,7 @@ for name, data in manifest["sounds"].items():
         raise RuntimeError("Audio import failed: " + name)
     sound.set_editor_property("looping", data["loop"])
     sound.set_editor_property("compression_quality", 90)
-    sound.set_editor_property("priority", 100.0 if data["loop"] else 65.0 if data["role"] in ("announcement", "interface") else 40.0)
+    sound.set_editor_property("priority", 100.0 if data["loop"] else 75.0 if data["role"] == "deployment" else 65.0 if data["role"] in ("announcement", "interface") else 40.0)
     sound.set_editor_property("loading_behavior", unreal.SoundWaveLoadingBehavior.RETAIN_ON_LOAD if data["loop"] else unreal.SoundWaveLoadingBehavior.FORCE_INLINE)
     if not library.save_loaded_asset(sound, False):
         raise RuntimeError("Audio save failed: " + name)

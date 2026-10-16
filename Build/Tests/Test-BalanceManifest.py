@@ -19,13 +19,18 @@ def main():
     current = json.loads((ROOT / "Assets/Data/card_manifest.json").read_text())
     baseline = json.loads((ROOT / "Assets/Data/Baselines/1.5.0.json").read_text())
     validate(current); validate(baseline)
-    expanded = json.loads((ROOT / current["baseline"]).read_text())
+    expanded = json.loads((ROOT / "Assets/Data/Baselines/1.5.0-expanded-schema.json").read_text())
     validate(expanded)
     assert expanded["schema"] == 2 and expanded["derivedFrom"]["balanceHash"] == baseline["balanceHash"]
     for before, derivative in zip(baseline["cards"], expanded["cards"]):
         assert all(derivative[key] == value for key, value in before.items())
     assert len(current["cards"]) == 21 and len(current["entities"]) == 1
-    assert current["rules"]["arenaWidth"] == 24 and current["rules"]["arenaHeight"] == 34
+    assert current["rules"]["arenaWidth"] == 22 and current["rules"]["arenaHeight"] == 40
+    release_baseline = json.loads((ROOT / current["baseline"]).read_text())
+    assert current["cards"] == release_baseline["cards"]
+    assert current["entities"] == release_baseline["entities"]
+    assert current["rules"] == release_baseline["rules"]
+    assert current["balanceHash"] == release_baseline["balanceHash"]
     assert (ROOT / "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Simulation/RiftArenaRules.generated.inc").read_text() == generate_arena(current)
     assert (ROOT / "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftCardManifest.generated.inc").read_text() == generate(current)
     visual = copy.deepcopy(current)
@@ -50,7 +55,7 @@ def main():
         lambda m: m["rules"].update(arenaWidth=25),
         lambda m: m["rules"].update(arenaHeight=0),
         lambda m: m["rules"].update(bridgeCenterX=11),
-        lambda m: m["rules"].update(coreDepth=16.5),
+        lambda m: m["rules"].update(coreDepth=m["rules"]["arenaHeight"] / 2 - 1),
         lambda m: m["rules"].pop("guardDepth")]
     for mutate in mutations:
         fixture = copy.deepcopy(current);mutate(fixture)

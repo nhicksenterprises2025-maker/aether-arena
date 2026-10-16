@@ -7,6 +7,7 @@ from pathlib import Path
 import hashlib
 import json
 import shutil
+import subprocess
 import urllib.parse
 import urllib.request
 import zipfile
@@ -32,10 +33,15 @@ def main():
         for record in prior["files"]:
             target = OUT / record["file"]
             if not target.exists() and "archiveMember" in record:
-                archive = CACHE / (record["author"] + ".zip")
+                archive_format = record.get("archiveFormat", "zip")
+                archive = CACHE / (record.get("archiveName", record["author"]) + "." + archive_format)
                 download(record["url"], archive)
-                with zipfile.ZipFile(archive) as source:
-                    target.write_bytes(source.read(record["archiveMember"]))
+                if archive_format == "7z":
+                    extracted = subprocess.run(["tar", "-xOf", str(archive), record["archiveMember"]], check=True, capture_output=True)
+                    target.write_bytes(extracted.stdout)
+                else:
+                    with zipfile.ZipFile(archive) as source:
+                        target.write_bytes(source.read(record["archiveMember"]))
             else:
                 download(record["url"], target)
             if hashlib.sha256(target.read_bytes()).hexdigest() != record["sha256"]:
@@ -97,7 +103,7 @@ def main():
         download(url, target)
         records.append({"file": target.name, "author": "Versilian Studios / Sam Gossner / Simon Dalzell", "license": "CC0-1.0", "page": "https://versilian-studios.com/vsco-community/", "url": url, "sha256": hashlib.sha256(target.read_bytes()).hexdigest()})
     download(f"https://raw.githubusercontent.com/sgossner/VSCO-2-CE/{commit}/LICENSE", OUT / "LICENSE-VSCO.txt")
-    prior_path.write_text(json.dumps({"schemaVersion": 1, "license": "CC0-1.0", "files": records}, indent=2) + "\n", encoding="utf-8")
+    prior_path.write_text(json.dumps({"schemaVersion": 1, "license": "CC0-1.0", "files": records}, indent=2) + "\n", encoding="utf-8", newline="\n")
     print(f"Fetched {len(records)} CC0 palette samples")
 
 

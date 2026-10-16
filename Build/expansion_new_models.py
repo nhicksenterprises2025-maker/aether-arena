@@ -790,6 +790,7 @@ def build(Forge,name):
 
 
 def actions(f,scene,set_world_rotation,aim_leg,aim_arm):
+    from roster_art_direction import secondary_motion
     """Authored poses sampled at 100 Hz; the simulation retains every timing."""
     c=CONTRACTS[f.name];marker=c['windup']/(c['windup']+c['recover']);fps=100
     durations={'Idle':2.,'Locomotion':c['cycle'],'Attack':c['windup']+c['recover'],
@@ -1005,6 +1006,7 @@ def actions(f,scene,set_world_rotation,aim_leg,aim_arm):
                 rotate('head',.015*pulse);rotate('chest',.012*pulse)
             if not specter and clip!='Locomotion':feet()
             owning_grips(clip)
+            secondary_motion(f,clip,t)
             for pb in f.rig.pose.bones:
                 for channel in ('rotation_euler','location','scale'):pb.keyframe_insert(channel,frame=frame,group=pb.name)
         curves=list(action.fcurves) if hasattr(action,'fcurves') else [c for layer in action.layers for strip in layer.strips for bag in strip.channelbags for c in bag.fcurves]

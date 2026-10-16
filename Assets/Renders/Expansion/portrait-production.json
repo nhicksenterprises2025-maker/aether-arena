@@ -2,31 +2,31 @@
   "schema": 1,
   "sourceBlend": {
     "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
-    "sha256": "b7c215a00681328298919bb147900285a00335729934d08c28d9b7c608296929",
-    "bytes": 22079995
+    "sha256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
+    "bytes": 24405773
   },
   "renderer": {
     "file": "Build/render_expansion_portraits.py",
-    "sha256": "eb5438d1ef41465b7d71f91279ccdba649b927f249c99b989e1f3d7152b11eff",
-    "bytes": 16097
+    "sha256": "8946c1eaab4eea52a23f995e91bb5c339fb668a4df9008e5dfcc2ea5bb5ee506",
+    "bytes": 16018
   },
   "cards": {
     "mini_stampede": {
       "file": "Assets/Source/CardArt/mini_stampede.png",
-      "sha256": "c51cbd809db9652b226401daf82470d56292c29cbe2f57799dad6dc4ccb01f97",
-      "bytes": 911859,
-      "sourceSceneSHA256": "b7c215a00681328298919bb147900285a00335729934d08c28d9b7c608296929",
+      "sha256": "d88c3a81a3667c274f175ed33e9b9e697858b0aad3040b4fa564b9040fb1a1b0",
+      "bytes": 913014,
+      "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
       "rendererScript": {
         "file": "Build/render_expansion_portraits.py",
-        "sha256": "eb5438d1ef41465b7d71f91279ccdba649b927f249c99b989e1f3d7152b11eff",
-        "bytes": 16097
+        "sha256": "8946c1eaab4eea52a23f995e91bb5c339fb668a4df9008e5dfcc2ea5bb5ee506",
+        "bytes": 16018
       },
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/mini_stampede/SK_mini_stampede.fbx",
-            "sha256": "98d78e53662f99ab42089e8339957f81ce06b9b34f29dc9b3e5364eff6089e85",
-            "bytes": 729500
+            "sha256": "1299fd0b4d7f332282711b838138492cdd8b659df0b44b1ec5e1ad72c7e60ad5",
+            "bytes": 731420
           },
           "action": "Locomotion",
           "phase": 0.09,
@@ -45,8 +45,8 @@
         {
           "model": {
             "file": "Assets/Export/Characters/mini_stampede/SK_mini_stampede.fbx",
-            "sha256": "98d78e53662f99ab42089e8339957f81ce06b9b34f29dc9b3e5364eff6089e85",
-            "bytes": 729500
+            "sha256": "1299fd0b4d7f332282711b838138492cdd8b659df0b44b1ec5e1ad72c7e60ad5",
+            "bytes": 731420
           },
           "action": "Locomotion",
           "phase": 0.155,
@@ -65,8 +65,8 @@
         {
           "model": {
             "file": "Assets/Export/Characters/mini_stampede/SK_mini_stampede.fbx",
-            "sha256": "98d78e53662f99ab42089e8339957f81ce06b9b34f29dc9b3e5364eff6089e85",
-            "bytes": 729500
+            "sha256": "1299fd0b4d7f332282711b838138492cdd8b659df0b44b1ec5e1ad72c7e60ad5",
+            "bytes": 731420
           },
           "action": "Locomotion",
           "phase": 0.22,
@@ -85,8 +85,8 @@
         {
           "model": {
             "file": "Assets/Export/Characters/mini_stampede/SK_mini_stampede.fbx",
-            "sha256": "98d78e53662f99ab42089e8339957f81ce06b9b34f29dc9b3e5364eff6089e85",
-            "bytes": 729500
+            "sha256": "1299fd0b4d7f332282711b838138492cdd8b659df0b44b1ec5e1ad72c7e60ad5",
+            "bytes": 731420
           },
           "action": "Locomotion",
           "phase": 0.28500000000000003,
@@ -105,8 +105,8 @@
         {
           "model": {
             "file": "Assets/Export/Characters/mini_stampede/SK_mini_stampede.fbx",
-            "sha256": "98d78e53662f99ab42089e8339957f81ce06b9b34f29dc9b3e5364eff6089e85",
-            "bytes": 729500
+            "sha256": "1299fd0b4d7f332282711b838138492cdd8b659df0b44b1ec5e1ad72c7e60ad5",
+            "bytes": 731420
           },
           "action": "Locomotion",
           "phase": 0.35,
@@ -132,7 +132,7 @@
         [
           0.962803304195404,
           1.9616512060165405,
-          0.7447189092636108
+          0.7464004158973694
         ]
       ],
       "poseFrame": 1,
@@ -142,18 +142,18 @@
       "subjectCount": 5,
       "master": {
         "file": "Assets/Source/CardArt/Masters/mini_stampede.png",
-        "sha256": "49d91bb22b14827f9a13e1ab4ab0caca6778f41eab5ffbcab7c1d187b847c0ae",
-        "bytes": 1583365
+        "sha256": "772b927a1887ebfc080581f02c46b7602b3cab4dd300ea8e914695eac67b7432",
+        "bytes": 1584809
       },
       "editableScene": {
         "file": "Assets/Source/CardArt/Scenes/mini_stampede_Portrait.blend",
-        "bytes": 4814606,
-        "sha256": "7a6b5f326a3ff0accf5e326e4c816d27d3062e0aa248bd7c4daa61221f3e724e"
+        "sha256": "7a828ac7e1e3dfb7e4148248ca469c5007f598b9eedf3b0a97d3a379ebfd1f81",
+        "bytes": 4783542
       },
       "smallReview": {
         "file": "Assets/Renders/Expansion/Small/mini_stampede_96x120.png",
-        "sha256": "e8bc62b5608c50eeb3331acb1456a70750157a534f4abdf460542f86753e5593",
-        "bytes": 19747
+        "sha256": "3903cabb11d9873627fbcd58384ebe51ea583c51a87d36414d541c447daa192b",
+        "bytes": 19768
       },
       "runtimeResolution": [
         768,
@@ -170,29 +170,24 @@
       "safeZones": {
         "topLeftBadge": 0.2,
         "bottomName": 0.14
-      },
-      "sceneFinalizer": {
-        "file": "Build/finalize_expansion_art_scenes.py",
-        "bytes": 2162,
-        "sha256": "9f2b0e01fc0551b378303fa1bb2a27439d894faea494a0b2e25a15f1890dadee"
       }
     },
     "stampede": {
       "file": "Assets/Source/CardArt/stampede.png",
-      "sha256": "bc995ee6facc983b003f9dbb9bcc7715c96a7d7ba85b5d334206a9470661c561",
-      "bytes": 924840,
-      "sourceSceneSHA256": "b7c215a00681328298919bb147900285a00335729934d08c28d9b7c608296929",
+      "sha256": "0f0a81bf0ffd6d885758f6fd8b96a83c2d18c8ad2fde6b3590e26ebbb7287e81",
+      "bytes": 924604,
+      "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
       "rendererScript": {
         "file": "Build/render_expansion_portraits.py",
-        "sha256": "eb5438d1ef41465b7d71f91279ccdba649b927f249c99b989e1f3d7152b11eff",
-        "bytes": 16097
+        "sha256": "8946c1eaab4eea52a23f995e91bb5c339fb668a4df9008e5dfcc2ea5bb5ee506",
+        "bytes": 16018
       },
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
-            "bytes": 741884
+            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
+            "bytes": 742460
           },
           "action": "Locomotion",
           "phase": 0.09,
@@ -211,8 +206,8 @@
         {
           "model": {
             "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
-            "bytes": 741884
+            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
+            "bytes": 742460
           },
           "action": "Locomotion",
           "phase": 0.137,
@@ -231,8 +226,8 @@
         {
           "model": {
             "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
-            "bytes": 741884
+            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
+            "bytes": 742460
           },
           "action": "Locomotion",
           "phase": 0.184,
@@ -251,8 +246,8 @@
         {
           "model": {
             "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
-            "bytes": 741884
+            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
+            "bytes": 742460
           },
           "action": "Locomotion",
           "phase": 0.231,
@@ -271,8 +266,8 @@
         {
           "model": {
             "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
-            "bytes": 741884
+            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
+            "bytes": 742460
           },
           "action": "Locomotion",
           "phase": 0.278,
@@ -291,8 +286,8 @@
         {
           "model": {
             "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
-            "bytes": 741884
+            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
+            "bytes": 742460
           },
           "action": "Locomotion",
           "phase": 0.09,
@@ -311,8 +306,8 @@
         {
           "model": {
             "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
-            "bytes": 741884
+            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
+            "bytes": 742460
           },
           "action": "Locomotion",
           "phase": 0.137,
@@ -331,8 +326,8 @@
         {
           "model": {
             "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
-            "bytes": 741884
+            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
+            "bytes": 742460
           },
           "action": "Locomotion",
           "phase": 0.184,
@@ -351,8 +346,8 @@
         {
           "model": {
             "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
-            "bytes": 741884
+            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
+            "bytes": 742460
           },
           "action": "Locomotion",
           "phase": 0.231,
@@ -371,8 +366,8 @@
         {
           "model": {
             "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
-            "bytes": 741884
+            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
+            "bytes": 742460
           },
           "action": "Locomotion",
           "phase": 0.278,
@@ -391,8 +386,8 @@
         {
           "model": {
             "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
-            "bytes": 741884
+            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
+            "bytes": 742460
           },
           "action": "Locomotion",
           "phase": 0.09,
@@ -411,8 +406,8 @@
         {
           "model": {
             "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
-            "bytes": 741884
+            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
+            "bytes": 742460
           },
           "action": "Locomotion",
           "phase": 0.137,
@@ -431,8 +426,8 @@
         {
           "model": {
             "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
-            "bytes": 741884
+            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
+            "bytes": 742460
           },
           "action": "Locomotion",
           "phase": 0.184,
@@ -451,8 +446,8 @@
         {
           "model": {
             "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
-            "bytes": 741884
+            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
+            "bytes": 742460
           },
           "action": "Locomotion",
           "phase": 0.231,
@@ -471,8 +466,8 @@
         {
           "model": {
             "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "4d1fb76908425f27bf53f9e337608bb0a684521d0b00752b5ddcf96e21cff453",
-            "bytes": 741884
+            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
+            "bytes": 742460
           },
           "action": "Locomotion",
           "phase": 0.278,
@@ -498,7 +493,7 @@
         [
           1.3145819902420044,
           1.823384165763855,
-          0.4874908924102783
+          0.4887016713619232
         ]
       ],
       "poseFrame": 1,
@@ -508,18 +503,18 @@
       "subjectCount": 15,
       "master": {
         "file": "Assets/Source/CardArt/Masters/stampede.png",
-        "sha256": "41b5b307155e489d898b9ec2bb80f1270a2d8ebaaa781ef958d7d5d8459f1264",
-        "bytes": 1608798
+        "sha256": "6304744883bc1f670fe769091b1334b761bed361837a5e1f1af466b4ff97b621",
+        "bytes": 1609106
       },
       "editableScene": {
         "file": "Assets/Source/CardArt/Scenes/stampede_Portrait.blend",
-        "bytes": 10155105,
-        "sha256": "b126f61697cdf5c73de0e983354fc3332e5749a48c4db8655ac3756a3dfc703e"
+        "sha256": "99251a580fb8141f433ed5d913855930f15860e66d8e4961b4567acd9ed2ff6c",
+        "bytes": 10091179
       },
       "smallReview": {
         "file": "Assets/Renders/Expansion/Small/stampede_96x120.png",
-        "sha256": "ce3833eceef62dcd03eeba4f49d9d884e96f8a7744f7c7548caaf89daccad2d7",
-        "bytes": 19504
+        "sha256": "30ba4d88cd52f6a72715968bb2d82063ac95de8164118d328d2018104c9c32e7",
+        "bytes": 19465
       },
       "runtimeResolution": [
         768,
@@ -536,29 +531,24 @@
       "safeZones": {
         "topLeftBadge": 0.2,
         "bottomName": 0.14
-      },
-      "sceneFinalizer": {
-        "file": "Build/finalize_expansion_art_scenes.py",
-        "bytes": 2162,
-        "sha256": "9f2b0e01fc0551b378303fa1bb2a27439d894faea494a0b2e25a15f1890dadee"
       }
     },
     "pulverizer": {
       "file": "Assets/Source/CardArt/pulverizer.png",
-      "sha256": "4e6068f2cbbcfc0683efa936cac9216cbde4d2c31ab1305a4644d8dbbcdcfc4b",
-      "bytes": 909186,
-      "sourceSceneSHA256": "b7c215a00681328298919bb147900285a00335729934d08c28d9b7c608296929",
+      "sha256": "5097eb15701f729f07aceb115f0c8c2d8179cbe8d30a425a5f068179370f7c06",
+      "bytes": 909178,
+      "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
       "rendererScript": {
         "file": "Build/render_expansion_portraits.py",
-        "sha256": "eb5438d1ef41465b7d71f91279ccdba649b927f249c99b989e1f3d7152b11eff",
-        "bytes": 16097
+        "sha256": "8946c1eaab4eea52a23f995e91bb5c339fb668a4df9008e5dfcc2ea5bb5ee506",
+        "bytes": 16018
       },
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/pulverizer/SK_pulverizer.fbx",
-            "sha256": "f4bf2578c5d8d7a025335257854f0dd017580c7719c1f0818d9aae155587d40e",
-            "bytes": 683548
+            "sha256": "68124968236bb96c69c0565eda378aa5e9817f9d619d11ff0832cc3168a455ec",
+            "bytes": 685980
           },
           "action": "Attack",
           "phase": 0.5263157894736842,
@@ -594,18 +584,18 @@
       "subjectCount": 1,
       "master": {
         "file": "Assets/Source/CardArt/Masters/pulverizer.png",
-        "sha256": "368c539dee1290255a0a60d597b6c9a79b05a85f8e6c154d51e6fc0961da7580",
-        "bytes": 1568558
+        "sha256": "aadbeded5c8c02d41ab48ecae7a8c004dfbb707c3d53805a2db2de553c0572a8",
+        "bytes": 1568607
       },
       "editableScene": {
         "file": "Assets/Source/CardArt/Scenes/pulverizer_Portrait.blend",
-        "bytes": 2721463,
-        "sha256": "ab78e11f14c3630503964f7d1f149498f1e0d54004c2db6a465ca31203dcb541"
+        "sha256": "6111440fa824012b4cb29ecf524f9b8ef6690f7c34cdb4efa19afa8ec50581bf",
+        "bytes": 2678205
       },
       "smallReview": {
         "file": "Assets/Renders/Expansion/Small/pulverizer_96x120.png",
-        "sha256": "f4042bef10195c2f40aa39657fe4a47aaa88136a31e40dae861cab8c2486bb20",
-        "bytes": 19427
+        "sha256": "b8a71704543bcc386b5e589d8f029e58afbc724082e874f365f25fc6f3de8705",
+        "bytes": 19450
       },
       "runtimeResolution": [
         768,
@@ -622,11 +612,6 @@
       "safeZones": {
         "topLeftBadge": 0.2,
         "bottomName": 0.14
-      },
-      "sceneFinalizer": {
-        "file": "Build/finalize_expansion_art_scenes.py",
-        "bytes": 2162,
-        "sha256": "9f2b0e01fc0551b378303fa1bb2a27439d894faea494a0b2e25a15f1890dadee"
       }
     }
   }

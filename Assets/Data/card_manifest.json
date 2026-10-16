@@ -1,8 +1,8 @@
 {
   "schema": 3,
-  "version": "1.7.1",
+  "version": "1.8.0",
   "status": "approved",
-  "sourceCommit": "e47a919223056aec843ab80309b6384b97750422",
+  "sourceCommit": "3e444fd0633514f37f6f67a6ed25893f27753573",
   "cards": [
     {
       "id": "ironclad",
@@ -1167,13 +1167,13 @@
     "cloakLockException": "Approved Shadow Surge drops enemy locks, including committed Crown Tower locks; committed damage and projectiles still resolve"
   },
   "balanceHash": "88c28ff155ef5e63becb70515e0d30b1cef10c2d0f0b7cfc53ced371e4d9c90a",
-  "baseline": "Assets/Data/Baselines/1.7.0.json",
+  "baseline": "Assets/Data/Baselines/1.7.1.json",
   "approval": {
     "sourceResolution": "Assets/Data/source_resolution.json",
-    "source": "Direct user quick hotfix request and swarm-only scope correction on 2026-10-12",
-    "scope": "Swarm combat shuffling; friendly troops may push one another, opponents hold combat positions; remove only overhead slow percentage and VEIL text.",
-    "balanceUnchanged": "All card/entity definitions, abilities, assets, model scales and arena geometry retain their 1.7.0 values.",
-    "releaseAcceptance": "Runtime and Windows package acceptance are measured separately."
+    "source": "Direct user approval of full presentation update on 2026-10-15",
+    "scope": "Complete roster models, animation, portraits, attack effects, deployment sound identities, interface and arena presentation. Verify existing troop routing and collision behavior.",
+    "balanceUnchanged": "All numerical card/entity definitions, abilities, collision radii, model scales and arena rules remain unchanged.",
+    "releaseAcceptance": "Native runtime, rendered presentation and Windows delivery require independent checks."
   },
   "baselineRuntimePins": [
     {
@@ -1186,8 +1186,8 @@
     }
   ],
   "baselineProvenance": {
-    "tag": "v1.7.0",
-    "sourceCommit": "e47a919223056aec843ab80309b6384b97750422",
-    "canonicalFileSHA256": "97c0e1ddce1efb0c4b37aa15b3f494625977c5efa44b3342ed33db3c5cf7aa3e"
+    "tag": "v1.7.1",
+    "sourceCommit": "3e444fd0633514f37f6f67a6ed25893f27753573",
+    "canonicalFileSHA256": "572392ffd09163d1f3757cca1764ade67ea272a01e31211a8487118f9862a035"
   }
 }

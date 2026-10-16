@@ -1199,4 +1199,4 @@ std::vector<Card> BuildManifestEntities() {
 }
 } // namespace
 const std::string& CardManifestHash() { static const std::string value = "88c28ff155ef5e63becb70515e0d30b1cef10c2d0f0b7cfc53ced371e4d9c90a"; return value; }
-const std::string& CardManifestVersion() { static const std::string value = "1.7.1"; return value; }
+const std::string& CardManifestVersion() { static const std::string value = "1.8.0"; return value; }
