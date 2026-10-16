@@ -5,6 +5,7 @@ import json
 import math
 import bpy
 from mathutils import Vector
+from asset_file_io import write_json
 
 
 def render_selected(root, selected):
@@ -194,9 +195,9 @@ def render_selected(root, selected):
         report['cards'][card]=record;expansion_report['cards'][card]=record
         render_identity_views(root,card,manifest,scene,studio,character)
         print('RIFT_EXPANSION_PORTRAIT',card,record['subjectCount'],master,flush=True)
-    manifest_path.write_text(json.dumps(manifest,indent=2),encoding='utf-8')
-    report_path.write_text(json.dumps(report,indent=2),encoding='utf-8')
-    (renders/'portrait-production.json').write_text(json.dumps(expansion_report,indent=2),encoding='utf-8')
+    write_json(manifest_path,manifest)
+    write_json(report_path,report)
+    write_json(renders/'portrait-production.json',expansion_report)
     print('RIFT_EXPANSION_PORTRAITS_COMPLETE',len(selected),flush=True)
 
 

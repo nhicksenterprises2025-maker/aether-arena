@@ -2,6 +2,7 @@
 from pathlib import Path
 import json
 from PIL import Image, ImageDraw, ImageFont
+from asset_file_io import write_json
 ROOT=Path(__file__).resolve().parents[1]
 R=ROOT/'Assets/Renders'
 try: font=ImageFont.truetype(str(ROOT/'Assets/Fonts/BarlowSemiCondensed/BarlowSemiCondensed-SemiBold.ttf'),22)
@@ -17,7 +18,7 @@ def sheet(names,name,columns=4,source=None):
         canvas.paste(im,(x+(width-im.width)//2,y))
         d.text((x+18,y+height-34),n.replace('_',' ').title(),font=font,fill=(220,231,241))
     canvas.save(R/(name+'.png'))
-sheet(['ironclad','ember_archer','twin_blades','arc_mage','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven','archer_tower','tower_archer','tower_guard','tower_core','nova_flask','meteor_shard','pulverizer'],'characters_contact')
+sheet(list(json.loads((ROOT/'Assets/asset_manifest.json').read_text())['characters'])+['archer_tower','tower_guard','tower_core','nova_flask','meteor_shard','bullet_round'],'characters_contact')
 sheet(['bridge','floor_tile','lane_paver','bank_segment','boundary_stone','grass_tuft','shrub','tree','crystal_plinth','banner','ruin','distant_island','meteor_shard','bullet_round','tower_rubble'],'environment_contact')
 card_ids=list(json.loads((ROOT/'Assets/asset_manifest.json').read_text())['cards'])
 sheet(card_ids,'model_cards_contact',4,ROOT/'Assets/Source/CardArt')
@@ -35,5 +36,5 @@ if all((R/'Poses'/(n+'.png')).exists() for n in creature_poses):
 p=ROOT/'Assets/asset_manifest.json';m=json.loads(p.read_text())
 m['units'].update({'fbx':'meter','fbxCentimetersPerUnit':100,'unrealImportUniformScale':1})
 m['contactSheets']=['Assets/Renders/characters_contact.png','Assets/Renders/environment_contact.png','Assets/Renders/model_cards_contact.png']
-p.write_text(json.dumps(m,indent=2),encoding='utf-8')
+write_json(p,m)
 print('Contact sheets saved.')

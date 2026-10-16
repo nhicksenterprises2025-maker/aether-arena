@@ -10,6 +10,8 @@ from mathutils import Vector
 from bpy_extras.object_utils import world_to_camera_view
 
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT/'Build'))
+from asset_file_io import write_json
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--cards',nargs='+',default=['bone_warden','aether_reaper','iron_giant','shadow_surge','bone_warden_skeleton'])
 args=parser.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
@@ -48,7 +50,10 @@ for card in args.cards:
     scene.render.image_settings.file_format='PNG';scene.render.fps=100
     scene.view_settings.view_transform='AgX';scene.view_settings.look='AgX - Medium High Contrast'
     world=bpy.data.worlds.new('PortraitWorld_'+card);scene.world=world;world.use_nodes=True
-    world.node_tree.nodes['Background'].inputs[0].default_value=(.025,.024,.04,1)
+    mood={'bone_warden':(.022,.043,.035),'aether_reaper':(.029,.020,.061),
+          'iron_giant':(.041,.037,.033),'shadow_surge':(.025,.016,.054),
+          'bone_warden_skeleton':(.022,.043,.035)}[card]
+    world.node_tree.nodes['Background'].inputs[0].default_value=(*mood,1)
     world.node_tree.nodes['Background'].inputs[1].default_value=.28
     subjects=[];sources=[]
     def material(name,color,metal=0,rough=.75,emission=0):
@@ -100,7 +105,7 @@ for card in args.cards:
         composition='One imposing Warden; four subordinate Skeleton death-summon silhouettes behind the green ribs'
     elif card=='aether_reaper':
         character(card,scale=1.10,action='Attack',phase=.22/.60-.13)
-        composition='One airborne hooded Reaper; attached silver crescent scythe toward lower right; purple ruins'
+        composition='One airborne hooded Reaper; attached silver crescent scythe toward lower right; quiet violet studio'
     elif card=='iron_giant':
         character(card,scale=1.,cutaway=True,action='Locomotion',phase=.15,rotation=-.08)
         composition='One broad automaton, intact cool steel shell with one small cutaway showing warm underlying body'
@@ -116,14 +121,9 @@ for card in args.cards:
             a=i*math.tau/3+.30
             static('shadow_surge_wisp',(math.cos(a)*.83,math.sin(a)*.83,.09),1.55,rotation=a+math.pi,tag='wisp_'+str(i+1))
         composition='Spell illustration: three affected ally silhouettes in a readable low violet circular veil; no spawned creature'
-    slate=material('PortraitSlate_'+card,(.037,.046,.057),rough=.83)
+    slate=material('PortraitSlate_'+card,mood,rough=.83)
     bpy.ops.mesh.primitive_plane_add(size=200,location=(0,0,-.028));floor=own(bpy.context.object);floor.name='QuietSlateGround_'+card;floor.data.materials.append(slate)
-    # Distant cut stone supplies context and does not hide silhouettes.
-    rock=material('DistantRuins_'+card,(.09,.052,.13) if card in ('aether_reaper','shadow_surge') else (.04,.09,.075))
-    for i,(x,y,z,size) in enumerate(((-2.4,2.8,.9,(.55,.65,1.8)),(2.2,3.7,.6,(.45,.75,1.2)),(-1.6,4.1,.65,(.36,.58,1.3)))):
-        bpy.ops.mesh.primitive_cube_add(size=1,location=(x,y,z),scale=size)
-        ob=own(bpy.context.object);ob.name='DistantRuins_'+str(i);ob.data.materials.append(rock)
-        bevel=ob.modifiers.new('HandCutEdges','BEVEL');bevel.width=.035;bevel.segments=2
+    # Quiet colored studio floor matches the roster; no placeholder scenery.
     if card=='bone_warden':
         green=material('FourSoulWisps',(.08,.54,.13),emission=1.2)
         for i,(x,y) in enumerate(((-1.04,.48),(.91,.48),(-1.32,1.12),(1.18,1.12))):
@@ -207,7 +207,7 @@ for card in args.cards:
         # No skeletal/creature record is introduced for this spell.
         M['characters'].pop(card,None);M['cards'][card]['identityViews']=views
     print('RIFT_APPROVED_CARD_ART',card,len(subjects),flush=True)
-M_path=manifest_path;M_path.write_text(json.dumps(M,indent=2),encoding='utf-8')
-portrait_path.write_text(json.dumps(P,indent=2),encoding='utf-8')
-(ROOT/'Assets/Renders/Expansion/approved-portrait-production.json').write_text(json.dumps(R,indent=2),encoding='utf-8')
+write_json(manifest_path,M)
+write_json(portrait_path,P)
+write_json(ROOT/'Assets/Renders/Expansion/approved-portrait-production.json',R)
 print('RIFT_APPROVED_CARD_ART_COMPLETE',len(args.cards),flush=True)

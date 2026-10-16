@@ -416,6 +416,347 @@
       "page": "https://versilian-studios.com/vsco-community/",
       "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Percussion/Snare2-HitSN_v3_rr1_Sum.wav",
       "sha256": "3df96009d655dd4fe43c635bd3c20314a1e0cbdf9f571ee8a66207f9ef917d08"
+    },
+    {
+      "file": "BrandonSong_yes0.wav",
+      "author": "Brandon Song (wolfwoot)",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/voice-clip-pack-male-adventurer-rpg",
+      "url": "https://opengameart.org/sites/default/files/RPG%20Male%20Adventurer.zip",
+      "sha256": "cce4e7a43ab9bd5e34d58f568e21e724d8aee6d058d6e3d3372079e3fcc2c113",
+      "archiveMember": "RPG Male Adventurer/yes0.wav"
+    },
+    {
+      "file": "BrandonSong_yes1.wav",
+      "author": "Brandon Song (wolfwoot)",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/voice-clip-pack-male-adventurer-rpg",
+      "url": "https://opengameart.org/sites/default/files/RPG%20Male%20Adventurer.zip",
+      "sha256": "d6b8192091bfb95caf14cbd385b012263fe764656b0fd471cd2eb64b6afe3007",
+      "archiveMember": "RPG Male Adventurer/yes1.wav"
+    },
+    {
+      "file": "BrandonSong_greet0.wav",
+      "author": "Brandon Song (wolfwoot)",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/voice-clip-pack-male-adventurer-rpg",
+      "url": "https://opengameart.org/sites/default/files/RPG%20Male%20Adventurer.zip",
+      "sha256": "34b931ceef4055ba5ff776d6c819caa947c66dd914a826047e9eda0569c45518",
+      "archiveMember": "RPG Male Adventurer/greet0.wav"
+    },
+    {
+      "file": "BrandonSong_attackbig0.wav",
+      "author": "Brandon Song (wolfwoot)",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/voice-clip-pack-male-adventurer-rpg",
+      "url": "https://opengameart.org/sites/default/files/RPG%20Male%20Adventurer.zip",
+      "sha256": "93254d118fdfb1dac17e9b76dc7f57ad847654818cd10ba5f8630c5e4a14026a",
+      "archiveMember": "RPG Male Adventurer/attackbig0.wav"
+    },
+    {
+      "file": "BrandonSong_attackbig1.wav",
+      "author": "Brandon Song (wolfwoot)",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/voice-clip-pack-male-adventurer-rpg",
+      "url": "https://opengameart.org/sites/default/files/RPG%20Male%20Adventurer.zip",
+      "sha256": "a8c74fc1f04f8619263c85cf8cc32ea264ba9ef5a7122650f4a90339f694bc6b",
+      "archiveMember": "RPG Male Adventurer/attackbig1.wav"
+    },
+    {
+      "file": "BrandonSong_attackbig2.wav",
+      "author": "Brandon Song (wolfwoot)",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/voice-clip-pack-male-adventurer-rpg",
+      "url": "https://opengameart.org/sites/default/files/RPG%20Male%20Adventurer.zip",
+      "sha256": "7fb7582565945efd5c8722bc6a7ed858086850c0fb93c58e9ca2836a08b52930",
+      "archiveMember": "RPG Male Adventurer/attackbig2.wav"
+    },
+    {
+      "file": "BrandonSong_attack0.wav",
+      "author": "Brandon Song (wolfwoot)",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/voice-clip-pack-male-adventurer-rpg",
+      "url": "https://opengameart.org/sites/default/files/RPG%20Male%20Adventurer.zip",
+      "sha256": "01f4adfff1d7a5f7be27b6d63041708d8fd01d43d6847f8527b991828bf6382b",
+      "archiveMember": "RPG Male Adventurer/attack0.wav"
+    },
+    {
+      "file": "BrandonSong_attack1.wav",
+      "author": "Brandon Song (wolfwoot)",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/voice-clip-pack-male-adventurer-rpg",
+      "url": "https://opengameart.org/sites/default/files/RPG%20Male%20Adventurer.zip",
+      "sha256": "18604485719a00414f368a3eedf074666ea7d0751bd4ee6f28f5510fcc3099a4",
+      "archiveMember": "RPG Male Adventurer/attack1.wav"
+    },
+    {
+      "file": "BrandonSong_attack2.wav",
+      "author": "Brandon Song (wolfwoot)",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/voice-clip-pack-male-adventurer-rpg",
+      "url": "https://opengameart.org/sites/default/files/RPG%20Male%20Adventurer.zip",
+      "sha256": "9e64bb6bddee90e393ed73ba5836e34626cc157efd35ed2fc1070135a67dcbea",
+      "archiveMember": "RPG Male Adventurer/attack2.wav"
+    },
+    {
+      "file": "Cicifyre_Type2_fire.wav",
+      "author": "cicifyre",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/female-rpg-voice-starter-pack",
+      "url": "https://opengameart.org/sites/default/files/RPG%20Voice%20Starter%20Pack.zip",
+      "sha256": "5096a8162ef3e7eae58487d8edf5c4df0119e95ab5b328ff17ca5c5fd142ae10",
+      "archiveMember": "RPG Voice Starter Pack/Type 2/fire.wav"
+    },
+    {
+      "file": "Cicifyre_Type2_burn.wav",
+      "author": "cicifyre",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/female-rpg-voice-starter-pack",
+      "url": "https://opengameart.org/sites/default/files/RPG%20Voice%20Starter%20Pack.zip",
+      "sha256": "2db6c5943ffd019e1be100935a1571e58b5cccf5ef602c7d09e573e3b86cfefc",
+      "archiveMember": "RPG Voice Starter Pack/Type 2/burn.wav"
+    },
+    {
+      "file": "Cicifyre_Type2_hellstorm.wav",
+      "author": "cicifyre",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/female-rpg-voice-starter-pack",
+      "url": "https://opengameart.org/sites/default/files/RPG%20Voice%20Starter%20Pack.zip",
+      "sha256": "d097a23f20ba5087ec5098427242396fb16fb3fddaed05f339f07f9b574c68bf",
+      "archiveMember": "RPG Voice Starter Pack/Type 2/hellstorm.wav"
+    },
+    {
+      "file": "Ogrebane_monster-1.wav",
+      "author": "Ogrebane",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/monster-sound-effects-2",
+      "url": "https://opengameart.org/sites/default/files/monster_sfx_pack_2.zip",
+      "sha256": "e75b804529fd936c299dfd0121e284d38455bc111ae93b1d3c6988bcc74a441d",
+      "archiveMember": "monster_sfx_pack_2/monster-1.wav"
+    },
+    {
+      "file": "Ogrebane_monster-2.wav",
+      "author": "Ogrebane",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/monster-sound-effects-2",
+      "url": "https://opengameart.org/sites/default/files/monster_sfx_pack_2.zip",
+      "sha256": "93f8f15311863734d8813a2b7d61e21361cf547289108b6e04406b82771e1b5e",
+      "archiveMember": "monster_sfx_pack_2/monster-2.wav"
+    },
+    {
+      "file": "Ogrebane_monster-3.wav",
+      "author": "Ogrebane",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/monster-sound-effects-2",
+      "url": "https://opengameart.org/sites/default/files/monster_sfx_pack_2.zip",
+      "sha256": "c2f6954cc3a67610b229c98c7cea6301cc788192571facef8d8ebd336a799419",
+      "archiveMember": "monster_sfx_pack_2/monster-3.wav"
+    },
+    {
+      "file": "Ogrebane_monster-7.wav",
+      "author": "Ogrebane",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/monster-sound-effects-2",
+      "url": "https://opengameart.org/sites/default/files/monster_sfx_pack_2.zip",
+      "sha256": "f7bc1606de5edbfda001146b35254ea53907c9ffa55d737c67f8433d292035d1",
+      "archiveMember": "monster_sfx_pack_2/monster-7.wav"
+    },
+    {
+      "file": "Ogrebane_monster-8.wav",
+      "author": "Ogrebane",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/monster-sound-effects-2",
+      "url": "https://opengameart.org/sites/default/files/monster_sfx_pack_2.zip",
+      "sha256": "8d8d8408616bfdee87f1ebbd6d3f00dd0c12cd108598e11cb6ef8913e0c4eaae",
+      "archiveMember": "monster_sfx_pack_2/monster-8.wav"
+    },
+    {
+      "file": "Ogrebane_monster-9.wav",
+      "author": "Ogrebane",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/monster-sound-effects-2",
+      "url": "https://opengameart.org/sites/default/files/monster_sfx_pack_2.zip",
+      "sha256": "ffbb1bd3e16bcd89ee9ca4467e5d047bbc53effa13d3fe3889a5ae636c19fc23",
+      "archiveMember": "monster_sfx_pack_2/monster-9.wav"
+    },
+    {
+      "file": "Ogrebane_monster-10.wav",
+      "author": "Ogrebane",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/monster-sound-effects-2",
+      "url": "https://opengameart.org/sites/default/files/monster_sfx_pack_2.zip",
+      "sha256": "409dd097b89a96770112de1ca0fafcba21386fff4f8818848be1cbcc51d4c165",
+      "archiveMember": "monster_sfx_pack_2/monster-10.wav"
+    },
+    {
+      "file": "Ogrebane_monster-11.wav",
+      "author": "Ogrebane",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/monster-sound-effects-2",
+      "url": "https://opengameart.org/sites/default/files/monster_sfx_pack_2.zip",
+      "sha256": "1c003a10d30ad73c40292ecff8803beec141284f1ec98f617a25d9c86211ee82",
+      "archiveMember": "monster_sfx_pack_2/monster-11.wav"
+    },
+    {
+      "file": "Ogrebane_monster-12.wav",
+      "author": "Ogrebane",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/monster-sound-effects-2",
+      "url": "https://opengameart.org/sites/default/files/monster_sfx_pack_2.zip",
+      "sha256": "16ec7099f5047b48d9d86a83dcde58cc3e67d9a05fd205dc8f8c93bafd8d3806",
+      "archiveMember": "monster_sfx_pack_2/monster-12.wav"
+    },
+    {
+      "file": "Ogrebane_monster-14.wav",
+      "author": "Ogrebane",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/monster-sound-effects-2",
+      "url": "https://opengameart.org/sites/default/files/monster_sfx_pack_2.zip",
+      "sha256": "b8aef9df2c3823ad26650f2c30f95dedd7ecd274e009ac4a09bfd4856c7a2931",
+      "archiveMember": "monster_sfx_pack_2/monster-14.wav"
+    },
+    {
+      "file": "Ogrebane_monster-15.wav",
+      "author": "Ogrebane",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/monster-sound-effects-2",
+      "url": "https://opengameart.org/sites/default/files/monster_sfx_pack_2.zip",
+      "sha256": "d9a15ef348544aa0c8b2c2dc01abcc5dda13301e935b1fe831becd66246a7795",
+      "archiveMember": "monster_sfx_pack_2/monster-15.wav"
+    },
+    {
+      "file": "Ogrebane_monster-16.wav",
+      "author": "Ogrebane",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/monster-sound-effects-2",
+      "url": "https://opengameart.org/sites/default/files/monster_sfx_pack_2.zip",
+      "sha256": "e651ab7ab4bfc224c37a6681199a2857f65c434e9fc69a3468134ca0b9edc102",
+      "archiveMember": "monster_sfx_pack_2/monster-16.wav"
+    },
+    {
+      "file": "Fvcalderan_battlecry0.ogg",
+      "author": "fvcalderan",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/tiny-creatures-sounds",
+      "url": "https://opengameart.org/sites/default/files/battlecry0.ogg",
+      "sha256": "f05729747ee39d5fd8e5d36376d65f0015753f7cbbbb8e52d655bccf82377a6b"
+    },
+    {
+      "file": "Fvcalderan_battlecry1.ogg",
+      "author": "fvcalderan",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/tiny-creatures-sounds",
+      "url": "https://opengameart.org/sites/default/files/battlecry1.ogg",
+      "sha256": "20d9e32b7a3c6ecd8d03573bf9e0a594643ece7faf87bfd4891f4eb171d8b6dd"
+    },
+    {
+      "file": "Fvcalderan_battlecry2.ogg",
+      "author": "fvcalderan",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/tiny-creatures-sounds",
+      "url": "https://opengameart.org/sites/default/files/battlecry2.ogg",
+      "sha256": "1873d03b3b1a70492140ab29840497383956fc28d10c23ece01fb0ed7d14736a"
+    },
+    {
+      "file": "Zeroisnotnull_crow_caw.wav",
+      "author": "zeroisnotnull",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/crow-caw",
+      "url": "https://opengameart.org/sites/default/files/crow_caw.wav",
+      "sha256": "bba22883209b435905471d057160f1badae59b89a62e9a8b3199d7e327b17339"
+    },
+    {
+      "file": "AntumDeluge_bat_01.flac",
+      "author": "AntumDeluge / polymorpheva",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/bat-screeches",
+      "url": "https://opengameart.org/sites/default/files/bat.zip",
+      "archiveMember": "flac/bat_01.flac",
+      "archiveName": "AntumDeluge",
+      "sha256": "71dd6dac86d9cd74480f78b521021a22d5ec4d3f7151caa7536ed2da6acf21ee"
+    },
+    {
+      "file": "AntumDeluge_bat_02.flac",
+      "author": "AntumDeluge / polymorpheva",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/bat-screeches",
+      "url": "https://opengameart.org/sites/default/files/bat.zip",
+      "archiveMember": "flac/bat_02.flac",
+      "archiveName": "AntumDeluge",
+      "sha256": "72d1705f4e12b1dfb7d19cc9091bb8c7f11c5aaf80154342c3a31c817cdc2a1b"
+    },
+    {
+      "file": "AntumDeluge_bat_03.flac",
+      "author": "AntumDeluge / polymorpheva",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/bat-screeches",
+      "url": "https://opengameart.org/sites/default/files/bat.zip",
+      "archiveMember": "flac/bat_03.flac",
+      "archiveName": "AntumDeluge",
+      "sha256": "bc7f1ac5f52fa87f33eff62e4ecb9b7e0fe42164b5830f24a4ce6471ae4d2a01"
+    },
+    {
+      "file": "Qubodup_dog_growl.flac",
+      "author": "qubodup",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/dog-snarl-grunt-grumble",
+      "url": "https://opengameart.org/sites/default/files/dog_0.7z",
+      "archiveMember": "dog/dog-growl.flac",
+      "archiveFormat": "7z",
+      "archiveName": "qubodup-dog",
+      "sha256": "84a4ecc14152ad1523e62800223def75b92fe7b16c6b78943b8bd236ab82cd29"
+    },
+    {
+      "file": "Qubodup_dog_grumble.flac",
+      "author": "qubodup",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/dog-snarl-grunt-grumble",
+      "url": "https://opengameart.org/sites/default/files/dog_0.7z",
+      "archiveMember": "dog/dog-grumble.flac",
+      "archiveFormat": "7z",
+      "archiveName": "qubodup-dog",
+      "sha256": "932580aca34cae6c9e8e54736a765e2688e15e4a949d1b039ff59f0465dcaed8"
+    },
+    {
+      "file": "Qubodup_dog_snarl.flac",
+      "author": "qubodup",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/dog-snarl-grunt-grumble",
+      "url": "https://opengameart.org/sites/default/files/dog_0.7z",
+      "archiveMember": "dog/dog-snarl.flac",
+      "archiveFormat": "7z",
+      "archiveName": "qubodup-dog",
+      "sha256": "086614716a3d402c906079ea3ff1820a993a3fb7f6913653f50f1665eb444cab"
+    },
+    {
+      "file": "BrandonSong_attackbig3.wav",
+      "author": "Brandon Song (wolfwoot)",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/voice-clip-pack-male-adventurer-rpg",
+      "url": "https://opengameart.org/sites/default/files/RPG%20Male%20Adventurer.zip",
+      "archiveMember": "RPG Male Adventurer/attackbig3.wav",
+      "archiveName": "BrandonSong",
+      "sha256": "026d596cbafdd730e33422243010d63cc73088746e817bd89660201ca4a2506f"
+    },
+    {
+      "file": "BrandonSong_attackbig4.wav",
+      "author": "Brandon Song (wolfwoot)",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/voice-clip-pack-male-adventurer-rpg",
+      "url": "https://opengameart.org/sites/default/files/RPG%20Male%20Adventurer.zip",
+      "archiveMember": "RPG Male Adventurer/attackbig4.wav",
+      "archiveName": "BrandonSong",
+      "sha256": "05679adb1522e4e656d9e66fc9b6bd343538fb2968edd37492733f2f8b1255c1"
+    },
+    {
+      "file": "BrandonSong_attackbig5.wav",
+      "author": "Brandon Song (wolfwoot)",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/voice-clip-pack-male-adventurer-rpg",
+      "url": "https://opengameart.org/sites/default/files/RPG%20Male%20Adventurer.zip",
+      "archiveMember": "RPG Male Adventurer/attackbig5.wav",
+      "archiveName": "BrandonSong",
+      "sha256": "98c53fabbe6c7f584ee7164ed5c0407adbd4812b837c1c0ef90818025ff3ed7c"
     }
   ]
 }

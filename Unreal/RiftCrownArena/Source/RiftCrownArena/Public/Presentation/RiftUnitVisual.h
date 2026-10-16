@@ -35,7 +35,7 @@ class RIFTCROWNARENA_API ARiftUnitVisual : public AActor
 public:
     ARiftUnitVisual();
     bool InitializeEntity(const rift::Entity& Entity, URiftCardData* Card, double Time);
-    void Synchronize(const rift::Entity& Entity, const rift::Snapshot& State, float DeltaSeconds);
+    void Synchronize(const rift::Entity& Entity, const rift::Snapshot& State, float DeltaSeconds, double InterpolationAlpha=1.);
     void AttackAt(double Time, double Damage);
     void AimAt(FVector Target);
     void HitAt(double Time, double Damage);
@@ -129,6 +129,8 @@ private:
     rift::EntityKind Kind=rift::EntityKind::Troop;
     rift::Team Team=rift::Team::Player;
     FVector PreviousPosition=FVector::ZeroVector;
+    FVector MotionFrom=FVector::ZeroVector,MotionTarget=FVector::ZeroVector;
+    double MotionSampleTime=0,MotionSampleSpan=0;
     double Born=0, DeathTime=-1, LastAttack=-100, LastHit=-100, AttackInterval=1;
     double TurnTime=-100, AcquireTime=-100;
     double LastShieldHit=-100;

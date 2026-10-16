@@ -2,7 +2,9 @@
 #include "RiftDiagnostics.h"
 #include "RiftMatchSubsystem.h"
 #include "RiftProfileSubsystem.h"
+#include "RiftReplaySubsystem.h"
 #include "RiftUIWidget.h"
+#include "Simulation/RiftSimulation.h"
 #include "AudioDevice.h"
 #include "AudioDeviceManager.h"
 #include "AudioMixerDevice.h"
@@ -31,6 +33,7 @@ namespace
 const TCHAR* VariedCues[]={TEXT("sword_hit"),TEXT("shield_hit"),TEXT("tower_hit"),TEXT("building_hit"),TEXT("arrow_hit"),TEXT("sword_attack"),TEXT("dual_attack"),TEXT("bow_release"),TEXT("heavy_slam"),TEXT("bat_bite")};
 uint8 CuePriority(FName Name)
 {
+    if(Name.ToString().StartsWith(TEXT("spawn_")))return 75;
     if(Name==TEXT("victory")||Name==TEXT("defeat")||Name==TEXT("tower_destroy"))return 95;
     if(Name==TEXT("core_awaken")||Name==TEXT("overtime")||Name==TEXT("tiebreaker"))return 90;
     if(Name==TEXT("meteor_impact")||Name==TEXT("nova_impact")||Name==TEXT("bullet_burst"))return 80;
@@ -40,6 +43,9 @@ uint8 CuePriority(FName Name)
 }
 float CueCooldown(FName Name)
 {
+    // Paid deployments already deduplicate by playId; simultaneous opposing
+    // deployments of the same card must each retain their own signature.
+    if(Name.ToString().StartsWith(TEXT("spawn_")))return 0.f;
     if(Name==TEXT("frost_slow")||Name==TEXT("stun"))return .18f;
     if(Name==TEXT("bat_bite")||Name==TEXT("wing_air")||Name==TEXT("arrow_flight"))return .12f;
     if(Name==TEXT("meteor_tick"))return .16f;
@@ -124,6 +130,7 @@ void URiftBattleAudioSubsystem::Deinitialize()
         Entry.Value->SoundSubmixObject=OriginalSubmixRoutes.FindRef(Entry.Key);
     OriginalSubmixRoutes.Reset();
     Voices.Reset();LastPlayTime.Reset();VariantSequence.Reset();Sounds.Reset();Music=nullptr;BattleWorld.Reset();
+    for(auto& Plays:DeploymentPlays)Plays.Reset();
     Limiter=nullptr;MasterMix=nullptr;
     Super::Deinitialize();
 }
@@ -158,11 +165,17 @@ void URiftBattleAudioSubsystem::SetBattleWorld(UWorld* World)
     if (BattleWorld.Get()==World && Music && Music->IsPlaying()) return;
     if (Music) { Music->Stop(); Music->DestroyComponent(); }
     Music=nullptr; BattleWorld=World;
+    for(auto& Plays:DeploymentPlays)Plays.Reset();
     StopOneShots();MusicDuck=1.f;
     if (!World||!EnsureMixRegistered(World)) return;
     // Preload short foley variations before play, preventing first-hit disk work.
     for(const auto* Name:VariedCues)for(int32 Index=0;Index<3;++Index)
         Sound(Index?FName(*FString::Printf(TEXT("%s_v%d"),Name,Index+1)):FName(Name));
+    for(const auto& Card:rift::Cards())for(int32 Index=0;Index<3;++Index)
+    {
+        const FString Base=TEXT("spawn_")+FString(UTF8_TO_TCHAR(Card.id.c_str()));
+        Sound(FName(Index?*FString::Printf(TEXT("%s_v%d"),*Base,Index+1):*Base));
+    }
     // The imported music master is streamed by UE; no PCM file is read during play.
     if (auto* Score=Sound(TEXT("music_rift")))
     {
@@ -241,12 +254,37 @@ bool URiftBattleAudioSubsystem::AdmitVoice(FName Name,bool IsUI,uint8 Priority,f
 }
 FName URiftBattleAudioSubsystem::Variation(FName Name)
 {
+    if(Name.ToString().StartsWith(TEXT("spawn_")))
+    {
+        // Start each character at a random take, then exhaust its three-take
+        // rotation before repeating. Combat variations keep their prior order.
+        auto* Sequence=VariantSequence.Find(Name);
+        if(!Sequence)Sequence=&VariantSequence.Add(Name,FMath::RandHelper(3));
+        const uint32 Index=(*Sequence)++%3;
+        return Index?FName(*FString::Printf(TEXT("%s_v%d"),*Name.ToString(),Index+1)):Name;
+    }
     for(const auto* Cue:VariedCues)if(Name==Cue)
     {
         const uint32 Index=VariantSequence.FindOrAdd(Name)++%3;
         return Index?FName(*FString::Printf(TEXT("%s_v%d"),Cue,Index+1)):Name;
     }
     return Name;
+}
+void URiftBattleAudioSubsystem::OnSimulationEvent(const rift::Event& Event,FVector Position)
+{
+    if(Event.type=="match_start")
+    {for(auto& Plays:DeploymentPlays)Plays.Reset();return;}
+    if(Event.type!="card_play"||!Event.playId||!rift::FindCard(Event.cardId))return;
+    // A loaded replay dispatches each event once per forward cursor pass.
+    // Its IDs can repeat after seeking/reopening, or match a prior live game.
+    const auto* Replay=GetGameInstance()->GetSubsystem<URiftReplaySubsystem>();
+    if(!Replay||!Replay->IsPlaying())
+    {
+        auto& Plays=DeploymentPlays[Event.team==rift::Team::Enemy?1:0];
+        if(Plays.Contains(Event.playId))return;
+        Plays.Add(Event.playId);
+    }
+    PlayEffect(FName(*(TEXT("spawn_")+FString(UTF8_TO_TCHAR(Event.cardId.c_str())))),Position,.65f);
 }
 void URiftBattleAudioSubsystem::PlayEffect(FName Name,FVector Position,float Gain,float Pitch)
 {
@@ -354,6 +392,18 @@ FString URiftBattleAudioSubsystem::RunAudioSmokeJSON(URiftUIWidget* Interface)
     int32 Variations=0;for(const auto* Cue:VariedCues)for(int32 Variant=2;Variant<=3;++Variant)
         if(auto* Asset=Sound(FName(*FString::Printf(TEXT("%s_v%d"),Cue,Variant))))if(Asset->GetDuration()>0)++Variations;
     Report->SetNumberField(TEXT("loadedCombatVariations"),Variations);Check(TEXT("all20CombatVariationsLoad"),Variations==20);
+    int32 SpawnTakes=0;
+    for(const auto& Card:rift::Cards())
+    {
+        const FString Base=TEXT("spawn_")+FString(UTF8_TO_TCHAR(Card.id.c_str()));
+        for(int32 Index=0;Index<3;++Index)
+        {
+            auto* Asset=Cast<USoundWave>(Sound(FName(Index?*FString::Printf(TEXT("%s_v%d"),*Base,Index+1):*Base)));
+            if(Asset&&!Asset->bLooping&&Asset->GetDuration()>.15f&&Asset->GetDuration()<1.6f)++SpawnTakes;
+        }
+    }
+    Report->SetNumberField(TEXT("loadedDeploymentTakes"),SpawnTakes);
+    Check(TEXT("all21CardsHaveThreeShortNonLoopingDeploymentTakes"),rift::Cards().size()==21&&SpawnTakes==63);
     StopOneShots();MusicDuck=1.f;
     SetSlider(0,.6f);SetSlider(1,.35f);SetSlider(2,.4f);SetSlider(3,.8f);
     FloatCheck(TEXT("masterCallback"),Profile->Settings.MasterVolume,.6f);FloatCheck(TEXT("musicCallback"),Profile->Settings.MusicVolume,.35f);
@@ -381,6 +431,58 @@ FString URiftBattleAudioSubsystem::RunAudioSmokeJSON(URiftUIWidget* Interface)
     if(UIVoice)FloatCheck(TEXT("masterMutesUI"),UIVoice->VolumeMultiplier,0.f);
     const int32 BeforeMuted=Voices.Num();PlayEffect(TEXT("sword_hit"),FVector::ZeroVector);PlayUI();Check(TEXT("mutedPlayCreatesNoVoice"),Voices.Num()==BeforeMuted);
     SetSlider(0,.6f);
+    StopOneShots();
+    const auto SavedPlayerDeployments=DeploymentPlays[0],SavedEnemyDeployments=DeploymentPlays[1];
+    const auto SavedVariants=VariantSequence;
+    rift::Event Spawn;Spawn.type="card_play";Spawn.cardId="stampede";Spawn.playId=MAX_uint64-1;Spawn.amount=7;
+    OnSimulationEvent(Spawn,FVector::ZeroVector);
+    Check(TEXT("oneSignatureForFifteenMemberPaidDeployment"),Voices.Num()==1);
+    for(int32 Member=0;Member<15;++Member) {Spawn.type="entity_spawn";OnSimulationEvent(Spawn,FVector::ZeroVector);}
+    Spawn.type="card_play";OnSimulationEvent(Spawn,FVector::ZeroVector);
+    Check(TEXT("entitySpawnsAndDuplicatePlayDoNotRepeatVoice"),Voices.Num()==1);
+    Spawn.team=rift::Team::Enemy;OnSimulationEvent(Spawn,FVector::ZeroVector);
+    Check(TEXT("simultaneousOpposingDeploymentRetainsVoice"),Voices.Num()==2);
+    const FName Signature(TEXT("spawn_ironclad"));TSet<FName> Rotation;
+    for(int32 Index=0;Index<3;++Index)Rotation.Add(Variation(Signature));
+    Check(TEXT("deploymentRotationUsesThreeDistinctTakesBeforeRepeat"),Rotation.Num()==3&&Rotation.Contains(Variation(Signature)));
+    // Use the real recorder, archive loader and playback cursor. A synthetic
+    // duplicate alone cannot cover replay entry or backward-seek semantics.
+    auto* Replay=GetGameInstance()->GetSubsystem<URiftReplaySubsystem>();
+    Check(TEXT("deploymentReplaySubsystemAvailable"),Replay!=nullptr);
+    if(Replay)
+    {
+        Match->LeaveMatch();
+        rift::MatchOptions Options;Options.aiEnabled={false,false};
+        Options.decks[0]=Options.decks[1]={"ironclad","ember_archer","twin_blades","boulderback","arc_mage","rambeast","sky_manta","meteor_shards"};
+        rift::Match Fixture(Options);Replay->BeginRecording(Options,true);Replay->Sample(Fixture.State());
+        auto RecordEvents=[&](){for(const auto& Event:Fixture.DrainEvents())Replay->RecordEvent(Event);};
+        RecordEvents();Fixture.Step(.2);RecordEvents();Replay->Sample(Fixture.State());
+        const bool Paid=Fixture.Play(rift::Team::Player,0,{-7,6.5});rift::Event Deployment;
+        for(const auto& Event:Fixture.DrainEvents()){Replay->RecordEvent(Event);if(Event.type=="card_play")Deployment=Event;}
+        Replay->Sample(Fixture.State());Fixture.Step(.3);RecordEvents();Replay->EndRecording(Fixture.State(),true);
+        const bool Written=Replay->FlushPendingWrites();const FString Filename=Replay->LatestFilename;
+        Check(TEXT("paidDeploymentReplayArchiveWritten"),Paid&&Deployment.playId&&Written&&!Filename.IsEmpty());
+        Report->SetStringField(TEXT("deploymentReplayFixture"),Filename);
+        if(Paid&&Deployment.playId&&Written&&!Filename.IsEmpty())
+        {
+            OnSimulationEvent(Deployment,FVector::ZeroVector);StopOneShots();
+            const FName Cue(*(TEXT("spawn_")+FString(UTF8_TO_TCHAR(Deployment.cardId.c_str()))));
+            auto DeploymentVoices=[&](){int32 Count=0;for(const auto& Voice:Voices)if(Voice.Cue==Cue&&Voice.Component.IsValid()&&Voice.Component->IsPlaying())++Count;return Count;};
+            const bool Opened=Replay->OpenReplay(Filename);Check(TEXT("paidDeploymentReplayArchiveOpens"),Opened&&Replay->IsPlaying());
+            if(Opened)
+            {
+                Replay->Advance(.25f);Check(TEXT("replayDeploymentAudibleAfterItsLiveMatch"),DeploymentVoices()==1);
+                StopOneShots();Replay->Seek(0);Replay->Advance(.25f);
+                Check(TEXT("replayDeploymentAudibleAgainAfterBackwardSeek"),DeploymentVoices()==1);
+                StopOneShots();Replay->CloseReplay();const bool Reopened=Replay->OpenReplay(Filename);
+                if(Reopened)Replay->Advance(.25f);
+                Check(TEXT("replayDeploymentAudibleAgainAfterReopening"),Reopened&&DeploymentVoices()==1);
+            }
+            Replay->CloseReplay();StopOneShots();OnSimulationEvent(Deployment,FVector::ZeroVector);
+            Check(TEXT("replayPlaybackPreservesLiveDeploymentDeduplication"),DeploymentVoices()==0);
+        }
+    }
+    DeploymentPlays[0]=SavedPlayerDeployments;DeploymentPlays[1]=SavedEnemyDeployments;VariantSequence=SavedVariants;
     FillSmokeBurst();const int32 Maximum=Voices.Num();
     Report->SetNumberField(TEXT("maximumOneShotVoices"),Maximum);Check(TEXT("combinedUIAndSFXVoiceLimit"),Maximum==32&&Voices.Num()<=32);
     int32 ReservedUI=0;for(const auto& Voice:Voices)if(Voice.UI)++ReservedUI;

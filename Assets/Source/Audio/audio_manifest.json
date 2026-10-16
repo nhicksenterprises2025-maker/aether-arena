@@ -3,7 +3,7 @@
   "originalSource": "Build/generate_audio.py",
   "sampleRate": 44100,
   "palette": "Assets/Source/Audio/Palette/sources.json",
-  "design": "Recorded material layers; short transients; three combat variations; original 16-bar orchestral score",
+  "design": "Recorded material layers; short transients; three combat variations; original 16-bar orchestral score; three recorded deployment signatures per playable card",
   "sounds": {
     "sword_hit": {
       "file": "Assets/Source/Audio/sword_hit.wav",
@@ -888,6 +888,1101 @@
         "Recorded CC0 palette and original synthesis; see Palette/sources.json"
       ],
       "productionSource": "Build/generate_expansion_audio.py"
+    },
+    "spawn_ironclad": {
+      "file": "Assets/Source/Audio/spawn_ironclad.wav",
+      "duration": 0.8996825396825396,
+      "sha256": "e9464e712dcfcf935ec3467d3df956da04b8e79ed5d63106cab48a94f2449ebd",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.59478759765625,
+      "rmsDbFS": -22.999998876919186,
+      "dcOffset": 1.5242636498213655e-05,
+      "role": "deployment",
+      "sources": [
+        "BrandonSong_yes0.wav",
+        "Tinysized_handcuffs-metal-lock-01.wav",
+        "Tinysized_sword-clash-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "ironclad"
+    },
+    "spawn_ironclad_v2": {
+      "file": "Assets/Source/Audio/spawn_ironclad_v2.wav",
+      "duration": 0.6862358276643991,
+      "sha256": "a805e750ba4d173a443c16fe6db8d08c2417a951cdaf173c15203810209a9954",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.573577880859375,
+      "rmsDbFS": -23.000005336380106,
+      "dcOffset": 1.5341983068226878e-05,
+      "role": "deployment",
+      "sources": [
+        "BrandonSong_yes1.wav",
+        "Tinysized_handcuffs-metal-lock-01.wav",
+        "Tinysized_sword-clash-03.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "ironclad"
+    },
+    "spawn_ironclad_v3": {
+      "file": "Assets/Source/Audio/spawn_ironclad_v3.wav",
+      "duration": 0.5740362811791383,
+      "sha256": "34aacea5e862abf63b2f9540d30a8a8a559facce00881e5a764f2ff1b10d6022",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.5999755859375,
+      "rmsDbFS": -23.324653049747862,
+      "dcOffset": 1.5002617411243335e-05,
+      "role": "deployment",
+      "sources": [
+        "BrandonSong_greet0.wav",
+        "Tinysized_handcuffs-metal-lock-01.wav",
+        "Tinysized_sword-clash-05.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "ironclad"
+    },
+    "spawn_ember_archer": {
+      "file": "Assets/Source/Audio/spawn_ember_archer.wav",
+      "duration": 0.7278004535147392,
+      "sha256": "6f48781403b43908c1ab72c725530723f824d96795e8e3ba43c0a65d5f029da7",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.445953369140625,
+      "rmsDbFS": -22.999994644411338,
+      "dcOffset": 1.5022985243488285e-05,
+      "role": "deployment",
+      "sources": [
+        "Cicifyre_Type2_fire.wav",
+        "Tinysized_quiver-leather-squeeze-01.wav",
+        "Tinysized_wood-twigs-break-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "ember_archer"
+    },
+    "spawn_ember_archer_v2": {
+      "file": "Assets/Source/Audio/spawn_ember_archer_v2.wav",
+      "duration": 0.6191836734693877,
+      "sha256": "e74d095058cf595e2e7391e2df9b24c8d2366e60b21ebd16fdb4aee47df77929",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.36920166015625,
+      "rmsDbFS": -22.999992803705524,
+      "dcOffset": 1.531131693812715e-05,
+      "role": "deployment",
+      "sources": [
+        "Cicifyre_Type2_burn.wav",
+        "Tinysized_quiver-leather-squeeze-01.wav",
+        "Tinysized_wood-twigs-break-02.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "ember_archer"
+    },
+    "spawn_ember_archer_v3": {
+      "file": "Assets/Source/Audio/spawn_ember_archer_v3.wav",
+      "duration": 0.9981859410430839,
+      "sha256": "7543faa625743566b13e22f4ce6a2db1195b571b4a310b2d7f495d3e766e5d06",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.422454833984375,
+      "rmsDbFS": -23.000007418269416,
+      "dcOffset": 1.5139547276096093e-05,
+      "role": "deployment",
+      "sources": [
+        "Cicifyre_Type2_hellstorm.wav",
+        "Tinysized_quiver-leather-squeeze-01.wav",
+        "Tinysized_wood-twigs-break-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "ember_archer"
+    },
+    "spawn_twin_blades": {
+      "file": "Assets/Source/Audio/spawn_twin_blades.wav",
+      "duration": 0.8843083900226757,
+      "sha256": "c1b53803b2b96d10be483d197e7fe7647c5964a41d04e8fa48ff7897107657f9",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.600006103515625,
+      "rmsDbFS": -24.102393055116515,
+      "dcOffset": 1.4858910032245243e-05,
+      "role": "deployment",
+      "sources": [
+        "Fvcalderan_battlecry0.ogg",
+        "Tinysized_metal-knife-scrape-01.wav",
+        "Tinysized_sword-clash-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "twin_blades"
+    },
+    "spawn_twin_blades_v2": {
+      "file": "Assets/Source/Audio/spawn_twin_blades_v2.wav",
+      "duration": 0.7969160997732426,
+      "sha256": "07286f389e7f0054ce0a5e16089a900df9cfdea653e9cd0ef853e9a9a330e203",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.5999755859375,
+      "rmsDbFS": -23.86451346644385,
+      "dcOffset": 1.5738991108457346e-05,
+      "role": "deployment",
+      "sources": [
+        "Fvcalderan_battlecry1.ogg",
+        "Tinysized_metal-knife-scrape-01.wav",
+        "Tinysized_sword-clash-03.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "twin_blades"
+    },
+    "spawn_twin_blades_v3": {
+      "file": "Assets/Source/Audio/spawn_twin_blades_v3.wav",
+      "duration": 0.7960090702947846,
+      "sha256": "5efa1382da7906463c6c6f57b10f613feff42d90507df8857f0b5fc01504cc68",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.600006103515625,
+      "rmsDbFS": -23.784716452338095,
+      "dcOffset": 1.471979355094861e-05,
+      "role": "deployment",
+      "sources": [
+        "Fvcalderan_battlecry2.ogg",
+        "Tinysized_metal-knife-scrape-01.wav",
+        "Tinysized_sword-clash-05.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "twin_blades"
+    },
+    "spawn_boulderback": {
+      "file": "Assets/Source/Audio/spawn_boulderback.wav",
+      "duration": 1.0863718820861679,
+      "sha256": "3cf9ff60d51a8ada54d04a03ab58e937002cf0d033569c6a0b284b79d433fead",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.5999755859375,
+      "rmsDbFS": -25.78850096503905,
+      "dcOffset": 2.0412997737246657e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactMining_000.ogg",
+        "Ogrebane_monster-1.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "boulderback"
+    },
+    "spawn_boulderback_v2": {
+      "file": "Assets/Source/Audio/spawn_boulderback_v2.wav",
+      "duration": 0.6845578231292517,
+      "sha256": "b677cfbdd2f6e42b60e1bbe368d57d342cbae48d7fd360d7f06307c0083621a8",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.383392333984375,
+      "rmsDbFS": -23.000007084471118,
+      "dcOffset": 7.863666906302793e-06,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactMining_002.ogg",
+        "Ogrebane_monster-2.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "boulderback"
+    },
+    "spawn_boulderback_v3": {
+      "file": "Assets/Source/Audio/spawn_boulderback_v3.wav",
+      "duration": 0.6900680272108843,
+      "sha256": "30e8b70804e961aee101e63575075d8d6262ec12c8ee65d60c53b953ddf9cdc9",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.39288330078125,
+      "rmsDbFS": -22.999992926988337,
+      "dcOffset": 1.4335199109387322e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactMining_004.ogg",
+        "Ogrebane_monster-3.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "boulderback"
+    },
+    "spawn_arc_mage": {
+      "file": "Assets/Source/Audio/spawn_arc_mage.wav",
+      "duration": 0.8975056689342403,
+      "sha256": "9614940a3c75281fc493dfa6e5276b4cb58ed9cb04808f271e2f599bde1109de",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.41094970703125,
+      "rmsDbFS": -22.99999275215056,
+      "dcOffset": 1.4025132544056341e-05,
+      "role": "deployment",
+      "sources": [
+        "BrandonSong_attackbig0.wav",
+        "Tinysized_compressed-air-spray-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "arc_mage"
+    },
+    "spawn_arc_mage_v2": {
+      "file": "Assets/Source/Audio/spawn_arc_mage_v2.wav",
+      "duration": 0.8943990929705216,
+      "sha256": "751860e89c6ac12c4e34f31f55c7252ec9fddf65b9be56748add8050d7015148",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.5999755859375,
+      "rmsDbFS": -23.49040102544862,
+      "dcOffset": 1.6911827768076717e-05,
+      "role": "deployment",
+      "sources": [
+        "BrandonSong_attackbig1.wav",
+        "Tinysized_compressed-air-spray-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "arc_mage"
+    },
+    "spawn_arc_mage_v3": {
+      "file": "Assets/Source/Audio/spawn_arc_mage_v3.wav",
+      "duration": 0.7866439909297052,
+      "sha256": "7174fdc4103e71ff73619a31e7e103fe7e4ac1460ca14c9596ce04141b999af4",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.5999755859375,
+      "rmsDbFS": -23.536914251523097,
+      "dcOffset": 1.5238116176565969e-05,
+      "role": "deployment",
+      "sources": [
+        "BrandonSong_attackbig2.wav",
+        "Tinysized_compressed-air-spray-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "arc_mage"
+    },
+    "spawn_rambeast": {
+      "file": "Assets/Source/Audio/spawn_rambeast.wav",
+      "duration": 0.5463945578231293,
+      "sha256": "d06789dc1375bb66fd2143d236c57cbce04787f43494c6be6a2c79df9f1700f9",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.435882568359375,
+      "rmsDbFS": -23.00000177747239,
+      "dcOffset": 3.081520556770315e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactWood_medium_000.ogg",
+        "Ogrebane_monster-10.wav",
+        "Tinysized_metal-knife-scrape-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "rambeast"
+    },
+    "spawn_rambeast_v2": {
+      "file": "Assets/Source/Audio/spawn_rambeast_v2.wav",
+      "duration": 0.6808163265306122,
+      "sha256": "8e8cf76e518b4318d3240b1ef03bb86af07c7bde8929f2f1066340ad23c29cd4",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.569091796875,
+      "rmsDbFS": -22.99998623890151,
+      "dcOffset": 3.3025134254575505e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactWood_medium_002.ogg",
+        "Ogrebane_monster-11.wav",
+        "Tinysized_metal-knife-scrape-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "rambeast"
+    },
+    "spawn_rambeast_v3": {
+      "file": "Assets/Source/Audio/spawn_rambeast_v3.wav",
+      "duration": 0.7110657596371882,
+      "sha256": "3ac7fbd5d5565852b7201cd604d0506710d56e6bd70a74b398900930910e595b",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.486541748046875,
+      "rmsDbFS": -22.999989331690465,
+      "dcOffset": 3.033850948621564e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactWood_medium_004.ogg",
+        "Ogrebane_monster-12.wav",
+        "Tinysized_metal-knife-scrape-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "rambeast"
+    },
+    "spawn_sky_manta": {
+      "file": "Assets/Source/Audio/spawn_sky_manta.wav",
+      "duration": 0.8187074829931973,
+      "sha256": "335b3bd0a7898fd0f599d6d5859f1b87b429607d5e5fb27b257c0b4a5f753783",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.5999755859375,
+      "rmsDbFS": -25.200148777747046,
+      "dcOffset": 1.5237235309773577e-05,
+      "role": "deployment",
+      "sources": [
+        "Ogrebane_monster-14.wav",
+        "Tinysized_book-page-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "sky_manta"
+    },
+    "spawn_sky_manta_v2": {
+      "file": "Assets/Source/Audio/spawn_sky_manta_v2.wav",
+      "duration": 0.8188888888888889,
+      "sha256": "087ce48588ec3fd7d2576bd9496c6ac253869ada844b0cc27c4ab0851ce0d010",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.5999755859375,
+      "rmsDbFS": -25.233769713816898,
+      "dcOffset": 1.527526769272838e-05,
+      "role": "deployment",
+      "sources": [
+        "Ogrebane_monster-15.wav",
+        "Tinysized_book-page-02.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "sky_manta"
+    },
+    "spawn_sky_manta_v3": {
+      "file": "Assets/Source/Audio/spawn_sky_manta_v3.wav",
+      "duration": 0.8207709750566894,
+      "sha256": "6294cd3dcd446e7e2faa74ed3c366b0bc9d009b7360db476cf0f6aeb5ace90dd",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.5999755859375,
+      "rmsDbFS": -24.33842035684828,
+      "dcOffset": 1.5130634794763234e-05,
+      "role": "deployment",
+      "sources": [
+        "Ogrebane_monster-16.wav",
+        "Tinysized_book-page-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "sky_manta"
+    },
+    "spawn_vampire_bats": {
+      "file": "Assets/Source/Audio/spawn_vampire_bats.wav",
+      "duration": 0.7764172335600907,
+      "sha256": "91cb1b6556510315dfd4b73dfa140b379d2d9d71e80dd7c769852f010f9ba90e",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.600006103515625,
+      "rmsDbFS": -26.35945361358325,
+      "dcOffset": 1.5666106036890333e-05,
+      "role": "deployment",
+      "sources": [
+        "AntumDeluge_bat_01.flac",
+        "Tinysized_book-page-01.wav",
+        "Tinysized_book-page-02.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "vampire_bats"
+    },
+    "spawn_vampire_bats_v2": {
+      "file": "Assets/Source/Audio/spawn_vampire_bats_v2.wav",
+      "duration": 0.7754421768707483,
+      "sha256": "5169ddf39502573d903cefc3736b981dbd6160481f4a3a914f6d418c5d3b3202",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.600006103515625,
+      "rmsDbFS": -26.903606323443636,
+      "dcOffset": 1.573934922334196e-05,
+      "role": "deployment",
+      "sources": [
+        "AntumDeluge_bat_02.flac",
+        "Tinysized_book-page-01.wav",
+        "Tinysized_book-page-02.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "vampire_bats"
+    },
+    "spawn_vampire_bats_v3": {
+      "file": "Assets/Source/Audio/spawn_vampire_bats_v3.wav",
+      "duration": 0.775374149659864,
+      "sha256": "25e05f23f6c16f485615002e85890f3a1106b0354b15b35ec2cdb205383e44a6",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.600006103515625,
+      "rmsDbFS": -24.142972134288854,
+      "dcOffset": 1.4825042119505615e-05,
+      "role": "deployment",
+      "sources": [
+        "AntumDeluge_bat_03.flac",
+        "Tinysized_book-page-01.wav",
+        "Tinysized_book-page-02.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "vampire_bats"
+    },
+    "spawn_frost_fang": {
+      "file": "Assets/Source/Audio/spawn_frost_fang.wav",
+      "duration": 0.7196371882086168,
+      "sha256": "1ff6da6bf22ecba092e4cde6b01bdac8dd49efe27de69dd73925f2f29dc4c4ec",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.48419189453125,
+      "rmsDbFS": -23.000000692078686,
+      "dcOffset": 1.4477002100827925e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactGlass_light_000.ogg",
+        "Qubodup_dog_growl.flac"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "frost_fang"
+    },
+    "spawn_frost_fang_v2": {
+      "file": "Assets/Source/Audio/spawn_frost_fang_v2.wav",
+      "duration": 0.7036734693877551,
+      "sha256": "d5463b71d6ec2c9346c583405a330e966f5511d7a50cdbd07db93aca83f753c6",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.600006103515625,
+      "rmsDbFS": -23.051923746108397,
+      "dcOffset": 1.4642182930624033e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactGlass_light_000.ogg",
+        "Qubodup_dog_grumble.flac"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "frost_fang"
+    },
+    "spawn_frost_fang_v3": {
+      "file": "Assets/Source/Audio/spawn_frost_fang_v3.wav",
+      "duration": 0.8374149659863945,
+      "sha256": "004870fbf3accce5c7351a413e5e3c829183d2c49ad08c221e515be2da6b011d",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.470184326171875,
+      "rmsDbFS": -22.99999053606617,
+      "dcOffset": 1.580584123468386e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactGlass_light_000.ogg",
+        "Qubodup_dog_snarl.flac"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "frost_fang"
+    },
+    "spawn_storm_raven": {
+      "file": "Assets/Source/Audio/spawn_storm_raven.wav",
+      "duration": 0.768344671201814,
+      "sha256": "ae49371cdaf02264a2b4ddd09cbc20851938c0d04ee150b6c198134746f8d3bb",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.25323486328125,
+      "rmsDbFS": -23.000003633751803,
+      "dcOffset": 1.4612123347302561e-05,
+      "role": "deployment",
+      "sources": [
+        "Zeroisnotnull_crow_caw.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "storm_raven"
+    },
+    "spawn_storm_raven_v2": {
+      "file": "Assets/Source/Audio/spawn_storm_raven_v2.wav",
+      "duration": 0.5829705215419501,
+      "sha256": "0ca472fc858a317543b690a0767e86e002eff237bf7e8df9cb8fa10649f0a051",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.3045654296875,
+      "rmsDbFS": -22.999998237526814,
+      "dcOffset": 1.595854838043098e-05,
+      "role": "deployment",
+      "sources": [
+        "Zeroisnotnull_crow_caw.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "storm_raven"
+    },
+    "spawn_storm_raven_v3": {
+      "file": "Assets/Source/Audio/spawn_storm_raven_v3.wav",
+      "duration": 0.5827210884353742,
+      "sha256": "9e016e41d6194f02cc167594b3b52c94dfa106ce2a18ae4daf062866c8ac2c92",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.477752685546875,
+      "rmsDbFS": -23.000009038932557,
+      "dcOffset": 1.7582818185024125e-05,
+      "role": "deployment",
+      "sources": [
+        "Zeroisnotnull_crow_caw.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "storm_raven"
+    },
+    "spawn_meteor_shards": {
+      "file": "Assets/Source/Audio/spawn_meteor_shards.wav",
+      "duration": 0.6516780045351473,
+      "sha256": "25ddf03279dc31ec05253ffd7267ac04dfa18c1f1a3778ddb400c17d8c1c0d9b",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.42828369140625,
+      "rmsDbFS": -23.000001406486923,
+      "dcOffset": 4.632907950922527e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactMining_000.ogg",
+        "Tinysized_wood-twigs-break-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "meteor_shards"
+    },
+    "spawn_meteor_shards_v2": {
+      "file": "Assets/Source/Audio/spawn_meteor_shards_v2.wav",
+      "duration": 0.651655328798186,
+      "sha256": "fb38cf58579453dd350ab8eff445be34719b22ef43fe8c3ee677be660cc8d826",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.481292724609375,
+      "rmsDbFS": -23.000008220050468,
+      "dcOffset": 2.01224019726712e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactMining_002.ogg",
+        "Tinysized_wood-twigs-break-02.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "meteor_shards"
+    },
+    "spawn_meteor_shards_v3": {
+      "file": "Assets/Source/Audio/spawn_meteor_shards_v3.wav",
+      "duration": 0.6517233560090703,
+      "sha256": "94c3100d016b04294c4ebcff2063893f8dc9a54118a274cbedb22c34f2ae0f05",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.382415771484375,
+      "rmsDbFS": -22.999997857277247,
+      "dcOffset": 1.174577952119794e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactMining_004.ogg",
+        "Tinysized_wood-twigs-break-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "meteor_shards"
+    },
+    "spawn_archer_tower": {
+      "file": "Assets/Source/Audio/spawn_archer_tower.wav",
+      "duration": 0.7119954648526077,
+      "sha256": "b0426a7969a9c0fd8022ade0c45f128f8730df6f1e1fa29132b0da188e77bfbf",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.600006103515625,
+      "rmsDbFS": -25.729824843719868,
+      "dcOffset": 7.591149150848753e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactWood_medium_000.ogg",
+        "Tinysized_handcuffs-metal-lock-01.wav",
+        "Tinysized_quiver-leather-squeeze-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "archer_tower"
+    },
+    "spawn_archer_tower_v2": {
+      "file": "Assets/Source/Audio/spawn_archer_tower_v2.wav",
+      "duration": 0.7125396825396826,
+      "sha256": "e0ac600008787c1690f6a41935b8c95cb5c13ea8312434544b8c99e1c777c98f",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.600006103515625,
+      "rmsDbFS": -26.284671716091506,
+      "dcOffset": 7.347410672019699e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactWood_medium_002.ogg",
+        "Tinysized_handcuffs-metal-lock-02.wav",
+        "Tinysized_quiver-leather-squeeze-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "archer_tower"
+    },
+    "spawn_archer_tower_v3": {
+      "file": "Assets/Source/Audio/spawn_archer_tower_v3.wav",
+      "duration": 0.7122902494331066,
+      "sha256": "1d331afbab64ecb3c582843e7c6bd57eb2f24fd82b8c60bd790c3569d82c58ed",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.600006103515625,
+      "rmsDbFS": -25.95417349227305,
+      "dcOffset": 6.86111168452741e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactWood_medium_004.ogg",
+        "Tinysized_handcuffs-metal-lock-01.wav",
+        "Tinysized_quiver-leather-squeeze-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "archer_tower"
+    },
+    "spawn_bullet_burst": {
+      "file": "Assets/Source/Audio/spawn_bullet_burst.wav",
+      "duration": 0.34514739229024943,
+      "sha256": "295dbb63507f04e6a43802c271bedbdda97bfca80ff470923a676935ecf03d1d",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.5999755859375,
+      "rmsDbFS": -24.68920086124325,
+      "dcOffset": 1.5159543275942777e-05,
+      "role": "deployment",
+      "sources": [
+        "Tinysized_compressed-air-spray-01.wav",
+        "Tinysized_handcuffs-metal-lock-01.wav",
+        "Tinysized_sword-clash-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "bullet_burst"
+    },
+    "spawn_bullet_burst_v2": {
+      "file": "Assets/Source/Audio/spawn_bullet_burst_v2.wav",
+      "duration": 0.34514739229024943,
+      "sha256": "e8a02d40bee2ba1290131728ffa53e2b1c6be69ce8cbb3d87d6b0d542de74e02",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.5999755859375,
+      "rmsDbFS": -23.5584227780018,
+      "dcOffset": 1.5550511526016686e-05,
+      "role": "deployment",
+      "sources": [
+        "Tinysized_compressed-air-spray-01.wav",
+        "Tinysized_handcuffs-metal-lock-02.wav",
+        "Tinysized_sword-clash-03.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "bullet_burst"
+    },
+    "spawn_bullet_burst_v3": {
+      "file": "Assets/Source/Audio/spawn_bullet_burst_v3.wav",
+      "duration": 0.34514739229024943,
+      "sha256": "8fab2b715baa523a38c5cc2075f05c3b75b9f9156d8412e99fcdab362ca1fe57",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.5999755859375,
+      "rmsDbFS": -24.594870396711794,
+      "dcOffset": 1.4365576983484988e-05,
+      "role": "deployment",
+      "sources": [
+        "Tinysized_compressed-air-spray-01.wav",
+        "Tinysized_handcuffs-metal-lock-01.wav",
+        "Tinysized_sword-clash-05.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "bullet_burst"
+    },
+    "spawn_nova_flask": {
+      "file": "Assets/Source/Audio/spawn_nova_flask.wav",
+      "duration": 0.7747165532879818,
+      "sha256": "14595c532bb63e7d633e6f3c0f662033a05ea290c148797c014663780f0ead77",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.5999755859375,
+      "rmsDbFS": -26.150733660187736,
+      "dcOffset": 1.1866706436137128e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactGlass_light_000.ogg",
+        "Tinysized_quiver-leather-squeeze-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "nova_flask"
+    },
+    "spawn_nova_flask_v2": {
+      "file": "Assets/Source/Audio/spawn_nova_flask_v2.wav",
+      "duration": 0.7740136054421769,
+      "sha256": "ed36a0f11873c7a14ab6a3ef2bd8d7a259a902bb87e0601de406e7e87798d2ea",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.5999755859375,
+      "rmsDbFS": -25.963834884098777,
+      "dcOffset": 1.4615965523744654e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactGlass_light_002.ogg",
+        "Tinysized_quiver-leather-squeeze-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "nova_flask"
+    },
+    "spawn_nova_flask_v3": {
+      "file": "Assets/Source/Audio/spawn_nova_flask_v3.wav",
+      "duration": 0.7739455782312925,
+      "sha256": "ca81f7bc1e25db8f59e4c7d2e21b56664f066772aa6d643b825ae7cb7b51b675",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.5999755859375,
+      "rmsDbFS": -26.260755807508303,
+      "dcOffset": 1.0440765279822595e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactGlass_light_000.ogg",
+        "Tinysized_quiver-leather-squeeze-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "nova_flask"
+    },
+    "spawn_mini_stampede": {
+      "file": "Assets/Source/Audio/spawn_mini_stampede.wav",
+      "duration": 0.3795691609977324,
+      "sha256": "30175856e6dd26e6f5e937463567ed8006457a51c93381495d7d2d7e5aaa8ea9",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.381622314453125,
+      "rmsDbFS": -22.99999920082357,
+      "dcOffset": 1.6670812735229107e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactWood_medium_000.ogg",
+        "Ogrebane_monster-7.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "mini_stampede"
+    },
+    "spawn_mini_stampede_v2": {
+      "file": "Assets/Source/Audio/spawn_mini_stampede_v2.wav",
+      "duration": 0.40242630385487527,
+      "sha256": "83c8ef5654ca9c8a83093f4515f3d49c44350d45fa51b231e6df41fb4198a7af",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.51727294921875,
+      "rmsDbFS": -22.9999978597052,
+      "dcOffset": 1.3939003114963092e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactWood_medium_002.ogg",
+        "Ogrebane_monster-8.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "mini_stampede"
+    },
+    "spawn_mini_stampede_v3": {
+      "file": "Assets/Source/Audio/spawn_mini_stampede_v3.wav",
+      "duration": 0.4268480725623583,
+      "sha256": "c5fe1da4a385337832a69fedad56106eb25ea65a623fb6af6905456d843c8cb2",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.474853515625,
+      "rmsDbFS": -23.0000054112896,
+      "dcOffset": 1.3780249365836167e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactWood_medium_004.ogg",
+        "Ogrebane_monster-9.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "mini_stampede"
+    },
+    "spawn_stampede": {
+      "file": "Assets/Source/Audio/spawn_stampede.wav",
+      "duration": 0.4682766439909297,
+      "sha256": "f906e7e50183ad2e0eb082d28c8ed535311868da891fe9f5699971920cf60005",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.409820556640625,
+      "rmsDbFS": -22.99999604214554,
+      "dcOffset": 1.412016168632875e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactWood_medium_000.ogg",
+        "Ogrebane_monster-7.wav",
+        "Tinysized_sword-clash-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "stampede"
+    },
+    "spawn_stampede_v2": {
+      "file": "Assets/Source/Audio/spawn_stampede_v2.wav",
+      "duration": 0.4048979591836735,
+      "sha256": "64cc36c83a5f938f6b518a57d0522cc819b782ccc25c3268c7c2557a7cc1bb1e",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.443206787109375,
+      "rmsDbFS": -22.999993975109156,
+      "dcOffset": 1.3915441369497648e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactWood_medium_002.ogg",
+        "Ogrebane_monster-8.wav",
+        "Tinysized_sword-clash-03.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "stampede"
+    },
+    "spawn_stampede_v3": {
+      "file": "Assets/Source/Audio/spawn_stampede_v3.wav",
+      "duration": 0.507482993197279,
+      "sha256": "6990f30439ffcf6ec1a621efe053f4630c44c88d83bca4c6b702ddbe5ffb7db4",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.465789794921875,
+      "rmsDbFS": -23.00000449157939,
+      "dcOffset": 1.747056349139857e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactWood_medium_004.ogg",
+        "Ogrebane_monster-9.wav",
+        "Tinysized_sword-clash-05.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "stampede"
+    },
+    "spawn_pulverizer": {
+      "file": "Assets/Source/Audio/spawn_pulverizer.wav",
+      "duration": 0.7359410430839002,
+      "sha256": "cb891926f9c88ab490018e71ef182b7848d1b0edc10a4196369cd3f702ef716e",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.524627685546875,
+      "rmsDbFS": -22.9999939116243,
+      "dcOffset": 1.5113512038303035e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactPlate_light_000.ogg",
+        "Tinysized_handcuffs-metal-lock-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "pulverizer"
+    },
+    "spawn_pulverizer_v2": {
+      "file": "Assets/Source/Audio/spawn_pulverizer_v2.wav",
+      "duration": 0.73578231292517,
+      "sha256": "674ea94b894c8d35824d49af8af3cfc4a45dc1fc2e770f641b5cf4d980415383",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.40325927734375,
+      "rmsDbFS": -22.99999926582904,
+      "dcOffset": 1.5170381384253267e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactPlate_light_000.ogg",
+        "Tinysized_handcuffs-metal-lock-02.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "pulverizer"
+    },
+    "spawn_pulverizer_v3": {
+      "file": "Assets/Source/Audio/spawn_pulverizer_v3.wav",
+      "duration": 0.7356009070294784,
+      "sha256": "f001072dd03bd2be522e1a38aff3cfc055612ae1edca59ce4355563ad944f322",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.566253662109375,
+      "rmsDbFS": -23.000007102816802,
+      "dcOffset": 1.5315233411683107e-05,
+      "role": "deployment",
+      "sources": [
+        "Kenney_impactPlate_light_000.ogg",
+        "Tinysized_handcuffs-metal-lock-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "pulverizer"
+    },
+    "spawn_bone_warden": {
+      "file": "Assets/Source/Audio/spawn_bone_warden.wav",
+      "duration": 0.6846031746031747,
+      "sha256": "adadd53ad5ef17a48571a6f21ae444428eea69dd8097273952b3a2360d6cb151",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.4432373046875,
+      "rmsDbFS": -23.000003949951633,
+      "dcOffset": 1.5193591361560564e-05,
+      "role": "deployment",
+      "sources": [
+        "BrandonSong_attackbig3.wav",
+        "Kenney_impactMining_000.ogg",
+        "Tinysized_wood-twigs-break-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "bone_warden"
+    },
+    "spawn_bone_warden_v2": {
+      "file": "Assets/Source/Audio/spawn_bone_warden_v2.wav",
+      "duration": 0.7338095238095238,
+      "sha256": "eed03d611c2304a140e5a5c3a62b6d8e0dfb1074d59de5673b0f111315488455",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.478302001953125,
+      "rmsDbFS": -23.000006626018596,
+      "dcOffset": 1.5165900046545224e-05,
+      "role": "deployment",
+      "sources": [
+        "BrandonSong_attackbig4.wav",
+        "Kenney_impactMining_002.ogg",
+        "Tinysized_wood-twigs-break-02.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "bone_warden"
+    },
+    "spawn_bone_warden_v3": {
+      "file": "Assets/Source/Audio/spawn_bone_warden_v3.wav",
+      "duration": 0.9353061224489796,
+      "sha256": "cf1465221f1f2aa1cd8d968a21d4d599c59d741dce8ef2b52b60f6b1d4af2e09",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.522857666015625,
+      "rmsDbFS": -22.99999366865814,
+      "dcOffset": 1.5238442530668897e-05,
+      "role": "deployment",
+      "sources": [
+        "BrandonSong_attackbig5.wav",
+        "Kenney_impactMining_004.ogg",
+        "Tinysized_wood-twigs-break-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "bone_warden"
+    },
+    "spawn_aether_reaper": {
+      "file": "Assets/Source/Audio/spawn_aether_reaper.wav",
+      "duration": 0.7324943310657597,
+      "sha256": "fc210221745dd3bae6ea6acaa05a64f9585e0e1e77d61879d90dd3678d5cfafa",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.5999755859375,
+      "rmsDbFS": -24.33715824401454,
+      "dcOffset": 1.5235643204094821e-05,
+      "role": "deployment",
+      "sources": [
+        "BrandonSong_attack0.wav",
+        "Tinysized_tube-plastic-whoosh-02.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "aether_reaper"
+    },
+    "spawn_aether_reaper_v2": {
+      "file": "Assets/Source/Audio/spawn_aether_reaper_v2.wav",
+      "duration": 0.7348072562358277,
+      "sha256": "8685209f78d430aad33537df083c20048cc8069d0ce9cb52408c9934f01f582b",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.5982666015625,
+      "rmsDbFS": -23.000011411151306,
+      "dcOffset": 1.5313881743268786e-05,
+      "role": "deployment",
+      "sources": [
+        "BrandonSong_attack1.wav",
+        "Tinysized_tube-plastic-whoosh-02.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "aether_reaper"
+    },
+    "spawn_aether_reaper_v3": {
+      "file": "Assets/Source/Audio/spawn_aether_reaper_v3.wav",
+      "duration": 0.7402267573696145,
+      "sha256": "48f5b9f371ff1106c63631bbd052013c2b61975051f1a999e60e8565f816dc13",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.59832763671875,
+      "rmsDbFS": -22.999992301474677,
+      "dcOffset": 1.5198958006256893e-05,
+      "role": "deployment",
+      "sources": [
+        "BrandonSong_attack2.wav",
+        "Tinysized_tube-plastic-whoosh-02.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "aether_reaper"
+    },
+    "spawn_iron_giant": {
+      "file": "Assets/Source/Audio/spawn_iron_giant.wav",
+      "duration": 1.1938548752834468,
+      "sha256": "98db6dd133968aa538cab14b75f261a6c68e47cc831a1390571c3a27d1bf6f2f",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.551513671875,
+      "rmsDbFS": -23.000003856419372,
+      "dcOffset": 1.6523857995581586e-05,
+      "role": "deployment",
+      "sources": [
+        "BrandonSong_yes0.wav",
+        "Kenney_impactPlate_light_002.ogg",
+        "Tinysized_handcuffs-metal-lock-02.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "iron_giant"
+    },
+    "spawn_iron_giant_v2": {
+      "file": "Assets/Source/Audio/spawn_iron_giant_v2.wav",
+      "duration": 0.9479818594104309,
+      "sha256": "47c3988b349e0a2398d2dc83638130aae9c5b7b013ad0864598d3bda7cd124e9",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.47021484375,
+      "rmsDbFS": -22.999995940192626,
+      "dcOffset": 1.677860912795113e-05,
+      "role": "deployment",
+      "sources": [
+        "BrandonSong_yes1.wav",
+        "Kenney_impactPlate_light_002.ogg",
+        "Tinysized_handcuffs-metal-lock-02.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "iron_giant"
+    },
+    "spawn_iron_giant_v3": {
+      "file": "Assets/Source/Audio/spawn_iron_giant_v3.wav",
+      "duration": 0.7865759637188209,
+      "sha256": "23c3207471e548568bc984ab86678e50db6672542f82e01d4d430ffece373272",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.580902099609375,
+      "rmsDbFS": -23.0000009946217,
+      "dcOffset": 1.724531729722815e-05,
+      "role": "deployment",
+      "sources": [
+        "BrandonSong_greet0.wav",
+        "Kenney_impactPlate_light_002.ogg",
+        "Tinysized_handcuffs-metal-lock-02.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "iron_giant"
+    },
+    "spawn_shadow_surge": {
+      "file": "Assets/Source/Audio/spawn_shadow_surge.wav",
+      "duration": 0.7755102040816326,
+      "sha256": "88cac6ec867bdeb5dce95f8c9a10ae944948310af88c8442764195cba2e2f86e",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.600006103515625,
+      "rmsDbFS": -23.796872182248393,
+      "dcOffset": 1.5014291506761696e-05,
+      "role": "deployment",
+      "sources": [
+        "Tinysized_tube-plastic-whoosh-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "shadow_surge"
+    },
+    "spawn_shadow_surge_v2": {
+      "file": "Assets/Source/Audio/spawn_shadow_surge_v2.wav",
+      "duration": 0.7826984126984127,
+      "sha256": "86f1c70a4a2521ab63dde06383bbdfff1c5627aca06c165f58825fd12c4253d1",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.495269775390625,
+      "rmsDbFS": -23.000005221990474,
+      "dcOffset": 1.522917064643871e-05,
+      "role": "deployment",
+      "sources": [
+        "Tinysized_tube-plastic-whoosh-02.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "shadow_surge"
+    },
+    "spawn_shadow_surge_v3": {
+      "file": "Assets/Source/Audio/spawn_shadow_surge_v3.wav",
+      "duration": 0.7801133786848072,
+      "sha256": "829cb1bb904b6b24600c5d7d1dc23198cf63885a9bbf132138dca9b4bdc0723a",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.600006103515625,
+      "rmsDbFS": -24.22928927468673,
+      "dcOffset": 1.5161655823983374e-05,
+      "role": "deployment",
+      "sources": [
+        "Tinysized_tube-plastic-whoosh-01.wav"
+      ],
+      "productionSource": "Build/generate_roster_audio.py",
+      "cardId": "shadow_surge"
     }
   },
   "usedSourceFiles": [
@@ -939,5 +2034,196 @@
     "VSCO_VlnEns_susVib_A3_v1.wav",
     "VSCO_glock_medium_C5.wav",
     "VSCO_susvib_D2_v1_1.wav"
-  ]
+  ],
+  "spawnCueProfiles": {
+    "ironclad": {
+      "identity": "Confident human acknowledgements, fitted armor and shield latch",
+      "takes": [
+        "spawn_ironclad",
+        "spawn_ironclad_v2",
+        "spawn_ironclad_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    },
+    "ember_archer": {
+      "identity": "Performed fire calls, leather bow grip and restrained ember snap",
+      "takes": [
+        "spawn_ember_archer",
+        "spawn_ember_archer_v2",
+        "spawn_ember_archer_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    },
+    "twin_blades": {
+      "identity": "Three mischievous creature battlecries and paired blade flicks",
+      "takes": [
+        "spawn_twin_blades",
+        "spawn_twin_blades_v2",
+        "spawn_twin_blades_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    },
+    "boulderback": {
+      "identity": "Low stone creature calls, gravel weight and settling rock",
+      "takes": [
+        "spawn_boulderback",
+        "spawn_boulderback_v2",
+        "spawn_boulderback_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    },
+    "arc_mage": {
+      "identity": "Short voiced incantations with a rising rune chord",
+      "takes": [
+        "spawn_arc_mage",
+        "spawn_arc_mage_v2",
+        "spawn_arc_mage_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    },
+    "rambeast": {
+      "identity": "Compact throaty challenge, horn scrape and hoof stamp",
+      "takes": [
+        "spawn_rambeast",
+        "spawn_rambeast_v2",
+        "spawn_rambeast_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    },
+    "sky_manta": {
+      "identity": "Breathy gliding creature call and soft harmonic fin shimmer",
+      "takes": [
+        "spawn_sky_manta",
+        "spawn_sky_manta_v2",
+        "spawn_sky_manta_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    },
+    "vampire_bats": {
+      "identity": "Three recorded bat screeches, staggered wing foley",
+      "takes": [
+        "spawn_vampire_bats",
+        "spawn_vampire_bats_v2",
+        "spawn_vampire_bats_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    },
+    "frost_fang": {
+      "identity": "Three recorded canine growls with a short cold exhalation",
+      "takes": [
+        "spawn_frost_fang",
+        "spawn_frost_fang_v2",
+        "spawn_frost_fang_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    },
+    "storm_raven": {
+      "identity": "Recorded crow caw with charged feather crackle",
+      "takes": [
+        "spawn_storm_raven",
+        "spawn_storm_raven_v2",
+        "spawn_storm_raven_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    },
+    "meteor_shards": {
+      "identity": "Fracturing stone, descending flame and a short celestial warning",
+      "takes": [
+        "spawn_meteor_shards",
+        "spawn_meteor_shards_v2",
+        "spawn_meteor_shards_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    },
+    "archer_tower": {
+      "identity": "Different wooden deployment latches, bow string and watch bell",
+      "takes": [
+        "spawn_archer_tower",
+        "spawn_archer_tower_v2",
+        "spawn_archer_tower_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    },
+    "bullet_burst": {
+      "identity": "Three mechanical chambering signatures with a brisk air cut",
+      "takes": [
+        "spawn_bullet_burst",
+        "spawn_bullet_burst_v2",
+        "spawn_bullet_burst_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    },
+    "nova_flask": {
+      "identity": "Glass stopper, liquid-free crystal spin and a bright alchemical chime",
+      "takes": [
+        "spawn_nova_flask",
+        "spawn_nova_flask_v2",
+        "spawn_nova_flask_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    },
+    "mini_stampede": {
+      "identity": "Three short scrappy nasal creature grunts and light hoof scrabble",
+      "takes": [
+        "spawn_mini_stampede",
+        "spawn_mini_stampede_v2",
+        "spawn_mini_stampede_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    },
+    "stampede": {
+      "identity": "Lower war-hog rally grunts, heavier hoofs and a brass collar response",
+      "takes": [
+        "spawn_stampede",
+        "spawn_stampede_v2",
+        "spawn_stampede_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    },
+    "pulverizer": {
+      "identity": "Three locking mechanisms, compression thump and violet resonance",
+      "takes": [
+        "spawn_pulverizer",
+        "spawn_pulverizer_v2",
+        "spawn_pulverizer_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    },
+    "bone_warden": {
+      "identity": "Lower performed battlecries, dry ribcage rattle and hammer settling",
+      "takes": [
+        "spawn_bone_warden",
+        "spawn_bone_warden_v2",
+        "spawn_bone_warden_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    },
+    "aether_reaper": {
+      "identity": "Breathy voiced shadow calls, a scythe whisper and dark resonance",
+      "takes": [
+        "spawn_aether_reaper",
+        "spawn_aether_reaper_v2",
+        "spawn_aether_reaper_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    },
+    "iron_giant": {
+      "identity": "Deep human acknowledgements through a short metal cavity and shield lock",
+      "takes": [
+        "spawn_iron_giant",
+        "spawn_iron_giant_v2",
+        "spawn_iron_giant_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    },
+    "shadow_surge": {
+      "identity": "Three brief reversing cloth shadows and low Aether chords",
+      "takes": [
+        "spawn_shadow_surge",
+        "spawn_shadow_surge_v2",
+        "spawn_shadow_surge_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    }
+  }
 }

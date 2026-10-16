@@ -179,6 +179,9 @@ double Match::AetherGenerated(double from, double to) {
         amount += std::max(0., std::min(to, segment[1]) - std::max(from, segment[0])) * segment[2] / 2.8;
     return amount;
 }
+double Match::InterpolationAlpha() const {
+    return std::clamp(accumulator_ / FixedDT, 0., 1.);
+}
 void Match::Step(double seconds) {
     if (!std::isfinite(seconds) || seconds <= 0 || state_.phase == Phase::Finished)
         return;

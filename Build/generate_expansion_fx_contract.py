@@ -1,6 +1,7 @@
 """Append/check the approved visual-only FX material contract without art writes."""
 from pathlib import Path
 import argparse,hashlib,json
+from asset_file_io import write_json
 
 ROOT=Path(__file__).resolve().parents[1]
 def pin(root,path):
@@ -21,7 +22,7 @@ def main():
     if args.write:
         if m.get('presentationMaterials') and [e['name'] for e in m['presentationMaterials']]!=['M_RiftExpansionFX']:
             raise ValueError('Cannot replace another presentation material contract')
-        m['presentationMaterials']=expected;p.write_text(json.dumps(m,indent=2),encoding='utf-8')
+        m['presentationMaterials']=expected;write_json(p,m)
     elif m.get('presentationMaterials')!=expected:raise ValueError('Dedicated expansion FX contract is missing or stale')
     print('RIFT_EXPANSION_FX_CONTRACT', 'WRITTEN' if args.write else 'PASS')
 if __name__=='__main__':main()

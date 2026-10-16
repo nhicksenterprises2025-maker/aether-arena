@@ -10,6 +10,7 @@ class USoundSubmix;
 class USoundSubmixBase;
 class USubmixEffectDynamicsProcessorPreset;
 class URiftUIWidget;
+namespace rift { struct Event; }
 
 UCLASS()
 class RIFTCROWNARENA_API URiftBattleAudioSubsystem : public UGameInstanceSubsystem, public FTickableGameObject
@@ -25,6 +26,7 @@ public:
     void SetBattleWorld(UWorld* World);
     void RefreshVolumes();
     void PlayEffect(FName Name, FVector Position, float Gain=1.f, float Pitch=1.f);
+    void OnSimulationEvent(const rift::Event& Event, FVector Position);
     UFUNCTION(BlueprintCallable) void PlayUI(FName Name=TEXT("ui_click"));
     FString RunAudioSmokeJSON(URiftUIWidget* Interface);
     void RunAudioSmoke(URiftUIWidget* Interface,TFunction<void(const FString&)> Completed);
@@ -45,6 +47,7 @@ private:
     TArray<FVoice> Voices;
     TMap<FName,double> LastPlayTime;
     TMap<FName,uint32> VariantSequence;
+    TSet<uint64> DeploymentPlays[2];
     TSet<uint32> RegisteredDeviceIds;
     TWeakObjectPtr<UWorld> BattleWorld;
     float MusicDuck=1.f;

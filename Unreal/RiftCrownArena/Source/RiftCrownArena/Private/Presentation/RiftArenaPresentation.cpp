@@ -164,24 +164,25 @@ ARiftArenaPresentation::ARiftArenaPresentation()
     PrimaryActorTick.bCanEverTick=true;PrimaryActorTick.TickGroup=TG_PostUpdateWork;
     Scene=CreateDefaultSubobject<USceneComponent>(TEXT("AuthoredArenaRoot"));SetRootComponent(Scene);Scene->SetMobility(EComponentMobility::Static);
     auto* Sun=CreateDefaultSubobject<UDirectionalLightComponent>(TEXT("AfternoonKey"));Sun->SetupAttachment(Scene);
-    Sun->SetMobility(EComponentMobility::Movable);Sun->LightSourceAngle=1.5f;Sun->SetForwardShadingPriority(1);
-    Sun->SetRelativeRotation(FRotator(-52,-24,0));Sun->SetIntensity(6.f);
-    Sun->SetLightColor(FLinearColor(1.f,.89f,.74f));Sun->CastShadows=true;
+    Sun->SetMobility(EComponentMobility::Movable);Sun->LightSourceAngle=3.5f;Sun->SetForwardShadingPriority(1);
+    Sun->SetRelativeRotation(FRotator(-52,-24,0));Sun->SetIntensity(5.7f);
+    Sun->SetLightColor(FLinearColor(1.f,.94f,.84f));Sun->CastShadows=true;
     auto* Fill=CreateDefaultSubobject<UDirectionalLightComponent>(TEXT("EquipmentFill"));Fill->SetupAttachment(Scene);
     Fill->SetMobility(EComponentMobility::Movable);Fill->SetRelativeRotation(FRotator(-58,156,0));
-    Fill->SetIntensity(2.5f);Fill->SetLightColor(FLinearColor(.64f,.76f,.90f));Fill->CastShadows=false;
+    Fill->SetIntensity(1.8f);Fill->SetLightColor(FLinearColor(.68f,.79f,.94f));Fill->CastShadows=false;
     Fill->bAtmosphereSunLight=false;
     Fill->SetForwardShadingPriority(0);
     auto* Sky=CreateDefaultSubobject<USkyLightComponent>(TEXT("SoftSkyFill"));Sky->SetupAttachment(Scene);
     Sky->SetMobility(EComponentMobility::Movable);
-    Sky->SetIntensity(2.f);Sky->SetLightColor(FLinearColor(.72f,.81f,.94f));Sky->bRealTimeCapture=true;
+    Sky->SetIntensity(1.7f);Sky->SetLightColor(FLinearColor(.77f,.84f,.96f));Sky->bRealTimeCapture=true;
     auto* Atmosphere=CreateDefaultSubobject<USkyAtmosphereComponent>(TEXT("RiftSky"));Atmosphere->SetupAttachment(Scene);
     auto* Fog=CreateDefaultSubobject<UExponentialHeightFogComponent>(TEXT("DistantIslandHaze"));Fog->SetupAttachment(Scene);
     Fog->SetFogDensity(.008f);Fog->SetFogInscatteringColor(FLinearColor(.12f,.20f,.27f));Fog->SetStartDistance(3800.f);
     auto* Post=CreateDefaultSubobject<UPostProcessComponent>(TEXT("BattlefieldGrade"));Post->SetupAttachment(Scene);Post->bUnbound=true;
     Post->Settings.bOverride_BloomIntensity=true;Post->Settings.BloomIntensity=.18f;
-    Post->Settings.bOverride_AutoExposureMinBrightness=true;Post->Settings.AutoExposureMinBrightness=.8f;
-    Post->Settings.bOverride_AutoExposureMaxBrightness=true;Post->Settings.AutoExposureMaxBrightness=1.2f;
+    // Spell flashes must not make the entire painted arena breathe in exposure.
+    Post->Settings.bOverride_AutoExposureMinBrightness=true;Post->Settings.AutoExposureMinBrightness=1.f;
+    Post->Settings.bOverride_AutoExposureMaxBrightness=true;Post->Settings.AutoExposureMaxBrightness=1.f;
     Post->Settings.bOverride_VignetteIntensity=true;Post->Settings.VignetteIntensity=.12f;
     Post->Settings.bOverride_AmbientOcclusionIntensity=true;Post->Settings.AmbientOcclusionIntensity=.5f;
     PlacementDecal=CreateDefaultSubobject<UDecalComponent>(TEXT("PlacementFootprint"));PlacementDecal->SetupAttachment(Scene);
@@ -250,7 +251,7 @@ UHierarchicalInstancedStaticMeshComponent* ARiftArenaPresentation::Instances(FNa
         else RIFT_LOG(LogRift,Error,TEXT("Arena grid material is missing; run the targeted RiftArenaOnly import."));
         for (int32 Index=0;Index<Component->GetNumMaterials();++Index)
             if (auto* Dynamic=Component->CreateDynamicMaterialInstance(Index))
-            {Dynamic->SetScalarParameterValue(TEXT("RiftGridStrength"),.35f);Dynamic->SetScalarParameterValue(TEXT("RiftBaseColorGain"),1.12f);Dynamic->SetScalarParameterValue(TEXT("RiftTileSize"),RiftArenaGeometry::UnitsPerTile);}
+            {Dynamic->SetScalarParameterValue(TEXT("RiftGridStrength"),.25f);Dynamic->SetScalarParameterValue(TEXT("RiftBaseColorGain"),1.12f);Dynamic->SetScalarParameterValue(TEXT("RiftTileSize"),RiftArenaGeometry::UnitsPerTile);}
     }
     if (Team>=0)
         for (int32 Index=0;Index<Component->GetNumMaterials();++Index)
@@ -319,9 +320,12 @@ void ARiftArenaPresentation::ConstructArena()
             Place(TEXT("shrub"),FVector(Side*(HalfWidth+140.f*RiftArenaGeometry::WorldScale)+Random.FRandRange(-35,35)*RiftArenaGeometry::WorldScale,Y,0),FRotator(0,Random.FRandRange(0,360),0),FVector(Random.FRandRange(.7,1.3)));
             Place(TEXT("grass_tuft"),FVector(Side*(HalfWidth+35.f*RiftArenaGeometry::WorldScale),Y+45*RiftArenaGeometry::WorldScale,5),FRotator(0,Random.FRandRange(0,360),0),FVector(1.4));
             if (Index%4==1) Place(TEXT("tree"),FVector(Side*(HalfWidth+350.f*RiftArenaGeometry::WorldScale),Y+70*RiftArenaGeometry::WorldScale,-20),FRotator(0,Random.FRandRange(0,360),0),FVector(Random.FRandRange(.95,1.35)));
+            if(Index%3==0)for(int32 Clump=0;Clump<3;++Clump)
+                Place(TEXT("grass_tuft"),FVector(Side*(HalfWidth+(155.f+Clump*32.f)*RiftArenaGeometry::WorldScale),Y+Random.FRandRange(-55,55)*RiftArenaGeometry::WorldScale,2),
+                    FRotator(0,Random.FRandRange(0,360),0),FVector(Random.FRandRange(.65f,1.15f)));
         }
         Place(TEXT("ruin"),FVector(Side*(HalfWidth+440.f*RiftArenaGeometry::WorldScale),Side*(rift::arena::GuardDepth*Tile+180.f*RiftArenaGeometry::WorldScale),-25),FRotator(0,Side*32,0),FVector(1.5));
-        for (float X:{-(HalfWidth-180.f*RiftArenaGeometry::WorldScale),HalfWidth-180.f*RiftArenaGeometry::WorldScale})
+        for (float X:{-(HalfWidth+145.f*RiftArenaGeometry::WorldScale),HalfWidth+145.f*RiftArenaGeometry::WorldScale})
         {
             Place(TEXT("banner"),FVector(X,Side*(rift::arena::CoreDepth*Tile+230.f*RiftArenaGeometry::WorldScale),0),FRotator(0,Side*90,0),FVector(1.05),Side==1?0:1);
             Place(TEXT("crystal_plinth"),FVector(X,Side*900.f*RiftArenaGeometry::WorldScale,0),FRotator::ZeroRotator,FVector(.8),Side==1?0:1);
@@ -503,7 +507,7 @@ void ARiftArenaPresentation::ClearVisuals()
     for (auto& Glow:SpellCastGlows) if (Glow) Glow->DestroyComponent();SpellCastGlows.Reset();
     for (auto& Ring:SpellCastRings) if (Ring.Value) Ring.Value->DestroyComponent();SpellCastRings.Reset();SpellCastMaterials.Reset();
     SpellImpactEffects.Reset();RecentSpellImpacts.Reset();SpellImpactEvents=0;
-    RecentReaperAttacks.Reset();RecentCloakExpiries.Reset();
+    RecentReaperAttacks.Reset();RecentCloakExpiries.Reset();ContactAccents.Reset();PresentationLag=0;
     for(auto& Pair:ExpansionBatches)if(Pair.Value)Pair.Value->DestroyComponent();ExpansionBatches.Reset();
     ProjectileBodiesCreated=0;ProjectileBodiesReleased=0;
     for (auto& Entry:Hazards) if (Entry.Value) Entry.Value->DestroyComponent();Hazards.Reset();
@@ -529,6 +533,11 @@ void ARiftArenaPresentation::Synchronize(float DeltaSeconds)
     ResultDeathClock=State->phase==rift::Phase::Finished?FMath::Min(1.1f,ResultDeathClock+DeltaSeconds):0.f;
     auto* Catalog=GetGameInstance()->GetSubsystem<URiftAssetCatalogSubsystem>();
     const double VisualTime=State->elapsed+ResultDeathClock;
+    const auto* Replay=GetGameInstance()->GetSubsystem<URiftReplaySubsystem>();
+    const bool Interpolate=State->phase!=rift::Phase::Finished && Match && Match->GetSpeed()>0 &&
+        !(Replay&&Replay->IsPlaying()) && Match->Simulation();
+    const double MotionAlpha=Interpolate?Match->Simulation()->InterpolationAlpha():1.;
+    PresentationLag=(1.-MotionAlpha)/60.;
     struct FVisualHerd {uint64 Leader=MAX_uint64;FVector Center=FVector::ZeroVector;int32 Members=0;};
     TMap<uint64,FVisualHerd> VisualHerds;
     for(const auto& Entity:State->entities)if(!Entity.dead && Entity.cardId=="stampede")
@@ -556,7 +565,7 @@ void ARiftArenaPresentation::Synchronize(float DeltaSeconds)
             Units.Add(Entity.id,Actor);
         }
         Actor->SetFormationDustLeader(FormationLeader,FormationCenter);
-        Actor->Synchronize(Entity,*State,DeltaSeconds);
+        Actor->Synchronize(Entity,*State,DeltaSeconds,MotionAlpha);
         if(Actor->CurrentAnimation()==TEXT("Breath")&&!Actor->IsDead()&&!Actor->HiddenFromViewer()&&State->phase!=rift::Phase::Finished)
         {
             auto* Next=NextFrostBreath.Find(Entity.id);
@@ -643,6 +652,8 @@ void ARiftArenaPresentation::ShowcaseNiagaraAtAge(float Age)
 FString ARiftArenaPresentation::NiagaraDiagnosticsJSON()
 {
     auto Report=MakeShared<FJsonObject>();TArray<TSharedPtr<FJsonValue>> Entries;
+    Report->SetNumberField(TEXT("presentationLagSeconds"),PresentationLag);
+    Report->SetNumberField(TEXT("contactAccentCount"),ContactAccents.Num());
     Report->SetBoolField(TEXT("showcaseAgeSampling"),ShowcaseSampleAge>=0.f);
     if(ShowcaseSampleAge>=0.f)Report->SetNumberField(TEXT("requestedShowcaseAge"),ShowcaseSampleAge);
     TArray<TSharedPtr<FJsonValue>> Animations;
@@ -657,9 +668,12 @@ FString ARiftArenaPresentation::NiagaraDiagnosticsJSON()
         Entry->SetNumberField(TEXT("shieldFragments"),Unit->ShieldFragmentCount());
         Entry->SetNumberField(TEXT("reaperAuraPieces"),Unit->ReaperAuraCount());
         Entry->SetNumberField(TEXT("pulverizerPulsePieces"),Unit->PulverizerPulseCount());
+        Entry->SetNumberField(TEXT("renderX"),Unit->GetActorLocation().X/RiftArenaGeometry::UnitsPerTile);
+        Entry->SetNumberField(TEXT("renderZ"),Unit->GetActorLocation().Y/RiftArenaGeometry::UnitsPerTile);
         if (const auto* State=ViewState()) if (const auto* Entity=FindEntity(*State,Pair.Key))
         {
             Entry->SetNumberField(TEXT("hp"),Entity->hp);Entry->SetNumberField(TEXT("maxHp"),Entity->maxHp);
+            Entry->SetNumberField(TEXT("authoritativeX"),Entity->position.x);Entry->SetNumberField(TEXT("authoritativeZ"),Entity->position.z);
             Entry->SetNumberField(TEXT("shieldHP"),Entity->shieldHP);Entry->SetNumberField(TEXT("maxShieldHP"),Entity->maxShieldHP);
             Entry->SetNumberField(TEXT("parentEntityId"),double(Entity->parentEntityId));Entry->SetNumberField(TEXT("invisibleUntil"),Entity->invisibleUntil);
             Entry->SetStringField(TEXT("team"),UTF8_TO_TCHAR(rift::TeamName(Entity->team).c_str()));
@@ -949,7 +963,7 @@ void ARiftArenaPresentation::SynchronizeProjectiles(const rift::Snapshot& State)
         }
         const FVector Start=ProjectileOrigins.FindRef(Projectile.id), End=Target->ImpactLocation();
         const double Duration=FMath::Max(.001,Projectile.duration);
-        const double Progress=FMath::Clamp(1.-Projectile.remaining/Duration,0.,1.);
+        const double Progress=FMath::Clamp(1.-(Projectile.remaining+PresentationLag)/Duration,0.,1.);
         const double Age=Progress*Duration;
         const FVector Position=ProjectilePathPoint(Projectile.cardId,Start,End,Progress);
         const FVector Tangent=ProjectilePathPoint(Projectile.cardId,Start,End,FMath::Min(1.,Progress+.003))-
@@ -1308,6 +1322,7 @@ UInstancedStaticMeshComponent* ARiftArenaPresentation::ExpansionBatch(FName Key,
 void ARiftArenaPresentation::SynchronizeExpansionEffects(const rift::Snapshot& State)
 {
     for(auto& Pair:ExpansionBatches)if(Pair.Value)Pair.Value->ClearInstances();
+    if(State.phase==rift::Phase::Finished){ContactAccents.Reset();return;}
     TMap<UInstancedStaticMeshComponent*,TArray<FTransform>> Transforms;
     auto Piece=[&](FName Key,FName Mesh,FLinearColor Color,FVector Center,FVector Direction,FVector Size)
     {
@@ -1320,6 +1335,23 @@ void ARiftArenaPresentation::SynchronizeExpansionEffects(const rift::Snapshot& S
     {Piece(Key,TEXT("shadow_surge_ribbon"),Color,(A+B)*.5,B-A,FVector((B-A).Length(),Width,Width*.6));};
     const double Tile=RiftArenaGeometry::UnitsPerTile;
     const FLinearColor Violet(.37f,.08f,.66f),Cyan(.10f,.75f,.90f),Green(.20f,.70f,.27f);
+    ContactAccents.RemoveAllSwap([&](const FContactAccent& Accent){return State.elapsed-Accent.Born>=.18 || State.elapsed<Accent.Born;});
+    // Three short directional flecks retain the contact material. Their size
+    // stays below a weapon tip, including a full swarm attacking together.
+    for(const auto& Accent:ContactAccents)
+    {
+        const double Age=State.elapsed-Accent.Born,T=Age/.18;
+        const FName Key(*FString::Printf(TEXT("Contact_%08x_%d"),Accent.Color.ToFColor(false).ToPackedRGBA(),Accent.Heavy?1:0));
+        const FVector Side=FVector::CrossProduct(Accent.Direction,FVector::UpVector).GetSafeNormal(UE_SMALL_NUMBER,FVector::RightVector);
+        for(int32 I=0;I<3;++I)
+        {
+            const FVector Direction=(Accent.Direction*.25+Side*(I-1)*.58+FVector::UpVector*(.7+.15*(I%2))).GetSafeNormal();
+            const FVector Center=Accent.Position+Direction*(.08+.48*T)*Tile-FVector(0,0,.24*T*T*Tile);
+            const double Length=(Accent.Heavy?.12:.075)*Tile*(1.-T);
+            Piece(Key,TEXT("projectile_trail"),Accent.Color,
+                Center,Direction,FVector(Length,.012*Tile,.009*Tile)*(1.-T));
+        }
+    }
     // The damage front is authored mesh geometry as well as a floor decal.
     // This remains visible when LOW suppresses decals/bloom, and remains owned
     // by the paid wave after its source dies. No attack/cooldown or wall-clock
@@ -1426,6 +1458,7 @@ void ARiftArenaPresentation::SynchronizeExpansionEffects(const rift::Snapshot& S
 }
 void ARiftArenaPresentation::OnSimulationEvent(const rift::Event& Event)
 {
+    if(Audio)Audio->OnSimulationEvent(Event,URiftMatchSubsystem::WorldPoint(Event.position,25));
     // Deployment events may arrive before this actor's next tick. Build current
     // visual replicas first so attacks, destruction and audio use real anchors.
     if (Event.type=="match_start" || Event.type=="entity_spawn" ||
@@ -1441,7 +1474,6 @@ void ARiftArenaPresentation::OnSimulationEvent(const rift::Event& Event)
     {
         if(Event.cardId!="mini_stampede" && Event.cardId!="stampede" && Event.cardId!="pulverizer")
             SpawnEffect(TEXT("Deploy"),URiftMatchSubsystem::WorldPoint(Event.position,8),Event.team,65*RiftArenaGeometry::WorldScale);
-        if (Event.count<2 || Event.source%Event.count==0) PlayEventSound(TEXT("deploy"),Position,.45f);
     }
     else if (Event.type=="attack")
     {
@@ -1499,6 +1531,18 @@ void ARiftArenaPresentation::OnSimulationEvent(const rift::Event& Event)
     {
         if (Target && Event.amount>0) Target->HitAt(Event.time,Event.amount);
         if(HiddenTarget)return;
+        if(Target && Event.amount>0 && Event.damageKind!="dot" && Event.damageKind!="aura" && Event.cardId!="pulverizer")
+        {
+            FContactAccent Accent;Accent.Position=Position;Accent.Born=Event.time;
+            Accent.Direction=Source?(Position-Source->ImpactLocation()).GetSafeNormal():FVector::UpVector;
+            Accent.Heavy=Event.cardId=="boulderback"||Event.cardId=="iron_giant"||Event.cardId=="rambeast";
+            const FString& MaterialFamily=Target->PresentationAssetId();
+            Accent.Color=MaterialFamily==TEXT("bone_warden")||MaterialFamily==TEXT("bone_warden_skeleton")?FLinearColor(.90f,.80f,.56f):
+                MaterialFamily==TEXT("aether_reaper")?FLinearColor(.55f,.18f,.88f):
+                MaterialFamily==TEXT("frost_fang")?FLinearColor(.37f,.78f,.94f):
+                MaterialFamily==TEXT("ironclad")||MaterialFamily==TEXT("iron_giant")||Target->IsTower()?FLinearColor(1.f,.68f,.24f):FLinearColor(.58f,.49f,.34f);
+            ContactAccents.Add(Accent);if(ContactAccents.Num()>64)ContactAccents.RemoveAt(0);
+        }
         const bool ArcPrimary=Event.cardId=="arc_mage" && Event.damageKind=="attack";
         const FName FX=Event.damageKind=="dot"?TEXT("MeteorTick"):Event.cardId=="frost_fang"?TEXT("Frost"):ArcPrimary||Event.cardId=="pulverizer"?TEXT("Nova"):TEXT("Impact");
         const float Radius=(ArcPrimary?155.f:Event.damageKind=="splash"?85.f:Event.cardId=="storm_raven"?80.f:Event.cardId=="sky_manta"?62.f:55.f)*RiftArenaGeometry::WorldScale;

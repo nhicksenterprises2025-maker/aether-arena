@@ -41,6 +41,8 @@ if($symbols.Count){
     Write-Output "Preserved $($symbols.Count) debug-symbol files separately: $symbolBatch"
 }
 & (Join-Path $PSScriptRoot 'Stage-AppLocalRuntime.ps1') -GamePackage $packageRoot -ToolchainRoot $ToolchainRoot -BuildLog $BuildLog
+$audioCredits=Join-Path $repoRoot ("Docs/AUDIO_CREDITS_"+$Version+".md")
+if(Test-Path -LiteralPath $audioCredits -PathType Leaf){Copy-Item -LiteralPath $audioCredits -Destination (Join-Path $packageRoot 'Audio-Credits.txt') -Force}
 if($PatchNotesFile){$PatchNotes=Get-Content -LiteralPath $PatchNotesFile -Raw}
 if($PatchNotes.Length -gt 131072){throw 'Patch notes exceed launcher limits.'}
 $launcherRoot=Join-Path $repoRoot 'Artifacts/Launcher'

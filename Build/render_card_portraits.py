@@ -13,6 +13,8 @@ import sys
 from mathutils import Vector
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT/'Build'))
+from asset_file_io import write_json
 parser = argparse.ArgumentParser()
 parser.add_argument('--cards', nargs='*')
 opts = parser.parse_args(sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else [])
@@ -75,6 +77,10 @@ PORTRAIT_MOODS = {
     'mini_stampede': ((.042,.033,.022), (1,.87,.69), (.60,.69,.43)),
     'stampede': ((.027,.037,.056), (1,.91,.73), (.38,.63,.88)),
     'pulverizer': ((.032,.026,.048), (.95,.90,1), (.62,.32,.96)),
+    'bone_warden': ((.022,.043,.035), (1,.91,.75), (.32,.82,.49)),
+    'aether_reaper': ((.029,.020,.061), (.88,.86,1), (.63,.30,1)),
+    'iron_giant': ((.041,.037,.033), (1,.85,.63), (.45,.67,.82)),
+    'shadow_surge': ((.025,.016,.054), (.88,.85,1), (.56,.26,1)),
 }
 
 studio = bpy.data.collections.new('CardPortraitStudio')
@@ -139,6 +145,7 @@ for card in selected:
     def character(name, loc=(0, 0, 0), scale=1, action='Idle', phase=.16, rotation=0):
         original_rig = bpy.data.objects['SKEL_' + name]
         rig = original_rig.copy()
+        rig.data = original_rig.data.copy()
         studio.objects.link(rig)
         mesh = bpy.data.objects['SK_' + name].copy()
         studio.objects.link(mesh)
@@ -149,12 +156,23 @@ for card in selected:
         rig.rotation_euler.z = rotation
         clip = next(a for a in manifest['characters'][name]['animations'] if a['name'] == action)
         rig.animation_data_create()
-        rig.animation_data.action = bpy.data.actions[clip['action']]
+        staged = bpy.data.actions[clip['action']].copy()
+        staged.name = rig.name + '_PortraitPose'
+        offset = round((clip['frames'] - 1) * phase)
+        curves = list(staged.fcurves) if hasattr(staged,'fcurves') else [curve for layer in staged.layers for strip in layer.strips for bag in strip.channelbags for curve in bag.fcurves]
+        for curve in curves:
+            for point in curve.keyframe_points:
+                point.co.x -= offset
+                point.handle_left.x -= offset
+                point.handle_right.x -= offset
+        rig.animation_data.action = staged
         rig.hide_render = mesh.hide_render = False
         temporary.extend((mesh, rig))
         subjects.append(mesh)
-        sources.append({'model': manifest['characters'][name]['mesh'], 'action': clip['name'], 'phase': phase})
-        return 1 + round((clip['frames'] - 1) * phase)
+        sources.append({'model': manifest['characters'][name]['mesh'], 'action': clip['name'], 'phase': phase,
+                        'phaseOffsetFrames':offset,'poseSourceFrame':1+offset,
+                        'evaluatedAtFrame':1,'stagedAction':staged.name})
+        return 1
     def static(name, loc=(0, 0, 0), scale=1, rotation=(0, 0, 0)):
         mesh = bpy.data.objects['SM_' + name].copy()
         studio.objects.link(mesh)
@@ -183,10 +201,22 @@ for card in selected:
         frame=character(card, (-.65,.28,0),.82,phase=.16,rotation=-.14)
         character(card,(.59,.36,0),.79,phase=.16,rotation=.12)
         character(card,(0,-.30,0),1.,phase=.16)
+    elif card == 'shadow_surge':
+        frame=character('ironclad',(-.58,.30,0),.66,phase=.16,rotation=-.12)
+        character('twin_blades',(.53,.15,0),.67,phase=.16,rotation=.15)
+        character('bone_warden_skeleton',(0,-.15,0),.92,phase=.16)
+        static('shadow_surge_ribbon',scale=1.1)
+        for i in range(7):
+            angle=i*math.tau/7
+            static('shadow_surge_wisp',(math.cos(angle)*.9,math.sin(angle)*.9,.02),1.6,
+                   (0,0,angle))
     elif 'skeletal' in binding:
         name = binding['skeletal']
-        action = 'WingCycle' if name in ('sky_manta', 'storm_raven') else 'Idle'
-        frame = character(name, action=action, phase=.16)
+        action = 'WingCycle' if name in ('sky_manta', 'storm_raven') else 'DrawRelease' if name=='ember_archer' else 'Cast' if name=='arc_mage' else 'Attack' if name=='ironclad' else 'Idle'
+        frame = character(name, action=action, phase=.37 if action=='DrawRelease' else .27 if action in ('Cast','Attack') else .16)
+        if name=='bone_warden':
+            character('bone_warden_skeleton',(-.44,.16,0),.70,phase=.16,rotation=-.1)
+            character('bone_warden_skeleton',(.43,.16,0),.70,phase=.16,rotation=.1)
     elif card == 'bullet_burst':
         for i in range(7):
             angle = (i - 3) * .18
@@ -240,6 +270,6 @@ for card in selected:
                            'lighting': {'backdrop': mood, 'key': key_color, 'rim': rim_color}}
     for obj in temporary: bpy.data.objects.remove(obj, do_unlink=True)
     print('RIFT_CARD_PORTRAIT', card, info['sha256'], flush=True)
-manifest_path.write_text(json.dumps(manifest, indent=2), encoding='utf-8')
-report_path.write_text(json.dumps(report, indent=2), encoding='utf-8')
+write_json(manifest_path,manifest)
+write_json(report_path,report)
 print('RIFT_CARD_PORTRAITS_COMPLETE', len(selected), flush=True)

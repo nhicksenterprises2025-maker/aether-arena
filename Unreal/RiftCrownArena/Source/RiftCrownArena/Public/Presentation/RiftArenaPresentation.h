@@ -122,6 +122,9 @@ private:
     TArray<rift::Event> RecentSpellImpacts;
     TArray<rift::Event> RecentReaperAttacks;
     TArray<rift::Event> RecentCloakExpiries;
+    struct FContactAccent {FVector Position,Direction;FLinearColor Color;double Born=0;bool Heavy=false;};
+    TArray<FContactAccent> ContactAccents;
+    double PresentationLag=0;
     uint64 SpellImpactEvents=0;
     TMap<uint64,double> NextFrostBreath;
     TArray<TWeakObjectPtr<UNiagaraComponent>> TransientEffects;

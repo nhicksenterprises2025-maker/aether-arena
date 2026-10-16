@@ -31,7 +31,7 @@
 #include "Styling/CoreStyle.h"
 
 namespace {
-const FLinearColor Gold(.95f,.64f,.19f,1),Blue(.22f,.69f,.97f,1),Red(.98f,.32f,.29f,1),Ink(.018f,.035f,.065f,.99f),White(.95f,.94f,.89f,1),Soft(.55f,.66f,.79f,1),Violet(.55f,.24f,.94f,1);
+const FLinearColor Gold(.91f,.65f,.29f,1),Blue(.22f,.69f,.97f,1),Red(.98f,.32f,.29f,1),Ink(.025f,.038f,.052f,.99f),White(.96f,.93f,.84f,1),Soft(.62f,.66f,.68f,1),Violet(.55f,.24f,.94f,1);
 FString GameString(const std::string& S){return UTF8_TO_TCHAR(S.c_str());}
 FString ResultLabel(const std::string& Reason){
     if(Reason=="core_destroyed")return TEXT("Core destroyed");
@@ -49,7 +49,8 @@ FString CardSummary(const rift::Card& C){
     if(C.chargeDamage)Result+=FString::Printf(TEXT("\n%.0f charge damage"),C.chargeDamage);
     if(C.shieldHP>0)Result+=FString::Printf(TEXT("\n%.0f separate shield · shield-hit overflow blocked"),C.shieldHP);
     if(C.deathSpawnCount>0)Result+=FString::Printf(TEXT("\n%d skeletons on death · no additional Aether"),C.deathSpawnCount);
-    if(C.invisibilityDuration>0)Result+=FString::Printf(TEXT("\n%.1fs veil for friendly troops inside the area"),C.invisibilityDuration);
+    if(C.healthCloakThreshold>0)Result+=FString::Printf(TEXT("\nAt %.0f%% HP: %.1fs self-cloak, once per deployment"),C.healthCloakThreshold*100,C.invisibilityDuration);
+    else if(C.invisibilityDuration>0)Result+=FString::Printf(TEXT("\n%.1fs veil for friendly troops inside the area"),C.invisibilityDuration);
     if(C.building)Result+=FString::Printf(TEXT("\n%.0fs lifetime · %.1f tile footprint"),C.lifetime,C.footprint);
     return Result;
 }
@@ -86,7 +87,7 @@ void URiftUIWidget::Battle()
         B->PointerMoved=[this](FVector2D Point){if(auto* PC=Cast<ARiftPlayerController>(GetOwningPlayer()))PC->UpdateCardDragAtScreen(Point);};
         B->PointerReleased=[this](FVector2D Point){if(auto* PC=Cast<ARiftPlayerController>(GetOwningPlayer()))PC->FinishCardDragAtScreen(Point);};
         B->PointerCancelled=[this](){if(auto* PC=Cast<ARiftPlayerController>(GetOwningPlayer()))PC->CancelCardDrag();};auto Style=B->GetStyle();Style.SetNormalPadding(FMargin(2));Style.SetPressedPadding(FMargin(2,4,2,0));B->SetStyle(Style);
-        FString Id=GameString(S->hands[0][I]);UImage* Art=nullptr;auto* Stack=WidgetTree->ConstructWidget<UVerticalBox>();auto* Overlay=WidgetTree->ConstructWidget<UOverlay>();auto* ArtSlot=Overlay->AddChildToOverlay(Illustration(Id,64,&Art));ArtSlot->SetHorizontalAlignment(HAlign_Center);
+        FString Id=GameString(S->hands[0][I]);UImage* Art=nullptr;auto* Stack=WidgetTree->ConstructWidget<UVerticalBox>();auto* Overlay=WidgetTree->ConstructWidget<UOverlay>();auto* ArtSlot=Overlay->AddChildToOverlay(Illustration(Id,72,&Art));ArtSlot->SetHorizontalAlignment(HAlign_Center);
         auto* Cost=Text(TEXT(""),18,White);Cost->SetJustification(ETextJustify::Center);auto* Orb=Panel(Cost,FMargin(7,3),Violet);auto* OrbSlot=Overlay->AddChildToOverlay(Orb);OrbSlot->SetHorizontalAlignment(HAlign_Left);OrbSlot->SetVerticalAlignment(VAlign_Top);OrbSlot->SetPadding(FMargin(-3,-4,0,0));
         Add(Stack,Overlay,0);
         auto* Name=Text(TEXT(""),13,White);Name->SetAutoWrapText(false);Name->SetTextOverflowPolicy(ETextOverflowPolicy::Ellipsis);Name->SetJustification(ETextJustify::Center);Add(Stack,Name,1);B->SetContent(Stack);auto* Width=WidgetTree->ConstructWidget<USizeBox>();Width->SetWidthOverride(116);Width->SetContent(B);Add(Hand,Width,false,2);HandButtons.Add(B);HandText.Add(Name);HandCost.Add(Cost);HandImages.Add(Art);HandArtIds.Add(Id);
@@ -98,7 +99,7 @@ void URiftUIWidget::Battle()
     if(S->phase==rift::Phase::Finished){InfoPanel->SetVisibility(ESlateVisibility::Collapsed);Feedback->SetVisibility(ESlateVisibility::Collapsed);}
     auto* Announcement=WidgetTree->ConstructWidget<UVerticalBox>();AnnouncementText=WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(),MakeUniqueObjectName(WidgetTree,UTextBlock::StaticClass(),TEXT("BattleAnnouncement")));AnnouncementText->SetFont(RiftTypography::Font("Bold",25));AnnouncementText->SetColorAndOpacity(Gold);AnnouncementText->SetJustification(ETextJustify::Center);Add(Announcement,AnnouncementText,8);AnnouncementPanel=Panel(Announcement,FMargin(20,12));AnnouncementPanel->SetVisibility(ESlateVisibility::Collapsed);auto* AnnounceSlot=Root->AddChildToCanvas(AnnouncementPanel);AnnounceSlot->SetAnchors(FAnchors(.5f,.31f));AnnounceSlot->SetOffsets(FMargin(-260,0,520,84));
     if(bDev){auto* Scroll=WidgetTree->ConstructWidget<UScrollBox>();auto* Dev=WidgetTree->ConstructWidget<UVerticalBox>();Scroll->AddChild(Dev);auto* Frame=Panel(Scroll,FMargin(12));auto* LayoutSlot=Root->AddChildToCanvas(Frame);LayoutSlot->SetAnchors(FAnchors(1,0,1,1));LayoutSlot->SetOffsets(FMargin(-RiftBattleLayout::DeveloperRightSidebar,202,302,RiftBattleLayout::HandTop+RiftBattleLayout::WorldGutter));Developer(Dev);}
-    DragImage=WidgetTree->ConstructWidget<UImage>();auto* GhostFit=WidgetTree->ConstructWidget<UScaleBox>();GhostFit->SetStretch(EStretch::ScaleToFit);GhostFit->SetContent(DragImage);DragFrame=Panel(GhostFit,FMargin(3));DragFrame->SetVisibility(ESlateVisibility::Collapsed);auto* GhostSlot=Root->AddChildToCanvas(DragFrame);GhostSlot->SetOffsets(FMargin(0,0,76,96));GhostSlot->SetZOrder(8);
+    DragImage=WidgetTree->ConstructWidget<UImage>();auto* GhostFit=WidgetTree->ConstructWidget<UScaleBox>();GhostFit->SetStretch(EStretch::ScaleToFit);GhostFit->SetContent(DragImage);DragFrame=Panel(GhostFit,FMargin(3));DragFrame->SetPadding(FMargin(2));DragFrame->SetVisibility(ESlateVisibility::Collapsed);auto* GhostSlot=Root->AddChildToCanvas(DragFrame);GhostSlot->SetOffsets(FMargin(0,0,76,96));GhostSlot->SetZOrder(8);
     if(S->phase==rift::Phase::Finished){
         auto* R=GetGameInstance()->GetSubsystem<URiftReplaySubsystem>();bEndReplaySaving=R->IsSaving();const bool Ready=!bEndReplaySaving&&!R->LatestFilename.IsEmpty();auto* Summary=WidgetTree->ConstructWidget<UVerticalBox>();auto* Title=Text(S->winner==0?TEXT("VICTORY"):S->winner==1?TEXT("DEFEAT"):TEXT("DRAW"),34,S->winner==0?Gold:White);Title->SetJustification(ETextJustify::Center);Add(Summary,Title,8);auto* Result=Text(FString::Printf(TEXT("%d  —  %d CROWNS"),S->crowns[0],S->crowns[1]),22,Blue);Result->SetJustification(ETextJustify::Center);Add(Summary,Result,6);auto* Reason=Text(ResultLabel(S->resultReason),14,Soft);Reason->SetJustification(ETextJustify::Center);Add(Summary,Reason,8);
         if(bEndReplaySaving)Add(Summary,Text(TEXT("Saving your replay…"),12,Soft));else if(!Ready)Add(Summary,Text(R->LastError.IsEmpty()?TEXT("Replay unavailable."):R->LastError,12,Gold));

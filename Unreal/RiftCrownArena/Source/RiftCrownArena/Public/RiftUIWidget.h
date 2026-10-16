@@ -159,7 +159,7 @@ private:
     void Add(UVerticalBox*,UWidget*,float Spacing=6);
     void Add(UHorizontalBox*,UWidget*,bool Fill=false,float Spacing=4);
     void Shell(const FString& Title);
-    UBorder* Panel(UWidget*,FMargin Padding=FMargin(16),FLinearColor Color=FLinearColor(.018f,.035f,.065f,1));
+    UBorder* Panel(UWidget*,FMargin Padding=FMargin(16),FLinearColor Color=FLinearColor(.025f,.038f,.052f,1));
     UWidget* Badge(const FString&,FLinearColor Color,int32 Size=16);
     void Home();void Profile();void Loadout();void Cards();void CardDetail();void Settings();void Battle();void UpdateBattleHUD(float);void Developer(UVerticalBox*);void UpdateTrainingReadout();void FieldManual();void Replays();void ReplayView();void UpdateReplayHUD();void MatchAnalysis();void Meta();void MetaRows();void PatchNotes();
     bool ApprovedPatchNotes();

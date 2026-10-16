@@ -2,7 +2,17 @@
 
 These reports contain executed results and repository-relative evidence paths. Complete generated datasets, binaries, traces and commandlet logs remain ignored under `Artifacts/QA`, `Build/NativeTests` and `Build/Automation`. Current acceptance and historical releases are listed separately. Each gameplay fingerprint keeps its own captured roster and rules; earlier 10,000-match cohorts remain historical evidence.
 
-## Current version 1.5.0 Pulverizer, detection and Mini Stampede placement
+## Current version 1.8.0 full roster and presentation update
+
+[full-update-1.8.0.json](full-update-1.8.0.json) records current report identities, unchanged 1.7.1 balance, source model/portrait checks, actual native imports, simulation coverage and replay-aware deployment audio. All 21 playable cards and the subordinate skeleton remain represented. The authored pass includes 18 rigs and 176 clips; saved weapon grips and new character motions reproduce from maintained builders.
+
+All 94 native simulation scenarios, 33 complete Unreal tests and two actual D3D12 tests pass. Ten final Shipping screenshots received primary-agent direct inspection; actual card dragging passes 37 checks at each of 1080p and 720p. Screenshot-disabled 45-second normal play averages 16.669 ms per frame with no frames over 50 ms. The artificial 208-body overload averages 20.545 ms with 53 such hitches; no matched 1.7.1 baseline or smooth-overload claim is made.
+
+All local Windows delivery gates pass for the same frozen Shipping executable and 50-file payload. Actual WPF Play renders Home and exits cleanly; all 51 MSI checks pass from the preserved public 1.7.1 installer through the 1.8.0 upgrade, installed Play, repair and uninstall, with isolated saves preserved. Earlier failed and superseded candidates retain their own reports and scopes; they do not establish acceptance of the current package.
+
+The curated QA archive contains explicit reports, logs, actual model galleries, reviewed source poses, canonical data, native-derived stat tables, patch notes and audio credits, with a reopened entry-hash inventory. It excludes broad workspace captures and environment data. Public delivery and the final merged Git tree are verified separately after publication and commit; this local acceptance does not claim public download verification.
+
+## Historical version 1.5.0 Pulverizer, detection and Mini Stampede placement
 
 [pulverizer-1.5.0.json](pulverizer-1.5.0.json) binds the new card's authored/imported assets, traveling shockwaves, independently expiring slows, strict 8-front/5-rear detection and compact paid Mini Stampede formation. All sixteen prior numerical definitions and 586 source/322 imported assets remain unchanged. [Patch notes](../PATCH_NOTES_1.5.0.md) and [card](../CARD_STATS_1.5.0.tsv)/[ability](../ABILITY_STATS_1.5.0.tsv) tables document the seventeen-card roster and calculated DPS.
 

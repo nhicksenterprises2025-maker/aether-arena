@@ -242,6 +242,8 @@ class Match {
     }
     std::vector<Event> DrainEvents();
     void Step(double seconds);
+    // Read-only presentation progress; never feeds back into fixed combat.
+    double InterpolationAlpha() const;
     bool Play(Team team, int handIndex, Vec2 point, const std::string &reason = "player");
     bool Spawn(Team team, const std::string &cardId, Vec2 point); // tagged zero-cost DEV cast
     bool CanPlace(Team team, const Card &card, Vec2 point, bool sandbox = false) const;

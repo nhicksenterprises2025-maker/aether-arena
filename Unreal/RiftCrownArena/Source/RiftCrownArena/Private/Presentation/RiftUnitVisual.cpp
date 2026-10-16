@@ -128,10 +128,16 @@ FLinearColor ARiftUnitVisual::TeamColor(rift::Team Value)
 }
 void ARiftUnitVisual::ColorMesh(UMeshComponent* Component,FLinearColor Color)
 {
+    const bool Armored=AssetId==TEXT("ironclad")||AssetId==TEXT("iron_giant")||AssetId==TEXT("boulderback")||IsTower();
+    const FLinearColor HitTint=AssetId==TEXT("aether_reaper")||AssetId==TEXT("arc_mage")?FLinearColor(.67f,.32f,1.f):
+        AssetId==TEXT("frost_fang")||AssetId==TEXT("sky_manta")?FLinearColor(.38f,.84f,1.f):
+        AssetId==TEXT("bone_warden")||AssetId==TEXT("bone_warden_skeleton")?FLinearColor(1.f,.88f,.61f):
+        Armored?FLinearColor(1.f,.69f,.25f):FLinearColor(1.f,.56f,.35f);
     for (int32 Index=0;Index<Component->GetNumMaterials();++Index)
         if (auto* Material=Component->CreateDynamicMaterialInstance(Index))
         {
             Material->SetVectorParameterValue(TEXT("TeamColor"),Color);
+            Material->SetVectorParameterValue(TEXT("HitTint"),HitTint);
             Material->SetScalarParameterValue(TEXT("RiftTeamEmissive"),.12f);
             Materials.Add(Material);
         }
@@ -491,12 +497,16 @@ void ARiftUnitVisual::UpdatePulverizerSlow(const rift::Entity& Entity,double Tim
 }
 void ARiftUnitVisual::UpdateSelectedGlow(double Time,double Cooldown,bool Anticipating)
 {
-    if(AssetId!=TEXT("pulverizer"))return;
+    const bool Elemental=AssetId==TEXT("arc_mage")||AssetId==TEXT("ember_archer")||AssetId==TEXT("sky_manta")||
+        AssetId==TEXT("storm_raven")||AssetId==TEXT("frost_fang")||AssetId==TEXT("aether_reaper")||AssetId==TEXT("bone_warden")||AssetId==TEXT("iron_giant");
+    if(AssetId!=TEXT("pulverizer")&&!Elemental)return;
     const double Windup=Anticipating && AttackAnticipation>0?1.-FMath::Clamp(Cooldown/AttackAnticipation,0.,1.):0.;
     const double ContactAge=Time-LastAttack;
     const double Contact=ContactAge>=0?FMath::Clamp(1.-ContactAge/.22,0.,1.):0.;
     const double Collapse=bDead?FMath::Square(1.-FMath::Clamp((Time-DeathTime)/CleanupSeconds,0.,1.)):1.;
-    for(auto Material:Materials)Material->SetScalarParameterValue(TEXT("GlowStrength"),float((1.2+.9*Windup+2.0*Contact)*Collapse));
+    const double Glow=AssetId==TEXT("pulverizer")?1.2+.9*Windup+2.0*Contact:
+        1.24+.10*FMath::Sin(Time*2.4+AnimationPhase*UE_TWO_PI)+.25*Windup+.45*Contact;
+    for(auto Material:Materials)Material->SetScalarParameterValue(TEXT("GlowStrength"),float(Glow*Collapse));
 }
 bool ARiftUnitVisual::InitializeEntity(const rift::Entity& Entity,URiftCardData* Card,double Time)
 {
@@ -582,6 +592,7 @@ bool ARiftUnitVisual::InitializeEntity(const rift::Entity& Entity,URiftCardData*
         GroundRing->SetDecalMaterial(Dynamic);Materials.Add(Dynamic);
     }
     SetActorLocation(URiftMatchSubsystem::WorldPoint(Entity.position));PreviousPosition=GetActorLocation();
+    MotionFrom=MotionTarget=PreviousPosition;MotionSampleTime=Time;MotionSampleSpan=0;
     SetActorRotation(FRotator(0,FMath::RadiansToDegrees(FMath::Atan2(Entity.facing.z,Entity.facing.x)),0));
     UpdateStructureAim(Time);
     if (Time-Born<.35) SetClip(TEXT("Deploy"),0); else SetClip(TEXT("Idle"),AnimationPhase,true);
@@ -609,7 +620,8 @@ void ARiftUnitVisual::SetClip(FName Name,double NormalizedPosition,bool Loop,boo
     {
         // Real contact/release events snap to their authored contact pose. All
         // ordinary state changes blend the last evaluated local-space pose.
-        const float BlendDuration=Name==TEXT("Death")?.10f:Name==TEXT("Hit")?.045f:.10f;
+        const float BlendDuration=Name==TEXT("Death")?.09f:Name==TEXT("Hit")?.035f:
+            Name==TEXT("Locomotion")||Name==TEXT("Idle")||Name==TEXT("WingCycle")?.14f:.10f;
         Node->BeginVisualTransition(VisualTime,BlendDuration,Snap);
         Node->SetAnimationAsset(Animation,Loop);Node->SetPlaying(false);CurrentClip=Name;
     }
@@ -739,15 +751,31 @@ bool ARiftUnitVisual::IsExpired(double Time)const
     return bDead && Kind!=rift::EntityKind::Core && Kind!=rift::EntityKind::Guard &&
         (bHasAuthoredDeathTiming?Time-DeathTime>=CleanupSeconds:Time-DeathTime>CleanupSeconds);
 }
-void ARiftUnitVisual::Synchronize(const rift::Entity& Entity,const rift::Snapshot& State,float DeltaSeconds)
+void ARiftUnitVisual::Synchronize(const rift::Entity& Entity,const rift::Snapshot& State,float DeltaSeconds,double InterpolationAlpha)
 {
-    const double Time=State.elapsed;VisualTime=Time;
+    const double Time=State.elapsed;
+    constexpr double FixedStep=1./60.;
+    const double Alpha=FMath::Clamp(InterpolationAlpha,0.,1.);
+    const double RenderTime=Time-(1.-Alpha)*FixedStep;VisualTime=RenderTime;
     UpdateDamageHistory(Entity,Time);
     // Pose clocks, turn smoothing and visual banking must also stop when the
     // simulation pauses, regardless of the renderer's wall-clock delta.
-    const double AnimationDelta=FMath::Clamp(Time-AnimationTime,0.,.5);AnimationTime=Time;
-    FVector Position=URiftMatchSubsystem::WorldPoint(Entity.position);
-    if (bFlying) Position.Z=bDead?GetActorLocation().Z:95.f*RiftArenaGeometry::WorldScale+FMath::Sin(Time*3.2+AnimationPhase*UE_TWO_PI)*float(FlightBobTiles*RiftArenaGeometry::UnitsPerTile);
+    const double AnimationDelta=FMath::Clamp(RenderTime-AnimationTime,0.,.5);AnimationTime=RenderTime;
+    const FVector Authoritative=URiftMatchSubsystem::WorldPoint(Entity.position);
+    if(Time>MotionSampleTime+1e-7)
+    {
+        MotionFrom=MotionTarget;MotionTarget=Authoritative;MotionSampleSpan=Time-MotionSampleTime;MotionSampleTime=Time;
+        // Only adjacent fixed poses define a verified straight sweep. When a
+        // fast-forward or missed frame spans turns, use the current legal pose
+        // rather than cutting a chord across a tower, bridge bank or fighter.
+        if(MotionSampleSpan>FixedStep*1.5 || FVector::DistSquared2D(MotionFrom,MotionTarget)>FMath::Square(2.*RiftArenaGeometry::UnitsPerTile))
+            MotionFrom=MotionTarget;
+    }
+    else if(!Authoritative.Equals(MotionTarget,.001))
+    {MotionFrom=MotionTarget=Authoritative;MotionSampleSpan=0;MotionSampleTime=Time;}
+    const double MotionAlpha=MotionSampleSpan>0?FMath::Clamp(1.-(1.-Alpha)*FixedStep/MotionSampleSpan,0.,1.):1.;
+    FVector Position=FMath::Lerp(MotionFrom,MotionTarget,MotionAlpha);
+    if (bFlying) Position.Z=bDead?GetActorLocation().Z:95.f*RiftArenaGeometry::WorldScale+FMath::Sin(RenderTime*3.2+AnimationPhase*UE_TWO_PI)*float(FlightBobTiles*RiftArenaGeometry::UnitsPerTile);
     SetActorLocation(Position);
     const float Wanted=FMath::RadiansToDegrees(FMath::Atan2(Entity.facing.z,Entity.facing.x));
     const float Delta=FMath::FindDeltaAngleDegrees(GetActorRotation().Yaw,Wanted);
@@ -777,7 +805,7 @@ void ARiftUnitVisual::Synchronize(const rift::Entity& Entity,const rift::Snapsho
     // Real same-time target/cooldown and combat events still choose new poses.
     const bool FrozenMovingPose=AnimationDelta<=0 && Travel<=.005 && !TargetChanged && !CooldownChanged &&
         (CurrentClip==TEXT("Locomotion") || CurrentClip==TEXT("Charge"));
-    UpdateReaperAura(Time,Travel>.005 || FrozenMovingPose);
+    UpdateReaperAura(RenderTime,Travel>.005 || FrozenMovingPose);
     double PulseReleasedAt=-100;
     if(AssetId==TEXT("pulverizer"))for(const auto& Wave:State.shockwaves)
         if(Wave.source==EntityId && Wave.cardId=="pulverizer" && Wave.born<=Time && Time<Wave.expires)
@@ -799,7 +827,11 @@ void ARiftUnitVisual::Synchronize(const rift::Entity& Entity,const rift::Snapsho
     Character->SetRelativeRotation(FRotator(Charging?-3.f:0.f,0,FlightBank));
     for (auto Material:Materials)
     {
-        Material->SetScalarParameterValue(TEXT("HitFlash"),float(FMath::Clamp(1.-(Time-LastHit)/.18,0.,1.)));
+        // Preserve painted surface detail through contact. A brief, restrained
+        // family-colored rim replaces a full-body white silhouette.
+        const double HitAge=FMath::Max(0.,RenderTime-LastHit);
+        const bool Armored=AssetId==TEXT("ironclad")||AssetId==TEXT("iron_giant")||AssetId==TEXT("boulderback")||IsTower();
+        Material->SetScalarParameterValue(TEXT("HitFlash"),float((Armored?.36:.24)*FMath::Square(FMath::Clamp(1.-HitAge/.12,0.,1.))));
         Material->SetScalarParameterValue(TEXT("SlowAmount"),Slowed?float(Entity.slowPct):0.f);
     }
     if (!Character->GetSkeletalMeshAsset()) return;
@@ -818,7 +850,7 @@ void ARiftUnitVisual::Synchronize(const rift::Entity& Entity,const rift::Snapsho
         }
     const double RecoveryDuration=AttackRecovery>0?AttackRecovery:FMath::Clamp(AttackInterval*.32,.18,.50);
     const double WindupDuration=AttackAnticipation>0?AttackAnticipation:FMath::Clamp(AttackInterval*.32,.18,.42);
-    const double SinceAttack=Time-LastAttack;
+    const double SinceAttack=FMath::Max(0.,RenderTime-LastAttack);
     UpdateSelectedGlow(Time,Entity.cooldown,TargetInRange && Entity.cooldown>0 && Entity.cooldown<=WindupDuration);
     if(SinceAttack>=0 && SinceAttack<RecoveryDuration)
     {
@@ -839,7 +871,7 @@ void ARiftUnitVisual::Synchronize(const rift::Entity& Entity,const rift::Snapsho
         EmitHoofDust(Time,PreviousGaitPhase,GaitClock+AnimationPhase);
     }
     else if(FrozenMovingPose)return;
-    else SetClip(bFlying && AssetId!=TEXT("aether_reaper")?TEXT("WingCycle"):AssetId==TEXT("frost_fang")?TEXT("Breath"):TEXT("Idle"),Time*.7+AnimationPhase,true);
+    else SetClip(bFlying && AssetId!=TEXT("aether_reaper")?TEXT("WingCycle"):AssetId==TEXT("frost_fang")?TEXT("Breath"):TEXT("Idle"),RenderTime*.7+AnimationPhase,true);
 }
 FVector ARiftUnitVisual::HealthLocation()const
 {
@@ -1081,6 +1113,47 @@ bool FRiftExpansionShieldCloakTest::RunTest(const FString& Parameters)
     TestFalse(TEXT("Death releases the cloak treatment"),Owner->IsCloaked());
     for(int32 I=0;I<Originals.Num();++I)TestTrue(TEXT("Death also restores exact original materials"),Mesh->GetMaterial(I)==Originals[I]);
     TestEqual(TEXT("Visual state transitions never spawn paid bodies or damage events"),Sim.State().entities.size(),State.entities.size());
+    return !HasAnyErrors();
+}
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRiftRenderInterpolationTest,"Rift.Presentation.FixedStepInterpolation",
+    EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FRiftRenderInterpolationTest::RunTest(const FString& Parameters)
+{
+    if(!FParse::Param(FCommandLine::Get(),TEXT("RiftAutomationSandbox")))
+    {AddError(TEXT("Interpolation fixture requires isolated RiftSaveRoot/UserDir and RiftAutomationSandbox."));return false;}
+    auto* GI=NewObject<UGameInstance>(GEngine);GI->InitializeStandalone(FName(*FGuid::NewGuid().ToString(EGuidFormats::Digits)));
+    auto* World=GI->GetWorld();if(!TestNotNull(TEXT("Interpolation uses a native world"),World)){GI->Shutdown();return false;}
+    ON_SCOPE_EXIT {World->DestroyWorld(false);GI->Shutdown();GEngine->DestroyWorldContext(World);};
+    rift::MatchOptions Options;Options.aiEnabled={false,false};rift::Match Sim(Options);
+    if(!TestTrue(TEXT("Interpolation starts with a real troop"),Sim.Spawn(rift::Team::Player,"ironclad",{-.5,6.5})))return false;
+    rift::Entity Body;for(const auto& Entity:Sim.State().entities)if(Entity.cardId=="ironclad")Body=Entity;
+    auto* Card=GI->GetSubsystem<URiftAssetCatalogSubsystem>()->Card(TEXT("ironclad"));
+    auto* Visual=World->SpawnActor<ARiftUnitVisual>();
+    if(!TestTrue(TEXT("Interpolation loads the actual imported model"),Card&&Visual->InitializeEntity(Body,Card,0)))return false;
+    const auto OriginalEvents=Sim.Events().size();const auto OriginalBodies=Sim.State().entities.size();
+    Sim.Step(1./120.);
+    TestTrue(TEXT("A half fixed step exposes fractional render progress without advancing combat"),
+        FMath::IsNearlyEqual(Sim.InterpolationAlpha(),.5,1e-9)&&Sim.State().elapsed==0);
+    auto Sample=Sim.State();Sample.elapsed=1./60.;Body.position.x+=.04;
+    const FVector Start=Visual->GetActorLocation(),End=URiftMatchSubsystem::WorldPoint(Body.position);
+    Visual->Synchronize(Body,Sample,1.f/120.f,0.);
+    TestTrue(TEXT("Start of render segment retains preceding authoritative pose"),Visual->GetActorLocation().Equals(Start,.00001));
+    Visual->Synchronize(Body,Sample,1.f/120.f,.5);
+    TestTrue(TEXT("A second renderer frame reaches the midpoint without a simulation step"),Visual->GetActorLocation().Equals(FMath::Lerp(Start,End,.5),.00001));
+    const double HalfGait=Visual->LocomotionPhase();
+    Visual->Synchronize(Body,Sample,1.f/120.f,1.);
+    TestTrue(TEXT("End of render segment reaches the exact authoritative body"),Visual->GetActorLocation().Equals(End,.00001)&&Visual->LocomotionPhase()>HalfGait);
+    const double PausedGait=Visual->LocomotionPhase();
+    for(int32 I=0;I<20;++I)Visual->Synchronize(Body,Sample,3.f,1.);
+    TestTrue(TEXT("Paused render ticks preserve exact position and gait"),Visual->GetActorLocation().Equals(End,0.)&&Visual->LocomotionPhase()==PausedGait);
+    Body.position.x+=4.;Visual->Synchronize(Body,Sample,0,.5);
+    TestTrue(TEXT("Same-time developer edits snap rather than slide through the battlefield"),Visual->GetActorLocation().Equals(URiftMatchSubsystem::WorldPoint(Body.position),.00001));
+    Sample.elapsed+=1./15.;Body.position.x+=.1;Body.position.z+=.1;
+    Visual->Synchronize(Body,Sample,1.f/15.f,0.);
+    TestTrue(TEXT("Skipped fixed poses cannot interpolate an unverified chord through an obstacle"),
+        Visual->GetActorLocation().Equals(URiftMatchSubsystem::WorldPoint(Body.position),.00001));
+    TestTrue(TEXT("Presentation cannot spawn bodies, damage, or advance fixed elapsed time"),
+        Sim.State().entities.size()==OriginalBodies&&Sim.Events().size()==OriginalEvents&&Sim.State().elapsed==0);
     return !HasAnyErrors();
 }
 #endif
