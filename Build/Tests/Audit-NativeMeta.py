@@ -132,7 +132,7 @@ if "balanceHash" in data:
         for key in ("arenaWidth", "arenaHeight", "riverHalfWidth", "bridgeCenterX", "bridgeWidth", "coreDepth", "guardDepth"):
             check(key in matching_rules, f"Dynamic arena policy requires canonical geometry field: {key}")
         valid_rules = dict(matching_rules)
-        for key in ("arenaWidth", "arenaHeight", "riverHalfWidth", "bridgeCenterX", "bridgeWidth", "coreDepth", "guardDepth", "guardX", "pocketOuterX", "pocketMaxDepth"):
+        for key in ("arenaWidth", "arenaHeight", "riverHalfWidth", "bridgeCenterX", "bridgeWidth", "coreDepth", "guardDepth", "guardX", "guardCenterX", "pocketOuterX", "pocketMaxDepth"):
             if key not in valid_rules:
                 continue
             value = valid_rules[key]
@@ -142,8 +142,11 @@ if "balanceHash" in data:
             check(valid, f"Invalid canonical arena geometry: {key}")
             if not valid:
                 del valid_rules[key]
-        expected_rules.update(valid_rules)
-        expected_rules["guardX"] = valid_rules.get("guardX", expected_rules["bridgeCenterX"])
+        expected_rules.update({key: value for key, value in valid_rules.items() if key != "guardCenterX"})
+        expected_rules["guardX"] = valid_rules.get("guardCenterX", valid_rules.get("guardX", expected_rules["bridgeCenterX"]))
+        if "guardCenterX" in valid_rules:
+            alignment_rule = "guard centers one tile inward from bridge centers; cores at arena center"
+            near(expected_rules["guardX"], expected_rules["bridgeCenterX"] - 1, "Guard Towers exactly one tile inward")
         expected_rules["pocketOuterX"] = valid_rules.get("pocketOuterX", expected_rules["arenaWidth"] / 2 - .8)
         expected_rules["pocketMaxDepth"] = valid_rules.get("pocketMaxDepth", expected_rules["guardDepth"] - 3.15)
         policy = ("rift-native-1|native-observed-2|ai-v15-port-2|fingerprint-policy-2|"

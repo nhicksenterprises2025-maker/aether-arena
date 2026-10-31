@@ -60,7 +60,7 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
     TestEqual(TEXT("Approved arena is twenty-two tiles across"),rift::arena::Width,22);
     TestEqual(TEXT("Approved arena is forty tiles deep"),rift::arena::Height,40);
     TestEqual(TEXT("Each bridge is two more tiles away from the Core axis"),rift::arena::BridgeCenterX,7.76);
-    TestEqual(TEXT("Both Guard axes use the approved lateral position"),rift::arena::GuardX,7.76);
+    TestEqual(TEXT("Both Guard axes move exactly one tile inward"),rift::arena::GuardX,6.76);
     TestEqual(TEXT("Core depth adds exactly three rear tiles"),rift::arena::CoreDepth,16.84);
     TestEqual(TEXT("Guard depth adds exactly three rear tiles"),rift::arena::GuardDepth,13.72);
     rift::MatchOptions GeometryOptions;GeometryOptions.aiEnabled={false,false};
@@ -79,7 +79,7 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
         TestTrue(Label+TEXT(" retains its tower lane"),Core?Tower.lane==0:(Tower.lane==-1||Tower.lane==1));
         TestTrue(Label+TEXT(" uses its shifted symmetric rear depth"),std::abs(Tower.position.z-Sign*(Core?16.84:13.72))<1.e-9);
         TestTrue(Label+TEXT(" retains its collision radius"),std::abs(Tower.radius-(Core?1.35:1.15))<1.e-9);
-        TestTrue(Label+TEXT(" has the requested arena/bridge center"),std::abs(Tower.position.x-(Core?0.:Tower.lane*rift::arena::BridgeCenterX))<1.e-9);
+        TestTrue(Label+TEXT(" has the requested Core/Guard center"),std::abs(Tower.position.x-(Core?0.:Tower.lane*rift::arena::GuardX))<1.e-9);
         CoreCount+=Core;GuardCount+=Guard;
     }
     TestEqual(TEXT("Both Core Towers stay centered"),CoreCount,2);

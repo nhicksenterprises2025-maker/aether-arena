@@ -8,7 +8,16 @@ $riftRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..')).Replace('\','/'
 $riftManifest=Get-Content -LiteralPath "$riftRoot/Assets/asset_manifest.json" -Raw|ConvertFrom-Json -Depth 100
 if($ArenaOnly -and $CardIds.Count){throw 'ArenaOnly cannot be combined with model imports.'}
 if(!$ArenaOnly -and (!$CardIds.Count -or @($CardIds|Select-Object -Unique).Count -ne $CardIds.Count)){throw 'Select one or more unique model or spell portrait IDs.'}
-foreach($riftId in $CardIds){if($riftId -notmatch '^[a-z0-9_]+$' -or (!$riftManifest.characters.PSObject.Properties[$riftId] -and !($riftId -eq 'shadow_surge' -and $riftManifest.illustrations.PSObject.Properties[$riftId]))){throw "Unknown selected asset ID: $riftId"}}
+foreach($riftId in $CardIds){if($riftId -notmatch '^[a-z0-9_]+$' -or (!$riftManifest.characters.PSObject.Properties[$riftId] -and !$riftManifest.cards.PSObject.Properties[$riftId])){throw "Unknown selected asset ID: $riftId"}}
+$riftSelectedModels=@($CardIds|Where-Object {$riftManifest.characters.PSObject.Properties[$_]})
+$riftSelectedStatics=@()
+foreach($riftId in $CardIds){
+    $riftBinding=$riftManifest.cards.PSObject.Properties[$riftId].Value
+    foreach($riftKey in @('skeletal','skeletalDecoration')){if($riftBinding.$riftKey){$riftSelectedModels+= $riftBinding.$riftKey}}
+    if($riftBinding.static){$riftSelectedStatics+= $riftBinding.static}
+    $riftSelectedStatics+= @($riftBinding.effectStatics|Where-Object {$_})
+}
+$riftSelectedModels=@($riftSelectedModels|Sort-Object -Unique)
 $riftOutput="$riftRoot/Artifacts/QA/ExpansionImport/import-$([Guid]::NewGuid().ToString('N'))"
 New-Item -ItemType Directory -Path $riftOutput -Force|Out-Null
 $riftReportPath="$riftOutput/import.json"
@@ -52,7 +61,9 @@ $riftUnapprovedChanges=@($riftChanges|Where-Object {
     # art, models, audio and effects of all other IDs remain pinned.
     $riftAllowed=$riftPath -match '^Unreal/RiftCrownArena/Content/Rift/Cards/DA_[a-z0-9_]+\.uasset$'
     $riftAllowed=$riftAllowed -or $riftPath -match '^Unreal/RiftCrownArena/Content/Rift/Entities/DA_bone_warden_skeleton\.uasset$'
-    foreach($riftId in $CardIds){$riftAllowed=$riftAllowed -or $riftPath.StartsWith("Unreal/RiftCrownArena/Content/Rift/Characters/$riftId/") -or $riftPath -eq "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_$riftId.uasset"}
+    foreach($riftId in $CardIds){$riftAllowed=$riftAllowed -or $riftPath -eq "Unreal/RiftCrownArena/Content/Rift/CardArt/T_Card_$riftId.uasset"}
+    foreach($riftId in $riftSelectedModels){$riftAllowed=$riftAllowed -or $riftPath.StartsWith("Unreal/RiftCrownArena/Content/Rift/Characters/$riftId/")}
+    foreach($riftId in $riftSelectedStatics){$riftAllowed=$riftAllowed -or $riftPath -eq "Unreal/RiftCrownArena/Content/Rift/Environment/SM_$riftId.uasset"}
     if($CardIds -contains 'pulverizer'){$riftAllowed=$riftAllowed -or $riftPath -eq 'Unreal/RiftCrownArena/Content/Rift/Materials/M_RiftShockwave.uasset'}
     if($CardIds -contains 'iron_giant'){$riftAllowed=$riftAllowed -or $riftPath -eq 'Unreal/RiftCrownArena/Content/Rift/Environment/SM_iron_shield_fragment.uasset'}
     if($CardIds -contains 'dart_gun'){$riftAllowed=$riftAllowed -or $riftPath -eq 'Unreal/RiftCrownArena/Content/Rift/Environment/SM_dart_projectile.uasset'}

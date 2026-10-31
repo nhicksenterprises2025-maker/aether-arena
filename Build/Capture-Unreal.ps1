@@ -173,7 +173,7 @@ if($riftArenaGeometryRequired) {
     # Retain the public pre-1.6 geometry contract. Current captures instead use
     # the approved manifest already pinned with the capture's producer inputs.
     $riftArenaWidth=30;$riftArenaHeight=44;$riftArenaFloor=1200;$riftArenaDecoration=640
-    $riftArenaBridgeX=7.2;$riftArenaGuardDepth=13.4;$riftArenaCoreDepth=17.3;$riftArenaRiverDepth=3.3
+    $riftArenaBridgeX=7.2;$riftArenaGuardX=7.2;$riftArenaGuardDepth=13.4;$riftArenaCoreDepth=17.3;$riftArenaRiverDepth=3.3
     $riftArenaPlayerRows=5;$riftArenaEnemyRows=4;$riftArenaPavers=36;$riftArenaManifestPassed=$true
     $riftArenaCurrent=[version]$ExpectedVersion -ge [version]'1.6.0'
     if($riftArenaCurrent) {
@@ -181,14 +181,18 @@ if($riftArenaGeometryRequired) {
         $riftArenaManifest=Get-Content -LiteralPath $riftArenaManifestPath -Raw | ConvertFrom-Json
         $riftArenaManifestPin=@($riftTowerSourcePins | Where-Object path -eq 'Assets/Data/card_manifest.json')
         $riftArenaRules=$riftArenaManifest.rules
+        $riftArenaHasGuardX=$riftArenaRules.PSObject.Properties.Name -contains 'guardCenterX'
+        $riftArenaGuardCandidate=if($riftArenaHasGuardX){$riftArenaRules.guardCenterX}else{$riftArenaRules.bridgeCenterX}
         $riftArenaManifestPassed=$riftArenaManifest.schema -in @(2,3) -and $riftArenaManifest.status -eq 'approved' -and
             $riftArenaManifest.version -eq $ExpectedVersion -and $riftArenaManifestPin.Count -eq 1 -and
             $riftArenaManifestPin[0].sha256 -eq (Get-FileHash -LiteralPath $riftArenaManifestPath -Algorithm SHA256).Hash.ToLowerInvariant() -and
-            @(@($riftArenaRules.arenaWidth,$riftArenaRules.arenaHeight,$riftArenaRules.riverHalfWidth,$riftArenaRules.bridgeCenterX,$riftArenaRules.guardDepth,$riftArenaRules.coreDepth) |
-                Where-Object { $_ -isnot [ValueType] -or ![double]::IsFinite([double]$_) -or $_ -le 0 }).Count -eq 0
+            ($riftArenaRules.navigationRevision -lt 13 -or $riftArenaHasGuardX) -and
+            @(@($riftArenaRules.arenaWidth,$riftArenaRules.arenaHeight,$riftArenaRules.riverHalfWidth,$riftArenaRules.bridgeCenterX,$riftArenaGuardCandidate,$riftArenaRules.guardDepth,$riftArenaRules.coreDepth) |
+                Where-Object { $_ -isnot [ValueType] -or $_ -is [bool] -or ![double]::IsFinite([double]$_) -or $_ -le 0 }).Count -eq 0 -and
+            [double]$riftArenaGuardCandidate -lt ([double]$riftArenaRules.arenaWidth/2)
         if($riftArenaManifestPassed) {
             $riftArenaWidth=[int]$riftArenaRules.arenaWidth;$riftArenaHeight=[int]$riftArenaRules.arenaHeight
-            $riftArenaBridgeX=[double]$riftArenaRules.bridgeCenterX;$riftArenaGuardDepth=[double]$riftArenaRules.guardDepth;$riftArenaCoreDepth=[double]$riftArenaRules.coreDepth
+            $riftArenaBridgeX=[double]$riftArenaRules.bridgeCenterX;$riftArenaGuardX=[double]$riftArenaGuardCandidate;$riftArenaGuardDepth=[double]$riftArenaRules.guardDepth;$riftArenaCoreDepth=[double]$riftArenaRules.coreDepth
             $riftArenaRiverDepth=2*[double]$riftArenaRules.riverHalfWidth
             $riftArenaRiverRows=0;$riftArenaPlayerRows=0;$riftArenaEnemyRows=0
             for($riftArenaRow=0;$riftArenaRow -lt $riftArenaHeight;++$riftArenaRow) {
@@ -232,7 +236,7 @@ if($riftArenaGeometryRequired) {
             @($geometry.towers.id|Sort-Object -Unique).Count -eq 6 -and
             @($geometry.towers|Where-Object{
                 $_.alignmentPassed -ne $true -or $_.team -notin @('player','enemy') -or $_.kind -notin @('core','guard') -or
-                [math]::Abs($_.x-$(if($_.kind -eq 'core'){0}else{$_.lane*$riftArenaBridgeX})) -gt .000001 -or
+                [math]::Abs($_.x-$(if($_.kind -eq 'core'){0}else{$_.lane*$riftArenaGuardX})) -gt .000001 -or
                 [math]::Abs($_.z-$(if($_.team -eq 'player'){1}else{-1})*$(if($_.kind -eq 'core'){$riftArenaCoreDepth}else{$riftArenaGuardDepth})) -gt .000001 -or
                 ($_.kind -eq 'core' -and $_.lane -ne 0) -or ($_.kind -eq 'guard' -and $_.lane -notin @(-1,1)) -or
                 ($_.dead -ne $true -and $_.visualAvailable -ne $true) -or

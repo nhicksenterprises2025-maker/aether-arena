@@ -3,6 +3,13 @@
 Original Windows card battler: twenty-two cards, two lanes, deterministic combat,
 seven AI personalities, deck workshop, Meta Lab, replays and developer training.
 
+Version 2.0.0 moves both teams' Guard Towers exactly one tile inward and upgrades
+every other card's model detail and model-rendered portrait to follow Dart Gun's
+visual standard. Core Towers, bridges, arena dimensions, card stats and audio
+retain their 1.9.0 values. See [the update notes](Docs/PATCH_NOTES_2.0.0.md),
+[spreadsheet-ready stats](Docs/CARD_STATS_2.0.0.tsv) and
+[audio credits](Docs/AUDIO_CREDITS_2.0.0.md).
+
 Version 1.9.0 adds Dart Gun, a 3-Aether elderly veteran with a detailed animated
 model, 8.5-tile range and 50-damage darts every 0.4 seconds (125 DPS). Friendly
 swarm formations leave room for larger allies to join combat. See

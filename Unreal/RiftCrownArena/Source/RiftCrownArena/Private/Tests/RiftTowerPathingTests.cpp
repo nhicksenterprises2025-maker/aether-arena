@@ -180,15 +180,15 @@ bool FRiftTowerPathingIntegrationTest::RunTest(const FString& Parameters)
     TestEqual(TEXT("The approved arena is forty tiles deep"),rift::arena::Height,40);
     TestEqual(TEXT("The Core physical depth adds three rear tiles"),rift::arena::CoreDepth,16.84);
     TestEqual(TEXT("The Guard physical depth adds three rear tiles"),rift::arena::GuardDepth,13.72);
-    TestEqual(TEXT("Guard centers move two more tiles away from the Core axis"),rift::arena::GuardX,7.76);
-    TestEqual(TEXT("Bridge centers follow the moved Guard axes"),rift::arena::BridgeCenterX,7.76);
+    TestEqual(TEXT("Guard centers move exactly one tile toward the Core axis"),rift::arena::GuardX,6.76);
+    TestEqual(TEXT("Bridge centers retain their previous positions"),rift::arena::BridgeCenterX,7.76);
     rift::Match AlignedTowers(TowerOptions());int32 AlignedGuards=0,CenteredCores=0;
     for(const auto& Tower:AlignedTowers.State().entities)
     {
         const bool Core=Tower.kind==rift::EntityKind::Core;const double Sign=Tower.team==rift::Team::Player?1.:-1.;
         TestEqual(TEXT("Every actual tower uses its shifted rear depth"),Tower.position.z,Sign*(Core?16.84:13.72));
         TestEqual(TEXT("Every actual tower retains its original body radius"),Tower.radius,Core?1.35:1.15);
-        TestEqual(TEXT("Every actual Guard follows its bridge and every Core stays centered"),Tower.position.x,Core?0.:Tower.lane*7.76);
+        TestEqual(TEXT("Every actual Guard moves one tile inward and every Core stays centered"),Tower.position.x,Core?0.:Tower.lane*6.76);
         if(Core)++CenteredCores;else ++AlignedGuards;
     }
     TestEqual(TEXT("All four actual Guard bodies align with their stone-path and bridge axes"),AlignedGuards,4);

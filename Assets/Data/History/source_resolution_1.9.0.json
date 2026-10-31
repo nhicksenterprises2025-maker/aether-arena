@@ -1,0 +1,29 @@
+{
+  "schema": 2,
+  "status": "approved",
+  "unresolved": false,
+  "releaseBlocked": false,
+  "baseline": "Assets/Data/Baselines/1.8.1.json",
+  "baselineBalanceHash": "253831ff25ff676070c0fddf89d2851172c9f25f2baa24dd3f70280877da31cd",
+  "startingCommit": "93ff6bf70eef9972171321a9ed95ee06611d1124",
+  "version": "1.9.0",
+  "confirmation": {
+    "source": "User request on 2026-10-31: swarm pathfinding fix and Dart Gun card",
+    "requestedStats": {
+      "cost": 3,
+      "damage": 50,
+      "attackInterval": 0.4,
+      "range": 8.5
+    },
+    "implementationDefaults": "Unspecified values chosen for implementation: 420 HP, 1.5 tiles/s, projectile speed22, model scale1.05, collision radius0.42; ground troop targets ground/air troops and structures."
+  },
+  "resolvedChoices": {},
+  "mechanicNotes": [
+    "New card: Dart Gun, a fictional 81-year-old African American WWII veteran. Costs3 Aether;420HP;50damage every0.4seconds (125basicDPS);8.5-tile attack range;1.5tiles/s movement;22tiles/s darts;ground/air troops and structures.",
+    "Dart Gun uses a detailed veteran model, slow walking animation, rapid firing recoil, visible dart projectiles, model-rendered portrait and deployment audio.",
+    "Friendly swarm routing allows blocked troops to make progress while retaining physical separation, enemy blocking and planted melee attacks.",
+    "Ranged troops can acquire enemies in front up to their attack range when it exceeds8tiles. Dart Gun notices enemies8.5tiles ahead; rear detection remains5tiles. Existing cards retain their detection ranges.",
+    "Existing card stats, abilities, arena geometry and art remain unchanged. Navigation revision12 separates new simulation results from earlier movement rules."
+  ],
+  "priorResolution": "Assets/Data/History/source_resolution_1.8.1.json"
+}

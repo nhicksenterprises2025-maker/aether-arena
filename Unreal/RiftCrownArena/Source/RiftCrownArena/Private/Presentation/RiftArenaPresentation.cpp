@@ -472,7 +472,7 @@ FString ARiftArenaPresentation::GeometryDiagnosticsJSON() const
     if(State)for(const auto& Tower:State->entities)if(Tower.kind==rift::EntityKind::Guard||Tower.kind==rift::EntityKind::Core)
     {
         const bool Core=Tower.kind==rift::EntityKind::Core;const int32 Home=Tower.team==rift::Team::Player?1:-1;
-        const double ExpectedX=Core?0.:Tower.lane*rift::arena::BridgeCenterX,ExpectedZ=Home*(Core?rift::arena::CoreDepth:rift::arena::GuardDepth);
+        const double ExpectedX=Core?0.:Tower.lane*rift::arena::GuardX,ExpectedZ=Home*(Core?rift::arena::CoreDepth:rift::arena::GuardDepth);
         const auto* Actor=Visual(Tower.id);const FVector Position=Actor?Actor->GetActorLocation():FVector::ZeroVector;
         const FIntPoint Slot(int32(Tower.team),Tower.lane);
         const bool VisualAligned=Actor?(FMath::IsNearlyEqual(Position.X/Tile,ExpectedX,1.e-6)&&FMath::IsNearlyEqual(Position.Y/Tile,ExpectedZ,1.e-6)):Tower.dead;

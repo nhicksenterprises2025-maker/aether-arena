@@ -79,17 +79,29 @@ scene = bpy.context.scene
 for card_id, card in manifest['characters'].items():
     rig = bpy.data.objects['SKEL_' + card_id]
     for clip in card['animations']:
-        rig.animation_data.action = bpy.data.actions[clip['action']]
+        action = bpy.data.actions[clip['action']]
+        rig.animation_data.action = action
+        if hasattr(action, 'slots') and action.slots:
+            rig.animation_data.action_slot = action.slots[0]
+        for bone in rig.pose.bones:
+            bone.rotation_mode = 'XYZ'
         unsafe = []
         minimum_scale = 1e30
         minimum_determinant = 1e30
         matrix_count = 0
         samples = 4 * (clip['frames'] - 1) + 1
+        first_pose = None
+        maximum_pose_change = 0.
         for sample in range(samples):
             frame = 1 + sample / 4
             integer = int(frame)
             scene.frame_set(integer, subframe=frame - integer)
             bpy.context.view_layer.update()
+            pose = [value for bone in rig.pose.bones for row in bone.matrix for value in row]
+            if first_pose is None:
+                first_pose = pose
+            else:
+                maximum_pose_change = max(maximum_pose_change, max(abs(a-b) for a,b in zip(first_pose, pose)))
             for bone in rig.pose.bones:
                 matrix_count += 1
                 minimum_scale = min(minimum_scale, *(abs(value) for value in bone.scale))
@@ -108,12 +120,15 @@ for card_id, card in manifest['characters'].items():
                         unsafe.append({'bone': bone.name, 'frame': frame,
                                        'scale': list(bone.scale), 'determinant': determinant})
         check(card_id + ' ' + clip['name'] + ' all sampled bone matrices finite and invertible', not unsafe, unsafe)
+        if clip['name'] == 'Attack' or (clip['name'] == 'Locomotion' and card_id != 'pulverizer'):
+            check(card_id + ' ' + clip['name'] + ' evaluates actual animated motion', maximum_pose_change > .001, maximum_pose_change)
         fbx = inspect_fbx(ROOT / clip['file'])
         check(card_id + ' ' + clip['name'] + ' FBX numeric arrays finite', not fbx['nonfiniteElements'], fbx['nonfiniteElements'])
         check(card_id + ' ' + clip['name'] + ' FBX initial and animation scales nonzero',
               fbx['scaleCurveCount'] >= len(card['bones']) * 3 and fbx['unsafeScaleValues'] == 0, fbx)
         check(card_id + ' ' + clip['name'] + ' FBX matches current manifest pin', fbx['sha256'] == clip['sha256'])
         report['clips'].append({'card': card_id, 'clip': clip['name'], 'samples': samples,
+                                'maximumPoseChange': maximum_pose_change,
                                 'poseMatrices': matrix_count, 'minimumSourceScale': minimum_scale,
                                 'minimumMatrixDeterminant': minimum_determinant, 'fbx': fbx})
         report['poseMatricesChecked'] += matrix_count

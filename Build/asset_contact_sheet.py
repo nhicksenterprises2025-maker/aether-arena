@@ -1,6 +1,6 @@
 """Assemble actual Blender renders for visual review; never edits game art."""
 from pathlib import Path
-import json
+import argparse, json, sys
 from PIL import Image, ImageDraw, ImageFont
 from asset_file_io import write_json
 ROOT=Path(__file__).resolve().parents[1]
@@ -18,6 +18,13 @@ def sheet(names,name,columns=4,source=None):
         canvas.paste(im,(x+(width-im.width)//2,y))
         d.text((x+18,y+height-34),n.replace('_',' ').title(),font=font,fill=(220,231,241))
     canvas.save(R/(name+'.png'))
+parser=argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--cards-only',action='store_true')
+if parser.parse_args().cards_only:
+    sheet(list(json.loads((ROOT/'Assets/asset_manifest.json').read_text())['cards']),
+          'model_cards_contact',4,ROOT/'Assets/Source/CardArt')
+    print('Card portrait contact sheet saved.')
+    sys.exit(0)
 sheet(list(json.loads((ROOT/'Assets/asset_manifest.json').read_text())['characters'])+['archer_tower','tower_guard','tower_core','nova_flask','meteor_shard','bullet_round'],'characters_contact')
 sheet(['bridge','floor_tile','lane_paver','bank_segment','boundary_stone','grass_tuft','shrub','tree','crystal_plinth','banner','ruin','distant_island','meteor_shard','bullet_round','tower_rubble'],'environment_contact')
 card_ids=list(json.loads((ROOT/'Assets/asset_manifest.json').read_text())['cards'])
