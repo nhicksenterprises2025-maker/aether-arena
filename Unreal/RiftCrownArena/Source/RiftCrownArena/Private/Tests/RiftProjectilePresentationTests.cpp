@@ -10,13 +10,13 @@ bool FRiftProjectilePresentationTest::RunTest(const FString& Parameters)
 {
     const FVector Launch(-720.,410.,205.),GroundTarget(-580.,-160.,125.),FlyingTarget(-400.,-320.,310.);
     const std::pair<const char*,const TCHAR*> Bindings[]={
-        {"ember_archer",TEXT("arrow_projectile")},{"archer_tower",TEXT("arrow_projectile")},
+        {"dart_gun",TEXT("dart_projectile")},{"ember_archer",TEXT("arrow_projectile")},{"archer_tower",TEXT("arrow_projectile")},
         {"arc_mage",TEXT("arc_projectile")},{"sky_manta",TEXT("manta_projectile")},
         {"storm_raven",TEXT("storm_projectile")},{"tower_guard",TEXT("bullet_round")},
         {"tower_core",TEXT("bullet_round")}};
     int32 RangedCards=0;
     for (const auto& Card:rift::Cards()) if (Card.projectileSpeed>0.) ++RangedCards;
-    TestEqual(TEXT("All five numerical ranged cards are bound, plus both crown towers"),RangedCards,5);
+    TestEqual(TEXT("All six numerical ranged cards are bound, plus both crown towers"),RangedCards,6);
     for (const auto& Binding:Bindings)
     {
         const FString Label=UTF8_TO_TCHAR(Binding.first);
@@ -41,6 +41,7 @@ bool FRiftProjectilePresentationTest::RunTest(const FString& Parameters)
     }
     auto* Trail=LoadObject<UStaticMesh>(nullptr,TEXT("/Game/Rift/Environment/SM_projectile_trail.SM_projectile_trail"));
     TestNotNull(TEXT("Flight trails have their own authored mesh"),Trail);
+    TestTrue(TEXT("Darts follow a direct, bounded trajectory"),ARiftArenaPresentation::ProjectilePathPoint("dart_gun",Launch,FlyingTarget,.5)==FMath::Lerp(Launch,FlyingTarget,.5));
     const FVector ShortTarget=Launch+FVector(8.,0.,0.);
     const FVector ShortArc=ARiftArenaPresentation::ProjectilePathPoint("ember_archer",Launch,ShortTarget,.5);
     TestTrue(TEXT("Short arrows remain readable without a large lob"),ShortArc.Z>Launch.Z&&ShortArc.Z<=Launch.Z+30.);

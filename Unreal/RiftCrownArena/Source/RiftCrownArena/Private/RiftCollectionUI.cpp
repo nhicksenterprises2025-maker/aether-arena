@@ -124,6 +124,7 @@ void URiftUIWidget::CardDetail()
     Hero->AddChildToWrapBox(Panel(Illustration(DetailCard,224),FMargin(4),FLinearColor(.07f,.10f,.15f,1)));
     auto* Details=WidgetTree->ConstructWidget<UVerticalBox>();auto* DetailsSize=WidgetTree->ConstructWidget<USizeBox>();DetailsSize->SetWidthOverride(590);DetailsSize->SetContent(Details);Hero->AddChildToWrapBox(DetailsSize);
     Add(Details,Text(FS(Card->name),32,Gold),3);Add(Details,Text(FS(Intelligence.role),18,Paper),3);
+    if(Card->id=="dart_gun")Add(Details,Text(TEXT("An 81-year-old African American World War II veteran. His measured stride hides a steady aim and a remarkably fast dart gun."),15,Paper),6);
     auto* Tags=WidgetTree->ConstructWidget<UWrapBox>();Tags->SetInnerSlotPadding(FVector2D(7,7));Add(Details,Tags,5);
     Tags->AddChildToWrapBox(Badge(FString::Printf(TEXT("%d AETHER"),Card->cost),Purple,14));Tags->AddChildToWrapBox(Badge(CardType(*Card),FLinearColor(.045f,.14f,.20f,1),12));if(!Card->spell)Tags->AddChildToWrapBox(Badge(FString::Printf(TEXT("%d %s"),Card->count,Card->count==1?TEXT("MEMBER"):TEXT("MEMBERS")),FLinearColor(.08f,.115f,.16f,1),12));
     const FString Targets=Card->spell?(Card->towerDamage>0?TEXT("Ground, air and structures"):TEXT("Ground and air troops")):Card->structuresOnly?TEXT("Towers and buildings"):Card->building?(Card->canHitAir?TEXT("Ground and air troops"):TEXT("Ground troops")):Card->canHitAir?TEXT("Ground, air and structures"):TEXT("Ground and structures");
@@ -141,7 +142,8 @@ void URiftUIWidget::CardDetail()
         Stat(TEXT("DAMAGE / HIT"),FString::Printf(TEXT("%.0f"),Card->damage));Stat(TEXT("HIT INTERVAL"),FString::Printf(TEXT("%.2f s"),Card->attackInterval));
         Stat(TEXT("BASIC DPS / MEMBER"),FString::Printf(TEXT("%.2f"),Card->damage/Card->attackInterval));
         if(Card->count>1){Stat(TEXT("FULL SWARM HP"),FString::Printf(TEXT("%.0f"),Card->hp*Card->count));Stat(TEXT("FULL SWARM BASIC DPS"),FString::Printf(TEXT("%.2f"),Card->damage*Card->count/Card->attackInterval));}
-        Stat(TEXT("ATTACK RANGE"),FString::Printf(TEXT("%.2f tiles"),Card->range));Stat(TEXT("MOVEMENT"),FString::Printf(TEXT("%.2f tiles/s"),Card->moveSpeed));Stat(TEXT("FRONT / REAR SIGHT"),TEXT("8 / 5 tiles"));
+        Stat(TEXT("ATTACK RANGE"),FString::Printf(TEXT("%.2f tiles"),Card->range));Stat(TEXT("MOVEMENT"),FString::Printf(TEXT("%.2f tiles/s"),Card->moveSpeed));
+        Stat(TEXT("FRONT / REAR SIGHT"),FString::Printf(TEXT("%g / %g tiles"),Card->projectileSpeed>0?FMath::Max(rift::detection::Front,Card->range):rift::detection::Front,rift::detection::Rear));
         if(Card->projectileSpeed>0)Stat(TEXT("PROJECTILE SPEED"),FString::Printf(TEXT("%.1f tiles/s"),Card->projectileSpeed));if(Card->shockwaveSpeed>0)Stat(TEXT("SHOCKWAVE SPEED"),FString::Printf(TEXT("%.1f tiles/s"),Card->shockwaveSpeed));if(Card->splash>0)Stat(Card->shockwaveSpeed>0?TEXT("SHOCKWAVE RADIUS"):TEXT("SPLASH RADIUS"),FString::Printf(TEXT("%.2f tiles"),Card->splash));
     }
     else

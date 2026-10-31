@@ -24,13 +24,16 @@ def main():
     assert expanded["schema"] == 2 and expanded["derivedFrom"]["balanceHash"] == baseline["balanceHash"]
     for before, derivative in zip(baseline["cards"], expanded["cards"]):
         assert all(derivative[key] == value for key, value in before.items())
-    assert len(current["cards"]) == 21 and len(current["entities"]) == 1
+    assert len(current["cards"]) == 22 and len(current["entities"]) == 1
     assert current["rules"]["arenaWidth"] == 22 and current["rules"]["arenaHeight"] == 40
     release_baseline = json.loads((ROOT / current["baseline"]).read_text())
-    assert current["cards"] == release_baseline["cards"]
+    assert [card for card in current["cards"] if card["id"] != "dart_gun"] == release_baseline["cards"]
+    dart = next(card for card in current["cards"] if card["id"] == "dart_gun")
+    assert (dart["cost"], dart["damage"], dart["attackInterval"], dart["range"]) == (3, 50, .4, 8.5)
+    near(dart["damage"] / dart["attackInterval"], 125)
     assert current["entities"] == release_baseline["entities"]
-    assert current["rules"] == release_baseline["rules"]
-    assert current["balanceHash"] == release_baseline["balanceHash"]
+    assert current["rules"] == dict(release_baseline["rules"], navigationRevision=12)
+    assert current["balanceHash"] != release_baseline["balanceHash"]
     assert (ROOT / "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Simulation/RiftArenaRules.generated.inc").read_text() == generate_arena(current)
     assert (ROOT / "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftCardManifest.generated.inc").read_text() == generate(current)
     visual = copy.deepcopy(current)

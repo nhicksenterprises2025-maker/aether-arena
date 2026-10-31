@@ -692,7 +692,24 @@ bool Match::EngagementPoint(const Entity &s, const Entity &t,
     constexpr double Tau = 6.28318530717958647692;
     const double separation = BodyClearance(s, EntityKind::Troop, s.radius);
     const double angle = 2. * std::asin(std::min(1., separation / (2. * radius)));
-    const int count = std::max(2, std::min(128, static_cast<int>(std::floor(Tau / angle))));
+    int count = std::max(2, std::min(128, static_cast<int>(std::floor(Tau / angle))));
+    const bool stagger = arena::NavigationRevision >= 12 && !s.flying && card->count > 2;
+    const double innerRadius = stagger ? std::min(radius, physical + .01) : radius;
+    if (stagger) {
+        // Alternate near/far contacts so a swarm cannot seal its whole outer
+        // attack ring against friendly followers. Keep both rings reachable
+        // and every pair physically separated, including the wraparound pair.
+        count = std::max(count - count % 2, (card->count + 2) / 2 * 2);
+        while (count > 2 && (2. * innerRadius * std::sin(Tau / count) < separation ||
+               std::hypot(radius - innerRadius, 2. * std::sqrt(radius * innerRadius) *
+                          std::sin(Tau / count / 2.)) < separation)) count -= 2;
+    }
+    auto contactPoint = [&](int n) {
+        const double bearing = Tau * n / count;
+        const double ring = stagger && n % 2 == 0 ? innerRadius : radius;
+        return Vec2{t.position.x + std::sin(bearing) * ring,
+                    t.position.z + std::cos(bearing) * ring};
+    };
     // Plan a paid formation together before its front rank reaches contact.
     // Minimize its longest approach first: leading outer members can wrap the
     // target while the following ranks enter nearer arcs. Greedy nearest-goal
@@ -716,9 +733,7 @@ bool Match::EngagementPoint(const Entity &s, const Entity &t,
         std::vector<Vec2> goals;
         if (!planned && formation.size() > 1)
             for (int n = 0; n < count; ++n) {
-                const double bearing = Tau * n / count;
-                Vec2 candidate{t.position.x + std::sin(bearing) * radius,
-                               t.position.z + std::cos(bearing) * radius};
+                const Vec2 candidate = contactPoint(n);
                 if (free(candidate, false)) goals.push_back(candidate);
             }
         if (goals.size() >= formation.size() && formation.size() > 1) {
@@ -732,7 +747,7 @@ bool Match::EngagementPoint(const Entity &s, const Entity &t,
                 for (int j = 0; j < columns; ++j) {
                     const double toAngle = std::atan2(goals[j].x - t.position.x, goals[j].z - t.position.z);
                     const double turn = std::abs(std::remainder(toAngle - fromAngle, Tau));
-                    cost[i][j] = std::max(0., radial - radius) +
+                    cost[i][j] = std::max(0., radial - (stagger ? D(goals[j], t.position) : radius)) +
                         std::max(0., turn - .35) * (radius + separation);
                     limits.push_back(cost[i][j]);
                 }
@@ -817,9 +832,7 @@ bool Match::EngagementPoint(const Entity &s, const Entity &t,
         Vec2 vacancy = saved;
         if (nearest > .12)
             for (int n = 0; n < count; ++n) {
-                const double bearing = Tau * n / count;
-                const Vec2 candidate{t.position.x + std::sin(bearing) * radius,
-                                     t.position.z + std::cos(bearing) * radius};
+                const Vec2 candidate = contactPoint(n);
                 const double distance = D(s.position, candidate);
                 if (distance >= nearest || !free(candidate, true)) continue;
                 const auto traffic = CollisionBodies(s, distance + .05);
@@ -857,7 +870,8 @@ bool Match::EngagementPoint(const Entity &s, const Entity &t,
                 continue;
             const Vec2 occupied{t.position.x + slot.offset.x, t.position.z + slot.offset.z};
             const double distance = D(s.position, occupied);
-            if (distance + .1 >= closest || D(owner->position, occupied) > .04 ||
+            if (distance + (stagger ? .005 : .1) >= closest ||
+                D(owner->position, occupied) > .04 ||
                 !free(occupied, true, ownerId) ||
                 !NavSegmentValid(owner->position, destination, *owner, 0, owner->bridge, blockers))
                 continue;
@@ -913,9 +927,7 @@ bool Match::EngagementPoint(const Entity &s, const Entity &t,
     double best = std::numeric_limits<double>::infinity();
     bool found = false;
     for (int n = 0; n < count; ++n) {
-        const double bearing = Tau * n / count;
-        const Vec2 candidate{t.position.x + std::sin(bearing) * radius,
-                             t.position.z + std::cos(bearing) * radius};
+        const Vec2 candidate = contactPoint(n);
         const double distance = D(s.position, candidate) +
             (alternate && D(candidate, previous) < .01 ? 8. : 0.);
         if (distance + 1e-9 < best && free(candidate, false)) {

@@ -517,10 +517,10 @@ int main(int argc, char **argv) {
             Check(ready==1&&spent==1,"exact charge entry and spend are replayable");
         });
         Test("complete exact roster and swarm DPS", [] {
-            Check(Cards().size() == 21 && EntityDefinitions().size() == 1 && !FindCard("bone_warden_skeleton"), "twenty-one playable cards and one subordinate outside decks");
-            const std::vector<double> hp{822, 374, 262, 1620, 512, 934, 480, 174, 1265, 1222, 0, 850, 0, 0, 111, 111, 700, 1526, 445, 1000, 0},
-                damage{93, 152, 55, 118, 108, 156, 77, 86, 72, 251, 262, 75, 175, 375, 20, 20, 65, 101, 95, 85, 100},
-                interval{1.1, 1.75, .75, 2, 1.15, 1.25, .92, 1.05, .75, 1.7, 0, .9, 0, 0, .9, 1, .9, 1.5, 1.05, 1.3, 0};
+            Check(Cards().size() == 22 && EntityDefinitions().size() == 1 && !FindCard("bone_warden_skeleton"), "twenty-two playable cards and one subordinate outside decks");
+            const std::vector<double> hp{822, 374, 262, 1620, 512, 934, 480, 174, 1265, 1222, 0, 850, 0, 0, 111, 111, 700, 1526, 445, 1000, 0, 420},
+                damage{93, 152, 55, 118, 108, 156, 77, 86, 72, 251, 262, 75, 175, 375, 20, 20, 65, 101, 95, 85, 100, 50},
+                interval{1.1, 1.75, .75, 2, 1.15, 1.25, .92, 1.05, .75, 1.7, 0, .9, 0, 0, .9, 1, .9, 1.5, 1.05, 1.3, 0, .4};
             for (std::size_t n = 0; n < Cards().size(); ++n) {
                 Near(Cards()[n].hp, hp[n], 0, "roster HP");
                 Near(Cards()[n].damage, damage[n], 0, "roster damage");
@@ -545,6 +545,59 @@ int main(int argc, char **argv) {
                      card.id == "meteor_shards" ? .75 : card.id == "bullet_burst" ? .30 :
                      card.id == "nova_flask" ? .85 : card.id == "shadow_surge" ? .25 : 0,
                      0, "all four approved spell windups");
+        });
+        Test("Dart Gun pays three and fires travelling fifty damage darts every four tenths", [] {
+            const auto *card = FindCard("dart_gun");
+            Check(card && card->cost == 3 && card->count == 1 && !card->flying && card->canHitAir,
+                  "Dart Gun is one paid ground marksman with air coverage");
+            Near(card->hp, 420, 0, "Dart Gun HP");Near(card->moveSpeed, 1.5, 0, "slow veteran walk");
+            Near(card->range, 8.5, 0, "Dart Gun authored range");Near(card->projectileSpeed, 22, 0, "dart travel speed");
+            Near(card->damage / card->attackInterval, 125, 0, "Dart Gun computed DPS");
+            int fixtures = 0;
+            for (const Team team : {Team::Player, Team::Enemy})
+                for (const auto *victim : {"boulderback", "sky_manta"}) {
+                    Match m(CollisionOptions("dart_gun", victim));FreezeCrowns(m);
+                    const int sign = team == Team::Player ? 1 : -1;
+                    const Team other = team == Team::Player ? Team::Enemy : Team::Player;
+                    const auto target = PaidCollisionCard(m, other, victim, {2.5, -sign * 4.5}).front().id;
+                    const auto shooter = PaidCollisionCard(m, team, "dart_gun", {.5, sign * 3.5}).front();
+                    // Hold a real paid target with the existing stun status;
+                    // only its HP is maintained to observe repeated impacts.
+                    MutableEntity(m, target).stunUntil = 100;
+                    const double separation = m.CombatDistance(shooter, ById(m, target));
+                    Check(separation > 8 && separation < 8.5, "fixture exercises extra half tile acquisition");
+                    std::vector<double> shots, hits;int visibleDarts = 0;Vec2 firingStance;bool fired = false;
+                    std::size_t cursor = m.Events().size();
+                    for (int frame = 0; frame < 210; ++frame) {
+                        auto &body = MutableEntity(m, target);body.hp = body.maxHp;
+                        const auto before = m.State().entities;m.Step(1. / 60.);
+                        SweptBodyClearance(m, before, "Dart Gun actual paid long shot");
+                        for (const auto &projectile : m.State().projectiles) if (projectile.source == shooter.id) {
+                            Near(projectile.damage, 50, 0, "committed dart packet");
+                            const auto &victimBody = ById(m, target);
+                            const double horizontal = std::hypot(projectile.origin.x - victimBody.position.x,
+                                                                  projectile.origin.z - victimBody.position.z);
+                            const double vertical = 1.35 - (victimBody.flying ? 1.95 : .86);
+                            Near(projectile.duration, std::hypot(horizontal, vertical) / 22, 1e-8,
+                                 "actual three dimensional distance determines flight time");
+                            ++visibleDarts;
+                        }
+                        for (; cursor < m.Events().size(); ++cursor) {
+                            const auto &event = m.Events()[cursor];
+                            if (event.source != shooter.id || event.target != target) continue;
+                            if (event.type == "attack") {shots.push_back(event.time);if (!fired) {firingStance = ById(m, shooter.id).position;fired = true;}}
+                            if (event.type == "damage") {Near(event.requested, 50, 0, "dart hits for fifty");hits.push_back(event.time);}
+                        }
+                        const auto &now = ById(m, shooter.id);
+                        if (fired) Near(std::hypot(now.position.x - firingStance.x, now.position.z - firingStance.z),
+                             0, 1e-9, "Dart Gun fires from standstill inside actual long range");
+                    }
+                    Check(shots.size() >= 7 && hits.size() >= 6 && visibleDarts > 20, "real repeated ground and air projectile attacks");
+                    for (std::size_t n = 1; n < shots.size(); ++n) Near(shots[n] - shots[n-1], .4, 1e-8, "four tenths cadence");
+                    Check(hits.front() > shots.front() + .30, "damage waits for visible dart flight");
+                    ++fixtures;
+                }
+            std::cout << "DART_GUN_COMBAT fixtures=" << fixtures << " damage=50 interval=0.4 dps=125 range=8.5 projectile_speed=22\n";
         });
         Test("current patch Pulverizer exact paid stats footprint lifetime", [] {
             const auto *card = FindCard("pulverizer");
@@ -671,14 +724,15 @@ int main(int argc, char **argv) {
             int cards=0;
             for(const auto &card:Cards())if(!card.spell){
                 Entity source;source.id=901;source.cardId=card.id;source.facing={0,-1};source.radius=10;
-                for(const double boundary:{detection::Front,detection::Rear}){
-                    const double sign=boundary==detection::Front?-1:1;
+                for(const bool front:{true,false}){
+                    const double boundary=front?(card.id=="dart_gun"?8.5:8.):5.;
+                    const double sign=front?-1:1;
                     target.position={0,sign*boundary};Check(m.InSight(source,target),"exact shared boundary inclusive");
                     target.position={0,sign*(boundary+.00001)};Check(!m.InSight(source,target),"no radius or pursuit bonus");
                 }
                 ++cards;
             }
-            Check(cards==17,"all seventeen physical cards share strict8/5");
+            Check(cards==18,"all eighteen physical cards keep explicit front range and strict five-tile rear sight");
             for(const auto&id:std::vector<std::string>{"ironclad","ember_archer","archer_tower","pulverizer","stampede"}){
                 Match a(Quiet());a.Spawn(Team::Player,id,{.5,8.5});
                 a.Spawn(Team::Enemy,id=="stampede"?"archer_tower":"ironclad",{.5,4.5});
@@ -1472,7 +1526,7 @@ int main(int argc, char **argv) {
                             members += static_cast<int>(ids.size());
                         }
             }
-            Check(fixtures == 132 && members == 360, "all eleven ground cards, both teams, both lane states and pockets");
+            Check(fixtures == 144 && members == 372, "all twelve ground cards, both teams, both lane states and pockets");
         });
         Test("continuous routes to an opposite target still use the current side bridge", [] {
             int routes = 0;
@@ -1512,7 +1566,7 @@ int main(int argc, char **argv) {
                         routes++;
                     }
             }
-            Check(routes == 44, "all eleven ground cards mirror the current-side route policy");
+            Check(routes == 48, "all twelve ground cards mirror the current-side route policy");
         });
         Test("paid swarms split from each resolved landing side and advance through their own lane", [] {
             int fixtures = 0, members = 0, splitFixtures = 0;
@@ -1743,7 +1797,7 @@ int main(int argc, char **argv) {
                             ++fixtures;
                         }
             }
-            Check(fixtures == 132 && members == 360, "all eleven ground cards and every swarm member in the tower matrix");
+            Check(fixtures == 144 && members == 372, "all twelve ground cards and every swarm member in the tower matrix");
         });
         Test("continuous tower perimeter paths clear corners and blocked rounded start cells", [] {
             int paths = 0;
@@ -1836,7 +1890,7 @@ int main(int argc, char **argv) {
                         ++fixtures;
                     }
             }
-            Check(fixtures == 154 && members == 420, "all eleven ground cards mirrored across rear/side/corner cases");
+            Check(fixtures == 168 && members == 434, "all twelve ground cards mirrored across rear/side/corner cases");
         });
         Test("legal ground drops air spells buildings and DEV river fixtures retain their positions", [] {
             for (Team team : {Team::Player, Team::Enemy}) {
@@ -2185,7 +2239,7 @@ int main(int argc, char **argv) {
                     Near(PairSynergy(Cards()[a], Cards()[b]), PairSynergy(Cards()[b], Cards()[a]), 0,
                          "symmetric");
                 }
-            Check(pairs == 210, "all twenty-one-card pairs");
+            Check(pairs == 231, "all twenty-two-card pairs");
             auto d = AnalyzeDeck({"vampire_bats", "twin_blades", "nova_flask"});
             Near(d.averageHP, (174 * 5 + 262 * 2) / 2., 0, "swarm aggregate spell excluded");
             Near(d.deploymentDPS, (86 / 1.05 * 5 + 55 / .75 * 2) / 2., .0051, "aggregate DPS spell excluded");
@@ -2385,9 +2439,9 @@ int main(int argc, char **argv) {
                                  0, 0, "building stays fixed while nearby troops route around it");
                         }
                 }
-            Check(collisionPaidFixtures - fixtureStart == 34 && collisionPaidPlays - playStart == 68 &&
-                      collisionMembers - memberStart == 122,
-                  "all seventeen physical cards, both teams, sixty-eight paid casts and122 actual members");
+            Check(collisionPaidFixtures - fixtureStart == 36 && collisionPaidPlays - playStart == 72 &&
+                      collisionMembers - memberStart == 126,
+                  "all eighteen physical cards, both teams, seventy-two paid casts and126 actual members");
         });
         Test("ground and air occupy distinct collision layers while spells have no body", [] {
             for (const Team team : {Team::Player, Team::Enemy}) {
@@ -2815,6 +2869,43 @@ int main(int argc, char **argv) {
             Check(fixtures == 24 && members == 240, "both real hog swarms and every member contact Guard Core and paid building in both mirrored lanes");
             Check(slowContactFixtures == 0, "all members join within five seconds of local approach, with bounded first-to-last arrival travel");
         });
+        Test("paid mixed followers clear Stampede contacts and every hog keeps attacking", [] {
+            int fixtures = 0;double latestFollowerHit = 0;
+            for (const Team team : {Team::Player, Team::Enemy}) for (int lane : {-1, 1})
+                for (const auto *follower : {"ironclad", "frost_fang", "iron_giant", "ember_archer", "dart_gun"}) {
+                    Match m(CollisionOptions("stampede", follower));FreezeCrowns(m);
+                    const int sign = team == Team::Player ? 1 : -1;
+                    const Team other = team == Team::Player ? Team::Enemy : Team::Player;
+                    const auto target = Tower(m, other, EntityKind::Guard, lane).id;
+                    const auto swarm = PaidCollisionCard(m, team, "stampede", {lane * 7.5, sign * 6.5});
+                    const auto follow = PaidCollisionCard(m, team, follower, {lane * 7.5, sign * 8.5}).front();
+                    std::map<EntityId, double> firstHit;std::map<EntityId, int> hits;
+                    std::size_t cursor = m.Events().size();
+                    for (int frame = 0; frame < 25 * 60; ++frame) {
+                        // Crown HP maintenance allows observing formation progress
+                        // without ending the fight. No unit pose/path/radius changes.
+                        Check(m.SetTowerHP(target, ById(m, target).maxHp), "live target HP maintenance accepted");
+                        const auto before = m.State().entities;m.Step(1. / 60.);
+                        SweptBodyClearance(m, before, "mixed paid follower around Stampede");
+                        for (; cursor < m.Events().size(); ++cursor) {
+                            const auto &event = m.Events()[cursor];
+                            if (event.type == "damage" && event.target == target &&
+                                (event.cardId == "stampede" || event.source == follow.id)) {
+                                Near(event.requested, FindCard(event.cardId)->damage, 0, "contact preserves real per-hit damage");
+                                firstHit.try_emplace(event.source, event.time);++hits[event.source];
+                            }
+                        }
+                    }
+                    std::cout << "SWARM_FOLLOWER card=" << follower << " team=" << int(team) << " lane=" << lane
+                              << " first_hit=" << (firstHit.count(follow.id) ? firstHit.at(follow.id) : -1)
+                              << " hitting_members=" << hits.size() << " expected_members=16\n";
+                    Check(firstHit.count(follow.id) && hits[follow.id] >= 3, "paid follower routes past swarm and repeatedly attacks");
+                    for (const auto &hog : swarm) Check(hits[hog.id] >= 3, "all fifteen original hogs retain real target access");
+                    latestFollowerHit = std::max(latestFollowerHit, firstHit.at(follow.id));++fixtures;
+                }
+            Check(fixtures == 20, "all five follower types on both teams and both bridges");
+            std::cout << "SWARM_FOLLOWER_SUMMARY fixtures=" << fixtures << " latest_first_hit=" << latestFollowerHit << "\n";
+        });
         Test("swarm target arc reservations remain deterministic across frame chunks", [] {
             auto options = CollisionOptions("stampede", "archer_tower");Match first(options), repeat(options);
             for (Match *m : {&first, &repeat}) {
@@ -2826,15 +2917,19 @@ int main(int argc, char **argv) {
             for (int step = 0; step < 48; ++step) repeat.Step(.25);
             Same(first, repeat);BodyClearance(first, "deterministic actual target arc bodies");
         });
-        Test("real crown fire frees swarm contacts and living waiting members refill promptly", [] {
+        Test("real crown fire and a paid spell free swarm contacts that waiting members refill promptly", [] {
             int refills = 0, exposedDeaths = 0;
             double worstLatency = 0;
             for (const Team team : {Team::Player, Team::Enemy}) for (const int lane : {-1, 1}) {
-                Match m(CollisionOptions("mini_stampede", "stampede"));
+                auto options = CollisionOptions("mini_stampede", "stampede");
+                options.decks[team == Team::Player ? 1 : 0] = CollisionOptions("bullet_burst", "ironclad").decks[0];
+                Match m(options);
                 const Team opponent = team == Team::Player ? Team::Enemy : Team::Player;
                 const int sign = team == Team::Player ? 1 : -1;
                 const EntityId targetId = Tower(m, opponent, EntityKind::Guard, lane).id;
-                // Two actual paid plays exceed the contact ring's body capacity.
+                // Two paid swarms congest the target. With staggered contacts,
+                // one crown kill need not open a straight route through both
+                // depths. A paid defensive burst opens that real corridor.
                 // Every crown fires normally; no HP, damage or position edits.
                 const double dropDepth = team == Team::Player && lane == -1 ? 4.5 : 3.5;
                 auto paid = PaidCollisionCard(m, team, "mini_stampede", {lane * 7.5, sign * dropDepth});
@@ -2845,12 +2940,19 @@ int main(int argc, char **argv) {
                 std::map<EntityId, Vacancy> waiting;
                 std::set<EntityId> hit;
                 std::size_t cursor = m.Events().size();
-                int fixtureRefills = 0;
+                int fixtureRefills = 0, crownHits = 0;
+                bool corridorCast = false;
                 for (int frame = 0; frame < 20 * 60; ++frame) {
-                    const auto before = m.State().entities;m.Step(1. / 60.);
+                    const auto before = m.State().entities;
+                    if (!corridorCast && hit.size() >= 12 && m.State().elapsed >= 6.5) {
+                        PaidCollisionCard(m, opponent, "bullet_burst", ById(m, targetId).position);
+                        corridorCast = true;
+                    }
+                    m.Step(1. / 60.);
                     SweptBodyClearance(m, before, "real crown fire swarm contact refill");
                     for (; cursor < m.Events().size(); ++cursor) {
                         const auto &event = m.Events()[cursor];
+                        if (event.type == "damage" && event.source == targetId) ++crownHits;
                         if (event.type != "damage" || event.target != targetId ||
                             (event.cardId != "mini_stampede" && event.cardId != "stampede")) continue;
                         hit.insert(event.source);
@@ -2911,7 +3013,8 @@ int main(int argc, char **argv) {
                 }
                 std::cout << "SWARM_VACANCY_FIXTURE team=" << int(team) << " lane=" << lane << " paid_members=20 hit_members=" << hit.size()
                           << " refills=" << fixtureRefills << " exposed_deaths_so_far=" << exposedDeaths << '\n';
-                Check(fixtureRefills > 0, "real crown fire exposes and refills a clear-route waiting contact in every mirrored lane");
+                Check(corridorCast && crownHits > 0, "actual crown fire and a paid defensive burst exercise the congested contact");
+                Check(fixtureRefills > 0, "real combat exposes and refills a clear-route waiting contact in every mirrored lane");
             }
             Check(refills > 0 && exposedDeaths > 0, "real crown fire actually exposes and refills attacking contacts during the four mirrored matches");
             std::cout << "SWARM_VACANCY_SUMMARY fixtures=4 exposed_attacker_deaths=" << exposedDeaths

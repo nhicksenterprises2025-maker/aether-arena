@@ -76,10 +76,12 @@ int32 URiftBattleOverlay::PaintTrainingOverlay(const FGeometry& Geometry,FSlateW
         }
         if(Dev->ShowSight&&(Current.kind==rift::EntityKind::Troop||Current.kind==rift::EntityKind::Building))
         {
+            const auto* Card=rift::FindEntityDefinition(Current.cardId);
+            const double Front=Card&&Card->projectileSpeed>0?FMath::Max(rift::detection::Front,Card->range):rift::detection::Front;
             const FVector Forward(Current.facing.x,Current.facing.z,0),Side(-Current.facing.z,Current.facing.x,0);
             for(int32 Half=0;Half<2;++Half)
             {
-                const double Radius=(Half==0?8.:5.)*RiftArenaGeometry::UnitsPerTile;
+                const double Radius=(Half==0?Front:rift::detection::Rear)*RiftArenaGeometry::UnitsPerTile;
                 const FLinearColor Color=Half==0?FLinearColor(.40f,.92f,.64f,.65f):FLinearColor(1.f,.77f,.35f,.65f);
                 const double Start=Half==0?-UE_PI/2:UE_PI/2;
                 FVector Previous=Origin+(Forward*FMath::Cos(Start)+Side*FMath::Sin(Start))*Radius;

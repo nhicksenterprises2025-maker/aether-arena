@@ -2351,13 +2351,66 @@
         "bytes": 15927,
         "sha256": "06cec3bfeb371eb7822de7ad6618c6fdd1ffa53a06d38b1f2694a5e661a53ecf"
       }
+    },
+    "dart_gun": {
+      "file": "Assets/Source/CardArt/dart_gun.png",
+      "sha256": "de3ad7909460eb767703c94222fed6881e0eae8a42a362518b0a6d281fce9ccb",
+      "bytes": 854073,
+      "sourceSceneSHA256": "1a283006f962b709076bdaf7d7c87dd94771a2bbcc0b963cdb7c12f48964c67b",
+      "sources": [
+        {
+          "model": {
+            "file": "Assets/Export/Characters/dart_gun/SK_dart_gun.fbx",
+            "sha256": "8bfd43738a0e92f1c8c0ca9fe2e4ad6c66d8501fa3f8fdd6f5aa3bc221317c8a",
+            "bytes": 2480156
+          },
+          "action": "Idle",
+          "phase": 0.16,
+          "phaseOffsetFrames": 19,
+          "poseSourceFrame": 20,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "SKEL_dart_gun.001_PortraitPose"
+        }
+      ],
+      "boundsMeters": [
+        [
+          -0.4500000774860382,
+          -0.9716666340827942,
+          0.006999986246228218
+        ],
+        [
+          0.4950000047683716,
+          0.19300000369548798,
+          1.9361251592636108
+        ]
+      ],
+      "poseFrame": 1,
+      "cameraOrthoScale": 1.5336498022079468,
+      "composition": "Upper-body hero portrait",
+      "lighting": {
+        "backdrop": [
+          0.033,
+          0.043,
+          0.026
+        ],
+        "key": [
+          1,
+          0.91,
+          0.77
+        ],
+        "rim": [
+          0.57,
+          0.72,
+          0.49
+        ]
+      }
     }
   },
-  "method": "Actual final production rig render with editable staged scene",
+  "method": "Actual production Blender mesh/rig render, exported to the native game",
   "sourceBlend": {
     "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
-    "sha256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
-    "bytes": 24405773
+    "sha256": "1a283006f962b709076bdaf7d7c87dd94771a2bbcc0b963cdb7c12f48964c67b",
+    "bytes": 28572315
   },
   "resolution": [
     768,
@@ -2372,8 +2425,8 @@
   },
   "rendererScript": {
     "file": "Build/render_card_portraits.py",
-    "sha256": "bdcae6fc2439284b08bf86837e1e154cd9a5e2e3e98c5e1d992fc42c980897b1",
-    "bytes": 14809
+    "sha256": "b26618c643b009198ac0974ec68a39dc61f114a0e880eeedafe11296b588520b",
+    "bytes": 14885
   },
   "masterResolution": [
     1024,

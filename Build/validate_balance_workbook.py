@@ -241,7 +241,10 @@ def validate(args):
                 expected = "n.a."
             cv("Cards", f"{column}{i}", expected)
         for field, column in [("frontSight", "AA"), ("rearSight", "AB")]:
-            cv("Cards", f"{column}{i}", "n.a." if c["spell"] else m.get("rules", {}).get(field, "n.a."))
+            expected = m.get("rules", {}).get(field, "n.a.")
+            if field == "frontSight" and c["projectileSpeed"] > 0 and expected != "n.a.":
+                expected = max(expected, c["range"])
+            cv("Cards", f"{column}{i}", "n.a." if c["spell"] else expected)
         if not c["spell"]:
             for column, expected in {"H": c["hp"] + c.get("shieldHP", 0), "K": c["damage"] / c["attackInterval"], "L": c["hp"] * c["count"], "M": (c["hp"] + c.get("shieldHP", 0)) * c["count"], "N": c["damage"] / c["attackInterval"] * c["count"]}.items():
                 require_formula("Cards", f"{column}{i}")

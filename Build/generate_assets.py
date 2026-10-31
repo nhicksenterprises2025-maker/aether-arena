@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT/'Build'))
 import expansion_asset_models as expansion_models
 import expansion_new_models as new_models
+import dart_gun_model as dart_model
 from roster_art_direction import polish_geometry, secondary_motion
 from asset_file_io import write_json
 from generate_expansion_fx_contract import definition as expansion_fx_contract
@@ -323,6 +324,15 @@ if (UPDATE and UPDATE.intersection(set(new_models.CONTRACTS)|set(new_models.STAT
             ('M_RiftExpansionAscensionGlass',False,True)))
     PALETTE.clear();PALETTE.update(saved_palette);TEX=saved_tex
 
+DART_MATERIALS = None
+if not (UPDATE or PREVIEW) or (UPDATE or PREVIEW).intersection(dart_model.CHARACTERS|dart_model.STATICS):
+    saved_palette,saved_tex=dict(PALETTE),TEX
+    PALETTE.update(dart_model.PALETTE)
+    TEX=textures('T_RiftDartGunAtlas')
+    DART_MATERIALS=tuple(make_material(name,glow=glow,glass=glass) for name,glow,glass in (
+        ('M_RiftDartGunSurface',False,False),('M_RiftDartGunGlow',True,False),('M_RiftDartGunGlass',False,True)))
+    PALETTE.clear();PALETTE.update(saved_palette);TEX=saved_tex
+
 manifest=json.loads(json.dumps(previous_manifest)) if previous_manifest else {'schema':1,'source':'original procedural sculpt and rig authored for Rift Crown Arena',
  'units':{'blender':'meter','fbx':'meter','fbxCentimetersPerUnit':100,'unrealImportUniformScale':1,'convertSceneUnit':True,
           'exportAxisForward':'-Y','exportAxisUp':'Z','unrealForceFrontXAxis':True,'designForward':'-Y in Blender; +X in Unreal'},
@@ -331,7 +341,12 @@ manifest=json.loads(json.dumps(previous_manifest)) if previous_manifest else {'s
                'normal':Path(TEX['Normal'].filepath_raw).relative_to(ROOT).as_posix(),
                'teamMask':Path(TEX['TeamMask'].filepath_raw).relative_to(ROOT).as_posix()} for m in (SURFACE,GLOW,GLASS)],
  'characters':{},'statics':{},'illustrations':{},'renders':[]}
-manifest['build']='UE-crafted-roster-1.8.0'
+manifest['build']='UE-crafted-roster-1.9.0'
+if DART_MATERIALS:
+    records={r['name']:r for r in manifest.get('expansionMaterials',[])}
+    records.update({m.name:{'name':m.name,**{k:'Assets/Source/Textures/T_RiftDartGunAtlas_'+v+'.png' for k,v in
+        (('baseColor','BaseColor'),('orm','ORM'),('normal','Normal'),('teamMask','TeamMask'))}} for m in DART_MATERIALS})
+    manifest['expansionMaterials']=list(records.values())
 if EXPANSION_MATERIALS and not opts.replacement_proof:
     expansion_material_records=[{'name':m.name,'baseColor':'Assets/Source/Textures/T_RiftExpansionAtlas_BaseColor.png',
         'orm':'Assets/Source/Textures/T_RiftExpansionAtlas_ORM.png','normal':'Assets/Source/Textures/T_RiftExpansionAtlas_Normal.png',
@@ -353,7 +368,7 @@ class Forge:
     def __init__(self,name):
         self.name=name; self.collection=bpy.data.collections.new(name); scene.collection.children.link(self.collection)
         self.parts=[]; self.bones={}; self.sockets={}; self.rig=None; self.mesh=None; self.family='static'
-        self.materials=NEW_MATERIALS if name in set(new_models.CONTRACTS)|set(new_models.STATIC_IDS) else EXPANSION_MATERIALS if name in expansion_models.CONTRACTS else (SURFACE,GLOW,GLASS)
+        self.materials=DART_MATERIALS if name in dart_model.CHARACTERS|dart_model.STATICS else NEW_MATERIALS if name in set(new_models.CONTRACTS)|set(new_models.STATIC_IDS) else EXPANSION_MATERIALS if name in expansion_models.CONTRACTS else (SURFACE,GLOW,GLASS)
     def add(self,obj,key='steel',bone=None,bevel=0,smooth=True,glow=False):
         for c in list(obj.users_collection): c.objects.unlink(obj)
         self.collection.objects.link(obj); obj.name=self.name+'_'+obj.name
@@ -664,6 +679,7 @@ def pulverizer():
     return expansion_models.pulse_machine(Forge)
 
 def actions(f):
+    if f.name=='dart_gun':return dart_model.actions(f,scene,set_world_rotation,aim_leg,aim_arm)
     if f.name in new_models.CONTRACTS:return new_models.actions(f,scene,set_world_rotation,aim_leg,aim_arm)
     if hasattr(f,'expansion_design'):return expansion_models.actions(f,scene,set_world_rotation,aim_leg)
     standard={'Idle':60,'Locomotion':30,'Attack':30,'Hit':16,'Death':45,'Deploy':24,'Status':30,'Turn':24,'Acquire':18}
@@ -855,6 +871,9 @@ def export_character(f):
         export_selected(p,[f.rig],True,1,clip['frames']);rec['animations'].append({k:v for k,v in clip.items() if k!='object'}|file_info(p))
     f.rig.animation_data.action=None;scene.render.fps=30;scene.frame_set(1)
     for pb in f.rig.pose.bones:pb.rotation_euler=(0,0,0);pb.location=(0,0,0);pb.scale=(1,1,1)
+    if f.name=='dart_gun':
+        rec['animationTiming']={'anticipationSeconds':.09,'recoverySeconds':.16,'contactNormalized':.48}
+        rec['gaitStrideMeters']=.54
     manifest['characters'][f.name]=rec
     return f
 
@@ -1233,15 +1252,15 @@ def contact_gait(f,phase,charge=False):
 forges=[]
 knownModels={'ironclad','ember_archer','twin_blades','arc_mage','tower_archer','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven','mini_stampede','stampede','pulverizer',
              'tower_guard','tower_core','archer_tower','nova_flask','bridge','floor_tile','lane_paver','bank_segment','boundary_stone','grass_tuft','shrub','tree','crystal_plinth','banner','ruin','distant_island','meteor_shard','bullet_round','tower_rubble','arrow_projectile','arc_projectile','manta_projectile','storm_projectile','projectile_trail'}
-knownModels.update(new_models.CONTRACTS);knownModels.update(new_models.STATIC_IDS)
+knownModels.update(new_models.CONTRACTS);knownModels.update(new_models.STATIC_IDS);knownModels.update(dart_model.CHARACTERS|dart_model.STATICS)
 if PREVIEW and PREVIEW-knownModels:raise ValueError('Unknown preview models: '+', '.join(sorted(PREVIEW-knownModels)))
-characterIds=('ironclad','ember_archer','twin_blades','arc_mage','tower_archer','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven','mini_stampede','stampede','pulverizer')+tuple(new_models.CONTRACTS)
-if UPDATE and UPDATE-(set(characterIds)|set(new_models.STATIC_IDS)):raise ValueError('Unknown update models: '+', '.join(sorted(UPDATE-set(characterIds)-set(new_models.STATIC_IDS))))
+characterIds=('ironclad','ember_archer','twin_blades','arc_mage','tower_archer','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven','mini_stampede','stampede','pulverizer')+tuple(new_models.CONTRACTS)+tuple(dart_model.CHARACTERS)
+if UPDATE and UPDATE-(set(characterIds)|set(new_models.STATIC_IDS)|dart_model.STATICS):raise ValueError('Unknown update models: '+', '.join(sorted(UPDATE-set(characterIds)-set(new_models.STATIC_IDS))))
 for name in characterIds:
     if PREVIEW and name not in PREVIEW:continue
     if UPDATE and name not in UPDATE:continue
     print('RIFT_ASSET_BEGIN',name,flush=True)
-    f=new_models.build(Forge,name) if name in new_models.CONTRACTS else pulverizer() if name=='pulverizer' else humanoid(name) if name in ('ironclad','ember_archer','twin_blades','arc_mage','tower_archer') else hog(name) if name in ('mini_stampede','stampede') else quadruped(name) if name in ('boulderback','rambeast','frost_fang') else flyer(name)
+    f=dart_model.build(Forge,humanoid_rig) if name=='dart_gun' else new_models.build(Forge,name) if name in new_models.CONTRACTS else pulverizer() if name=='pulverizer' else humanoid(name) if name in ('ironclad','ember_archer','twin_blades','arc_mage','tower_archer') else hog(name) if name in ('mini_stampede','stampede') else quadruped(name) if name in ('boulderback','rambeast','frost_fang') else flyer(name)
     if PREVIEW:
         if opts.preview_action:
             clips=actions(f)
@@ -1265,10 +1284,10 @@ for name in ('tower_guard','tower_core','archer_tower','nova_flask','bridge','fl
     if cannon:
         if not PREVIEW:export_static(cannon)
         forges.append(cannon);print('RIFT_ASSET_COMPLETE','guard_cannon',flush=True)
-for name in new_models.STATIC_IDS:
+for name in tuple(new_models.STATIC_IDS)+tuple(dart_model.STATICS):
     if PREVIEW and name not in PREVIEW:continue
     if UPDATE and name not in UPDATE:continue
-    f=new_models.effect_static(Forge,name)
+    f=dart_model.projectile(Forge) if name=='dart_projectile' else new_models.effect_static(Forge,name)
     if not PREVIEW:export_static(f)
     forges.append(f);print('RIFT_ASSET_COMPLETE',name,flush=True)
 if not opts.no_renders:
@@ -1310,6 +1329,7 @@ blend=ROOT/previous_manifest['source']['file'] if opts.replacement_proof else SR
 bpy.ops.wm.save_as_mainfile(filepath=str(blend),compress=True)
 manifest['source']=file_info(blend)
 card_bindings={
+ 'dart_gun':{'skeletal':'dart_gun'},
  'ironclad':{'skeletal':'ironclad'},'ember_archer':{'skeletal':'ember_archer'},
  'twin_blades':{'skeletal':'twin_blades'},'boulderback':{'skeletal':'boulderback'},
  'arc_mage':{'skeletal':'arc_mage'},'rambeast':{'skeletal':'rambeast'},
@@ -1347,10 +1367,10 @@ if opts.production_proof:
     if proof.exists():raise ValueError('Production preservation evidence cannot be overwritten')
     proof.write_text(json.dumps({'schema':1,'passed':True,'kind':'additive-model-production',
         'fromSource':previous_manifest['source'],'toSource':manifest['source'],
-        'addedCharacters':sorted(UPDATE.intersection(new_models.CONTRACTS)),
-        'addedStatics':sorted(UPDATE.intersection(new_models.STATIC_IDS)),
+        'addedCharacters':sorted(UPDATE.intersection(set(new_models.CONTRACTS)|dart_model.CHARACTERS)),
+        'addedStatics':sorted(UPDATE.intersection(set(new_models.STATIC_IDS)|dart_model.STATICS)),
         'before':preserved_signatures,'after':after,
-        'producer':file_info(Path(__file__)),'modelBuilder':file_info(ROOT/'Build/expansion_new_models.py')},indent=2),encoding='utf-8')
+        'producer':file_info(Path(__file__)),'modelBuilder':file_info(ROOT/('Build/dart_gun_model.py' if UPDATE.intersection(dart_model.CHARACTERS|dart_model.STATICS) else 'Build/expansion_new_models.py'))},indent=2),encoding='utf-8')
 if opts.replacement_proof:
     replacement_proof_path.parent.mkdir(parents=True,exist_ok=True)
     replacement_proof_path.write_text(json.dumps({'schema':1,'passed':True,'kind':'selected-model-replacement',
@@ -1359,5 +1379,5 @@ if opts.replacement_proof:
         'materialsBefore':replacement_materials_before,'materialsAfter':replacement_materials_after,
         'untouchedAssetsBefore':replacement_assets_before,'untouchedAssetsAfter':replacement_assets_after,
         'preservedSceneTiming':replacement_scene_before,
-        'producer':file_info(Path(__file__)),'modelBuilder':file_info(ROOT/'Build/expansion_new_models.py')},indent=2),encoding='utf-8')
+        'producer':file_info(Path(__file__)),'modelBuilder':file_info(ROOT/('Build/dart_gun_model.py' if UPDATE.intersection(dart_model.CHARACTERS|dart_model.STATICS) else 'Build/expansion_new_models.py'))},indent=2),encoding='utf-8')
 print('RIFT_ASSET_FINISHED',len(manifest['characters']),len(manifest['statics']),flush=True)

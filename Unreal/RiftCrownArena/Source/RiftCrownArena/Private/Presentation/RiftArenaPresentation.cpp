@@ -50,7 +50,7 @@ FName FlightFor(const std::string& Card)
 {
     if (Card=="meteor_shards") return TEXT("Meteor");
     if (Card=="bullet_burst") return TEXT("BulletBurst");
-    if (Card=="ember_archer" || Card=="archer_tower") return TEXT("ArrowFlight");
+    if (Card=="ember_archer" || Card=="archer_tower" || Card=="dart_gun") return TEXT("ArrowFlight");
     if (Card=="arc_mage") return TEXT("ArcFlight");
     if (Card=="sky_manta") return TEXT("MantaFlight");
     if (Card=="storm_raven") return TEXT("StormFlight");
@@ -59,6 +59,7 @@ FName FlightFor(const std::string& Card)
 }
 FName MissileFor(const std::string& Card)
 {
+    if (Card=="dart_gun") return TEXT("dart_projectile");
     if (Card=="ember_archer" || Card=="archer_tower") return TEXT("arrow_projectile");
     if (Card=="arc_mage") return TEXT("arc_projectile");
     if (Card=="sky_manta") return TEXT("manta_projectile");
@@ -116,6 +117,7 @@ FVector ARiftArenaPresentation::ProjectilePathPoint(const std::string& Card,FVec
     if (T<=0.) return Source;
     if (T>=1.) return Target;
     FVector Position=FMath::Lerp(Source,Target,T);
+    if (Card=="dart_gun") return Position; // Pressure-fired darts travel directly to the committed target.
     const double Distance=FVector::Dist2D(Source,Target);
     const double Envelope=FMath::Sin(T*UE_PI);
     const FVector Side=FVector::CrossProduct((Target-Source).GetSafeNormal(),FVector::UpVector).GetSafeNormal();
@@ -1485,12 +1487,12 @@ void ARiftArenaPresentation::OnSimulationEvent(const rift::Event& Event)
             Source->AttackAt(Event.time,Event.amount);
         }
         const FVector Origin=Source?Source->AttackLocation():Position;
-        const FName Sound=Event.cardId=="ironclad"?TEXT("sword_attack"):Event.cardId=="twin_blades"?TEXT("dual_attack"):
+        const FName Sound=Event.cardId=="dart_gun"?TEXT("dart_fire"):Event.cardId=="ironclad"?TEXT("sword_attack"):Event.cardId=="twin_blades"?TEXT("dual_attack"):
             Event.cardId=="ember_archer"||Event.cardId=="archer_tower"?TEXT("bow_release"):Event.cardId=="boulderback"?TEXT("heavy_slam"):
             Event.cardId=="rambeast"?TEXT("charge"):Event.cardId=="arc_mage"?TEXT("arc_cast"):Event.cardId=="sky_manta"?TEXT("manta_cast"):
             Event.cardId=="vampire_bats"?TEXT("bat_bite"):Event.cardId=="frost_fang"?TEXT("frost_attack"):
             Event.cardId=="storm_raven"?TEXT("storm_bolt"):TEXT("heavy_slam");
-        PlayEventSound(Sound,Origin,Event.cardId=="vampire_bats"?.18f:.45f);
+        PlayEventSound(Sound,Origin,Event.cardId=="vampire_bats"?.18f:Event.cardId=="dart_gun"?.26f:.45f);
         if (Event.cardId=="frost_fang" && !HiddenSource)
         {auto* FX=SpawnEffect(TEXT("Frost"),Origin,Event.team,70*RiftArenaGeometry::WorldScale);SetEffectParameters(FX,Event.team,70*RiftArenaGeometry::WorldScale,Origin,Position);}
     }
@@ -1522,9 +1524,10 @@ void ARiftArenaPresentation::OnSimulationEvent(const rift::Event& Event)
         }
         if(!HiddenSource)
         {
-            auto* Flash=SpawnEffect(TEXT("Impact"),Origin,Event.team,28*RiftArenaGeometry::WorldScale);
+            const float FlashSize=(Event.cardId=="dart_gun"?11.f:28.f)*RiftArenaGeometry::WorldScale;
+            auto* Flash=SpawnEffect(TEXT("Impact"),Origin,Event.team,FlashSize);
             if (Flash) Flash->SetWorldRotation((Position-Origin).Rotation());
-            SetEffectParameters(Flash,Event.team,28*RiftArenaGeometry::WorldScale,Origin,Position,EffectColor(FlightFor(Event.cardId),Event.team));
+            SetEffectParameters(Flash,Event.team,FlashSize,Origin,Position,EffectColor(FlightFor(Event.cardId),Event.team));
         }
     }
     else if (Event.type=="damage")
@@ -1545,7 +1548,7 @@ void ARiftArenaPresentation::OnSimulationEvent(const rift::Event& Event)
         }
         const bool ArcPrimary=Event.cardId=="arc_mage" && Event.damageKind=="attack";
         const FName FX=Event.damageKind=="dot"?TEXT("MeteorTick"):Event.cardId=="frost_fang"?TEXT("Frost"):ArcPrimary||Event.cardId=="pulverizer"?TEXT("Nova"):TEXT("Impact");
-        const float Radius=(ArcPrimary?155.f:Event.damageKind=="splash"?85.f:Event.cardId=="storm_raven"?80.f:Event.cardId=="sky_manta"?62.f:55.f)*RiftArenaGeometry::WorldScale;
+        const float Radius=(Event.cardId=="dart_gun"?22.f:ArcPrimary?155.f:Event.damageKind=="splash"?85.f:Event.cardId=="storm_raven"?80.f:Event.cardId=="sky_manta"?62.f:55.f)*RiftArenaGeometry::WorldScale;
         // The traveling ground front and short ankle ripple carry Pulverizer
         // contact; a full Nova cloud would obscure both the herd and tile grid.
         if(Event.cardId!="pulverizer")
@@ -1562,6 +1565,7 @@ void ARiftArenaPresentation::OnSimulationEvent(const rift::Event& Event)
             const FName Sound=Event.targetKind==rift::EntityKind::Guard||Event.targetKind==rift::EntityKind::Core?TEXT("tower_hit"):
                 Event.targetKind==rift::EntityKind::Building?TEXT("building_hit"):
                 Event.cardId=="vampire_bats"?TEXT("bat_bite"):
+                Event.cardId=="dart_gun"?TEXT("dart_hit"):
                 Event.cardId=="rambeast"||Event.cardId=="boulderback"?TEXT("heavy_slam"):
                 Event.cardId=="frost_fang"?TEXT("frost_attack"):
                 Event.cardId=="storm_raven"?TEXT("storm_bolt"):

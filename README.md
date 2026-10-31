@@ -1,7 +1,14 @@
 # Rift Crown Arena / Aether Arena
 
-Original Windows card battler: twenty-one cards, two lanes, deterministic combat,
+Original Windows card battler: twenty-two cards, two lanes, deterministic combat,
 seven AI personalities, deck workshop, Meta Lab, replays and developer training.
+
+Version 1.9.0 adds Dart Gun, a 3-Aether elderly veteran with a detailed animated
+model, 8.5-tile range and 50-damage darts every 0.4 seconds (125 DPS). Friendly
+swarm formations leave room for larger allies to join combat. See
+[the update notes](Docs/PATCH_NOTES_1.9.0.md),
+[spreadsheet-ready stats](Docs/CARD_STATS_1.9.0.tsv) and
+[audio credits](Docs/AUDIO_CREDITS_1.9.0.md).
 
 Version 1.8.0 refreshes the full roster with refined models, smoother animation,
 actual-model portraits and clearer attack effects. Every playable card has
@@ -104,7 +111,7 @@ specification. Run its `start_game.bat` or follow its README.
 The native Windows implementation uses Unreal Engine 5.8.2 under
 `Unreal/RiftCrownArena`, original asset sources in `Assets`, a self-contained
 .NET 8 WPF launcher in `Launcher`, and packaging tools in `Build` and `Installer`.
-The twenty-one-card balance and gameplay rules remain authoritative in the
+The twenty-two-card balance and gameplay rules remain authoritative in the
 deterministic C++ simulation. The browser reference remains intact.
 
 Download the Windows installer, portable game ZIP, standalone launcher and

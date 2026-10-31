@@ -10,6 +10,7 @@ import generate_audio as a
 
 
 PROFILES = {
+    "dart_gun": "Measured veteran acknowledgements, worn leather and a dry weapon latch",
     "ironclad": "Confident human acknowledgements, fitted armor and shield latch",
     "ember_archer": "Performed fire calls, leather bow grip and restrained ember snap",
     "twin_blades": "Three mischievous creature battlecries and paired blade flicks",
@@ -57,7 +58,11 @@ def recipe(card, v):
     mine = f"Kenney_impactMining_00{v*2}"
     cry = f"Fvcalderan_battlecry{v}"
     ack = ["yes0", "yes1", "greet0"][v]
-    if card == "ironclad":
+    if card == "dart_gun":
+        voice(x,"BrandonSong_"+ack,.94,limit=1.10,airy=True)
+        a.layer(x,"Tinysized_quiver-leather-squeeze-01",.18,at=.04,limit=.22)
+        a.layer(x,"Tinysized_handcuffs-metal-lock-01",.22,at=.14,pitch=.96,limit=.18)
+    elif card == "ironclad":
         voice(x,"BrandonSong_"+ack,.89,limit=.95)
         a.layer(x,metal,.20,limit=.22,pitch=.85)
         a.layer(x,"Tinysized_handcuffs-metal-lock-01",.17,at=.07,limit=.20)

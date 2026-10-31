@@ -878,7 +878,7 @@ void ARiftGameMode::BeginPlay()
                 else if(Scenario==TEXT("projectiles"))
                 {
                     // Capture only: ordinary sandbox deployments and fixed
-                    // simulation steps produce all five card missiles plus
+                    // simulation steps produce all six card missiles plus
                     // live core/guard shots. Never insert a projectile or edit
                     // an entity snapshot to manufacture renderer coverage.
                     Match->SetSpeed(0);Sim->ClearField();
@@ -903,6 +903,7 @@ void ARiftGameMode::BeginPlay()
                     // already-walking casters onto the first shared target.
                     Deployed&=Sim->Spawn(rift::Team::Player,"ember_archer",{-10.5,8.5});
                     Deployed&=Sim->Spawn(rift::Team::Player,"arc_mage",{-5.5,8.5});
+                    Deployed&=Sim->Spawn(rift::Team::Player,"dart_gun",{3.5,9.5});
                     Deployed&=Sim->Spawn(rift::Team::Player,"sky_manta",{.5,6.5});
                     Deployed&=Sim->Spawn(rift::Team::Player,"storm_raven",{10.5,1.5});
                     Match->FlushEvents();
@@ -922,7 +923,7 @@ void ARiftGameMode::BeginPlay()
                             const double Progress=FMath::Clamp(1.-Projectile.remaining/FMath::Max(.001,Projectile.duration),0.,1.);
                             Minimum=FMath::Min(Minimum,Progress);Maximum=FMath::Max(Maximum,Progress);
                         }
-                        Ready=Coverage.Contains(TEXT("ember_archer"))&&Coverage.Contains(TEXT("arc_mage"))&&Coverage.Contains(TEXT("sky_manta"))&&
+                        Ready=Coverage.Contains(TEXT("dart_gun"))&&Coverage.Contains(TEXT("ember_archer"))&&Coverage.Contains(TEXT("arc_mage"))&&Coverage.Contains(TEXT("sky_manta"))&&
                             Coverage.Contains(TEXT("archer_tower"))&&Coverage.Contains(TEXT("storm_raven"))&&Coverage.Contains(TEXT("crown_core"))&&
                             Coverage.Contains(TEXT("crown_guard"))&&Minimum>=.12&&Maximum<=.45;
                         if(Ready)break;
@@ -935,7 +936,7 @@ void ARiftGameMode::BeginPlay()
                             Deployed,int32(Sim->State().projectiles.size()),Sim->State().elapsed);
                         FPlatformMisc::RequestExitWithStatus(false,2);return;
                     }
-                    RIFT_LOG(LogRift,Log,TEXT("Actual projectile capture fixture reached all seven source roles: %d live shots, %d fixed steps, elapsed=%.6f"),
+                    RIFT_LOG(LogRift,Log,TEXT("Actual projectile capture fixture reached all eight source roles: %d live shots, %d fixed steps, elapsed=%.6f"),
                         int32(Sim->State().projectiles.size()),Steps+1,Sim->State().elapsed);
                 }
                 else if(Scenario==TEXT("spells"))

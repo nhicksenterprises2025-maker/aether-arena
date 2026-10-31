@@ -124,8 +124,8 @@ bool FRiftTowerPathingIntegrationTest::RunTest(const FString& Parameters)
             }
             TestEqual(Label+TEXT(" emits one paid play"),Plays,1);TestEqual(Label+TEXT(" emits one spawn per member"),Spawns,Card.count);
         }
-    TestEqual(TEXT("Both teams' three towers and rear-edge tiles cover all eleven ground cards"),PaidCases,132);
-    TestEqual(TEXT("All paid single, twin and swarm ground members are exercised"),Members,360);
+    TestEqual(TEXT("Both teams' three towers and rear-edge tiles cover all twelve ground cards"),PaidCases,144);
+    TestEqual(TEXT("All paid single, twin and swarm ground members are exercised"),Members,372);
 
     // Legal hand drops on the outer rows must also begin inside the movement
     // envelope. Continuous segment checks cannot rescue an invalid origin.
@@ -173,8 +173,8 @@ bool FRiftTowerPathingIntegrationTest::RunTest(const FString& Parameters)
                     (Start.position.z-Entity->position.z)*(Team==rift::Team::Player?1.:-1.)>.25);
             }
         }
-    TestEqual(TEXT("Both teams' rear rows, side rows and extreme corners cover all eleven ground cards"),BoundaryCases,154);
-    TestEqual(TEXT("Rear/side/corner paid deployments retain all single, twin and swarm members"),BoundaryMembers,420);
+    TestEqual(TEXT("Both teams' rear rows, side rows and extreme corners cover all twelve ground cards"),BoundaryCases,168);
+    TestEqual(TEXT("Rear/side/corner paid deployments retain all single, twin and swarm members"),BoundaryMembers,434);
 
     TestEqual(TEXT("The approved arena is twenty-two tiles wide"),rift::arena::Width,22);
     TestEqual(TEXT("The approved arena is forty tiles deep"),rift::arena::Height,40);
@@ -242,8 +242,8 @@ bool FRiftTowerPathingIntegrationTest::RunTest(const FString& Parameters)
             for(const auto& Start:Starts)if(const auto* Unit=TowerEntity(Match.State(),Start.id))
                 TestTrue(Label+TEXT(" actually advances toward the Core"),TowerDistance(Start.position,Unit->position)>.5);
         }
-    TestEqual(TEXT("All eleven ground cards cover both teams, both lanes, own-half and enemy pocket deployments"),RouteCases,88);
-    TestEqual(TEXT("Destroyed-Guard routing retains every single, twin and swarm member"),RouteMembers,240);
+    TestEqual(TEXT("All twelve ground cards cover both teams, both lanes, own-half and enemy pocket deployments"),RouteCases,96);
+    TestEqual(TEXT("Destroyed-Guard routing retains every single, twin and swarm member"),RouteMembers,248);
 
     auto* GI=NewObject<UGameInstance>(GEngine);GI->InitializeStandalone(FName(*FGuid::NewGuid().ToString(EGuidFormats::Digits)));
     auto* World=GI->GetWorld();auto* Replay=GI->GetSubsystem<URiftReplaySubsystem>();

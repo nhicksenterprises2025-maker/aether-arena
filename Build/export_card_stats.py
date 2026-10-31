@@ -75,7 +75,7 @@ for c in cards:
                   numeric(c.get("hpDecayPerSecond", 0)) if building else "N/A",
                   "Yes" if c.get("hardExpiry") else "No" if building and "hardExpiry" in c else "N/A",
                   numeric(c["initialAttackCooldown"]) if not spell and "initialAttackCooldown" in c else "N/A",
-                  numeric(rules["frontSight"]) if not spell and "frontSight" in rules else "N/A",
+                  numeric(max(rules["frontSight"], c["range"] if c["projectileSpeed"] > 0 else 0)) if not spell and "frontSight" in rules else "N/A",
                   numeric(rules["rearSight"]) if not spell and "rearSight" in rules else "N/A", c["id"]])
     def ability(title, values, details):
         abilities.append([c["name"], title, values, details])
