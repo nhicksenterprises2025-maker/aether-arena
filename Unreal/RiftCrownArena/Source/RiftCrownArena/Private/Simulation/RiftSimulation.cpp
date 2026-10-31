@@ -1238,7 +1238,10 @@ bool Match::InSight(const Entity &s, const Entity &t) const {
     const Vec2 delta = Difference(t.position, s.position);
     const double length = std::hypot(delta.x, delta.z);
     const double dot = delta.x * s.facing.x + delta.z * s.facing.z;
-    return length <= (dot >= 0 ? detection::Front : detection::Rear) + Epsilon;
+    const auto *card = FindEntityDefinition(s.cardId);
+    const double front = card && card->projectileSpeed > 0
+        ? std::max(detection::Front, card->range) : detection::Front;
+    return length <= (dot >= 0 ? front : detection::Rear) + Epsilon;
 }
 double Match::CombatDistance(const Entity &s, const Entity &t) const {
     const double direct = Distance(s.position, t.position);

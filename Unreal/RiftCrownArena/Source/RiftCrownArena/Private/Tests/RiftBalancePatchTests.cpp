@@ -42,7 +42,8 @@ const FBalanceCard ExpectedCards[] = {
     {"bone_warden",6,1,1526,101,1.5,1,1.75,1.65,0,.5,0,0,false,false,false,false,false,101/1.5},
     {"aether_reaper",4,1,445,95,1.05,1.85,1.4,1.35,0,1.5,0,0,true,true,false,false,false,95/1.05},
     {"iron_giant",3,1,1000,85,1.3,1.55,1.35,1.65,0,0,0,0,false,false,true,false,false,85/1.3},
-    {"shadow_surge",3,1,0,100,0,0,0,1,0,0,0,0,false,true,false,true,false,0}
+    {"shadow_surge",3,1,0,100,0,0,0,1,0,0,0,0,false,true,false,true,false,0},
+    {"dart_gun",3,1,420,50,.4,1.5,8.5,1.05,22,0,0,0,false,true,false,false,false,125}
 };
 }
 
@@ -52,7 +53,7 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
 {
     if(!FParse::Param(FCommandLine::Get(),TEXT("RiftAutomationSandbox")))
     {AddError(TEXT("Balance patch fixture requires isolated RiftSaveRoot/UserDir and RiftAutomationSandbox."));return false;}
-    TestEqual(TEXT("All twenty-one approved playable cards exist"),int32(rift::Cards().size()),int32(UE_ARRAY_COUNT(ExpectedCards)));
+    TestEqual(TEXT("All approved playable cards exist"),int32(rift::Cards().size()),int32(UE_ARRAY_COUNT(ExpectedCards)));
     TestNotNull(TEXT("Pulverizer remains in the approved playable roster"),rift::FindCard("pulverizer"));
     // The 1.7 design moves actual collision/target bodies with their visuals:
     // three more rear tiles and two more lateral tiles on each bridge axis.
@@ -153,7 +154,7 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
         CHECK_IMPORTED(InvisibilityDuration,invisibilityDuration);CHECK_IMPORTED(DotStructureDamage,dotStructureDamage);
         CHECK_IMPORTED(HealthCloakThreshold,healthCloakThreshold);
 #undef CHECK_IMPORTED
-        Imported(TEXT("FrontSight"),A->FrontSight,8);Imported(TEXT("RearSight"),A->RearSight,5);
+        Imported(TEXT("FrontSight"),A->FrontSight,C->projectileSpeed>0?FMath::Max(8.,C->range):8.);Imported(TEXT("RearSight"),A->RearSight,5);
         TestEqual(*(Id+TEXT(" imported visual round count")),A->Rounds,C->rounds);
         TestEqual(*(Id+TEXT(" imported flying flag")),A->Flying,C->flying);
         TestEqual(*(Id+TEXT(" imported air targeting")),A->GroundAndAir,C->canHitAir);
@@ -283,7 +284,7 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
     }
     TestTrue(TEXT("Mini Stampede is actually selected by AI and Meta generated-deck policy"),MiniAppearances>0);
     TestTrue(TEXT("Stampede is actually selected by AI and Meta generated-deck policy"),StampedeAppearances>0);
-    AddInfo(TEXT("Retained balance contract: six aligned tower bodies, exact stats/abilities/imports for all twenty-one approved cards, zero new wave attacks on existing cards, paid hog counts/costs/targets, derived DPS and current-roster replay telemetry verified. Pulverizer has a separate focused contract."));
+    AddInfo(TEXT("Retained balance contract: six aligned tower bodies, exact stats/abilities/imports for all twenty-two approved cards, zero new wave attacks on existing cards, paid hog counts/costs/targets, derived DPS and current-roster replay telemetry verified. Pulverizer has a separate focused contract."));
     return !HasAnyErrors();
 }
 #endif

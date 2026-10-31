@@ -403,7 +403,13 @@ FString URiftBattleAudioSubsystem::RunAudioSmokeJSON(URiftUIWidget* Interface)
         }
     }
     Report->SetNumberField(TEXT("loadedDeploymentTakes"),SpawnTakes);
-    Check(TEXT("all21CardsHaveThreeShortNonLoopingDeploymentTakes"),rift::Cards().size()==21&&SpawnTakes==63);
+    Check(TEXT("everyCardHasThreeShortNonLoopingDeploymentTakes"),SpawnTakes==int32(rift::Cards().size())*3);
+    for(const auto* Name:{TEXT("dart_fire"),TEXT("dart_hit")})
+    {
+        auto* Asset=Cast<USoundWave>(Sound(FName(Name)));
+        Check(FString(Name)==TEXT("dart_fire")?TEXT("dartFireIsShortAndNonLooping"):TEXT("dartHitIsShortAndNonLooping"),
+            Asset&&!Asset->bLooping&&Asset->GetDuration()>.05f&&Asset->GetDuration()<.4f);
+    }
     StopOneShots();MusicDuck=1.f;
     SetSlider(0,.6f);SetSlider(1,.35f);SetSlider(2,.4f);SetSlider(3,.8f);
     FloatCheck(TEXT("masterCallback"),Profile->Settings.MasterVolume,.6f);FloatCheck(TEXT("musicCallback"),Profile->Settings.MusicVolume,.35f);

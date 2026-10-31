@@ -43,7 +43,7 @@ bool FRiftPulverizerTest::RunTest(const FString& Parameters)
     {AddError(TEXT("Pulverizer fixture requires isolated RiftSaveRoot/UserDir and RiftAutomationSandbox."));return false;}
     const auto* C=rift::FindCard("pulverizer");
     if(!TestNotNull(TEXT("Pulverizer exists in authoritative gameplay"),C))return false;
-    TestEqual(TEXT("Approved expansion has twenty-one playable cards"),int32(rift::Cards().size()),21);
+    TestEqual(TEXT("Current roster includes Dart Gun"),int32(rift::Cards().size()),22);
     TestEqual(TEXT("Pulverizer costs three Aether"),C->cost,3);
     TestEqual(TEXT("One building per paid Pulverizer cast"),C->count,1);
     auto Stat=[&](const TCHAR* Field,double Actual,double Expected)
@@ -76,7 +76,7 @@ bool FRiftPulverizerTest::RunTest(const FString& Parameters)
     TArray<TSharedPtr<FJsonValue>> Definitions;
     if(!TestTrue(TEXT("Native card definition export is valid JSON"),FJsonSerializer::Deserialize(
         TJsonReaderFactory<>::Create(URiftAssetLibrary::CardDefinitionsJSON()),Definitions)))return false;
-    TestEqual(TEXT("Native export contains all twenty-one playable definitions"),Definitions.Num(),21);
+    TestEqual(TEXT("Native export contains every playable definition"),Definitions.Num(),int32(rift::Cards().size()));
     std::set<std::string> ExportedIds;
     for(const auto& Value:Definitions)
     {
@@ -183,9 +183,10 @@ bool FRiftPulverizerTest::RunTest(const FString& Parameters)
     {
         auto Source=Building;Source.cardId=CardDefinition.id;Source.facing={0,-1};Source.position={0,0};Source.radius=2;
         Source.target=Source.forcedTarget=Target.id;Source.forcedUntil=100;
-        Target.radius=2;Target.position={0,-8};
+        const double Front=CardDefinition.projectileSpeed>0?FMath::Max(rift::detection::Front,CardDefinition.range):rift::detection::Front;
+        Target.radius=2;Target.position={0,-Front};
         TestTrue(TEXT("Every card detects the exact front boundary"),Match.InSight(Source,Target));
-        Target.position.z=-8.001;TestFalse(TEXT("No current target, forced pull or body radius enlarges front detection"),Match.InSight(Source,Target));
+        Target.position.z=-Front-.001;TestFalse(TEXT("No current target, forced pull or body radius enlarges front detection"),Match.InSight(Source,Target));
         Target.position.z=5;TestTrue(TEXT("Every card detects the exact rear boundary"),Match.InSight(Source,Target));
         Target.position.z=5.001;TestFalse(TEXT("No current target, forced pull or body radius enlarges rear detection"),Match.InSight(Source,Target));
     }

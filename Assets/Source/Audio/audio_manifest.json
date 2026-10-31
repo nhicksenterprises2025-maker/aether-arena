@@ -1983,6 +1983,92 @@
       ],
       "productionSource": "Build/generate_roster_audio.py",
       "cardId": "shadow_surge"
+    },
+    "spawn_dart_gun": {
+      "file": "Assets/Source/Audio/spawn_dart_gun.wav",
+      "duration": 0.8592063492063492,
+      "sha256": "ddc11c3f1325fcf3a9710497082d03f10e7d98781b75a040cbbefad472eb452a",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.5999755859375,
+      "rmsDbFS": -23.695437560412543,
+      "dcOffset": 1.4736484309021272e-05,
+      "role": "deployment",
+      "sources": [
+        "BrandonSong_yes0.wav",
+        "Tinysized_handcuffs-metal-lock-01.wav",
+        "Tinysized_quiver-leather-squeeze-01.wav"
+      ],
+      "cardId": "dart_gun",
+      "productionSource": "Build/generate_dart_gun_audio.py"
+    },
+    "spawn_dart_gun_v2": {
+      "file": "Assets/Source/Audio/spawn_dart_gun_v2.wav",
+      "duration": 0.6550113378684808,
+      "sha256": "6309a2d1e5d55856c19c1be11f4c9c5e518f41512bd9ed527c6c47f4ff3fabfc",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.54571533203125,
+      "rmsDbFS": -22.99999605004234,
+      "dcOffset": 1.4464313581298034e-05,
+      "role": "deployment",
+      "sources": [
+        "BrandonSong_yes1.wav",
+        "Tinysized_handcuffs-metal-lock-01.wav",
+        "Tinysized_quiver-leather-squeeze-01.wav"
+      ],
+      "cardId": "dart_gun",
+      "productionSource": "Build/generate_dart_gun_audio.py"
+    },
+    "spawn_dart_gun_v3": {
+      "file": "Assets/Source/Audio/spawn_dart_gun_v3.wav",
+      "duration": 0.5498412698412698,
+      "sha256": "1714c98129f5b74533c388d598aba8c7559ec94802b47209f8dcc2184d4d6afd",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.5999755859375,
+      "rmsDbFS": -24.287444855431268,
+      "dcOffset": 1.598623710589533e-05,
+      "role": "deployment",
+      "sources": [
+        "BrandonSong_greet0.wav",
+        "Tinysized_handcuffs-metal-lock-01.wav",
+        "Tinysized_quiver-leather-squeeze-01.wav"
+      ],
+      "cardId": "dart_gun",
+      "productionSource": "Build/generate_dart_gun_audio.py"
+    },
+    "dart_fire": {
+      "file": "Assets/Source/Audio/dart_fire.wav",
+      "duration": 0.18,
+      "sha256": "966195dc834a762f2b39a7c5f8a48333c34ab73f8b4fa8401926ab1e52400959",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.41998291015625,
+      "rmsDbFS": -28.8597932478794,
+      "dcOffset": 1.4670581774376417e-05,
+      "role": "combat",
+      "sources": [
+        "Tinysized_arrow-feathers-01.wav",
+        "Tinysized_handcuffs-metal-lock-01.wav"
+      ],
+      "productionSource": "Build/generate_dart_gun_audio.py"
+    },
+    "dart_hit": {
+      "file": "Assets/Source/Audio/dart_hit.wav",
+      "duration": 0.16,
+      "sha256": "805c996b02253e2a91596b8ce793d98dfb99e731509e433ba2396d0f00b76bc6",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.420013427734375,
+      "rmsDbFS": -26.857669330635787,
+      "dcOffset": 0.00016420498456544075,
+      "role": "combat",
+      "sources": [
+        "Kenney_impactWood_medium_002.ogg",
+        "Tinysized_arrow-feathers-01.wav"
+      ],
+      "productionSource": "Build/generate_dart_gun_audio.py"
     }
   },
   "usedSourceFiles": [
@@ -2222,6 +2308,15 @@
         "spawn_shadow_surge",
         "spawn_shadow_surge_v2",
         "spawn_shadow_surge_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    },
+    "dart_gun": {
+      "identity": "Measured veteran acknowledgements, worn leather and a dry weapon latch",
+      "takes": [
+        "spawn_dart_gun",
+        "spawn_dart_gun_v2",
+        "spawn_dart_gun_v3"
       ],
       "trigger": "one card_play per playId; never entity_spawn"
     }

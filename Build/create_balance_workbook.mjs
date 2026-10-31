@@ -199,6 +199,7 @@ async function build(args) {
     for (const [column, field] of [["AA", "frontSight"], ["AB", "rearSight"]]) {
       const sourceAddress = sourceCell("Post", "@rules", field);
       if (c.spell || !sourceAddress) sheets.Cards.getRange(`${column}${r}`).values = [["n.a."]];
+      else if (field === "frontSight") setFormula("Cards", `${column}${r}`, `=MAX(${sourceAddress},IF(Q${r}>0,P${r},0))`, Math.max(manifest.rules[field], c.projectileSpeed > 0 ? c.range : 0), `${c.id} ${field}`);
       else setFormula("Cards", `${column}${r}`, `=${sourceAddress}`, manifest.rules[field], `${c.id} ${field}`);
     }
     for (const [field, column] of Object.entries({ cost: "D", count: "E", hp: "F", shieldHP: "G", damage: "I", attackInterval: "J", moveSpeed: "O", range: "P", projectileSpeed: "Q", splash: "R", scale: "S", collisionRadius: "V", lifetime: "W", footprint: "X", hpDecayPerSecond: "Y", initialAttackCooldown: "Z" })) {

@@ -1,8 +1,8 @@
 {
   "schema": 3,
-  "version": "1.8.1",
+  "version": "1.9.0",
   "status": "approved",
-  "sourceCommit": "3f5b06bc14b896e7a84d8486bad777b5c7db7ee9",
+  "sourceCommit": "93ff6bf70eef9972171321a9ed95ee06611d1124",
   "cards": [
     {
       "id": "ironclad",
@@ -1095,6 +1095,58 @@
       "id": "shadow_surge",
       "name": "Shadow Surge",
       "healthCloakThreshold": 0
+    },
+    {
+      "id": "dart_gun",
+      "name": "Dart Gun",
+      "cost": 3,
+      "count": 1,
+      "hp": 420,
+      "damage": 50,
+      "attackInterval": 0.4,
+      "moveSpeed": 1.5,
+      "range": 8.5,
+      "scale": 1.05,
+      "projectileSpeed": 22,
+      "shockwaveSpeed": 0,
+      "splash": 0,
+      "lifetime": 0,
+      "footprint": 0,
+      "towerDamage": 0,
+      "spellRadius": 0,
+      "castDelay": 0,
+      "chargeDamage": 0,
+      "slowPct": 0,
+      "slowDuration": 0,
+      "auraDamage": 0,
+      "auraInterval": 0,
+      "auraRadius": 0,
+      "stunDuration": 0,
+      "dotDamage": 0,
+      "dotDuration": 0,
+      "dotInterval": 0,
+      "rounds": 0,
+      "flying": false,
+      "canHitAir": true,
+      "structuresOnly": false,
+      "spell": false,
+      "building": false,
+      "collisionRadius": 0.42,
+      "targetMask": 7,
+      "chargeMoveSeconds": 0,
+      "chargedMoveSpeed": 0,
+      "hpDecayPerSecond": 0,
+      "initialAttackCooldown": 0,
+      "shieldHP": 0,
+      "deathSpawnCount": 0,
+      "invisibilityDuration": 0,
+      "dotStructureDamage": 0,
+      "hardExpiry": false,
+      "shieldOverflowProtected": false,
+      "globalFriendlyInvisibility": false,
+      "breakExistingLocks": false,
+      "deathSpawnId": "",
+      "healthCloakThreshold": 0
     }
   ],
   "entities": [
@@ -1153,7 +1205,7 @@
   ],
   "rules": {
     "combatRevision": 4,
-    "navigationRevision": 11,
+    "navigationRevision": 12,
     "targetHardLock": "first authoritative attack against a Crown Tower",
     "frontSight": 8,
     "rearSight": 5,
@@ -1166,28 +1218,18 @@
     "coreDepth": 16.84,
     "cloakLockException": "Approved Shadow Surge drops enemy locks, including committed Crown Tower locks; committed damage and projectiles still resolve"
   },
-  "balanceHash": "253831ff25ff676070c0fddf89d2851172c9f25f2baa24dd3f70280877da31cd",
-  "baseline": "Assets/Data/Baselines/1.8.0.json",
+  "balanceHash": "b452ca00abcb1097f552b6f99e4324a56c65c8bd1d61aacfd0989548329ee1c1",
+  "baseline": "Assets/Data/Baselines/1.8.1.json",
   "approval": {
     "sourceResolution": "Assets/Data/source_resolution.json",
-    "source": "Direct user request to stop melee troops shuffling while attacking moving enemies on 2026-10-16",
-    "scope": "Melee troops chase enemies outside attack range, hold their position while an enemy remains in range, and resume pursuit after it leaves range. Preserve friendly yielding and swarm collision behavior.",
-    "balanceUnchanged": "All numerical card/entity definitions, abilities, collision radii, model scales and arena geometry remain unchanged from 1.8.0. Navigation revision advances from 10 to 11 for the movement correction.",
-    "releaseAcceptance": "Native movement regression, collision scenarios and Windows delivery require independent checks."
+    "source": "User request on 2026-10-31: swarm pathfinding fix and Dart Gun card",
+    "scope": "Add Dart Gun with authored veteran model, animations, portrait, projectiles and audio; fix friendly swarm congestion.",
+    "implementationDefaults": "Unspecified values chosen for implementation: 420 HP, 1.5 tiles/s, projectile speed22, model scale1.05, collision radius0.42; ground troop targets ground/air troops and structures.",
+    "releaseAcceptance": "Verify paid combat and collision, imported art and animations, native runtime, and Windows delivery."
   },
-  "baselineRuntimePins": [
-    {
-      "path": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArena.dll",
-      "sha256": "4e2b33339d149fdfa24c47953978469ef95d83038d2588cf8c77182232805b51"
-    },
-    {
-      "path": "Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArenaEditor.dll",
-      "sha256": "9b39240bcdcc65b30fd5564c115bc45dfd7cccdad61fb116d3ab77508b0b45e1"
-    }
-  ],
   "baselineProvenance": {
-    "tag": "v1.8.0",
-    "sourceCommit": "3f5b06bc14b896e7a84d8486bad777b5c7db7ee9",
-    "canonicalFileSHA256": "dc6c14f909029b0aa4e3ceb37983538b684375a1159846a01ca0a0c2edc168e0"
+    "tag": "v1.8.1",
+    "sourceCommit": "93ff6bf70eef9972171321a9ed95ee06611d1124",
+    "canonicalFileSHA256": "136a226fb34aac6f215105ef5eb795f44d2e0babd3623ac7ec58188e872605b1"
   }
 }

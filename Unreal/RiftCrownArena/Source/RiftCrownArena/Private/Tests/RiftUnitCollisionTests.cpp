@@ -108,7 +108,7 @@ bool FRiftUnitCollisionIntegrationTest::RunTest(const FString& Parameters)
             TestTrue(Label+TEXT(" has real movement or a stable fixed building"),Start.kind==rift::EntityKind::Troop?(!End->dead&&CollisionDistance(Start.position,End->position)>.5):CollisionDistance(Start.position,End->position)<1.e-9);
         Total.PairChecks+=Observed.PairChecks;Total.SweepChecks+=Observed.SweepChecks;Total.MinimumGap=std::min(Total.MinimumGap,Observed.MinimumGap);Total.MinimumSweep=std::min(Total.MinimumSweep,Observed.MinimumSweep);
     }
-    TestEqual(TEXT("All seventeen physical cards cover both teams"),Cases,34);TestEqual(TEXT("Paid physical card casts"),PaidPlays,68);TestEqual(TEXT("Every actual paid physical member retained"),Members,122);
+    TestEqual(TEXT("All eighteen physical cards cover both teams"),Cases,36);TestEqual(TEXT("Paid physical card casts"),PaidPlays,72);TestEqual(TEXT("Every actual paid physical member retained"),Members,126);
     const std::vector<std::string> PocketDeck{"ironclad","twin_blades","boulderback","archer_tower","sky_manta","vampire_bats","storm_raven","frost_fang"};
     const int PocketSlots[]{1,2,2,3,0,1,0,1,0,1,2,3,2,3,2,3};
     for(const bool Resized:{true,false})for(const auto Team:{rift::Team::Player,rift::Team::Enemy})for(const int Lane:{-1,1})

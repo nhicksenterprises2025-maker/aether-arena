@@ -24,7 +24,7 @@ CARD_IDS = frozenset((
     "twin_blades", "boulderback", "arc_mage", "rambeast", "sky_manta",
     "frost_fang", "storm_raven", "bullet_burst", "nova_flask",
     "meteor_shards", "mini_stampede", "stampede", "pulverizer",
-    "bone_warden", "aether_reaper", "iron_giant", "shadow_surge",
+    "bone_warden", "aether_reaper", "iron_giant", "shadow_surge", "dart_gun",
 ))
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 
@@ -121,13 +121,13 @@ class PortraitAudit:
         ):
             self.report["provenance"][label] = self.file_info(relative)
 
-        self.check("Manifest contains exactly the twenty-one approved playable cards",
+        self.check("Manifest contains exactly the twenty-two approved playable cards",
                    set(manifest.get("cards", {})) == CARD_IDS)
-        self.check("Manifest illustrations contain exactly the twenty-one cards",
+        self.check("Manifest illustrations contain exactly the twenty-two cards",
                    set(manifest.get("illustrations", {})) == CARD_IDS)
-        self.check("Portrait report contains exactly the twenty-one cards",
+        self.check("Portrait report contains exactly the twenty-two cards",
                    set(portraits.get("cards", {})) == CARD_IDS)
-        self.check("Portrait PNG inventory contains exactly the twenty-one deck cards (child excluded)",
+        self.check("Portrait PNG inventory contains exactly the twenty-two deck cards (child excluded)",
                    {p.stem for p in (self.root / "Assets/Source/CardArt").glob("*.png")} == CARD_IDS)
         self.check("Portrait resolution is 768 by 960", portraits.get("resolution") == [768, 960])
         same_source = portraits.get("sourceBlend") == manifest.get("source")

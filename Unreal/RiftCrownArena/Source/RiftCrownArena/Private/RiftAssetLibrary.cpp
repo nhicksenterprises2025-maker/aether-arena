@@ -71,7 +71,7 @@ bool URiftAssetCatalogSubsystem::Validate(FString& Error)const
         MATCH_STAT(ChargeMoveSeconds,chargeMoveSeconds);MATCH_STAT(ChargedMoveSpeed,chargedMoveSpeed);
         MATCH_STAT(HPDecayPerSecond,hpDecayPerSecond);MATCH_STAT(InitialAttackCooldown,initialAttackCooldown);
         MATCH_STAT(ShieldHP,shieldHP);MATCH_STAT(InvisibilityDuration,invisibilityDuration);MATCH_STAT(DotStructureDamage,dotStructureDamage);MATCH_STAT(HealthCloakThreshold,healthCloakThreshold);
-        Matches=Matches&&FMath::IsNearlyEqual(A->FrontSight,8.f,.001f)&&FMath::IsNearlyEqual(A->RearSight,5.f,.001f);
+        Matches=Matches&&FMath::IsNearlyEqual(double(A->FrontSight),C.projectileSpeed>0?FMath::Max(8.,C.range):8.,.001)&&FMath::IsNearlyEqual(A->RearSight,5.f,.001f);
 #undef MATCH_STAT
         if(!Matches)
         {Error=FString::Printf(TEXT("DataAsset does not match the locked roster: %s"),UTF8_TO_TCHAR(C.id.c_str()));return false;}

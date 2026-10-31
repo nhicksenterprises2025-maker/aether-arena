@@ -60,6 +60,7 @@ scene.world.node_tree.nodes['Background'].inputs[1].default_value = .45
 # photographic lighting. Close portraits put the face and held equipment in
 # the small hand image; creatures and structures retain their full silhouette.
 PORTRAIT_MOODS = {
+    'dart_gun': ((.033,.043,.026), (1,.91,.77), (.57,.72,.49)),
     'ironclad': ((.027,.042,.054), (1,.88,.70), (.40,.68,.84)),
     'ember_archer': ((.055,.028,.025), (1,.83,.66), (.62,.40,.26)),
     'twin_blades': ((.039,.025,.058), (1,.86,.76), (.57,.38,.86)),
@@ -239,7 +240,7 @@ for card in selected:
         obj.to_mesh_clear()
     lo = Vector(tuple(min(p[k] for p in points) for k in range(3)))
     hi = Vector(tuple(max(p[k] for p in points) for k in range(3)))
-    hero_crop = card in ('ironclad', 'ember_archer', 'twin_blades', 'arc_mage')
+    hero_crop = card in ('dart_gun', 'ironclad', 'ember_archer', 'twin_blades', 'arc_mage')
     framed_points = [p for p in points if p.z >= lo.z + (hi.z-lo.z)*.25] if hero_crop else points
     frame_lo = Vector(tuple(min(p[k] for p in framed_points) for k in range(3)))
     frame_hi = Vector(tuple(max(p[k] for p in framed_points) for k in range(3)))

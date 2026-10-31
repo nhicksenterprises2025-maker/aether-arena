@@ -619,7 +619,7 @@ def card_data(only=None, stats_only=False):
                        "hardExpiry":"HardExpiry", "shieldOverflowProtected":"ShieldOverflowProtected",
                        "globalFriendlyInvisibility":"GlobalFriendlyInvisibility", "breakExistingLocks":"BreakExistingLocks"})
     attacks.update({"bone_warden":"heavy_slam", "bone_warden_skeleton":"sword_attack",
-                    "aether_reaper":"dual_attack", "iron_giant":"heavy_slam", "shadow_surge":"arc_cast"})
+                    "aether_reaper":"dual_attack", "iron_giant":"heavy_slam", "shadow_surge":"arc_cast", "dart_gun":"dart_fire"})
     effects = ["Deploy","Impact","ArrowFlight","ArcFlight","MantaFlight","StormFlight","TowerFlight","BulletBurst","Nova","Meteor","MeteorTick","Frost","Slow","Stun","Aura","TowerDestroy","CoreAwaken"]
     for c in definitions:
         if only is not None and c["id"] not in only:
@@ -638,8 +638,17 @@ def card_data(only=None, stats_only=False):
         data.set_editor_property("Description", unreal.Text(c["name"] + " — " + role))
         for key, prop in properties.items():
             data.set_editor_property(prop, c[key])
+        data.set_editor_property("FrontSight", max(8, c["range"]) if c["projectileSpeed"] > 0 else 8)
+        data.set_editor_property("RearSight", 5)
+        if c["id"] == "dart_gun":
+            data.set_editor_property("Description", unreal.Text("An 81-year-old African American WWII veteran. Slow, steady steps; rapid, precise darts."))
         source_card = (MANIFEST.get("characters") or {}).get(c["id"]) or {}
         contract = (source_card.get("modelDesign") or {}).get("animationContract") or {}
+        if not contract and source_card.get("animationTiming"):
+            contract = {"attack": source_card["animationTiming"],
+                        "locomotion": next((clip for clip in source_card.get("animations", [])
+                                            if clip["name"] == "Locomotion"), {}),
+                        "visual": {"readabilityMultiplier": 0}}  # Retain native model-size defaults.
         for prop, value in animation_contract_properties(contract, c["scale"], (source_card.get("modelDesign") or {}).get("flightBobTiles")).items():
             data.set_editor_property(prop, value)
         if stats_only:
@@ -655,7 +664,8 @@ def card_data(only=None, stats_only=False):
         data.set_editor_property("Effects", {key:LIB.load_asset("/Game/Rift/VFX/NS_Rift"+key) for key in effects})
         deploy_path = "/Game/Rift/Audio/SFX_spawn_" + c["id"]
         deploy = LIB.load_asset(deploy_path if LIB.does_asset_exist(deploy_path) else "/Game/Rift/Audio/SFX_deploy")
-        sounds = {"Attack": LIB.load_asset("/Game/Rift/Audio/SFX_" + attacks[c["id"]]), "Deploy":deploy, "Hit":LIB.load_asset("/Game/Rift/Audio/SFX_building_hit" if c["id"] == "pulverizer" else "/Game/Rift/Audio/SFX_sword_hit")}
+        hit_sound = "dart_hit" if c["id"] == "dart_gun" else "building_hit" if c["id"] == "pulverizer" else "sword_hit"
+        sounds = {"Attack": LIB.load_asset("/Game/Rift/Audio/SFX_" + attacks[c["id"]]), "Deploy":deploy, "Hit":LIB.load_asset("/Game/Rift/Audio/SFX_" + hit_sound)}
         if any(v is None for v in sounds.values()):
             raise RuntimeError("Missing sound binding for " + c["id"])
         data.set_editor_property("Sounds", sounds)
@@ -676,6 +686,7 @@ def main():
         mats = {name: LIB.load_asset("/Game/Rift/Materials/" + name)
                 for name in ("M_RiftSurface", "M_RiftGlow", "M_RiftGlass")}
         effect_ids=set()
+        if 'dart_gun' in selected:effect_ids.add('dart_projectile')
         if 'iron_giant' in selected:effect_ids.add('iron_shield_fragment')
         if 'shadow_surge' in selected:effect_ids.update(('shadow_surge_wisp','shadow_surge_ribbon'))
         required={name for card in selected if card in MANIFEST['characters'] for name in MANIFEST['characters'][card]['materials']}

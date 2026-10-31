@@ -2,8 +2,8 @@
   "schema": 1,
   "source": {
     "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
-    "sha256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
-    "bytes": 24405773
+    "sha256": "1a283006f962b709076bdaf7d7c87dd94771a2bbcc0b963cdb7c12f48964c67b",
+    "bytes": 28572315
   },
   "units": {
     "blender": "meter",
@@ -8958,6 +8958,270 @@
           "sha256": "32b4603fa0cdc1bd9a668747a51074058c0691192d18315380f77dacacf29cd8"
         }
       ]
+    },
+    "dart_gun": {
+      "id": "dart_gun",
+      "rigFamily": "humanoid",
+      "mesh": {
+        "file": "Assets/Export/Characters/dart_gun/SK_dart_gun.fbx",
+        "sha256": "8bfd43738a0e92f1c8c0ca9fe2e4ad6c66d8501fa3f8fdd6f5aa3bc221317c8a",
+        "bytes": 2480156
+      },
+      "bones": [
+        "root",
+        "pelvis",
+        "spine",
+        "chest",
+        "neck",
+        "head",
+        "upperarm_l",
+        "forearm_l",
+        "hand_l",
+        "thigh_l",
+        "shin_l",
+        "foot_l",
+        "foot_l_contact",
+        "upperarm_r",
+        "forearm_r",
+        "hand_r",
+        "thigh_r",
+        "shin_r",
+        "foot_r",
+        "foot_r_contact",
+        "cape",
+        "hp_anchor",
+        "status_anchor",
+        "attack_origin",
+        "impact_origin",
+        "coat_hem"
+      ],
+      "boneCount": 26,
+      "sockets": {
+        "foot_l_contact": {
+          "bone": "foot_l_contact",
+          "parent": "foot_l",
+          "positionMeters": [
+            -0.15953846153846157,
+            -0.1,
+            0.035
+          ]
+        },
+        "foot_r_contact": {
+          "bone": "foot_r_contact",
+          "parent": "foot_r",
+          "positionMeters": [
+            0.15953846153846157,
+            -0.1,
+            0.035
+          ]
+        },
+        "hp_anchor": {
+          "bone": "hp_anchor",
+          "parent": "head",
+          "positionMeters": [
+            0,
+            -0.025,
+            2.1
+          ]
+        },
+        "status_anchor": {
+          "bone": "status_anchor",
+          "parent": "chest",
+          "positionMeters": [
+            0,
+            0,
+            1.482769230769231
+          ]
+        },
+        "attack_origin": {
+          "bone": "attack_origin",
+          "parent": "hand_r",
+          "positionMeters": [
+            0.235,
+            -0.945,
+            1.315
+          ]
+        },
+        "impact_origin": {
+          "bone": "impact_origin",
+          "parent": "chest",
+          "positionMeters": [
+            0,
+            -0.18,
+            0.9853846153846155
+          ]
+        }
+      },
+      "triangles": 104760,
+      "materials": [
+        "M_RiftDartGunSurface"
+      ],
+      "boundsMeters": [
+        0.9450000524520874,
+        1.1430001258850098,
+        1.929998755455017
+      ],
+      "lods": [
+        {
+          "level": 1,
+          "triangles": 52380,
+          "file": "Assets/Export/Characters/dart_gun/SK_dart_gun_LOD1.fbx",
+          "sha256": "39bc0dc2e9dcb2e1bb69f8035d21222e4d98969fd91ed13ab77d295c5306da41",
+          "bytes": 1363180
+        },
+        {
+          "level": 2,
+          "triangles": 26190,
+          "file": "Assets/Export/Characters/dart_gun/SK_dart_gun_LOD2.fbx",
+          "sha256": "b41d9756d15c2e5528d9631bb40ca56376ed20e03d1fe0f92d23fbddce36fe22",
+          "bytes": 782828
+        },
+        {
+          "level": 3,
+          "triangles": 12562,
+          "file": "Assets/Export/Characters/dart_gun/SK_dart_gun_LOD3.fbx",
+          "sha256": "ca55a368c9c636c648d6a752745f91fddd878ac55008dc8644773188ba51d894",
+          "bytes": 461836
+        }
+      ],
+      "animations": [
+        {
+          "name": "Idle",
+          "action": "AN_dart_gun_Idle",
+          "frames": 121,
+          "fps": 60,
+          "seconds": 2.0,
+          "releaseNormalized": null,
+          "loop": true,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/dart_gun/AN_dart_gun_Idle.fbx",
+          "sha256": "0e7dafa44fcb6d0f37a1f9aa777e5f7e086e992b69508c0a80b737adfe326295",
+          "bytes": 338268
+        },
+        {
+          "name": "Locomotion",
+          "action": "AN_dart_gun_Locomotion",
+          "frames": 73,
+          "fps": 60,
+          "seconds": 1.2,
+          "releaseNormalized": null,
+          "loop": true,
+          "strideMeters": 0.54,
+          "file": "Assets/Export/Characters/dart_gun/AN_dart_gun_Locomotion.fbx",
+          "sha256": "bb60a075e6ca2e9eaad824e30667a17ed16acdc9b1fc5ad5b6fac83f9abb85fd",
+          "bytes": 291532
+        },
+        {
+          "name": "Attack",
+          "action": "AN_dart_gun_Attack",
+          "frames": 25,
+          "fps": 60,
+          "seconds": 0.4,
+          "releaseNormalized": 0.48,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/dart_gun/AN_dart_gun_Attack.fbx",
+          "sha256": "dba596de33c3a8c68afba4d7811a61eb353d919602f8dab971ff8b464c92e567",
+          "bytes": 223884
+        },
+        {
+          "name": "Hit",
+          "action": "AN_dart_gun_Hit",
+          "frames": 19,
+          "fps": 60,
+          "seconds": 0.3,
+          "releaseNormalized": null,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/dart_gun/AN_dart_gun_Hit.fbx",
+          "sha256": "8202d5c70bbb818fa2187154a61a7cbeff80954319d4d5cc3ed16331224d5427",
+          "bytes": 209308
+        },
+        {
+          "name": "Death",
+          "action": "AN_dart_gun_Death",
+          "frames": 73,
+          "fps": 60,
+          "seconds": 1.2,
+          "releaseNormalized": null,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/dart_gun/AN_dart_gun_Death.fbx",
+          "sha256": "41410b784e7a5e18fc43d4a175994d5443cb12fe1ecdda6a24710f652430d1d9",
+          "bytes": 292332
+        },
+        {
+          "name": "Deploy",
+          "action": "AN_dart_gun_Deploy",
+          "frames": 49,
+          "fps": 60,
+          "seconds": 0.8,
+          "releaseNormalized": null,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/dart_gun/AN_dart_gun_Deploy.fbx",
+          "sha256": "fe984e2f2a8a4d51fdbd27b9c62f713a20864f2ac4f600c067c7c8d59c9bca12",
+          "bytes": 244188
+        },
+        {
+          "name": "Status",
+          "action": "AN_dart_gun_Status",
+          "frames": 61,
+          "fps": 60,
+          "seconds": 1.0,
+          "releaseNormalized": null,
+          "loop": true,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/dart_gun/AN_dart_gun_Status.fbx",
+          "sha256": "fa4df14d483d40a439454cda6237f8a5a51024db40912c1534f989dac0efa3c7",
+          "bytes": 258492
+        },
+        {
+          "name": "Turn",
+          "action": "AN_dart_gun_Turn",
+          "frames": 37,
+          "fps": 60,
+          "seconds": 0.6,
+          "releaseNormalized": null,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/dart_gun/AN_dart_gun_Turn.fbx",
+          "sha256": "3b4b594dedad5ba79f96541c7b302841aaaba60084dc2b291776f1e4412e04be",
+          "bytes": 228844
+        },
+        {
+          "name": "Acquire",
+          "action": "AN_dart_gun_Acquire",
+          "frames": 25,
+          "fps": 60,
+          "seconds": 0.4,
+          "releaseNormalized": null,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/dart_gun/AN_dart_gun_Acquire.fbx",
+          "sha256": "02bed94b07b03fca3e3547179f365dd1bac69f9ad875b1c501f56117c58ecad5",
+          "bytes": 223884
+        }
+      ],
+      "modelDesign": {
+        "identity": "81-year-old Black WWII veteran; receding silver hair, mustache and aged facial planes",
+        "surface": "Dedicated olive cloth, dark skin, weathered leather and gunmetal PBR atlas",
+        "equipment": "Two fitted anatomical grips; mechanical dart rifle with cassette, sights and bore",
+        "gripPolicy": "Rifle fixed to right hand; left support grip follows evaluated rifle during recoil",
+        "animationPolicy": "Short planted recoil, foot-contact slow gait, breathing, deploy, turn and death",
+        "rosterArtRevision": "crafted-roster-2"
+      },
+      "physics": {
+        "type": "capsule",
+        "simulationCollisionAuthoritative": false,
+        "autoCreatePhysicsAsset": true
+      },
+      "animationTiming": {
+        "anticipationSeconds": 0.09,
+        "recoverySeconds": 0.16,
+        "contactNormalized": 0.48
+      },
+      "gaitStrideMeters": 0.54
     }
   },
   "statics": {
@@ -9898,6 +10162,37 @@
           "bytes": 22540
         }
       ]
+    },
+    "dart_projectile": {
+      "name": "dart_projectile",
+      "file": "Assets/Export/Environment/SM_dart_projectile.fbx",
+      "sha256": "ed414ca1e959ab5254f61cb5c44b758d97678e6cfacc444ee07a09b493ef85f0",
+      "bytes": 32812,
+      "triangles": 618,
+      "boundsMeters": [
+        0.06300000101327896,
+        0.44999998807907104,
+        0.07274613529443741
+      ],
+      "materials": [
+        "M_RiftDartGunSurface"
+      ],
+      "lods": [
+        {
+          "level": 1,
+          "triangles": 308,
+          "file": "Assets/Export/Environment/SM_dart_projectile_LOD1.fbx",
+          "sha256": "0f7246820ec330aee2f081a5b28580ad937801ba8394acbc2467cd620735a8a6",
+          "bytes": 29404
+        },
+        {
+          "level": 2,
+          "triangles": 134,
+          "file": "Assets/Export/Environment/SM_dart_projectile_LOD2.fbx",
+          "sha256": "8ffb04f40baed9b8bb5e0205652f43841a6f5fd1714f90d68643d51c3e8a3b18",
+          "bytes": 25292
+        }
+      ]
     }
   },
   "illustrations": {
@@ -10005,27 +10300,33 @@
     },
     "bone_warden": {
       "file": "Assets/Source/CardArt/bone_warden.png",
-      "bytes": 898753,
       "sha256": "cfe0a092537373ef20ba9f104ecb81c0c93e373a236e1034ebdd329ffc3d6c1e",
+      "bytes": 898753,
       "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7"
     },
     "aether_reaper": {
       "file": "Assets/Source/CardArt/aether_reaper.png",
-      "bytes": 772796,
       "sha256": "f15ec0df011873274dc8a71022da54fbb3bea3a3ec5a212bea41c3272b9cef10",
+      "bytes": 772796,
       "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7"
     },
     "iron_giant": {
       "file": "Assets/Source/CardArt/iron_giant.png",
-      "bytes": 900016,
       "sha256": "1d12ce1db2e9d08cac4a2f86ec86e173d1d36c0ceb1f14934aa7ced8243b04be",
+      "bytes": 900016,
       "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7"
     },
     "shadow_surge": {
       "file": "Assets/Source/CardArt/shadow_surge.png",
-      "bytes": 845303,
       "sha256": "f90da4d233c09592e3240fe8b9c2e2b74b46024917f243d8c63d47f1370a6f63",
+      "bytes": 845303,
       "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7"
+    },
+    "dart_gun": {
+      "file": "Assets/Source/CardArt/dart_gun.png",
+      "sha256": "de3ad7909460eb767703c94222fed6881e0eae8a42a362518b0a6d281fce9ccb",
+      "bytes": 854073,
+      "sourceSceneSHA256": "1a283006f962b709076bdaf7d7c87dd94771a2bbcc0b963cdb7c12f48964c67b"
     }
   },
   "renders": [
@@ -10260,7 +10561,7 @@
       "bytes": 1147320
     }
   ],
-  "build": "UE-crafted-roster-1.8.0",
+  "build": "UE-crafted-roster-1.9.0",
   "expansionMaterials": [
     {
       "name": "M_RiftExpansionSurface",
@@ -10303,6 +10604,27 @@
       "orm": "Assets/Source/Textures/T_RiftAscensionAtlas_ORM.png",
       "normal": "Assets/Source/Textures/T_RiftAscensionAtlas_Normal.png",
       "teamMask": "Assets/Source/Textures/T_RiftAscensionAtlas_TeamMask.png"
+    },
+    {
+      "name": "M_RiftDartGunSurface",
+      "baseColor": "Assets/Source/Textures/T_RiftDartGunAtlas_BaseColor.png",
+      "orm": "Assets/Source/Textures/T_RiftDartGunAtlas_ORM.png",
+      "normal": "Assets/Source/Textures/T_RiftDartGunAtlas_Normal.png",
+      "teamMask": "Assets/Source/Textures/T_RiftDartGunAtlas_TeamMask.png"
+    },
+    {
+      "name": "M_RiftDartGunGlow",
+      "baseColor": "Assets/Source/Textures/T_RiftDartGunAtlas_BaseColor.png",
+      "orm": "Assets/Source/Textures/T_RiftDartGunAtlas_ORM.png",
+      "normal": "Assets/Source/Textures/T_RiftDartGunAtlas_Normal.png",
+      "teamMask": "Assets/Source/Textures/T_RiftDartGunAtlas_TeamMask.png"
+    },
+    {
+      "name": "M_RiftDartGunGlass",
+      "baseColor": "Assets/Source/Textures/T_RiftDartGunAtlas_BaseColor.png",
+      "orm": "Assets/Source/Textures/T_RiftDartGunAtlas_ORM.png",
+      "normal": "Assets/Source/Textures/T_RiftDartGunAtlas_Normal.png",
+      "teamMask": "Assets/Source/Textures/T_RiftDartGunAtlas_TeamMask.png"
     }
   ],
   "cards": {
@@ -10412,6 +10734,9 @@
           "sha256": "363d8fd966f3b4a321e59599561bf155d3377aa840bda1620353049ec6ceac88"
         }
       ]
+    },
+    "dart_gun": {
+      "skeletal": "dart_gun"
     }
   },
   "entities": {
@@ -10465,8 +10790,8 @@
       "timeSource": "Native simulation-clock geometry only; no material Time",
       "shaderProducer": {
         "file": "Build/import_unreal_assets.py",
-        "bytes": 74169,
-        "sha256": "038e7abb0f1ba2c88d5be5e0431b2e5f949a0f7ae3a7f80d7b8954d3a1d18e77"
+        "bytes": 75078,
+        "sha256": "e7240726fa52a4741a326ac61acf63672130513a9b25eb65257ce1a5d25b24de"
       },
       "contractProducer": {
         "file": "Build/generate_expansion_fx_contract.py",
