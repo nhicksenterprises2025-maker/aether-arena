@@ -1,21 +1,21 @@
 {
   "schema": 1,
-  "version": "1.4.0",
+  "version": "crafted-roster-2.0.0",
   "provenance": {
     "assetManifest": {
       "file": "Assets/asset_manifest.json",
-      "bytes": 147758,
-      "sha256": "a24f3f106772bd60474dabf84a3fa2a5ebf45292faa1936539541448c960e11f"
+      "bytes": 336473,
+      "sha256": "88c5c774fe28181f217c4e43e37a5cc587613695090cc31bc5359ca6cccf7df4"
     },
     "sourceBlend": {
       "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
-      "bytes": 12662775,
-      "sha256": "43b08804565ce7be846957e34c1768a9872e507658c511724f11cc08514fb7ae"
+      "bytes": 34216728,
+      "sha256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4"
     },
     "validatorScript": {
       "file": "Build/validate_assets.py",
-      "bytes": 8180,
-      "sha256": "2258fca27a41bd2212eec8d92e80271c1e36196225c232e1138535973e9259b0"
+      "bytes": 9758,
+      "sha256": "28a9970a7c93f62a144140faa8bc1b3bd5a6428bba9c093f136ddc02eb086cff"
     }
   },
   "checks": [
@@ -26,6 +26,760 @@
     },
     {
       "name": "Production scene SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Material catalog has unique declarations",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "ironclad every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface",
+          "M_RiftGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "ember_archer every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "twin_blades every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface",
+          "M_RiftGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "arc_mage every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface",
+          "M_RiftGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "tower_archer every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "boulderback every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface",
+          "M_RiftGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "rambeast every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface",
+          "M_RiftGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "frost_fang every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "sky_manta every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface",
+          "M_RiftGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "vampire_bats every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "storm_raven every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface",
+          "M_RiftGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "mini_stampede every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftExpansionSurface"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "stampede every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftExpansionSurface"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "pulverizer every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftExpansionSurface",
+          "M_RiftExpansionGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "bone_warden every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftExpansionAscensionSurface",
+          "M_RiftExpansionAscensionGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "bone_warden_skeleton every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftExpansionAscensionSurface",
+          "M_RiftExpansionAscensionGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "aether_reaper every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftExpansionAscensionSurface",
+          "M_RiftExpansionAscensionGlow",
+          "M_RiftExpansionAscensionGlass"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "iron_giant every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftExpansionAscensionSurface",
+          "M_RiftExpansionAscensionGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "dart_gun every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftDartGunSurface"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "tower_guard every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface",
+          "M_RiftGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "guard_cannon every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface",
+          "M_RiftGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "tower_core every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface",
+          "M_RiftGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "archer_tower every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface",
+          "M_RiftGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "nova_flask every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftGlass",
+          "M_RiftSurface",
+          "M_RiftGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "bridge every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "floor_tile every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "lane_paver every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "bank_segment every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "boundary_stone every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "grass_tuft every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "shrub every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "tree every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "crystal_plinth every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface",
+          "M_RiftGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "banner every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "ruin every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "distant_island every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "meteor_shard every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface",
+          "M_RiftGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "bullet_round every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface",
+          "M_RiftGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "tower_rubble every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "arrow_projectile every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftSurface",
+          "M_RiftGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "arc_projectile every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftGlow",
+          "M_RiftSurface"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "manta_projectile every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "storm_projectile every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "projectile_trail every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "iron_shield_fragment every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftExpansionAscensionSurface"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "shadow_surge_wisp every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftExpansionAscensionGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "shadow_surge_ribbon every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftExpansionAscensionGlow"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "dart_projectile every referenced material declared",
+      "passed": true,
+      "detail": {
+        "referenced": [
+          "M_RiftDartGunSurface"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "M_RiftSurface baseColor source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftSurface normal source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftSurface orm source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftSurface teamMask source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftGlow baseColor source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftGlow normal source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftGlow orm source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftGlow teamMask source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftGlass baseColor source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftGlass normal source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftGlass orm source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftGlass teamMask source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftExpansionSurface baseColor source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftExpansionSurface normal source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftExpansionSurface orm source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftExpansionSurface teamMask source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftExpansionGlow baseColor source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftExpansionGlow normal source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftExpansionGlow orm source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftExpansionGlow teamMask source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftExpansionGlass baseColor source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftExpansionGlass normal source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftExpansionGlass orm source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftExpansionGlass teamMask source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftExpansionAscensionSurface baseColor source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftExpansionAscensionSurface normal source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftExpansionAscensionSurface orm source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftExpansionAscensionSurface teamMask source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftExpansionAscensionGlow baseColor source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftExpansionAscensionGlow normal source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftExpansionAscensionGlow orm source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftExpansionAscensionGlow teamMask source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftExpansionAscensionGlass baseColor source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftExpansionAscensionGlass normal source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftExpansionAscensionGlass orm source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftExpansionAscensionGlass teamMask source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftDartGunSurface baseColor source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftDartGunSurface normal source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftDartGunSurface orm source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftDartGunSurface teamMask source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftDartGunGlow baseColor source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftDartGunGlow normal source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftDartGunGlow orm source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftDartGunGlow teamMask source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftDartGunGlass baseColor source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftDartGunGlass normal source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftDartGunGlass orm source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "M_RiftDartGunGlass teamMask source exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Expansion FX contract matches current texture and shader producers",
       "passed": true,
       "detail": ""
     },
@@ -45,7 +799,7 @@
       "detail": [
         1.3285150527954102,
         0.6670000553131104,
-        2.1555709838867188
+        2.22829270362854
       ]
     },
     {
@@ -77,7 +831,7 @@
       "name": "ironclad every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 12322,
+        "vertices": 21434,
         "unweighted": 0
       }
     },
@@ -165,9 +919,9 @@
       "name": "ironclad three ordered LODs",
       "passed": true,
       "detail": [
-        12120,
-        6060,
-        2896
+        21037,
+        10517,
+        5035
       ]
     },
     {
@@ -188,7 +942,7 @@
     {
       "name": "ironclad Idle bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 252
     },
     {
       "name": "ironclad Idle source action",
@@ -198,7 +952,7 @@
     {
       "name": "ironclad Idle animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 17
     },
     {
       "name": "ironclad Locomotion FBX exists",
@@ -218,7 +972,7 @@
     {
       "name": "ironclad Locomotion bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 252
     },
     {
       "name": "ironclad Locomotion source action",
@@ -228,7 +982,7 @@
     {
       "name": "ironclad Locomotion animated pose",
       "passed": true,
-      "detail": 24
+      "detail": 26
     },
     {
       "name": "ironclad Attack FBX exists",
@@ -248,7 +1002,7 @@
     {
       "name": "ironclad Attack bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 252
     },
     {
       "name": "ironclad Attack source action",
@@ -258,7 +1012,7 @@
     {
       "name": "ironclad Attack animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 17
     },
     {
       "name": "ironclad Hit FBX exists",
@@ -278,7 +1032,7 @@
     {
       "name": "ironclad Hit bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 252
     },
     {
       "name": "ironclad Hit source action",
@@ -288,7 +1042,7 @@
     {
       "name": "ironclad Hit animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 17
     },
     {
       "name": "ironclad Death FBX exists",
@@ -308,7 +1062,7 @@
     {
       "name": "ironclad Death bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 252
     },
     {
       "name": "ironclad Death source action",
@@ -318,7 +1072,7 @@
     {
       "name": "ironclad Death animated pose",
       "passed": true,
-      "detail": 24
+      "detail": 26
     },
     {
       "name": "ironclad Deploy FBX exists",
@@ -338,7 +1092,7 @@
     {
       "name": "ironclad Deploy bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 252
     },
     {
       "name": "ironclad Deploy source action",
@@ -348,7 +1102,7 @@
     {
       "name": "ironclad Deploy animated pose",
       "passed": true,
-      "detail": 24
+      "detail": 26
     },
     {
       "name": "ironclad Status FBX exists",
@@ -368,7 +1122,7 @@
     {
       "name": "ironclad Status bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 252
     },
     {
       "name": "ironclad Status source action",
@@ -378,7 +1132,7 @@
     {
       "name": "ironclad Status animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 17
     },
     {
       "name": "ironclad Turn FBX exists",
@@ -398,7 +1152,7 @@
     {
       "name": "ironclad Turn bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 252
     },
     {
       "name": "ironclad Turn source action",
@@ -408,7 +1162,7 @@
     {
       "name": "ironclad Turn animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 17
     },
     {
       "name": "ironclad Acquire FBX exists",
@@ -428,7 +1182,7 @@
     {
       "name": "ironclad Acquire bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 252
     },
     {
       "name": "ironclad Acquire source action",
@@ -438,7 +1192,7 @@
     {
       "name": "ironclad Acquire animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 17
     },
     {
       "name": "ember_archer source mesh",
@@ -454,9 +1208,9 @@
       "name": "ember_archer dimension manifest",
       "passed": true,
       "detail": [
-        1.038766622543335,
-        0.6501976251602173,
-        1.8976101875305176
+        1.0262078046798706,
+        0.9638462066650391,
+        1.9057503938674927
       ]
     },
     {
@@ -488,7 +1242,7 @@
       "name": "ember_archer every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 12688,
+        "vertices": 23590,
         "unweighted": 0
       }
     },
@@ -576,9 +1330,9 @@
       "name": "ember_archer three ordered LODs",
       "passed": true,
       "detail": [
-        12494,
-        6246,
-        2998
+        23231,
+        11612,
+        5570
       ]
     },
     {
@@ -599,7 +1353,7 @@
     {
       "name": "ember_archer Idle bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 270
     },
     {
       "name": "ember_archer Idle source action",
@@ -609,7 +1363,7 @@
     {
       "name": "ember_archer Idle animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 19
     },
     {
       "name": "ember_archer Locomotion FBX exists",
@@ -629,7 +1383,7 @@
     {
       "name": "ember_archer Locomotion bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 270
     },
     {
       "name": "ember_archer Locomotion source action",
@@ -639,7 +1393,7 @@
     {
       "name": "ember_archer Locomotion animated pose",
       "passed": true,
-      "detail": 24
+      "detail": 28
     },
     {
       "name": "ember_archer Attack FBX exists",
@@ -659,7 +1413,7 @@
     {
       "name": "ember_archer Attack bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 270
     },
     {
       "name": "ember_archer Attack source action",
@@ -669,7 +1423,7 @@
     {
       "name": "ember_archer Attack animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 19
     },
     {
       "name": "ember_archer Hit FBX exists",
@@ -689,7 +1443,7 @@
     {
       "name": "ember_archer Hit bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 270
     },
     {
       "name": "ember_archer Hit source action",
@@ -699,7 +1453,7 @@
     {
       "name": "ember_archer Hit animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 19
     },
     {
       "name": "ember_archer Death FBX exists",
@@ -719,7 +1473,7 @@
     {
       "name": "ember_archer Death bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 270
     },
     {
       "name": "ember_archer Death source action",
@@ -729,7 +1483,7 @@
     {
       "name": "ember_archer Death animated pose",
       "passed": true,
-      "detail": 24
+      "detail": 28
     },
     {
       "name": "ember_archer Deploy FBX exists",
@@ -749,7 +1503,7 @@
     {
       "name": "ember_archer Deploy bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 270
     },
     {
       "name": "ember_archer Deploy source action",
@@ -759,7 +1513,7 @@
     {
       "name": "ember_archer Deploy animated pose",
       "passed": true,
-      "detail": 24
+      "detail": 28
     },
     {
       "name": "ember_archer Status FBX exists",
@@ -779,7 +1533,7 @@
     {
       "name": "ember_archer Status bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 270
     },
     {
       "name": "ember_archer Status source action",
@@ -789,7 +1543,7 @@
     {
       "name": "ember_archer Status animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 19
     },
     {
       "name": "ember_archer Turn FBX exists",
@@ -809,7 +1563,7 @@
     {
       "name": "ember_archer Turn bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 270
     },
     {
       "name": "ember_archer Turn source action",
@@ -819,7 +1573,7 @@
     {
       "name": "ember_archer Turn animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 19
     },
     {
       "name": "ember_archer Acquire FBX exists",
@@ -839,7 +1593,7 @@
     {
       "name": "ember_archer Acquire bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 270
     },
     {
       "name": "ember_archer Acquire source action",
@@ -849,7 +1603,7 @@
     {
       "name": "ember_archer Acquire animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 19
     },
     {
       "name": "ember_archer DrawRelease FBX exists",
@@ -869,7 +1623,7 @@
     {
       "name": "ember_archer DrawRelease bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 270
     },
     {
       "name": "ember_archer DrawRelease source action",
@@ -879,7 +1633,7 @@
     {
       "name": "ember_archer DrawRelease animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 19
     },
     {
       "name": "twin_blades source mesh",
@@ -897,7 +1651,7 @@
       "detail": [
         1.0735392570495605,
         0.5861743688583374,
-        1.8132785558700562
+        1.8210572004318237
       ]
     },
     {
@@ -929,7 +1683,7 @@
       "name": "twin_blades every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 14553,
+        "vertices": 18927,
         "unweighted": 0
       }
     },
@@ -1017,9 +1771,9 @@
       "name": "twin_blades three ordered LODs",
       "passed": true,
       "detail": [
-        14366,
-        7182,
-        3448
+        18616,
+        9306,
+        4466
       ]
     },
     {
@@ -1040,7 +1794,7 @@
     {
       "name": "twin_blades Idle bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 243
     },
     {
       "name": "twin_blades Idle source action",
@@ -1050,7 +1804,7 @@
     {
       "name": "twin_blades Idle animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 16
     },
     {
       "name": "twin_blades Locomotion FBX exists",
@@ -1070,7 +1824,7 @@
     {
       "name": "twin_blades Locomotion bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 243
     },
     {
       "name": "twin_blades Locomotion source action",
@@ -1080,7 +1834,7 @@
     {
       "name": "twin_blades Locomotion animated pose",
       "passed": true,
-      "detail": 24
+      "detail": 25
     },
     {
       "name": "twin_blades Attack FBX exists",
@@ -1100,7 +1854,7 @@
     {
       "name": "twin_blades Attack bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 243
     },
     {
       "name": "twin_blades Attack source action",
@@ -1110,7 +1864,7 @@
     {
       "name": "twin_blades Attack animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 16
     },
     {
       "name": "twin_blades Hit FBX exists",
@@ -1130,7 +1884,7 @@
     {
       "name": "twin_blades Hit bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 243
     },
     {
       "name": "twin_blades Hit source action",
@@ -1140,7 +1894,7 @@
     {
       "name": "twin_blades Hit animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 16
     },
     {
       "name": "twin_blades Death FBX exists",
@@ -1160,7 +1914,7 @@
     {
       "name": "twin_blades Death bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 243
     },
     {
       "name": "twin_blades Death source action",
@@ -1170,7 +1924,7 @@
     {
       "name": "twin_blades Death animated pose",
       "passed": true,
-      "detail": 24
+      "detail": 25
     },
     {
       "name": "twin_blades Deploy FBX exists",
@@ -1190,7 +1944,7 @@
     {
       "name": "twin_blades Deploy bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 243
     },
     {
       "name": "twin_blades Deploy source action",
@@ -1200,7 +1954,7 @@
     {
       "name": "twin_blades Deploy animated pose",
       "passed": true,
-      "detail": 24
+      "detail": 25
     },
     {
       "name": "twin_blades Status FBX exists",
@@ -1220,7 +1974,7 @@
     {
       "name": "twin_blades Status bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 243
     },
     {
       "name": "twin_blades Status source action",
@@ -1230,7 +1984,7 @@
     {
       "name": "twin_blades Status animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 16
     },
     {
       "name": "twin_blades Turn FBX exists",
@@ -1250,7 +2004,7 @@
     {
       "name": "twin_blades Turn bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 243
     },
     {
       "name": "twin_blades Turn source action",
@@ -1260,7 +2014,7 @@
     {
       "name": "twin_blades Turn animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 16
     },
     {
       "name": "twin_blades Acquire FBX exists",
@@ -1280,7 +2034,7 @@
     {
       "name": "twin_blades Acquire bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 243
     },
     {
       "name": "twin_blades Acquire source action",
@@ -1290,7 +2044,7 @@
     {
       "name": "twin_blades Acquire animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 16
     },
     {
       "name": "twin_blades AlternateStrike FBX exists",
@@ -1310,7 +2064,7 @@
     {
       "name": "twin_blades AlternateStrike bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 243
     },
     {
       "name": "twin_blades AlternateStrike source action",
@@ -1320,7 +2074,7 @@
     {
       "name": "twin_blades AlternateStrike animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 16
     },
     {
       "name": "arc_mage source mesh",
@@ -1337,8 +2091,8 @@
       "passed": true,
       "detail": [
         1.1741681098937988,
-        0.6206409931182861,
-        2.276381254196167
+        0.6306159496307373,
+        2.2928991317749023
       ]
     },
     {
@@ -1370,7 +2124,7 @@
       "name": "arc_mage every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 14357,
+        "vertices": 25151,
         "unweighted": 0
       }
     },
@@ -1458,9 +2212,9 @@
       "name": "arc_mage three ordered LODs",
       "passed": true,
       "detail": [
-        14150,
-        7074,
-        3396
+        24856,
+        12422,
+        5964
       ]
     },
     {
@@ -1481,7 +2235,7 @@
     {
       "name": "arc_mage Idle bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 243
     },
     {
       "name": "arc_mage Idle source action",
@@ -1491,7 +2245,7 @@
     {
       "name": "arc_mage Idle animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 16
     },
     {
       "name": "arc_mage Locomotion FBX exists",
@@ -1511,7 +2265,7 @@
     {
       "name": "arc_mage Locomotion bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 243
     },
     {
       "name": "arc_mage Locomotion source action",
@@ -1521,7 +2275,7 @@
     {
       "name": "arc_mage Locomotion animated pose",
       "passed": true,
-      "detail": 24
+      "detail": 25
     },
     {
       "name": "arc_mage Attack FBX exists",
@@ -1541,7 +2295,7 @@
     {
       "name": "arc_mage Attack bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 243
     },
     {
       "name": "arc_mage Attack source action",
@@ -1551,7 +2305,7 @@
     {
       "name": "arc_mage Attack animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 16
     },
     {
       "name": "arc_mage Hit FBX exists",
@@ -1571,7 +2325,7 @@
     {
       "name": "arc_mage Hit bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 243
     },
     {
       "name": "arc_mage Hit source action",
@@ -1581,7 +2335,7 @@
     {
       "name": "arc_mage Hit animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 16
     },
     {
       "name": "arc_mage Death FBX exists",
@@ -1601,7 +2355,7 @@
     {
       "name": "arc_mage Death bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 243
     },
     {
       "name": "arc_mage Death source action",
@@ -1611,7 +2365,7 @@
     {
       "name": "arc_mage Death animated pose",
       "passed": true,
-      "detail": 24
+      "detail": 25
     },
     {
       "name": "arc_mage Deploy FBX exists",
@@ -1631,7 +2385,7 @@
     {
       "name": "arc_mage Deploy bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 243
     },
     {
       "name": "arc_mage Deploy source action",
@@ -1641,7 +2395,7 @@
     {
       "name": "arc_mage Deploy animated pose",
       "passed": true,
-      "detail": 24
+      "detail": 25
     },
     {
       "name": "arc_mage Status FBX exists",
@@ -1661,7 +2415,7 @@
     {
       "name": "arc_mage Status bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 243
     },
     {
       "name": "arc_mage Status source action",
@@ -1671,7 +2425,7 @@
     {
       "name": "arc_mage Status animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 16
     },
     {
       "name": "arc_mage Turn FBX exists",
@@ -1691,7 +2445,7 @@
     {
       "name": "arc_mage Turn bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 243
     },
     {
       "name": "arc_mage Turn source action",
@@ -1701,7 +2455,7 @@
     {
       "name": "arc_mage Turn animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 16
     },
     {
       "name": "arc_mage Acquire FBX exists",
@@ -1721,7 +2475,7 @@
     {
       "name": "arc_mage Acquire bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 243
     },
     {
       "name": "arc_mage Acquire source action",
@@ -1731,7 +2485,7 @@
     {
       "name": "arc_mage Acquire animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 16
     },
     {
       "name": "arc_mage Cast FBX exists",
@@ -1751,7 +2505,7 @@
     {
       "name": "arc_mage Cast bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 243
     },
     {
       "name": "arc_mage Cast source action",
@@ -1761,7 +2515,7 @@
     {
       "name": "arc_mage Cast animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 16
     },
     {
       "name": "tower_archer source mesh",
@@ -1777,9 +2531,9 @@
       "name": "tower_archer dimension manifest",
       "passed": true,
       "detail": [
-        1.038766622543335,
-        0.6501976251602173,
-        1.8976101875305176
+        1.0262078046798706,
+        0.9638462066650391,
+        1.9057503938674927
       ]
     },
     {
@@ -1811,7 +2565,7 @@
       "name": "tower_archer every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 12688,
+        "vertices": 34594,
         "unweighted": 0
       }
     },
@@ -1899,9 +2653,9 @@
       "name": "tower_archer three ordered LODs",
       "passed": true,
       "detail": [
-        12494,
-        6246,
-        2998
+        34334,
+        17166,
+        8240
       ]
     },
     {
@@ -1922,7 +2676,7 @@
     {
       "name": "tower_archer Idle bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 270
     },
     {
       "name": "tower_archer Idle source action",
@@ -1932,7 +2686,7 @@
     {
       "name": "tower_archer Idle animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 19
     },
     {
       "name": "tower_archer Locomotion FBX exists",
@@ -1952,7 +2706,7 @@
     {
       "name": "tower_archer Locomotion bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 270
     },
     {
       "name": "tower_archer Locomotion source action",
@@ -1962,7 +2716,7 @@
     {
       "name": "tower_archer Locomotion animated pose",
       "passed": true,
-      "detail": 24
+      "detail": 28
     },
     {
       "name": "tower_archer Attack FBX exists",
@@ -1982,7 +2736,7 @@
     {
       "name": "tower_archer Attack bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 270
     },
     {
       "name": "tower_archer Attack source action",
@@ -1992,7 +2746,7 @@
     {
       "name": "tower_archer Attack animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 19
     },
     {
       "name": "tower_archer Hit FBX exists",
@@ -2012,7 +2766,7 @@
     {
       "name": "tower_archer Hit bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 270
     },
     {
       "name": "tower_archer Hit source action",
@@ -2022,7 +2776,7 @@
     {
       "name": "tower_archer Hit animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 19
     },
     {
       "name": "tower_archer Death FBX exists",
@@ -2042,7 +2796,7 @@
     {
       "name": "tower_archer Death bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 270
     },
     {
       "name": "tower_archer Death source action",
@@ -2052,7 +2806,7 @@
     {
       "name": "tower_archer Death animated pose",
       "passed": true,
-      "detail": 24
+      "detail": 28
     },
     {
       "name": "tower_archer Deploy FBX exists",
@@ -2072,7 +2826,7 @@
     {
       "name": "tower_archer Deploy bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 270
     },
     {
       "name": "tower_archer Deploy source action",
@@ -2082,7 +2836,7 @@
     {
       "name": "tower_archer Deploy animated pose",
       "passed": true,
-      "detail": 24
+      "detail": 28
     },
     {
       "name": "tower_archer Status FBX exists",
@@ -2102,7 +2856,7 @@
     {
       "name": "tower_archer Status bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 270
     },
     {
       "name": "tower_archer Status source action",
@@ -2112,7 +2866,7 @@
     {
       "name": "tower_archer Status animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 19
     },
     {
       "name": "tower_archer Turn FBX exists",
@@ -2132,7 +2886,7 @@
     {
       "name": "tower_archer Turn bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 270
     },
     {
       "name": "tower_archer Turn source action",
@@ -2142,7 +2896,7 @@
     {
       "name": "tower_archer Turn animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 19
     },
     {
       "name": "tower_archer Acquire FBX exists",
@@ -2162,7 +2916,7 @@
     {
       "name": "tower_archer Acquire bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 270
     },
     {
       "name": "tower_archer Acquire source action",
@@ -2172,7 +2926,7 @@
     {
       "name": "tower_archer Acquire animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 19
     },
     {
       "name": "tower_archer DrawRelease FBX exists",
@@ -2192,7 +2946,7 @@
     {
       "name": "tower_archer DrawRelease bone tracks",
       "passed": true,
-      "detail": 234
+      "detail": 270
     },
     {
       "name": "tower_archer DrawRelease source action",
@@ -2202,7 +2956,7 @@
     {
       "name": "tower_archer DrawRelease animated pose",
       "passed": true,
-      "detail": 15
+      "detail": 19
     },
     {
       "name": "boulderback source mesh",
@@ -2218,9 +2972,9 @@
       "name": "boulderback dimension manifest",
       "passed": true,
       "detail": [
-        1.239999771118164,
-        2.2259891033172607,
-        2.1162524223327637
+        1.2230916023254395,
+        2.2279891967773438,
+        2.0980000495910645
       ]
     },
     {
@@ -2252,7 +3006,7 @@
       "name": "boulderback every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 20822,
+        "vertices": 22053,
         "unweighted": 0
       }
     },
@@ -2340,9 +3094,9 @@
       "name": "boulderback three ordered LODs",
       "passed": true,
       "detail": [
-        20758,
-        10378,
-        4980
+        21902,
+        10950,
+        5256
       ]
     },
     {
@@ -2661,7 +3415,7 @@
       "detail": [
         1.2982109785079956,
         2.5863091945648193,
-        1.7150214910507202
+        1.7045843601226807
       ]
     },
     {
@@ -2693,7 +3447,7 @@
       "name": "rambeast every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 22267,
+        "vertices": 46323,
         "unweighted": 0
       }
     },
@@ -2781,9 +3535,9 @@
       "name": "rambeast three ordered LODs",
       "passed": true,
       "detail": [
-        22192,
-        11096,
-        5324
+        45406,
+        22696,
+        10896
       ]
     },
     {
@@ -2804,7 +3558,7 @@
     {
       "name": "rambeast Idle bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 261
     },
     {
       "name": "rambeast Idle source action",
@@ -2814,7 +3568,7 @@
     {
       "name": "rambeast Idle animated pose",
       "passed": true,
-      "detail": 6
+      "detail": 7
     },
     {
       "name": "rambeast Locomotion FBX exists",
@@ -2834,7 +3588,7 @@
     {
       "name": "rambeast Locomotion bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 261
     },
     {
       "name": "rambeast Locomotion source action",
@@ -2844,7 +3598,7 @@
     {
       "name": "rambeast Locomotion animated pose",
       "passed": true,
-      "detail": 25
+      "detail": 26
     },
     {
       "name": "rambeast Attack FBX exists",
@@ -2864,7 +3618,7 @@
     {
       "name": "rambeast Attack bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 261
     },
     {
       "name": "rambeast Attack source action",
@@ -2874,7 +3628,7 @@
     {
       "name": "rambeast Attack animated pose",
       "passed": true,
-      "detail": 17
+      "detail": 18
     },
     {
       "name": "rambeast Hit FBX exists",
@@ -2894,7 +3648,7 @@
     {
       "name": "rambeast Hit bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 261
     },
     {
       "name": "rambeast Hit source action",
@@ -2904,7 +3658,7 @@
     {
       "name": "rambeast Hit animated pose",
       "passed": true,
-      "detail": 17
+      "detail": 18
     },
     {
       "name": "rambeast Death FBX exists",
@@ -2924,7 +3678,7 @@
     {
       "name": "rambeast Death bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 261
     },
     {
       "name": "rambeast Death source action",
@@ -2934,7 +3688,7 @@
     {
       "name": "rambeast Death animated pose",
       "passed": true,
-      "detail": 17
+      "detail": 18
     },
     {
       "name": "rambeast Deploy FBX exists",
@@ -2954,7 +3708,7 @@
     {
       "name": "rambeast Deploy bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 261
     },
     {
       "name": "rambeast Deploy source action",
@@ -2964,7 +3718,7 @@
     {
       "name": "rambeast Deploy animated pose",
       "passed": true,
-      "detail": 17
+      "detail": 18
     },
     {
       "name": "rambeast Status FBX exists",
@@ -2984,7 +3738,7 @@
     {
       "name": "rambeast Status bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 261
     },
     {
       "name": "rambeast Status source action",
@@ -2994,7 +3748,7 @@
     {
       "name": "rambeast Status animated pose",
       "passed": true,
-      "detail": 6
+      "detail": 7
     },
     {
       "name": "rambeast Turn FBX exists",
@@ -3014,7 +3768,7 @@
     {
       "name": "rambeast Turn bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 261
     },
     {
       "name": "rambeast Turn source action",
@@ -3024,7 +3778,7 @@
     {
       "name": "rambeast Turn animated pose",
       "passed": true,
-      "detail": 17
+      "detail": 18
     },
     {
       "name": "rambeast Acquire FBX exists",
@@ -3044,7 +3798,7 @@
     {
       "name": "rambeast Acquire bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 261
     },
     {
       "name": "rambeast Acquire source action",
@@ -3054,7 +3808,7 @@
     {
       "name": "rambeast Acquire animated pose",
       "passed": true,
-      "detail": 6
+      "detail": 7
     },
     {
       "name": "rambeast Charge FBX exists",
@@ -3074,7 +3828,7 @@
     {
       "name": "rambeast Charge bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 261
     },
     {
       "name": "rambeast Charge source action",
@@ -3084,7 +3838,7 @@
     {
       "name": "rambeast Charge animated pose",
       "passed": true,
-      "detail": 25
+      "detail": 26
     },
     {
       "name": "frost_fang source mesh",
@@ -3123,7 +3877,7 @@
     {
       "name": "frost_fang consolidated material slots",
       "passed": true,
-      "detail": 2
+      "detail": 1
     },
     {
       "name": "frost_fang armature modifier",
@@ -3134,7 +3888,7 @@
       "name": "frost_fang every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 20692,
+        "vertices": 29248,
         "unweighted": 0
       }
     },
@@ -3222,9 +3976,9 @@
       "name": "frost_fang three ordered LODs",
       "passed": true,
       "detail": [
-        20578,
-        10288,
-        4938
+        28620,
+        14310,
+        6868
       ]
     },
     {
@@ -3245,7 +3999,7 @@
     {
       "name": "frost_fang Idle bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 261
     },
     {
       "name": "frost_fang Idle source action",
@@ -3255,7 +4009,7 @@
     {
       "name": "frost_fang Idle animated pose",
       "passed": true,
-      "detail": 6
+      "detail": 7
     },
     {
       "name": "frost_fang Locomotion FBX exists",
@@ -3275,7 +4029,7 @@
     {
       "name": "frost_fang Locomotion bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 261
     },
     {
       "name": "frost_fang Locomotion source action",
@@ -3285,7 +4039,7 @@
     {
       "name": "frost_fang Locomotion animated pose",
       "passed": true,
-      "detail": 25
+      "detail": 26
     },
     {
       "name": "frost_fang Attack FBX exists",
@@ -3305,7 +4059,7 @@
     {
       "name": "frost_fang Attack bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 261
     },
     {
       "name": "frost_fang Attack source action",
@@ -3315,7 +4069,7 @@
     {
       "name": "frost_fang Attack animated pose",
       "passed": true,
-      "detail": 17
+      "detail": 18
     },
     {
       "name": "frost_fang Hit FBX exists",
@@ -3335,7 +4089,7 @@
     {
       "name": "frost_fang Hit bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 261
     },
     {
       "name": "frost_fang Hit source action",
@@ -3345,7 +4099,7 @@
     {
       "name": "frost_fang Hit animated pose",
       "passed": true,
-      "detail": 17
+      "detail": 18
     },
     {
       "name": "frost_fang Death FBX exists",
@@ -3365,7 +4119,7 @@
     {
       "name": "frost_fang Death bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 261
     },
     {
       "name": "frost_fang Death source action",
@@ -3375,7 +4129,7 @@
     {
       "name": "frost_fang Death animated pose",
       "passed": true,
-      "detail": 17
+      "detail": 18
     },
     {
       "name": "frost_fang Deploy FBX exists",
@@ -3395,7 +4149,7 @@
     {
       "name": "frost_fang Deploy bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 261
     },
     {
       "name": "frost_fang Deploy source action",
@@ -3405,7 +4159,7 @@
     {
       "name": "frost_fang Deploy animated pose",
       "passed": true,
-      "detail": 17
+      "detail": 18
     },
     {
       "name": "frost_fang Status FBX exists",
@@ -3425,7 +4179,7 @@
     {
       "name": "frost_fang Status bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 261
     },
     {
       "name": "frost_fang Status source action",
@@ -3435,7 +4189,7 @@
     {
       "name": "frost_fang Status animated pose",
       "passed": true,
-      "detail": 6
+      "detail": 7
     },
     {
       "name": "frost_fang Turn FBX exists",
@@ -3455,7 +4209,7 @@
     {
       "name": "frost_fang Turn bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 261
     },
     {
       "name": "frost_fang Turn source action",
@@ -3465,7 +4219,7 @@
     {
       "name": "frost_fang Turn animated pose",
       "passed": true,
-      "detail": 17
+      "detail": 18
     },
     {
       "name": "frost_fang Acquire FBX exists",
@@ -3485,7 +4239,7 @@
     {
       "name": "frost_fang Acquire bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 261
     },
     {
       "name": "frost_fang Acquire source action",
@@ -3495,7 +4249,7 @@
     {
       "name": "frost_fang Acquire animated pose",
       "passed": true,
-      "detail": 6
+      "detail": 7
     },
     {
       "name": "frost_fang FrostAttack FBX exists",
@@ -3515,7 +4269,7 @@
     {
       "name": "frost_fang FrostAttack bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 261
     },
     {
       "name": "frost_fang FrostAttack source action",
@@ -3525,7 +4279,7 @@
     {
       "name": "frost_fang FrostAttack animated pose",
       "passed": true,
-      "detail": 17
+      "detail": 18
     },
     {
       "name": "frost_fang Breath FBX exists",
@@ -3545,7 +4299,7 @@
     {
       "name": "frost_fang Breath bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 261
     },
     {
       "name": "frost_fang Breath source action",
@@ -3555,7 +4309,7 @@
     {
       "name": "frost_fang Breath animated pose",
       "passed": true,
-      "detail": 3
+      "detail": 4
     },
     {
       "name": "sky_manta source mesh",
@@ -3605,7 +4359,7 @@
       "name": "sky_manta every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 9858,
+        "vertices": 13672,
         "unweighted": 0
       }
     },
@@ -3693,9 +4447,9 @@
       "name": "sky_manta three ordered LODs",
       "passed": true,
       "detail": [
-        9800,
-        4900,
-        2352
+        13536,
+        6768,
+        3246
       ]
     },
     {
@@ -4012,9 +4766,9 @@
       "name": "vampire_bats dimension manifest",
       "passed": true,
       "detail": [
-        2.2638723850250244,
-        1.2457504272460938,
-        0.8178354501724243
+        2.2632434368133545,
+        1.2453699111938477,
+        0.8180428743362427
       ]
     },
     {
@@ -4035,7 +4789,7 @@
     {
       "name": "vampire_bats consolidated material slots",
       "passed": true,
-      "detail": 2
+      "detail": 1
     },
     {
       "name": "vampire_bats armature modifier",
@@ -4046,7 +4800,7 @@
       "name": "vampire_bats every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 7372,
+        "vertices": 15124,
         "unweighted": 0
       }
     },
@@ -4134,9 +4888,9 @@
       "name": "vampire_bats three ordered LODs",
       "passed": true,
       "detail": [
-        7298,
-        3648,
-        1750
+        14712,
+        7356,
+        3530
       ]
     },
     {
@@ -4453,9 +5207,9 @@
       "name": "storm_raven dimension manifest",
       "passed": true,
       "detail": [
-        3.332244396209717,
-        1.8566105365753174,
-        0.7926256656646729
+        3.3622100353240967,
+        1.896559476852417,
+        0.8339977860450745
       ]
     },
     {
@@ -4487,7 +5241,7 @@
       "name": "storm_raven every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 12186,
+        "vertices": 17430,
         "unweighted": 0
       }
     },
@@ -4575,9 +5329,9 @@
       "name": "storm_raven three ordered LODs",
       "passed": true,
       "detail": [
-        11672,
-        5820,
-        2800
+        16892,
+        8446,
+        4054
       ]
     },
     {
@@ -4984,9 +5738,9 @@
       "name": "mini_stampede dimension manifest",
       "passed": true,
       "detail": [
-        0.7041628360748291,
-        1.712011456489563,
-        1.0356413125991821
+        0.5119068026542664,
+        1.2248927354812622,
+        0.5954470634460449
       ]
     },
     {
@@ -5018,7 +5772,7 @@
       "name": "mini_stampede every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 5442,
+        "vertices": 16887,
         "unweighted": 0
       }
     },
@@ -5106,9 +5860,9 @@
       "name": "mini_stampede three ordered LODs",
       "passed": true,
       "detail": [
-        5338,
-        2668,
-        1280
+        16408,
+        8204,
+        3938
       ]
     },
     {
@@ -5129,7 +5883,7 @@
     {
       "name": "mini_stampede Idle bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 270
     },
     {
       "name": "mini_stampede Idle source action",
@@ -5139,7 +5893,7 @@
     {
       "name": "mini_stampede Idle animated pose",
       "passed": true,
-      "detail": 6
+      "detail": 19
     },
     {
       "name": "mini_stampede Locomotion FBX exists",
@@ -5159,7 +5913,7 @@
     {
       "name": "mini_stampede Locomotion bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 270
     },
     {
       "name": "mini_stampede Locomotion source action",
@@ -5169,7 +5923,7 @@
     {
       "name": "mini_stampede Locomotion animated pose",
       "passed": true,
-      "detail": 25
+      "detail": 28
     },
     {
       "name": "mini_stampede Attack FBX exists",
@@ -5189,7 +5943,7 @@
     {
       "name": "mini_stampede Attack bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 270
     },
     {
       "name": "mini_stampede Attack source action",
@@ -5199,7 +5953,7 @@
     {
       "name": "mini_stampede Attack animated pose",
       "passed": true,
-      "detail": 17
+      "detail": 19
     },
     {
       "name": "mini_stampede Hit FBX exists",
@@ -5219,7 +5973,7 @@
     {
       "name": "mini_stampede Hit bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 270
     },
     {
       "name": "mini_stampede Hit source action",
@@ -5229,7 +5983,7 @@
     {
       "name": "mini_stampede Hit animated pose",
       "passed": true,
-      "detail": 17
+      "detail": 19
     },
     {
       "name": "mini_stampede Death FBX exists",
@@ -5249,7 +6003,7 @@
     {
       "name": "mini_stampede Death bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 270
     },
     {
       "name": "mini_stampede Death source action",
@@ -5259,7 +6013,7 @@
     {
       "name": "mini_stampede Death animated pose",
       "passed": true,
-      "detail": 17
+      "detail": 28
     },
     {
       "name": "mini_stampede Deploy FBX exists",
@@ -5279,7 +6033,7 @@
     {
       "name": "mini_stampede Deploy bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 270
     },
     {
       "name": "mini_stampede Deploy source action",
@@ -5289,7 +6043,7 @@
     {
       "name": "mini_stampede Deploy animated pose",
       "passed": true,
-      "detail": 17
+      "detail": 28
     },
     {
       "name": "mini_stampede Status FBX exists",
@@ -5309,7 +6063,7 @@
     {
       "name": "mini_stampede Status bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 270
     },
     {
       "name": "mini_stampede Status source action",
@@ -5339,7 +6093,7 @@
     {
       "name": "mini_stampede Turn bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 270
     },
     {
       "name": "mini_stampede Turn source action",
@@ -5349,7 +6103,7 @@
     {
       "name": "mini_stampede Turn animated pose",
       "passed": true,
-      "detail": 17
+      "detail": 19
     },
     {
       "name": "mini_stampede Acquire FBX exists",
@@ -5369,7 +6123,7 @@
     {
       "name": "mini_stampede Acquire bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 270
     },
     {
       "name": "mini_stampede Acquire source action",
@@ -5395,9 +6149,9 @@
       "name": "stampede dimension manifest",
       "passed": true,
       "detail": [
-        0.7460000514984131,
-        1.712011456489563,
-        1.0664186477661133
+        0.5119068026542664,
+        1.2248927354812622,
+        0.5954470634460449
       ]
     },
     {
@@ -5429,7 +6183,7 @@
       "name": "stampede every vertex skinned",
       "passed": true,
       "detail": {
-        "vertices": 6768,
+        "vertices": 17827,
         "unweighted": 0
       }
     },
@@ -5517,9 +6271,9 @@
       "name": "stampede three ordered LODs",
       "passed": true,
       "detail": [
-        6630,
-        3314,
-        1586
+        17302,
+        8650,
+        4152
       ]
     },
     {
@@ -5540,7 +6294,7 @@
     {
       "name": "stampede Idle bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 270
     },
     {
       "name": "stampede Idle source action",
@@ -5550,7 +6304,7 @@
     {
       "name": "stampede Idle animated pose",
       "passed": true,
-      "detail": 6
+      "detail": 19
     },
     {
       "name": "stampede Locomotion FBX exists",
@@ -5570,7 +6324,7 @@
     {
       "name": "stampede Locomotion bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 270
     },
     {
       "name": "stampede Locomotion source action",
@@ -5580,7 +6334,7 @@
     {
       "name": "stampede Locomotion animated pose",
       "passed": true,
-      "detail": 25
+      "detail": 28
     },
     {
       "name": "stampede Attack FBX exists",
@@ -5600,7 +6354,7 @@
     {
       "name": "stampede Attack bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 270
     },
     {
       "name": "stampede Attack source action",
@@ -5610,7 +6364,7 @@
     {
       "name": "stampede Attack animated pose",
       "passed": true,
-      "detail": 17
+      "detail": 19
     },
     {
       "name": "stampede Hit FBX exists",
@@ -5630,7 +6384,7 @@
     {
       "name": "stampede Hit bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 270
     },
     {
       "name": "stampede Hit source action",
@@ -5640,7 +6394,7 @@
     {
       "name": "stampede Hit animated pose",
       "passed": true,
-      "detail": 17
+      "detail": 19
     },
     {
       "name": "stampede Death FBX exists",
@@ -5660,7 +6414,7 @@
     {
       "name": "stampede Death bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 270
     },
     {
       "name": "stampede Death source action",
@@ -5670,7 +6424,7 @@
     {
       "name": "stampede Death animated pose",
       "passed": true,
-      "detail": 17
+      "detail": 28
     },
     {
       "name": "stampede Deploy FBX exists",
@@ -5690,7 +6444,7 @@
     {
       "name": "stampede Deploy bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 270
     },
     {
       "name": "stampede Deploy source action",
@@ -5700,7 +6454,7 @@
     {
       "name": "stampede Deploy animated pose",
       "passed": true,
-      "detail": 17
+      "detail": 28
     },
     {
       "name": "stampede Status FBX exists",
@@ -5720,7 +6474,7 @@
     {
       "name": "stampede Status bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 270
     },
     {
       "name": "stampede Status source action",
@@ -5750,7 +6504,7 @@
     {
       "name": "stampede Turn bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 270
     },
     {
       "name": "stampede Turn source action",
@@ -5760,7 +6514,7 @@
     {
       "name": "stampede Turn animated pose",
       "passed": true,
-      "detail": 17
+      "detail": 19
     },
     {
       "name": "stampede Acquire FBX exists",
@@ -5780,7 +6534,7 @@
     {
       "name": "stampede Acquire bone tracks",
       "passed": true,
-      "detail": 252
+      "detail": 270
     },
     {
       "name": "stampede Acquire source action",
@@ -5791,6 +6545,2472 @@
       "name": "stampede Acquire animated pose",
       "passed": true,
       "detail": 6
+    },
+    {
+      "name": "pulverizer source mesh",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer source skeleton",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer dimension manifest",
+      "passed": true,
+      "detail": [
+        1.6640000343322754,
+        1.6640000343322754,
+        1.2760000228881836
+      ]
+    },
+    {
+      "name": "pulverizer finite vertices",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer UV layer",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer finite UVs",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer consolidated material slots",
+      "passed": true,
+      "detail": 2
+    },
+    {
+      "name": "pulverizer armature modifier",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer every vertex skinned",
+      "passed": true,
+      "detail": {
+        "vertices": 19886,
+        "unweighted": 0
+      }
+    },
+    {
+      "name": "pulverizer declared bones present",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer required sockets",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer required actions",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer mesh FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer mesh FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer FBX explicit units",
+      "passed": true,
+      "detail": 100.0
+    },
+    {
+      "name": "pulverizer FBX skin exported",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "pulverizer LOD1 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer LOD1 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer LOD1 smaller",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer LOD2 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer LOD2 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer LOD2 smaller",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer LOD3 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer LOD3 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer LOD3 smaller",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer three ordered LODs",
+      "passed": true,
+      "detail": [
+        19326,
+        9636,
+        4648
+      ]
+    },
+    {
+      "name": "pulverizer Idle FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Idle FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Idle one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "pulverizer Idle bone tracks",
+      "passed": true,
+      "detail": 144
+    },
+    {
+      "name": "pulverizer Idle source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Idle animated pose",
+      "passed": true,
+      "detail": 7
+    },
+    {
+      "name": "pulverizer Locomotion FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Locomotion FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Locomotion one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "pulverizer Locomotion bone tracks",
+      "passed": true,
+      "detail": 144
+    },
+    {
+      "name": "pulverizer Locomotion source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Locomotion animated pose",
+      "passed": true,
+      "detail": 7
+    },
+    {
+      "name": "pulverizer Attack FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Attack FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Attack one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "pulverizer Attack bone tracks",
+      "passed": true,
+      "detail": 144
+    },
+    {
+      "name": "pulverizer Attack source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Attack animated pose",
+      "passed": true,
+      "detail": 8
+    },
+    {
+      "name": "pulverizer Hit FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Hit FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Hit one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "pulverizer Hit bone tracks",
+      "passed": true,
+      "detail": 144
+    },
+    {
+      "name": "pulverizer Hit source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Hit animated pose",
+      "passed": true,
+      "detail": 8
+    },
+    {
+      "name": "pulverizer Death FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Death FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Death one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "pulverizer Death bone tracks",
+      "passed": true,
+      "detail": 144
+    },
+    {
+      "name": "pulverizer Death source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Death animated pose",
+      "passed": true,
+      "detail": 10
+    },
+    {
+      "name": "pulverizer Deploy FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Deploy FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Deploy one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "pulverizer Deploy bone tracks",
+      "passed": true,
+      "detail": 144
+    },
+    {
+      "name": "pulverizer Deploy source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Deploy animated pose",
+      "passed": true,
+      "detail": 8
+    },
+    {
+      "name": "pulverizer Status FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Status FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Status one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "pulverizer Status bone tracks",
+      "passed": true,
+      "detail": 144
+    },
+    {
+      "name": "pulverizer Status source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Status animated pose",
+      "passed": true,
+      "detail": 8
+    },
+    {
+      "name": "pulverizer Turn FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Turn FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Turn one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "pulverizer Turn bone tracks",
+      "passed": true,
+      "detail": 144
+    },
+    {
+      "name": "pulverizer Turn source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Turn animated pose",
+      "passed": true,
+      "detail": 8
+    },
+    {
+      "name": "pulverizer Acquire FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Acquire FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Acquire one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "pulverizer Acquire bone tracks",
+      "passed": true,
+      "detail": 144
+    },
+    {
+      "name": "pulverizer Acquire source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "pulverizer Acquire animated pose",
+      "passed": true,
+      "detail": 8
+    },
+    {
+      "name": "bone_warden source mesh",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden source skeleton",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden dimension manifest",
+      "passed": true,
+      "detail": [
+        1.3784226179122925,
+        0.6780002117156982,
+        2.056999683380127
+      ]
+    },
+    {
+      "name": "bone_warden finite vertices",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden UV layer",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden finite UVs",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden consolidated material slots",
+      "passed": true,
+      "detail": 2
+    },
+    {
+      "name": "bone_warden armature modifier",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden every vertex skinned",
+      "passed": true,
+      "detail": {
+        "vertices": 32989,
+        "unweighted": 0
+      }
+    },
+    {
+      "name": "bone_warden declared bones present",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden required sockets",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden required actions",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden mesh FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden mesh FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden FBX explicit units",
+      "passed": true,
+      "detail": 100.0
+    },
+    {
+      "name": "bone_warden FBX skin exported",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "bone_warden LOD1 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden LOD1 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden LOD1 smaller",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden LOD2 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden LOD2 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden LOD2 smaller",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden LOD3 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden LOD3 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden LOD3 smaller",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden three ordered LODs",
+      "passed": true,
+      "detail": [
+        32332,
+        16154,
+        7728
+      ]
+    },
+    {
+      "name": "bone_warden Idle FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Idle FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Idle one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "bone_warden Idle bone tracks",
+      "passed": true,
+      "detail": 360
+    },
+    {
+      "name": "bone_warden Idle source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Idle animated pose",
+      "passed": true,
+      "detail": 29
+    },
+    {
+      "name": "bone_warden Locomotion FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Locomotion FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Locomotion one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "bone_warden Locomotion bone tracks",
+      "passed": true,
+      "detail": 360
+    },
+    {
+      "name": "bone_warden Locomotion source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Locomotion animated pose",
+      "passed": true,
+      "detail": 38
+    },
+    {
+      "name": "bone_warden Attack FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Attack FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Attack one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "bone_warden Attack bone tracks",
+      "passed": true,
+      "detail": 360
+    },
+    {
+      "name": "bone_warden Attack source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Attack animated pose",
+      "passed": true,
+      "detail": 34
+    },
+    {
+      "name": "bone_warden Hit FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Hit FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Hit one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "bone_warden Hit bone tracks",
+      "passed": true,
+      "detail": 360
+    },
+    {
+      "name": "bone_warden Hit source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Hit animated pose",
+      "passed": true,
+      "detail": 34
+    },
+    {
+      "name": "bone_warden Death FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Death FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Death one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "bone_warden Death bone tracks",
+      "passed": true,
+      "detail": 360
+    },
+    {
+      "name": "bone_warden Death source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Death animated pose",
+      "passed": true,
+      "detail": 34
+    },
+    {
+      "name": "bone_warden Deploy FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Deploy FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Deploy one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "bone_warden Deploy bone tracks",
+      "passed": true,
+      "detail": 360
+    },
+    {
+      "name": "bone_warden Deploy source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Deploy animated pose",
+      "passed": true,
+      "detail": 34
+    },
+    {
+      "name": "bone_warden Status FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Status FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Status one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "bone_warden Status bone tracks",
+      "passed": true,
+      "detail": 360
+    },
+    {
+      "name": "bone_warden Status source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Status animated pose",
+      "passed": true,
+      "detail": 27
+    },
+    {
+      "name": "bone_warden Turn FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Turn FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Turn one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "bone_warden Turn bone tracks",
+      "passed": true,
+      "detail": 360
+    },
+    {
+      "name": "bone_warden Turn source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Turn animated pose",
+      "passed": true,
+      "detail": 34
+    },
+    {
+      "name": "bone_warden Acquire FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Acquire FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Acquire one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "bone_warden Acquire bone tracks",
+      "passed": true,
+      "detail": 360
+    },
+    {
+      "name": "bone_warden Acquire source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden Acquire animated pose",
+      "passed": true,
+      "detail": 27
+    },
+    {
+      "name": "bone_warden_skeleton source mesh",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton source skeleton",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton dimension manifest",
+      "passed": true,
+      "detail": [
+        0.6078974604606628,
+        0.26181235909461975,
+        0.9775021076202393
+      ]
+    },
+    {
+      "name": "bone_warden_skeleton finite vertices",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton UV layer",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton finite UVs",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton consolidated material slots",
+      "passed": true,
+      "detail": 2
+    },
+    {
+      "name": "bone_warden_skeleton armature modifier",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton every vertex skinned",
+      "passed": true,
+      "detail": {
+        "vertices": 12004,
+        "unweighted": 0
+      }
+    },
+    {
+      "name": "bone_warden_skeleton declared bones present",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton required sockets",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton required actions",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton mesh FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton mesh FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton FBX explicit units",
+      "passed": true,
+      "detail": 100.0
+    },
+    {
+      "name": "bone_warden_skeleton FBX skin exported",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "bone_warden_skeleton LOD1 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton LOD1 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton LOD1 smaller",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton LOD2 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton LOD2 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton LOD2 smaller",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton LOD3 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton LOD3 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton LOD3 smaller",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton three ordered LODs",
+      "passed": true,
+      "detail": [
+        11800,
+        5900,
+        2832
+      ]
+    },
+    {
+      "name": "bone_warden_skeleton Idle FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Idle FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Idle one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "bone_warden_skeleton Idle bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "bone_warden_skeleton Idle source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Idle animated pose",
+      "passed": true,
+      "detail": 17
+    },
+    {
+      "name": "bone_warden_skeleton Locomotion FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Locomotion FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Locomotion one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "bone_warden_skeleton Locomotion bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "bone_warden_skeleton Locomotion source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Locomotion animated pose",
+      "passed": true,
+      "detail": 26
+    },
+    {
+      "name": "bone_warden_skeleton Attack FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Attack FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Attack one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "bone_warden_skeleton Attack bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "bone_warden_skeleton Attack source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Attack animated pose",
+      "passed": true,
+      "detail": 22
+    },
+    {
+      "name": "bone_warden_skeleton Hit FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Hit FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Hit one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "bone_warden_skeleton Hit bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "bone_warden_skeleton Hit source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Hit animated pose",
+      "passed": true,
+      "detail": 22
+    },
+    {
+      "name": "bone_warden_skeleton Death FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Death FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Death one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "bone_warden_skeleton Death bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "bone_warden_skeleton Death source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Death animated pose",
+      "passed": true,
+      "detail": 22
+    },
+    {
+      "name": "bone_warden_skeleton Deploy FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Deploy FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Deploy one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "bone_warden_skeleton Deploy bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "bone_warden_skeleton Deploy source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Deploy animated pose",
+      "passed": true,
+      "detail": 22
+    },
+    {
+      "name": "bone_warden_skeleton Status FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Status FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Status one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "bone_warden_skeleton Status bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "bone_warden_skeleton Status source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Status animated pose",
+      "passed": true,
+      "detail": 15
+    },
+    {
+      "name": "bone_warden_skeleton Turn FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Turn FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Turn one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "bone_warden_skeleton Turn bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "bone_warden_skeleton Turn source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Turn animated pose",
+      "passed": true,
+      "detail": 22
+    },
+    {
+      "name": "bone_warden_skeleton Acquire FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Acquire FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Acquire one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "bone_warden_skeleton Acquire bone tracks",
+      "passed": true,
+      "detail": 252
+    },
+    {
+      "name": "bone_warden_skeleton Acquire source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bone_warden_skeleton Acquire animated pose",
+      "passed": true,
+      "detail": 15
+    },
+    {
+      "name": "aether_reaper source mesh",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper source skeleton",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper dimension manifest",
+      "passed": true,
+      "detail": [
+        1.6233811378479004,
+        0.7447385787963867,
+        1.9244493246078491
+      ]
+    },
+    {
+      "name": "aether_reaper finite vertices",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper UV layer",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper finite UVs",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper consolidated material slots",
+      "passed": true,
+      "detail": 3
+    },
+    {
+      "name": "aether_reaper armature modifier",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper every vertex skinned",
+      "passed": true,
+      "detail": {
+        "vertices": 10639,
+        "unweighted": 0
+      }
+    },
+    {
+      "name": "aether_reaper declared bones present",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper required sockets",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper required actions",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper mesh FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper mesh FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper FBX explicit units",
+      "passed": true,
+      "detail": 100.0
+    },
+    {
+      "name": "aether_reaper FBX skin exported",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "aether_reaper LOD1 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper LOD1 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper LOD1 smaller",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper LOD2 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper LOD2 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper LOD2 smaller",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper LOD3 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper LOD3 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper LOD3 smaller",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper three ordered LODs",
+      "passed": true,
+      "detail": [
+        10227,
+        5112,
+        2449
+      ]
+    },
+    {
+      "name": "aether_reaper Idle FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Idle FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Idle one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "aether_reaper Idle bone tracks",
+      "passed": true,
+      "detail": 261
+    },
+    {
+      "name": "aether_reaper Idle source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Idle animated pose",
+      "passed": true,
+      "detail": 26
+    },
+    {
+      "name": "aether_reaper Locomotion FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Locomotion FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Locomotion one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "aether_reaper Locomotion bone tracks",
+      "passed": true,
+      "detail": 261
+    },
+    {
+      "name": "aether_reaper Locomotion source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Locomotion animated pose",
+      "passed": true,
+      "detail": 26
+    },
+    {
+      "name": "aether_reaper Attack FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Attack FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Attack one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "aether_reaper Attack bone tracks",
+      "passed": true,
+      "detail": 261
+    },
+    {
+      "name": "aether_reaper Attack source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Attack animated pose",
+      "passed": true,
+      "detail": 27
+    },
+    {
+      "name": "aether_reaper Hit FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Hit FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Hit one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "aether_reaper Hit bone tracks",
+      "passed": true,
+      "detail": 261
+    },
+    {
+      "name": "aether_reaper Hit source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Hit animated pose",
+      "passed": true,
+      "detail": 26
+    },
+    {
+      "name": "aether_reaper Death FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Death FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Death one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "aether_reaper Death bone tracks",
+      "passed": true,
+      "detail": 261
+    },
+    {
+      "name": "aether_reaper Death source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Death animated pose",
+      "passed": true,
+      "detail": 27
+    },
+    {
+      "name": "aether_reaper Deploy FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Deploy FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Deploy one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "aether_reaper Deploy bone tracks",
+      "passed": true,
+      "detail": 261
+    },
+    {
+      "name": "aether_reaper Deploy source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Deploy animated pose",
+      "passed": true,
+      "detail": 27
+    },
+    {
+      "name": "aether_reaper Status FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Status FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Status one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "aether_reaper Status bone tracks",
+      "passed": true,
+      "detail": 261
+    },
+    {
+      "name": "aether_reaper Status source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Status animated pose",
+      "passed": true,
+      "detail": 26
+    },
+    {
+      "name": "aether_reaper Turn FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Turn FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Turn one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "aether_reaper Turn bone tracks",
+      "passed": true,
+      "detail": 261
+    },
+    {
+      "name": "aether_reaper Turn source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Turn animated pose",
+      "passed": true,
+      "detail": 26
+    },
+    {
+      "name": "aether_reaper Acquire FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Acquire FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Acquire one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "aether_reaper Acquire bone tracks",
+      "passed": true,
+      "detail": 261
+    },
+    {
+      "name": "aether_reaper Acquire source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "aether_reaper Acquire animated pose",
+      "passed": true,
+      "detail": 26
+    },
+    {
+      "name": "iron_giant source mesh",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant source skeleton",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant dimension manifest",
+      "passed": true,
+      "detail": [
+        1.4144186973571777,
+        0.7233999967575073,
+        1.3680000305175781
+      ]
+    },
+    {
+      "name": "iron_giant finite vertices",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant UV layer",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant finite UVs",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant consolidated material slots",
+      "passed": true,
+      "detail": 2
+    },
+    {
+      "name": "iron_giant armature modifier",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant every vertex skinned",
+      "passed": true,
+      "detail": {
+        "vertices": 23598,
+        "unweighted": 0
+      }
+    },
+    {
+      "name": "iron_giant declared bones present",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant required sockets",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant required actions",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant mesh FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant mesh FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant FBX explicit units",
+      "passed": true,
+      "detail": 100.0
+    },
+    {
+      "name": "iron_giant FBX skin exported",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "iron_giant LOD1 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant LOD1 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant LOD1 smaller",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant LOD2 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant LOD2 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant LOD2 smaller",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant LOD3 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant LOD3 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant LOD3 smaller",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant three ordered LODs",
+      "passed": true,
+      "detail": [
+        23073,
+        11536,
+        5519
+      ]
+    },
+    {
+      "name": "iron_giant Idle FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Idle FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Idle one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "iron_giant Idle bone tracks",
+      "passed": true,
+      "detail": 315
+    },
+    {
+      "name": "iron_giant Idle source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Idle animated pose",
+      "passed": true,
+      "detail": 22
+    },
+    {
+      "name": "iron_giant Locomotion FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Locomotion FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Locomotion one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "iron_giant Locomotion bone tracks",
+      "passed": true,
+      "detail": 315
+    },
+    {
+      "name": "iron_giant Locomotion source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Locomotion animated pose",
+      "passed": true,
+      "detail": 33
+    },
+    {
+      "name": "iron_giant Attack FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Attack FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Attack one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "iron_giant Attack bone tracks",
+      "passed": true,
+      "detail": 315
+    },
+    {
+      "name": "iron_giant Attack source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Attack animated pose",
+      "passed": true,
+      "detail": 29
+    },
+    {
+      "name": "iron_giant Hit FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Hit FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Hit one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "iron_giant Hit bone tracks",
+      "passed": true,
+      "detail": 315
+    },
+    {
+      "name": "iron_giant Hit source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Hit animated pose",
+      "passed": true,
+      "detail": 29
+    },
+    {
+      "name": "iron_giant Death FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Death FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Death one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "iron_giant Death bone tracks",
+      "passed": true,
+      "detail": 315
+    },
+    {
+      "name": "iron_giant Death source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Death animated pose",
+      "passed": true,
+      "detail": 29
+    },
+    {
+      "name": "iron_giant Deploy FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Deploy FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Deploy one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "iron_giant Deploy bone tracks",
+      "passed": true,
+      "detail": 315
+    },
+    {
+      "name": "iron_giant Deploy source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Deploy animated pose",
+      "passed": true,
+      "detail": 29
+    },
+    {
+      "name": "iron_giant Status FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Status FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Status one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "iron_giant Status bone tracks",
+      "passed": true,
+      "detail": 315
+    },
+    {
+      "name": "iron_giant Status source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Status animated pose",
+      "passed": true,
+      "detail": 20
+    },
+    {
+      "name": "iron_giant Turn FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Turn FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Turn one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "iron_giant Turn bone tracks",
+      "passed": true,
+      "detail": 315
+    },
+    {
+      "name": "iron_giant Turn source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Turn animated pose",
+      "passed": true,
+      "detail": 29
+    },
+    {
+      "name": "iron_giant Acquire FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Acquire FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Acquire one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "iron_giant Acquire bone tracks",
+      "passed": true,
+      "detail": 315
+    },
+    {
+      "name": "iron_giant Acquire source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_giant Acquire animated pose",
+      "passed": true,
+      "detail": 20
+    },
+    {
+      "name": "dart_gun source mesh",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun source skeleton",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun dimension manifest",
+      "passed": true,
+      "detail": [
+        0.9450000524520874,
+        1.1430001258850098,
+        1.929998755455017
+      ]
+    },
+    {
+      "name": "dart_gun finite vertices",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun UV layer",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun finite UVs",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun consolidated material slots",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "dart_gun armature modifier",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun every vertex skinned",
+      "passed": true,
+      "detail": {
+        "vertices": 52754,
+        "unweighted": 0
+      }
+    },
+    {
+      "name": "dart_gun declared bones present",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun required sockets",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun required actions",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun mesh FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun mesh FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun FBX explicit units",
+      "passed": true,
+      "detail": 100.0
+    },
+    {
+      "name": "dart_gun FBX skin exported",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "dart_gun LOD1 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun LOD1 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun LOD1 smaller",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun LOD2 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun LOD2 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun LOD2 smaller",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun LOD3 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun LOD3 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun LOD3 smaller",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun three ordered LODs",
+      "passed": true,
+      "detail": [
+        52380,
+        26190,
+        12562
+      ]
+    },
+    {
+      "name": "dart_gun Idle FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Idle FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Idle one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "dart_gun Idle bone tracks",
+      "passed": true,
+      "detail": 243
+    },
+    {
+      "name": "dart_gun Idle source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Idle animated pose",
+      "passed": true,
+      "detail": 15
+    },
+    {
+      "name": "dart_gun Locomotion FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Locomotion FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Locomotion one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "dart_gun Locomotion bone tracks",
+      "passed": true,
+      "detail": 243
+    },
+    {
+      "name": "dart_gun Locomotion source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Locomotion animated pose",
+      "passed": true,
+      "detail": 25
+    },
+    {
+      "name": "dart_gun Attack FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Attack FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Attack one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "dart_gun Attack bone tracks",
+      "passed": true,
+      "detail": 243
+    },
+    {
+      "name": "dart_gun Attack source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Attack animated pose",
+      "passed": true,
+      "detail": 15
+    },
+    {
+      "name": "dart_gun Hit FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Hit FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Hit one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "dart_gun Hit bone tracks",
+      "passed": true,
+      "detail": 243
+    },
+    {
+      "name": "dart_gun Hit source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Hit animated pose",
+      "passed": true,
+      "detail": 15
+    },
+    {
+      "name": "dart_gun Death FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Death FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Death one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "dart_gun Death bone tracks",
+      "passed": true,
+      "detail": 243
+    },
+    {
+      "name": "dart_gun Death source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Death animated pose",
+      "passed": true,
+      "detail": 25
+    },
+    {
+      "name": "dart_gun Deploy FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Deploy FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Deploy one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "dart_gun Deploy bone tracks",
+      "passed": true,
+      "detail": 243
+    },
+    {
+      "name": "dart_gun Deploy source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Deploy animated pose",
+      "passed": true,
+      "detail": 25
+    },
+    {
+      "name": "dart_gun Status FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Status FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Status one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "dart_gun Status bone tracks",
+      "passed": true,
+      "detail": 243
+    },
+    {
+      "name": "dart_gun Status source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Status animated pose",
+      "passed": true,
+      "detail": 15
+    },
+    {
+      "name": "dart_gun Turn FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Turn FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Turn one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "dart_gun Turn bone tracks",
+      "passed": true,
+      "detail": 243
+    },
+    {
+      "name": "dart_gun Turn source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Turn animated pose",
+      "passed": true,
+      "detail": 15
+    },
+    {
+      "name": "dart_gun Acquire FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Acquire FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Acquire one FBX animation stack",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "dart_gun Acquire bone tracks",
+      "passed": true,
+      "detail": 243
+    },
+    {
+      "name": "dart_gun Acquire source action",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_gun Acquire animated pose",
+      "passed": true,
+      "detail": 15
     },
     {
       "name": "tower_guard static FBX exists",
@@ -6530,7 +9750,7 @@
     {
       "name": "bullet_round static materials",
       "passed": true,
-      "detail": 1
+      "detail": 2
     },
     {
       "name": "bullet_round static LOD1 exists",
@@ -6793,6 +10013,166 @@
       "detail": ""
     },
     {
+      "name": "iron_shield_fragment static FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_shield_fragment static FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_shield_fragment static FBX units",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_shield_fragment static materials",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "iron_shield_fragment static LOD1 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_shield_fragment static LOD1 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_shield_fragment static LOD2 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "iron_shield_fragment static LOD2 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "shadow_surge_wisp static FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "shadow_surge_wisp static FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "shadow_surge_wisp static FBX units",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "shadow_surge_wisp static materials",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "shadow_surge_wisp static LOD1 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "shadow_surge_wisp static LOD1 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "shadow_surge_wisp static LOD2 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "shadow_surge_wisp static LOD2 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "shadow_surge_ribbon static FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "shadow_surge_ribbon static FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "shadow_surge_ribbon static FBX units",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "shadow_surge_ribbon static materials",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "shadow_surge_ribbon static LOD1 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "shadow_surge_ribbon static LOD1 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "shadow_surge_ribbon static LOD2 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "shadow_surge_ribbon static LOD2 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_projectile static FBX exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_projectile static FBX SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_projectile static FBX units",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_projectile static materials",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "dart_projectile static LOD1 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_projectile static LOD1 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_projectile static LOD2 exists",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dart_projectile static LOD2 SHA256",
+      "passed": true,
+      "detail": ""
+    },
+    {
       "name": "BaseColor texture source",
       "passed": true,
       "detail": ""
@@ -6823,18 +10203,23 @@
       "detail": ""
     },
     {
+      "name": "Pulverizer skeletal building identity",
+      "passed": true,
+      "detail": ""
+    },
+    {
       "name": "Ironclad FBX unit roundtrip",
       "passed": true,
       "detail": {
         "sourceMeters": [
           1.3285150527954102,
           0.6670000553131104,
-          2.1555709838867188
+          2.22829270362854
         ],
         "importMeters": [
           1.3285150527954102,
           0.6669998168945312,
-          2.1555705070495605
+          2.228292465209961
         ],
         "fbxUnitScaleFactor": 100
       }
@@ -6857,398 +10242,398 @@
   ],
   "characters": {
     "ironclad": {
-      "vertices": 12322,
-      "triangles": 24240,
-      "boneCount": 25,
+      "vertices": 21434,
+      "triangles": 42074,
+      "boneCount": 27,
       "materialSlots": 2,
       "boundsMeters": [
         1.3285150527954102,
         0.6670000553131104,
-        2.1555709838867188
+        2.22829270362854
       ],
       "actions": [
         {
           "action": "Idle",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 17,
+          "fbxCurves": 252,
           "durationSeconds": 1.9666666666666666
         },
         {
           "action": "Locomotion",
-          "movingBones": 24,
-          "fbxCurves": 234,
+          "movingBones": 26,
+          "fbxCurves": 252,
           "durationSeconds": 0.9666666666666667
         },
         {
           "action": "Attack",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 17,
+          "fbxCurves": 252,
           "durationSeconds": 0.9666666666666667
         },
         {
           "action": "Hit",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 17,
+          "fbxCurves": 252,
           "durationSeconds": 0.5
         },
         {
           "action": "Death",
-          "movingBones": 24,
-          "fbxCurves": 234,
+          "movingBones": 26,
+          "fbxCurves": 252,
           "durationSeconds": 1.4666666666666666
         },
         {
           "action": "Deploy",
-          "movingBones": 24,
-          "fbxCurves": 234,
+          "movingBones": 26,
+          "fbxCurves": 252,
           "durationSeconds": 0.7666666666666667
         },
         {
           "action": "Status",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 17,
+          "fbxCurves": 252,
           "durationSeconds": 0.9666666666666667
         },
         {
           "action": "Turn",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 17,
+          "fbxCurves": 252,
           "durationSeconds": 0.7666666666666667
         },
         {
           "action": "Acquire",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 17,
+          "fbxCurves": 252,
           "durationSeconds": 0.5666666666666667
         }
       ],
       "lodTriangles": [
-        12120,
-        6060,
-        2896
+        21037,
+        10517,
+        5035
       ]
     },
     "ember_archer": {
-      "vertices": 12688,
-      "triangles": 24988,
-      "boneCount": 25,
+      "vertices": 23590,
+      "triangles": 46464,
+      "boneCount": 29,
       "materialSlots": 1,
       "boundsMeters": [
-        1.038766622543335,
-        0.6501976251602173,
-        1.8976101875305176
+        1.0262078046798706,
+        0.9638462066650391,
+        1.9057503938674927
       ],
       "actions": [
         {
           "action": "Idle",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 19,
+          "fbxCurves": 270,
           "durationSeconds": 1.9666666666666666
         },
         {
           "action": "Locomotion",
-          "movingBones": 24,
-          "fbxCurves": 234,
+          "movingBones": 28,
+          "fbxCurves": 270,
           "durationSeconds": 0.9666666666666667
         },
         {
           "action": "Attack",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 19,
+          "fbxCurves": 270,
           "durationSeconds": 0.9666666666666667
         },
         {
           "action": "Hit",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 19,
+          "fbxCurves": 270,
           "durationSeconds": 0.5
         },
         {
           "action": "Death",
-          "movingBones": 24,
-          "fbxCurves": 234,
+          "movingBones": 28,
+          "fbxCurves": 270,
           "durationSeconds": 1.4666666666666666
         },
         {
           "action": "Deploy",
-          "movingBones": 24,
-          "fbxCurves": 234,
+          "movingBones": 28,
+          "fbxCurves": 270,
           "durationSeconds": 0.7666666666666667
         },
         {
           "action": "Status",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 19,
+          "fbxCurves": 270,
           "durationSeconds": 0.9666666666666667
         },
         {
           "action": "Turn",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 19,
+          "fbxCurves": 270,
           "durationSeconds": 0.7666666666666667
         },
         {
           "action": "Acquire",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 19,
+          "fbxCurves": 270,
           "durationSeconds": 0.5666666666666667
         },
         {
           "action": "DrawRelease",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 19,
+          "fbxCurves": 270,
           "durationSeconds": 1.5
         }
       ],
       "lodTriangles": [
-        12494,
-        6246,
-        2998
+        23231,
+        11612,
+        5570
       ]
     },
     "twin_blades": {
-      "vertices": 14553,
-      "triangles": 28734,
-      "boneCount": 25,
+      "vertices": 18927,
+      "triangles": 37232,
+      "boneCount": 26,
       "materialSlots": 2,
       "boundsMeters": [
         1.0735392570495605,
         0.5861743688583374,
-        1.8132785558700562
+        1.8210572004318237
       ],
       "actions": [
         {
           "action": "Idle",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 16,
+          "fbxCurves": 243,
           "durationSeconds": 1.9666666666666666
         },
         {
           "action": "Locomotion",
-          "movingBones": 24,
-          "fbxCurves": 234,
+          "movingBones": 25,
+          "fbxCurves": 243,
           "durationSeconds": 0.9666666666666667
         },
         {
           "action": "Attack",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 16,
+          "fbxCurves": 243,
           "durationSeconds": 0.9666666666666667
         },
         {
           "action": "Hit",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 16,
+          "fbxCurves": 243,
           "durationSeconds": 0.5
         },
         {
           "action": "Death",
-          "movingBones": 24,
-          "fbxCurves": 234,
+          "movingBones": 25,
+          "fbxCurves": 243,
           "durationSeconds": 1.4666666666666666
         },
         {
           "action": "Deploy",
-          "movingBones": 24,
-          "fbxCurves": 234,
+          "movingBones": 25,
+          "fbxCurves": 243,
           "durationSeconds": 0.7666666666666667
         },
         {
           "action": "Status",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 16,
+          "fbxCurves": 243,
           "durationSeconds": 0.9666666666666667
         },
         {
           "action": "Turn",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 16,
+          "fbxCurves": 243,
           "durationSeconds": 0.7666666666666667
         },
         {
           "action": "Acquire",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 16,
+          "fbxCurves": 243,
           "durationSeconds": 0.5666666666666667
         },
         {
           "action": "AlternateStrike",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 16,
+          "fbxCurves": 243,
           "durationSeconds": 1.4333333333333333
         }
       ],
       "lodTriangles": [
-        14366,
-        7182,
-        3448
+        18616,
+        9306,
+        4466
       ]
     },
     "arc_mage": {
-      "vertices": 14357,
-      "triangles": 28302,
-      "boneCount": 25,
+      "vertices": 25151,
+      "triangles": 49714,
+      "boneCount": 26,
       "materialSlots": 2,
       "boundsMeters": [
         1.1741681098937988,
-        0.6206409931182861,
-        2.276381254196167
+        0.6306159496307373,
+        2.2928991317749023
       ],
       "actions": [
         {
           "action": "Idle",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 16,
+          "fbxCurves": 243,
           "durationSeconds": 1.9666666666666666
         },
         {
           "action": "Locomotion",
-          "movingBones": 24,
-          "fbxCurves": 234,
+          "movingBones": 25,
+          "fbxCurves": 243,
           "durationSeconds": 0.9666666666666667
         },
         {
           "action": "Attack",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 16,
+          "fbxCurves": 243,
           "durationSeconds": 0.9666666666666667
         },
         {
           "action": "Hit",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 16,
+          "fbxCurves": 243,
           "durationSeconds": 0.5
         },
         {
           "action": "Death",
-          "movingBones": 24,
-          "fbxCurves": 234,
+          "movingBones": 25,
+          "fbxCurves": 243,
           "durationSeconds": 1.4666666666666666
         },
         {
           "action": "Deploy",
-          "movingBones": 24,
-          "fbxCurves": 234,
+          "movingBones": 25,
+          "fbxCurves": 243,
           "durationSeconds": 0.7666666666666667
         },
         {
           "action": "Status",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 16,
+          "fbxCurves": 243,
           "durationSeconds": 0.9666666666666667
         },
         {
           "action": "Turn",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 16,
+          "fbxCurves": 243,
           "durationSeconds": 0.7666666666666667
         },
         {
           "action": "Acquire",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 16,
+          "fbxCurves": 243,
           "durationSeconds": 0.5666666666666667
         },
         {
           "action": "Cast",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 16,
+          "fbxCurves": 243,
           "durationSeconds": 0.9666666666666667
         }
       ],
       "lodTriangles": [
-        14150,
-        7074,
-        3396
+        24856,
+        12422,
+        5964
       ]
     },
     "tower_archer": {
-      "vertices": 12688,
-      "triangles": 24988,
-      "boneCount": 25,
+      "vertices": 34594,
+      "triangles": 68668,
+      "boneCount": 29,
       "materialSlots": 1,
       "boundsMeters": [
-        1.038766622543335,
-        0.6501976251602173,
-        1.8976101875305176
+        1.0262078046798706,
+        0.9638462066650391,
+        1.9057503938674927
       ],
       "actions": [
         {
           "action": "Idle",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 19,
+          "fbxCurves": 270,
           "durationSeconds": 1.9666666666666666
         },
         {
           "action": "Locomotion",
-          "movingBones": 24,
-          "fbxCurves": 234,
+          "movingBones": 28,
+          "fbxCurves": 270,
           "durationSeconds": 0.9666666666666667
         },
         {
           "action": "Attack",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 19,
+          "fbxCurves": 270,
           "durationSeconds": 0.9666666666666667
         },
         {
           "action": "Hit",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 19,
+          "fbxCurves": 270,
           "durationSeconds": 0.5
         },
         {
           "action": "Death",
-          "movingBones": 24,
-          "fbxCurves": 234,
+          "movingBones": 28,
+          "fbxCurves": 270,
           "durationSeconds": 1.4666666666666666
         },
         {
           "action": "Deploy",
-          "movingBones": 24,
-          "fbxCurves": 234,
+          "movingBones": 28,
+          "fbxCurves": 270,
           "durationSeconds": 0.7666666666666667
         },
         {
           "action": "Status",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 19,
+          "fbxCurves": 270,
           "durationSeconds": 0.9666666666666667
         },
         {
           "action": "Turn",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 19,
+          "fbxCurves": 270,
           "durationSeconds": 0.7666666666666667
         },
         {
           "action": "Acquire",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 19,
+          "fbxCurves": 270,
           "durationSeconds": 0.5666666666666667
         },
         {
           "action": "DrawRelease",
-          "movingBones": 15,
-          "fbxCurves": 234,
+          "movingBones": 19,
+          "fbxCurves": 270,
           "durationSeconds": 1.0666666666666667
         }
       ],
       "lodTriangles": [
-        12494,
-        6246,
-        2998
+        34334,
+        17166,
+        8240
       ]
     },
     "boulderback": {
-      "vertices": 20822,
-      "triangles": 41516,
+      "vertices": 22053,
+      "triangles": 43806,
       "boneCount": 27,
       "materialSlots": 2,
       "boundsMeters": [
-        1.239999771118164,
-        2.2259891033172607,
-        2.1162524223327637
+        1.2230916023254395,
+        2.2279891967773438,
+        2.0980000495910645
       ],
       "actions": [
         {
@@ -7313,94 +10698,94 @@
         }
       ],
       "lodTriangles": [
-        20758,
-        10378,
-        4980
+        21902,
+        10950,
+        5256
       ]
     },
     "rambeast": {
-      "vertices": 22267,
-      "triangles": 44386,
-      "boneCount": 27,
+      "vertices": 46323,
+      "triangles": 90814,
+      "boneCount": 28,
       "materialSlots": 2,
       "boundsMeters": [
         1.2982109785079956,
         2.5863091945648193,
-        1.7150214910507202
+        1.7045843601226807
       ],
       "actions": [
         {
           "action": "Idle",
-          "movingBones": 6,
-          "fbxCurves": 252,
+          "movingBones": 7,
+          "fbxCurves": 261,
           "durationSeconds": 1.9666666666666666
         },
         {
           "action": "Locomotion",
-          "movingBones": 25,
-          "fbxCurves": 252,
+          "movingBones": 26,
+          "fbxCurves": 261,
           "durationSeconds": 0.9666666666666667
         },
         {
           "action": "Attack",
-          "movingBones": 17,
-          "fbxCurves": 252,
+          "movingBones": 18,
+          "fbxCurves": 261,
           "durationSeconds": 0.9666666666666667
         },
         {
           "action": "Hit",
-          "movingBones": 17,
-          "fbxCurves": 252,
+          "movingBones": 18,
+          "fbxCurves": 261,
           "durationSeconds": 0.5
         },
         {
           "action": "Death",
-          "movingBones": 17,
-          "fbxCurves": 252,
+          "movingBones": 18,
+          "fbxCurves": 261,
           "durationSeconds": 1.4666666666666666
         },
         {
           "action": "Deploy",
-          "movingBones": 17,
-          "fbxCurves": 252,
+          "movingBones": 18,
+          "fbxCurves": 261,
           "durationSeconds": 0.7666666666666667
         },
         {
           "action": "Status",
-          "movingBones": 6,
-          "fbxCurves": 252,
+          "movingBones": 7,
+          "fbxCurves": 261,
           "durationSeconds": 0.9666666666666667
         },
         {
           "action": "Turn",
-          "movingBones": 17,
-          "fbxCurves": 252,
+          "movingBones": 18,
+          "fbxCurves": 261,
           "durationSeconds": 0.7666666666666667
         },
         {
           "action": "Acquire",
-          "movingBones": 6,
-          "fbxCurves": 252,
+          "movingBones": 7,
+          "fbxCurves": 261,
           "durationSeconds": 0.5666666666666667
         },
         {
           "action": "Charge",
-          "movingBones": 25,
-          "fbxCurves": 252,
+          "movingBones": 26,
+          "fbxCurves": 261,
           "durationSeconds": 0.9666666666666667
         }
       ],
       "lodTriangles": [
-        22192,
-        11096,
-        5324
+        45406,
+        22696,
+        10896
       ]
     },
     "frost_fang": {
-      "vertices": 20692,
-      "triangles": 41158,
-      "boneCount": 27,
-      "materialSlots": 2,
+      "vertices": 29248,
+      "triangles": 57242,
+      "boneCount": 28,
+      "materialSlots": 1,
       "boundsMeters": [
         1.2199997901916504,
         2.546309232711792,
@@ -7409,80 +10794,80 @@
       "actions": [
         {
           "action": "Idle",
-          "movingBones": 6,
-          "fbxCurves": 252,
+          "movingBones": 7,
+          "fbxCurves": 261,
           "durationSeconds": 1.9666666666666666
         },
         {
           "action": "Locomotion",
-          "movingBones": 25,
-          "fbxCurves": 252,
+          "movingBones": 26,
+          "fbxCurves": 261,
           "durationSeconds": 0.9666666666666667
         },
         {
           "action": "Attack",
-          "movingBones": 17,
-          "fbxCurves": 252,
+          "movingBones": 18,
+          "fbxCurves": 261,
           "durationSeconds": 0.9666666666666667
         },
         {
           "action": "Hit",
-          "movingBones": 17,
-          "fbxCurves": 252,
+          "movingBones": 18,
+          "fbxCurves": 261,
           "durationSeconds": 0.5
         },
         {
           "action": "Death",
-          "movingBones": 17,
-          "fbxCurves": 252,
+          "movingBones": 18,
+          "fbxCurves": 261,
           "durationSeconds": 1.4666666666666666
         },
         {
           "action": "Deploy",
-          "movingBones": 17,
-          "fbxCurves": 252,
+          "movingBones": 18,
+          "fbxCurves": 261,
           "durationSeconds": 0.7666666666666667
         },
         {
           "action": "Status",
-          "movingBones": 6,
-          "fbxCurves": 252,
+          "movingBones": 7,
+          "fbxCurves": 261,
           "durationSeconds": 0.9666666666666667
         },
         {
           "action": "Turn",
-          "movingBones": 17,
-          "fbxCurves": 252,
+          "movingBones": 18,
+          "fbxCurves": 261,
           "durationSeconds": 0.7666666666666667
         },
         {
           "action": "Acquire",
-          "movingBones": 6,
-          "fbxCurves": 252,
+          "movingBones": 7,
+          "fbxCurves": 261,
           "durationSeconds": 0.5666666666666667
         },
         {
           "action": "FrostAttack",
-          "movingBones": 17,
-          "fbxCurves": 252,
+          "movingBones": 18,
+          "fbxCurves": 261,
           "durationSeconds": 0.7666666666666667
         },
         {
           "action": "Breath",
-          "movingBones": 3,
-          "fbxCurves": 252,
+          "movingBones": 4,
+          "fbxCurves": 261,
           "durationSeconds": 1.9666666666666666
         }
       ],
       "lodTriangles": [
-        20578,
-        10288,
-        4938
+        28620,
+        14310,
+        6868
       ]
     },
     "sky_manta": {
-      "vertices": 9858,
-      "triangles": 19600,
+      "vertices": 13672,
+      "triangles": 27072,
       "boneCount": 20,
       "materialSlots": 2,
       "boundsMeters": [
@@ -7553,20 +10938,20 @@
         }
       ],
       "lodTriangles": [
-        9800,
-        4900,
-        2352
+        13536,
+        6768,
+        3246
       ]
     },
     "vampire_bats": {
-      "vertices": 7372,
-      "triangles": 14598,
+      "vertices": 15124,
+      "triangles": 29424,
       "boneCount": 20,
-      "materialSlots": 2,
+      "materialSlots": 1,
       "boundsMeters": [
-        2.2638723850250244,
-        1.2457504272460938,
-        0.8178354501724243
+        2.2632434368133545,
+        1.2453699111938477,
+        0.8180428743362427
       ],
       "actions": [
         {
@@ -7631,20 +11016,20 @@
         }
       ],
       "lodTriangles": [
-        7298,
-        3648,
-        1750
+        14712,
+        7356,
+        3530
       ]
     },
     "storm_raven": {
-      "vertices": 12186,
-      "triangles": 23344,
+      "vertices": 17430,
+      "triangles": 33784,
       "boneCount": 20,
       "materialSlots": 2,
       "boundsMeters": [
-        3.332244396209717,
-        1.8566105365753174,
-        0.7926256656646729
+        3.3622100353240967,
+        1.896559476852417,
+        0.8339977860450745
       ],
       "actions": [
         {
@@ -7727,159 +11112,591 @@
         }
       ],
       "lodTriangles": [
-        11672,
-        5820,
-        2800
+        16892,
+        8446,
+        4054
       ]
     },
     "mini_stampede": {
-      "vertices": 5442,
-      "triangles": 10676,
-      "boneCount": 27,
+      "vertices": 16887,
+      "triangles": 32818,
+      "boneCount": 29,
       "materialSlots": 1,
       "boundsMeters": [
-        0.7041628360748291,
-        1.712011456489563,
-        1.0356413125991821
+        0.5119068026542664,
+        1.2248927354812622,
+        0.5954470634460449
       ],
       "actions": [
         {
           "action": "Idle",
-          "movingBones": 6,
-          "fbxCurves": 252,
-          "durationSeconds": 1.9666666666666666
+          "movingBones": 19,
+          "fbxCurves": 270,
+          "durationSeconds": 2.0
         },
         {
           "action": "Locomotion",
-          "movingBones": 25,
-          "fbxCurves": 252,
-          "durationSeconds": 0.9666666666666667
+          "movingBones": 28,
+          "fbxCurves": 270,
+          "durationSeconds": 0.42
         },
         {
           "action": "Attack",
-          "movingBones": 17,
-          "fbxCurves": 252,
-          "durationSeconds": 0.9666666666666667
+          "movingBones": 19,
+          "fbxCurves": 270,
+          "durationSeconds": 0.44
         },
         {
           "action": "Hit",
-          "movingBones": 17,
-          "fbxCurves": 252,
-          "durationSeconds": 0.5
+          "movingBones": 19,
+          "fbxCurves": 270,
+          "durationSeconds": 0.16
         },
         {
           "action": "Death",
-          "movingBones": 17,
-          "fbxCurves": 252,
-          "durationSeconds": 1.4666666666666666
+          "movingBones": 28,
+          "fbxCurves": 270,
+          "durationSeconds": 0.65
         },
         {
           "action": "Deploy",
-          "movingBones": 17,
-          "fbxCurves": 252,
-          "durationSeconds": 0.7666666666666667
+          "movingBones": 28,
+          "fbxCurves": 270,
+          "durationSeconds": 0.3
         },
         {
           "action": "Status",
           "movingBones": 6,
-          "fbxCurves": 252,
-          "durationSeconds": 0.9666666666666667
+          "fbxCurves": 270,
+          "durationSeconds": 1.0
         },
         {
           "action": "Turn",
-          "movingBones": 17,
-          "fbxCurves": 252,
-          "durationSeconds": 0.7666666666666667
+          "movingBones": 19,
+          "fbxCurves": 270,
+          "durationSeconds": 0.18
         },
         {
           "action": "Acquire",
           "movingBones": 6,
-          "fbxCurves": 252,
-          "durationSeconds": 0.5666666666666667
+          "fbxCurves": 270,
+          "durationSeconds": 0.12
         }
       ],
       "lodTriangles": [
-        5338,
-        2668,
-        1280
+        16408,
+        8204,
+        3938
       ]
     },
     "stampede": {
-      "vertices": 6768,
-      "triangles": 13260,
-      "boneCount": 27,
+      "vertices": 17827,
+      "triangles": 34614,
+      "boneCount": 29,
       "materialSlots": 1,
       "boundsMeters": [
-        0.7460000514984131,
-        1.712011456489563,
-        1.0664186477661133
+        0.5119068026542664,
+        1.2248927354812622,
+        0.5954470634460449
       ],
       "actions": [
         {
           "action": "Idle",
-          "movingBones": 6,
-          "fbxCurves": 252,
-          "durationSeconds": 1.9666666666666666
+          "movingBones": 19,
+          "fbxCurves": 270,
+          "durationSeconds": 2.0
         },
         {
           "action": "Locomotion",
-          "movingBones": 25,
-          "fbxCurves": 252,
-          "durationSeconds": 0.9666666666666667
+          "movingBones": 28,
+          "fbxCurves": 270,
+          "durationSeconds": 0.46
         },
         {
           "action": "Attack",
-          "movingBones": 17,
-          "fbxCurves": 252,
-          "durationSeconds": 0.9666666666666667
+          "movingBones": 19,
+          "fbxCurves": 270,
+          "durationSeconds": 0.52
         },
         {
           "action": "Hit",
-          "movingBones": 17,
-          "fbxCurves": 252,
-          "durationSeconds": 0.5
+          "movingBones": 19,
+          "fbxCurves": 270,
+          "durationSeconds": 0.16
         },
         {
           "action": "Death",
-          "movingBones": 17,
-          "fbxCurves": 252,
-          "durationSeconds": 1.4666666666666666
+          "movingBones": 28,
+          "fbxCurves": 270,
+          "durationSeconds": 0.6
         },
         {
           "action": "Deploy",
-          "movingBones": 17,
-          "fbxCurves": 252,
-          "durationSeconds": 0.7666666666666667
+          "movingBones": 28,
+          "fbxCurves": 270,
+          "durationSeconds": 0.3
         },
         {
           "action": "Status",
           "movingBones": 6,
-          "fbxCurves": 252,
-          "durationSeconds": 0.9666666666666667
+          "fbxCurves": 270,
+          "durationSeconds": 1.0
         },
         {
           "action": "Turn",
-          "movingBones": 17,
-          "fbxCurves": 252,
-          "durationSeconds": 0.7666666666666667
+          "movingBones": 19,
+          "fbxCurves": 270,
+          "durationSeconds": 0.18
         },
         {
           "action": "Acquire",
           "movingBones": 6,
-          "fbxCurves": 252,
-          "durationSeconds": 0.5666666666666667
+          "fbxCurves": 270,
+          "durationSeconds": 0.12
         }
       ],
       "lodTriangles": [
-        6630,
-        3314,
-        1586
+        17302,
+        8650,
+        4152
+      ]
+    },
+    "pulverizer": {
+      "vertices": 19886,
+      "triangles": 38740,
+      "boneCount": 15,
+      "materialSlots": 2,
+      "boundsMeters": [
+        1.6640000343322754,
+        1.6640000343322754,
+        1.2760000228881836
+      ],
+      "actions": [
+        {
+          "action": "Idle",
+          "movingBones": 7,
+          "fbxCurves": 144,
+          "durationSeconds": 2.0
+        },
+        {
+          "action": "Locomotion",
+          "movingBones": 7,
+          "fbxCurves": 144,
+          "durationSeconds": 2.0
+        },
+        {
+          "action": "Attack",
+          "movingBones": 8,
+          "fbxCurves": 144,
+          "durationSeconds": 0.38
+        },
+        {
+          "action": "Hit",
+          "movingBones": 8,
+          "fbxCurves": 144,
+          "durationSeconds": 0.16
+        },
+        {
+          "action": "Death",
+          "movingBones": 10,
+          "fbxCurves": 144,
+          "durationSeconds": 0.85
+        },
+        {
+          "action": "Deploy",
+          "movingBones": 8,
+          "fbxCurves": 144,
+          "durationSeconds": 0.3
+        },
+        {
+          "action": "Status",
+          "movingBones": 8,
+          "fbxCurves": 144,
+          "durationSeconds": 1.0
+        },
+        {
+          "action": "Turn",
+          "movingBones": 8,
+          "fbxCurves": 144,
+          "durationSeconds": 0.18
+        },
+        {
+          "action": "Acquire",
+          "movingBones": 8,
+          "fbxCurves": 144,
+          "durationSeconds": 0.12
+        }
+      ],
+      "lodTriangles": [
+        19326,
+        9636,
+        4648
+      ]
+    },
+    "bone_warden": {
+      "vertices": 32989,
+      "triangles": 64666,
+      "boneCount": 39,
+      "materialSlots": 2,
+      "boundsMeters": [
+        1.3784226179122925,
+        0.6780002117156982,
+        2.056999683380127
+      ],
+      "actions": [
+        {
+          "action": "Idle",
+          "movingBones": 29,
+          "fbxCurves": 360,
+          "durationSeconds": 2.0
+        },
+        {
+          "action": "Locomotion",
+          "movingBones": 38,
+          "fbxCurves": 360,
+          "durationSeconds": 1.1
+        },
+        {
+          "action": "Attack",
+          "movingBones": 34,
+          "fbxCurves": 360,
+          "durationSeconds": 0.82
+        },
+        {
+          "action": "Hit",
+          "movingBones": 34,
+          "fbxCurves": 360,
+          "durationSeconds": 0.16
+        },
+        {
+          "action": "Death",
+          "movingBones": 34,
+          "fbxCurves": 360,
+          "durationSeconds": 0.9
+        },
+        {
+          "action": "Deploy",
+          "movingBones": 34,
+          "fbxCurves": 360,
+          "durationSeconds": 0.3
+        },
+        {
+          "action": "Status",
+          "movingBones": 27,
+          "fbxCurves": 360,
+          "durationSeconds": 1.0
+        },
+        {
+          "action": "Turn",
+          "movingBones": 34,
+          "fbxCurves": 360,
+          "durationSeconds": 0.18
+        },
+        {
+          "action": "Acquire",
+          "movingBones": 27,
+          "fbxCurves": 360,
+          "durationSeconds": 0.12
+        }
+      ],
+      "lodTriangles": [
+        32332,
+        16154,
+        7728
+      ]
+    },
+    "bone_warden_skeleton": {
+      "vertices": 12004,
+      "triangles": 23600,
+      "boneCount": 27,
+      "materialSlots": 2,
+      "boundsMeters": [
+        0.6078974604606628,
+        0.26181235909461975,
+        0.9775021076202393
+      ],
+      "actions": [
+        {
+          "action": "Idle",
+          "movingBones": 17,
+          "fbxCurves": 252,
+          "durationSeconds": 2.0
+        },
+        {
+          "action": "Locomotion",
+          "movingBones": 26,
+          "fbxCurves": 252,
+          "durationSeconds": 0.55
+        },
+        {
+          "action": "Attack",
+          "movingBones": 22,
+          "fbxCurves": 252,
+          "durationSeconds": 0.32
+        },
+        {
+          "action": "Hit",
+          "movingBones": 22,
+          "fbxCurves": 252,
+          "durationSeconds": 0.16
+        },
+        {
+          "action": "Death",
+          "movingBones": 22,
+          "fbxCurves": 252,
+          "durationSeconds": 0.45
+        },
+        {
+          "action": "Deploy",
+          "movingBones": 22,
+          "fbxCurves": 252,
+          "durationSeconds": 0.3
+        },
+        {
+          "action": "Status",
+          "movingBones": 15,
+          "fbxCurves": 252,
+          "durationSeconds": 1.0
+        },
+        {
+          "action": "Turn",
+          "movingBones": 22,
+          "fbxCurves": 252,
+          "durationSeconds": 0.18
+        },
+        {
+          "action": "Acquire",
+          "movingBones": 15,
+          "fbxCurves": 252,
+          "durationSeconds": 0.12
+        }
+      ],
+      "lodTriangles": [
+        11800,
+        5900,
+        2832
+      ]
+    },
+    "aether_reaper": {
+      "vertices": 10639,
+      "triangles": 20455,
+      "boneCount": 28,
+      "materialSlots": 3,
+      "boundsMeters": [
+        1.6233811378479004,
+        0.7447385787963867,
+        1.9244493246078491
+      ],
+      "actions": [
+        {
+          "action": "Idle",
+          "movingBones": 26,
+          "fbxCurves": 261,
+          "durationSeconds": 2.0
+        },
+        {
+          "action": "Locomotion",
+          "movingBones": 26,
+          "fbxCurves": 261,
+          "durationSeconds": 1.2
+        },
+        {
+          "action": "Attack",
+          "movingBones": 27,
+          "fbxCurves": 261,
+          "durationSeconds": 0.6
+        },
+        {
+          "action": "Hit",
+          "movingBones": 26,
+          "fbxCurves": 261,
+          "durationSeconds": 0.16
+        },
+        {
+          "action": "Death",
+          "movingBones": 27,
+          "fbxCurves": 261,
+          "durationSeconds": 0.75
+        },
+        {
+          "action": "Deploy",
+          "movingBones": 27,
+          "fbxCurves": 261,
+          "durationSeconds": 0.3
+        },
+        {
+          "action": "Status",
+          "movingBones": 26,
+          "fbxCurves": 261,
+          "durationSeconds": 1.0
+        },
+        {
+          "action": "Turn",
+          "movingBones": 26,
+          "fbxCurves": 261,
+          "durationSeconds": 0.18
+        },
+        {
+          "action": "Acquire",
+          "movingBones": 26,
+          "fbxCurves": 261,
+          "durationSeconds": 0.12
+        }
+      ],
+      "lodTriangles": [
+        10227,
+        5112,
+        2449
+      ]
+    },
+    "iron_giant": {
+      "vertices": 23598,
+      "triangles": 46148,
+      "boneCount": 34,
+      "materialSlots": 2,
+      "boundsMeters": [
+        1.4144186973571777,
+        0.7233999967575073,
+        1.3680000305175781
+      ],
+      "actions": [
+        {
+          "action": "Idle",
+          "movingBones": 22,
+          "fbxCurves": 315,
+          "durationSeconds": 2.0
+        },
+        {
+          "action": "Locomotion",
+          "movingBones": 33,
+          "fbxCurves": 315,
+          "durationSeconds": 0.9
+        },
+        {
+          "action": "Attack",
+          "movingBones": 29,
+          "fbxCurves": 315,
+          "durationSeconds": 0.6
+        },
+        {
+          "action": "Hit",
+          "movingBones": 29,
+          "fbxCurves": 315,
+          "durationSeconds": 0.16
+        },
+        {
+          "action": "Death",
+          "movingBones": 29,
+          "fbxCurves": 315,
+          "durationSeconds": 0.8
+        },
+        {
+          "action": "Deploy",
+          "movingBones": 29,
+          "fbxCurves": 315,
+          "durationSeconds": 0.3
+        },
+        {
+          "action": "Status",
+          "movingBones": 20,
+          "fbxCurves": 315,
+          "durationSeconds": 1.0
+        },
+        {
+          "action": "Turn",
+          "movingBones": 29,
+          "fbxCurves": 315,
+          "durationSeconds": 0.18
+        },
+        {
+          "action": "Acquire",
+          "movingBones": 20,
+          "fbxCurves": 315,
+          "durationSeconds": 0.12
+        }
+      ],
+      "lodTriangles": [
+        23073,
+        11536,
+        5519
+      ]
+    },
+    "dart_gun": {
+      "vertices": 52754,
+      "triangles": 104760,
+      "boneCount": 26,
+      "materialSlots": 1,
+      "boundsMeters": [
+        0.9450000524520874,
+        1.1430001258850098,
+        1.929998755455017
+      ],
+      "actions": [
+        {
+          "action": "Idle",
+          "movingBones": 15,
+          "fbxCurves": 243,
+          "durationSeconds": 2.0
+        },
+        {
+          "action": "Locomotion",
+          "movingBones": 25,
+          "fbxCurves": 243,
+          "durationSeconds": 1.2
+        },
+        {
+          "action": "Attack",
+          "movingBones": 15,
+          "fbxCurves": 243,
+          "durationSeconds": 0.4
+        },
+        {
+          "action": "Hit",
+          "movingBones": 15,
+          "fbxCurves": 243,
+          "durationSeconds": 0.3
+        },
+        {
+          "action": "Death",
+          "movingBones": 25,
+          "fbxCurves": 243,
+          "durationSeconds": 1.2
+        },
+        {
+          "action": "Deploy",
+          "movingBones": 25,
+          "fbxCurves": 243,
+          "durationSeconds": 0.8
+        },
+        {
+          "action": "Status",
+          "movingBones": 15,
+          "fbxCurves": 243,
+          "durationSeconds": 1.0
+        },
+        {
+          "action": "Turn",
+          "movingBones": 15,
+          "fbxCurves": 243,
+          "durationSeconds": 0.6
+        },
+        {
+          "action": "Acquire",
+          "movingBones": 15,
+          "fbxCurves": 243,
+          "durationSeconds": 0.4
+        }
+      ],
+      "lodTriangles": [
+        52380,
+        26190,
+        12562
       ]
     }
   },
   "statics": {
     "tower_guard": {
-      "triangles": 16960,
+      "triangles": 36328,
       "materialSlots": 2,
       "boundsMeters": [
         2.2800002098083496,
@@ -7897,7 +11714,7 @@
       ]
     },
     "tower_core": {
-      "triangles": 24240,
+      "triangles": 52824,
       "materialSlots": 2,
       "boundsMeters": [
         2.5992002487182617,
@@ -7906,7 +11723,7 @@
       ]
     },
     "archer_tower": {
-      "triangles": 18752,
+      "triangles": 24820,
       "materialSlots": 2,
       "boundsMeters": [
         2.131898880004883,
@@ -7915,16 +11732,16 @@
       ]
     },
     "nova_flask": {
-      "triangles": 4934,
+      "triangles": 18402,
       "materialSlots": 3,
       "boundsMeters": [
         0.6779645681381226,
         0.7039647102355957,
-        0.9810000658035278
+        0.9900000095367432
       ]
     },
     "bridge": {
-      "triangles": 10512,
+      "triangles": 10760,
       "materialSlots": 1,
       "boundsMeters": [
         4.199999809265137,
@@ -7951,7 +11768,7 @@
       ]
     },
     "bank_segment": {
-      "triangles": 1316,
+      "triangles": 3044,
       "materialSlots": 1,
       "boundsMeters": [
         2.0199999809265137,
@@ -8005,10 +11822,10 @@
       ]
     },
     "banner": {
-      "triangles": 452,
+      "triangles": 720,
       "materialSlots": 1,
       "boundsMeters": [
-        1.1850000619888306,
+        1.1869888305664062,
         0.550000011920929,
         2.6600000858306885
       ]
@@ -8032,17 +11849,17 @@
       ]
     },
     "meteor_shard": {
-      "triangles": 184,
+      "triangles": 632,
       "materialSlots": 2,
       "boundsMeters": [
-        0.3780798614025116,
+        0.37942659854888916,
         0.36719125509262085,
         0.8401453495025635
       ]
     },
     "bullet_round": {
-      "triangles": 1696,
-      "materialSlots": 1,
+      "triangles": 5008,
+      "materialSlots": 2,
       "boundsMeters": [
         0.06678362190723419,
         0.06679999828338623,
@@ -8050,12 +11867,12 @@
       ]
     },
     "tower_rubble": {
-      "triangles": 2256,
+      "triangles": 5712,
       "materialSlots": 1,
       "boundsMeters": [
-        1.617492914199829,
-        1.7404589653015137,
-        0.4576186537742615
+        1.6154694557189941,
+        1.7392146587371826,
+        0.4556470215320587
       ]
     },
     "arrow_projectile": {
@@ -8102,6 +11919,42 @@
         1.0,
         0.03999999910593033
       ]
+    },
+    "iron_shield_fragment": {
+      "triangles": 560,
+      "materialSlots": 1,
+      "boundsMeters": [
+        0.36000001430511475,
+        0.08449999988079071,
+        0.3064126968383789
+      ]
+    },
+    "shadow_surge_wisp": {
+      "triangles": 692,
+      "materialSlots": 1,
+      "boundsMeters": [
+        0.23503537476062775,
+        0.16156993806362152,
+        0.390812486410141
+      ]
+    },
+    "shadow_surge_ribbon": {
+      "triangles": 832,
+      "materialSlots": 1,
+      "boundsMeters": [
+        2.119999885559082,
+        2.119999885559082,
+        0.07246410101652145
+      ]
+    },
+    "dart_projectile": {
+      "triangles": 618,
+      "materialSlots": 1,
+      "boundsMeters": [
+        0.06300000101327896,
+        0.44999998807907104,
+        0.07274613529443741
+      ]
     }
   },
   "errors": [],
@@ -8109,5 +11962,5 @@
   "unrealImportUnitConversion": true,
   "visualReview": "Actual rendered contact sheets reviewed separately; numerical checks do not establish production art quality.",
   "passed": true,
-  "checkCount": 1336
+  "checkCount": 1947
 }

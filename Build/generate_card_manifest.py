@@ -82,6 +82,9 @@ def validate(manifest):
             raise ValueError("Arena dimensions must be positive even tile counts")
         if rules["bridgeCenterX"] + rules["bridgeWidth"] / 2 >= rules["arenaWidth"] / 2:
             raise ValueError("Bridges must fit inside the arena")
+        guard_x = rules.get("guardCenterX", rules["bridgeCenterX"])
+        if isinstance(guard_x, bool) or not isinstance(guard_x, (int, float)) or not math.isfinite(guard_x) or not 0 < guard_x < rules["arenaWidth"] / 2 - 1.8:
+            raise ValueError("Guard tower centers must fit inside the arena")
         if not rules["riverHalfWidth"] < rules["guardDepth"] < rules["coreDepth"] < rules["arenaHeight"] / 2 - 2:
             raise ValueError("River, Guard and Core positions must fit in order inside the arena")
     seen = set()
@@ -173,7 +176,7 @@ def generate_arena(manifest):
              "inline constexpr int Width = HalfWidth * 2, Height = HalfHeight * 2;",
              "inline constexpr double LastTileX = HalfWidth - .5, LastTileZ = HalfHeight - .5;",
              f"inline constexpr double RiverHalfWidth = {rules['riverHalfWidth']}, BridgeCenterX = {rules['bridgeCenterX']}, BridgeWidth = {rules['bridgeWidth']};",
-             f"inline constexpr double CoreDepth = {rules['coreDepth']}, GuardDepth = {rules['guardDepth']}, GuardX = BridgeCenterX;",
+             f"inline constexpr double CoreDepth = {rules['coreDepth']}, GuardDepth = {rules['guardDepth']}, GuardX = {rules.get('guardCenterX', 'BridgeCenterX')};",
              "inline constexpr double DeploymentMaxX = HalfWidth - 1.8;",
              "inline constexpr double PocketOuterX = HalfWidth - .8, PocketMaxDepth = GuardDepth - 3.15;",
              f"inline constexpr int NavigationRevision = {int(rules.get('navigationRevision', 6))}, CombatRevision = {int(rules.get('combatRevision', 1))};", ""]

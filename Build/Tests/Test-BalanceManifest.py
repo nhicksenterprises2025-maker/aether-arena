@@ -27,12 +27,12 @@ def main():
     assert len(current["cards"]) == 22 and len(current["entities"]) == 1
     assert current["rules"]["arenaWidth"] == 22 and current["rules"]["arenaHeight"] == 40
     release_baseline = json.loads((ROOT / current["baseline"]).read_text())
-    assert [card for card in current["cards"] if card["id"] != "dart_gun"] == release_baseline["cards"]
+    assert current["cards"] == release_baseline["cards"]
     dart = next(card for card in current["cards"] if card["id"] == "dart_gun")
     assert (dart["cost"], dart["damage"], dart["attackInterval"], dart["range"]) == (3, 50, .4, 8.5)
     near(dart["damage"] / dart["attackInterval"], 125)
     assert current["entities"] == release_baseline["entities"]
-    assert current["rules"] == dict(release_baseline["rules"], navigationRevision=12)
+    assert current["rules"] == dict(release_baseline["rules"], navigationRevision=13, guardCenterX=6.76)
     assert current["balanceHash"] != release_baseline["balanceHash"]
     assert (ROOT / "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Simulation/RiftArenaRules.generated.inc").read_text() == generate_arena(current)
     assert (ROOT / "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftCardManifest.generated.inc").read_text() == generate(current)
@@ -58,12 +58,16 @@ def main():
         lambda m: m["rules"].update(arenaWidth=25),
         lambda m: m["rules"].update(arenaHeight=0),
         lambda m: m["rules"].update(bridgeCenterX=11),
+        lambda m: m["rules"].update(guardCenterX=True),
+        lambda m: m["rules"].update(guardCenterX=0),
+        lambda m: m["rules"].update(guardCenterX=float("inf")),
+        lambda m: m["rules"].update(guardCenterX=11),
         lambda m: m["rules"].update(coreDepth=m["rules"]["arenaHeight"] / 2 - 1),
         lambda m: m["rules"].pop("guardDepth")]
     for mutate in mutations:
         fixture = copy.deepcopy(current);mutate(fixture)
-        fixture["balanceHash"] = balance_hash(fixture)
         try:
+            fixture["balanceHash"] = balance_hash(fixture)
             validate(fixture)
         except ValueError:
             pass

@@ -14,6 +14,9 @@ sys.path.insert(0, str(ROOT/'Build'))
 import expansion_asset_models as expansion_models
 import expansion_new_models as new_models
 import dart_gun_model as dart_model
+from roster_humanoid_detail import polish as detail_humanoids
+from roster_creature_detail import polish as detail_creatures
+from roster_prop_detail import polish as detail_props
 from roster_art_direction import polish_geometry, secondary_motion
 from asset_file_io import write_json
 from generate_expansion_fx_contract import definition as expansion_fx_contract
@@ -24,7 +27,7 @@ from upgrade_card_models import (PALETTE_ADDITIONS, humanoid_costume, clean_crea
 EXPORT_WORK = Path(tempfile.mkdtemp(prefix='RiftCrown-FBX-'))
 ARGS=argparse.ArgumentParser()
 ARGS.add_argument('--no-renders',action='store_true')
-ARGS.add_argument('--update-models', help='Comma-separated character IDs to rebuild in the existing production scene')
+ARGS.add_argument('--update-models', help='Comma-separated character/static model IDs to rebuild in the existing production scene')
 ARGS.add_argument('--preview-models', help='Comma-separated model IDs; renders only, with isolated output')
 ARGS.add_argument('--preview-output', type=Path, default=ROOT/'Artifacts/QA/model-upgrade-preview')
 ARGS.add_argument('--preview-action', help='Optional existing animation name for isolated pose review')
@@ -118,6 +121,7 @@ def replacement_asset_signatures(source_file):
         if not path.is_file() or path==ROOT/'Assets/asset_manifest.json' or path==source_file or path==replacement_proof_path:continue
         rel=path.relative_to(ROOT).as_posix()
         if any(rel.startswith('Assets/Export/Characters/'+name+'/') for name in UPDATE):continue
+        if any(rel.startswith('Assets/Export/Environment/SM_'+name+'.') or rel.startswith('Assets/Export/Environment/SM_'+name+'_LOD') for name in UPDATE):continue
         result[rel]={'bytes':path.stat().st_size,'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
     return result
 if UPDATE:
@@ -128,8 +132,8 @@ if UPDATE:
         illustration.setdefault('sourceSceneSHA256',previous_manifest['source']['sha256'])
     bpy.ops.wm.open_mainfile(filepath=str(ROOT/previous_manifest['source']['file']))
     if opts.replacement_proof:
-        missing=UPDATE-set(previous_manifest['characters'])
-        if missing:raise ValueError('Replacement mode requires existing selected characters: '+', '.join(sorted(missing)))
+        missing=UPDATE-(set(previous_manifest['characters'])|set(previous_manifest['statics']))
+        if missing:raise ValueError('Replacement mode requires existing selected models: '+', '.join(sorted(missing)))
         replaced_objects={obj.name for name in UPDATE for obj in bpy.data.collections[name].all_objects}
         kept_objects={obj.name for obj in bpy.data.objects}-replaced_objects
         kept_actions={action.name for action in bpy.data.actions if not any(action.name.startswith('AN_'+name+'_') for name in UPDATE)}
@@ -341,7 +345,7 @@ manifest=json.loads(json.dumps(previous_manifest)) if previous_manifest else {'s
                'normal':Path(TEX['Normal'].filepath_raw).relative_to(ROOT).as_posix(),
                'teamMask':Path(TEX['TeamMask'].filepath_raw).relative_to(ROOT).as_posix()} for m in (SURFACE,GLOW,GLASS)],
  'characters':{},'statics':{},'illustrations':{},'renders':[]}
-manifest['build']='UE-crafted-roster-1.9.0'
+manifest['build']='UE-crafted-roster-2.0.0'
 if DART_MATERIALS:
     records={r['name']:r for r in manifest.get('expansionMaterials',[])}
     records.update({m.name:{'name':m.name,**{k:'Assets/Source/Textures/T_RiftDartGunAtlas_'+v+'.png' for k,v in
@@ -441,6 +445,9 @@ class Forge:
     def finish(self,skinned=False):
         if skinned and self.family not in ('humanoid','mechanism'): clean_creature_details(self)
         polish_geometry(self,skinned)
+        detail_humanoids(self,skinned)
+        detail_creatures(self,skinned)
+        detail_props(self,skinned)
         bpy.ops.object.select_all(action='DESELECT')
         for o in self.parts:o.select_set(True)
         bpy.context.view_layer.objects.active=self.parts[0]; bpy.ops.object.join()
@@ -1255,7 +1262,7 @@ knownModels={'ironclad','ember_archer','twin_blades','arc_mage','tower_archer','
 knownModels.update(new_models.CONTRACTS);knownModels.update(new_models.STATIC_IDS);knownModels.update(dart_model.CHARACTERS|dart_model.STATICS)
 if PREVIEW and PREVIEW-knownModels:raise ValueError('Unknown preview models: '+', '.join(sorted(PREVIEW-knownModels)))
 characterIds=('ironclad','ember_archer','twin_blades','arc_mage','tower_archer','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven','mini_stampede','stampede','pulverizer')+tuple(new_models.CONTRACTS)+tuple(dart_model.CHARACTERS)
-if UPDATE and UPDATE-(set(characterIds)|set(new_models.STATIC_IDS)|dart_model.STATICS):raise ValueError('Unknown update models: '+', '.join(sorted(UPDATE-set(characterIds)-set(new_models.STATIC_IDS))))
+if UPDATE and UPDATE-knownModels:raise ValueError('Unknown update models: '+', '.join(sorted(UPDATE-knownModels)))
 for name in characterIds:
     if PREVIEW and name not in PREVIEW:continue
     if UPDATE and name not in UPDATE:continue
@@ -1272,7 +1279,7 @@ for name in characterIds:
     forges.append(f);print('RIFT_ASSET_COMPLETE',name,flush=True)
 for name in ('tower_guard','tower_core','archer_tower','nova_flask','bridge','floor_tile','lane_paver','bank_segment','boundary_stone','grass_tuft','shrub','tree','crystal_plinth','banner','ruin','distant_island','meteor_shard','bullet_round','tower_rubble','arrow_projectile','arc_projectile','manta_projectile','storm_projectile','projectile_trail'):
     if PREVIEW and name not in PREVIEW:continue
-    if UPDATE:continue
+    if UPDATE and name not in UPDATE:continue
     print('RIFT_ASSET_BEGIN',name,flush=True)
     f=tower(name) if name in ('tower_guard','tower_core','archer_tower') else nova() if name=='nova_flask' else environment(name)
     cannon=None
@@ -1374,10 +1381,13 @@ if opts.production_proof:
 if opts.replacement_proof:
     replacement_proof_path.parent.mkdir(parents=True,exist_ok=True)
     replacement_proof_path.write_text(json.dumps({'schema':1,'passed':True,'kind':'selected-model-replacement',
-        'fromSource':previous_manifest['source'],'toSource':manifest['source'],'replacedCharacters':sorted(UPDATE),
+        'fromSource':previous_manifest['source'],'toSource':manifest['source'],
+        'replacedCharacters':sorted(UPDATE.intersection(previous_manifest['characters'])),
+        'replacedStatics':sorted(UPDATE.intersection(previous_manifest['statics'])),
         'before':replacement_before,'after':replacement_after,
         'materialsBefore':replacement_materials_before,'materialsAfter':replacement_materials_after,
         'untouchedAssetsBefore':replacement_assets_before,'untouchedAssetsAfter':replacement_assets_after,
         'preservedSceneTiming':replacement_scene_before,
-        'producer':file_info(Path(__file__)),'modelBuilder':file_info(ROOT/('Build/dart_gun_model.py' if UPDATE.intersection(dart_model.CHARACTERS|dart_model.STATICS) else 'Build/expansion_new_models.py'))},indent=2),encoding='utf-8')
+        'producer':file_info(Path(__file__)),'modelBuilder':file_info(ROOT/('Build/dart_gun_model.py' if UPDATE.intersection(dart_model.CHARACTERS|dart_model.STATICS) else 'Build/expansion_new_models.py')),
+        'detailProducers':[file_info(ROOT/('Build/'+name+'.py')) for name in ('roster_humanoid_detail','roster_creature_detail','roster_prop_detail')]},indent=2),encoding='utf-8')
 print('RIFT_ASSET_FINISHED',len(manifest['characters']),len(manifest['statics']),flush=True)

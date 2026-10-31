@@ -114,7 +114,9 @@ bool FRiftUnitCollisionIntegrationTest::RunTest(const FString& Parameters)
     for(const bool Resized:{true,false})for(const auto Team:{rift::Team::Player,rift::Team::Enemy})for(const int Lane:{-1,1})
     {
         auto Options=CollisionDeck("ironclad","twin_blades");Options.seed=135;Options.decks[int(Team)]=PocketDeck;
-        rift::Match Pocket(Options);const int Sign=Team==rift::Team::Player?1:-1,Deadline=Resized?(Team==rift::Team::Player?12:15):20;
+        // The inward Guard's rear detour takes the outer Boulderback 21.89s;
+        // require bridge clearance two seconds before building expiry at 25s.
+        rift::Match Pocket(Options);const int Sign=Team==rift::Team::Player?1:-1,Deadline=Resized?(Team==rift::Team::Player?12:15):23;
         std::vector<rift::Entity> PaidMembers,Ground,Buildings;int AdjustedDrops=0;
         FCollisionObservation Observed;
         for(int Play=0;Play<16;++Play)
@@ -305,10 +307,10 @@ bool FRiftUnitCollisionIntegrationTest::RunTest(const FString& Parameters)
         {++BuildingRequests;if(Full.Spawn(Team,"archer_tower",{X,Z}))++Buildings;else ++Rejected;}
         // The actual 22 x 40 board supplies 11 x 20 requested points at a
         // two-tile pitch. Boundary and six Crown body clearances reduce this
-        // fixed packing to 207 separated buildings on either team's layer.
+        // fixed packing to 205 separated buildings with the inward Guards.
         TestEqual(TEXT("Capacity matrix covers every two-tile point in the approved board"),BuildingRequests,220);
-        TestEqual(TEXT("Radius-aware boundary and Crown packing retains the observed fixed building count"),Buildings,207);
-        TestEqual(TEXT("Every unavailable building request is accounted for"),Rejected,13);
+        TestEqual(TEXT("Radius-aware boundary and Crown packing retains the observed fixed building count"),Buildings,205);
+        TestEqual(TEXT("Every unavailable building request is accounted for"),Rejected,15);
         for(int N=0;N<100;++N){if(!Full.Spawn(Team,"boulderback",Drop)){++Rejected;Exhausted=true;break;}++Residuals;}
         TestTrue(TEXT("Actual large and small sandbox bodies exhaust the approved twenty-two by forty arena capacity"),Residuals>0&&Exhausted);
         FCollisionObservation Capacity;ObserveCollision(Full.State(),Capacity);

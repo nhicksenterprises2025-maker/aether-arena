@@ -679,26 +679,30 @@ def main():
     selected_arg = re.search(r"(?:^|\s)-RiftSelectedModels=([a-z0-9_,]+)", unreal.SystemLibrary.get_command_line())
     if selected_arg:
         selected = selected_arg.group(1).split(",")
-        if len(set(selected)) != len(selected) or any(card not in MANIFEST["characters"] and card!='shadow_surge' for card in selected):
+        if len(set(selected)) != len(selected) or any(card not in MANIFEST["characters"] and card not in MANIFEST["cards"] for card in selected):
             raise RuntimeError("Selected model list contains unknown or duplicate IDs")
         REPORT["mode"] = "SelectedModels"
         REPORT["selectedModels"] = selected
         mats = {name: LIB.load_asset("/Game/Rift/Materials/" + name)
                 for name in ("M_RiftSurface", "M_RiftGlow", "M_RiftGlass")}
+        model_ids = set(selected).intersection(MANIFEST['characters'])
         effect_ids=set()
+        for identity in selected:
+            binding = MANIFEST['cards'].get(identity, {})
+            model_ids.update(binding[key] for key in ('skeletal', 'skeletalDecoration') if binding.get(key))
+            if binding.get('static'): effect_ids.add(binding['static'])
+            effect_ids.update(binding.get('effectStatics', []))
         if 'dart_gun' in selected:effect_ids.add('dart_projectile')
         if 'iron_giant' in selected:effect_ids.add('iron_shield_fragment')
         if 'shadow_surge' in selected:effect_ids.update(('shadow_surge_wisp','shadow_surge_ribbon'))
-        required={name for card in selected if card in MANIFEST['characters'] for name in MANIFEST['characters'][card]['materials']}
+        required={name for card in model_ids for name in MANIFEST['characters'][card]['materials']}
         required.update(name for effect in effect_ids for name in MANIFEST['statics'][effect]['materials'])
         import_expansion_materials(mats,required)
         if set(selected).intersection({'bone_warden','aether_reaper','shadow_surge'}):
             REPORT.setdefault('materials',[]).append(expansion_fx_material().get_path_name())
-        for card_id in selected:
-            if card_id=='shadow_surge':
-                REPORT['cards'][card_id]=texture(ROOT/'Assets/Source/CardArt/shadow_surge.png','T_Card_shadow_surge',ui=True).get_path_name()
-                REPORT.setdefault('materials',[]).append(cloak_material().get_path_name())
-                continue
+        if 'shadow_surge' in selected:
+            REPORT.setdefault('materials',[]).append(cloak_material().get_path_name())
+        for card_id in sorted(model_ids):
             card = MANIFEST["characters"][card_id]
             dest = "/Game/Rift/Characters/" + card_id
             mesh = import_file(ROOT / card["mesh"]["file"], dest, "SK_" + card_id, mesh_options(skeletal=True))
@@ -726,7 +730,8 @@ def main():
                 clips[clip["name"]] = anim.get_path_name()
             REPORT["animations"][card_id] = clips
             save(mesh)
-            if card_id in {definition["id"] for definition in json.loads(unreal.RiftAssetLibrary.card_definitions_json())}:
+        for card_id in selected:
+            if card_id in MANIFEST['cards']:
                 REPORT["cards"][card_id] = texture(ROOT / ("Assets/Source/CardArt/" + card_id + ".png"), "T_Card_" + card_id, ui=True).get_path_name()
         static_editor=unreal.get_editor_subsystem(unreal.StaticMeshEditorSubsystem) or unreal.get_default_object(unreal.StaticMeshEditorSubsystem)
         for name in sorted(effect_ids):
@@ -746,7 +751,7 @@ def main():
             raise RuntimeError(REPORT["physicsFinalization"]["errors"])
         unreal.AssetRegistryHelpers.get_asset_registry().scan_files_synchronous([
             str(ROOT / f"Unreal/RiftCrownArena/Content/Rift/Characters/{card}/SK_{card}_PhysicsAsset.uasset")
-            for card in selected if card in MANIFEST['characters']], True)
+            for card in sorted(model_ids)], True)
         # All numerical bindings follow the same compiled canonical definitions;
         # meshes, sound bindings and illustrations of other cards stay untouched.
         card_data(stats_only=True)

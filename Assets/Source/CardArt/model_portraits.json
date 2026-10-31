@@ -3,15 +3,15 @@
   "cards": {
     "ironclad": {
       "file": "Assets/Source/CardArt/ironclad.png",
-      "sha256": "421e2db40bc6afe631a68bd4cce86f7ac6d003f9481eb44a41b1b944ec86b402",
-      "bytes": 916940,
-      "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
+      "sha256": "d8c704e029e6d53c3e00adf04fdef884e68c02f5f96d6930d6f2ecc15e98657e",
+      "bytes": 943789,
+      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/ironclad/SK_ironclad.fbx",
-            "sha256": "f5b1987b9e16ad546bcd8defd9678ab3e3b8811e3035223ecc69aa5e6d7c3f3d",
-            "bytes": 701660
+            "sha256": "38ed17e28cda8c53f6cd290bdf959c176ffb71f3c959c217e0df129854aa5318",
+            "bytes": 1100684
           },
           "action": "Attack",
           "phase": 0.27,
@@ -56,15 +56,15 @@
     },
     "ember_archer": {
       "file": "Assets/Source/CardArt/ember_archer.png",
-      "sha256": "4ed93f4496eb0580da3b1f5bd789460426664292466013ddaab486fcf5650ca9",
-      "bytes": 897382,
-      "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
+      "sha256": "66035b6c3d7a3efefadbf693de77f1c5d49cae2324e8075574f2c8bc90fdc569",
+      "bytes": 904553,
+      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/ember_archer/SK_ember_archer.fbx",
-            "sha256": "5b50852b6ef8b3b6b5801ad63d8a53f2a9abbd7cb191028f41d88e5c277a9b84",
-            "bytes": 689708
+            "sha256": "ad35bcf6d9cd6a0ca2a8e2e20f8ca59066d55765ff4217657196cde229647fc7",
+            "bytes": 1263868
           },
           "action": "DrawRelease",
           "phase": 0.37,
@@ -109,17 +109,17 @@
     },
     "archer_tower": {
       "file": "Assets/Source/CardArt/archer_tower.png",
-      "sha256": "c033dcda28e59e8d28abb2fea0ee963b7f61479cf1e970600ba06139d15176ae",
-      "bytes": 890510,
-      "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
+      "sha256": "7295d53b3462a3d3eea44620b16c97f1e5cfdb4b83037b1eb276ccce799e4beb",
+      "bytes": 903953,
+      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
       "sources": [
         {
           "model": {
             "name": "archer_tower",
             "file": "Assets/Export/Environment/SM_archer_tower.fbx",
-            "sha256": "cae7d3b9698a4596e1d2204b2987996b9964dc7465cb9afea8455aae254cfd64",
-            "bytes": 349020,
-            "triangles": 19040,
+            "sha256": "5401d24c45fd5e68e624427d62f3769076064f8950b34e37d9dfca7a5d9b7654",
+            "bytes": 465580,
+            "triangles": 24820,
             "boundsMeters": [
               2.131898880004883,
               2.131999969482422,
@@ -132,17 +132,17 @@
             "lods": [
               {
                 "level": 1,
-                "triangles": 9520,
+                "triangles": 12410,
                 "file": "Assets/Export/Environment/SM_archer_tower_LOD1.fbx",
-                "sha256": "1630d41567d7c335ebc6a2742bc4ce25ac9b148d92275e1167640c383dc7f2d8",
-                "bytes": 275116
+                "sha256": "7b4a6cbb72a8b15befa912118b9c70774adf1b8fc6f4547ddedd3239f49f311d",
+                "bytes": 355324
               },
               {
                 "level": 2,
-                "triangles": 4188,
+                "triangles": 5450,
                 "file": "Assets/Export/Environment/SM_archer_tower_LOD2.fbx",
-                "sha256": "734293c69f57f3d5efa85fa5fef1defac2cf304dbc81d1909139c3303a8da6f4",
-                "bytes": 140348
+                "sha256": "0f9af78313d7bc8104038c44876e3a0d8384c4f4ab53f10fdda2e65b26f898f4",
+                "bytes": 181884
               }
             ],
             "sockets": {
@@ -166,8 +166,8 @@
         {
           "model": {
             "file": "Assets/Export/Characters/tower_archer/SK_tower_archer.fbx",
-            "sha256": "8733dcb673b95813d72dc01e4b60096965cc205e79322c0f4bae9335add515d3",
-            "bytes": 689532
+            "sha256": "b6b5e018a4dd804301ad4e22f13f800351e98a75609c34db504b886903ba3131",
+            "bytes": 1821260
           },
           "action": "DrawRelease",
           "phase": 0.37,
@@ -212,15 +212,15 @@
     },
     "vampire_bats": {
       "file": "Assets/Source/CardArt/vampire_bats.png",
-      "sha256": "2126d9642fbb7c11b523b9dedbfc17ffcfe4b1cda51c8583e5bd702c409d7d08",
-      "bytes": 781446,
-      "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
+      "sha256": "052ef579d5801b423f0a7b7b27a4529e647062086502bf410712bbfcd5c21003",
+      "bytes": 800896,
+      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/vampire_bats/SK_vampire_bats.fbx",
-            "sha256": "a19dcac50dd026238e572cbd5912e032d0fe9484f60c1376027a094deb932cab",
-            "bytes": 485372
+            "sha256": "d07dba1cabc0f0ecdc6dbbf41ca2a3adbcd90768bafd079f463b509d0c0a2743",
+            "bytes": 903628
           },
           "action": "WingCycle",
           "phase": 0.16,
@@ -232,8 +232,8 @@
         {
           "model": {
             "file": "Assets/Export/Characters/vampire_bats/SK_vampire_bats.fbx",
-            "sha256": "a19dcac50dd026238e572cbd5912e032d0fe9484f60c1376027a094deb932cab",
-            "bytes": 485372
+            "sha256": "d07dba1cabc0f0ecdc6dbbf41ca2a3adbcd90768bafd079f463b509d0c0a2743",
+            "bytes": 903628
           },
           "action": "WingCycle",
           "phase": 0.16,
@@ -245,8 +245,8 @@
         {
           "model": {
             "file": "Assets/Export/Characters/vampire_bats/SK_vampire_bats.fbx",
-            "sha256": "a19dcac50dd026238e572cbd5912e032d0fe9484f60c1376027a094deb932cab",
-            "bytes": 485372
+            "sha256": "d07dba1cabc0f0ecdc6dbbf41ca2a3adbcd90768bafd079f463b509d0c0a2743",
+            "bytes": 903628
           },
           "action": "WingCycle",
           "phase": 0.16,
@@ -258,18 +258,18 @@
       ],
       "boundsMeters": [
         [
-          -1.101072072982788,
+          -1.100818157196045,
           -0.8083664178848267,
-          0.2581323981285095
+          0.25846195220947266
         ],
         [
-          1.0783361196517944,
-          0.5562151670455933,
-          1.1015875339508057
+          1.0780956745147705,
+          0.5549874901771545,
+          1.1016846895217896
         ]
       ],
       "poseFrame": 1,
-      "cameraOrthoScale": 2.698211908340454,
+      "cameraOrthoScale": 2.6986403465270996,
       "composition": "Full silhouette",
       "lighting": {
         "backdrop": [
@@ -291,15 +291,15 @@
     },
     "twin_blades": {
       "file": "Assets/Source/CardArt/twin_blades.png",
-      "sha256": "1021bda3162dca0c31373b80d95b3aa4b0822d3e72e0261a31df8d92af740db8",
-      "bytes": 898957,
-      "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
+      "sha256": "73bc314a04c928117bc3abaac897d5a669909a3934f40a5bc1b6c33931353c5c",
+      "bytes": 915219,
+      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/twin_blades/SK_twin_blades.fbx",
-            "sha256": "98b9c89bfc1fc031003ac31754981f24760a6c1898a44959dba17d9455aba059",
-            "bytes": 736508
+            "sha256": "af3fb4dc308dd7aa0359f973c71f6b0c8f083fc7401beced952eae885ce78b84",
+            "bytes": 955932
           },
           "action": "Idle",
           "phase": 0.12,
@@ -311,8 +311,8 @@
         {
           "model": {
             "file": "Assets/Export/Characters/twin_blades/SK_twin_blades.fbx",
-            "sha256": "98b9c89bfc1fc031003ac31754981f24760a6c1898a44959dba17d9455aba059",
-            "bytes": 736508
+            "sha256": "af3fb4dc308dd7aa0359f973c71f6b0c8f083fc7401beced952eae885ce78b84",
+            "bytes": 955932
           },
           "action": "Idle",
           "phase": 0.12,
@@ -357,15 +357,15 @@
     },
     "boulderback": {
       "file": "Assets/Source/CardArt/boulderback.png",
-      "sha256": "bf3bd2fd5a3c10bc136f368fbc5172a55481d492761f95e7502db69d1df59b25",
-      "bytes": 841183,
-      "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
+      "sha256": "bbc2b15df5f1111a0cad4eb3ea29e4ee6fd9cd316fea23e9dabd32aaf8d4767f",
+      "bytes": 869765,
+      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/boulderback/SK_boulderback.fbx",
-            "sha256": "8ea69e8384990f7c1feaef674e374571d5305b04d033a7ec34b01905c0cb02ec",
-            "bytes": 1502316
+            "sha256": "14af9cb55a27bb5725e892f30b97b27232e9593dc83a748d052ebf172889654b",
+            "bytes": 1495196
           },
           "action": "Idle",
           "phase": 0.16,
@@ -377,18 +377,18 @@
       ],
       "boundsMeters": [
         [
-          -0.619999885559082,
-          -1.3528671264648438,
-          -0.006000041961669922
+          -0.6115458011627197,
+          -1.3550740480422974,
+          0.011999964714050293
         ],
         [
-          0.619999885559082,
+          0.6115458011627197,
           0.8762241005897522,
-          2.1102523803710938
+          2.109999895095825
         ]
       ],
       "poseFrame": 1,
-      "cameraOrthoScale": 2.686396598815918,
+      "cameraOrthoScale": 2.7003355026245117,
       "composition": "Full silhouette",
       "lighting": {
         "backdrop": [
@@ -410,15 +410,15 @@
     },
     "arc_mage": {
       "file": "Assets/Source/CardArt/arc_mage.png",
-      "sha256": "35a74b2b83eca849bfdc1868e27366a108cbd3a9243d46bb265e7f6b5fa987a2",
-      "bytes": 898824,
-      "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
+      "sha256": "f8cb127173a9bc02b3b727751c9bcaa97796453225093faf52d64c9987ccad48",
+      "bytes": 928640,
+      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/arc_mage/SK_arc_mage.fbx",
-            "sha256": "bf148693bb7e445656ed13564d32292456d9cbfa4061b68159f060403076ec9b",
-            "bytes": 755692
+            "sha256": "5c460fafe389729467da6eb653e61a358a09243d01dc32088df78c4506940f89",
+            "bytes": 1326188
           },
           "action": "Cast",
           "phase": 0.27,
@@ -463,15 +463,15 @@
     },
     "rambeast": {
       "file": "Assets/Source/CardArt/rambeast.png",
-      "sha256": "91e8b6cca47f9b52dbee524a87c2eea0d44259af0a0aa523f4c2c1592306124e",
-      "bytes": 857948,
-      "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
+      "sha256": "0c89e6b7f14184afe267ca7bbefac518a41f538d3660ca5b20157ee502f67eed",
+      "bytes": 925393,
+      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/rambeast/SK_rambeast.fbx",
-            "sha256": "2dbf87173c595fb1652a03a82de063ac0378f9e7b3aa86cc44085b89dcc88690",
-            "bytes": 2049916
+            "sha256": "bce70fa48da7fab14f92dee3a6b10b7faf8be0959e5b873c8157219f83ec9b01",
+            "bytes": 3679724
           },
           "action": "Idle",
           "phase": 0.16,
@@ -485,16 +485,16 @@
         [
           -0.6491208076477051,
           -1.3721168041229248,
-          -0.00599999725818634
+          0.008999999612569809
         ],
         [
           0.6490836143493652,
           1.2136989831924438,
-          1.6998804807662964
+          1.7047086954116821
         ]
       ],
       "poseFrame": 1,
-      "cameraOrthoScale": 2.337700128555298,
+      "cameraOrthoScale": 2.4072468280792236,
       "composition": "Full silhouette",
       "lighting": {
         "backdrop": [
@@ -516,15 +516,15 @@
     },
     "sky_manta": {
       "file": "Assets/Source/CardArt/sky_manta.png",
-      "sha256": "bbb42ec5510e35dd11d4342ba10879cb8ac6280cd364f1ab41c99c4226897648",
-      "bytes": 746787,
-      "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
+      "sha256": "09980e361a58b71fce487cbf35f92d49c7a2aece932298aaceb2a92743b2ccf1",
+      "bytes": 751642,
+      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/sky_manta/SK_sky_manta.fbx",
-            "sha256": "71d754d7c5168a6065b2b2238161b05dd2a8a09257d8833b4f368dc5c69daadc",
-            "bytes": 627004
+            "sha256": "a1b71c7361b1b91ef2b201d9a4489be4d6c104037b8425fe316d55c3221a0d82",
+            "bytes": 793916
           },
           "action": "WingCycle",
           "phase": 0.16,
@@ -569,15 +569,15 @@
     },
     "frost_fang": {
       "file": "Assets/Source/CardArt/frost_fang.png",
-      "sha256": "63c8abab2bb2221fdd694408c17c62bb48434977f8d817fbc960dbd58950a16a",
-      "bytes": 868580,
-      "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
+      "sha256": "6cb53b365967713346bb42e0c3ccb2f96dff47bfe03d4d8fec336a33e74a7ced",
+      "bytes": 892979,
+      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/frost_fang/SK_frost_fang.fbx",
-            "sha256": "96e7f5639e6a73df76fb12e10410f5ca736622e95825a559f2c9ebeecf09b183",
-            "bytes": 1388540
+            "sha256": "83acb52f0e1d28613853d15340656557af50b19eec524ee4efdb2bcdd93e4a8c",
+            "bytes": 1870764
           },
           "action": "Idle",
           "phase": 0.16,
@@ -622,15 +622,15 @@
     },
     "storm_raven": {
       "file": "Assets/Source/CardArt/storm_raven.png",
-      "sha256": "242a21a96d32c0f363f37ac393370dd9c801b9d044de554593b816c9a219ef2b",
-      "bytes": 772771,
-      "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
+      "sha256": "4328daaedcb11f57fa5ec6060f3318c7f076347f7ae48eb421235fbeac0704bd",
+      "bytes": 772661,
+      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/storm_raven/SK_storm_raven.fbx",
-            "sha256": "5d601464e72ca2fba3bc8bd4412fddba20ea9bb6913dabc9b4282107205300a4",
-            "bytes": 768220
+            "sha256": "ddc59c6327ad19233429b0240c14a13d85068eb3cb02954947cb51a99f189e13",
+            "bytes": 1058620
           },
           "action": "WingCycle",
           "phase": 0.16,
@@ -642,18 +642,18 @@
       ],
       "boundsMeters": [
         [
-          -1.6623276472091675,
+          -1.6744012832641602,
           -0.8793196678161621,
-          0.7232036590576172
+          0.7238665223121643
         ],
         [
-          1.6623276472091675,
-          0.9751157164573669,
-          1.5341507196426392
+          1.6744012832641602,
+          1.015238881111145,
+          1.5626873970031738
         ]
       ],
       "poseFrame": 1,
-      "cameraOrthoScale": 4.106918811798096,
+      "cameraOrthoScale": 4.272488117218018,
       "composition": "Full silhouette",
       "lighting": {
         "backdrop": [
@@ -675,39 +675,40 @@
     },
     "bullet_burst": {
       "file": "Assets/Source/CardArt/bullet_burst.png",
-      "sha256": "78569aa7c7d308e2c6ca3d07ad84c5e450692612c5dd822ffacb0eeb803fe461",
-      "bytes": 824827,
-      "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
+      "sha256": "82d3516958a25c0d384279b1008e376e40c878f6c6d40c072c58802421207357",
+      "bytes": 850668,
+      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
       "sources": [
         {
           "model": {
             "name": "bullet_round",
             "file": "Assets/Export/Environment/SM_bullet_round.fbx",
-            "sha256": "c827188224bc51740ad16b0721529053bf0dd97c3c454c2e5a06afdb8febaf1d",
-            "bytes": 66332,
-            "triangles": 2744,
+            "sha256": "cbb4228b960efc4435550523e22a39f77465486269677ca6698a8b396cb061d5",
+            "bytes": 106236,
+            "triangles": 5008,
             "boundsMeters": [
               0.06678362190723419,
               0.06679999828338623,
               0.24639999866485596
             ],
             "materials": [
-              "M_RiftSurface"
+              "M_RiftSurface",
+              "M_RiftGlow"
             ],
             "lods": [
               {
                 "level": 1,
-                "triangles": 1372,
+                "triangles": 2504,
                 "file": "Assets/Export/Environment/SM_bullet_round_LOD1.fbx",
-                "sha256": "c5c55d28048285708197f957da66e7506c74bdc5e4b67c5fb192e080beada303",
-                "bytes": 53596
+                "sha256": "c509f4b9ff617d97a688e2c87870ec5102a63851751c92d1c2dba8513b8d3688",
+                "bytes": 84636
               },
               {
                 "level": 2,
-                "triangles": 602,
+                "triangles": 1096,
                 "file": "Assets/Export/Environment/SM_bullet_round_LOD2.fbx",
-                "sha256": "3102e17c2c8fbf4a28f3a25f728723bf472c8d7ce118ce331e5c55a8c5f8e3e0",
-                "bytes": 37548
+                "sha256": "b830557c3f6ce885a6deaa6e6295fe2d081c823b36cc7d348615ee03a213ea0c",
+                "bytes": 55148
               }
             ]
           }
@@ -716,31 +717,32 @@
           "model": {
             "name": "bullet_round",
             "file": "Assets/Export/Environment/SM_bullet_round.fbx",
-            "sha256": "c827188224bc51740ad16b0721529053bf0dd97c3c454c2e5a06afdb8febaf1d",
-            "bytes": 66332,
-            "triangles": 2744,
+            "sha256": "cbb4228b960efc4435550523e22a39f77465486269677ca6698a8b396cb061d5",
+            "bytes": 106236,
+            "triangles": 5008,
             "boundsMeters": [
               0.06678362190723419,
               0.06679999828338623,
               0.24639999866485596
             ],
             "materials": [
-              "M_RiftSurface"
+              "M_RiftSurface",
+              "M_RiftGlow"
             ],
             "lods": [
               {
                 "level": 1,
-                "triangles": 1372,
+                "triangles": 2504,
                 "file": "Assets/Export/Environment/SM_bullet_round_LOD1.fbx",
-                "sha256": "c5c55d28048285708197f957da66e7506c74bdc5e4b67c5fb192e080beada303",
-                "bytes": 53596
+                "sha256": "c509f4b9ff617d97a688e2c87870ec5102a63851751c92d1c2dba8513b8d3688",
+                "bytes": 84636
               },
               {
                 "level": 2,
-                "triangles": 602,
+                "triangles": 1096,
                 "file": "Assets/Export/Environment/SM_bullet_round_LOD2.fbx",
-                "sha256": "3102e17c2c8fbf4a28f3a25f728723bf472c8d7ce118ce331e5c55a8c5f8e3e0",
-                "bytes": 37548
+                "sha256": "b830557c3f6ce885a6deaa6e6295fe2d081c823b36cc7d348615ee03a213ea0c",
+                "bytes": 55148
               }
             ]
           }
@@ -749,31 +751,32 @@
           "model": {
             "name": "bullet_round",
             "file": "Assets/Export/Environment/SM_bullet_round.fbx",
-            "sha256": "c827188224bc51740ad16b0721529053bf0dd97c3c454c2e5a06afdb8febaf1d",
-            "bytes": 66332,
-            "triangles": 2744,
+            "sha256": "cbb4228b960efc4435550523e22a39f77465486269677ca6698a8b396cb061d5",
+            "bytes": 106236,
+            "triangles": 5008,
             "boundsMeters": [
               0.06678362190723419,
               0.06679999828338623,
               0.24639999866485596
             ],
             "materials": [
-              "M_RiftSurface"
+              "M_RiftSurface",
+              "M_RiftGlow"
             ],
             "lods": [
               {
                 "level": 1,
-                "triangles": 1372,
+                "triangles": 2504,
                 "file": "Assets/Export/Environment/SM_bullet_round_LOD1.fbx",
-                "sha256": "c5c55d28048285708197f957da66e7506c74bdc5e4b67c5fb192e080beada303",
-                "bytes": 53596
+                "sha256": "c509f4b9ff617d97a688e2c87870ec5102a63851751c92d1c2dba8513b8d3688",
+                "bytes": 84636
               },
               {
                 "level": 2,
-                "triangles": 602,
+                "triangles": 1096,
                 "file": "Assets/Export/Environment/SM_bullet_round_LOD2.fbx",
-                "sha256": "3102e17c2c8fbf4a28f3a25f728723bf472c8d7ce118ce331e5c55a8c5f8e3e0",
-                "bytes": 37548
+                "sha256": "b830557c3f6ce885a6deaa6e6295fe2d081c823b36cc7d348615ee03a213ea0c",
+                "bytes": 55148
               }
             ]
           }
@@ -782,31 +785,32 @@
           "model": {
             "name": "bullet_round",
             "file": "Assets/Export/Environment/SM_bullet_round.fbx",
-            "sha256": "c827188224bc51740ad16b0721529053bf0dd97c3c454c2e5a06afdb8febaf1d",
-            "bytes": 66332,
-            "triangles": 2744,
+            "sha256": "cbb4228b960efc4435550523e22a39f77465486269677ca6698a8b396cb061d5",
+            "bytes": 106236,
+            "triangles": 5008,
             "boundsMeters": [
               0.06678362190723419,
               0.06679999828338623,
               0.24639999866485596
             ],
             "materials": [
-              "M_RiftSurface"
+              "M_RiftSurface",
+              "M_RiftGlow"
             ],
             "lods": [
               {
                 "level": 1,
-                "triangles": 1372,
+                "triangles": 2504,
                 "file": "Assets/Export/Environment/SM_bullet_round_LOD1.fbx",
-                "sha256": "c5c55d28048285708197f957da66e7506c74bdc5e4b67c5fb192e080beada303",
-                "bytes": 53596
+                "sha256": "c509f4b9ff617d97a688e2c87870ec5102a63851751c92d1c2dba8513b8d3688",
+                "bytes": 84636
               },
               {
                 "level": 2,
-                "triangles": 602,
+                "triangles": 1096,
                 "file": "Assets/Export/Environment/SM_bullet_round_LOD2.fbx",
-                "sha256": "3102e17c2c8fbf4a28f3a25f728723bf472c8d7ce118ce331e5c55a8c5f8e3e0",
-                "bytes": 37548
+                "sha256": "b830557c3f6ce885a6deaa6e6295fe2d081c823b36cc7d348615ee03a213ea0c",
+                "bytes": 55148
               }
             ]
           }
@@ -815,31 +819,32 @@
           "model": {
             "name": "bullet_round",
             "file": "Assets/Export/Environment/SM_bullet_round.fbx",
-            "sha256": "c827188224bc51740ad16b0721529053bf0dd97c3c454c2e5a06afdb8febaf1d",
-            "bytes": 66332,
-            "triangles": 2744,
+            "sha256": "cbb4228b960efc4435550523e22a39f77465486269677ca6698a8b396cb061d5",
+            "bytes": 106236,
+            "triangles": 5008,
             "boundsMeters": [
               0.06678362190723419,
               0.06679999828338623,
               0.24639999866485596
             ],
             "materials": [
-              "M_RiftSurface"
+              "M_RiftSurface",
+              "M_RiftGlow"
             ],
             "lods": [
               {
                 "level": 1,
-                "triangles": 1372,
+                "triangles": 2504,
                 "file": "Assets/Export/Environment/SM_bullet_round_LOD1.fbx",
-                "sha256": "c5c55d28048285708197f957da66e7506c74bdc5e4b67c5fb192e080beada303",
-                "bytes": 53596
+                "sha256": "c509f4b9ff617d97a688e2c87870ec5102a63851751c92d1c2dba8513b8d3688",
+                "bytes": 84636
               },
               {
                 "level": 2,
-                "triangles": 602,
+                "triangles": 1096,
                 "file": "Assets/Export/Environment/SM_bullet_round_LOD2.fbx",
-                "sha256": "3102e17c2c8fbf4a28f3a25f728723bf472c8d7ce118ce331e5c55a8c5f8e3e0",
-                "bytes": 37548
+                "sha256": "b830557c3f6ce885a6deaa6e6295fe2d081c823b36cc7d348615ee03a213ea0c",
+                "bytes": 55148
               }
             ]
           }
@@ -848,31 +853,32 @@
           "model": {
             "name": "bullet_round",
             "file": "Assets/Export/Environment/SM_bullet_round.fbx",
-            "sha256": "c827188224bc51740ad16b0721529053bf0dd97c3c454c2e5a06afdb8febaf1d",
-            "bytes": 66332,
-            "triangles": 2744,
+            "sha256": "cbb4228b960efc4435550523e22a39f77465486269677ca6698a8b396cb061d5",
+            "bytes": 106236,
+            "triangles": 5008,
             "boundsMeters": [
               0.06678362190723419,
               0.06679999828338623,
               0.24639999866485596
             ],
             "materials": [
-              "M_RiftSurface"
+              "M_RiftSurface",
+              "M_RiftGlow"
             ],
             "lods": [
               {
                 "level": 1,
-                "triangles": 1372,
+                "triangles": 2504,
                 "file": "Assets/Export/Environment/SM_bullet_round_LOD1.fbx",
-                "sha256": "c5c55d28048285708197f957da66e7506c74bdc5e4b67c5fb192e080beada303",
-                "bytes": 53596
+                "sha256": "c509f4b9ff617d97a688e2c87870ec5102a63851751c92d1c2dba8513b8d3688",
+                "bytes": 84636
               },
               {
                 "level": 2,
-                "triangles": 602,
+                "triangles": 1096,
                 "file": "Assets/Export/Environment/SM_bullet_round_LOD2.fbx",
-                "sha256": "3102e17c2c8fbf4a28f3a25f728723bf472c8d7ce118ce331e5c55a8c5f8e3e0",
-                "bytes": 37548
+                "sha256": "b830557c3f6ce885a6deaa6e6295fe2d081c823b36cc7d348615ee03a213ea0c",
+                "bytes": 55148
               }
             ]
           }
@@ -881,31 +887,32 @@
           "model": {
             "name": "bullet_round",
             "file": "Assets/Export/Environment/SM_bullet_round.fbx",
-            "sha256": "c827188224bc51740ad16b0721529053bf0dd97c3c454c2e5a06afdb8febaf1d",
-            "bytes": 66332,
-            "triangles": 2744,
+            "sha256": "cbb4228b960efc4435550523e22a39f77465486269677ca6698a8b396cb061d5",
+            "bytes": 106236,
+            "triangles": 5008,
             "boundsMeters": [
               0.06678362190723419,
               0.06679999828338623,
               0.24639999866485596
             ],
             "materials": [
-              "M_RiftSurface"
+              "M_RiftSurface",
+              "M_RiftGlow"
             ],
             "lods": [
               {
                 "level": 1,
-                "triangles": 1372,
+                "triangles": 2504,
                 "file": "Assets/Export/Environment/SM_bullet_round_LOD1.fbx",
-                "sha256": "c5c55d28048285708197f957da66e7506c74bdc5e4b67c5fb192e080beada303",
-                "bytes": 53596
+                "sha256": "c509f4b9ff617d97a688e2c87870ec5102a63851751c92d1c2dba8513b8d3688",
+                "bytes": 84636
               },
               {
                 "level": 2,
-                "triangles": 602,
+                "triangles": 1096,
                 "file": "Assets/Export/Environment/SM_bullet_round_LOD2.fbx",
-                "sha256": "3102e17c2c8fbf4a28f3a25f728723bf472c8d7ce118ce331e5c55a8c5f8e3e0",
-                "bytes": 37548
+                "sha256": "b830557c3f6ce885a6deaa6e6295fe2d081c823b36cc7d348615ee03a213ea0c",
+                "bytes": 55148
               }
             ]
           }
@@ -946,21 +953,21 @@
     },
     "nova_flask": {
       "file": "Assets/Source/CardArt/nova_flask.png",
-      "sha256": "dbef4d5fb30c4e3557058e28a50e351fe7da1800944385d1ec997628138aaf11",
-      "bytes": 905651,
-      "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
+      "sha256": "6f3c525188f11b49a659832683c3375b1ecfb66dbed678a76e1ded97476d1c87",
+      "bytes": 935938,
+      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
       "sources": [
         {
           "model": {
             "name": "nova_flask",
             "file": "Assets/Export/Environment/SM_nova_flask.fbx",
-            "sha256": "4bbe744becd3c38231aba2c31825f319330a6d384eb9bba086bd37cb729df278",
-            "bytes": 138300,
-            "triangles": 5458,
+            "sha256": "5804570ace7444caeffb82a4a17790359e01bdb4ba554f6c69a8c0c970e0ca30",
+            "bytes": 399084,
+            "triangles": 18402,
             "boundsMeters": [
               0.6779645681381226,
               0.7039647102355957,
-              0.9810000658035278
+              0.9900000095367432
             ],
             "materials": [
               "M_RiftGlass",
@@ -970,17 +977,17 @@
             "lods": [
               {
                 "level": 1,
-                "triangles": 2728,
+                "triangles": 9200,
                 "file": "Assets/Export/Environment/SM_nova_flask_LOD1.fbx",
-                "sha256": "4ac8c650b19591c3237345d17e61701e74be03930855b2c3c4a6046991ea1103",
-                "bytes": 105276
+                "sha256": "44f19c775b85376c5dc667e1952cb457515f161e4b9981ee36ac2ba6a4ab2c66",
+                "bytes": 280108
               },
               {
                 "level": 2,
-                "triangles": 1200,
+                "triangles": 4036,
                 "file": "Assets/Export/Environment/SM_nova_flask_LOD2.fbx",
-                "sha256": "2849ae94b5b7405d97c5987ead8646c182e9b7823614ef2078cbfd9aa9cbc748",
-                "bytes": 66044
+                "sha256": "508515b49c46840fe78d19e6038b14f366cadbd9d0e7d716ce03ef974e1a8bbc",
+                "bytes": 162540
               }
             ]
           }
@@ -995,11 +1002,11 @@
         [
           0.3529645800590515,
           0.3359646797180176,
-          1.1260000467300415
+          1.1349999904632568
         ]
       ],
       "poseFrame": 1,
-      "cameraOrthoScale": 1.15679132938385,
+      "cameraOrthoScale": 1.159079909324646,
       "composition": "Full silhouette",
       "lighting": {
         "backdrop": [
@@ -1021,19 +1028,19 @@
     },
     "meteor_shards": {
       "file": "Assets/Source/CardArt/meteor_shards.png",
-      "sha256": "fcbb9ef42ee5e40106ff01c4e068f98e3eadb0673415da4a18c6fb9aa3cae0f1",
-      "bytes": 804197,
-      "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
+      "sha256": "8e62fa6bca733b466fc173816131e9d39152a963f7423072d7d01ac39e5cf002",
+      "bytes": 869887,
+      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
       "sources": [
         {
           "model": {
             "name": "meteor_shard",
             "file": "Assets/Export/Environment/SM_meteor_shard.fbx",
-            "sha256": "9103a36e178eac62cca25bf1f92e96884276b73da64f7005b2011fb15a7516a2",
-            "bytes": 29820,
-            "triangles": 184,
+            "sha256": "f27d4ed402ba9cc8e6038cda80f119cce0c4f6967812e7ce81e4aa0878c83ec9",
+            "bytes": 46396,
+            "triangles": 632,
             "boundsMeters": [
-              0.3780798614025116,
+              0.37942659854888916,
               0.36719125509262085,
               0.8401453495025635
             ],
@@ -1044,17 +1051,17 @@
             "lods": [
               {
                 "level": 1,
-                "triangles": 92,
+                "triangles": 316,
                 "file": "Assets/Export/Environment/SM_meteor_shard_LOD1.fbx",
-                "sha256": "9f7f1473ccc975453f511b54aa80d07dbc9766996c8ff6815905a57555cb2f47",
-                "bytes": 27148
+                "sha256": "ff3d61491afe78f28aebfa0a6638e771db97f803be4ea723c3841e6a95b8384c",
+                "bytes": 37676
               },
               {
                 "level": 2,
-                "triangles": 40,
+                "triangles": 138,
                 "file": "Assets/Export/Environment/SM_meteor_shard_LOD2.fbx",
-                "sha256": "b0c529b442a0e49f7e9f29a77777b80659230bcf0967db6ec11816319bfffae2",
-                "bytes": 25132
+                "sha256": "c6adbb6f1a5ccc3b9590e2b967604c93f310c0fc5b7e8760731732c16b35fb2f",
+                "bytes": 31068
               }
             ]
           }
@@ -1063,11 +1070,11 @@
           "model": {
             "name": "meteor_shard",
             "file": "Assets/Export/Environment/SM_meteor_shard.fbx",
-            "sha256": "9103a36e178eac62cca25bf1f92e96884276b73da64f7005b2011fb15a7516a2",
-            "bytes": 29820,
-            "triangles": 184,
+            "sha256": "f27d4ed402ba9cc8e6038cda80f119cce0c4f6967812e7ce81e4aa0878c83ec9",
+            "bytes": 46396,
+            "triangles": 632,
             "boundsMeters": [
-              0.3780798614025116,
+              0.37942659854888916,
               0.36719125509262085,
               0.8401453495025635
             ],
@@ -1078,17 +1085,17 @@
             "lods": [
               {
                 "level": 1,
-                "triangles": 92,
+                "triangles": 316,
                 "file": "Assets/Export/Environment/SM_meteor_shard_LOD1.fbx",
-                "sha256": "9f7f1473ccc975453f511b54aa80d07dbc9766996c8ff6815905a57555cb2f47",
-                "bytes": 27148
+                "sha256": "ff3d61491afe78f28aebfa0a6638e771db97f803be4ea723c3841e6a95b8384c",
+                "bytes": 37676
               },
               {
                 "level": 2,
-                "triangles": 40,
+                "triangles": 138,
                 "file": "Assets/Export/Environment/SM_meteor_shard_LOD2.fbx",
-                "sha256": "b0c529b442a0e49f7e9f29a77777b80659230bcf0967db6ec11816319bfffae2",
-                "bytes": 25132
+                "sha256": "c6adbb6f1a5ccc3b9590e2b967604c93f310c0fc5b7e8760731732c16b35fb2f",
+                "bytes": 31068
               }
             ]
           }
@@ -1097,11 +1104,11 @@
           "model": {
             "name": "meteor_shard",
             "file": "Assets/Export/Environment/SM_meteor_shard.fbx",
-            "sha256": "9103a36e178eac62cca25bf1f92e96884276b73da64f7005b2011fb15a7516a2",
-            "bytes": 29820,
-            "triangles": 184,
+            "sha256": "f27d4ed402ba9cc8e6038cda80f119cce0c4f6967812e7ce81e4aa0878c83ec9",
+            "bytes": 46396,
+            "triangles": 632,
             "boundsMeters": [
-              0.3780798614025116,
+              0.37942659854888916,
               0.36719125509262085,
               0.8401453495025635
             ],
@@ -1112,17 +1119,17 @@
             "lods": [
               {
                 "level": 1,
-                "triangles": 92,
+                "triangles": 316,
                 "file": "Assets/Export/Environment/SM_meteor_shard_LOD1.fbx",
-                "sha256": "9f7f1473ccc975453f511b54aa80d07dbc9766996c8ff6815905a57555cb2f47",
-                "bytes": 27148
+                "sha256": "ff3d61491afe78f28aebfa0a6638e771db97f803be4ea723c3841e6a95b8384c",
+                "bytes": 37676
               },
               {
                 "level": 2,
-                "triangles": 40,
+                "triangles": 138,
                 "file": "Assets/Export/Environment/SM_meteor_shard_LOD2.fbx",
-                "sha256": "b0c529b442a0e49f7e9f29a77777b80659230bcf0967db6ec11816319bfffae2",
-                "bytes": 25132
+                "sha256": "c6adbb6f1a5ccc3b9590e2b967604c93f310c0fc5b7e8760731732c16b35fb2f",
+                "bytes": 31068
               }
             ]
           }
@@ -1130,13 +1137,13 @@
       ],
       "boundsMeters": [
         [
-          -0.46328121423721313,
+          -0.4669716954231262,
           -0.36530983448028564,
           -0.11756692826747894
         ],
         [
           0.5386044979095459,
-          0.30064523220062256,
+          0.30329784750938416,
           1.1809407472610474
         ]
       ],
@@ -1163,1015 +1170,456 @@
     },
     "mini_stampede": {
       "file": "Assets/Source/CardArt/mini_stampede.png",
-      "sha256": "d88c3a81a3667c274f175ed33e9b9e697858b0aad3040b4fa564b9040fb1a1b0",
-      "bytes": 913014,
-      "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
-      "rendererScript": {
-        "file": "Build/render_expansion_portraits.py",
-        "sha256": "8946c1eaab4eea52a23f995e91bb5c339fb668a4df9008e5dfcc2ea5bb5ee506",
-        "bytes": 16018
-      },
+      "sha256": "458862c95cf8661223e309c612f61169e7baa96d21dd67b33fc283ade80ac4ed",
+      "bytes": 834050,
+      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/mini_stampede/SK_mini_stampede.fbx",
-            "sha256": "1299fd0b4d7f332282711b838138492cdd8b659df0b44b1ec5e1ad72c7e60ad5",
-            "bytes": 731420
+            "sha256": "fc385ce84af953d8d0a7d00433f6736bbbdcb5f137de80cc8288337d594a8726",
+            "bytes": 932460
           },
-          "action": "Locomotion",
-          "phase": 0.09,
-          "instance": "1",
-          "scale": 1.3,
-          "positionMeters": [
-            0,
-            -1.14,
-            0
-          ],
-          "phaseOffsetFrames": 4,
-          "poseSourceFrame": 5,
+          "action": "Idle",
+          "phase": 0.16,
+          "phaseOffsetFrames": 32,
+          "poseSourceFrame": 33,
           "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_mini_stampede_Rig_1_PortraitPose"
+          "stagedAction": "SKEL_mini_stampede.001_PortraitPose"
         },
         {
           "model": {
             "file": "Assets/Export/Characters/mini_stampede/SK_mini_stampede.fbx",
-            "sha256": "1299fd0b4d7f332282711b838138492cdd8b659df0b44b1ec5e1ad72c7e60ad5",
-            "bytes": 731420
+            "sha256": "fc385ce84af953d8d0a7d00433f6736bbbdcb5f137de80cc8288337d594a8726",
+            "bytes": 932460
           },
-          "action": "Locomotion",
-          "phase": 0.155,
-          "instance": "2",
-          "scale": 1.3,
-          "positionMeters": [
-            -0.58,
-            0.04,
-            0
-          ],
-          "phaseOffsetFrames": 7,
-          "poseSourceFrame": 8,
+          "action": "Idle",
+          "phase": 0.16,
+          "phaseOffsetFrames": 32,
+          "poseSourceFrame": 33,
           "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_mini_stampede_Rig_2_PortraitPose"
+          "stagedAction": "SKEL_mini_stampede.002_PortraitPose"
         },
         {
           "model": {
             "file": "Assets/Export/Characters/mini_stampede/SK_mini_stampede.fbx",
-            "sha256": "1299fd0b4d7f332282711b838138492cdd8b659df0b44b1ec5e1ad72c7e60ad5",
-            "bytes": 731420
+            "sha256": "fc385ce84af953d8d0a7d00433f6736bbbdcb5f137de80cc8288337d594a8726",
+            "bytes": 932460
           },
-          "action": "Locomotion",
-          "phase": 0.22,
-          "instance": "3",
-          "scale": 1.3,
-          "positionMeters": [
-            0.58,
-            0.04,
-            0
-          ],
-          "phaseOffsetFrames": 9,
-          "poseSourceFrame": 10,
+          "action": "Idle",
+          "phase": 0.16,
+          "phaseOffsetFrames": 32,
+          "poseSourceFrame": 33,
           "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_mini_stampede_Rig_3_PortraitPose"
-        },
-        {
-          "model": {
-            "file": "Assets/Export/Characters/mini_stampede/SK_mini_stampede.fbx",
-            "sha256": "1299fd0b4d7f332282711b838138492cdd8b659df0b44b1ec5e1ad72c7e60ad5",
-            "bytes": 731420
-          },
-          "action": "Locomotion",
-          "phase": 0.28500000000000003,
-          "instance": "4",
-          "scale": 1.3,
-          "positionMeters": [
-            -0.64,
-            1.24,
-            0
-          ],
-          "phaseOffsetFrames": 12,
-          "poseSourceFrame": 13,
-          "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_mini_stampede_Rig_4_PortraitPose"
-        },
-        {
-          "model": {
-            "file": "Assets/Export/Characters/mini_stampede/SK_mini_stampede.fbx",
-            "sha256": "1299fd0b4d7f332282711b838138492cdd8b659df0b44b1ec5e1ad72c7e60ad5",
-            "bytes": 731420
-          },
-          "action": "Locomotion",
-          "phase": 0.35,
-          "instance": "5",
-          "scale": 1.3,
-          "positionMeters": [
-            0.64,
-            1.24,
-            0
-          ],
-          "phaseOffsetFrames": 15,
-          "poseSourceFrame": 16,
-          "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_mini_stampede_Rig_5_PortraitPose"
+          "stagedAction": "SKEL_mini_stampede.003_PortraitPose"
         }
       ],
       "boundsMeters": [
         [
-          -0.9834309220314026,
-          -1.9901013374328613,
-          0.005199985112994909
+          -0.8924883008003235,
+          -0.9558781981468201,
+          0.0031599977519363165
         ],
         [
-          0.962803304195404,
-          1.9616512060165405,
-          0.7464004158973694
+          0.8145063519477844,
+          0.8059654831886292,
+          0.6005302667617798
         ]
       ],
       "poseFrame": 1,
-      "cameraProjection": "Perspective",
-      "cameraDistance": 6.584045184817016,
-      "composition": "Five boarlets in a diagonal charge",
-      "subjectCount": 5,
-      "master": {
-        "file": "Assets/Source/CardArt/Masters/mini_stampede.png",
-        "sha256": "772b927a1887ebfc080581f02c46b7602b3cab4dd300ea8e914695eac67b7432",
-        "bytes": 1584809
-      },
-      "editableScene": {
-        "file": "Assets/Source/CardArt/Scenes/mini_stampede_Portrait.blend",
-        "sha256": "7a828ac7e1e3dfb7e4148248ca469c5007f598b9eedf3b0a97d3a379ebfd1f81",
-        "bytes": 4783542
-      },
-      "smallReview": {
-        "file": "Assets/Renders/Expansion/Small/mini_stampede_96x120.png",
-        "sha256": "3903cabb11d9873627fbcd58384ebe51ea583c51a87d36414d541c447daa192b",
-        "bytes": 19768
-      },
-      "runtimeResolution": [
-        768,
-        960
-      ],
-      "masterResolution": [
-        1024,
-        1280
-      ],
+      "cameraOrthoScale": 2.611027479171753,
+      "composition": "Model-rendered herd trio",
       "lighting": {
-        "key": "warm copper",
-        "rim": "cool teal/violet"
-      },
-      "safeZones": {
-        "topLeftBadge": 0.2,
-        "bottomName": 0.14
+        "backdrop": [
+          0.042,
+          0.033,
+          0.022
+        ],
+        "key": [
+          1,
+          0.87,
+          0.69
+        ],
+        "rim": [
+          0.6,
+          0.69,
+          0.43
+        ]
       }
     },
     "stampede": {
       "file": "Assets/Source/CardArt/stampede.png",
-      "sha256": "0f0a81bf0ffd6d885758f6fd8b96a83c2d18c8ad2fde6b3590e26ebbb7287e81",
-      "bytes": 924604,
-      "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
-      "rendererScript": {
-        "file": "Build/render_expansion_portraits.py",
-        "sha256": "8946c1eaab4eea52a23f995e91bb5c339fb668a4df9008e5dfcc2ea5bb5ee506",
-        "bytes": 16018
-      },
+      "sha256": "4f352bae9c1325a1049de8db81372c25ad40ab59a2a200bf45a2044ed888e3b8",
+      "bytes": 852539,
+      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
-            "bytes": 742460
+            "sha256": "696006ecfb6269f519b71249edb6783af4cbd7b49b1f956a9df589caa22e502e",
+            "bytes": 978748
           },
-          "action": "Locomotion",
-          "phase": 0.09,
-          "instance": "1",
-          "scale": 0.85,
-          "positionMeters": [
-            -1.09,
-            -1.34,
-            0
-          ],
-          "phaseOffsetFrames": 4,
-          "poseSourceFrame": 5,
+          "action": "Idle",
+          "phase": 0.16,
+          "phaseOffsetFrames": 32,
+          "poseSourceFrame": 33,
           "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_stampede_Rig_1_PortraitPose"
+          "stagedAction": "SKEL_stampede.001_PortraitPose"
         },
         {
           "model": {
             "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
-            "bytes": 742460
+            "sha256": "696006ecfb6269f519b71249edb6783af4cbd7b49b1f956a9df589caa22e502e",
+            "bytes": 978748
           },
-          "action": "Locomotion",
-          "phase": 0.137,
-          "instance": "2",
-          "scale": 0.85,
-          "positionMeters": [
-            -0.59,
-            -1.34,
-            0
-          ],
-          "phaseOffsetFrames": 6,
-          "poseSourceFrame": 7,
+          "action": "Idle",
+          "phase": 0.16,
+          "phaseOffsetFrames": 32,
+          "poseSourceFrame": 33,
           "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_stampede_Rig_2_PortraitPose"
+          "stagedAction": "SKEL_stampede.002_PortraitPose"
         },
         {
           "model": {
             "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
-            "bytes": 742460
+            "sha256": "696006ecfb6269f519b71249edb6783af4cbd7b49b1f956a9df589caa22e502e",
+            "bytes": 978748
           },
-          "action": "Locomotion",
-          "phase": 0.184,
-          "instance": "3",
-          "scale": 0.85,
-          "positionMeters": [
-            -0.09,
-            -1.34,
-            0
-          ],
-          "phaseOffsetFrames": 8,
-          "poseSourceFrame": 9,
+          "action": "Idle",
+          "phase": 0.16,
+          "phaseOffsetFrames": 32,
+          "poseSourceFrame": 33,
           "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_stampede_Rig_3_PortraitPose"
-        },
-        {
-          "model": {
-            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
-            "bytes": 742460
-          },
-          "action": "Locomotion",
-          "phase": 0.231,
-          "instance": "4",
-          "scale": 0.85,
-          "positionMeters": [
-            0.41000000000000003,
-            -1.34,
-            0
-          ],
-          "phaseOffsetFrames": 11,
-          "poseSourceFrame": 12,
-          "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_stampede_Rig_4_PortraitPose"
-        },
-        {
-          "model": {
-            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
-            "bytes": 742460
-          },
-          "action": "Locomotion",
-          "phase": 0.278,
-          "instance": "5",
-          "scale": 0.85,
-          "positionMeters": [
-            0.91,
-            -1.34,
-            0
-          ],
-          "phaseOffsetFrames": 13,
-          "poseSourceFrame": 14,
-          "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_stampede_Rig_5_PortraitPose"
-        },
-        {
-          "model": {
-            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
-            "bytes": 742460
-          },
-          "action": "Locomotion",
-          "phase": 0.09,
-          "instance": "6",
-          "scale": 0.85,
-          "positionMeters": [
-            -1.0,
-            0.0,
-            0
-          ],
-          "phaseOffsetFrames": 4,
-          "poseSourceFrame": 5,
-          "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_stampede_Rig_6_PortraitPose"
-        },
-        {
-          "model": {
-            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
-            "bytes": 742460
-          },
-          "action": "Locomotion",
-          "phase": 0.137,
-          "instance": "7",
-          "scale": 0.85,
-          "positionMeters": [
-            -0.5,
-            0.0,
-            0
-          ],
-          "phaseOffsetFrames": 6,
-          "poseSourceFrame": 7,
-          "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_stampede_Rig_7_PortraitPose"
-        },
-        {
-          "model": {
-            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
-            "bytes": 742460
-          },
-          "action": "Locomotion",
-          "phase": 0.184,
-          "instance": "8",
-          "scale": 0.85,
-          "positionMeters": [
-            0.0,
-            0.0,
-            0
-          ],
-          "phaseOffsetFrames": 8,
-          "poseSourceFrame": 9,
-          "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_stampede_Rig_8_PortraitPose"
-        },
-        {
-          "model": {
-            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
-            "bytes": 742460
-          },
-          "action": "Locomotion",
-          "phase": 0.231,
-          "instance": "9",
-          "scale": 0.85,
-          "positionMeters": [
-            0.5,
-            0.0,
-            0
-          ],
-          "phaseOffsetFrames": 11,
-          "poseSourceFrame": 12,
-          "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_stampede_Rig_9_PortraitPose"
-        },
-        {
-          "model": {
-            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
-            "bytes": 742460
-          },
-          "action": "Locomotion",
-          "phase": 0.278,
-          "instance": "10",
-          "scale": 0.85,
-          "positionMeters": [
-            1.0,
-            0.0,
-            0
-          ],
-          "phaseOffsetFrames": 13,
-          "poseSourceFrame": 14,
-          "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_stampede_Rig_10_PortraitPose"
-        },
-        {
-          "model": {
-            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
-            "bytes": 742460
-          },
-          "action": "Locomotion",
-          "phase": 0.09,
-          "instance": "11",
-          "scale": 0.85,
-          "positionMeters": [
-            -0.91,
-            1.34,
-            0
-          ],
-          "phaseOffsetFrames": 4,
-          "poseSourceFrame": 5,
-          "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_stampede_Rig_11_PortraitPose"
-        },
-        {
-          "model": {
-            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
-            "bytes": 742460
-          },
-          "action": "Locomotion",
-          "phase": 0.137,
-          "instance": "12",
-          "scale": 0.85,
-          "positionMeters": [
-            -0.41000000000000003,
-            1.34,
-            0
-          ],
-          "phaseOffsetFrames": 6,
-          "poseSourceFrame": 7,
-          "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_stampede_Rig_12_PortraitPose"
-        },
-        {
-          "model": {
-            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
-            "bytes": 742460
-          },
-          "action": "Locomotion",
-          "phase": 0.184,
-          "instance": "13",
-          "scale": 0.85,
-          "positionMeters": [
-            0.09,
-            1.34,
-            0
-          ],
-          "phaseOffsetFrames": 8,
-          "poseSourceFrame": 9,
-          "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_stampede_Rig_13_PortraitPose"
-        },
-        {
-          "model": {
-            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
-            "bytes": 742460
-          },
-          "action": "Locomotion",
-          "phase": 0.231,
-          "instance": "14",
-          "scale": 0.85,
-          "positionMeters": [
-            0.59,
-            1.34,
-            0
-          ],
-          "phaseOffsetFrames": 11,
-          "poseSourceFrame": 12,
-          "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_stampede_Rig_14_PortraitPose"
-        },
-        {
-          "model": {
-            "file": "Assets/Export/Characters/stampede/SK_stampede.fbx",
-            "sha256": "26370fd0c2ea69901b8dfc89fc8553ce3e80b5f02dd1acb2cfc68cc6bffa0cd0",
-            "bytes": 742460
-          },
-          "action": "Locomotion",
-          "phase": 0.278,
-          "instance": "15",
-          "scale": 0.85,
-          "positionMeters": [
-            1.09,
-            1.34,
-            0
-          ],
-          "phaseOffsetFrames": 13,
-          "poseSourceFrame": 14,
-          "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_stampede_Rig_15_PortraitPose"
+          "stagedAction": "SKEL_stampede.003_PortraitPose"
         }
       ],
       "boundsMeters": [
         [
-          -1.312098741531372,
-          -1.8971071243286133,
-          0.003400026820600033
+          -0.8924883008003235,
+          -0.9558781981468201,
+          0.0031599977519363165
         ],
         [
-          1.3145819902420044,
-          1.823384165763855,
-          0.4887016713619232
+          0.8145063519477844,
+          0.8059654831886292,
+          0.6005302667617798
         ]
       ],
       "poseFrame": 1,
-      "cameraProjection": "Perspective",
-      "cameraDistance": 9.612506586791516,
-      "composition": "Fifteen boarlets, five across and three deep",
-      "subjectCount": 15,
-      "master": {
-        "file": "Assets/Source/CardArt/Masters/stampede.png",
-        "sha256": "6304744883bc1f670fe769091b1334b761bed361837a5e1f1af466b4ff97b621",
-        "bytes": 1609106
-      },
-      "editableScene": {
-        "file": "Assets/Source/CardArt/Scenes/stampede_Portrait.blend",
-        "sha256": "99251a580fb8141f433ed5d913855930f15860e66d8e4961b4567acd9ed2ff6c",
-        "bytes": 10091179
-      },
-      "smallReview": {
-        "file": "Assets/Renders/Expansion/Small/stampede_96x120.png",
-        "sha256": "30ba4d88cd52f6a72715968bb2d82063ac95de8164118d328d2018104c9c32e7",
-        "bytes": 19465
-      },
-      "runtimeResolution": [
-        768,
-        960
-      ],
-      "masterResolution": [
-        1024,
-        1280
-      ],
+      "cameraOrthoScale": 2.686973810195923,
+      "composition": "Model-rendered herd trio",
       "lighting": {
-        "key": "warm copper",
-        "rim": "cool teal/violet"
-      },
-      "safeZones": {
-        "topLeftBadge": 0.2,
-        "bottomName": 0.14
+        "backdrop": [
+          0.027,
+          0.037,
+          0.056
+        ],
+        "key": [
+          1,
+          0.91,
+          0.73
+        ],
+        "rim": [
+          0.38,
+          0.63,
+          0.88
+        ]
       }
     },
     "pulverizer": {
       "file": "Assets/Source/CardArt/pulverizer.png",
-      "sha256": "5097eb15701f729f07aceb115f0c8c2d8179cbe8d30a425a5f068179370f7c06",
-      "bytes": 909178,
-      "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
-      "rendererScript": {
-        "file": "Build/render_expansion_portraits.py",
-        "sha256": "8946c1eaab4eea52a23f995e91bb5c339fb668a4df9008e5dfcc2ea5bb5ee506",
-        "bytes": 16018
-      },
+      "sha256": "9d18d9aeec9c81a89c7a9c58fe6108a688a97fb19e36b9da70299558070e74a3",
+      "bytes": 923898,
+      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/pulverizer/SK_pulverizer.fbx",
-            "sha256": "68124968236bb96c69c0565eda378aa5e9817f9d619d11ff0832cc3168a455ec",
-            "bytes": 685980
+            "sha256": "8d0b087106d74e49d25bf7037e9a7ec04e3e1eb65f887cae9a3f5b12f9109c6e",
+            "bytes": 811212
           },
-          "action": "Attack",
-          "phase": 0.5263157894736842,
-          "instance": "impact",
-          "scale": 0.95,
-          "positionMeters": [
-            0,
-            0,
-            0
-          ],
-          "phaseOffsetFrames": 20,
-          "poseSourceFrame": 21,
+          "action": "Idle",
+          "phase": 0.16,
+          "phaseOffsetFrames": 32,
+          "poseSourceFrame": 33,
           "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_pulverizer_Rig_impact_PortraitPose"
+          "stagedAction": "SKEL_pulverizer.001_PortraitPose"
         }
       ],
       "boundsMeters": [
         [
-          -0.7904000282287598,
-          -0.7904000282287598,
+          -0.8320000171661377,
+          -0.8320000171661377,
           0.0
         ],
         [
-          0.7904000282287598,
-          0.7904000282287598,
-          1.0602000951766968
+          0.8320000171661377,
+          0.8320000171661377,
+          1.2793773412704468
         ]
       ],
       "poseFrame": 1,
-      "cameraProjection": "Perspective",
-      "cameraDistance": 5.0,
-      "composition": "Four-brace compression machine at its authoritative contact pose",
-      "subjectCount": 1,
-      "master": {
-        "file": "Assets/Source/CardArt/Masters/pulverizer.png",
-        "sha256": "aadbeded5c8c02d41ab48ecae7a8c004dfbb707c3d53805a2db2de553c0572a8",
-        "bytes": 1568607
-      },
-      "editableScene": {
-        "file": "Assets/Source/CardArt/Scenes/pulverizer_Portrait.blend",
-        "sha256": "6111440fa824012b4cb29ecf524f9b8ef6690f7c34cdb4efa19afa8ec50581bf",
-        "bytes": 2678205
-      },
-      "smallReview": {
-        "file": "Assets/Renders/Expansion/Small/pulverizer_96x120.png",
-        "sha256": "b8a71704543bcc386b5e589d8f029e58afbc724082e874f365f25fc6f3de8705",
-        "bytes": 19450
-      },
-      "runtimeResolution": [
-        768,
-        960
-      ],
-      "masterResolution": [
-        1024,
-        1280
-      ],
+      "cameraOrthoScale": 2.9495506286621094,
+      "composition": "Full silhouette",
       "lighting": {
-        "key": "warm copper",
-        "rim": "cool teal/violet"
-      },
-      "safeZones": {
-        "topLeftBadge": 0.2,
-        "bottomName": 0.14
+        "backdrop": [
+          0.032,
+          0.026,
+          0.048
+        ],
+        "key": [
+          0.95,
+          0.9,
+          1
+        ],
+        "rim": [
+          0.62,
+          0.32,
+          0.96
+        ]
       }
     },
     "bone_warden": {
       "file": "Assets/Source/CardArt/bone_warden.png",
-      "bytes": 898753,
-      "sha256": "cfe0a092537373ef20ba9f104ecb81c0c93e373a236e1034ebdd329ffc3d6c1e",
-      "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
+      "sha256": "dffba6f4edf8a8213a4f6a3d3d1fb53a8449d96b15dcad55ffcc724cfe1256e9",
+      "bytes": 998657,
+      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/bone_warden/SK_bone_warden.fbx",
-            "sha256": "a38db5dd305842a8b04c5ae8dc5b29580885a70eb30644e38f60d961042f45e4",
-            "bytes": 1148476
+            "sha256": "9fe98f615cbd6a9781165cac1da1da97f106bae0cf49803951c9484bb2c13c3d",
+            "bytes": 1647196
           },
-          "action": "Attack",
-          "phase": 0.2546341463414634,
-          "instance": "hero",
-          "scale": 1.5,
-          "positionMeters": [
-            0,
-            -0.32,
-            0
-          ],
-          "phaseOffsetFrames": 21,
-          "poseSourceFrame": 22,
+          "action": "Idle",
+          "phase": 0.16,
+          "phaseOffsetFrames": 32,
+          "poseSourceFrame": 33,
           "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_bone_warden_Rig_hero_PortraitPose",
-          "illustrationOnlyShieldCutaway": false,
-          "illustrationOnlyAffectedAlly": false
+          "stagedAction": "SKEL_bone_warden.001_PortraitPose"
         },
         {
           "model": {
             "file": "Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton.fbx",
-            "sha256": "261ed1ca9cf225090526e30f6ab5e41b410e90fb6633e306f32baf94fb4072bd",
-            "bytes": 408428
+            "sha256": "2721959005e4755123fcec65a65c00f0757ef8e8168c9718390fd781e0b509b5",
+            "bytes": 660716
           },
-          "action": "Deploy",
-          "phase": 0.32,
-          "instance": "summon_1",
-          "scale": 0.65,
-          "positionMeters": [
-            -1.04,
-            0.48,
-            0
-          ],
-          "phaseOffsetFrames": 10,
-          "poseSourceFrame": 11,
+          "action": "Idle",
+          "phase": 0.16,
+          "phaseOffsetFrames": 32,
+          "poseSourceFrame": 33,
           "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_bone_warden_Rig_summon_1_PortraitPose",
-          "illustrationOnlyShieldCutaway": false,
-          "illustrationOnlyAffectedAlly": false
+          "stagedAction": "SKEL_bone_warden_skeleton.001_PortraitPose"
         },
         {
           "model": {
             "file": "Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton.fbx",
-            "sha256": "261ed1ca9cf225090526e30f6ab5e41b410e90fb6633e306f32baf94fb4072bd",
-            "bytes": 408428
+            "sha256": "2721959005e4755123fcec65a65c00f0757ef8e8168c9718390fd781e0b509b5",
+            "bytes": 660716
           },
-          "action": "Deploy",
-          "phase": 0.32,
-          "instance": "summon_2",
-          "scale": 0.65,
-          "positionMeters": [
-            0.91,
-            0.48,
-            0
-          ],
-          "phaseOffsetFrames": 10,
-          "poseSourceFrame": 11,
+          "action": "Idle",
+          "phase": 0.16,
+          "phaseOffsetFrames": 32,
+          "poseSourceFrame": 33,
           "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_bone_warden_Rig_summon_2_PortraitPose",
-          "illustrationOnlyShieldCutaway": false,
-          "illustrationOnlyAffectedAlly": false
-        },
-        {
-          "model": {
-            "file": "Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton.fbx",
-            "sha256": "261ed1ca9cf225090526e30f6ab5e41b410e90fb6633e306f32baf94fb4072bd",
-            "bytes": 408428
-          },
-          "action": "Deploy",
-          "phase": 0.32,
-          "instance": "summon_3",
-          "scale": 0.65,
-          "positionMeters": [
-            -1.32,
-            1.12,
-            0.025
-          ],
-          "phaseOffsetFrames": 10,
-          "poseSourceFrame": 11,
-          "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_bone_warden_Rig_summon_3_PortraitPose",
-          "illustrationOnlyShieldCutaway": false,
-          "illustrationOnlyAffectedAlly": false
-        },
-        {
-          "model": {
-            "file": "Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton.fbx",
-            "sha256": "261ed1ca9cf225090526e30f6ab5e41b410e90fb6633e306f32baf94fb4072bd",
-            "bytes": 408428
-          },
-          "action": "Deploy",
-          "phase": 0.32,
-          "instance": "summon_4",
-          "scale": 0.65,
-          "positionMeters": [
-            1.18,
-            1.12,
-            0.025
-          ],
-          "phaseOffsetFrames": 10,
-          "poseSourceFrame": 11,
-          "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_bone_warden_Rig_summon_4_PortraitPose",
-          "illustrationOnlyShieldCutaway": false,
-          "illustrationOnlyAffectedAlly": false
+          "stagedAction": "SKEL_bone_warden_skeleton.002_PortraitPose"
         }
       ],
       "boundsMeters": [
         [
-          -1.5006221532821655,
-          -1.1479814052581787,
-          -0.0018981003668159246
+          -0.6535011529922485,
+          -0.4985283315181732,
+          -0.0020440686494112015
         ],
         [
-          1.4007277488708496,
-          1.174425482749939,
-          2.8691904544830322
+          0.8249999284744263,
+          0.2234346568584442,
+          2.031430721282959
         ]
       ],
       "poseFrame": 1,
-      "cameraProjection": "Perspective",
-      "cameraDistance": 7.475601237156295,
-      "composition": "One imposing Warden; four subordinate Skeleton death-summon silhouettes behind the green ribs",
-      "subjectCount": 5,
-      "master": {
-        "file": "Assets/Source/CardArt/Masters/bone_warden.png",
-        "bytes": 1553974,
-        "sha256": "726647c309283568d29e1829fe1fd9fce5158d9453824ca1337bdd253c817027"
-      },
-      "editableScene": {
-        "file": "Assets/Source/CardArt/Scenes/bone_warden_Portrait.blend",
-        "bytes": 25881912,
-        "sha256": "f9e1de30b7686cd912846e3f086febff817d43a86d3380951eb319dc1a08a692"
-      },
-      "smallReview": {
-        "file": "Assets/Renders/Expansion/Small/bone_warden_96x120.png",
-        "bytes": 18392,
-        "sha256": "a9c14b94ed36eda0a68291de84b8ca53bd456dac06eeb0e8706c1595f937f65f"
-      },
-      "runtimeResolution": [
-        768,
-        960
-      ],
-      "masterResolution": [
-        1024,
-        1280
-      ],
-      "safeZones": {
-        "topLeftBadge": 0.2,
-        "bottomName": 0.14
-      },
-      "rendererScript": {
-        "file": "Build/render_approved_expansion.py",
-        "bytes": 15927,
-        "sha256": "06cec3bfeb371eb7822de7ad6618c6fdd1ffa53a06d38b1f2694a5e661a53ecf"
+      "cameraOrthoScale": 2.2559316158294678,
+      "composition": "Full silhouette",
+      "lighting": {
+        "backdrop": [
+          0.022,
+          0.043,
+          0.035
+        ],
+        "key": [
+          1,
+          0.91,
+          0.75
+        ],
+        "rim": [
+          0.32,
+          0.82,
+          0.49
+        ]
       }
     },
     "aether_reaper": {
       "file": "Assets/Source/CardArt/aether_reaper.png",
-      "bytes": 772796,
-      "sha256": "f15ec0df011873274dc8a71022da54fbb3bea3a3ec5a212bea41c3272b9cef10",
-      "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
+      "sha256": "36ab58e0d1bbab033b106f8270ae2b97b690e1743c707cd560b0d71ffbe1d7e3",
+      "bytes": 863607,
+      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/aether_reaper/SK_aether_reaper.fbx",
-            "sha256": "6931118a9d6e451f60c7f23983aa6d0ea7fc90f3e045d363ee5246a5f82d3966",
-            "bytes": 518860
+            "sha256": "ed6101a98169ec41c5f3db55aa62d63cba38a39247d97714de5ecad078945990",
+            "bytes": 596668
           },
-          "action": "Attack",
-          "phase": 0.2366666666666667,
-          "instance": "hero",
-          "scale": 1.1,
-          "positionMeters": [
-            0,
-            0,
-            0
-          ],
-          "phaseOffsetFrames": 14,
-          "poseSourceFrame": 15,
+          "action": "Idle",
+          "phase": 0.16,
+          "phaseOffsetFrames": 32,
+          "poseSourceFrame": 33,
           "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_aether_reaper_Rig_hero_PortraitPose",
-          "illustrationOnlyShieldCutaway": false,
-          "illustrationOnlyAffectedAlly": false
+          "stagedAction": "SKEL_aether_reaper.001_PortraitPose"
         }
       ],
       "boundsMeters": [
         [
-          -0.44522276520729065,
-          -0.4164784252643585,
-          0.29897063970565796
+          -0.3907424807548523,
+          -0.3806614279747009,
+          0.2587284445762634
         ],
         [
-          0.6788777709007263,
-          0.41040197014808655,
-          2.5936503410339355
+          1.0899708271026611,
+          0.4333089292049408,
+          2.1815268993377686
         ]
       ],
       "poseFrame": 1,
-      "cameraProjection": "Perspective",
-      "cameraDistance": 5.629558913529406,
-      "composition": "One airborne hooded Reaper; attached silver crescent scythe toward lower right; quiet violet studio",
-      "subjectCount": 1,
-      "master": {
-        "file": "Assets/Source/CardArt/Masters/aether_reaper.png",
-        "bytes": 1354710,
-        "sha256": "db283ec42223c7fea9d96351ede4ea330a6033a2917a06021a3d6d089f69b5a3"
-      },
-      "editableScene": {
-        "file": "Assets/Source/CardArt/Scenes/aether_reaper_Portrait.blend",
-        "bytes": 24739806,
-        "sha256": "c47078a01695c1d57224aac8ac1054b53e4d7d49f9eb4892e0eabb9b4e4ad2fe"
-      },
-      "smallReview": {
-        "file": "Assets/Renders/Expansion/Small/aether_reaper_96x120.png",
-        "bytes": 14555,
-        "sha256": "7d532303a8a1d82d33435476b6420b23b2bf6565eb192860aa265e4598897d35"
-      },
-      "runtimeResolution": [
-        768,
-        960
-      ],
-      "masterResolution": [
-        1024,
-        1280
-      ],
-      "safeZones": {
-        "topLeftBadge": 0.2,
-        "bottomName": 0.14
-      },
-      "rendererScript": {
-        "file": "Build/render_approved_expansion.py",
-        "bytes": 15927,
-        "sha256": "06cec3bfeb371eb7822de7ad6618c6fdd1ffa53a06d38b1f2694a5e661a53ecf"
+      "cameraOrthoScale": 2.0081260204315186,
+      "composition": "Full silhouette",
+      "lighting": {
+        "backdrop": [
+          0.029,
+          0.02,
+          0.061
+        ],
+        "key": [
+          0.88,
+          0.86,
+          1
+        ],
+        "rim": [
+          0.63,
+          0.3,
+          1
+        ]
       }
     },
     "iron_giant": {
       "file": "Assets/Source/CardArt/iron_giant.png",
-      "bytes": 900016,
-      "sha256": "1d12ce1db2e9d08cac4a2f86ec86e173d1d36c0ceb1f14934aa7ced8243b04be",
-      "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
+      "sha256": "c0cb849c27715e90171e551aef21636df25447e9b05e972dbeaec7c52a03fe38",
+      "bytes": 943494,
+      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/iron_giant/SK_iron_giant.fbx",
-            "sha256": "5b76b28c2c5acb04bd94c4652def5572dfe78eee1a02b8d34336dac3261550d1",
-            "bytes": 1066876
+            "sha256": "ac3c9f684b01c21c15d5d734360bcf2326ff6bbf36e60069b210cd359966576d",
+            "bytes": 1150524
           },
-          "action": "Locomotion",
-          "phase": 0.15,
-          "instance": "hero",
-          "scale": 1.0,
-          "positionMeters": [
-            0,
-            0,
-            0
-          ],
-          "phaseOffsetFrames": 14,
-          "poseSourceFrame": 15,
+          "action": "Idle",
+          "phase": 0.16,
+          "phaseOffsetFrames": 32,
+          "poseSourceFrame": 33,
           "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_iron_giant_Rig_hero_PortraitPose",
-          "illustrationOnlyShieldCutaway": true,
-          "illustrationOnlyAffectedAlly": false
+          "stagedAction": "SKEL_iron_giant.001_PortraitPose"
         }
       ],
       "boundsMeters": [
         [
-          -0.6840983033180237,
-          -0.5257591009140015,
-          0.009999647736549377
+          -0.7056193947792053,
+          -0.3867291808128357,
+          0.00999978557229042
         ],
         [
-          0.6793323159217834,
-          0.36532488465309143,
-          1.2800512313842773
+          0.701038122177124,
+          0.3484746813774109,
+          1.3231983184814453
         ]
       ],
       "poseFrame": 1,
-      "cameraProjection": "Perspective",
-      "cameraDistance": 3.287817098770081,
-      "composition": "One broad automaton, intact cool steel shell with one small cutaway showing warm underlying body",
-      "subjectCount": 1,
-      "master": {
-        "file": "Assets/Source/CardArt/Masters/iron_giant.png",
-        "bytes": 1558717,
-        "sha256": "fec3e11e5bd336d71ad1b5f4cd30a79f1ca8c206edad9c715332a84428bc3b5b"
-      },
-      "editableScene": {
-        "file": "Assets/Source/CardArt/Scenes/iron_giant_Portrait.blend",
-        "bytes": 25193930,
-        "sha256": "ced9e15a03ff0c0cb5183d461b80cf11b144a10d557e8ebfe8549a641083e06d"
-      },
-      "smallReview": {
-        "file": "Assets/Renders/Expansion/Small/iron_giant_96x120.png",
-        "bytes": 19967,
-        "sha256": "47acc33fdcd6933f93e864a281c208fd23af36a76ede6af8a016ff635aae175e"
-      },
-      "runtimeResolution": [
-        768,
-        960
-      ],
-      "masterResolution": [
-        1024,
-        1280
-      ],
-      "safeZones": {
-        "topLeftBadge": 0.2,
-        "bottomName": 0.14
-      },
-      "rendererScript": {
-        "file": "Build/render_approved_expansion.py",
-        "bytes": 15927,
-        "sha256": "06cec3bfeb371eb7822de7ad6618c6fdd1ffa53a06d38b1f2694a5e661a53ecf"
+      "cameraOrthoScale": 1.958890676498413,
+      "composition": "Full silhouette",
+      "lighting": {
+        "backdrop": [
+          0.041,
+          0.037,
+          0.033
+        ],
+        "key": [
+          1,
+          0.85,
+          0.63
+        ],
+        "rim": [
+          0.45,
+          0.67,
+          0.82
+        ]
       }
     },
     "shadow_surge": {
       "file": "Assets/Source/CardArt/shadow_surge.png",
-      "bytes": 845303,
-      "sha256": "f90da4d233c09592e3240fe8b9c2e2b74b46024917f243d8c63d47f1370a6f63",
-      "sourceSceneSHA256": "5ccfe24034ae57336cb0176208873fd2fdf3fe8bef4f6f5feb43bf89ee831de7",
+      "sha256": "42b249fb4fad78d2dfb6766a10170d8a49b63348c832099eed18a591dcb5f2b4",
+      "bytes": 937838,
+      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/ironclad/SK_ironclad.fbx",
-            "sha256": "f5b1987b9e16ad546bcd8defd9678ab3e3b8811e3035223ecc69aa5e6d7c3f3d",
-            "bytes": 701660
+            "sha256": "38ed17e28cda8c53f6cd290bdf959c176ffb71f3c959c217e0df129854aa5318",
+            "bytes": 1100684
           },
           "action": "Idle",
           "phase": 0.16,
-          "instance": "ally_1",
-          "scale": 0.73,
-          "positionMeters": [
-            -0.58,
-            0.02,
-            0
-          ],
           "phaseOffsetFrames": 19,
           "poseSourceFrame": 20,
           "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_shadow_surge_Rig_ally_1_PortraitPose",
-          "illustrationOnlyShieldCutaway": false,
-          "illustrationOnlyAffectedAlly": true
+          "stagedAction": "SKEL_ironclad.001_PortraitPose.001"
         },
         {
           "model": {
             "file": "Assets/Export/Characters/twin_blades/SK_twin_blades.fbx",
-            "sha256": "98b9c89bfc1fc031003ac31754981f24760a6c1898a44959dba17d9455aba059",
-            "bytes": 736508
+            "sha256": "af3fb4dc308dd7aa0359f973c71f6b0c8f083fc7401beced952eae885ce78b84",
+            "bytes": 955932
           },
           "action": "Idle",
           "phase": 0.16,
-          "instance": "ally_2",
-          "scale": 0.8,
-          "positionMeters": [
-            0.59,
-            0.17,
-            0
-          ],
           "phaseOffsetFrames": 19,
           "poseSourceFrame": 20,
           "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_shadow_surge_Rig_ally_2_PortraitPose",
-          "illustrationOnlyShieldCutaway": false,
-          "illustrationOnlyAffectedAlly": true
+          "stagedAction": "SKEL_twin_blades.001_PortraitPose.001"
         },
         {
           "model": {
             "file": "Assets/Export/Characters/bone_warden_skeleton/SK_bone_warden_skeleton.fbx",
-            "sha256": "261ed1ca9cf225090526e30f6ab5e41b410e90fb6633e306f32baf94fb4072bd",
-            "bytes": 408428
+            "sha256": "2721959005e4755123fcec65a65c00f0757ef8e8168c9718390fd781e0b509b5",
+            "bytes": 660716
           },
           "action": "Idle",
           "phase": 0.16,
-          "instance": "ally_3",
-          "scale": 0.92,
-          "positionMeters": [
-            0,
-            0.68,
-            0
-          ],
           "phaseOffsetFrames": 32,
           "poseSourceFrame": 33,
           "evaluatedAtFrame": 1,
-          "stagedAction": "Portrait_shadow_surge_Rig_ally_3_PortraitPose",
-          "illustrationOnlyShieldCutaway": false,
-          "illustrationOnlyAffectedAlly": true
+          "stagedAction": "SKEL_bone_warden_skeleton.001_PortraitPose.001"
         },
         {
           "model": {
             "name": "shadow_surge_ribbon",
             "file": "Assets/Export/Environment/SM_shadow_surge_ribbon.fbx",
-            "sha256": "01a9c2ca2a92c98e84665fd09332f72f81f994fade54c67ff53913a62f59ca82",
-            "bytes": 24204,
-            "triangles": 128,
+            "sha256": "8dbf64e6b644757b34f38bd5f68ce3787b709965ea0ab5ac5fa73b2691ced204",
+            "bytes": 40300,
+            "triangles": 832,
             "boundsMeters": [
               2.119999885559082,
               2.119999885559082,
-              0.0689999982714653
+              0.07246410101652145
             ],
             "materials": [
               "M_RiftExpansionAscensionGlow"
@@ -2179,30 +1627,28 @@
             "lods": [
               {
                 "level": 1,
-                "triangles": 64,
+                "triangles": 416,
                 "file": "Assets/Export/Environment/SM_shadow_surge_ribbon_LOD1.fbx",
-                "sha256": "953759ff6fc4a6cbde45f98ac8fe5c86fd8635dd126c82addc399d86e3f25f16",
-                "bytes": 23708
+                "sha256": "9960a990a16d01a93b71f3c924d80008078b1ea4ad1721f4720305498ef56b20",
+                "bytes": 32988
               },
               {
                 "level": 2,
-                "triangles": 28,
+                "triangles": 182,
                 "file": "Assets/Export/Environment/SM_shadow_surge_ribbon_LOD2.fbx",
-                "sha256": "0c602be9782f965e7fff51f9174a3d46d7cbfc3bfb8026ce6bdeb91d7b9025bc",
-                "bytes": 22540
+                "sha256": "d92fa730f0f0be0e1a6d71188df552cc490f036e8aced157d905e334c03ea606",
+                "bytes": 27388
               }
             ]
-          },
-          "illustrationOnlyEffect": true,
-          "instance": "circular_spell_motif"
+          }
         },
         {
           "model": {
             "name": "shadow_surge_wisp",
             "file": "Assets/Export/Environment/SM_shadow_surge_wisp.fbx",
-            "sha256": "e5812e18dd07491d8a3e88de21d5423cecf89c2881706c854a2cba5733bfbc24",
-            "bytes": 27756,
-            "triangles": 236,
+            "sha256": "e1c12af7fb131691253ace6ae5d69a877918625bc3951a91f8f7629fa06bd362",
+            "bytes": 39580,
+            "triangles": 692,
             "boundsMeters": [
               0.23503537476062775,
               0.16156993806362152,
@@ -2214,30 +1660,28 @@
             "lods": [
               {
                 "level": 1,
-                "triangles": 118,
+                "triangles": 346,
                 "file": "Assets/Export/Environment/SM_shadow_surge_wisp_LOD1.fbx",
-                "sha256": "5732433d4e4f3a6f73894b865f4351de5d7ae0d99434b465bc0ebebc599d2ca6",
-                "bytes": 24940
+                "sha256": "1020f5685fe80df362c9de80cb5d59ec5c104b4076e7d2a78822f48a64067bb8",
+                "bytes": 31676
               },
               {
                 "level": 2,
-                "triangles": 50,
+                "triangles": 152,
                 "file": "Assets/Export/Environment/SM_shadow_surge_wisp_LOD2.fbx",
-                "sha256": "91d824baa90751629f8e3f759eee6868aea4678fe6b45360a6390d6cc084d69a",
-                "bytes": 23036
+                "sha256": "79001f49fe748f82f4d36dfc460af9f23cf78c8aa9a7a92cf883b4922d0384f0",
+                "bytes": 26348
               }
             ]
-          },
-          "illustrationOnlyEffect": true,
-          "instance": "wisp_1"
+          }
         },
         {
           "model": {
             "name": "shadow_surge_wisp",
             "file": "Assets/Export/Environment/SM_shadow_surge_wisp.fbx",
-            "sha256": "e5812e18dd07491d8a3e88de21d5423cecf89c2881706c854a2cba5733bfbc24",
-            "bytes": 27756,
-            "triangles": 236,
+            "sha256": "e1c12af7fb131691253ace6ae5d69a877918625bc3951a91f8f7629fa06bd362",
+            "bytes": 39580,
+            "triangles": 692,
             "boundsMeters": [
               0.23503537476062775,
               0.16156993806362152,
@@ -2249,30 +1693,28 @@
             "lods": [
               {
                 "level": 1,
-                "triangles": 118,
+                "triangles": 346,
                 "file": "Assets/Export/Environment/SM_shadow_surge_wisp_LOD1.fbx",
-                "sha256": "5732433d4e4f3a6f73894b865f4351de5d7ae0d99434b465bc0ebebc599d2ca6",
-                "bytes": 24940
+                "sha256": "1020f5685fe80df362c9de80cb5d59ec5c104b4076e7d2a78822f48a64067bb8",
+                "bytes": 31676
               },
               {
                 "level": 2,
-                "triangles": 50,
+                "triangles": 152,
                 "file": "Assets/Export/Environment/SM_shadow_surge_wisp_LOD2.fbx",
-                "sha256": "91d824baa90751629f8e3f759eee6868aea4678fe6b45360a6390d6cc084d69a",
-                "bytes": 23036
+                "sha256": "79001f49fe748f82f4d36dfc460af9f23cf78c8aa9a7a92cf883b4922d0384f0",
+                "bytes": 26348
               }
             ]
-          },
-          "illustrationOnlyEffect": true,
-          "instance": "wisp_2"
+          }
         },
         {
           "model": {
             "name": "shadow_surge_wisp",
             "file": "Assets/Export/Environment/SM_shadow_surge_wisp.fbx",
-            "sha256": "e5812e18dd07491d8a3e88de21d5423cecf89c2881706c854a2cba5733bfbc24",
-            "bytes": 27756,
-            "triangles": 236,
+            "sha256": "e1c12af7fb131691253ace6ae5d69a877918625bc3951a91f8f7629fa06bd362",
+            "bytes": 39580,
+            "triangles": 692,
             "boundsMeters": [
               0.23503537476062775,
               0.16156993806362152,
@@ -2284,72 +1726,185 @@
             "lods": [
               {
                 "level": 1,
-                "triangles": 118,
+                "triangles": 346,
                 "file": "Assets/Export/Environment/SM_shadow_surge_wisp_LOD1.fbx",
-                "sha256": "5732433d4e4f3a6f73894b865f4351de5d7ae0d99434b465bc0ebebc599d2ca6",
-                "bytes": 24940
+                "sha256": "1020f5685fe80df362c9de80cb5d59ec5c104b4076e7d2a78822f48a64067bb8",
+                "bytes": 31676
               },
               {
                 "level": 2,
-                "triangles": 50,
+                "triangles": 152,
                 "file": "Assets/Export/Environment/SM_shadow_surge_wisp_LOD2.fbx",
-                "sha256": "91d824baa90751629f8e3f759eee6868aea4678fe6b45360a6390d6cc084d69a",
-                "bytes": 23036
+                "sha256": "79001f49fe748f82f4d36dfc460af9f23cf78c8aa9a7a92cf883b4922d0384f0",
+                "bytes": 26348
               }
             ]
-          },
-          "illustrationOnlyEffect": true,
-          "instance": "wisp_3"
+          }
+        },
+        {
+          "model": {
+            "name": "shadow_surge_wisp",
+            "file": "Assets/Export/Environment/SM_shadow_surge_wisp.fbx",
+            "sha256": "e1c12af7fb131691253ace6ae5d69a877918625bc3951a91f8f7629fa06bd362",
+            "bytes": 39580,
+            "triangles": 692,
+            "boundsMeters": [
+              0.23503537476062775,
+              0.16156993806362152,
+              0.390812486410141
+            ],
+            "materials": [
+              "M_RiftExpansionAscensionGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 346,
+                "file": "Assets/Export/Environment/SM_shadow_surge_wisp_LOD1.fbx",
+                "sha256": "1020f5685fe80df362c9de80cb5d59ec5c104b4076e7d2a78822f48a64067bb8",
+                "bytes": 31676
+              },
+              {
+                "level": 2,
+                "triangles": 152,
+                "file": "Assets/Export/Environment/SM_shadow_surge_wisp_LOD2.fbx",
+                "sha256": "79001f49fe748f82f4d36dfc460af9f23cf78c8aa9a7a92cf883b4922d0384f0",
+                "bytes": 26348
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "shadow_surge_wisp",
+            "file": "Assets/Export/Environment/SM_shadow_surge_wisp.fbx",
+            "sha256": "e1c12af7fb131691253ace6ae5d69a877918625bc3951a91f8f7629fa06bd362",
+            "bytes": 39580,
+            "triangles": 692,
+            "boundsMeters": [
+              0.23503537476062775,
+              0.16156993806362152,
+              0.390812486410141
+            ],
+            "materials": [
+              "M_RiftExpansionAscensionGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 346,
+                "file": "Assets/Export/Environment/SM_shadow_surge_wisp_LOD1.fbx",
+                "sha256": "1020f5685fe80df362c9de80cb5d59ec5c104b4076e7d2a78822f48a64067bb8",
+                "bytes": 31676
+              },
+              {
+                "level": 2,
+                "triangles": 152,
+                "file": "Assets/Export/Environment/SM_shadow_surge_wisp_LOD2.fbx",
+                "sha256": "79001f49fe748f82f4d36dfc460af9f23cf78c8aa9a7a92cf883b4922d0384f0",
+                "bytes": 26348
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "shadow_surge_wisp",
+            "file": "Assets/Export/Environment/SM_shadow_surge_wisp.fbx",
+            "sha256": "e1c12af7fb131691253ace6ae5d69a877918625bc3951a91f8f7629fa06bd362",
+            "bytes": 39580,
+            "triangles": 692,
+            "boundsMeters": [
+              0.23503537476062775,
+              0.16156993806362152,
+              0.390812486410141
+            ],
+            "materials": [
+              "M_RiftExpansionAscensionGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 346,
+                "file": "Assets/Export/Environment/SM_shadow_surge_wisp_LOD1.fbx",
+                "sha256": "1020f5685fe80df362c9de80cb5d59ec5c104b4076e7d2a78822f48a64067bb8",
+                "bytes": 31676
+              },
+              {
+                "level": 2,
+                "triangles": 152,
+                "file": "Assets/Export/Environment/SM_shadow_surge_wisp_LOD2.fbx",
+                "sha256": "79001f49fe748f82f4d36dfc460af9f23cf78c8aa9a7a92cf883b4922d0384f0",
+                "bytes": 26348
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "shadow_surge_wisp",
+            "file": "Assets/Export/Environment/SM_shadow_surge_wisp.fbx",
+            "sha256": "e1c12af7fb131691253ace6ae5d69a877918625bc3951a91f8f7629fa06bd362",
+            "bytes": 39580,
+            "triangles": 692,
+            "boundsMeters": [
+              0.23503537476062775,
+              0.16156993806362152,
+              0.390812486410141
+            ],
+            "materials": [
+              "M_RiftExpansionAscensionGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 346,
+                "file": "Assets/Export/Environment/SM_shadow_surge_wisp_LOD1.fbx",
+                "sha256": "1020f5685fe80df362c9de80cb5d59ec5c104b4076e7d2a78822f48a64067bb8",
+                "bytes": 31676
+              },
+              {
+                "level": 2,
+                "triangles": 152,
+                "file": "Assets/Export/Environment/SM_shadow_surge_wisp_LOD2.fbx",
+                "sha256": "79001f49fe748f82f4d36dfc460af9f23cf78c8aa9a7a92cf883b4922d0384f0",
+                "bytes": 26348
+              }
+            ]
+          }
         }
       ],
       "boundsMeters": [
         [
           -1.1660000085830688,
           -1.1660000085830688,
-          -0.0026864903047680855
+          -0.028959769755601883
         ],
         [
+          1.181523084640503,
           1.1660000085830688,
-          1.1660000085830688,
-          1.6430319547653198
+          1.4854809045791626
         ]
       ],
       "poseFrame": 1,
-      "cameraProjection": "Perspective",
-      "cameraDistance": 6.504969471988011,
-      "composition": "Spell illustration: three affected ally silhouettes in a readable low violet circular veil; no spawned creature",
-      "subjectCount": 7,
-      "master": {
-        "file": "Assets/Source/CardArt/Masters/shadow_surge.png",
-        "bytes": 1470894,
-        "sha256": "5bddb4fbd52c85b7b20b3595a5b88160d4a5c1396944aa6f8809c48ce05317b9"
-      },
-      "editableScene": {
-        "file": "Assets/Source/CardArt/Scenes/shadow_surge_Portrait.blend",
-        "bytes": 25496085,
-        "sha256": "d757a5225b3303706a894bbc18e0ce2242048d8385cf62de9e890b4bf4d320eb"
-      },
-      "smallReview": {
-        "file": "Assets/Renders/Expansion/Small/shadow_surge_96x120.png",
-        "bytes": 17948,
-        "sha256": "ee72af1045fef19837787999b8a873b4085fef7eee4078aa28f5f8b4b4e15144"
-      },
-      "runtimeResolution": [
-        768,
-        960
-      ],
-      "masterResolution": [
-        1024,
-        1280
-      ],
-      "safeZones": {
-        "topLeftBadge": 0.2,
-        "bottomName": 0.14
-      },
-      "rendererScript": {
-        "file": "Build/render_approved_expansion.py",
-        "bytes": 15927,
-        "sha256": "06cec3bfeb371eb7822de7ad6618c6fdd1ffa53a06d38b1f2694a5e661a53ecf"
+      "cameraOrthoScale": 3.368143081665039,
+      "composition": "Full silhouette",
+      "lighting": {
+        "backdrop": [
+          0.025,
+          0.016,
+          0.054
+        ],
+        "key": [
+          0.88,
+          0.85,
+          1
+        ],
+        "rim": [
+          0.56,
+          0.26,
+          1
+        ]
       }
     },
     "dart_gun": {
@@ -2409,8 +1964,8 @@
   "method": "Actual production Blender mesh/rig render, exported to the native game",
   "sourceBlend": {
     "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
-    "sha256": "1a283006f962b709076bdaf7d7c87dd94771a2bbcc0b963cdb7c12f48964c67b",
-    "bytes": 28572315
+    "sha256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
+    "bytes": 34216728
   },
   "resolution": [
     768,

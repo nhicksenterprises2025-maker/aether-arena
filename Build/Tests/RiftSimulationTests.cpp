@@ -1384,7 +1384,7 @@ int main(int argc, char **argv) {
             Match m(Quiet());
             Check(arena::Width == 22 && arena::Height == 40, "confirmed 22 by 40 tile board");
             Near(arena::BridgeCenterX * 1.25, 9.7, 1e-12, "updated arena places physical bridge centers");
-            Near(arena::GuardX, arena::BridgeCenterX, 0, "Guard axis shares the bridge center");
+            Near(arena::GuardX, arena::BridgeCenterX - 1., 0, "Guard axis moves exactly one tile toward the Core");
             int guardsAligned = 0, coresCentered = 0;
             for (Team team : {Team::Player, Team::Enemy}) {
                 const double sign = team == Team::Player ? 1. : -1.;
@@ -1396,8 +1396,8 @@ int main(int argc, char **argv) {
                 for (int lane : {-1, 1}) {
                     const auto &guard = Tower(m, team, EntityKind::Guard, lane);
                     Near(guard.position.z * 1.25, sign * 17.15, 1e-12, "updated arena places physical Guard depth");
-                    Near(guard.position.x * 1.25, lane * 9.7, 1e-12, "physical Guard and bridge axes stay aligned");
-                    Near(guard.position.x, lane * arena::BridgeCenterX, 0, "actual Guard body follows the bridge axis");
+                    Near(guard.position.x * 1.25, lane * 8.45, 1e-12, "physical Guard shifts exactly 125 world units inward");
+                    Near(guard.position.x, lane * 6.76, 0, "actual Guard body uses the one-tile inward position");
                     Near(guard.radius, 1.15, 0, "Guard collision radius retained");
                     ++guardsAligned;
                 }
@@ -3234,7 +3234,10 @@ int main(int argc, char **argv) {
                 std::map<EntityId, bool> crossed;
                 std::map<EntityId, Vec2> progress;
                 for (const auto &body : ground) progress[body.id] = body.position;
-                for (int step = 0; step < 20 * 60; ++step) {
+                // The inward Guard requires the outer Boulderback to take its
+                // legal rear route: 28.45 tiles, crossing at 21.89s at 1.3/s.
+                // Still require clearance before any 25s building can expire.
+                for (int step = 0; step < 23 * 60; ++step) {
                     for (Match *m : {&first, &repeat}) {
                         // Explicit developer diagnostic: maintain only Core HP
                         // so a fast member's victory cannot end the clock while
@@ -3283,10 +3286,10 @@ int main(int argc, char **argv) {
                     } else std::cerr << " removed=1";
                     std::cerr << '\n';
                 }
-                Check(crossed.size() == ground.size(), "all eleven original-layout ground bodies clear their bridge within twenty seconds before building expiry");
+                Check(crossed.size() == ground.size(), "all eleven original-layout ground bodies clear their bridge within twenty-three seconds before building expiry");
                 std::cout << "COLLISION_ORIGINAL_POCKET core_maintained_diagnostic=1 team=" << int(team)
                           << " lane=" << lane << " casts_per_repeat=16 members=31 ground=" << ground.size()
-                          << " crossed=" << crossed.size() << " seconds=20 deterministic_repeats=2\n";
+                          << " crossed=" << crossed.size() << " seconds=23 deterministic_repeats=2\n";
             }
         });
         Test("physically sealed paid bridge waits safely and resumes after real building expiry", [] {

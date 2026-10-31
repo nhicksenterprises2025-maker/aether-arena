@@ -1,8 +1,8 @@
 {
   "schema": 3,
-  "version": "1.9.0",
+  "version": "2.0.0",
   "status": "approved",
-  "sourceCommit": "93ff6bf70eef9972171321a9ed95ee06611d1124",
+  "sourceCommit": "27a7e300dd4aaf1469a9bb3638a02407bf219b56",
   "cards": [
     {
       "id": "ironclad",
@@ -1205,7 +1205,7 @@
   ],
   "rules": {
     "combatRevision": 4,
-    "navigationRevision": 12,
+    "navigationRevision": 13,
     "targetHardLock": "first authoritative attack against a Crown Tower",
     "frontSight": 8,
     "rearSight": 5,
@@ -1216,20 +1216,20 @@
     "bridgeWidth": 4.2,
     "guardDepth": 13.72,
     "coreDepth": 16.84,
-    "cloakLockException": "Approved Shadow Surge drops enemy locks, including committed Crown Tower locks; committed damage and projectiles still resolve"
+    "cloakLockException": "Approved Shadow Surge drops enemy locks, including committed Crown Tower locks; committed damage and projectiles still resolve",
+    "guardCenterX": 6.76
   },
-  "balanceHash": "b452ca00abcb1097f552b6f99e4324a56c65c8bd1d61aacfd0989548329ee1c1",
-  "baseline": "Assets/Data/Baselines/1.8.1.json",
+  "balanceHash": "8d4889796f5a1b9be3f91a3a11a0f0045c7e4a7c878e3ddb20fc50112a56951c",
+  "baseline": "Assets/Data/Baselines/1.9.0.json",
   "approval": {
     "sourceResolution": "Assets/Data/source_resolution.json",
-    "source": "User request on 2026-10-31: swarm pathfinding fix and Dart Gun card",
-    "scope": "Add Dart Gun with authored veteran model, animations, portrait, projectiles and audio; fix friendly swarm congestion.",
-    "implementationDefaults": "Unspecified values chosen for implementation: 420 HP, 1.5 tiles/s, projectile speed22, model scale1.05, collision radius0.42; ground troop targets ground/air troops and structures.",
-    "releaseAcceptance": "Verify paid combat and collision, imported art and animations, native runtime, and Windows delivery."
+    "source": "User request: move both side towers toward the Core exactly one tile and make all other cards as detailed as Dart Gun",
+    "scope": "Move both teams' Guard Towers one horizontal tile inward; upgrade all other card models and their model-rendered art. Preserve every combat stat, ability, base model scale, Core Tower, bridge and arena dimension.",
+    "releaseAcceptance": "Verify exact tower coordinates, physical troop routing, all upgraded rigs and portraits, native runtime and Windows delivery."
   },
   "baselineProvenance": {
-    "tag": "v1.8.1",
-    "sourceCommit": "93ff6bf70eef9972171321a9ed95ee06611d1124",
-    "canonicalFileSHA256": "136a226fb34aac6f215105ef5eb795f44d2e0babd3623ac7ec58188e872605b1"
+    "tag": "v1.9.0",
+    "sourceCommit": "27a7e300dd4aaf1469a9bb3638a02407bf219b56",
+    "canonicalFileSHA256": "d41b232845d3b0434cba851170286a7714e1f0b0daa059208be86dffead20f7e"
   }
 }
