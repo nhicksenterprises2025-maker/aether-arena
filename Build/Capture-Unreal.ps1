@@ -2,7 +2,9 @@ param(
     [string]$EngineRoot = 'C:\Program Files\Epic Games\UE_5.8',
     [string]$Executable = '',
     [string]$Page = 'Battle',
-    [ValidateSet('','roster','expansion_roster','expansion_new_roster','expansion_effects','expansion_warden_death','reaper_design','congestion','effects','effects17','placement','projectiles','spells','tower_pathing','unit_collision','swarm_split','pulverizer')][string]$Scenario = '',
+    [string]$MetaDataset = '',
+    [ValidateSet('Cards','Matchups')][string]$MetaTab = 'Cards',
+    [ValidateSet('','roster','expansion_roster','expansion_new_roster','expansion_effects','expansion_warden_death','reaper_design','congestion','effects','effects17','placement','projectiles','spells','tower_pathing','unit_collision','swarm_split','pulverizer','storm_works','blade_box')][string]$Scenario = '',
     [ValidateRange(0,8)][float]$PulverizerAge = .35,
     [ValidateSet('crowd','contact','layers')][string]$CollisionCase = 'crowd',
     [ValidateRange(0,12)][float]$CollisionAge = 3,
@@ -57,6 +59,41 @@ if($Scenario -eq 'unit_collision' -and ($Page -ne 'Battle' -or $Phase -or $Recor
 if($Scenario -eq 'swarm_split' -and ($Page -ne 'Battle' -or $Phase -or $RecordedMatch -or $BreathSmoke)) { throw 'Swarm splitting requires its live paid Battle fixture without another phase, recorded-match or breath fixture.' }
 if($Scenario -eq 'expansion_warden_death' -and ($Page -ne 'Battle' -or $Phase -or $RecordedMatch -or $BreathSmoke -or $Developer)) { throw 'Warden death requires its isolated paid Battle fixture without another phase, replay, breath or developer fixture.' }
 if($Scenario -eq 'reaper_design' -and ($Page -ne 'Battle' -or $Phase -or $RecordedMatch -or $BreathSmoke -or $Developer)) { throw 'Reaper design requires its isolated Battle fixture without another phase, replay, breath or developer fixture.' }
+if($Scenario -in @('storm_works','blade_box') -and ($Page -ne 'Battle' -or $Phase -or $RecordedMatch -or $BreathSmoke -or $Developer)) { throw 'Thunderstorm and Blade Box require isolated live Battle fixtures without another phase, replay, breath or developer fixture.' }
+# A populated Meta capture uses an actual completed native dataset. The native
+# witness below must prove it was loaded rather than replaced by an empty default.
+$riftMetaCaptureInput=$null
+if($MetaDataset) {
+    if($Page -cne 'Meta' -or $Scenario -or $Phase -or $RecordedMatch -or $BreathSmoke -or $Developer -or $AllowExternalInput) { throw 'A Meta dataset requires an isolated Meta page capture.' }
+    $MetaDataset=(Resolve-Path -LiteralPath $MetaDataset).Path
+    if(!(Test-Path -LiteralPath $MetaDataset -PathType Leaf)) { throw 'Meta capture dataset must be a JSON file.' }
+    $riftMetaSourceHash=(Get-FileHash -LiteralPath $MetaDataset -Algorithm SHA256).Hash.ToLowerInvariant()
+    $riftMetaData=Get-Content -LiteralPath $MetaDataset -Raw | ConvertFrom-Json -Depth 100
+    $riftMetaManifest=Get-Content -LiteralPath (Join-Path $repoRoot 'Assets/Data/card_manifest.json') -Raw | ConvertFrom-Json -Depth 100
+    if($riftMetaData.schemaVersion -ne 1 -or $riftMetaData.version -cne $ExpectedVersion -or $riftMetaData.model -cne 'rift-native-1' -or
+       $riftMetaData.deckPolicy -cne 'native-observed-2' -or $riftMetaData.telemetryRevision -ne 5 -or
+       $riftMetaData.id -notmatch '^[a-fA-F0-9]{32}$' -or $riftMetaData.fingerprint -notmatch '^[a-fA-F0-9]{32}$' -or
+       $riftMetaData.balanceHash -cne $riftMetaManifest.balanceHash -or $riftMetaData.games -isnot [ValueType] -or
+       $riftMetaData.games -is [bool] -or ![double]::IsFinite([double]$riftMetaData.games) -or $riftMetaData.games -lt 100 -or
+       [math]::Truncate($riftMetaData.games) -ne $riftMetaData.games -or $riftMetaData.invalid -ne 0 -or $riftMetaData.economyInvalid -ne 0 -or
+       !$riftMetaData.buckets -or @($riftMetaData.checkpoints).Count -eq 0 -or
+       @($riftMetaData.cardSnapshot).Count -ne @($riftMetaManifest.cards).Count -or
+       (Compare-Object @($riftMetaData.cardSnapshot.id | Sort-Object) @($riftMetaManifest.cards.id | Sort-Object))) {
+        throw 'Meta capture requires at least 100 valid completed native matches from the current version and balance.'
+    }
+    $riftMetaCaptureInput=[ordered]@{
+        source=[ordered]@{path=$MetaDataset;sha256=$riftMetaSourceHash;bytes=(Get-Item -LiteralPath $MetaDataset).Length}
+        id=$riftMetaData.id;fingerprint=$riftMetaData.fingerprint;balanceHash=$riftMetaData.balanceHash
+        games=$riftMetaData.games;cardRows=@($riftMetaData.cardSnapshot).Count;tab=$MetaTab
+        datasetFile=[IO.Path]::GetFileName($MetaDataset);staged=$null;profile=$null
+    }
+} elseif($PSBoundParameters.ContainsKey('MetaTab')) { throw 'Explicit MetaTab capture requires a completed MetaDataset.' }
+function Test-RiftMetaCaptureState($State,$Expected) {
+    return $null -ne $State -and $null -ne $Expected -and $State.tab -ceq $Expected.tab -and
+        $State.id -ceq $Expected.id -and $State.datasetFile -ceq $Expected.datasetFile -and
+        $State.fingerprint -ceq $Expected.fingerprint -and $State.balanceHash -ceq $Expected.balanceHash -and
+        $State.games -eq $Expected.games -and $State.cardRows -eq $Expected.cardRows
+}
 $riftTowerSources=@(Get-ChildItem -LiteralPath (Join-Path $repoRoot 'Unreal/RiftCrownArena/Source'),(Join-Path $repoRoot 'Unreal/RiftCrownArena/Config') -File -Recurse | Where-Object Extension -in @('.cpp','.h','.cs','.ini','.inc') | ForEach-Object FullName)+@($projectPath,$PSCommandPath,(Join-Path $repoRoot 'Assets/Data/card_manifest.json'),(Join-Path $repoRoot 'Build/generate_card_manifest.py'))
 if($isEditor) { $riftTowerSources+=@('Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArena.dll','Unreal/RiftCrownArena/Binaries/Win64/UnrealEditor-RiftCrownArenaEditor.dll') | ForEach-Object { Join-Path $repoRoot $_ } }
 if($isEditor) { $riftTowerSources+=@(Get-ChildItem -LiteralPath (Join-Path $repoRoot 'Unreal/RiftCrownArena/Content') -File -Recurse | Where-Object Extension -in @('.uasset','.umap') | ForEach-Object FullName) }
@@ -68,6 +105,22 @@ $runRoot = Join-Path $repoRoot ('Artifacts/QA/VisualRuns/' + $Name + '-' + [Guid
 $saveRoot = Join-Path $runRoot 'Save'
 $engineUserRoot = Join-Path $runRoot 'EngineUser'
 New-Item -ItemType Directory -Path $captureRoot,$saveRoot,$engineUserRoot -Force | Out-Null
+if($riftMetaCaptureInput) {
+    $riftMetaStageRoot=Join-Path $saveRoot 'Meta'
+    New-Item -ItemType Directory -Path $riftMetaStageRoot | Out-Null
+    $riftMetaStagePath=Join-Path $riftMetaStageRoot $riftMetaCaptureInput.datasetFile
+    Copy-Item -LiteralPath $MetaDataset -Destination $riftMetaStagePath
+    $riftMetaStageHash=(Get-FileHash -LiteralPath $riftMetaStagePath -Algorithm SHA256).Hash.ToLowerInvariant()
+    if($riftMetaStageHash -cne $riftMetaCaptureInput.source.sha256 -or (Get-FileHash -LiteralPath $MetaDataset -Algorithm SHA256).Hash.ToLowerInvariant() -cne $riftMetaStageHash) { throw 'Meta dataset changed while staging the capture.' }
+    $riftMetaCaptureInput.staged=[ordered]@{path=$riftMetaStagePath;sha256=$riftMetaStageHash;bytes=(Get-Item -LiteralPath $riftMetaStagePath).Length}
+    $riftMetaProfile=Join-Path $saveRoot 'ue_save.json'
+    $riftMetaProfileJSON=[ordered]@{schemaVersion=1;profile=@{};metaDatasets=@($riftMetaCaptureInput.datasetFile)} | ConvertTo-Json -Depth 4
+    [IO.File]::WriteAllText($riftMetaProfile,$riftMetaProfileJSON,[Text.UTF8Encoding]::new($false))
+    # Profile shutdown adds defaults; preserve the exact seeded index as evidence.
+    $riftMetaProfileSeed=Join-Path $runRoot 'meta-profile-seed.json'
+    Copy-Item -LiteralPath $riftMetaProfile -Destination $riftMetaProfileSeed
+    $riftMetaCaptureInput.profile=[ordered]@{path=$riftMetaProfileSeed;sha256=(Get-FileHash -LiteralPath $riftMetaProfileSeed -Algorithm SHA256).Hash.ToLowerInvariant();bytes=(Get-Item -LiteralPath $riftMetaProfileSeed).Length}
+}
 $capturePath = Join-Path $runRoot ($Name + '.png')
 $logPath = Join-Path $runRoot ($Name + '.log')
 $stdoutPath = Join-Path $runRoot ($Name + '.stdout.log')
@@ -87,6 +140,7 @@ $arguments = @(
 )
 if ($isEditor) { $arguments = @(('"' + $projectPath + '"')) + $arguments }
 if ($Quality -ge 0) { $arguments += "-RiftQAQuality=$Quality" }
+if ($riftMetaCaptureInput) { $arguments += "-RiftCaptureMetaTab=$MetaTab" }
 if ($Scenario) { $arguments += "-RiftVisualScenario=$Scenario" }
 if ($Scenario -eq 'expansion_effects') { $arguments += "-RiftExpansionEffectStage=$ExpansionEffectStage" }
 if ($Scenario -eq 'expansion_warden_death') { $arguments += "-RiftWardenDeathStage=$WardenDeathStage" }
@@ -111,7 +165,7 @@ if ($Phase) { $arguments += "-RiftCapturePhase=$Phase" }
 if ($Overlay) { $arguments += "-RiftCaptureOverlay=$Overlay" }
 $arguments += '-RiftCaptureUIScale=' + $UIScale.ToString([System.Globalization.CultureInfo]::InvariantCulture)
 if ($Zoom -ne -1) { $arguments += '-RiftCaptureZoom=' + $Zoom.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
-if ($Scenario -in @('effects17','spells')) { $arguments += '-RiftEffectAge=' + $EffectAge.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
+if ($Scenario -in @('effects17','spells','storm_works','blade_box')) { $arguments += '-RiftEffectAge=' + $EffectAge.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
 if ($Scenario -in @('effects','congestion')) { $arguments += '-RiftCaptureSpeed=' + $Speed.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
 if ($PreviewCard) {
     if ($PreviewCard -notmatch '^[a-z_]+$') { throw 'Preview card must be an original card ID.' }
@@ -150,6 +204,13 @@ $resolutionMatches = $actualWidth -eq $Width -and $actualHeight -eq $Height
 $statePath = [System.IO.Path]::ChangeExtension($capturePath,'state.json')
 $stateCaptured = (Test-Path -LiteralPath $statePath) -and ((Get-Item -LiteralPath $statePath).LastWriteTime -ge $started.AddSeconds(-1))
 $riftCaptureState = if ($stateCaptured) { Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json } else { $null }
+$riftMetaCapturePassed=$true
+if($riftMetaCaptureInput) {
+    $riftMetaCapturePassed=$stateCaptured -and (Test-RiftMetaCaptureState $riftCaptureState.meta $riftMetaCaptureInput)
+    foreach($pin in @($riftMetaCaptureInput.source,$riftMetaCaptureInput.staged,$riftMetaCaptureInput.profile)) {
+        if(!(Test-Path -LiteralPath $pin.path -PathType Leaf) -or (Get-FileHash -LiteralPath $pin.path -Algorithm SHA256).Hash.ToLowerInvariant() -cne $pin.sha256 -or (Get-Item -LiteralPath $pin.path).Length -ne $pin.bytes) { $riftMetaCapturePassed=$false }
+    }
+}
 $riftCaptureQualityPassed = $Quality -lt 0 -or ($null -ne $riftCaptureState -and $riftCaptureState.observedQualityPreset -eq $Quality)
 $riftCameraFraming = if ($stateCaptured) { $riftCaptureState.cameraFraming } else { $null }
 $riftCameraFramingRequired = $Page -in @('Battle','ReplayView')
@@ -183,7 +244,7 @@ if($riftArenaGeometryRequired) {
         $riftArenaRules=$riftArenaManifest.rules
         $riftArenaHasGuardX=$riftArenaRules.PSObject.Properties.Name -contains 'guardCenterX'
         $riftArenaGuardCandidate=if($riftArenaHasGuardX){$riftArenaRules.guardCenterX}else{$riftArenaRules.bridgeCenterX}
-        $riftArenaManifestPassed=$riftArenaManifest.schema -in @(2,3) -and $riftArenaManifest.status -eq 'approved' -and
+        $riftArenaManifestPassed=$riftArenaManifest.schema -in @(2,3,4) -and $riftArenaManifest.status -eq 'approved' -and
             $riftArenaManifest.version -eq $ExpectedVersion -and $riftArenaManifestPin.Count -eq 1 -and
             $riftArenaManifestPin[0].sha256 -eq (Get-FileHash -LiteralPath $riftArenaManifestPath -Algorithm SHA256).Hash.ToLowerInvariant() -and
             ($riftArenaRules.navigationRevision -lt 13 -or $riftArenaHasGuardX) -and
@@ -369,7 +430,7 @@ if($Scenario -in @('expansion_roster','expansion_new_roster','expansion_effects'
     $riftRoster=$riftCaptureState.expansionRoster
     $riftRosterNew=$Scenario -ne 'expansion_roster'
     $riftRosterEffects=$Scenario -eq 'expansion_effects'
-    $riftExpansionEffectAdvance=switch($ExpansionEffectStage){'cast'{.12};'impact'{.37};default{.95}}
+    $riftExpansionEffectAdvance=switch($ExpansionEffectStage){'cast'{.12};'impact'{.80};default{.95}}
     $riftExpansionEffectAdvanceSteps=[math]::Round($riftExpansionEffectAdvance*60)
     $riftRosterSteps=if($riftRosterEffects){21+$riftExpansionEffectAdvanceSteps}else{21}
     $riftRosterAge=$riftRosterSteps/60
@@ -584,11 +645,72 @@ if ($isEditor) {
     $diagnostics=Get-RiftShippingDiagnostics -RepoRoot $repoRoot -DestinationRoot $runRoot -SaveRoot $saveRoot -EngineUserRoot $engineUserRoot -ProcessId $process.Id -ExpectedVersion $ExpectedVersion -StartedUTC $started -FinishedUTC $finished -ErrorPattern $errorPattern
     $errors=@($diagnostics.errors); $diagnosticSource=$diagnostics.diagnosticSource; $nativeDiagnosticLogs=@($diagnostics.nativeDiagnosticLogs); $diagnosticVerification=$diagnostics.diagnosticVerification; $logPath=$diagnostics.engineLog
 }
-$riftCapturePassed=!$timedOut -and $freshCapture -and $stateCaptured -and $resolutionMatches -and $riftCaptureQualityPassed -and $riftPhaseFixturePassed -and $riftCameraFramingPassed -and $riftModelEnvelopeCheckPassed -and $riftArenaGeometryPassed -and $riftTowerPathingPassed -and $riftUnitCollisionPassed -and $riftSwarmSplitPassed -and $riftExpansionRosterPassed -and $riftPulverizerWitnessPassed -and $riftTowerSourcesUnchanged -and $riftCaptureExecutableUnchanged -and $process.ExitCode -eq 0 -and $errors.Count -eq 0
+function Test-RiftThunderBladeCapture($State,$Manifest,[string]$Fixture,[double]$RequestedAge) {
+    if($null -eq $State -or $null -eq $Manifest -or $State.speed -ne 0){return $false}
+    $w=$State.thunderBladeWitness
+    if($null -eq $w -or $w.schema -ne 1 -or $w.passed -ne $true -or $w.scenario -cne $Fixture -or $w.provenance -cne 'ordinary Spawn / 60 Hz Step / FlushEvents'){return $false}
+    foreach($field in @('requestedEffectAge','fixedSteps','sampledAge','simulationTime','sourceId','waveCount','spawnCount','children')) {
+        $v=$w.$field;if($v -isnot [ValueType] -or $v -is [bool] -or ![double]::IsFinite([double]$v)){return $false}
+    }
+    $age=[double]$w.sampledAge;$offset=if($Fixture -eq 'blade_box'){2.7}else{0.0}
+    $steps=[math]::Round(($RequestedAge+$offset)*60)
+    if(-not [double]::IsFinite($age) -or [math]::Abs($w.requestedEffectAge-$RequestedAge) -gt .00001 -or $w.fixedSteps -ne $steps -or [math]::Abs($age-$steps/60) -gt .00001 -or [math]::Abs($w.simulationTime-$State.elapsed) -gt .00001){return $false}
+    $batches=@($State.niagara.expansionSurfaceEffects);$animations=@($State.niagara.unitAnimations)
+    if($Fixture -eq 'blade_box') {
+        $card=@($Manifest.cards | Where-Object id -CEQ 'blade_box');if($card.Count -ne 1){return $false}
+        $expected=[math]::Floor(($age+.000001)/$card[0].spawnInterval)
+        if($w.children -ne $expected -or $w.spawnCount -ne $expected -or $w.periodicSpawns -ne $expected -or $w.sourceId -le 0){return $false}
+        $body=@($animations | Where-Object { $_.entityId -eq $w.sourceId -and $_.assetId -ceq 'blade_box' })
+        $children=@($animations | Where-Object { $_.parentEntityId -eq $w.sourceId -and $_.assetId -ceq 'twin_blades' })
+        $spawn=@($w.events | Where-Object type -CEQ 'building_spawn')
+        $clock=$age-$expected*$card[0].spawnInterval
+        $clip=if($clock -ge ($card[0].spawnInterval-.16) -or ($expected -gt 0 -and $clock -lt .44)){'Spawn'}else{'Idle'}
+        if($body.Count -ne 1 -or $body[0].clip -cne $clip -or $w.expectedClip -cne $clip -or $body[0].animationAsset -notlike "*/blade_box/Animations/AN_blade_box_$clip.AN_blade_box_$clip" -or $children.Count -ne $expected -or $spawn.Count -ne $expected -or [math]::Abs($w.spawnClock-$clock) -gt .00001){return $false}
+        foreach($e in $spawn){if($e.source -ne $w.sourceId -or $e.target -notin @($children.entityId) -or [math]::Abs($e.age-$card[0].spawnInterval*$e.round) -gt .00001){return $false}}
+        return $true
+    }
+    $card=@($Manifest.cards | Where-Object id -CEQ 'thunderstorm');if($card.Count -ne 1){return $false};$card=$card[0]
+    $expected=0;for($i=0;$i -lt $card.rounds;$i++){if($age+.000001 -ge $card.castDelay+$i*$card.dotInterval){$expected++}}
+    $waves=@($w.events | Where-Object type -CEQ 'spell_impact');$targets=@($w.targets)
+    if($w.waveCount -ne $expected -or $waves.Count -ne $expected -or $targets.Count -ne 4 -or @($targets.kind | Sort-Object -Unique).Count -ne 4 -or @($targets | Where-Object { $_.kind -notin @('guard','ground','flying','building') }).Count -gt 0){return $false}
+    for($i=0;$i -lt $waves.Count;$i++){if($waves[$i].round -ne $i+1 -or [math]::Abs($waves[$i].age-($card.castDelay+$i*$card.dotInterval)) -gt .00001){return $false}}
+    $since=if($expected -gt 0){$age-($card.castDelay+($expected-1)*$card.dotInterval)}else{100.0}
+    $stunned=$expected -gt 0 -and $since -lt $card.stunDuration-.000001
+    foreach($t in $targets) {
+        if($t.alive -ne $true -or $t.hits -ne $expected -or $t.stuns -ne $expected -or $t.hp -le 0){return $false}
+        if(($t.stunUntil -gt $w.simulationTime+.000001) -ne $stunned){return $false}
+        $visual=@($animations | Where-Object entityId -EQ $t.id)
+        if($visual.Count -ne 1 -or ($t.kind -ne 'guard' -and (($visual[0].clip -ceq 'Status') -ne $stunned))){return $false}
+        $damage=@($w.events | Where-Object { $_.type -ceq 'damage' -and $_.target -eq $t.id })
+        $amount=if($t.kind -in @('guard','building')){$card.towerDamage}else{$card.damage}
+        if($damage.Count -ne $expected -or @($damage | Where-Object { [math]::Abs($_.amount-$amount) -gt .00001 }).Count -gt 0){return $false}
+    }
+    $active=$age -lt $card.castDelay+($card.rounds-1)*$card.dotInterval+.22
+    $counts=@{StormCloud=$(if($active){1}else{0});StormRain=$(if($active){48}else{0});StormAreaFlash=$(if($since -lt .13){1}else{0});StormTargetLightning=$(if($since -lt .17){4}else{0});UniversalStunStars=$(if($stunned){12}else{0})}
+    $meshes=@{StormCloud='thunderstorm_cloud';StormRain='thunderstorm_rain';StormAreaFlash='thunderstorm_bolt';StormTargetLightning='thunderstorm_bolt';UniversalStunStars='stun_spark'}
+    foreach($name in $counts.Keys) {
+        $batch=@($batches | Where-Object name -CEQ $name);$count=if($batch.Count -eq 0){0}else{$batch[0].instances}
+        if($batch.Count -gt 1 -or $count -ne $counts[$name]){return $false}
+        if($count -gt 0) {
+            $row=$batch[0];$parent=if($name -ceq 'StormCloud'){'M_RiftSurface'}else{'M_RiftGlow'}
+            if($row.visible -ne $true -or $row.nonInteractive -ne $true -or $row.renderProxyReady -ne $true -or $row.baseMaterial -cne "/Game/Rift/Materials/$parent.$parent" -or $row.blendMode -cne 'Opaque' -or $row.opacityBound -ne $false -or $row.opacitySource -cne 'opaque_material' -or $row.opacity -isnot [ValueType] -or $row.opacity -is [bool] -or ![double]::IsFinite([double]$row.opacity) -or [double]$row.opacity -ne 1 -or $row.mesh -cne "/Game/Rift/Environment/SM_$($meshes[$name]).SM_$($meshes[$name])"){return $false}
+            if($name -cne 'StormCloud') {
+                $glow=if($name -ceq 'StormRain'){.45}elseif($name -ceq 'UniversalStunStars'){1.6}else{2.0}
+                if($row.glowStrengthBound -ne $true -or $row.glowStrength -isnot [ValueType] -or $row.glowStrength -is [bool] -or ![double]::IsFinite([double]$row.glowStrength) -or [math]::Abs([double]$row.glowStrength-$glow) -gt .00001){return $false}
+            }
+        }
+    }
+    return $true
+}
+$riftThunderBladePassed=$true
+if($Scenario -in @('storm_works','blade_box')) { $riftThunderBladePassed=$stateCaptured -and (Test-RiftThunderBladeCapture $riftCaptureState $riftArenaManifest $Scenario $EffectAge) }
+$riftCapturePassed=!$timedOut -and $freshCapture -and $stateCaptured -and $riftMetaCapturePassed -and $resolutionMatches -and $riftCaptureQualityPassed -and $riftPhaseFixturePassed -and $riftCameraFramingPassed -and $riftModelEnvelopeCheckPassed -and $riftArenaGeometryPassed -and $riftTowerPathingPassed -and $riftUnitCollisionPassed -and $riftSwarmSplitPassed -and $riftExpansionRosterPassed -and $riftPulverizerWitnessPassed -and $riftThunderBladePassed -and $riftTowerSourcesUnchanged -and $riftCaptureExecutableUnchanged -and $process.ExitCode -eq 0 -and $errors.Count -eq 0
 $report = [ordered]@{
     schema = 1; version=$ExpectedVersion; passed=[bool]$riftCapturePassed; name = $Name; page = $Page; scenario = $Scenario; inspectCard = $InspectCard; speed = $Speed; breathSmoke = [bool]$BreathSmoke; uiScale=$UIScale; zoom=$Zoom;
     state = $statePath; stateCaptured = $stateCaptured; phaseFixture = $Phase; phaseFixturePassed = $riftPhaseFixturePassed; allowExternalInput = [bool]$AllowExternalInput;
+    metaCapturePassed=[bool]$riftMetaCapturePassed;metaDataset=$riftMetaCaptureInput;
     expansionRosterPassed = [bool]$riftExpansionRosterPassed;
+    thunderBladePassed = [bool]$riftThunderBladePassed; effectAge=$(if($Scenario -in @('storm_works','blade_box','spells','effects17')){$EffectAge}else{$null});
     pulverizerWitnessPassed = [bool]$riftPulverizerWitnessPassed; pulverizerAge=$(if($Scenario -eq 'pulverizer'){$PulverizerAge}else{$null});
     expansionEffectStage = $(if($Scenario -eq 'expansion_effects'){$ExpansionEffectStage}else{$null});
     wardenDeathStage = $(if($Scenario -eq 'expansion_warden_death'){$WardenDeathStage}else{$null});

@@ -1448,7 +1448,7 @@ bool FRiftHistoricalReplayIntegrationTest::RunTest(const FString& Parameters) {
     E=Event("shockwave_launch",.3,"pulverizer");E.source=101;E.target=100;E.playId=103;E.position={0,4};E.amount=77;E.until=1.3;Replay->RecordEvent(E);
     E=Event("attack",.4,"ironclad");E.team=rift::Team::Enemy;E.source=100;E.target=101;E.playId=101;E.amount=93;E.position=Victim.position;Replay->RecordEvent(E);
     E=Event("damage",.4,"ironclad");E.team=rift::Team::Enemy;E.source=100;E.target=101;E.playId=101;E.targetKind=rift::EntityKind::Building;E.amount=E.requested=93;E.hp=607;Replay->RecordEvent(E);Replay->Sample(Mid);
-    E=Event("spell_impact",.7,"meteor_shards");E.playId=102;E.position={0,4};Replay->RecordEvent(E);
+    E=Event("spell_impact",.7,"meteor_shards");E.playId=102;E.position={0,4};E.until=.7;Replay->RecordEvent(E);
     E=Event("slow",.8,"pulverizer");E.source=101;E.target=100;E.targetTeam=rift::Team::Enemy;E.playId=103;E.amount=.25;E.until=2.8;Replay->RecordEvent(E);
     for(double Tick:{1.2,1.7}){E=Event("hazard_tick",Tick,"meteor_shards");E.playId=102;Replay->RecordEvent(E);}
     Replay->EndRecording(Final,true);if(!TestTrue(TEXT("Synthetic archive template finishes writing"),Replay->FlushPendingWrites()))return false;
@@ -1920,12 +1920,13 @@ bool FRiftExpansionMechanicsIntegrationTest::RunTest(const FString& Parameters) 
         for(auto& Body:const_cast<rift::Snapshot&>(Match.State()).entities)Body.stunUntil=100;
         Replay->BeginRecording(Options,true);Replay->Sample(Match.State());
         Match.SetAether(rift::Team::Player,10);
-        uint64 Subject=0,Enemy=0,Crown=0;double Duration=Scenario==3?25.1:Scenario==4?2.:Scenario==5?1.8:1.6;
+        uint64 Subject=0,Enemy=0,Crown=0;double Duration=Scenario==2?3.1:Scenario==3?25.1:Scenario==4?2.:Scenario==5?1.8:1.6;
         if(Scenario==2) {
             TestTrue(TEXT("Local cloak paid fixture creates friendly body"),Match.Spawn(rift::Team::Player,"ironclad",{.5,8.5}));
             Subject=Id(Match,"ironclad",rift::Team::Player);Mutable(Match,Subject)->stunUntil=100;
             TestTrue(TEXT("Local cloak fixture launches real ranged enemy attack"),Match.Spawn(rift::Team::Enemy,"ember_archer",{.5,2.5}));
             Enemy=Id(Match,"ember_archer",rift::Team::Enemy);
+            Mutable(Match,Enemy)->cooldown=.6; // Launch before .75s impact; committed arrow arrives during cloak.
             for(auto& Body:const_cast<rift::Snapshot&>(Match.State()).entities)
                 if(Body.team==rift::Team::Enemy&&Body.kind==rift::EntityKind::Guard&&Body.lane==1) {
                     Crown=Body.id;Body.target=Body.hardLock=Body.forcedTarget=Subject;
@@ -1944,7 +1945,7 @@ bool FRiftExpansionMechanicsIntegrationTest::RunTest(const FString& Parameters) 
             if(Scenario==5)TestTrue(TEXT("Actual first175 health-cloak packet"),Match.Spawn(rift::Team::Enemy,"bullet_burst",{.5,8.5}));
         }
         auto Feed=[&]() {for(const auto& Event:Match.DrainEvents())Replay->RecordEvent(Event);Replay->Sample(Match.State());};
-        Feed();double Probe=Scenario==0?.9:Scenario==1?.35:Scenario==2?.3:Scenario==3?24.9:Scenario==5?.7:1.8;
+        Feed();double Probe=Scenario==0?.9:Scenario==1?.35:Scenario==2?.8:Scenario==3?24.9:Scenario==5?.7:1.8;
         rift::Snapshot LiveProbe;bool Probed=false;
         for(int32 Tick=0;Tick<int32(Duration*60+.5);++Tick) {
             if(Scenario==5&&Tick==20)TestTrue(TEXT("Actual second175 packet crosses Reaper half health"),Match.Spawn(rift::Team::Enemy,"bullet_burst",{.5,8.5}));
@@ -1953,8 +1954,8 @@ bool FRiftExpansionMechanicsIntegrationTest::RunTest(const FString& Parameters) 
         }
         Replay->EndRecording(Match.State(),true);
         if(!TestTrue(TEXT("Actual expansion recording writes"),Replay->FlushPendingWrites())||
-           !TestTrue(TEXT("Captured schema3 expansion recording opens"),Replay->OpenReplay(Replay->LatestFilename)))continue;
-        TestEqual(TEXT("Replay captured current expansion mechanics schema"),int32(Replay->ReconstructionDiagnostics()->GetNumberField(TEXT("balanceSchema"))),3);
+           !TestTrue(TEXT("Captured schema4 expansion recording opens"),Replay->OpenReplay(Replay->LatestFilename)))continue;
+        TestEqual(TEXT("Replay captured current expansion mechanics schema"),int32(Replay->ReconstructionDiagnostics()->GetNumberField(TEXT("balanceSchema"))),4);
         Replay->Seek(float(LiveProbe.elapsed));const auto* Live=Find(LiveProbe,Subject);const auto* Restored=Find(Replay->View,Subject);
         if(Scenario==0) {
             if(TestNotNull(TEXT("Shield live body remains"),Live)&&TestNotNull(TEXT("Shield replay body remains"),Restored)) {
@@ -1987,10 +1988,14 @@ bool FRiftExpansionMechanicsIntegrationTest::RunTest(const FString& Parameters) 
                 TestTrue(TEXT("Replay retains exact local cloak expiration"),FMath::IsNearlyEqual(Restored->invisibleUntil,Live->invisibleUntil,1e-7)&&Restored->invisibleUntil>Replay->TimelinePosition());
             const auto* Drop=Find(Replay->View,Crown);
             TestTrue(TEXT("Replay clears the previously locked Crown target"),Drop&&Drop->target==0&&Drop->hardLock==0&&Drop->forcedTarget==0);
-            Replay->Seek(.5f);Restored=Find(Replay->View,Subject);
+            Replay->Seek(1.2f);Restored=Find(Replay->View,Subject);
             TestTrue(TEXT("Replay committed projectile damages invisible subject"),Restored&&Restored->hp==822-152&&Restored->invisibleUntil>Replay->TimelinePosition());
-            Replay->Seek(1.3f);Restored=Find(Replay->View,Subject);
+            Replay->Seek(2.7f);Restored=Find(Replay->View,Subject);
+            TestTrue(TEXT("Replay retains the full two-second cloak near expiry"),Restored&&FMath::IsNearlyEqual(Restored->invisibleUntil,2.75,1e-7));
+            Replay->Seek(2.8f);Restored=Find(Replay->View,Subject);
             TestTrue(TEXT("Replay local cloak expires without borrowing current targeting"),Restored&&Restored->invisibleUntil==0);
+            Replay->Seek(.7f);Restored=Find(Replay->View,Subject);
+            TestTrue(TEXT("Backward replay restores pending three-quarter-second activation without premature cloak"),Restored&&Restored->invisibleUntil==0&&Replay->View.spellCasts.size()==1&&FMath::IsNearlyEqual(Replay->View.spellCasts[0].impactAt,.75,1e-7));
             // Normalize the real saved area-cloak recording into a declared
             // synthetic schema2 compatibility fixture. Its current arena and
             // numerical balance are retained; this is not a historical archive.
@@ -2008,8 +2013,19 @@ bool FRiftExpansionMechanicsIntegrationTest::RunTest(const FString& Parameters) 
                         return nullptr;
                     };
                     auto Legacy=Clone(Saved.ToSharedRef());Legacy->GetObjectField(TEXT("balance"))->SetNumberField(TEXT("schema"),2);
+                    auto LegacyCards=Legacy->GetObjectField(TEXT("balance"))->GetArrayField(TEXT("cards"));
+                    LegacyCards.RemoveAll([](const auto& Value){const auto Id=Value->AsObject()->GetStringField(TEXT("id"));return Id==TEXT("blade_box")||Id==TEXT("thunderstorm");});
+                    Legacy->GetObjectField(TEXT("balance"))->SetArrayField(TEXT("cards"),LegacyCards);
+                    auto StripNewMetrics=[](const TSharedPtr<FJsonObject>& Snapshot) {
+                        for(const auto& Team:Snapshot->GetArrayField(TEXT("teams"))) {
+                            auto Metrics=Team->AsObject()->GetObjectField(TEXT("telemetry"));
+                            Metrics->RemoveField(TEXT("blade_box"));Metrics->RemoveField(TEXT("thunderstorm"));
+                        }
+                    };
+                    for(const auto& State:Legacy->GetArrayField(TEXT("states")))StripNewMetrics(State->AsObject());
+                    if(Legacy->HasField(TEXT("result")))StripNewMetrics(Legacy->GetObjectField(TEXT("result")));
                     for(const auto& Value:Legacy->GetObjectField(TEXT("balance"))->GetArrayField(TEXT("cards")))
-                        Value->AsObject()->RemoveField(TEXT("healthCloakThreshold"));
+                    {Value->AsObject()->RemoveField(TEXT("healthCloakThreshold"));Value->AsObject()->RemoveField(TEXT("spawnId"));Value->AsObject()->RemoveField(TEXT("spawnInterval"));}
                     const auto LegacyReaper=Definition(Legacy,TEXT("aether_reaper"));
                     if(TestTrue(TEXT("Compatibility fixture retains a recorded Reaper definition"),LegacyReaper.IsValid())) {
                         LegacyReaper->SetNumberField(TEXT("invisibilityDuration"),0);
@@ -2089,6 +2105,7 @@ bool FRiftCardDataIntegrationTest::RunTest(const FString &Parameters) {
         METRIC(InitialAttackCooldown, initialAttackCooldown) METRIC(ShieldHP, shieldHP)
         METRIC(InvisibilityDuration, invisibilityDuration) METRIC(DotStructureDamage, dotStructureDamage)
         METRIC(HealthCloakThreshold, healthCloakThreshold)
+        METRIC(SpawnInterval, spawnInterval)
             METRIC(SlowPct, slowPct) METRIC(SlowDuration, slowDuration) METRIC(AuraDamage, auraDamage)
                 METRIC(AuraInterval, auraInterval) METRIC(AuraRadius, auraRadius)
                     METRIC(StunDuration, stunDuration) METRIC(DotDamage, dotDamage)
@@ -2103,12 +2120,13 @@ bool FRiftCardDataIntegrationTest::RunTest(const FString &Parameters) {
         TestEqual(Id + TEXT(" target mask"),D->TargetMask,int32(C.targetMask));
         TestEqual(Id + TEXT(" child count"),D->DeathSpawnCount,C.deathSpawnCount);
         TestEqual(Id + TEXT(" child definition"),D->DeathSpawnId,FString(UTF8_TO_TCHAR(C.deathSpawnId.c_str())));
+        TestEqual(Id + TEXT(" spawn definition"),D->SpawnId,FString(UTF8_TO_TCHAR(C.spawnId.c_str())));
         TestEqual(Id + TEXT(" hard expiry"),D->HardExpiry,C.hardExpiry);
         TestEqual(Id + TEXT(" shield protection"),D->ShieldOverflowProtected,C.shieldOverflowProtected);
         TestEqual(Id + TEXT(" local/global cloak scope"),D->GlobalFriendlyInvisibility,C.globalFriendlyInvisibility);
         TestEqual(Id + TEXT(" cloak lock drop"),D->BreakExistingLocks,C.breakExistingLocks);
         TestNotNull(Id + TEXT(" card illustration"), D->Illustration.Get());
-        if ((!C.spell && !C.building)||C.shockwaveSpeed>0) {
+        if ((!C.spell && !C.building)||C.shockwaveSpeed>0||C.spawnInterval>0) {
             TestNotNull(Id + TEXT(" skeletal mesh"), D->CharacterMesh.Get());
             if (const auto *Mesh = D->CharacterMesh.Get()) {
                 const double Height = Mesh->GetBounds().BoxExtent.Z * 2;
@@ -2120,8 +2138,9 @@ bool FRiftCardDataIntegrationTest::RunTest(const FString &Parameters) {
             TestTrue(Id + TEXT(" animation set bound"), D->Animations.Num() >= 6);
             for (const auto &A : D->Animations)
                 TestNotNull(Id + TEXT(" animation ") + A.Key.ToString(), A.Value.Get());
+            if(C.spawnInterval>0){const auto* Spawn=D->Animations.Find(TEXT("Spawn"));TestTrue(Id+TEXT(" release animation matches its rig"),Spawn&&*Spawn&&D->CharacterMesh&&(*Spawn)->GetSkeleton()==D->CharacterMesh->GetSkeleton());}
         }
-        if (C.building&&C.shockwaveSpeed<=0)
+        if (C.building&&C.shockwaveSpeed<=0&&C.spawnInterval<=0)
             TestNotNull(Id + TEXT(" structure mesh"), D->StructureMesh.Get());
         TestTrue(Id + TEXT(" effects bound"), D->Effects.Num() >= 10);
         for (const auto &E : D->Effects)

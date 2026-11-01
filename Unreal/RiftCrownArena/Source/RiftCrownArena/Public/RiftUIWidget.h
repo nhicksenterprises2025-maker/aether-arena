@@ -58,6 +58,7 @@ public:
     UFUNCTION(BlueprintCallable) bool IsBattleView()const{return Page==TEXT("Battle")||Page==TEXT("ReplayView");}
     UFUNCTION(BlueprintCallable) bool IsLiveBattleView()const{return Page==TEXT("Battle");}
     bool IsBattleDeveloperVisible()const{return IsLiveBattleView()&&bDev;}
+    FString CurrentMetaTab()const{return Page==TEXT("Meta")?Tab:FString();}
     UFUNCTION(BlueprintCallable) bool CanAcceptBattleInput()const;
     bool IsCardDragGhostVisible()const;
     UFUNCTION(BlueprintCallable) void ToggleBattleMenu();

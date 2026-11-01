@@ -1,6 +1,6 @@
 {
-  "schema": 3,
-  "version": "2.0.0",
+  "schema": 4,
+  "version": "2.1.0",
   "status": "approved",
   "sourceCommit": "27a7e300dd4aaf1469a9bb3638a02407bf219b56",
   "cards": [
@@ -54,7 +54,9 @@
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
       "deathSpawnId": "",
-      "healthCloakThreshold": 0
+      "healthCloakThreshold": 0,
+      "spawnId": "",
+      "spawnInterval": 0
     },
     {
       "id": "ember_archer",
@@ -106,7 +108,9 @@
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
       "deathSpawnId": "",
-      "healthCloakThreshold": 0
+      "healthCloakThreshold": 0,
+      "spawnId": "",
+      "spawnInterval": 0
     },
     {
       "id": "twin_blades",
@@ -158,7 +162,9 @@
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
       "deathSpawnId": "",
-      "healthCloakThreshold": 0
+      "healthCloakThreshold": 0,
+      "spawnId": "",
+      "spawnInterval": 0
     },
     {
       "id": "boulderback",
@@ -210,7 +216,9 @@
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
       "deathSpawnId": "",
-      "healthCloakThreshold": 0
+      "healthCloakThreshold": 0,
+      "spawnId": "",
+      "spawnInterval": 0
     },
     {
       "id": "arc_mage",
@@ -262,7 +270,9 @@
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
       "deathSpawnId": "",
-      "healthCloakThreshold": 0
+      "healthCloakThreshold": 0,
+      "spawnId": "",
+      "spawnInterval": 0
     },
     {
       "id": "rambeast",
@@ -314,7 +324,9 @@
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
       "deathSpawnId": "",
-      "healthCloakThreshold": 0
+      "healthCloakThreshold": 0,
+      "spawnId": "",
+      "spawnInterval": 0
     },
     {
       "id": "sky_manta",
@@ -366,7 +378,9 @@
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
       "deathSpawnId": "",
-      "healthCloakThreshold": 0
+      "healthCloakThreshold": 0,
+      "spawnId": "",
+      "spawnInterval": 0
     },
     {
       "id": "vampire_bats",
@@ -418,7 +432,9 @@
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
       "deathSpawnId": "",
-      "healthCloakThreshold": 0
+      "healthCloakThreshold": 0,
+      "spawnId": "",
+      "spawnInterval": 0
     },
     {
       "id": "frost_fang",
@@ -470,7 +486,9 @@
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
       "deathSpawnId": "",
-      "healthCloakThreshold": 0
+      "healthCloakThreshold": 0,
+      "spawnId": "",
+      "spawnInterval": 0
     },
     {
       "id": "storm_raven",
@@ -522,7 +540,9 @@
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
       "deathSpawnId": "",
-      "healthCloakThreshold": 0
+      "healthCloakThreshold": 0,
+      "spawnId": "",
+      "spawnInterval": 0
     },
     {
       "id": "meteor_shards",
@@ -574,7 +594,9 @@
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
       "deathSpawnId": "",
-      "healthCloakThreshold": 0
+      "healthCloakThreshold": 0,
+      "spawnId": "",
+      "spawnInterval": 0
     },
     {
       "id": "archer_tower",
@@ -626,7 +648,9 @@
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
       "deathSpawnId": "",
-      "healthCloakThreshold": 0
+      "healthCloakThreshold": 0,
+      "spawnId": "",
+      "spawnInterval": 0
     },
     {
       "id": "bullet_burst",
@@ -678,7 +702,9 @@
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
       "deathSpawnId": "",
-      "healthCloakThreshold": 0
+      "healthCloakThreshold": 0,
+      "spawnId": "",
+      "spawnInterval": 0
     },
     {
       "id": "nova_flask",
@@ -730,15 +756,17 @@
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
       "deathSpawnId": "",
-      "healthCloakThreshold": 0
+      "healthCloakThreshold": 0,
+      "spawnId": "",
+      "spawnInterval": 0
     },
     {
       "id": "mini_stampede",
       "name": "Mini Stampede",
-      "cost": 2,
+      "cost": 4,
       "count": 5,
-      "hp": 111,
-      "damage": 20,
+      "hp": 133.2,
+      "damage": 24,
       "attackInterval": 0.9,
       "moveSpeed": 3.5,
       "range": 1,
@@ -782,15 +810,17 @@
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
       "deathSpawnId": "",
-      "healthCloakThreshold": 0
+      "healthCloakThreshold": 0,
+      "spawnId": "",
+      "spawnInterval": 0
     },
     {
       "id": "stampede",
       "name": "Stampede",
       "cost": 7,
       "count": 15,
-      "hp": 111,
-      "damage": 20,
+      "hp": 133.2,
+      "damage": 24,
       "attackInterval": 1,
       "moveSpeed": 3,
       "range": 0.8,
@@ -834,7 +864,9 @@
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
       "deathSpawnId": "",
-      "healthCloakThreshold": 0
+      "healthCloakThreshold": 0,
+      "spawnId": "",
+      "spawnInterval": 0
     },
     {
       "id": "pulverizer",
@@ -886,7 +918,9 @@
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
       "deathSpawnId": "",
-      "healthCloakThreshold": 0
+      "healthCloakThreshold": 0,
+      "spawnId": "",
+      "spawnInterval": 0
     },
     {
       "cost": 6,
@@ -938,7 +972,9 @@
       "deathSpawnId": "bone_warden_skeleton",
       "id": "bone_warden",
       "name": "Bone Warden",
-      "healthCloakThreshold": 0
+      "healthCloakThreshold": 0,
+      "spawnId": "",
+      "spawnInterval": 0
     },
     {
       "cost": 4,
@@ -990,7 +1026,9 @@
       "deathSpawnId": "",
       "id": "aether_reaper",
       "name": "Aether Reaper",
-      "healthCloakThreshold": 0.5
+      "healthCloakThreshold": 0.5,
+      "spawnId": "",
+      "spawnInterval": 0
     },
     {
       "cost": 3,
@@ -1042,7 +1080,9 @@
       "deathSpawnId": "",
       "id": "iron_giant",
       "name": "Iron Giant",
-      "healthCloakThreshold": 0
+      "healthCloakThreshold": 0,
+      "spawnId": "",
+      "spawnInterval": 0
     },
     {
       "cost": 3,
@@ -1060,7 +1100,7 @@
       "footprint": 0,
       "towerDamage": 50,
       "spellRadius": 2,
-      "castDelay": 0.25,
+      "castDelay": 0.75,
       "chargeDamage": 0,
       "slowPct": 0,
       "slowDuration": 0,
@@ -1085,7 +1125,7 @@
       "initialAttackCooldown": 0,
       "shieldHP": 0,
       "deathSpawnCount": 0,
-      "invisibilityDuration": 1,
+      "invisibilityDuration": 2,
       "dotStructureDamage": 0,
       "hardExpiry": false,
       "shieldOverflowProtected": false,
@@ -1094,7 +1134,9 @@
       "deathSpawnId": "",
       "id": "shadow_surge",
       "name": "Shadow Surge",
-      "healthCloakThreshold": 0
+      "healthCloakThreshold": 0,
+      "spawnId": "",
+      "spawnInterval": 0
     },
     {
       "id": "dart_gun",
@@ -1146,7 +1188,117 @@
       "globalFriendlyInvisibility": false,
       "breakExistingLocks": false,
       "deathSpawnId": "",
-      "healthCloakThreshold": 0
+      "healthCloakThreshold": 0,
+      "spawnId": "",
+      "spawnInterval": 0
+    },
+    {
+      "id": "thunderstorm",
+      "name": "Thunderstorm",
+      "cost": 3,
+      "count": 1,
+      "hp": 0,
+      "damage": 65,
+      "attackInterval": 0,
+      "moveSpeed": 0,
+      "range": 0,
+      "scale": 1,
+      "projectileSpeed": 0,
+      "shockwaveSpeed": 0,
+      "splash": 0,
+      "lifetime": 0,
+      "footprint": 0,
+      "towerDamage": 33,
+      "spellRadius": 3,
+      "castDelay": 0.45,
+      "chargeDamage": 0,
+      "slowPct": 0,
+      "slowDuration": 0,
+      "auraDamage": 0,
+      "auraInterval": 0,
+      "auraRadius": 0,
+      "stunDuration": 0.25,
+      "dotDamage": 0,
+      "dotDuration": 0,
+      "dotInterval": 0.45,
+      "rounds": 3,
+      "flying": false,
+      "canHitAir": false,
+      "structuresOnly": false,
+      "spell": true,
+      "building": false,
+      "collisionRadius": 0,
+      "targetMask": 7,
+      "chargeMoveSeconds": 0,
+      "chargedMoveSpeed": 0,
+      "hpDecayPerSecond": 0,
+      "initialAttackCooldown": 0,
+      "shieldHP": 0,
+      "deathSpawnCount": 0,
+      "invisibilityDuration": 0,
+      "dotStructureDamage": 0,
+      "hardExpiry": false,
+      "shieldOverflowProtected": false,
+      "globalFriendlyInvisibility": false,
+      "breakExistingLocks": false,
+      "deathSpawnId": "",
+      "healthCloakThreshold": 0,
+      "spawnId": "",
+      "spawnInterval": 0
+    },
+    {
+      "id": "blade_box",
+      "name": "Blade Box",
+      "cost": 5,
+      "count": 1,
+      "hp": 500,
+      "damage": 0,
+      "attackInterval": 3,
+      "moveSpeed": 0,
+      "range": 0,
+      "scale": 1,
+      "projectileSpeed": 0,
+      "shockwaveSpeed": 0,
+      "splash": 0,
+      "lifetime": 30,
+      "footprint": 1.65,
+      "towerDamage": 0,
+      "spellRadius": 0,
+      "castDelay": 0,
+      "chargeDamage": 0,
+      "slowPct": 0,
+      "slowDuration": 0,
+      "auraDamage": 0,
+      "auraInterval": 0,
+      "auraRadius": 0,
+      "stunDuration": 0,
+      "dotDamage": 0,
+      "dotDuration": 0,
+      "dotInterval": 0,
+      "rounds": 0,
+      "flying": false,
+      "canHitAir": false,
+      "structuresOnly": false,
+      "spell": false,
+      "building": true,
+      "collisionRadius": 0.858,
+      "targetMask": 0,
+      "chargeMoveSeconds": 0,
+      "chargedMoveSpeed": 0,
+      "hpDecayPerSecond": 0,
+      "initialAttackCooldown": 0,
+      "shieldHP": 0,
+      "deathSpawnCount": 0,
+      "invisibilityDuration": 0,
+      "dotStructureDamage": 0,
+      "hardExpiry": true,
+      "shieldOverflowProtected": false,
+      "globalFriendlyInvisibility": false,
+      "breakExistingLocks": false,
+      "deathSpawnId": "",
+      "healthCloakThreshold": 0,
+      "spawnId": "twin_blades",
+      "spawnInterval": 3
     }
   ],
   "entities": [
@@ -1200,11 +1352,13 @@
       "deathSpawnId": "",
       "id": "bone_warden_skeleton",
       "name": "Bone Warden Skeleton",
-      "healthCloakThreshold": 0
+      "healthCloakThreshold": 0,
+      "spawnId": "",
+      "spawnInterval": 0
     }
   ],
   "rules": {
-    "combatRevision": 4,
+    "combatRevision": 5,
     "navigationRevision": 13,
     "targetHardLock": "first authoritative attack against a Crown Tower",
     "frontSight": 8,
@@ -1217,19 +1371,21 @@
     "guardDepth": 13.72,
     "coreDepth": 16.84,
     "cloakLockException": "Approved Shadow Surge drops enemy locks, including committed Crown Tower locks; committed damage and projectiles still resolve",
-    "guardCenterX": 6.76
+    "guardCenterX": 6.76,
+    "periodicSpawnPolicy": "One current referenced troop per completed spawn interval; stun pauses production; hard expiry continues; children retain parent paid-play attribution",
+    "lightningWavePolicy": "Fixed area; current enemy positions at each wave; castDelay + (wave-1)*dotInterval; stun refreshes per surviving target"
   },
-  "balanceHash": "8d4889796f5a1b9be3f91a3a11a0f0045c7e4a7c878e3ddb20fc50112a56951c",
-  "baseline": "Assets/Data/Baselines/1.9.0.json",
+  "balanceHash": "ad330d4a706a81c316225dcf04a469599ef9defa8331ea6e2b4ef4d02fdd2d49",
+  "baseline": "Assets/Data/Baselines/2.0.0.json",
   "approval": {
     "sourceResolution": "Assets/Data/source_resolution.json",
-    "source": "User request: move both side towers toward the Core exactly one tile and make all other cards as detailed as Dart Gun",
-    "scope": "Move both teams' Guard Towers one horizontal tile inward; upgrade all other card models and their model-rendered art. Preserve every combat stat, ability, base model scale, Core Tower, bridge and arena dimension.",
-    "releaseAcceptance": "Verify exact tower coordinates, physical troop routing, all upgraded rigs and portraits, native runtime and Windows delivery."
+    "source": "User request: Archer face/hair repair, cohesive detailed Boulderback, +20% Stampede HP/damage, Mini Stampede cost4, Thunderstorm cost3, Blade Box cost5 confirmed; user follow-up: Shadow Surge 0.75s activation and 2s invisibility",
+    "scope": "Two appearance repairs, two Stampede balance changes, Shadow Surge timing adjustment and two new cards. Preserve all other card values, arena geometry and game features.",
+    "releaseAcceptance": "Verify timed strikes/stuns, timed and attributed summons, collision-safe exits, replay/Meta parity, new models/portraits and Windows delivery."
   },
   "baselineProvenance": {
-    "tag": "v1.9.0",
-    "sourceCommit": "27a7e300dd4aaf1469a9bb3638a02407bf219b56",
-    "canonicalFileSHA256": "d41b232845d3b0434cba851170286a7714e1f0b0daa059208be86dffead20f7e"
+    "tag": "v2.0.0",
+    "sourceCommit": "68124ff8f405605bccafde462db1ec47de668012",
+    "canonicalFileSHA256": "28828926a00e98a8a1085d0a58ca9e5d9d6b345581e47e0e82f94d0306bb94f8"
   }
 }

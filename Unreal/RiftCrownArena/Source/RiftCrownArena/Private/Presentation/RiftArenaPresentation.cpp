@@ -14,6 +14,7 @@
 #include "Components/HierarchicalInstancedStaticMeshComponent.h"
 #include "Components/InstancedStaticMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/PostProcessComponent.h"
 #include "Components/SkyAtmosphereComponent.h"
 #include "Components/SkyLightComponent.h"
@@ -23,6 +24,8 @@
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "Materials/Material.h"
+#include "MaterialShared.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraSystem.h"
@@ -508,7 +511,7 @@ void ARiftArenaPresentation::ClearVisuals()
     for (auto& Body:SpellCastBodies) if (Body) Body->DestroyComponent();SpellCastBodies.Reset();SpellCastPieces.Reset();
     for (auto& Glow:SpellCastGlows) if (Glow) Glow->DestroyComponent();SpellCastGlows.Reset();
     for (auto& Ring:SpellCastRings) if (Ring.Value) Ring.Value->DestroyComponent();SpellCastRings.Reset();SpellCastMaterials.Reset();
-    SpellImpactEffects.Reset();RecentSpellImpacts.Reset();SpellImpactEvents=0;
+    SpellImpactEffects.Reset();RecentSpellImpacts.Reset();RecentLightningHits.Reset();SpellImpactEvents=0;
     RecentReaperAttacks.Reset();RecentCloakExpiries.Reset();ContactAccents.Reset();PresentationLag=0;
     for(auto& Pair:ExpansionBatches)if(Pair.Value)Pair.Value->DestroyComponent();ExpansionBatches.Reset();
     ProjectileBodiesCreated=0;ProjectileBodiesReleased=0;
@@ -688,8 +691,44 @@ FString ARiftArenaPresentation::NiagaraDiagnosticsJSON()
     {
         auto Entry=MakeShared<FJsonObject>();Entry->SetStringField(TEXT("name"),Pair.Key.ToString());
         Entry->SetNumberField(TEXT("instances"),Batch->GetInstanceCount());Entry->SetBoolField(TEXT("visible"),Batch->IsVisible());
+        Entry->SetStringField(TEXT("renderMode"),TEXT("instanced_static_meshes"));
         Entry->SetBoolField(TEXT("nonInteractive"),Batch->GetCollisionEnabled()==ECollisionEnabled::NoCollision);
         Entry->SetStringField(TEXT("mesh"),Batch->GetStaticMesh()?Batch->GetStaticMesh()->GetPathName():TEXT(""));
+        Entry->SetNumberField(TEXT("forcedLOD"),Batch->GetForcedLodModel());
+        Entry->SetBoolField(TEXT("registered"),Batch->IsRegistered());
+        Entry->SetBoolField(TEXT("renderProxyReady"),Batch->GetSceneProxy()!=nullptr);
+        Entry->SetBoolField(TEXT("psoPrecaching"),Batch->IsPSOPrecaching());
+        Entry->SetStringField(TEXT("worldBoundsOrigin"),Batch->Bounds.Origin.ToString());
+        Entry->SetStringField(TEXT("worldBoundsExtent"),Batch->Bounds.BoxExtent.ToString());
+        FTransform FirstInstance;if(Batch->GetInstanceCount()&&Batch->GetInstanceTransform(0,FirstInstance,true))Entry->SetStringField(TEXT("firstWorldTransform"),FirstInstance.ToString());
+        if(auto* Material=Batch->GetMaterial(0))
+        {
+            Entry->SetStringField(TEXT("material"),Material->GetPathName());
+            Entry->SetStringField(TEXT("baseMaterial"),Material->GetMaterial()->GetPathName());
+            const bool Opaque=Material->GetBlendMode()==BLEND_Opaque;
+            Entry->SetStringField(TEXT("blendMode"),Opaque?TEXT("Opaque"):Material->GetBlendMode()==BLEND_Translucent?TEXT("Translucent"):TEXT("Other"));
+            const auto* Resource=Material->GetMaterial()->GetMaterialResource(GMaxRHIShaderPlatform);
+            Entry->SetBoolField(TEXT("materialResourcePresent"),Resource!=nullptr);
+            Entry->SetBoolField(TEXT("shaderMapPresent"),Resource&&Resource->GetGameThreadShaderMap()!=nullptr);
+            Entry->SetBoolField(TEXT("shaderMapComplete"),Resource&&Resource->GetGameThreadShaderMap()&&Resource->IsGameThreadShaderMapComplete());
+#if WITH_EDITOR
+            Entry->SetBoolField(TEXT("shaderCompilationDiagnosticsAvailable"),true);
+            Entry->SetBoolField(TEXT("shaderCompilationFinished"),Resource&&Resource->IsCompilationFinished());
+            TArray<TSharedPtr<FJsonValue>> ShaderErrors;
+            if(Resource)for(const auto& Error:Resource->GetCompileErrors())ShaderErrors.Add(MakeShared<FJsonValueString>(Error));
+            Entry->SetArrayField(TEXT("shaderErrors"),ShaderErrors);
+#else
+            Entry->SetBoolField(TEXT("shaderCompilationDiagnosticsAvailable"),false);
+#endif
+            float Opacity=0,Emission=0,GlowStrength=0;
+            const bool OpacityBound=Material->GetScalarParameterValue(FMaterialParameterInfo(TEXT("EffectOpacity")),Opacity);
+            Entry->SetBoolField(TEXT("opacityBound"),OpacityBound);
+            Entry->SetStringField(TEXT("opacitySource"),Opaque?TEXT("opaque_material"):OpacityBound?TEXT("EffectOpacity"):TEXT("unbound"));
+            Entry->SetBoolField(TEXT("emissionBound"),Material->GetScalarParameterValue(FMaterialParameterInfo(TEXT("EffectEmission")),Emission));
+            Entry->SetBoolField(TEXT("glowStrengthBound"),Material->GetScalarParameterValue(FMaterialParameterInfo(TEXT("GlowStrength")),GlowStrength));
+            Entry->SetNumberField(TEXT("opacity"),Opaque?1.:Opacity);Entry->SetNumberField(TEXT("emission"),Emission);
+            Entry->SetNumberField(TEXT("glowStrength"),GlowStrength);
+        }
         ExpansionEffects.Add(MakeShared<FJsonValueObject>(Entry));
     }
     Report->SetArrayField(TEXT("expansionSurfaceEffects"),ExpansionEffects);
@@ -1102,8 +1141,8 @@ void ARiftArenaPresentation::SynchronizeSpellCasts(const rift::Snapshot& State)
         if (!Card || !Card->spell || State.phase==rift::Phase::Finished) continue;
         Present.Add(Cast.playId);
         const int32 Count=Cast.cardId=="meteor_shards"?5:Cast.cardId=="bullet_burst"?Card->rounds:0;
-        const double Duration=FMath::Max(.001,Cast.impactAt-Cast.born);
-        const double Progress=FMath::Clamp((State.elapsed-Cast.born)/Duration,0.,1.);
+        const double Duration=FMath::Max(.001,Cast.cardId=="thunderstorm"?Card->dotInterval:Cast.impactAt-Cast.born);
+        const double Progress=FMath::Clamp((State.elapsed-(Cast.impactAt-Duration))/Duration,0.,1.);
         const FVector Center=URiftMatchSubsystem::WorldPoint(Cast.position);
         if (!SpellCastRings.Contains(Cast.playId))
         {
@@ -1113,7 +1152,7 @@ void ARiftArenaPresentation::SynchronizeSpellCasts(const rift::Snapshot& State)
             if (auto* Base=LoadObject<UMaterialInterface>(nullptr,TEXT("/Game/Rift/Materials/M_RiftPlacement.M_RiftPlacement")))
             {
                 auto* Material=UMaterialInstanceDynamic::Create(Base,this);Material->SetScalarParameterValue(TEXT("Footprint"),0.f);
-                Material->SetVectorParameterValue(TEXT("RingColor"),Cast.cardId=="shadow_surge"?FLinearColor(.36f,.09f,.66f):ARiftUnitVisual::TeamColor(Cast.team));
+                Material->SetVectorParameterValue(TEXT("RingColor"),Cast.cardId=="thunderstorm"?FLinearColor(.30f,.48f,.78f):Cast.cardId=="shadow_surge"?FLinearColor(.36f,.09f,.66f):ARiftUnitVisual::TeamColor(Cast.team));
                 Ring->SetDecalMaterial(Material);SpellCastMaterials.Add(Cast.playId,Material);
             }
             Ring->RegisterComponent();AddInstanceComponent(Ring);SpellCastRings.Add(Cast.playId,Ring);
@@ -1133,7 +1172,7 @@ void ARiftArenaPresentation::SynchronizeSpellCasts(const rift::Snapshot& State)
         {
             // A restrained brightening announces the deadline without washing
             // out the fighters or moving the committed target radius.
-            FLinearColor Color=(Cast.cardId=="shadow_surge"?FLinearColor(.36f,.09f,.66f):ARiftUnitVisual::TeamColor(Cast.team))*(1.f+.3f*float(Progress));Color.A=1.f;
+            FLinearColor Color=(Cast.cardId=="shadow_surge"?FLinearColor(.36f,.09f,.66f):Cast.cardId=="thunderstorm"?FLinearColor(.28f,.46f,.68f):ARiftUnitVisual::TeamColor(Cast.team))*(1.f+.3f*float(Progress));Color.A=1.f;
             Material->SetVectorParameterValue(TEXT("RingColor"),Color);
         }
         auto* Trail=ProjectileTrail(Cast.cardId,Cast.team);
@@ -1311,14 +1350,22 @@ UInstancedStaticMeshComponent* ARiftArenaPresentation::ExpansionBatch(FName Key,
     if(auto* Batch=ExpansionBatches.FindRef(Key).Get())return Batch;
     const FString Path=FString::Printf(TEXT("/Game/Rift/Environment/SM_%s.SM_%s"),*MeshId.ToString(),*MeshId.ToString());
     auto* Mesh=LoadObject<UStaticMesh>(nullptr,*Path);
-    auto* Base=LoadObject<UMaterialInterface>(nullptr,TEXT("/Game/Rift/Materials/M_RiftExpansionFX.M_RiftExpansionFX"));
+    const bool Cloud=Key==TEXT("StormCloud");
+    const bool WeatherGlow=Key==TEXT("StormRain")||Key==TEXT("StormAreaFlash")||Key==TEXT("StormTargetLightning")||Key==TEXT("UniversalStunStars");
+    auto* Base=LoadObject<UMaterialInterface>(nullptr,Cloud?TEXT("/Game/Rift/Materials/M_RiftSurface.M_RiftSurface"):
+        WeatherGlow?TEXT("/Game/Rift/Materials/M_RiftGlow.M_RiftGlow"):TEXT("/Game/Rift/Materials/M_RiftExpansionFX.M_RiftExpansionFX"));
     if(!Mesh || !Base){RIFT_LOG(LogRift,Error,TEXT("Expansion effect asset is missing: %s"),*Path);return nullptr;}
     auto* Batch=NewObject<UInstancedStaticMeshComponent>(this,Key);Batch->SetupAttachment(Scene);
     Batch->SetMobility(EComponentMobility::Movable);Batch->SetStaticMesh(Mesh);Batch->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    // These authored 32-212-triangle cues are already tiny; their reduced LODs
+    // can erase the streak, zigzag and star silhouettes at the arena camera.
+    if(WeatherGlow)Batch->SetForcedLodModel(1);
     Batch->SetGenerateOverlapEvents(false);Batch->SetCanEverAffectNavigation(false);Batch->SetCastShadow(false);Batch->bReceivesDecals=false;
     for(int32 I=0;I<Batch->GetNumMaterials();++I)
     {Batch->SetMaterial(I,Base);if(auto* MID=Batch->CreateDynamicMaterialInstance(I))
-        {MID->SetVectorParameterValue(TEXT("EffectColor"),Color);}}
+        {if(Cloud)MID->SetScalarParameterValue(TEXT("RiftBaseColorGain"),1.2f);
+         else if(WeatherGlow)MID->SetScalarParameterValue(TEXT("GlowStrength"),Key==TEXT("StormRain")?.45f:Key==TEXT("UniversalStunStars")?1.6f:2.f);
+         else MID->SetVectorParameterValue(TEXT("EffectColor"),Color);}}
     Batch->RegisterComponent();AddInstanceComponent(Batch);ExpansionBatches.Add(Key,Batch);return Batch;
 }
 void ARiftArenaPresentation::SynchronizeExpansionEffects(const rift::Snapshot& State)
@@ -1397,14 +1444,16 @@ void ARiftArenaPresentation::SynchronizeExpansionEffects(const rift::Snapshot& S
     }
     for(const auto& Impact:RecentSpellImpacts)if(Impact.cardId=="shadow_surge")
     {
-        const double Age=State.elapsed-Impact.time;if(Age<0 || Age>=.30)continue;
-        const double T=Age/.30,Radius=(.24+1.72*FMath::Sin(T*UE_PI*.5))*Tile;
+        const double Age=State.elapsed-Impact.time;if(Age<0 || Age>=.50)continue;
+        const auto* Card=rift::FindCard(Impact.cardId);if(!Card)continue;
+        const double T=Age/.50,Radius=Card->spellRadius*(.18+.82*FMath::Sin(T*UE_PI*.5))*Tile;
         const FVector Center=URiftMatchSubsystem::WorldPoint(Impact.position,Tile*.04);
-        for(int32 I=0;I<32;++I)
+        for(int32 Band=0;Band<3;++Band)for(int32 I=0;I<32;++I)
         {
             const double A=I*UE_TWO_PI/32.,B=(I+1)*UE_TWO_PI/32.;
-            Ribbon(TEXT("ShadowGroundRibbon"),Violet,Center+FVector(FMath::Cos(A),FMath::Sin(A),0)*Radius,
-                Center+FVector(FMath::Cos(B),FMath::Sin(B),0)*Radius,(.025*(1.-T)+.003)*Tile);
+            const double BandRadius=Radius*(.46+.27*Band);
+            Ribbon(TEXT("ShadowGroundRibbon"),Violet,Center+FVector(FMath::Cos(A),FMath::Sin(A),0)*BandRadius,
+                Center+FVector(FMath::Cos(B),FMath::Sin(B),0)*BandRadius,(.045*(1.-T)+.006)*Tile);
         }
     }
     for(const auto& Event:RecentReaperAttacks)
@@ -1456,11 +1505,89 @@ void ARiftArenaPresentation::SynchronizeExpansionEffects(const rift::Snapshot& S
             Ribbon(TEXT("FourWardenSoulThreads"),Green,Path(A),Path(B),Tile*.015*(1.-Age/.30));
         }
     }
+    auto Weather=[&](FName Key,FName Mesh,FLinearColor Color,FVector Origin,FVector Size,double Yaw=0.,FVector UpAxis=FVector::ZeroVector)
+    {
+        auto* Batch=ExpansionBatch(Key,Mesh,Color);if(!Batch)return;
+        const FVector Bounds=Batch->GetStaticMesh()->GetBounds().BoxExtent*2.;
+        const FVector Scale(Size.X/FMath::Max(.01,Bounds.X),Size.Y/FMath::Max(.01,Bounds.Y),Size.Z/FMath::Max(.01,Bounds.Z));
+        const FQuat Rotation=UpAxis.IsNearlyZero()?FRotator(0,Yaw,0).Quaternion():FRotationMatrix::MakeFromZX(UpAxis,FVector(0,1,0)).ToQuat();
+        Transforms.FindOrAdd(Batch).Add(FTransform(Rotation,Origin,Scale));
+    };
+    auto Storm=[&](rift::Vec2 Position,double Born,double Finish)
+    {
+        const double Age=State.elapsed-Born,Remaining=Finish-State.elapsed;if(Age<0 || Remaining<=0)return;
+        const double Fade=FMath::Min(FMath::Clamp(Age/.18,0.,1.),FMath::Clamp(Remaining/.22,0.,1.));
+        const FVector Center=URiftMatchSubsystem::WorldPoint(Position,Tile*4.8);
+        Weather(TEXT("StormCloud"),TEXT("thunderstorm_cloud"),FLinearColor(.085f,.105f,.16f),Center,
+            FVector(6.0,4.8,.95+.04*FMath::Sin(Age*9))*Tile*(.86+.14*Fade),FMath::Sin(Age*2)*3.);
+        for(int32 I=0;I<48;++I)
+        {
+            const double Angle=I*2.3999632297,Radius=2.88*FMath::Sqrt((I+.5)/48.);
+            const double Fall=FMath::Fmod(Age*2.8+I*.173,1.);
+            const FVector Drop=URiftMatchSubsystem::WorldPoint(Position)+FVector(FMath::Cos(Angle)*Radius,FMath::Sin(Angle)*Radius,.35+(Center.Z/Tile-.35)*(1.-Fall))*Tile;
+            Weather(TEXT("StormRain"),TEXT("thunderstorm_rain"),FLinearColor(.55f,.75f,1.f),Drop,FVector(.04,.04,.35)*Tile*Fade);
+        }
+    };
+    for(const auto& Cast:State.spellCasts)if(Cast.cardId=="thunderstorm")
+        if(const auto* Card=rift::FindCard(Cast.cardId))Storm(Cast.position,Cast.born,Cast.born+Card->castDelay+(Card->rounds-1)*Card->dotInterval+.22);
+    for(const auto& Impact:RecentSpellImpacts)if(Impact.cardId=="thunderstorm")
+    {
+        const auto* Card=rift::FindCard(Impact.cardId);if(!Card)continue;
+        const double Age=State.elapsed-Impact.time;
+        if(Impact.count==Card->rounds)Storm(Impact.position,Impact.time-Card->castDelay-(Card->rounds-1)*Card->dotInterval,Impact.time+.22);
+        if(Age>=0 && Age<.13)
+        {
+            const double Flash=1.-Age/.13;
+            const FVector Cloud=URiftMatchSubsystem::WorldPoint(Impact.position,Tile*4.8);
+            const FVector Top=Cloud+FVector(0,2.6*Tile,-.15*Tile);
+            const FVector End=URiftMatchSubsystem::WorldPoint(Impact.position)+FVector(0,2.8*Tile,.35*Tile);
+            const FVector Up=Top-End;
+            Weather(TEXT("StormAreaFlash"),TEXT("thunderstorm_bolt"),FLinearColor(.82f,.92f,1.f),Top,FVector(.13*Tile,.55*Tile*Flash,Up.Length()),0.,Up);
+        }
+    }
+    RecentLightningHits.RemoveAllSwap([&](const rift::Event& Hit){return State.elapsed-Hit.time>=.17 || State.elapsed<Hit.time;});
+    for(const auto& Hit:RecentLightningHits)
+    {
+        const double Age=State.elapsed-Hit.time,Flash=(1.-Age/.17)*(.80+.20*FMath::Cos(Age*130));
+        auto* Target=Visual(Hit.target);if(Target && Target->HiddenFromViewer())continue;
+        FVector End=Target?Target->ImpactLocation():URiftMatchSubsystem::WorldPoint(Hit.position,Tile*.4);
+        if(const auto* Body=FindEntity(State,Hit.target))End.Y=FMath::Max(End.Y,URiftMatchSubsystem::WorldPoint(Body->position).Y+Body->radius*Tile);
+        if(Target)
+        {
+            TInlineComponentArray<UPrimitiveComponent*> Components(Target);
+            for(const auto* Component:Components)
+                if(Component->IsVisible() && Component->Bounds.SphereRadius>UE_SMALL_NUMBER &&
+                    (Component->IsA<USkeletalMeshComponent>() || (Component->IsA<UStaticMeshComponent>() && !Component->IsA<UInstancedStaticMeshComponent>())))
+                    End.Y=FMath::Max(End.Y,Component->Bounds.Origin.Y+Component->Bounds.BoxExtent.Y);
+        }
+        End.Y+=.12*Tile;
+        rift::Vec2 CastCenter=Hit.position;
+        for(const auto& Impact:RecentSpellImpacts)if(Impact.cardId=="thunderstorm" && Impact.playId==Hit.playId)CastCenter=Impact.position;
+        const FVector Cloud=URiftMatchSubsystem::WorldPoint(CastCenter,Tile*4.8);
+        const FVector Top(FMath::Clamp(End.X,Cloud.X-2.7*Tile,Cloud.X+2.7*Tile),Cloud.Y+2.6*Tile,FMath::Max(Cloud.Z-.15*Tile,End.Z+1.25*Tile));
+        const FVector Up=Top-End;
+        Weather(TEXT("StormTargetLightning"),TEXT("thunderstorm_bolt"),FLinearColor(.82f,.92f,1.f),Top,FVector(.13*Tile,.55*Tile*Flash,Up.Length()),0.,Up);
+    }
+    for(const auto& Entity:State.entities)if(!Entity.dead && Entity.stunUntil>State.elapsed)
+    {
+        auto* Unit=Visual(Entity.id);if(!Unit || Unit->HiddenFromViewer())continue;
+        const FVector Center=Unit->StatusLocation();
+        for(int32 I=0;I<3;++I)
+        {
+            const double Angle=State.elapsed*10+I*UE_TWO_PI/3.;
+            Weather(TEXT("UniversalStunStars"),TEXT("stun_spark"),FLinearColor(.72f,.92f,1.f),Center+FVector(FMath::Cos(Angle)*.55,FMath::Sin(Angle)*.55,.05*FMath::Sin(Angle*2))*Tile,FVector(.32,.32,.045)*Tile,Angle*180./UE_PI);
+        }
+    }
     for(auto& Pair:Transforms)Pair.Key->AddInstances(Pair.Value,false,true,false);
+
 }
 void ARiftArenaPresentation::OnSimulationEvent(const rift::Event& Event)
 {
     if(Audio)Audio->OnSimulationEvent(Event,URiftMatchSubsystem::WorldPoint(Event.position,25));
+    // The spawn clock resets before the child arrives. Preserve its parent's
+    // open hatch through synchronization instead of briefly blending to Idle.
+    if(Event.type=="entity_spawn" && Event.reason=="periodic_spawn")
+        if(auto* Parent=Visual(Event.parentEntityId))Parent->SpecialAt(TEXT("Spawn"),Event.time-.16,.60f);
     // Deployment events may arrive before this actor's next tick. Build current
     // visual replicas first so attacks, destruction and audio use real anchors.
     if (Event.type=="match_start" || Event.type=="entity_spawn" ||
@@ -1472,6 +1599,11 @@ void ARiftArenaPresentation::OnSimulationEvent(const rift::Event& Event)
         FindEntity(*State,Event.target)->team==rift::Team::Enemy && FindEntity(*State,Event.target)->invisibleUntil>State->elapsed;
     const bool HiddenSource=State && Event.source && FindEntity(*State,Event.source) &&
         FindEntity(*State,Event.source)->team==rift::Team::Enemy && FindEntity(*State,Event.source)->invisibleUntil>State->elapsed;
+    if(Event.cardId=="thunderstorm" && !HiddenTarget && (Event.type=="damage" || Event.type=="shield_damage"))
+    {
+        const bool Recorded=RecentLightningHits.ContainsByPredicate([&](const rift::Event& Hit){return Hit.playId==Event.playId && Hit.target==Event.target && FMath::Abs(Hit.time-Event.time)<1.e-7;});
+        if(!Recorded){RecentLightningHits.Add(Event);if(RecentLightningHits.Num()>256)RecentLightningHits.RemoveAt(0);}
+    }
     if (Event.type=="entity_spawn")
     {
         if(Event.cardId!="mini_stampede" && Event.cardId!="stampede" && Event.cardId!="pulverizer")
@@ -1601,9 +1733,11 @@ void ARiftArenaPresentation::OnSimulationEvent(const rift::Event& Event)
     {SpawnEffect(TEXT("TowerDestroy"),Position,Event.targetTeam,(Event.targetKind==rift::EntityKind::Core?270:190)*RiftArenaGeometry::WorldScale);PlayEventSound(TEXT("tower_destroy"),Position,.8f);}
     else if (Event.type=="core_activate")
     {if (Target) Target->ActivateCore();SpawnEffect(TEXT("CoreAwaken"),Position,Event.team,180*RiftArenaGeometry::WorldScale);PlayEventSound(TEXT("core_awaken"),Position,.6f);}
+    else if(Event.type=="building_spawn")
+    {if(Source)Source->SpecialAt(TEXT("Spawn"),Event.time-.16,.60f);if(!HiddenSource)PlayEventSound(TEXT("blade_release"),Position,.28f);}
     else if (Event.type=="slow" || Event.type=="stun")
     {if (State) SynchronizeStatuses(*State);if (Event.type=="stun" && Source) Source->SpecialAt(TEXT("StunDischarge"),Event.time,.3f);
-        if (Event.cardId!="pulverizer") PlayEventSound(Event.type=="slow"?TEXT("frost_slow"):TEXT("stun"),Position,.25f);}
+        if (Event.cardId!="pulverizer" && Event.cardId!="thunderstorm") PlayEventSound(Event.type=="slow"?TEXT("frost_slow"):TEXT("stun"),Position,.25f);}
     else if (Event.type=="aura")
     {if (Source) Source->SpecialAt(TEXT("Pulse"),Event.time);if(!HiddenSource)SpawnEffect(TEXT("Aura"),Source?Source->GetActorLocation():Position,Event.team,Event.amount*RiftArenaGeometry::UnitsPerTile);PlayEventSound(TEXT("storm_pulse"),Position,.55f);}
     else if (Event.type=="hazard_tick" && State)
@@ -1619,6 +1753,13 @@ void ARiftArenaPresentation::OnSimulationEvent(const rift::Event& Event)
     {
         const auto* Card=rift::FindCard(Event.cardId);if (Card && Card->spell)
         {
+            if(Event.cardId=="thunderstorm")
+            {
+                if(Event.count>=Card->rounds)RemoveSpellCast(Event.playId);++SpellImpactEvents;RecentSpellImpacts.Add(Event);
+                if(RecentSpellImpacts.Num()>32)RecentSpellImpacts.RemoveAt(0);
+                PlayEventSound(TEXT("thunder_strike"),URiftMatchSubsystem::WorldPoint(Event.position),.48f);
+                if(State)SynchronizeExpansionEffects(*State);return;
+            }
             if(Event.cardId=="shadow_surge")
             {
                 RemoveSpellCast(Event.playId);++SpellImpactEvents;RecentSpellImpacts.Add(Event);

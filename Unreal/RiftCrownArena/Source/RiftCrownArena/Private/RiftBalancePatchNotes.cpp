@@ -68,7 +68,8 @@ bool URiftUIWidget::ApprovedPatchNotes()
         {
             bool Spell=false;Definition->TryGetBoolField(TEXT("spell"),Spell);
             FString Copy=TEXT("Targets ")+Targets(int32(Num(Definition,TEXT("targetMask"))));
-            if(Spell)Copy+=TEXT(". Troops ")+Display(Num(Definition,TEXT("damage")))+TEXT(" · structures ")+Display(Num(Definition,TEXT("towerDamage")))+
+            if(Num(Definition,TEXT("spawnInterval"))>0)Copy=Display(Num(Definition,TEXT("hp")))+TEXT(" building HP · ")+Display(Num(Definition,TEXT("lifetime")))+TEXT("s lifetime · one fighter every ")+Display(Num(Definition,TEXT("spawnInterval")))+TEXT("s.");
+            else if(Spell)Copy+=TEXT(". Troops ")+Display(Num(Definition,TEXT("damage")))+TEXT(" · structures ")+Display(Num(Definition,TEXT("towerDamage")))+
                 TEXT(" · radius ")+Display(Num(Definition,TEXT("spellRadius")))+TEXT(" tiles · impact delay ")+Display(Num(Definition,TEXT("castDelay")))+TEXT("s.");
             else
             {

@@ -333,7 +333,7 @@ struct Reader {
 #define EXPANSION_CARD_FLAGS(X) X(hardExpiry) X(shieldOverflowProtected) X(globalFriendlyInvisibility) X(breakExistingLocks)
 TSharedRef<FJsonObject> BalanceJSON() {
     auto Balance=MakeShared<FJsonObject>();
-    Balance->SetNumberField(TEXT("schema"),3);
+    Balance->SetNumberField(TEXT("schema"),4);
     Balance->SetStringField(TEXT("manifestHash"),FS(rift::CardManifestHash()));
     Balance->SetStringField(TEXT("manifestVersion"),FS(rift::CardManifestVersion()));
     TArray<TSharedPtr<FJsonValue>> Cards;
@@ -341,6 +341,8 @@ TSharedRef<FJsonObject> BalanceJSON() {
         auto C=MakeShared<FJsonObject>();C->SetStringField(TEXT("id"),FS(Card.id));C->SetStringField(TEXT("name"),FS(Card.name));C->SetBoolField(TEXT("playable"),Playable);
         C->SetNumberField(TEXT("hpDecayPerSecond"),Card.hpDecayPerSecond);
         C->SetStringField(TEXT("deathSpawnId"),FS(Card.deathSpawnId));
+        C->SetStringField(TEXT("spawnId"),FS(Card.spawnId));
+        C->SetNumberField(TEXT("spawnInterval"),Card.spawnInterval);
 #define FIELD(K) C->SetNumberField(TEXT(#K),double(Card.K));
         CARD_NUMBERS(FIELD)
         EXPANSION_CARD_NUMBERS(FIELD)
@@ -363,7 +365,7 @@ bool ReadBalance(const TSharedPtr<FJsonObject>& Recording,FRiftReplayBalanceCont
     const TSharedPtr<FJsonObject>* B=nullptr;
     if (!Recording->TryGetObjectField(TEXT("balance"),B)) return false;
     Reader R(*B);int Schema=0;std::string Hash,Version;
-    R.Number(TEXT("schema"),Schema,1,3,true);R.Text(TEXT("manifestHash"),Hash,true);R.Text(TEXT("manifestVersion"),Version,true);
+    R.Number(TEXT("schema"),Schema,1,4,true);R.Text(TEXT("manifestHash"),Hash,true);R.Text(TEXT("manifestVersion"),Version,true);
     if (Hash.size()!=64||Version.empty()||Version.size()>128) return false;
     for (char C:Hash) if (!(C>='0'&&C<='9')&&!(C>='a'&&C<='f')) return false;
     const TArray<TSharedPtr<FJsonValue>>* Cards=nullptr;
@@ -381,6 +383,8 @@ bool ReadBalance(const TSharedPtr<FJsonObject>& Recording,FRiftReplayBalanceCont
 #undef FIELD
         CR.Number(TEXT("healthCloakThreshold"),C.healthCloakThreshold,0,1,Schema>=3);
         CR.Text(TEXT("deathSpawnId"),C.deathSpawnId,Schema>=2);
+        CR.Text(TEXT("spawnId"),C.spawnId,Schema>=4);
+        CR.Number(TEXT("spawnInterval"),C.spawnInterval,0,MaxTime,Schema>=4);
 #define FIELD(K) if (!CR.O||!CR.O->HasField(TEXT(#K))) CR.Valid=false;else CR.Flag(TEXT(#K),C.K);
         CARD_FLAGS(FIELD)
 #undef FIELD
@@ -391,7 +395,8 @@ bool ReadBalance(const TSharedPtr<FJsonObject>& Recording,FRiftReplayBalanceCont
         bool SafeId=!C.id.empty()&&C.id.size()<=128;
         for (char Ch:C.id) SafeId &= (Ch>='a'&&Ch<='z')||(Ch>='0'&&Ch<='9')||Ch=='_';
         if (!CR.Valid||!SafeId||C.name.empty()||Context.Definitions.count(C.id)||
-            C.cost>10||C.count<1||C.count>100||C.rounds>1000||C.targetMask<1||C.targetMask>7||
+            C.cost>10||C.count<1||C.count>100||C.rounds>1000||C.targetMask>7||
+            (C.targetMask==0&&!(Schema>=4&&C.building&&!C.spawnId.empty()&&C.damage==0))||
             C.scale<=0||C.scale>100||C.collisionRadius>100||C.range>100||C.splash>100||C.spellRadius>100||C.auraRadius>100||
             C.moveSpeed>100||C.projectileSpeed>1000||C.shockwaveSpeed>100||
             C.attackInterval>MaxTime||C.lifetime>MaxTime||C.castDelay>10||C.slowDuration>10||C.slowPct>1||
@@ -402,6 +407,11 @@ bool ReadBalance(const TSharedPtr<FJsonObject>& Recording,FRiftReplayBalanceCont
             (C.shockwaveSpeed>0&&C.splash<=0)||(C.slowPct>0&&C.slowDuration<=0)||
             C.chargeMoveSeconds>MaxTime||C.chargedMoveSpeed>100||C.initialAttackCooldown>MaxTime||C.invisibilityDuration>10||
             C.deathSpawnCount>100||((C.deathSpawnCount>0)!=!C.deathSpawnId.empty())||
+            ((C.spawnInterval>0)!=!C.spawnId.empty())||
+            (!C.spawnId.empty()&&(Schema<4||!C.building||!C.hardExpiry||C.damage!=0||C.targetMask!=0||
+                C.spawnInterval>C.lifetime||C.lifetime/C.spawnInterval>1000))||
+            (C.id=="thunderstorm"&&(Schema<4||!C.spell||C.castDelay<=0||C.rounds<1||C.dotInterval<=0||
+                C.dotDamage>0||C.castDelay+(C.rounds-1)*C.dotInterval>10))||
             (C.hardExpiry&&!C.building)||(C.shieldHP>0&&C.spell)||
             (C.healthCloakThreshold>0&&(Schema<3||C.spell||C.building||C.invisibilityDuration<=0))||
             (C.invisibilityDuration>0&&!C.spell&&C.healthCloakThreshold<=0)||(!Playable&&C.cost!=0)) return false;
@@ -412,6 +422,10 @@ bool ReadBalance(const TSharedPtr<FJsonObject>& Recording,FRiftReplayBalanceCont
     for (const auto& Entry:Context.Definitions) if (Entry.second.deathSpawnCount>0) {
         const auto Child=Context.Definitions.find(Entry.second.deathSpawnId);
         if (Child==Context.Definitions.end()||Context.PlayableIds.Contains(FS(Child->first))||Child->second.spell||Child->second.building) return false;
+    }
+    for (const auto& Entry:Context.Definitions) if (!Entry.second.spawnId.empty()) {
+        const auto Child=Context.Definitions.find(Entry.second.spawnId);
+        if (Child==Context.Definitions.end()||Child->second.spell||Child->second.building) return false;
     }
     if (Context.PlayableIds.Num()<8) return false;
     Context.Schema=Schema;Context.HasCapturedDefinitions=true;Context.ManifestHash=FS(Hash);Context.ManifestVersion=FS(Version);
@@ -466,7 +480,7 @@ bool ReadTelemetry(const TSharedPtr<FJsonObject> &O, rift::CardTelemetry &T) {
     X(stunSource)                                                                                            \
     X(hp) X(maxHp) X(radius) X(cooldown) X(born) X(died) X(slowPct) X(slowUntil) X(stunUntil) X(forcedUntil) \
         X(chargeTime) X(auraClock) X(repathClock) X(scanClock) X(stuckClock) X(stuckTime) X(stuckDistance)   \
-            X(slowTrackedFrom) X(stunTrackedFrom) X(lane) X(bridge) X(memberCount) X(shieldHP) X(maxShieldHP) X(shieldBrokenAt) X(invisibleUntil) X(invisibilitySource) X(invisibilityPlayId) X(parentEntityId)
+            X(slowTrackedFrom) X(stunTrackedFrom) X(lane) X(bridge) X(memberCount) X(shieldHP) X(maxShieldHP) X(shieldBrokenAt) X(invisibleUntil) X(invisibilitySource) X(invisibilityPlayId) X(parentEntityId) X(spawnClock) X(periodicSpawns)
 #define EVENT_NUMBERS(X)                                                                                     \
     X(sequence)                                                                                              \
     X(time)                                                                                                  \
@@ -540,6 +554,9 @@ bool ReadEvent(const TSharedPtr<FJsonObject> &O, rift::Event &E,const FRiftRepla
             (E.until <= E.time || E.until > MaxTime + 10 ||
              (Card&&FMath::Abs(E.until - E.time - Card->castDelay) > 1e-6)))
             R.Valid = false;
+        if (Context&&Context->Schema>=4&&E.type=="spell_impact"&&
+            (E.count<1||!Card||E.count>(Card->id=="thunderstorm"?Card->rounds:1)||
+                E.until>E.time+1e-6||E.time-E.until>1./60.+1e-6)) R.Valid=false;
     }
     if (E.type == "shockwave_launch") {
         // New wave events must describe the same traveling attack as the core.
@@ -577,6 +594,29 @@ bool ReadEvent(const TSharedPtr<FJsonObject> &O, rift::Event &E,const FRiftRepla
                 FMath::Abs(E.amount-(Card->chargedMoveSpeed>0?Card->chargedMoveSpeed:Card->moveSpeed))>1e-6))R.Valid=false;
             if(E.type=="charge_spent"&&(E.target==0||FMath::Abs(E.amount-Card->chargeDamage)>1e-6))R.Valid=false;
         }
+    }
+    if (E.type=="building_spawn") {
+        if (!Context||Context->Schema<4||!Card||Card->spawnId.empty()||!E.source||!E.target||!E.playId||
+            E.count<1||E.count>FMath::FloorToInt(Card->lifetime/Card->spawnInterval+1e-7)||
+            FMath::Abs(E.until-E.time-Card->spawnInterval)>1e-6) R.Valid=false;
+        if (Context&&Context->Schema>=4) {
+            const auto* Parent=Context->Entities.Find(E.source);
+            const auto* Child=Context->Entities.Find(E.target);
+            if (!Parent||!Child||Parent->cardId!=E.cardId||Parent->team!=E.team||Parent->playId!=E.playId||
+                Child->parentEntityId!=E.source||Child->team!=E.team||Child->playId!=E.playId||
+                Child->attributionCardId!=E.cardId||(Card&&Child->cardId!=Card->spawnId)) R.Valid=false;
+        }
+    }
+    if (Context&&Context->Schema>=4&&E.type=="entity_spawn"&&E.parentEntityId) {
+        const auto* Parent=Context->Entities.Find(E.parentEntityId);
+        const auto* Child=Context->Entities.Find(E.source);
+        const auto* Definition=Parent?RecordedCard(Context,Parent->cardId):nullptr;
+        if (!Parent||!Child||!Definition||Parent->team!=E.team||Parent->playId!=E.playId||
+            E.attributionCardId!=Parent->attributionCardId||Child->parentEntityId!=E.parentEntityId||
+            Child->playId!=E.playId||Child->cardId!=E.cardId||Child->team!=E.team) R.Valid=false;
+        else if (E.reason=="periodic_spawn") {
+            if (Definition->spawnId!=E.cardId||E.count!=1||E.targetKind!=rift::EntityKind::Troop) R.Valid=false;
+        } else if (E.reason!="death_spawn"||Definition->deathSpawnId!=E.cardId||E.count!=Definition->deathSpawnCount) R.Valid=false;
     }
     return R.Valid && !E.type.empty() && E.sequence > 0 && E.time >= 0 && E.time <= MaxTime &&
            (E.cardId.empty() || E.type == "ai_decision" || KnownCard(Context,E.cardId));
@@ -780,6 +820,7 @@ TSharedRef<FJsonObject> URiftReplaySubsystem::SnapshotJSON(const rift::Snapshot 
         Point(R, TEXT("position"), C.position);
         R->SetNumberField(TEXT("born"), C.born);
         R->SetNumberField(TEXT("impactAt"), C.impactAt);
+        R->SetNumberField(TEXT("round"), C.round);
         SpellCasts.Add(MakeShared<FJsonValueObject>(R));
     }
     O->SetArrayField(TEXT("spellCasts"), SpellCasts);
@@ -899,6 +940,14 @@ static bool ReadSnapshot(const TSharedPtr<FJsonObject> &O, rift::Snapshot &State
 #define FIELD(K) T.Number(TEXT(#K), E.K);
         ENTITY_NUMBERS(FIELD)
 #undef FIELD
+        T.Number(TEXT("spawnClock"),E.spawnClock,0,MaxTime,Context&&Context->Schema>=4);
+        T.Number(TEXT("periodicSpawns"),E.periodicSpawns,0,1000,Context&&Context->Schema>=4);
+        if (const auto* Definition=RecordedCard(Context,E.cardId)) {
+            if (Definition->spawnId.empty()) {if(E.spawnClock>0||E.periodicSpawns>0)T.Valid=false;}
+            else if (E.spawnClock>Definition->spawnInterval+1e-6||
+                E.periodicSpawns*Definition->spawnInterval+E.spawnClock>
+                    FMath::Min(Definition->lifetime,FMath::Max(0.,Parsed.elapsed-E.born))+1e-6) T.Valid=false;
+        }
         if(T.O&&T.O->HasField(TEXT("playId")))EntityPlayIdsCaptured.Add(E.id);
         T.Number(TEXT("team"), E.team, 0, 1, true);
         T.Number(TEXT("kind"), E.kind, 0, 3, true);
@@ -960,7 +1009,8 @@ static bool ReadSnapshot(const TSharedPtr<FJsonObject> &O, rift::Snapshot &State
             if(Parent==Parsed.entityTelemetry[Team].end()||Parent->second.parentEntityId||Parent->second.playId!=Body.playId||
                Parent->second.attributionCardId!=Body.attributionCardId)R.Valid=false;
             const auto* Definition=RecordedCard(Context,Body.attributionCardId);
-            if(Context&&Context->Schema>=2&&(!Definition||Definition->deathSpawnId!=Body.cardId))R.Valid=false;
+            if(Context&&Context->Schema>=2&&(!Definition||
+                (Definition->deathSpawnId!=Body.cardId&&!(Context->Schema>=4&&Definition->spawnId==Body.cardId))))R.Valid=false;
         }
     }
     for(auto& Entity:Parsed.entities) {
@@ -975,6 +1025,14 @@ static bool ReadSnapshot(const TSharedPtr<FJsonObject> &O, rift::Snapshot &State
         if(Found!=Parsed.entityTelemetry[int(Entity.team)].end()&&
            (Found->second.cardId!=Entity.cardId||Found->second.parentEntityId!=Entity.parentEntityId||
             Found->second.playId!=Entity.playId||Found->second.attributionCardId!=Entity.attributionCardId))R.Valid=false;
+        if(Context&&Context->Schema>=4) {
+            const auto* Definition=RecordedCard(Context,Entity.cardId);
+            if(Definition&&!Definition->spawnId.empty()) {
+                int Count=0;
+                for(const auto& Entry:Parsed.entityTelemetry[int(Entity.team)])Count+=Entry.second.parentEntityId==Entity.id;
+                if(Count!=Entity.periodicSpawns)R.Valid=false;
+            }
+        }
     }
     if (R.List(TEXT("projectiles"), A, 10000))
         for (const auto &V : *A) {
@@ -1042,11 +1100,13 @@ static bool ReadSnapshot(const TSharedPtr<FJsonObject> &O, rift::Snapshot &State
             T.Vec(TEXT("position"), C.position, true);
             T.Number(TEXT("born"), C.born, 0, MaxTime, true);
             T.Number(TEXT("impactAt"), C.impactAt, 0, MaxTime + 10, true);
+            T.Number(TEXT("round"), C.round, 1, 1000, Context&&Context->Schema>=4);
             const auto *Card = RecordedCard(Context,C.cardId);
             if (!SpellCard(Context,C.cardId) || (Card&&Card->castDelay<=0) || CastIds.Contains(C.playId) ||
                 C.born > Parsed.elapsed + 1e-7 || C.impactAt < Parsed.elapsed - 1e-7 ||
                 C.impactAt <= C.born ||
-                (Card && FMath::Abs(C.impactAt - C.born - Card->castDelay) > 1e-6) ||
+                (Card && (C.round>(Card->id=="thunderstorm"?Card->rounds:1)||
+                    FMath::Abs(C.impactAt-C.born-Card->castDelay-(C.round-1)*Card->dotInterval)>1e-6)) ||
                 Parsed.phase == rift::Phase::Tiebreaker || Parsed.phase == rift::Phase::Finished)
                 T.Valid = false;
             CastIds.Add(C.playId);
@@ -1130,12 +1190,40 @@ bool URiftReplaySubsystem::ValidateRecording(const TSharedPtr<FJsonObject> &O, F
     }
     uint64 Sequence = 0;
     Previous = -1;
+    std::map<rift::PlayId,rift::SpellCast> RepeatedCasts;
+    std::map<rift::EntityId,int> PeriodicCounts;
+    TSet<uint64> DeadSources;
     for (const auto &V : *Events) {
         rift::Event E;
         if (!ReadEvent(Obj(V), E,&Context) || E.time < Previous || E.time > Duration + .001 ||
             E.sequence <= Sequence) {
             Error = TEXT("Replay contains invalid or out-of-order events.");
             return false;
+        }
+        if(Context.Schema>=4) {
+            const auto* Card=RecordedCard(&Context,E.cardId);
+            bool Valid=true;
+            // Sparse recordings may retain only a retired parent's identity
+            // ledger. Its actual spawn event supplies the missing birth time.
+            if(E.type=="entity_spawn"&&!E.parentEntityId)
+                if(auto* Body=Context.Entities.Find(E.source))Body->born=E.time;
+            if(E.type=="death")DeadSources.Add(E.target);
+            if(Card&&Card->id=="thunderstorm"&&E.type=="spell_cast") {
+                rift::SpellCast Cast;Cast.playId=E.playId;Cast.team=E.team;Cast.cardId=E.cardId;
+                Cast.position=E.position;Cast.born=E.time;Cast.impactAt=E.until;
+                Valid=RepeatedCasts.emplace(E.playId,Cast).second;
+            } else if(Card&&Card->id=="thunderstorm"&&E.type=="spell_impact") {
+                auto Cast=RepeatedCasts.find(E.playId);
+                Valid=Cast!=RepeatedCasts.end()&&Cast->second.round==E.count&&Cast->second.team==E.team&&
+                    FMath::Abs(Cast->second.position.x-E.position.x)<1e-6&&FMath::Abs(Cast->second.position.z-E.position.z)<1e-6&&
+                    FMath::Abs(E.until-Cast->second.born-Card->castDelay-(E.count-1)*Card->dotInterval)<1e-6;
+                if(Valid)++Cast->second.round;
+            } else if(E.type=="building_spawn") {
+                const auto* Parent=Context.Entities.Find(E.source);
+                Valid=Parent&&Card&&!DeadSources.Contains(E.source)&&E.count==++PeriodicCounts[E.source]&&
+                    E.time+1e-6>=Parent->born+E.count*Card->spawnInterval&&E.time<=Parent->born+Card->lifetime+1e-6;
+            }
+            if(!Valid){Error=TEXT("Replay storm waves or periodic spawn events contradict their captured source timeline.");return false;}
         }
         Previous = E.time;
         Sequence = E.sequence;
@@ -1223,6 +1311,11 @@ void AdvanceSnapshot(rift::Snapshot &State, double To,FRiftReplayBalanceContext*
                     const auto Decay=Context->BuildingDecayRates.find(E.cardId);
                     if (Decay!=Context->BuildingDecayRates.end()) E.hp=FMath::Max(0.,E.hp-Decay->second*Dt);
                     const auto* Definition=RecordedCard(Context,E.cardId);
+                    if(Definition&&Context->Schema>=4&&!Definition->spawnId.empty()) {
+                        const double Active=FMath::Max(0.,FMath::Min(To,E.born+Definition->lifetime)-
+                            FMath::Max(FMath::Max(State.elapsed,E.born),E.stunUntil));
+                        E.spawnClock=FMath::Min(Definition->spawnInterval,E.spawnClock+Active);
+                    }
                     if(Definition&&Context->Schema>=2&&Definition->hardExpiry&&Definition->lifetime>0&&To+1e-9>=E.born+Definition->lifetime)E.hp=0;
                 } else if (Dt>0) MissingMechanic(Context,TEXT("Legacy building HP decay between snapshots is unavailable; recorded HP and damage events remain authoritative."));
                 if(!E.cardId.empty())State.telemetry[int(E.team)][E.attributionCardId.empty()?E.cardId:E.attributionCardId].buildingLifetime+=Dt;
@@ -1325,10 +1418,18 @@ void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E,FRiftReplayBal
         C.impactAt = E.until;
         State.spellCasts.push_back(C);
     } else if (E.type == "spell_impact") {
-        State.spellCasts.erase(std::remove_if(State.spellCasts.begin(), State.spellCasts.end(),
-                                            [&](const auto &C) { return C.playId == E.playId; }),
-                              State.spellCasts.end());
+        const auto Cast=std::find_if(State.spellCasts.begin(),State.spellCasts.end(),
+            [&](const auto& C){return C.playId==E.playId;});
+        if(Cast!=State.spellCasts.end()) {
+            if(Card&&Context&&Context->Schema>=4&&Card->id=="thunderstorm"&&E.count<Card->rounds) {
+                Cast->round=E.count+1;
+                Cast->impactAt=Cast->born+Card->castDelay+(Cast->round-1)*Card->dotInterval;
+            } else State.spellCasts.erase(Cast);
+        }
         AddSpellHazard();
+    } else if (E.type=="building_spawn"&&Source) {
+        Source->spawnClock=0;
+        Source->periodicSpawns=E.count;
     } else if (E.type == "entity_spawn" && !Source) {
         rift::Entity R;
         if (Card) {

@@ -43,7 +43,7 @@ bool FRiftPulverizerTest::RunTest(const FString& Parameters)
     {AddError(TEXT("Pulverizer fixture requires isolated RiftSaveRoot/UserDir and RiftAutomationSandbox."));return false;}
     const auto* C=rift::FindCard("pulverizer");
     if(!TestNotNull(TEXT("Pulverizer exists in authoritative gameplay"),C))return false;
-    TestEqual(TEXT("Current roster includes Dart Gun"),int32(rift::Cards().size()),22);
+    TestEqual(TEXT("Current roster includes Thunderstorm and Blade Box"),int32(rift::Cards().size()),24);
     TestEqual(TEXT("Pulverizer costs three Aether"),C->cost,3);
     TestEqual(TEXT("One building per paid Pulverizer cast"),C->count,1);
     auto Stat=[&](const TCHAR* Field,double Actual,double Expected)

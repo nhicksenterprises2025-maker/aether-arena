@@ -291,6 +291,7 @@ void Match::FixedStep(double dt) {
     for (EntityId id : order) {
         if (!Running(state_.phase))
             return;
+        UpdatePeriodicSpawner(id, dt);
         UpdateEntity(id, dt);
     }
     if (!Running(state_.phase))
@@ -350,11 +351,18 @@ void Match::FixedStep(double dt) {
         const Card *card = FindCard(cast.cardId);
         if (!card)
             continue;
+        if (card->id == "thunderstorm" && cast.round < card->rounds) {
+            SpellCast next = cast;
+            ++next.round;
+            next.impactAt = next.born + card->castDelay + (next.round - 1) * card->dotInterval;
+            state_.spellCasts.push_back(next);
+        }
         auto &event = Emit("spell_impact", cast.team);
         event.playId = cast.playId;
         event.cardId = cast.cardId;
         event.position = cast.position;
         event.until = cast.impactAt;
+        event.count = cast.round;
         ApplySpell(cast.team, *card, cast.position, cast.playId);
         if (!Running(state_.phase))
             return;
@@ -773,7 +781,8 @@ void Match::ApplySpell(Team team, const Card &c, Vec2 p, PlayId play) {
         if (!e.dead && e.team != team) {
             if (c.dotDamage > 0 && c.dotStructureDamage <= 0 && Structure(e))
                 continue;
-            const double padding = c.id == "bullet_burst" ? (Structure(e) ? e.radius * .25 : e.radius * .2)
+            const double padding = c.id == "thunderstorm" ? 0
+                                   : c.id == "bullet_burst" ? (Structure(e) ? e.radius * .25 : e.radius * .2)
                                    : c.dotDamage > 0      ? e.radius * .2
                                    : Structure(e)         ? e.radius * .4
                                                           : 0;
@@ -785,6 +794,22 @@ void Match::ApplySpell(Team team, const Card &c, Vec2 p, PlayId play) {
         Damage(id, e && Structure(*e) ? c.towerDamage : c.damage, team, c.id, play, 0, "initial");
         if (!Running(state_.phase))
             return;
+        auto *survivor = Get(id);
+        if (survivor && !survivor->dead && c.stunDuration > 0) {
+            survivor->stunUntil = std::max(survivor->stunUntil, state_.elapsed + c.stunDuration);
+            survivor->stunSource = play;
+            if (survivor->stunTrackedFrom < 0) survivor->stunTrackedFrom = state_.elapsed;
+            statusCredits_[play] = {team, c.id, 0};
+            ++state_.telemetry[Index(team)][c.id].stunned;
+            auto &stun = Emit("stun", team);
+            stun.target = id;
+            stun.targetTeam = survivor->team;
+            stun.targetKind = survivor->kind;
+            stun.position = survivor->position;
+            stun.playId = play;
+            stun.cardId = c.id;
+            stun.until = survivor->stunUntil;
+        }
     }
     if (c.invisibilityDuration > 0)
         ApplyInvisibility(team, c, p, play);
@@ -1035,15 +1060,19 @@ void Match::SetAether(Team team, double value) {
     e.sandbox = true;
 }
 void Match::SpawnDeathChildren(const Entity &parent, const Card &definition) {
-    const Card *child = FindEntityDefinition(definition.deathSpawnId);
-    if (!child || child->spell || child->building || definition.deathSpawnCount <= 0)
-        return;
+    SpawnChildren(parent, definition.deathSpawnId, definition.deathSpawnCount, parent.position, "death_spawn");
+}
+std::vector<EntityId> Match::SpawnChildren(const Entity &parent, const std::string &childId, int count,
+                                          Vec2 point, const std::string &reason, bool reportBlocked) {
+    const Card *child = FindEntityDefinition(childId);
+    if (!child || child->spell || child->building || count <= 0)
+        return {};
     std::vector<Entity> planned;
-    planned.reserve(static_cast<std::size_t>(definition.deathSpawnCount));
-    const int columns = static_cast<int>(std::ceil(std::sqrt(static_cast<double>(definition.deathSpawnCount))));
-    const int rows = (definition.deathSpawnCount + columns - 1) / columns;
+    planned.reserve(static_cast<std::size_t>(count));
+    const int columns = static_cast<int>(std::ceil(std::sqrt(static_cast<double>(count))));
+    const int rows = (count + columns - 1) / columns;
     const double pitch = 2 * child->collisionRadius + .06;
-    for (int n = 0; n < definition.deathSpawnCount; ++n) {
+    for (int n = 0; n < count; ++n) {
         Entity body;
         body.id = nextEntity_ + static_cast<EntityId>(n);
         body.parentEntityId = parent.id;
@@ -1058,22 +1087,25 @@ void Match::SpawnDeathChildren(const Entity &parent, const Card &definition) {
         body.hp = body.maxHp = child->hp;
         body.shieldHP = body.maxShieldHP = child->shieldHP;
         body.born = state_.elapsed;
-        body.memberCount = definition.deathSpawnCount;
+        body.memberCount = count;
         body.cooldown = child->initialAttackCooldown;
-        const Vec2 requested{parent.position.x + (n % columns - (columns - 1) * .5) * pitch,
-                             parent.position.z + (n / columns - (rows - 1) * .5) * pitch};
+        const Vec2 requested{point.x + (n % columns - (columns - 1) * .5) * pitch,
+                             point.z + (n / columns - (rows - 1) * .5) * pitch};
         if (!ResolveBodyPlacement(requested, body, false, planned, body.position)) {
-            auto &failure = Emit("death_spawn_blocked", parent.team);
-            failure.source = parent.id;
-            failure.playId = parent.playId;
-            failure.cardId = parent.cardId;
-            failure.count = definition.deathSpawnCount;
-            return; // Never insert an overlapping or partially paid formation.
+            if (reportBlocked) {
+                auto &failure = Emit(reason + "_blocked", parent.team);
+                failure.source = parent.id;
+                failure.playId = parent.playId;
+                failure.cardId = parent.cardId;
+                failure.count = count;
+            }
+            return {}; // Never insert an overlapping or partial formation.
         }
         body.lane = body.position.x < 0 ? -1 : 1;
         body.stuckPosition = body.position;
         planned.push_back(body);
     }
+    std::vector<EntityId> children;
     for (const auto &body : planned) {
         ++nextEntity_;
         state_.entities.push_back(body);
@@ -1096,11 +1128,45 @@ void Match::SpawnDeathChildren(const Entity &parent, const Card &definition) {
         event.targetKind = body.kind;
         event.hp = event.maxHp = body.hp;
         event.shieldHP = event.maxShieldHP = body.shieldHP;
-        event.count = definition.deathSpawnCount;
-        event.reason = "death_spawn";
+        event.count = count;
+        event.reason = reason;
+        children.push_back(body.id);
     }
     for (const auto &body : planned)
         PullDeployment(body.id);
+    return children;
+}
+void Match::UpdatePeriodicSpawner(EntityId id, double dt) {
+    Entity *body = Get(id);
+    if (!body || body->dead || body->kind != EntityKind::Building) return;
+    const Card *card = FindCard(body->cardId);
+    if (!card || card->spawnId.empty() || card->spawnInterval <= 0) return;
+    const Card *child = FindEntityDefinition(card->spawnId);
+    if (!child) return;
+    const double expires = body->born + card->lifetime;
+    if (card->hardExpiry && state_.elapsed > expires + Epsilon) return;
+    const double from = std::max(state_.elapsed - dt, body->born);
+    const double until = card->hardExpiry ? std::min(state_.elapsed, expires) : state_.elapsed;
+    const bool firstAttempt = body->spawnClock + Epsilon < card->spawnInterval;
+    body->spawnClock = std::min(card->spawnInterval, body->spawnClock +
+        std::max(0., until - std::max(from, body->stunUntil)));
+    if (body->spawnClock + Epsilon < card->spawnInterval || state_.elapsed + Epsilon < body->stunUntil) return;
+    const Entity parent = *body; // Child insertion can reallocate every entity.
+    const Vec2 exit{parent.position.x, parent.position.z - Sign(parent.team) *
+        (parent.radius + child->collisionRadius + .24)};
+    const auto children = SpawnChildren(parent, card->spawnId, 1, exit, "periodic_spawn", firstAttempt);
+    if (children.empty()) return; // Hold one ready child; never overlap bodies or catch up in a burst.
+    body = Get(id);
+    body->spawnClock = 0;
+    ++body->periodicSpawns;
+    auto &event = Emit("building_spawn", parent.team);
+    event.source = id;
+    event.target = children.front();
+    event.playId = parent.playId;
+    event.cardId = parent.cardId;
+    event.position = parent.position;
+    event.count = body->periodicSpawns;
+    event.until = state_.elapsed + card->spawnInterval;
 }
 void Match::ApplyInvisibility(Team team, const Card &card, Vec2 point, PlayId play) {
     std::vector<EntityId> cloaked;
@@ -1208,6 +1274,7 @@ bool Match::SetAIStyle(Team team, const std::string &style) {
     return true;
 }
 std::uint8_t TargetMaskFor(const Card &c) {
+    if (c.building && !c.spawnId.empty() && c.damage <= 0) return 0;
     if (c.targetMask)
         return c.targetMask;
     if (c.spell)

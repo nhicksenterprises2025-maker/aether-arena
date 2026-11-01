@@ -131,13 +131,24 @@ bool FRiftCloakSourceEffectsIntegrationTest::RunTest(const FString& Parameters)
             const FVector ReleaseOrigin=FirstFrost->AttackLocation();
             const int32 SourcePuffsBefore=CloakSystemAt(Visible,TEXT(".NS_RiftFrost"),ReleaseOrigin);
             TestEqual(TEXT("Visible release creates a real effect at the source's exact mouth anchor"),SourcePuffsBefore,1);
-            Advance(.35);
+            // The longer cast permits legitimate visible idle breathing. The
+            // diagnostic is cumulative, so preserve that pre-cloak baseline.
+            Advance(Shadow->castDelay-2./60.);
+            TestFalse(TEXT("Breath baseline is sampled before real cloak activation"),FirstFrost->HiddenFromViewer());
+            const auto BeforeCloak=CloakDiagnostics(Arena);
+            if(!TestTrue(TEXT("Visible breathing baseline diagnostics parse"),BeforeCloak.IsValid()))return false;
+            const int32 VisibleIdlePuffs=int32(BeforeCloak->GetNumberField(TEXT("frostBreathPuffs")));
+            Advance(2./60.);
             auto* Frost=Arena->Visual(SourceId);
             if(!TestNotNull(TEXT("Real Frost model remains present while cloaked"),Frost))return false;
+            // Activation can coincide with the next release; sample the actual
+            // idle gap after its authored attack, while the cloak remains live.
+            const int32 IdleFrames=int32(FMath::CeilToInt(rift::FindCard(SourceCard)->attackInterval*60.));
+            for(int32 Frame=0;Frame<IdleFrames&&Frost->CurrentAnimation()!=TEXT("Breath");++Frame)Step();
             TestTrue(TEXT("A genuinely stationary Frost reaches its actual idle Breath while hidden"),Frost->HiddenFromViewer()&&Frost->CurrentAnimation()==TEXT("Breath"));
             auto Idle=CloakDiagnostics(Arena);
             if(!TestTrue(TEXT("Idle cloak diagnostics parse"),Idle.IsValid()))return false;
-            TestEqual(TEXT("Hidden idle Frost never emits its mouth-location ambience"),int32(Idle->GetNumberField(TEXT("frostBreathPuffs"))),0);
+            TestEqual(TEXT("Hidden idle Frost adds no mouth-location ambience to visible puffs"),int32(Idle->GetNumberField(TEXT("frostBreathPuffs"))),VisibleIdlePuffs);
             const int32 BeforeAttack=CloakSystemCount(Idle,TEXT(".NS_RiftFrost"));
             bool HiddenAttack=false;double HiddenDamage=0;
             for(int32 Frame=0;Frame<45&&!HiddenAttack;++Frame)
@@ -151,12 +162,14 @@ bool FRiftCloakSourceEffectsIntegrationTest::RunTest(const FString& Parameters)
             }
             TestTrue(TEXT("Actual cloaked Frost still releases and damages its visible victim"),HiddenAttack&&HiddenDamage==rift::FindCard(SourceCard)->damage);
             const auto HiddenRelease=CloakDiagnostics(Arena);
+            TestEqual(TEXT("Breathing remains suppressed throughout the hidden release"),int32(HiddenRelease->GetNumberField(TEXT("frostBreathPuffs"))),VisibleIdlePuffs);
             TestEqual(TEXT("Hidden Frost release creates only the legitimate visible-victim contact effect"),CloakSystemCount(HiddenRelease,TEXT(".NS_RiftFrost"))-BeforeAttack,1);
             TestTrue(TEXT("Stationary releases use the same actual mouth position"),Frost->AttackLocation().Equals(ReleaseOrigin,.1));
             TestEqual(TEXT("Hidden release creates no new particles at that mouth position"),CloakSystemAt(HiddenRelease,TEXT(".NS_RiftFrost"),ReleaseOrigin),SourcePuffsBefore);
             TestEqual(TEXT("Cloak expiry ribbons cannot appear before the actual expiry event"),CloakSurfaceCount(CloakDiagnostics(Arena),TEXT("CloakExpiryEdge")),0);
             bool Expired=false;double ExpiryTime=-1;
-            for(int32 Frame=0;Frame<90&&!Expired;++Frame)
+            const int32 ExpiryFrames=int32(FMath::CeilToInt(Shadow->invisibilityDuration*60.))+2;
+            for(int32 Frame=0;Frame<ExpiryFrames&&!Expired;++Frame)
             {
                 Step();
                 for(const auto& Event:LastEvents)if(Event.type=="invisibility_expire"&&Event.target==SourceId)
@@ -216,7 +229,9 @@ bool FRiftCloakSourceEffectsIntegrationTest::RunTest(const FString& Parameters)
         {
             Advance(.05);
             TestEqual(TEXT("Visible Storm pulse is a positive control for the authored aura"),CloakSystemCount(CloakDiagnostics(Arena),TEXT(".NS_RiftAura")),1);
-            CloakFixtureBody(Simulation,SourceId)->auraClock=rift::FindCard(SourceCard)->auraInterval-.40;
+            // Schedule the next real pulse just after this card's canonical
+            // cast delay, not at the obsolete .40-second fixture offset.
+            CloakFixtureBody(Simulation,SourceId)->auraClock=rift::FindCard(SourceCard)->auraInterval-(Shadow->castDelay+.05);
             if(!TestTrue(TEXT("Real Shadow cast is accepted beside Storm Raven"),Simulation.Spawn(rift::Team::Enemy,"shadow_surge",SourcePosition)))return false;
             Forward();Advance(Shadow->castDelay);
             auto* Raven=Arena->Visual(SourceId);

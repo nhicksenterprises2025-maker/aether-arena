@@ -1,0 +1,26 @@
+Card	Ability	Values	Behavior
+Twin Blades	Split formation	2 members	Lane comes from each member's resolved landing X; ground members use that side's bridge; a destroyed lane Guard opens the route to the Core
+Rambeast	Charged impact	302 TOTAL damage; >1.5 s accumulated movement; movement 2 normal / 3.2 charged tiles/s	Replaces basic hit damage; never an additive bonus
+Vampire Bats	Split formation	5 members	Lane comes from each member's resolved landing X; ground members use that side's bridge; a destroyed lane Guard opens the route to the Core
+Frost Fang	Movement slow	30%; 2 s	Each melee hit refreshes the slow; no stacking
+Storm Raven	Electric aura	82 damage; 3 s interval; 2 tile radius; 0.4 s stun	Hits ground and air troops; basic attack remains structures-only
+Meteor Shards	Lingering damage zone	Troops 40 / structures 15 damage per tick; 1 s interval; 5 s duration	5 ticks after initial impact while inside the zone; troop maximum 462; structure maximum 218 where eligible; separate damage packets, before mitigation/HP limits
+Meteor Shards	Area spell	262 troop damage; 143 structure damage; 4.5 tile radius; 0.75 s cast delay	Fixed target area; current enemy positions at impact
+Archer Tower	Defensive building	25 s maximum lifetime; 1.65 tile footprint; 25 HP/s decay; 0.35 s first cooldown; expires at maximum lifetime even if HP remains	Ground troops, Air troops
+Bullet Burst	Area spell	175 troop damage; 55 structure damage; 2.5 tile radius; 0.3 s cast delay	Fixed target area; current enemy positions at impact
+Bullet Burst	Visual burst	7 rounds	Listed damage is applied once per eligible target, not once per visual round
+Nova Flask	Area spell	375 troop damage; 185 structure damage; 3 tile radius; 0.85 s cast delay	Fixed target area; current enemy positions at impact
+Mini Stampede	Split formation	5 members	Lane comes from each member's resolved landing X; ground members use that side's bridge; a destroyed lane Guard opens the route to the Core
+Stampede	Split formation	15 members	Lane comes from each member's resolved landing X; ground members use that side's bridge; a destroyed lane Guard opens the route to the Core
+Pulverizer	Expanding shockwave	65 damage/target; 0.9 s interval; 4 tile radius; 8 tiles/s; 0.5 s to outer edge	Ground troops; one hit per target per wave as its front arrives
+Pulverizer	Movement slow	10%; 1.5 s	Each shockwave hit refreshes the slow; no stacking; stronger slows retain their own expiry
+Pulverizer	Defensive building	45 s maximum lifetime; 1.65 tile footprint; 15.5555556 HP/s decay; 0.35 s first cooldown; no separate hard-expiry rule	Ground troops
+Bone Warden	Death summons	4 × bone_warden_skeleton	Exactly one death transition; children cost zero Aether and occupy no additional hand/deck slots; contribution credited to parent
+Aether Reaper	Invisibility	1 simulation s	Once per deployment, this troop survives damage leaving it at or below 50% maximum HP; existing enemy locks drop; new enemy acquisition is prevented; committed hits, in-flight projectiles and area spells still resolve; no damage immunity
+Iron Giant	Separate shield	1000 body HP + 310 shield HP	Each damage packet consumes shield first; a protected shield-breaking packet discards its overflow. The next packet can hit body HP; no regeneration
+Shadow Surge	Area spell	100 troop damage; 50 structure damage; 2 tile radius; 0.75 s cast delay	Fixed target area; current enemy positions at impact
+Shadow Surge	Invisibility	2 simulation s	Friendly troops inside the spell area at impact; existing enemy locks drop; new enemy acquisition is prevented; committed hits, in-flight projectiles and area spells still resolve; no damage immunity
+Thunderstorm	Area spell	65 troop damage; 33 structure damage; 3 tile radius; 0.45 s cast delay	Fixed target area; current enemy positions at impact
+Thunderstorm	Lightning waves	3 strikes; 0.45 s first impact; 0.45 s between strikes; 0.25 s stun each	Current enemy positions tested at each wave; ground, air and structures; maximum 195 troop or 99 structure damage. Stun refreshes without stacking
+Blade Box	Periodic reinforcements	1 Twin Blades member every 3 s; first spawn 3 s; up to 10 before expiry	Uses current troop stats and one member per spawn. Stun pauses production; hard lifetime continues; destruction stops production. Children retain parent play attribution and cost no extra Aether or deck slot
+Blade Box	Defensive building	30 s maximum lifetime; 1.65 tile footprint; 0 HP/s decay; 0 s first cooldown; expires at maximum lifetime even if HP remains	None (summons troops)

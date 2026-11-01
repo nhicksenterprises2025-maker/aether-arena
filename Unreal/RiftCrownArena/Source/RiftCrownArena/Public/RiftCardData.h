@@ -56,6 +56,8 @@ public:
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float ShieldHP=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) FString DeathSpawnId;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) int32 DeathSpawnCount=0;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) FString SpawnId;
+    UPROPERTY(EditAnywhere,BlueprintReadOnly) float SpawnInterval=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float InvisibilityDuration=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) float HealthCloakThreshold=0;
     UPROPERTY(EditAnywhere,BlueprintReadOnly) bool HardExpiry=false;

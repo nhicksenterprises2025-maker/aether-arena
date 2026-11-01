@@ -36,14 +36,16 @@ const FBalanceCard ExpectedCards[] = {
     {"archer_tower",4,1,850,75,.9,0,7,1,18,0,25,1.65,false,true,false,false,true,75/.9},
     {"bullet_burst",2,1,0,175,0,0,0,1,0,0,0,0,false,false,false,true,false,0},
     {"nova_flask",4,1,0,375,0,0,0,1,0,0,0,0,false,false,false,true,false,0},
-    {"mini_stampede",2,5,111,20,.9,3.5,1,1.3,0,0,0,0,false,false,false,false,false,20/.9},
-    {"stampede",7,15,111,20,1,3,.8,.90,0,0,0,0,false,false,true,false,false,20},
+    {"mini_stampede",4,5,133.2,24,.9,3.5,1,1.3,0,0,0,0,false,false,false,false,false,24/.9},
+    {"stampede",7,15,133.2,24,1,3,.8,.90,0,0,0,0,false,false,true,false,false,24},
     {"pulverizer",3,1,700,65,.9,0,4,1.05,0,4,45,1.65,false,false,false,false,true,65/.9},
     {"bone_warden",6,1,1526,101,1.5,1,1.75,1.65,0,.5,0,0,false,false,false,false,false,101/1.5},
     {"aether_reaper",4,1,445,95,1.05,1.85,1.4,1.35,0,1.5,0,0,true,true,false,false,false,95/1.05},
     {"iron_giant",3,1,1000,85,1.3,1.55,1.35,1.65,0,0,0,0,false,false,true,false,false,85/1.3},
     {"shadow_surge",3,1,0,100,0,0,0,1,0,0,0,0,false,true,false,true,false,0},
-    {"dart_gun",3,1,420,50,.4,1.5,8.5,1.05,22,0,0,0,false,true,false,false,false,125}
+    {"dart_gun",3,1,420,50,.4,1.5,8.5,1.05,22,0,0,0,false,true,false,false,false,125},
+    {"thunderstorm",3,1,0,65,0,0,0,1,0,0,0,0,false,false,false,true,false,0},
+    {"blade_box",5,1,500,0,3,0,0,1,0,0,30,1.65,false,false,false,false,true,0}
 };
 }
 
@@ -153,6 +155,7 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
         CHECK_IMPORTED(InitialAttackCooldown,initialAttackCooldown);CHECK_IMPORTED(ShieldHP,shieldHP);
         CHECK_IMPORTED(InvisibilityDuration,invisibilityDuration);CHECK_IMPORTED(DotStructureDamage,dotStructureDamage);
         CHECK_IMPORTED(HealthCloakThreshold,healthCloakThreshold);
+        CHECK_IMPORTED(SpawnInterval,spawnInterval);
 #undef CHECK_IMPORTED
         Imported(TEXT("FrontSight"),A->FrontSight,C->projectileSpeed>0?FMath::Max(8.,C->range):8.);Imported(TEXT("RearSight"),A->RearSight,5);
         TestEqual(*(Id+TEXT(" imported visual round count")),A->Rounds,C->rounds);
@@ -164,6 +167,7 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
         TestEqual(*(Id+TEXT(" imported target mask")),A->TargetMask,int32(C->targetMask));
         TestEqual(*(Id+TEXT(" imported child count")),A->DeathSpawnCount,C->deathSpawnCount);
         TestEqual(*(Id+TEXT(" imported child definition")),A->DeathSpawnId,FString(UTF8_TO_TCHAR(C->deathSpawnId.c_str())));
+        TestEqual(*(Id+TEXT(" imported periodic child definition")),A->SpawnId,FString(UTF8_TO_TCHAR(C->spawnId.c_str())));
         TestEqual(*(Id+TEXT(" imported hard expiry")),A->HardExpiry,C->hardExpiry);
         TestEqual(*(Id+TEXT(" imported protected shield overflow")),A->ShieldOverflowProtected,C->shieldOverflowProtected);
         TestEqual(*(Id+TEXT(" imported cloak scope")),A->GlobalFriendlyInvisibility,C->globalFriendlyInvisibility);
@@ -186,28 +190,31 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
         Ability(TEXT("aura damage"),C.auraDamage,C.id=="storm_raven"?82:0);
         Ability(TEXT("aura interval"),C.auraInterval,C.id=="storm_raven"?3:0);
         Ability(TEXT("aura radius"),C.auraRadius,C.id=="storm_raven"?2:0);
-        Ability(TEXT("stun duration"),C.stunDuration,C.id=="storm_raven"?.4:0);
+        Ability(TEXT("stun duration"),C.stunDuration,C.id=="storm_raven"?.4:C.id=="thunderstorm"?.25:0);
         Ability(TEXT("DOT damage"),C.dotDamage,C.id=="meteor_shards"?40:0);
         Ability(TEXT("DOT duration"),C.dotDuration,C.id=="meteor_shards"?5:0);
-        Ability(TEXT("DOT interval"),C.dotInterval,C.id=="meteor_shards"?1:0);
+        Ability(TEXT("DOT or wave interval"),C.dotInterval,C.id=="meteor_shards"?1:C.id=="thunderstorm"?.45:0);
         Ability(TEXT("structure DOT damage"),C.dotStructureDamage,C.id=="meteor_shards"?15:0);
         Ability(TEXT("charge movement threshold"),C.chargeMoveSeconds,C.id=="rambeast"?1.5:0);
         Ability(TEXT("charged movement speed"),C.chargedMoveSpeed,C.id=="rambeast"?3.2:0);
         Ability(TEXT("explicit Archer decay"),C.hpDecayPerSecond,C.id=="archer_tower"?25:0);
         Ability(TEXT("initial attack cooldown"),C.initialAttackCooldown,C.id=="archer_tower"?.35:0);
         Ability(TEXT("initial Giant shield"),C.shieldHP,C.id=="iron_giant"?310:0);
-        Ability(TEXT("local cloak duration"),C.invisibilityDuration,C.id=="shadow_surge"||C.id=="aether_reaper"?1:0);
-        TestEqual(*(Id+TEXT(" hard expiry policy")),C.hardExpiry,C.id=="archer_tower");
+        Ability(TEXT("local cloak duration"),C.invisibilityDuration,C.id=="shadow_surge"?2:C.id=="aether_reaper"?1:0);
+        TestEqual(*(Id+TEXT(" hard expiry policy")),C.hardExpiry,C.id=="archer_tower"||C.id=="blade_box");
         TestEqual(*(Id+TEXT(" shield overflow policy")),C.shieldOverflowProtected,C.id=="iron_giant");
         TestFalse(*(Id+TEXT(" cloak is local rather than global")),C.globalFriendlyInvisibility);
         TestEqual(*(Id+TEXT(" cloak drops enemy locks")),C.breakExistingLocks,C.id=="shadow_surge"||C.id=="aether_reaper");
         TestEqual(*(Id+TEXT(" child count")),C.deathSpawnCount,C.id=="bone_warden"?4:0);
         TestEqual(*(Id+TEXT(" child subordinate id")),FString(UTF8_TO_TCHAR(C.deathSpawnId.c_str())),
                   C.id=="bone_warden"?FString(TEXT("bone_warden_skeleton")):FString());
-        Ability(TEXT("spell delay"),C.castDelay,C.id=="meteor_shards"?.75:C.id=="bullet_burst"?.30:C.id=="nova_flask"?.85:C.id=="shadow_surge"?.25:0);
-        Ability(TEXT("spell radius"),C.spellRadius,C.id=="meteor_shards"?4.5:C.id=="bullet_burst"?2.5:C.id=="nova_flask"?3:C.id=="shadow_surge"?2:0);
-        Ability(TEXT("spell structure damage"),C.towerDamage,C.id=="meteor_shards"?143:C.id=="bullet_burst"?55:C.id=="nova_flask"?185:C.id=="shadow_surge"?50:0);
-        TestEqual(*(Id+TEXT(" preserves Bullet Burst's seven visual rounds")),C.rounds,C.id=="bullet_burst"?7:0);
+        Ability(TEXT("spell delay"),C.castDelay,C.id=="meteor_shards"?.75:C.id=="bullet_burst"?.30:C.id=="nova_flask"?.85:C.id=="shadow_surge"?.75:C.id=="thunderstorm"?.45:0);
+        Ability(TEXT("spell radius"),C.spellRadius,C.id=="meteor_shards"?4.5:C.id=="bullet_burst"?2.5:C.id=="nova_flask"||C.id=="thunderstorm"?3:C.id=="shadow_surge"?2:0);
+        Ability(TEXT("spell structure damage"),C.towerDamage,C.id=="meteor_shards"?143:C.id=="bullet_burst"?55:C.id=="nova_flask"?185:C.id=="shadow_surge"?50:C.id=="thunderstorm"?33:0);
+        TestEqual(*(Id+TEXT(" visual rounds or authoritative storm waves")),C.rounds,C.id=="bullet_burst"?7:C.id=="thunderstorm"?3:0);
+        Ability(TEXT("periodic spawn interval"),C.spawnInterval,C.id=="blade_box"?3:0);
+        TestEqual(*(Id+TEXT(" periodic child definition")),FString(UTF8_TO_TCHAR(C.spawnId.c_str())),
+                  C.id=="blade_box"?FString(TEXT("twin_blades")):FString());
     }
 
     // Both swarms use ordinary paid deployment and member-based telemetry,
@@ -226,7 +233,7 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
         int Members=0;
         for(const auto& E:M.State().entities)if(E.cardId==Hog)
         {
-            ++Members;TestEqual(*(Id+TEXT(" each live member receives patched HP")),E.hp,111.);
+            ++Members;TestEqual(*(Id+TEXT(" each live member receives patched HP")),E.hp,133.2);
             TestEqual(*(Id+TEXT(" each member records complete cast size")),E.memberCount,C->count);
         }
         TestEqual(*(Id+TEXT(" spawns the full requested swarm")),Members,C->count);
@@ -284,7 +291,7 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
     }
     TestTrue(TEXT("Mini Stampede is actually selected by AI and Meta generated-deck policy"),MiniAppearances>0);
     TestTrue(TEXT("Stampede is actually selected by AI and Meta generated-deck policy"),StampedeAppearances>0);
-    AddInfo(TEXT("Retained balance contract: six aligned tower bodies, exact stats/abilities/imports for all twenty-two approved cards, zero new wave attacks on existing cards, paid hog counts/costs/targets, derived DPS and current-roster replay telemetry verified. Pulverizer has a separate focused contract."));
+    AddInfo(TEXT("Retained balance contract: six aligned tower bodies, exact stats/abilities/imports for all twenty-four approved cards, zero new wave attacks on existing cards, paid hog counts/costs/targets, derived DPS and current-roster replay telemetry verified. Pulverizer has a separate focused contract."));
     return !HasAnyErrors();
 }
 #endif

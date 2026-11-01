@@ -304,6 +304,9 @@ void Match::UpdateAI(Team team, double dt) {
                                 potential += damage;
                             };
                             packet(v.kind == EntityKind::Troop ? choice.card->damage : choice.card->towerDamage);
+                            if(choice.card->id=="thunderstorm")
+                                for(int wave=1;wave<choice.card->rounds;++wave)
+                                    packet(v.kind == EntityKind::Troop ? choice.card->damage : choice.card->towerDamage);
                             if (choice.card->dotInterval > 0)
                                 for (int tick = 0; tick < static_cast<int>(choice.card->dotDuration * .72 /
                                                                          choice.card->dotInterval); ++tick)
@@ -334,7 +337,8 @@ void Match::UpdateAI(Team team, double dt) {
                 for (auto ch : available)
                     if (ch.card->spell && ch.card->towerDamage > 0 && CanHit(*ch.card, *weak) &&
                         (!best.card ||
-                         ch.card->towerDamage / ch.card->cost > best.card->towerDamage / best.card->cost))
+                         ch.card->towerDamage * (ch.card->id=="thunderstorm"?ch.card->rounds:1) / ch.card->cost >
+                         best.card->towerDamage * (best.card->id=="thunderstorm"?best.card->rounds:1) / best.card->cost))
                         best = ch;
                 if (best.card && AIPlay(team, best.index, weak->position, "spell_cycle")) {
                     ai.lastSpell = state_.elapsed;

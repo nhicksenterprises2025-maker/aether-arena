@@ -81,7 +81,8 @@ double SpellBodyDamage(const Card &spell, const Card &victim, double dwell, doub
         }
         body += damage;
     };
-    packet(victim.building ? spell.towerDamage : spell.damage);
+    const int waves = spell.id == "thunderstorm" ? std::min(spell.rounds, 1 + static_cast<int>(std::floor(dwell / spell.dotInterval + 1e-9))) : 1;
+    for (int wave=0; wave<waves; ++wave) packet(victim.building ? spell.towerDamage : spell.damage);
     const double tick = victim.building ? spell.dotStructureDamage : spell.dotDamage;
     if (spell.dotInterval > 0)
         for (int n = 0; n < static_cast<int>(std::floor(dwell / spell.dotInterval + 1e-9)); ++n)
@@ -155,11 +156,19 @@ std::string DeckStyle(const std::string &requested) {
 } // namespace
 
 double CounterScore(const Card &d, const Card &t) {
+    if (!d.spawnId.empty()) {
+        const auto *definition = FindEntityDefinition(d.spawnId);
+        if (!definition || t.spell) return 0;
+        Card child = *definition;child.count=1;child.cost=d.cost;
+        // Value an early reinforcement, not all lifetime spawns as an immediate swarm.
+        return Round(CounterScore(child,t) * .75 + (t.structuresOnly ? 16 : 0));
+    }
     if (t.spell || (!Direct(d, t) && !(d.auraDamage > 0 && Troop(t))))
         return 0;
     double result = 0;
     if (d.spell) {
-        const double dwell = std::min(d.dotDuration, 2 * d.spellRadius / std::max(.5, t.moveSpeed));
+        const double duration = d.id == "thunderstorm" ? (d.rounds-1)*d.dotInterval : d.dotDuration;
+        const double dwell = std::min(duration, 2 * d.spellRadius / std::max(.5, t.moveSpeed));
         double shieldDamage = 0;
         const double damage = SpellBodyDamage(d, t, dwell, &shieldDamage);
         result = Clamp((damage + shieldDamage) / std::max(1., t.hp + t.shieldHP)) * 57 + (damage >= t.hp ? 23 : 0) +
@@ -362,7 +371,11 @@ CardIntelligence IntelligenceFor(const std::string &id) {
         return intel;
     const auto &c = *card;
     intel.id = id;
-    if (c.spell)
+    if (!c.spawnId.empty())
+        intel.role = "Steady ground reinforcements and defensive pull";
+    else if (c.id == "thunderstorm")
+        intel.role = "Three-wave area damage and stun";
+    else if (c.spell)
         intel.role = c.dotDamage > 0       ? "Area denial spell"
                      : c.cost <= P().cheap ? "Cheap swarm-clear spell"
                                            : "Heavy area damage spell";
@@ -395,6 +408,7 @@ CardIntelligence IntelligenceFor(const std::string &id) {
     auto &uses = intel.suggestedUses;
     if (c.spell) {
         uses.emplace_back("Aim at clustered enemies to trade against several units.");
+        if(c.id=="thunderstorm")uses.emplace_back("Lead the first strike by 0.45 seconds. Each of three waves hits current targets inside the fixed area and briefly stuns survivors.");
         if (c.dotDamage > 0)
             uses.emplace_back("Cover a committed push or slow troops so they remain inside the zone.");
         uses.emplace_back(c.towerDamage > 0
@@ -409,7 +423,9 @@ CardIntelligence IntelligenceFor(const std::string &id) {
             uses.emplace_back("The first surviving hit at half health gives one second of invisibility. Launched attacks and spells still hit; this is a one-time lock break, not damage immunity.");
         if (c.structuresOnly)
             uses.emplace_back("Stage a push with troop support and spell coverage for defenders.");
-        if (c.building)
+        if (!c.spawnId.empty())
+            uses.emplace_back("Protect the building to gain one Twin Blade every three seconds. Destruction ends production; stun pauses it while the thirty-second lifetime continues.");
+        else if (c.building)
             uses.emplace_back("Place centrally to pull structure attackers and cover a threatened lane.");
         if (Troop(c) && c.range >= P().range && !c.structuresOnly)
             uses.emplace_back("Deploy behind a durable frontline and preserve surviving ranged damage.");

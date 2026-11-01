@@ -6,4 +6,4 @@ inline constexpr double RiverHalfWidth = 1.65, BridgeCenterX = 7.76, BridgeWidth
 inline constexpr double CoreDepth = 16.84, GuardDepth = 13.72, GuardX = 6.76;
 inline constexpr double DeploymentMaxX = HalfWidth - 1.8;
 inline constexpr double PocketOuterX = HalfWidth - .8, PocketMaxDepth = GuardDepth - 3.15;
-inline constexpr int NavigationRevision = 13, CombatRevision = 4;
+inline constexpr int NavigationRevision = 13, CombatRevision = 5;

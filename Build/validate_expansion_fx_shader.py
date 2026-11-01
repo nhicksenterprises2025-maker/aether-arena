@@ -10,12 +10,14 @@ class Node:
     def __init__(self,kind):self.kind=kind;self.properties={}
     def set_editor_property(self,key,value):self.properties[key]=value
 class Graph:
-    def __init__(self,fail=-1):self.nodes=[];self.edges=[];self.outputs={};self.calls=[];self.fail=fail
+    def __init__(self,fail=-1,stale=0,compile_errors=None):self.nodes=[Node('Stale') for _ in range(stale)];self.edges=[];self.outputs={};self.calls=[];self.fail=fail;self.compile_errors=compile_errors or []
     def create_material_expression(self,m,kind,*xy):
         n=Node(kind);self.nodes.append(n);return n
-    def delete_all_material_expressions(self,m):pass
+    def get_material_expressions(self,m):return self.nodes
+    def delete_material_expression(self,m,n):self.nodes.remove(n)
+    def get_num_material_expressions(self,m):return len(self.nodes)
     def set_base_material_usage(self,*args):pass
-    def recompile_material(self,m):pass
+    def recompile_material(self,m):return self.compile_errors
     def connect_material_expressions(self,a,out,b,inp):
         valid=(out=='A' if a.kind=='Texture' else out=='') and (
             inp in [n.properties['input_name'] for n in b.properties.get('inputs',[])] if b.kind=='Custom' else b.kind=='Multiply' and inp in ('A','B'))
@@ -26,8 +28,8 @@ class Graph:
         valid=out=='' and len(self.calls)!=self.fail;self.calls.append(valid)
         if valid:self.outputs[prop]=a
         return valid
-def producer(fail=-1,missing_atlas=False):
-    graph=Graph(fail);asset=Node('Material');atlas=object();report={};saved=[]
+def producer(fail=-1,missing_atlas=False,stale=0,compile_errors=None):
+    graph=Graph(fail,stale,compile_errors);asset=Node('Material');atlas=object();report={};saved=[]
     u=SimpleNamespace(MaterialEditingLibrary=graph,Material='Material',MaterialFactoryNew=lambda:None,
         MaterialExpressionVectorParameter='Vector',MaterialExpressionScalarParameter='Scalar',MaterialExpressionCustom='Custom',
         MaterialExpressionTextureSample='Texture',MaterialExpressionMultiply='Multiply',MaterialExpressionConstant='Constant',
@@ -50,12 +52,13 @@ def selected_path(ids,regress_to_list_intersection=False):
     tree=ast.parse((ROOT/'Build/import_unreal_assets.py').read_text(encoding='utf-8'))
     main=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='main')
     selected_branch=copy.deepcopy(main.body[1])
-    first_model=next(i for i,n in enumerate(selected_branch.body) if isinstance(n,ast.For))
+    first_model=next(i for i,n in enumerate(selected_branch.body) if isinstance(n,ast.For) and isinstance(n.target,ast.Name) and n.target.id=='card_id')
     selected_branch.body=selected_branch.body[:first_model]
     prefix=ast.Module(body=[copy.deepcopy(main.body[0]),selected_branch],type_ignores=[])
     if regress_to_list_intersection:
         gates=[n for n in ast.walk(prefix) if isinstance(n,ast.Call) and
-               isinstance(n.func,ast.Attribute) and n.func.attr=='intersection']
+               isinstance(n.func,ast.Attribute) and n.func.attr=='intersection' and
+               n.args and isinstance(n.args[0],ast.Set)]
         if len(gates)!=1:raise AssertionError('Expected the actual sole FX selected gate')
         gates[0].func.value=ast.Name(id='selected',ctx=ast.Load())
     ast.fix_missing_locations(prefix)
@@ -68,7 +71,7 @@ def selected_path(ids,regress_to_list_intersection=False):
          'MANIFEST':json.loads((ROOT/'Assets/asset_manifest.json').read_text(encoding='utf-8')),
          'REPORT':report,'LIB':SimpleNamespace(load_asset=load),
          'import_expansion_materials':lambda mats,required:imports.append(sorted(required)),
-         'expansion_fx_material':material}
+         'expansion_fx_material':material,'cloak_material':lambda:load('/Game/Rift/Materials/M_RiftCloak')}
     exec(compile(prefix,'actual-selected-command-line-prefix','exec'),env)
     return report,imports,fx,env.get('selected')
 def main():
@@ -90,7 +93,7 @@ def main():
         result,imports,fx,selected=selected_path(ids)
         check('Actual selected-list material route '+','.join(ids),type(selected) is list and selected==ids and
               result.get('selectedModels')==ids and result.get('mode')=='SelectedModels' and len(imports)==1 and
-              len(fx)==int(needs_fx) and result.get('materials',[])==(['/Game/Rift/Materials/M_RiftExpansionFX'] if needs_fx else []))
+              len(fx)==int(needs_fx) and result.get('materials',[])==((['/Game/Rift/Materials/M_RiftExpansionFX'] if needs_fx else [])+(['/Game/Rift/Materials/M_RiftCloak'] if 'shadow_surge' in ids else [])))
         report['selectedListFixtures'].append({'commandLineIDs':ids,'actualSelectedType':type(selected).__name__,
                                               'requiredMaterials':imports[0],'fxCalls':len(fx),'report':result})
     for ids in (['not_a_card'],['bone_warden','bone_warden']):
@@ -103,6 +106,11 @@ def main():
     g,m,r,saved=producer();contract=definition(ROOT);r=r['expansionFXMaterial']
     check('Exactly eleven real returns are checked',len(g.calls)==len(r['connections'])==11 and all(g.calls))
     check('Only new dedicated material is saved',len(saved)==1 and saved[0] is m and r['material']=='M_RiftExpansionFX')
+    dirty,_,cleaned,_=producer(stale=17)
+    check('Live registered expression list is fully cleaned through a snapshot',len(dirty.nodes)==10 and not any(n.kind=='Stale' for n in dirty.nodes) and cleaned['expansionFXMaterial']['removedExpressions']==17)
+    try:producer(compile_errors=['forced shader compile error'])
+    except RuntimeError:check('Real shader compiler errors prevent save',True)
+    else:check('Real shader compiler errors prevent save',False)
     check('Translucent lit two-sided material',m.properties=={'blend_mode':'Translucent','shading_model':'Lit','two_sided':True})
     params={n.properties.get('parameter_name'):n for n in g.nodes}
     check('Uniform EffectColor has exact violet default',params['EffectColor'].properties['default_value']==(.37,.08,.66,1))

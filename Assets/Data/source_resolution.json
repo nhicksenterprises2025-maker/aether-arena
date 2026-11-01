@@ -3,21 +3,60 @@
   "status": "approved",
   "unresolved": false,
   "releaseBlocked": false,
-  "baseline": "Assets/Data/Baselines/1.9.0.json",
-  "baselineBalanceHash": "b452ca00abcb1097f552b6f99e4324a56c65c8bd1d61aacfd0989548329ee1c1",
-  "startingCommit": "27a7e300dd4aaf1469a9bb3638a02407bf219b56",
-  "version": "2.0.0",
+  "baseline": "Assets/Data/Baselines/2.0.0.json",
+  "baselineBalanceHash": "8d4889796f5a1b9be3f91a3a11a0f0045c7e4a7c878e3ddb20fc50112a56951c",
+  "startingCommit": "68124ff8f405605bccafde462db1ec47de668012",
+  "version": "2.1.0",
   "confirmation": {
-    "source": "User request: move both side towers toward the Core exactly one tile and make all other cards as detailed as Dart Gun",
-    "guardHorizontalInwardTiles": 1,
-    "existingCardStatsPreserved": true
+    "source": "User request: Archer face/hair repair, cohesive detailed Boulderback, +20% Stampede HP/damage, Mini Stampede cost4, Thunderstorm cost3, Blade Box cost5 confirmed; user follow-up: Shadow Surge 0.75s activation and 2s invisibility",
+    "bladeBoxCost": 5,
+    "firstSpawnSeconds": 3,
+    "finalUninterruptedSpawnSeconds": 30
   },
-  "resolvedChoices": {},
+  "resolvedChoices": {
+    "mini_stampede": {
+      "cost": 4,
+      "hp": 133.2,
+      "damage": 24
+    },
+    "stampede": {
+      "cost": 7,
+      "hp": 133.2,
+      "damage": 24
+    },
+    "thunderstorm": {
+      "cost": 3,
+      "damage": 65,
+      "towerDamage": 33,
+      "spellRadius": 3,
+      "castDelay": 0.45,
+      "dotInterval": 0.45,
+      "rounds": 3,
+      "stunDuration": 0.25
+    },
+    "blade_box": {
+      "cost": 5,
+      "hp": 500,
+      "spawnId": "twin_blades",
+      "spawnInterval": 3,
+      "lifetime": 30,
+      "hardExpiry": true,
+      "hpDecayPerSecond": 0,
+      "targetMask": 0
+    },
+    "shadow_surge": {
+      "castDelay": 0.75,
+      "invisibilityDuration": 2
+    }
+  },
   "mechanicNotes": [
-    "Guard Towers: horizontal centers move from \u00b17.76 to \u00b16.76 tiles on both teams. Exact inward movement: one tile (125 world units). Core centers, tower depth, bridge positions and arena dimensions are unchanged.",
-    "All other card models receive fitted, character-specific anatomy, armor, clothing, weapon and mechanical detail; card art is rendered from the upgraded in-game models. Dart Gun is preserved as the visual reference.",
-    "All 22 playable card definitions and the subordinate skeleton definition retain their complete 1.9.0 stats and abilities. No audio changes.",
-    "Navigation revision13 distinguishes the new tower positions in Meta simulations and recorded mechanics snapshots."
+    "Archer face and hair fit repaired, including the Archer Tower archer; Boulderback receives connected layered rock armor and more cohesive anatomical detail. Updated portraits use the actual game models.",
+    "Mini Stampede costs 4 Aether instead of 2. Both Stampede cards gain exactly 20% body HP (111 to 133.2) and damage (20 to 24) per hog; Stampede remains 7 Aether. Hogs keep their existing models, count, scale, speed and attack intervals.",
+    "Thunderstorm costs 3 Aether. A dark cloud and rain mark its 3-tile radius. Three lightning waves strike current enemy ground/air units and structures at 0.45, 0.90 and 1.35 seconds: 65 damage per troop or 33 per structure each wave, with a 0.25-second refreshed stun. Maximum exposure: 195 troop damage or 99 structure damage.",
+    "Blade Box costs 5 Aether, has 500 HP and lasts 30 seconds. It produces one current Twin Blade every 3 seconds: ten at 3 through 30 seconds if uninterrupted. Stun pauses production while lifetime continues; destruction ends production. Each child uses the normal Twin Blades stats and costs no additional Aether or deck slot.",
+    "All stun sources share a visible animated status effect. New models, spell effects, illustrations, collection details, Meta definitions, replay state and spreadsheet statistics are updated together.",
+    "Shadow Surge now activates after 0.75 seconds (was 0.25) and gives friendly troops inside its 2-tile area 2 seconds of invisibility (was 1). Its purple area cue lasts 0.5 seconds; friendly cloaked troops retain a purple silhouette. Cost 3, 100 troop/50 structure damage, target eligibility and other balance stay unchanged.",
+    "Meta tables show compact 24-pixel card portraits beside names while preserving row height, sorting and filters. Stun uses animated stars instead of a text label; lightning remains visible at target edges and stops revealing an enemy immediately when it cloaks."
   ],
-  "priorResolution": "Assets/Data/History/source_resolution_1.9.0.json"
+  "priorResolution": "Assets/Data/History/source_resolution_2.0.0.json"
 }

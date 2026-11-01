@@ -34,11 +34,12 @@ EXPANSION_STRING_FIELDS = ["deathSpawnId"]
 def fields_for(schema):
     if schema == 1:
         return NUMBER_FIELDS, BOOL_FIELDS, STRING_FIELDS
-    if schema in (2, 3):
+    if schema in (2, 3, 4):
         return (NUMBER_FIELDS + EXPANSION_NUMBER_FIELDS +
-                (["healthCloakThreshold"] if schema == 3 else []), BOOL_FIELDS + EXPANSION_BOOL_FIELDS,
-                STRING_FIELDS + EXPANSION_STRING_FIELDS)
-    raise ValueError("Expected balance schema 1, 2 or 3")
+                (["healthCloakThreshold"] if schema >= 3 else []) +
+                (["spawnInterval"] if schema >= 4 else []), BOOL_FIELDS + EXPANSION_BOOL_FIELDS,
+                STRING_FIELDS + EXPANSION_STRING_FIELDS + (["spawnId"] if schema >= 4 else []))
+    raise ValueError("Expected balance schema 1, 2, 3 or 4")
 
 
 def balance_hash(manifest):
@@ -108,7 +109,8 @@ def validate(manifest):
                     raise ValueError(f"{card['id']}.{field}: expected a string")
             if card["count"] < 1 or card["count"] != int(card["count"]):
                 raise ValueError("Combat entity count must be a positive integer")
-            if card["targetMask"] != int(card["targetMask"]) or not 0 < card["targetMask"] <= 7:
+            passive_spawner = card.get("spawnId") and card["building"] and card["damage"] == 0
+            if card["targetMask"] != int(card["targetMask"]) or not (0 if passive_spawner else 1) <= card["targetMask"] <= 7:
                 raise ValueError("Expected an explicit ground/air/structure target mask")
             if not card["spell"] and (card["attackInterval"] <= 0 or card["collisionRadius"] <= 0):
                 raise ValueError("Combat entities need an attack interval and independent collision radius")
@@ -138,6 +140,13 @@ def validate(manifest):
                     raise ValueError("Health cloak requires a troop and positive invisibility duration")
                 if card["invisibilityDuration"] > 0 and not card["spell"] and threshold <= 0:
                     raise ValueError("Troop invisibility needs an explicit health threshold")
+            if manifest["schema"] >= 4:
+                if bool(card["spawnId"]) != bool(card["spawnInterval"]):
+                    raise ValueError("Periodic spawn ID and interval must be specified together")
+                if card["spawnId"] and (not card["building"] or not card["hardExpiry"] or card["spawnInterval"] > card["lifetime"]):
+                    raise ValueError("Periodic spawning requires a finite-lived building and an interval within its lifetime")
+                if card["id"] == "thunderstorm" and (not card["spell"] or card["rounds"] != int(card["rounds"]) or card["rounds"] < 1 or card["dotInterval"] <= 0 or card["castDelay"] <= 0 or card["dotDamage"] != 0):
+                    raise ValueError("Thunderstorm requires delayed, discrete lightning waves without a lingering damage zone")
     if manifest["schema"] >= 2:
         children = {card["id"]: card for card in manifest.get("entities", [])}
         for card in manifest["cards"] + manifest.get("entities", []):
@@ -145,6 +154,13 @@ def validate(manifest):
                 child = children.get(card["deathSpawnId"])
                 if not child or child["spell"] or child["building"] or child["deathSpawnCount"]:
                     raise ValueError("Death summons must reference a nonrecursive subordinate troop")
+    if manifest["schema"] >= 4:
+        definitions = {card["id"]: card for card in manifest["cards"] + manifest.get("entities", [])}
+        for card in definitions.values():
+            if card["spawnId"]:
+                child = definitions.get(card["spawnId"])
+                if not child or child["spell"] or child["building"] or child["spawnId"]:
+                    raise ValueError("Periodic summons must reference an existing nonrecursive troop definition")
     return manifest
 
 

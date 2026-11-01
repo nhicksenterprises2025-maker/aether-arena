@@ -40,6 +40,96 @@
 
 namespace
 {
+// Reachable visual fixtures: ordinary developer deployments, fixed simulation
+// steps and forwarded events. No snapshots, HP, stun clocks or poses are injected.
+bool BuildThunderBladeCapture(URiftMatchSubsystem* Match,bool Storm,const TSharedRef<FJsonObject>& Report)
+{
+    auto* Sim=Match->Simulation();if(!Sim)return false;
+    Match->SetSpeed(0);Sim->ClearField();Match->FlushEvents();
+    float Requested=.2f;FParse::Value(FCommandLine::Get(),TEXT("RiftEffectAge="),Requested);
+    if(!FMath::IsFinite(Requested)||Requested<.05f||Requested>2.f)return false;
+    const double Start=Sim->State().elapsed;
+    TArray<rift::EntityId> Victims;rift::EntityId Source=0;rift::Vec2 Center{};
+    bool Deployed=true;
+    if(Storm)
+    {
+        for(const auto& E:Sim->State().entities)if(E.team==rift::Team::Enemy&&E.kind==rift::EntityKind::Guard&&E.lane<0)
+        {Center=E.position;Victims.Add(E.id);break;}
+        if(Victims.IsEmpty())return false;
+        const rift::Vec2 Offsets[]={{2.2,-1.},{-2.,-.5},{0,2.3}};
+        const char* Cards[]={"ironclad","storm_raven","archer_tower"};
+        for(int32 I=0;I<3;++I)
+        {
+            const size_t Before=Sim->State().entities.size();
+            Deployed&=Sim->Spawn(rift::Team::Enemy,Cards[I],{Center.x+Offsets[I].x,Center.z+Offsets[I].z});
+            for(size_t J=Before;J<Sim->State().entities.size();++J)Victims.Add(Sim->State().entities[J].id);
+        }
+    }
+    else
+    {
+        Deployed=Sim->Spawn(rift::Team::Player,"blade_box",{0,6.5});
+        for(const auto& E:Sim->State().entities)if(E.cardId=="blade_box"){Source=E.id;Center=E.position;}
+        if(!Source)return false;
+    }
+    TMap<rift::EntityId,double> InitialHP;
+    for(const auto& E:Sim->State().entities)if(Victims.Contains(E.id))InitialHP.Add(E.id,E.hp);
+    TArray<rift::Event> Events;
+    auto Flush=[&]()
+    {
+        for(const auto& E:Sim->Events())if((Storm&&E.cardId=="thunderstorm")||(!Storm&&E.type=="building_spawn"&&E.source==Source))Events.Add(E);
+        Match->FlushEvents();
+        for(TActorIterator<ARiftArenaPresentation> It(Match->GetWorld());It;++It)It->Tick(0.f);
+    };
+    Flush();if(Storm)Deployed&=Sim->Spawn(rift::Team::Player,"thunderstorm",Center);Flush();
+    const int32 Steps=FMath::RoundToInt((double(Requested)+(Storm?0.:2.7))*60.);
+    for(int32 I=0;I<Steps;++I){Sim->Step(1./60.);Flush();}
+    const double Age=Sim->State().elapsed-Start;
+    int32 WaveCount=0,SpawnCount=0;TArray<TSharedPtr<FJsonValue>> EventRows,Targets;
+    TMap<rift::EntityId,int32> Hits,Stuns;
+    for(const auto& E:Events)
+    {
+        WaveCount+=E.type=="spell_impact";SpawnCount+=E.type=="building_spawn";
+        if(E.type=="damage"||E.type=="shield_damage")++Hits.FindOrAdd(E.target);
+        if(E.type=="stun")++Stuns.FindOrAdd(E.target);
+        auto Row=MakeShared<FJsonObject>();Row->SetStringField(TEXT("type"),UTF8_TO_TCHAR(E.type.c_str()));
+        Row->SetNumberField(TEXT("sequence"),double(E.sequence));Row->SetNumberField(TEXT("age"),E.time-Start);
+        Row->SetNumberField(TEXT("source"),double(E.source));Row->SetNumberField(TEXT("target"),double(E.target));
+        Row->SetNumberField(TEXT("round"),E.count);Row->SetNumberField(TEXT("amount"),E.amount);
+        Row->SetNumberField(TEXT("until"),E.until);EventRows.Add(MakeShared<FJsonValueObject>(Row));
+    }
+    const int32 ExpectedWaves=Storm?FMath::Clamp(FMath::FloorToInt((Age+1.e-6)/.45),0,3):0;
+    bool Passed=Deployed&&FMath::Abs(Age-Steps/60.)<1.e-6&&WaveCount==ExpectedWaves;
+    int32 Children=0;
+    for(const auto& E:Sim->State().entities)
+    {
+        if(Victims.Contains(E.id))
+        {
+            auto Row=MakeShared<FJsonObject>();Row->SetNumberField(TEXT("id"),double(E.id));Row->SetStringField(TEXT("card"),UTF8_TO_TCHAR(E.cardId.c_str()));
+            Row->SetStringField(TEXT("kind"),E.kind==rift::EntityKind::Guard?TEXT("guard"):E.kind==rift::EntityKind::Building?TEXT("building"):E.flying?TEXT("flying"):TEXT("ground"));
+            Row->SetNumberField(TEXT("initialHP"),InitialHP[E.id]);Row->SetNumberField(TEXT("hp"),E.hp);
+            Row->SetNumberField(TEXT("stunUntil"),E.stunUntil);Row->SetNumberField(TEXT("hits"),Hits.FindRef(E.id));Row->SetNumberField(TEXT("stuns"),Stuns.FindRef(E.id));
+            Row->SetBoolField(TEXT("alive"),!E.dead);Targets.Add(MakeShared<FJsonValueObject>(Row));
+            Passed&=!E.dead&&Hits.FindRef(E.id)==ExpectedWaves&&Stuns.FindRef(E.id)==ExpectedWaves;
+        }
+        if(!Storm&&E.parentEntityId==Source&&E.cardId=="twin_blades")++Children;
+        if(E.id==Source)
+        {
+            Report->SetNumberField(TEXT("spawnClock"),E.spawnClock);Report->SetNumberField(TEXT("periodicSpawns"),E.periodicSpawns);
+            Report->SetStringField(TEXT("expectedClip"),(E.spawnClock>=2.84||(Age>=3.-1.e-6&&Age<3.44))?TEXT("Spawn"):TEXT("Idle"));
+        }
+    }
+    Passed&=Storm?Targets.Num()==4:(Children==(Age+1.e-6>=3.?1:0)&&SpawnCount==Children);
+    Report->SetNumberField(TEXT("schema"),1);Report->SetBoolField(TEXT("passed"),Passed);
+    Report->SetStringField(TEXT("scenario"),Storm?TEXT("storm_works"):TEXT("blade_box"));
+    Report->SetStringField(TEXT("provenance"),TEXT("ordinary Spawn / 60 Hz Step / FlushEvents"));
+    Report->SetNumberField(TEXT("requestedEffectAge"),Requested);Report->SetNumberField(TEXT("fixedSteps"),Steps);
+    Report->SetNumberField(TEXT("sampledAge"),Age);Report->SetNumberField(TEXT("simulationTime"),Sim->State().elapsed);
+    Report->SetNumberField(TEXT("sourceId"),double(Source));Report->SetNumberField(TEXT("waveCount"),WaveCount);
+    Report->SetNumberField(TEXT("spawnCount"),SpawnCount);Report->SetNumberField(TEXT("children"),Children);
+    Report->SetArrayField(TEXT("events"),EventRows);Report->SetArrayField(TEXT("targets"),Targets);
+    return Passed;
+}
+
 // Isolated visual QA only: the requested age starts at a real paid wave release.
 // No attack clock, health, wave, position or card definition is fabricated.
 bool BuildPulverizerCapture(URiftMatchSubsystem* Match,const TSharedRef<FJsonObject>& Report)
@@ -774,6 +864,7 @@ void ARiftGameMode::BeginPlay()
         auto SwarmSplitCapture=MakeShared<FJsonObject>();
         auto ExpansionRosterCapture=MakeShared<FJsonObject>();
         auto PulverizerCapture=MakeShared<FJsonObject>();
+        auto ThunderBladeCapture=MakeShared<FJsonObject>();
         GetWorld()->GetSubsystem<URiftMatchSubsystem>()->OnEvent.AddLambda([CapturedEvents](const rift::Event& Event){++CapturedEvents->FindOrAdd(UTF8_TO_TCHAR(Event.type.c_str()));});
         FTimerHandle SetupTimer;GetWorld()->GetTimerManager().SetTimer(SetupTimer,[this,Page,Scenario,RecordedCapture,RecordedDuration,TowerPathingCapture,UnitCollisionCapture,SwarmSplitCapture,ExpansionRosterCapture,PulverizerCapture]()
         {
@@ -973,8 +1064,8 @@ void ARiftGameMode::BeginPlay()
                     if(!BuildSwarmSplitCapture(Match,SwarmSplitCapture))
                     {RIFT_LOG(LogRift,Error,TEXT("Swarm split capture failed paid formation/landing-lane/body/speed/progress checks"));FPlatformMisc::RequestExitWithStatus(false,2);return;}
                 }
-                else if(Scenario==TEXT("placement")||Scenario==TEXT("effects17"))Match->SetSpeed(0);
-                if(Scenario!=TEXT("roster")&&Scenario!=TEXT("expansion_roster")&&Scenario!=TEXT("expansion_new_roster")&&Scenario!=TEXT("expansion_effects")&&Scenario!=TEXT("expansion_warden_death")&&Scenario!=TEXT("reaper_design")&&Scenario!=TEXT("placement")&&Scenario!=TEXT("effects17")&&Scenario!=TEXT("projectiles")&&Scenario!=TEXT("spells")&&Scenario!=TEXT("tower_pathing")&&Scenario!=TEXT("unit_collision")&&Scenario!=TEXT("swarm_split")&&Scenario!=TEXT("pulverizer"))
+                else if(Scenario==TEXT("placement")||Scenario==TEXT("effects17")||Scenario==TEXT("storm_works")||Scenario==TEXT("blade_box"))Match->SetSpeed(0);
+                if(Scenario!=TEXT("roster")&&Scenario!=TEXT("expansion_roster")&&Scenario!=TEXT("expansion_new_roster")&&Scenario!=TEXT("expansion_effects")&&Scenario!=TEXT("expansion_warden_death")&&Scenario!=TEXT("reaper_design")&&Scenario!=TEXT("placement")&&Scenario!=TEXT("effects17")&&Scenario!=TEXT("projectiles")&&Scenario!=TEXT("spells")&&Scenario!=TEXT("tower_pathing")&&Scenario!=TEXT("unit_collision")&&Scenario!=TEXT("swarm_split")&&Scenario!=TEXT("pulverizer")&&Scenario!=TEXT("storm_works")&&Scenario!=TEXT("blade_box"))
                 {float CaptureSpeed=1;FParse::Value(FCommandLine::Get(),TEXT("RiftCaptureSpeed="),CaptureSpeed);Match->SetSpeed(FMath::Clamp(CaptureSpeed,.25f,4.f));}
                 Match->FlushEvents();
             }
@@ -1030,6 +1121,15 @@ void ARiftGameMode::BeginPlay()
             }
         },.5f,false);
         float Delay=6;FParse::Value(FCommandLine::Get(),TEXT("RiftCaptureDelay="),Delay);bool Quit=FParse::Param(FCommandLine::Get(),TEXT("RiftQuitAfterCapture"));
+        if(Scenario==TEXT("storm_works")||Scenario==TEXT("blade_box"))
+        {
+            Delay=FMath::Max(1.5f,Delay);FTimerHandle ThunderBladeTimer;
+            GetWorld()->GetTimerManager().SetTimer(ThunderBladeTimer,FTimerDelegate::CreateWeakLambda(this,[this,Scenario,ThunderBladeCapture]()
+            {
+                if(!BuildThunderBladeCapture(GetWorld()->GetSubsystem<URiftMatchSubsystem>(),Scenario==TEXT("storm_works"),ThunderBladeCapture))
+                {RIFT_LOG(LogRift,Error,TEXT("Thunderstorm/Blade Box fixture failed real deployment/event/target checks"));FPlatformMisc::RequestExitWithStatus(false,2);}
+            }),1.f,false);
+        }
         if(Scenario==TEXT("spells"))
         {
             FTimerHandle SpellSampleTimer;
@@ -1089,7 +1189,7 @@ void ARiftGameMode::BeginPlay()
                 {It->ShowcaseNiagaraAtAge(Age);break;}
             }),FMath::Max(1.f,Delay)-.5f,false);
         }
-        FTimerHandle CaptureTimer;GetWorld()->GetTimerManager().SetTimer(CaptureTimer,FTimerDelegate::CreateWeakLambda(this,[this,CapturePath,Quit,CapturedEvents,RecordedCapture,RecordedDuration,TowerPathingCapture,UnitCollisionCapture,SwarmSplitCapture,ExpansionRosterCapture,PulverizerCapture]()
+        FTimerHandle CaptureTimer;GetWorld()->GetTimerManager().SetTimer(CaptureTimer,FTimerDelegate::CreateWeakLambda(this,[this,CapturePath,Quit,CapturedEvents,RecordedCapture,RecordedDuration,TowerPathingCapture,UnitCollisionCapture,SwarmSplitCapture,ExpansionRosterCapture,PulverizerCapture,ThunderBladeCapture]()
         {
             IFileManager::Get().MakeDirectory(*FPaths::GetPath(CapturePath),true);
             auto Snapshot=MakeShared<FJsonObject>();auto EventCounts=MakeShared<FJsonObject>();
@@ -1100,6 +1200,7 @@ void ARiftGameMode::BeginPlay()
             if(TowerPathingCapture->HasField(TEXT("passed")))Snapshot->SetObjectField(TEXT("towerPathing"),TowerPathingCapture);
             if(UnitCollisionCapture->HasField(TEXT("passed")))Snapshot->SetObjectField(TEXT("unitCollision"),UnitCollisionCapture);
             if(PulverizerCapture->HasField(TEXT("passed")))Snapshot->SetObjectField(TEXT("pulverizerWitness"),PulverizerCapture);
+            if(ThunderBladeCapture->HasField(TEXT("passed")))Snapshot->SetObjectField(TEXT("thunderBladeWitness"),ThunderBladeCapture);
             if(ExpansionRosterCapture->HasField(TEXT("passed")))
             {
                 for(TActorIterator<ARiftExpansionCapture> It(GetWorld());It;++It)
@@ -1125,6 +1226,20 @@ void ARiftGameMode::BeginPlay()
             Snapshot->SetObjectField(TEXT("events"),EventCounts);
             if(const auto* PC=Cast<ARiftPlayerController>(GetWorld()->GetFirstPlayerController()))
             {
+                if(PC->Interface&&!PC->Interface->CurrentMetaTab().IsEmpty())
+                {
+                    const auto* Meta=GetGameInstance()->GetSubsystem<URiftMetaSimulationSubsystem>();
+                    auto MetaView=MakeShared<FJsonObject>();MetaView->SetStringField(TEXT("tab"),PC->Interface->CurrentMetaTab());
+                    MetaView->SetStringField(TEXT("datasetFile"),Meta->SelectedDatasetName());
+                    MetaView->SetNumberField(TEXT("cardRows"),Meta->CardRows().Num());
+                    if(const auto Data=Meta->Dataset())
+                    {
+                        for(const TCHAR* Key:{TEXT("id"),TEXT("fingerprint"),TEXT("balanceHash")})
+                        {FString Value;if(Data->TryGetStringField(Key,Value))MetaView->SetStringField(Key,Value);}
+                        double Games=0;if(Data->TryGetNumberField(TEXT("games"),Games))MetaView->SetNumberField(TEXT("games"),Games);
+                    }
+                    Snapshot->SetObjectField(TEXT("meta"),MetaView);
+                }
                 TSharedPtr<FJsonObject> Framing;
                 if(FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(PC->CameraFramingDiagnosticsJSON()),Framing))
                 {

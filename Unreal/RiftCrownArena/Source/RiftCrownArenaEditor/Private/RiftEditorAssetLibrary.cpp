@@ -207,9 +207,10 @@ FString URiftEditorAssetLibrary::FinalizeImportedPhysicsAssetsJSON()
     FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(URiftAssetLibrary::EntityDefinitionsJSON()),Children);Definitions.Append(Children);
     TArray<FString> Ids{TEXT("tower_archer")};
     for(const auto& Value:Definitions)
-    {const auto Definition=Value->AsObject();if(!Definition->GetBoolField(TEXT("spell")) && (!Definition->GetBoolField(TEXT("building")) || Definition->GetNumberField(TEXT("shockwaveSpeed"))>0))Ids.Add(Definition->GetStringField(TEXT("id")));}
+    {const auto Definition=Value->AsObject();if(!Definition->GetBoolField(TEXT("spell")) && (!Definition->GetBoolField(TEXT("building")) || Definition->GetNumberField(TEXT("shockwaveSpeed"))>0 || Definition->GetNumberField(TEXT("spawnInterval"))>0))Ids.Add(Definition->GetStringField(TEXT("id")));}
     FString SelectedString;TArray<FString> Selected;
     if(FParse::Value(FCommandLine::Get(),TEXT("RiftSelectedModels="),SelectedString))SelectedString.ParseIntoArray(Selected,TEXT(","),true);
+    if(Selected.Contains(TEXT("archer_tower")))Selected.AddUnique(TEXT("tower_archer"));
     for(const FString& Id:Ids)
     {
         if(FParse::Param(FCommandLine::Get(),TEXT("RiftPulverizerOnly")) && FString(Id)!=TEXT("pulverizer"))continue;

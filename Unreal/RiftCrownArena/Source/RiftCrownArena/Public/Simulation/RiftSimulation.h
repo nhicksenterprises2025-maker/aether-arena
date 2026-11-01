@@ -41,6 +41,8 @@ struct Card {
     double shieldHP = 0, invisibilityDuration = 0, dotStructureDamage = 0, healthCloakThreshold = 0;
     int deathSpawnCount = 0;
     std::string deathSpawnId;
+    std::string spawnId;
+    double spawnInterval = 0;
     int rounds = 0;
     bool flying = false, canHitAir = false, structuresOnly = false, spell = false, building = false;
     bool hardExpiry = false, shieldOverflowProtected = false, globalFriendlyInvisibility = false,
@@ -79,6 +81,8 @@ struct Entity {
     double shieldHP = 0, maxShieldHP = 0, shieldBrokenAt = -1, invisibleUntil = 0;
     double slowPct = 0, slowUntil = 0, stunUntil = 0, forcedUntil = 0;
     double chargeTime = 0, auraClock = 0, repathClock = 0, scanClock = 0;
+    double spawnClock = 0;
+    int periodicSpawns = 0;
     double stuckClock = 0, stuckTime = 0, stuckDistance = 1e9;
     double slowTrackedFrom = -1, stunTrackedFrom = -1;
     int lane = 0, bridge = 0, memberCount = 1;
@@ -121,6 +125,7 @@ struct SpellCast {
     std::string cardId;
     Vec2 position;
     double born = 0, impactAt = 0;
+    int round = 1;
 };
 struct Event {
     std::uint64_t sequence = 0;
@@ -334,6 +339,9 @@ class Match {
                 EntityId source = 0, const std::string &kind = "attack");
     void Kill(EntityId target, Team team, const std::string &card, PlayId play, EntityId source);
     void SpawnDeathChildren(const Entity &parent, const Card &definition);
+    std::vector<EntityId> SpawnChildren(const Entity &parent, const std::string &childId, int count,
+                                        Vec2 point, const std::string &reason, bool reportBlocked = true);
+    void UpdatePeriodicSpawner(EntityId id, double dt);
     void ApplyInvisibility(Team team, const Card &card, Vec2 point, PlayId play);
     void CloakBody(Entity &body, const Card &card, PlayId play, EntityId source = 0);
     void DropCloakedLocks(Team team, const Card &card, const std::vector<EntityId> &cloaked, PlayId play);

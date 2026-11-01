@@ -299,14 +299,18 @@ def cloak_material():
     """Sole-purpose owner cloak; never modifies any shared character material."""
     name='M_RiftCloak';path='/Game/Rift/Materials/'+name
     m=LIB.load_asset(path) if LIB.does_asset_exist(path) else TOOLS.create_asset(name,'/Game/Rift/Materials',unreal.Material,unreal.MaterialFactoryNew())
-    unreal.MaterialEditingLibrary.delete_all_material_expressions(m)
+    graph=unreal.MaterialEditingLibrary
+    previous_nodes=list(graph.get_material_expressions(m))
+    for expression in previous_nodes:
+        graph.delete_material_expression(m,expression)
+    if graph.get_num_material_expressions(m):
+        raise RuntimeError('Cloak graph cleanup left registered expressions')
     m.set_editor_property('blend_mode',unreal.BlendMode.BLEND_MASKED)
     m.set_editor_property('shading_model',unreal.MaterialShadingModel.MSM_DEFAULT_LIT)
     m.set_editor_property('two_sided',True)
     unreal.MaterialEditingLibrary.set_base_material_usage(m,unreal.MaterialUsage.MATUSAGE_SKELETAL_MESH)
-    graph=unreal.MaterialEditingLibrary
     def node(kind,x,y):return graph.create_material_expression(m,kind,x,y)
-    color=node(unreal.MaterialExpressionConstant3Vector,-300,0);color.set_editor_property('constant',unreal.LinearColor(.055,.035,.09,1))
+    color=node(unreal.MaterialExpressionConstant3Vector,-300,0);color.set_editor_property('constant',unreal.LinearColor(.14,.035,.24,1))
     amount=node(unreal.MaterialExpressionScalarParameter,-700,180);amount.set_editor_property('parameter_name','CloakAmount');amount.set_editor_property('default_value',.18)
     world=node(unreal.MaterialExpressionWorldPosition,-700,330)
     pore=node(unreal.MaterialExpressionCustom,-350,240);pore.set_editor_property('output_type',unreal.CustomMaterialOutputType.CMOT_FLOAT1)
@@ -316,7 +320,7 @@ def cloak_material():
     pore.set_editor_property('inputs',inputs)
     pore.set_editor_property('code','float3 cell=floor(World/6.0); float h=frac(sin(dot(cell,float3(12.9898,78.233,37.719)))*43758.5453); return step(clamp(Amount,0.0,0.35),h);')
     edge=node(unreal.MaterialExpressionFresnel,-700,500);edge.set_editor_property('exponent',3.);edge.set_editor_property('base_reflect_fraction',0.)
-    violet=node(unreal.MaterialExpressionConstant3Vector,-700,650);violet.set_editor_property('constant',unreal.LinearColor(.27,.09,.45,1))
+    violet=node(unreal.MaterialExpressionConstant3Vector,-700,650);violet.set_editor_property('constant',unreal.LinearColor(.37,.10,.45,1))
     glow=node(unreal.MaterialExpressionMultiply,-320,560)
     rough=node(unreal.MaterialExpressionConstant,-300,720);rough.set_editor_property('r',.78)
     checks=[]
@@ -330,10 +334,15 @@ def cloak_material():
     connect(edge,'',glow,'A');connect(violet,'',glow,'B')
     output(color,unreal.MaterialProperty.MP_BASE_COLOR);output(rough,unreal.MaterialProperty.MP_ROUGHNESS)
     output(pore,unreal.MaterialProperty.MP_OPACITY_MASK);output(glow,unreal.MaterialProperty.MP_EMISSIVE_COLOR)
-    REPORT['cloakMaterial']={'connections':checks,'baseColor':[.055,.035,.09],
+    compile_errors=list(graph.recompile_material(m))
+    if compile_errors:
+        raise RuntimeError('Cloak shader compilation failed: '+str(compile_errors))
+    REPORT['cloakMaterial']={'connections':checks,'baseColor':[.14,.035,.24],'edgeColor':[.37,.10,.45],
         'defaultCloakAmount':.18,'maximumCloakAmount':.35,'maximumEmissionChannel':.45,
-        'clock':'No Time node; deterministic 6cm world cells','sharedMaterialsChanged':False}
-    graph.recompile_material(m);return save(m)
+        'clock':'No Time node; deterministic 6cm world cells','sharedMaterialsChanged':False,
+        'removedExpressions':len(previous_nodes),'expressionCount':graph.get_num_material_expressions(m),
+        'compileErrors':compile_errors}
+    return save(m)
 
 def expansion_fx_material():
     """Uniform bounded FX tint; atlas UVs retain authored alpha only.
@@ -345,7 +354,12 @@ def expansion_fx_material():
     m=LIB.load_asset(path) if LIB.does_asset_exist(path) else TOOLS.create_asset(name,'/Game/Rift/Materials',unreal.Material,unreal.MaterialFactoryNew())
     atlas=LIB.load_asset('/Game/Rift/Textures/T_RiftAscensionAtlas_BaseColor')
     if atlas is None:raise RuntimeError('Authored expansion FX opacity atlas is missing')
-    graph=unreal.MaterialEditingLibrary;graph.delete_all_material_expressions(m)
+    graph=unreal.MaterialEditingLibrary
+    # UE 5.8's bulk deletion walks the live array it mutates, leaving nodes.
+    # A snapshot prevents stale expressions and duplicate parameter identities.
+    previous_nodes=list(graph.get_material_expressions(m))
+    for expression in previous_nodes:graph.delete_material_expression(m,expression)
+    if graph.get_num_material_expressions(m):raise RuntimeError('Expansion FX graph cleanup left registered expressions')
     m.set_editor_property('blend_mode',unreal.BlendMode.BLEND_TRANSLUCENT)
     m.set_editor_property('shading_model',unreal.MaterialShadingModel.MSM_DEFAULT_LIT)
     m.set_editor_property('two_sided',True)
@@ -384,13 +398,15 @@ def expansion_fx_material():
     output(alpha,unreal.MaterialProperty.MP_OPACITY)
     output(glow,unreal.MaterialProperty.MP_EMISSIVE_COLOR)
     output(rough,unreal.MaterialProperty.MP_ROUGHNESS)
-    graph.recompile_material(m)
+    compile_errors=list(graph.recompile_material(m))
+    if compile_errors:raise RuntimeError('Expansion FX shader compilation failed: '+str(compile_errors))
     REPORT['expansionFXMaterial']={'material':name,'uniformColorParameter':'EffectColor',
         'defaultColor':[.37,.08,.66],'opacityParameter':'EffectOpacity','defaultOpacity':.55,'maximumOpacity':.65,
         'emissionParameter':'EffectEmission','defaultEmission':.25,'maximumEmissionPerChannel':.45,
         'opacitySource':source_provenance.pin(ROOT,'Assets/Source/Textures/T_RiftAscensionAtlas_BaseColor.png'),
         'opacitySourceChannel':'A','colorUsesAtlasRGB':False,'timeSource':'Native simulation-clock geometry only; no material Time',
-        'connections':checks}
+        'connections':checks,'removedExpressions':len(previous_nodes),
+        'expressionCount':graph.get_num_material_expressions(m),'compileErrors':compile_errors}
     return save(m)
 
 def assign_materials(mesh, names, mats):
@@ -615,11 +631,13 @@ def card_data(only=None, stats_only=False):
     properties.update({"chargeMoveSeconds":"ChargeMoveSeconds", "chargedMoveSpeed":"ChargedMoveSpeed",
                        "hpDecayPerSecond":"HPDecayPerSecond", "initialAttackCooldown":"InitialAttackCooldown",
                        "shieldHP":"ShieldHP", "deathSpawnCount":"DeathSpawnCount", "deathSpawnId":"DeathSpawnId",
+                       "spawnId":"SpawnId", "spawnInterval":"SpawnInterval",
                        "invisibilityDuration":"InvisibilityDuration", "dotStructureDamage":"DotStructureDamage", "healthCloakThreshold":"HealthCloakThreshold",
                        "hardExpiry":"HardExpiry", "shieldOverflowProtected":"ShieldOverflowProtected",
                        "globalFriendlyInvisibility":"GlobalFriendlyInvisibility", "breakExistingLocks":"BreakExistingLocks"})
     attacks.update({"bone_warden":"heavy_slam", "bone_warden_skeleton":"sword_attack",
-                    "aether_reaper":"dual_attack", "iron_giant":"heavy_slam", "shadow_surge":"arc_cast", "dart_gun":"dart_fire"})
+                    "aether_reaper":"dual_attack", "iron_giant":"heavy_slam", "shadow_surge":"arc_cast", "dart_gun":"dart_fire",
+                    "thunderstorm":"thunder_strike", "blade_box":"blade_release"})
     effects = ["Deploy","Impact","ArrowFlight","ArcFlight","MantaFlight","StormFlight","TowerFlight","BulletBurst","Nova","Meteor","MeteorTick","Frost","Slow","Stun","Aura","TowerDestroy","CoreAwaken"]
     for c in definitions:
         if only is not None and c["id"] not in only:
@@ -664,7 +682,7 @@ def card_data(only=None, stats_only=False):
         data.set_editor_property("Effects", {key:LIB.load_asset("/Game/Rift/VFX/NS_Rift"+key) for key in effects})
         deploy_path = "/Game/Rift/Audio/SFX_spawn_" + c["id"]
         deploy = LIB.load_asset(deploy_path if LIB.does_asset_exist(deploy_path) else "/Game/Rift/Audio/SFX_deploy")
-        hit_sound = "dart_hit" if c["id"] == "dart_gun" else "building_hit" if c["id"] == "pulverizer" else "sword_hit"
+        hit_sound = "dart_hit" if c["id"] == "dart_gun" else "building_hit" if c["id"] in ("pulverizer","blade_box") else "sword_hit"
         sounds = {"Attack": LIB.load_asset("/Game/Rift/Audio/SFX_" + attacks[c["id"]]), "Deploy":deploy, "Hit":LIB.load_asset("/Game/Rift/Audio/SFX_" + hit_sound)}
         if any(v is None for v in sounds.values()):
             raise RuntimeError("Missing sound binding for " + c["id"])
