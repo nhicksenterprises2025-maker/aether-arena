@@ -7,6 +7,7 @@
 #include "RiftProfileSubsystem.h"
 #include "RiftReplaySubsystem.h"
 #include "RiftMetaSimulationSubsystem.h"
+#include "RiftAssetLibrary.h"
 #include "Presentation/RiftBattleAudioSubsystem.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/CanvasPanel.h"
@@ -36,6 +37,8 @@
 #include "Brushes/SlateRoundedBoxBrush.h"
 #include "Rendering/DrawElements.h"
 #include "Misc/Paths.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
 #include "HAL/FileManager.h"
 #include "Serialization/JsonSerializer.h"
 
@@ -270,6 +273,11 @@ TArray<TSharedPtr<FJsonObject>> URiftUIWidget::FilterRows(TArray<TSharedPtr<FJso
 }
 void URiftUIWidget::Meta()
 {
+    FString CapturePath,CaptureSaveRoot,CaptureTab;
+    if(FParse::Value(FCommandLine::Get(),TEXT("RiftCapture="),CapturePath)&&!CapturePath.IsEmpty()&&
+       FParse::Value(FCommandLine::Get(),TEXT("RiftSaveRoot="),CaptureSaveRoot)&&!CaptureSaveRoot.IsEmpty()&&
+       FParse::Value(FCommandLine::Get(),TEXT("RiftCaptureMetaTab="),CaptureTab)&&
+       (CaptureTab==TEXT("Cards")||CaptureTab==TEXT("Matchups")))Tab=CaptureTab;
     auto* M=GetGameInstance()->GetSubsystem<URiftMetaSimulationSubsystem>();MetaStatus=Text(M->Status(),16,Cyan);Add(Body,MetaStatus);auto* Control=Row();for(int32 Rate:{100,250,500,0})Add(Control,Button(Rate?FString::Printf(TEXT("%d / MIN"),Rate):TEXT("MAX SAFE"),[this,M,Rate](){M->SetRate(Rate);M->Start();bMetaPaused=false;Say(TEXT("Background simulation pauses automatically during live battles."));}));Add(Control,Button(TEXT("PAUSE / RESUME"),[this,M](){bMetaPaused=!bMetaPaused;M->Pause(bMetaPaused);}));Add(Control,Button(TEXT("ARCHIVE & RESET"),[this,M](){M->Reset();DatasetName.Empty();MetaDetail.Reset();Navigate(TEXT("Meta"));}));
     Add(Control,Button(TEXT("STATS GUIDE"),[this](){Navigate(TEXT("MetaGuide"));},Tab==TEXT("Stats Guide")));
     auto* Tabs=Row();for(FString Name:{TEXT("Cards"),TEXT("Matchups"),TEXT("Synergy"),TEXT("Archetypes"),TEXT("AI Styles"),TEXT("Alerts"),TEXT("Trends"),TEXT("Patches"),TEXT("Validation")})Add(Tabs,Button(Name.ToUpper(),[this,Name](){CaptureFilters();Tab=Name;MetaDetail.Reset();Navigate(TEXT("Meta"));},Tab==Name),true);
@@ -287,6 +295,18 @@ void URiftUIWidget::Meta()
 void URiftUIWidget::MetaRows()
 {
     if(!Rows)return;Rows->ClearChildren();auto* M=GetGameInstance()->GetSubsystem<URiftMetaSimulationSubsystem>();CaptureFilters();
+    auto* Catalog=GetGameInstance()->GetSubsystem<URiftAssetCatalogSubsystem>();
+    auto CardLabel=[this,Catalog](const FString& Id,UTextBlock* Label,float Gap=6.f)->UWidget*
+    {
+        const auto* Card=Catalog?Catalog->Card(Id):nullptr;
+        if(!Card||!Card->Illustration)return Label;
+        auto* Art=WidgetTree->ConstructWidget<UImage>();Art->SetBrushFromTexture(Card->Illustration,true);Art->SetVisibility(ESlateVisibility::HitTestInvisible);
+        auto* Fit=WidgetTree->ConstructWidget<UScaleBox>();Fit->SetStretch(EStretch::ScaleToFit);Fit->SetContent(Art);
+        auto* Size=WidgetTree->ConstructWidget<USizeBox>();Size->SetWidthOverride(24);Size->SetHeightOverride(24);Size->SetContent(Fit);
+        auto* Line=WidgetTree->ConstructWidget<UHorizontalBox>();auto* ArtSlot=Line->AddChildToHorizontalBox(Size);ArtSlot->SetVerticalAlignment(VAlign_Center);ArtSlot->SetPadding(FMargin(0,0,Gap,0));
+        auto* NameSlot=Line->AddChildToHorizontalBox(Label);NameSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));NameSlot->SetVerticalAlignment(VAlign_Center);
+        return Line;
+    };
     if(MetaCost)
     {
         // Switching an archive can expose costs absent from the live roster.
@@ -325,15 +345,15 @@ void URiftUIWidget::MetaRows()
         }
         const TArray<TSharedPtr<FJsonValue>>* Definitions=nullptr;Summary->SetNumberField(TEXT("immutableCardDefinitions"),Data&&Data->TryGetArrayField(TEXT("cardSnapshot"),Definitions)?Definitions->Num():0);Summary->SetNumberField(TEXT("recordedCheckpoints"),M->Checkpoints().Num());ShowJSON(Summary,Rows);
         Add(Rows,Text(TEXT("CLEAN CARD SAMPLES · MIRRORS EXCLUDED"),17,Brass));
-        for(const auto& Card:M->CardRows())Add(Rows,Text(JS(Card,TEXT("name"))+TEXT(" · N ")+Metric(Card,TEXT("cleanN"))+TEXT(" · deck appearances ")+Metric(Card,TEXT("appearances"))+TEXT(" · mirror exclusions ")+Metric(Card,TEXT("mirrorExclusions")),14),2);
+        for(const auto& Card:M->CardRows())Add(Rows,CardLabel(JS(Card,TEXT("id")),Text(JS(Card,TEXT("name"))+TEXT(" · N ")+Metric(Card,TEXT("cleanN"))+TEXT(" · deck appearances ")+Metric(Card,TEXT("appearances"))+TEXT(" · mirror exclusions ")+Metric(Card,TEXT("mirrorExclusions")),14)),2);
         return;
     }
     if(Tab==TEXT("Trends")){auto Points=M->Checkpoints();if(Points.IsEmpty()){Add(Rows,Text(TEXT("No cumulative checkpoints recorded yet. Run simulation to collect a trend."),17));return;}FString Id=DetailCard.IsEmpty()?TEXT("ironclad"):DetailCard;auto* Chart=CreateWidget<URiftChartWidget>(GetOwningPlayer());Chart->Caption=Pretty(MetaMetric?MetaMetric->GetSelectedOption():TEXT("adjustedWinRate"))+TEXT(" · cumulative whole-dataset estimate · simulated matches");double Latest=JN(Points.Last(),TEXT("games"));int32 Window=MetaWindow?FCString::Atoi(*MetaWindow->GetSelectedOption()):0;for(auto Point:Points){double N=JN(Point,TEXT("games"));if(Window&&N<Latest-Window)continue;const TArray<TSharedPtr<FJsonValue>>* Cards;if(Point->TryGetArrayField(TEXT("cards"),Cards))for(auto V:*Cards){auto C=V->AsObject();if(JS(C,TEXT("id"))==Id)Chart->SeriesA.Add(FVector2D(N,JN(C,MetaMetric?*MetaMetric->GetSelectedOption():TEXT("adjustedWinRate"))));}}auto* Size=WidgetTree->ConstructWidget<USizeBox>();Size->SetHeightOverride(260);Size->SetContent(Chart);Add(Rows,Text(Id,18,Cyan));Add(Rows,Size);Add(Rows,Text(TEXT("These are cumulative estimates at recorded checkpoints, not rolling-window win rates. Missing historical samples are not fabricated."),14,Muted));return;}
     if(Tab==TEXT("Matchups")||Tab==TEXT("Synergy"))
     {
         bool Empirical=Tab==TEXT("Synergy");auto Identity=M->ReportIdentity(Empirical?TEXT("synergy"):TEXT("matchups"));Add(Rows,Text((Empirical?TEXT("Mechanical annotations use current balance "):TEXT("Mechanical scores use current balance "))+JS(Identity,TEXT("mechanicalVersion"))+TEXT(" · ")+JS(Identity,TEXT("mechanicalBalanceHash")).Left(12),13,Muted));if(Empirical)Add(Rows,Text(TEXT("Recorded pair results use dataset ")+JS(Identity,TEXT("empiricalDatasetVersion"))+TEXT(" · ")+JS(Identity,TEXT("empiricalFingerprint")).Left(12),13,Muted));auto Values=Empirical?M->SynergyRows(StyleFilter,ArchetypeFilter):M->MatchupRows();TMap<FString,TSharedPtr<FJsonObject>> Cells;for(auto V:Values)Cells.Add(JS(V,TEXT("id")),V);Add(Rows,Text(Empirical?TEXT("Observed joint-deck win-score delta against paired card baseline. Mirrors excluded, shrinkage applied; click for N and confidence."):TEXT("Mechanical coverage edge. These values are not isolated-duel win rates. Click for targeting and interaction reasons."),14,Muted));auto* Horizontal=WidgetTree->ConstructWidget<UScrollBox>();Horizontal->SetOrientation(Orient_Horizontal);auto* Matrix=WidgetTree->ConstructWidget<UVerticalBox>();Horizontal->AddChild(Matrix);Add(Rows,Horizontal);
-        auto VisibleCards=FilterRows(M->CardRows(StyleFilter,ArchetypeFilter),true);if(VisibleCards.IsEmpty()){Add(Rows,Text(TEXT("No cards meet the current filters."),17));return;}auto* Header=Row(Matrix);auto* Corner=WidgetTree->ConstructWidget<USizeBox>();Corner->SetWidthOverride(140);Add(Header,Corner);for(auto Card:VisibleCards){auto* Cell=WidgetTree->ConstructWidget<USizeBox>();Cell->SetWidthOverride(53);auto* Label=Text(JS(Card,TEXT("name")).Left(3),12,Muted);Label->SetToolTipText(FText::FromString(JS(Card,TEXT("name"))));Cell->SetContent(Label);Add(Header,Cell);}
-        for(auto RowCard:VisibleCards){auto* Line=Row(Matrix);auto* Label=WidgetTree->ConstructWidget<USizeBox>();Label->SetWidthOverride(140);Label->SetContent(Text(JS(RowCard,TEXT("name")),13));Add(Line,Label);for(auto ColumnCard:VisibleCards){FString IA=JS(RowCard,TEXT("id")),IB=JS(ColumnCard,TEXT("id")),Key=Empirical?(IA<IB?IA+TEXT("+")+IB:IB+TEXT("+")+IA):IA+TEXT("/")+IB;auto Value=Cells.FindRef(Key);double Score=JN(Value,Empirical?TEXT("delta"):TEXT("edge"));bool Available=IA!=IB&&Value&&(!Empirical||JN(Value,TEXT("cleanN"))>=FMath::Max(1,MinSample));auto* ButtonCell=Button(Available?FString::Printf(TEXT("%+.1f"),Score):TEXT("—"),[this,Value](){if(Value){MetaDetail=Value;MetaRows();}});ButtonCell->SetBackgroundColor(Available?(Score>0?FLinearColor(.10f,.27f,.30f,1):Score<0?FLinearColor(.28f,.22f,.14f,1):Stone):Stone);auto* Size=WidgetTree->ConstructWidget<USizeBox>();Size->SetWidthOverride(53);Size->SetHeightOverride(32);Size->SetContent(ButtonCell);Add(Line,Size);}}return;
+        auto VisibleCards=FilterRows(M->CardRows(StyleFilter,ArchetypeFilter),true);if(VisibleCards.IsEmpty()){Add(Rows,Text(TEXT("No cards meet the current filters."),17));return;}auto* Header=Row(Matrix);auto* Corner=WidgetTree->ConstructWidget<USizeBox>();Corner->SetWidthOverride(140);Add(Header,Corner);for(auto Card:VisibleCards){auto* Cell=WidgetTree->ConstructWidget<USizeBox>();Cell->SetWidthOverride(53);auto* Label=Text(JS(Card,TEXT("name")).Left(3),12,Muted);Label->SetAutoWrapText(false);Label->SetTextOverflowPolicy(ETextOverflowPolicy::Ellipsis);Cell->SetToolTipText(FText::FromString(JS(Card,TEXT("name"))));Cell->SetContent(CardLabel(JS(Card,TEXT("id")),Label,4));Add(Header,Cell);}
+        for(auto RowCard:VisibleCards){auto* Line=Row(Matrix);auto* Label=WidgetTree->ConstructWidget<USizeBox>();Label->SetWidthOverride(140);auto* Name=Text(JS(RowCard,TEXT("name")),13);Name->SetAutoWrapText(false);Name->SetTextOverflowPolicy(ETextOverflowPolicy::Ellipsis);Label->SetToolTipText(Name->GetText());Label->SetContent(CardLabel(JS(RowCard,TEXT("id")),Name));Add(Line,Label);for(auto ColumnCard:VisibleCards){FString IA=JS(RowCard,TEXT("id")),IB=JS(ColumnCard,TEXT("id")),Key=Empirical?(IA<IB?IA+TEXT("+")+IB:IB+TEXT("+")+IA):IA+TEXT("/")+IB;auto Value=Cells.FindRef(Key);double Score=JN(Value,Empirical?TEXT("delta"):TEXT("edge"));bool Available=IA!=IB&&Value&&(!Empirical||JN(Value,TEXT("cleanN"))>=FMath::Max(1,MinSample));auto* ButtonCell=Button(Available?FString::Printf(TEXT("%+.1f"),Score):TEXT("—"),[this,Value](){if(Value){MetaDetail=Value;MetaRows();}});ButtonCell->SetBackgroundColor(Available?(Score>0?FLinearColor(.10f,.27f,.30f,1):Score<0?FLinearColor(.28f,.22f,.14f,1):Stone):Stone);auto* Size=WidgetTree->ConstructWidget<USizeBox>();Size->SetWidthOverride(53);Size->SetHeightOverride(32);Size->SetContent(ButtonCell);Add(Line,Size);}}return;
     }
     if(Tab==TEXT("AI Styles"))
     {
@@ -352,7 +372,7 @@ void URiftUIWidget::MetaRows()
         for(int32 I=1;I<Styles.Num();++I){FString StyleName=Styles[I];auto* Cell=WidgetTree->ConstructWidget<USizeBox>();Cell->SetWidthOverride(120);Cell->SetContent(Button(Pretty(StyleName.Replace(TEXT("_"),TEXT(" "))),[this,StyleName](){FString Key=TEXT("style:")+StyleName;bSortDescending=SortKey==Key?!bSortDescending:true;SortKey=Key;MetaRows();}));Add(Header,Cell);}
         for(auto Card:CardList)
         {
-            auto* Line=Row(Matrix);auto* NameCell=WidgetTree->ConstructWidget<USizeBox>();NameCell->SetWidthOverride(150);NameCell->SetContent(Text(JS(Card,TEXT("name")),14));Add(Line,NameCell);
+            auto* Line=Row(Matrix);auto* NameCell=WidgetTree->ConstructWidget<USizeBox>();NameCell->SetWidthOverride(150);auto* Name=Text(JS(Card,TEXT("name")),14);Name->SetAutoWrapText(false);Name->SetTextOverflowPolicy(ETextOverflowPolicy::Ellipsis);NameCell->SetToolTipText(Name->GetText());NameCell->SetContent(CardLabel(JS(Card,TEXT("id")),Name));Add(Line,NameCell);
             for(int32 I=1;I<Styles.Num();++I){auto Sample=StyleCards.FindOrAdd(Styles[I]).FindRef(JS(Card,TEXT("id")));FString Value=JN(Sample,TEXT("cleanN"))>=FMath::Max(1,MinSample)?Metric(Sample,TEXT("adjustedWinRate"))+TEXT("% · N ")+Metric(Sample,TEXT("cleanN")):TEXT("No clean samples");auto* Cell=WidgetTree->ConstructWidget<USizeBox>();Cell->SetWidthOverride(120);Cell->SetContent(Button(Value,[this,Sample](){if(Sample){MetaDetail=Sample;MetaRows();}}));Add(Line,Cell);}
         }
         Add(Rows,Text(TEXT("PERSONALITY TOTALS"),17,Brass));for(auto StyleRow:M->StyleRows(ArchetypeFilter))Add(Rows,Button(JS(StyleRow,TEXT("name"))+TEXT(" · Adjusted ")+Metric(StyleRow,TEXT("adjustedWinRate"))+TEXT("% · N ")+Metric(StyleRow,TEXT("cleanN"))+TEXT(" · Duration ")+Metric(StyleRow,TEXT("averageDuration"))+TEXT("s · Leaked Aether/game ")+Metric(StyleRow,TEXT("leakedPerGame")),[this,StyleRow](){MetaDetail=StyleRow;MetaRows();}));return;
@@ -361,7 +381,14 @@ void URiftUIWidget::MetaRows()
     if(Values.IsEmpty())Add(Rows,Text(Tab==TEXT("Alerts")?TEXT("No card currently meets the confidence and sample-size requirements for an alert."):TEXT("No recorded rows meet these filters."),17));
     if(Tab==TEXT("Alerts"))
     {
-        for(const auto& Value:Values)Add(Rows,Button(JS(Value,TEXT("severity"))+TEXT(" · ")+JS(Value,TEXT("name"))+TEXT(" · ")+JS(Value,TEXT("direction"))+TEXT(" · ")+JS(Value,TEXT("alert")),[this,Value](){MetaDetail=Value;MetaRows();}));return;
+        for(const auto& Value:Values)
+        {
+            const FString Label=JS(Value,TEXT("severity"))+TEXT(" · ")+JS(Value,TEXT("name"))+TEXT(" · ")+JS(Value,TEXT("direction"))+TEXT(" · ")+JS(Value,TEXT("alert"));
+            auto* Alert=Button(Label,[this,Value](){MetaDetail=Value;MetaRows();});
+            if(auto* LabelText=Cast<UTextBlock>(Alert->GetContent()))Alert->SetContent(CardLabel(JS(Value,TEXT("id")),LabelText));
+            Add(Rows,Alert);
+        }
+        return;
     }
     const TArray<FString> Columns=Tab==TEXT("Patches")?TArray<FString>{TEXT("name"),TEXT("availability"),TEXT("delta"),TEXT("baselineN"),TEXT("cleanN"),TEXT("adjustedWinRate"),TEXT("ciLow")}:Tab==TEXT("Archetypes")?TArray<FString>{TEXT("name"),TEXT("pickRate"),TEXT("adjustedWinRate"),TEXT("ciLow"),TEXT("cleanN"),TEXT("averageCrowns"),TEXT("averageDuration")}:TArray<FString>{TEXT("name"),TEXT("pickRate"),TEXT("adjustedWinRate"),TEXT("rawWinRate"),TEXT("ciLow"),TEXT("cleanN"),TEXT("damagePerAether"),TEXT("towerDamagePerAether")};
     const TMap<FString,FString> Labels={{TEXT("name"),Tab==TEXT("Archetypes")?TEXT("ARCHETYPE"):TEXT("CARD")},{TEXT("availability"),TEXT("BASELINE STATUS")},{TEXT("pickRate"),TEXT("PICK %")},{TEXT("adjustedWinRate"),TEXT("ADJUSTED %")},{TEXT("rawWinRate"),TEXT("RAW %")},{TEXT("ciLow"),TEXT("95% CI")},{TEXT("cleanN"),TEXT("CLEAN N")},{TEXT("baselineN"),TEXT("BASELINE N")},{TEXT("delta"),TEXT("DELTA")},{TEXT("averageCrowns"),TEXT("CROWNS / GAME")},{TEXT("averageDuration"),TEXT("DURATION (s)")},{TEXT("damagePerAether"),TEXT("DAMAGE / AETHER")},{TEXT("towerDamagePerAether"),TEXT("TOWER / AETHER")}};
@@ -377,7 +404,7 @@ void URiftUIWidget::MetaRows()
         {
             FString Label=Key==TEXT("name")||Key==TEXT("availability")?JS(Value,*Key):Metric(Value,*Key);
             if(Key==TEXT("ciLow")){const FString Low=Metric(Value,TEXT("ciLow")),High=Metric(Value,TEXT("ciHigh"));Label=JN(Value,TEXT("cleanN"))>0&&Low!=TEXT("unavailable")&&High!=TEXT("unavailable")?Low+TEXT("–")+High:TEXT("unavailable");}
-            auto* Cell=WidgetTree->ConstructWidget<UBorder>();Cell->SetBrushColor(FLinearColor(0,0,0,0));Cell->SetPadding(FMargin(10,9));Cell->SetClipping(EWidgetClipping::ClipToBounds);auto* ValueText=Text(Label,13,Key==TEXT("name")?Ivory:Key==TEXT("ciLow")?Muted:Cyan);ValueText->SetAutoWrapText(false);ValueText->SetTextOverflowPolicy(ETextOverflowPolicy::Ellipsis);ValueText->SetJustification(Key==TEXT("name")||Key==TEXT("availability")?ETextJustify::Left:ETextJustify::Center);ValueText->SetToolTipText(FText::FromString(Label));Cell->SetContent(ValueText);Add(Cells,Cell,true,2);
+            auto* Cell=WidgetTree->ConstructWidget<UBorder>();Cell->SetBrushColor(FLinearColor(0,0,0,0));Cell->SetPadding(FMargin(10,9));Cell->SetClipping(EWidgetClipping::ClipToBounds);auto* ValueText=Text(Label,13,Key==TEXT("name")?Ivory:Key==TEXT("ciLow")?Muted:Cyan);ValueText->SetAutoWrapText(false);ValueText->SetTextOverflowPolicy(ETextOverflowPolicy::Ellipsis);ValueText->SetJustification(Key==TEXT("name")||Key==TEXT("availability")?ETextJustify::Left:ETextJustify::Center);ValueText->SetToolTipText(FText::FromString(Label));if(Key==TEXT("name")&&Tab!=TEXT("Archetypes")){Cell->SetPadding(FMargin(10,5));Cell->SetContent(CardLabel(JS(Value,TEXT("id")),ValueText));}else Cell->SetContent(ValueText);Add(Cells,Cell,true,2);
         }
         Add(Rows,RowButton,0);
     }

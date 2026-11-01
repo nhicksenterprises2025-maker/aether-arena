@@ -24,7 +24,7 @@ if not cards or len({c["id"] for c in cards}) != len(cards):
     raise ValueError("Expected a complete native card definition array")
 entities = [] if isinstance(data, list) else data.get("entities", data.get("entitySnapshot", []))
 rules = {} if isinstance(data, list) else data.get("rules", data.get("rulesSnapshot", {}))
-if isinstance(data, dict) and data.get("schema") in (1, 2, 3) and data.get("balanceHash") and "cards" in data:
+if isinstance(data, dict) and data.get("schema") in (1, 2, 3, 4) and data.get("balanceHash") and "cards" in data:
     from generate_card_manifest import validate
     validate(data)
     if data.get("version") != args.version:
@@ -45,6 +45,8 @@ def numeric(value):
     return format(float(value), ".9g")
 
 def target_description(c):
+    if c.get("spawnId"):
+        return "None (summons troops)"
     if "targetMask" in c:
         mask = int(c["targetMask"])
         return ", ".join(label for bit, label in ((1,"Ground troops"),(2,"Air troops"),(4,"Structures")) if mask & bit)
@@ -98,8 +100,12 @@ for c in cards:
         ability("Lingering damage zone", f"Troops {numeric(c['dotDamage'])} / structures {numeric(structure_tick)} damage per tick; {numeric(c['dotInterval'])} s interval; {numeric(c['dotDuration'])} s duration", f"{ticks} ticks after initial impact while inside the zone; troop maximum {numeric(c['damage']+lingering)}; structure maximum {numeric(c['towerDamage']+structure_tick*ticks)} where eligible; separate damage packets, before mitigation/HP limits")
     if spell:
         ability("Area spell", f"{numeric(c['damage'])} troop damage; {numeric(c['towerDamage'])} structure damage; {numeric(c['spellRadius'])} tile radius; {numeric(c['castDelay'])} s cast delay", "Fixed target area; current enemy positions at impact" if c["castDelay"] else "Instant area impact")
-    if c["rounds"]:
+    if c["id"] == "thunderstorm":
+        ability("Lightning waves", f"{c['rounds']} strikes; {numeric(c['castDelay'])} s first impact; {numeric(c['dotInterval'])} s between strikes; {numeric(c['stunDuration'])} s stun each", f"Current enemy positions tested at each wave; ground, air and structures; maximum {numeric(c['damage']*c['rounds'])} troop or {numeric(c['towerDamage']*c['rounds'])} structure damage. Stun refreshes without stacking")
+    elif c["rounds"]:
         ability("Visual burst", f"{c['rounds']} rounds", "Listed damage is applied once per eligible target, not once per visual round")
+    if c.get("spawnId"):
+        ability("Periodic reinforcements", f"1 {c['spawnId'].replace('_', ' ').title()} member every {numeric(c['spawnInterval'])} s; first spawn {numeric(c['spawnInterval'])} s; up to {int(c['lifetime']/c['spawnInterval'])} before expiry", "Uses current troop stats and one member per spawn. Stun pauses production; hard lifetime continues; destruction stops production. Children retain parent play attribution and cost no extra Aether or deck slot")
     if building:
         decay = f"; {numeric(c['hpDecayPerSecond'])} HP/s decay" if "hpDecayPerSecond" in c else ""
         first = f"; {numeric(c['initialAttackCooldown'])} s first cooldown" if "initialAttackCooldown" in c else ""
@@ -118,17 +124,19 @@ for c in cards:
 args.output_directory.mkdir(parents=True, exist_ok=True)
 outputs = [emit("CARD_STATS", ["Card", "Type", "Aether cost", "Units", "Body HP per unit", "Damage per hit", "Attack interval (s)", "Basic DPS per unit", "Full swarm basic DPS", "Full swarm body HP", "Movement speed (tiles/s)", "Attack range (tiles)", "Projectile speed (tiles/s)", "Movement", "Basic attack targets", "Splash radius (tiles)", "Lifetime (s)", "Building footprint (tiles)", "Base model scale", "Shield HP per unit", "Initial durability per unit", "Gameplay collision radius (tiles)", "Passive HP decay (HP/s)", "Hard expiry at maximum lifetime", "Initial attack cooldown (s)", "Front sight (tiles)", "Rear sight (tiles)", "Card ID"], stats),
            emit("ABILITY_STATS", ["Card", "Ability", "Values", "Behavior"], abilities)]
-if entities:
-    children = {c["id"]:c for c in entities}
+if entities or any(c.get("spawnId") for c in cards):
+    children = {c["id"]:c for c in cards + entities}
     summon_rows = []
     for parent in cards:
-        if not parent.get("deathSpawnCount", 0):
+        periodic = bool(parent.get("spawnId"))
+        if not periodic and not parent.get("deathSpawnCount", 0):
             continue
-        child = children.get(parent.get("deathSpawnId"))
+        child = children.get(parent.get("spawnId") if periodic else parent.get("deathSpawnId"))
         if child is None:
             raise ValueError("Missing subordinate definition for " + parent["id"])
-        count = parent["deathSpawnCount"]
+        count = 1 if periodic else parent["deathSpawnCount"]
         summon_rows.append([parent["name"],child["name"],count,numeric(child["hp"]),numeric(child["damage"]),numeric(child["attackInterval"]),f"{child['damage']/child['attackInterval']:.2f}",numeric(child["hp"]*count),f"{child['damage']/child['attackInterval']*count:.2f}",numeric(child["moveSpeed"]),numeric(child["range"]),target_description(child),numeric(child["scale"]),numeric(child.get("collisionRadius",0)),0,0,parent["id"],child["id"]])
-    outputs.append(emit("SUMMON_STATS", ["Parent card", "Subordinate unit", "Children per death", "Body HP each", "Damage each", "Attack interval (s)", "Basic DPS each", "Group body HP", "Group basic DPS", "Movement (tiles/s)", "Range (tiles)", "Targets", "Model scale", "Collision radius (tiles)", "Additional Aether cost", "Additional deck slots", "Parent ID", "Entity ID"], summon_rows))
+        summon_rows[-1] += ["Every " + numeric(parent["spawnInterval"]) + " s while alive and unstunned" if periodic else "On death", int(parent["lifetime"] / parent["spawnInterval"]) if periodic else count]
+    outputs.append(emit("SUMMON_STATS", ["Parent card", "Subordinate unit", "Children per release", "Body HP each", "Damage each", "Attack interval (s)", "Basic DPS each", "Release body HP", "Release basic DPS", "Movement (tiles/s)", "Range (tiles)", "Targets", "Model scale", "Collision radius (tiles)", "Additional Aether cost", "Additional deck slots", "Parent ID", "Entity ID", "Release condition", "Maximum children per deployment"], summon_rows))
 proof = {"version": args.version, "source": str(args.input).replace("\\", "/"), "sourceSHA256": hashlib.sha256(raw).hexdigest(), "balanceHash":None if isinstance(data,list) else data.get("balanceHash"),"cardCount": len(cards),"subordinateDefinitions":len(entities), "formula": "Basic DPS per member = damage / attack interval; full swarm basic DPS = per-member DPS * count; no travel, projectile or ability damage included", "outputs": outputs}
 print(json.dumps(proof, indent=2))

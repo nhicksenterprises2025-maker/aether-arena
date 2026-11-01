@@ -59,7 +59,7 @@ namespace
     FString FS(const std::string& S){return UTF8_TO_TCHAR(S.c_str());}
     bool DatasetCanResume(const TSharedPtr<FJsonObject>& Dataset)
     {
-        if(!Dataset||Number(Dataset,TEXT("schemaVersion"),-1)!=1||String(Dataset,TEXT("fingerprint"))!=URiftMetaSimulationSubsystem::Fingerprint()||String(Dataset,TEXT("model"))!=TEXT("rift-native-1")||String(Dataset,TEXT("deckPolicy"))!=TEXT("native-observed-2")||Number(Dataset,TEXT("telemetryRevision"),-1)!=4)return false;
+        if(!Dataset||Number(Dataset,TEXT("schemaVersion"),-1)!=1||String(Dataset,TEXT("fingerprint"))!=URiftMetaSimulationSubsystem::Fingerprint()||String(Dataset,TEXT("model"))!=TEXT("rift-native-1")||String(Dataset,TEXT("deckPolicy"))!=TEXT("native-observed-2")||Number(Dataset,TEXT("telemetryRevision"),-1)!=5)return false;
         const TSharedPtr<FJsonObject>* Buckets=nullptr;const TArray<TSharedPtr<FJsonValue>>* Points=nullptr;
         if(!Dataset->TryGetObjectField(TEXT("buckets"),Buckets)||!Dataset->TryGetArrayField(TEXT("checkpoints"),Points))return false;
         double Games=-1,Invalid=-1,Seed=-1;
@@ -76,22 +76,24 @@ namespace
         FString Version=TEXT("unknown");if(GConfig)GConfig->GetString(TEXT("/Script/EngineSettings.GeneralProjectSettings"),TEXT("ProjectVersion"),Version,GGameIni);
         O->SetStringField(TEXT("version"),Version);O->SetStringField(TEXT("model"),TEXT("rift-native-1"));O->SetStringField(TEXT("deckPolicy"),TEXT("native-observed-2"));O->SetStringField(TEXT("fingerprint"),URiftMetaSimulationSubsystem::Fingerprint());O->SetStringField(TEXT("balanceHash"),FS(rift::CardManifestHash()));
         O->SetNumberField(TEXT("fingerprintPolicyRevision"),2);
-        O->SetNumberField(TEXT("games"),0);O->SetNumberField(TEXT("invalid"),0);O->SetNumberField(TEXT("seed"),151515);O->SetNumberField(TEXT("simulationWallSeconds"),0);O->SetNumberField(TEXT("economyChecks"),0);O->SetNumberField(TEXT("economyInvalid"),0);O->SetNumberField(TEXT("maximumEconomyResidual"),0);O->SetNumberField(TEXT("telemetryRevision"),4);
+        O->SetNumberField(TEXT("games"),0);O->SetNumberField(TEXT("invalid"),0);O->SetNumberField(TEXT("seed"),151515);O->SetNumberField(TEXT("simulationWallSeconds"),0);O->SetNumberField(TEXT("economyChecks"),0);O->SetNumberField(TEXT("economyInvalid"),0);O->SetNumberField(TEXT("maximumEconomyResidual"),0);O->SetNumberField(TEXT("telemetryRevision"),5);
         O->SetObjectField(TEXT("buckets"),MakeShared<FJsonObject>());O->SetArrayField(TEXT("checkpoints"),{});
         TArray<TSharedPtr<FJsonValue>> CardSnapshot;
         auto CaptureDefinition=[](const rift::Card& Card)
         {
             auto Definition=MakeShared<FJsonObject>();Definition->SetStringField(TEXT("id"),FS(Card.id));Definition->SetStringField(TEXT("name"),FS(Card.name));Definition->SetStringField(TEXT("category"),Card.spell?TEXT("Spell"):Card.building?TEXT("Building"):TEXT("Troop"));
 #define SNAPSHOT_FIELD(Key) Definition->SetNumberField(TEXT(#Key),double(Card.Key))
-            SNAPSHOT_FIELD(cost);SNAPSHOT_FIELD(count);SNAPSHOT_FIELD(hp);SNAPSHOT_FIELD(damage);SNAPSHOT_FIELD(attackInterval);SNAPSHOT_FIELD(moveSpeed);SNAPSHOT_FIELD(range);SNAPSHOT_FIELD(scale);SNAPSHOT_FIELD(collisionRadius);SNAPSHOT_FIELD(targetMask);SNAPSHOT_FIELD(projectileSpeed);SNAPSHOT_FIELD(shockwaveSpeed);SNAPSHOT_FIELD(splash);SNAPSHOT_FIELD(lifetime);SNAPSHOT_FIELD(footprint);SNAPSHOT_FIELD(towerDamage);SNAPSHOT_FIELD(spellRadius);SNAPSHOT_FIELD(castDelay);SNAPSHOT_FIELD(chargeDamage);SNAPSHOT_FIELD(slowPct);SNAPSHOT_FIELD(slowDuration);SNAPSHOT_FIELD(auraDamage);SNAPSHOT_FIELD(auraInterval);SNAPSHOT_FIELD(auraRadius);SNAPSHOT_FIELD(stunDuration);SNAPSHOT_FIELD(dotDamage);SNAPSHOT_FIELD(dotDuration);SNAPSHOT_FIELD(dotInterval);SNAPSHOT_FIELD(rounds);SNAPSHOT_FIELD(chargeMoveSeconds);SNAPSHOT_FIELD(chargedMoveSpeed);SNAPSHOT_FIELD(hpDecayPerSecond);SNAPSHOT_FIELD(initialAttackCooldown);SNAPSHOT_FIELD(shieldHP);SNAPSHOT_FIELD(deathSpawnCount);SNAPSHOT_FIELD(invisibilityDuration);SNAPSHOT_FIELD(healthCloakThreshold);SNAPSHOT_FIELD(dotStructureDamage);
+            SNAPSHOT_FIELD(cost);SNAPSHOT_FIELD(count);SNAPSHOT_FIELD(hp);SNAPSHOT_FIELD(damage);SNAPSHOT_FIELD(attackInterval);SNAPSHOT_FIELD(moveSpeed);SNAPSHOT_FIELD(range);SNAPSHOT_FIELD(scale);SNAPSHOT_FIELD(collisionRadius);SNAPSHOT_FIELD(targetMask);SNAPSHOT_FIELD(projectileSpeed);SNAPSHOT_FIELD(shockwaveSpeed);SNAPSHOT_FIELD(splash);SNAPSHOT_FIELD(lifetime);SNAPSHOT_FIELD(footprint);SNAPSHOT_FIELD(towerDamage);SNAPSHOT_FIELD(spellRadius);SNAPSHOT_FIELD(castDelay);SNAPSHOT_FIELD(chargeDamage);SNAPSHOT_FIELD(slowPct);SNAPSHOT_FIELD(slowDuration);SNAPSHOT_FIELD(auraDamage);SNAPSHOT_FIELD(auraInterval);SNAPSHOT_FIELD(auraRadius);SNAPSHOT_FIELD(stunDuration);SNAPSHOT_FIELD(dotDamage);SNAPSHOT_FIELD(dotDuration);SNAPSHOT_FIELD(dotInterval);SNAPSHOT_FIELD(rounds);SNAPSHOT_FIELD(chargeMoveSeconds);SNAPSHOT_FIELD(chargedMoveSpeed);SNAPSHOT_FIELD(hpDecayPerSecond);SNAPSHOT_FIELD(initialAttackCooldown);SNAPSHOT_FIELD(shieldHP);SNAPSHOT_FIELD(deathSpawnCount);SNAPSHOT_FIELD(invisibilityDuration);SNAPSHOT_FIELD(healthCloakThreshold);SNAPSHOT_FIELD(dotStructureDamage);SNAPSHOT_FIELD(spawnInterval);
 #undef SNAPSHOT_FIELD
             Definition->SetBoolField(TEXT("flying"),Card.flying);Definition->SetBoolField(TEXT("canHitAir"),Card.canHitAir);Definition->SetBoolField(TEXT("structuresOnly"),Card.structuresOnly);Definition->SetBoolField(TEXT("spell"),Card.spell);Definition->SetBoolField(TEXT("building"),Card.building);
-            Definition->SetBoolField(TEXT("hardExpiry"),Card.hardExpiry);Definition->SetBoolField(TEXT("shieldOverflowProtected"),Card.shieldOverflowProtected);Definition->SetBoolField(TEXT("globalFriendlyInvisibility"),Card.globalFriendlyInvisibility);Definition->SetBoolField(TEXT("breakExistingLocks"),Card.breakExistingLocks);Definition->SetStringField(TEXT("deathSpawnId"),FS(Card.deathSpawnId));return Definition;
+            Definition->SetBoolField(TEXT("hardExpiry"),Card.hardExpiry);Definition->SetBoolField(TEXT("shieldOverflowProtected"),Card.shieldOverflowProtected);Definition->SetBoolField(TEXT("globalFriendlyInvisibility"),Card.globalFriendlyInvisibility);Definition->SetBoolField(TEXT("breakExistingLocks"),Card.breakExistingLocks);Definition->SetStringField(TEXT("deathSpawnId"),FS(Card.deathSpawnId));Definition->SetStringField(TEXT("spawnId"),FS(Card.spawnId));return Definition;
         };
         for(const auto& Card:rift::Cards())CardSnapshot.Add(MakeShared<FJsonValueObject>(CaptureDefinition(Card)));
         TArray<TSharedPtr<FJsonValue>> EntitySnapshot;for(const auto& Card:rift::EntityDefinitions())EntitySnapshot.Add(MakeShared<FJsonValueObject>(CaptureDefinition(Card)));
         O->SetArrayField(TEXT("entitySnapshot"),EntitySnapshot);O->SetArrayField(TEXT("cardSnapshot"),CardSnapshot);auto Rules=MakeShared<FJsonObject>();
         Rules->SetNumberField(TEXT("combatRevision"),rift::arena::CombatRevision);
+        Rules->SetStringField(TEXT("periodicSpawnPolicy"),TEXT("One current referenced troop per completed spawn interval; stun pauses production; hard expiry continues; children retain parent paid-play attribution"));
+        Rules->SetStringField(TEXT("lightningWavePolicy"),TEXT("Fixed area; current enemy positions at each wave; castDelay + (wave-1)*dotInterval; stun refreshes per surviving target"));
         Rules->SetStringField(TEXT("cloakLockException"),TEXT("Approved Shadow Surge drops enemy locks, including committed Crown Tower locks; committed damage and projectiles still resolve"));
         Rules->SetStringField(TEXT("detection"),TEXT("strict center distance: 8 tiles forward, extended to attack range for longer-range projectile cards; 5 tiles rear; eligible targets only; Crown advance and engaged Crown hard locks preserved"));
         Rules->SetStringField(TEXT("shockwave"),TEXT("expanding ground troop-only front; one hit per wave; source death does not cancel; per-card slow refresh, strongest active effect wins"));
@@ -150,7 +152,8 @@ namespace
                 auto Entities=Object(Bucket,TEXT("entities"));
                 for(const auto& Entry:State.entityTelemetry[I]) {
                     const auto& Body=Entry.second;const auto& T=Body.observed;
-                    auto S=Object(Entities,FS(Body.cardId));S->SetStringField(TEXT("cardId"),FS(Body.cardId));
+                    const FString BodyKey=Body.parentEntityId?FS(Body.attributionCardId)+TEXT("/")+FS(Body.cardId):FS(Body.cardId);
+                    auto S=Object(Entities,BodyKey);S->SetStringField(TEXT("cardId"),FS(Body.cardId));
                     S->SetStringField(TEXT("parentCardId"),FS(Body.attributionCardId));S->SetBoolField(TEXT("subordinate"),Body.parentEntityId!=0);
                     Add(S,TEXT("observations"),1);
 #define RF(K) Add(S,TEXT(#K),double(T.K))
@@ -251,7 +254,7 @@ FString URiftMetaSimulationSubsystem::Fingerprint()
     // Only gameplay data and explicit simulator-policy revisions reset samples.
     // Policy2 formats authoritative tile geometry, independent of world-unit
     // presentation scale. Policy1 archives retain their recorded identity.
-    const FString Canonical=FString::Printf(TEXT("rift-native-1|native-observed-2|ai-v15-port-2|fingerprint-policy-2|telemetry-4|arena%dx%d|river%.9g|bridges%.9g,%.9g|phase180,120|aether2.8,120,240|drain180|coreGuardOnly|pocket2,%.9g,2.25,%.9g|towers%.9g,%.9g,%.9g|layered-swept-disc-1|collisionSkin0.02|structureClearance0.22|"),
+    const FString Canonical=FString::Printf(TEXT("rift-native-1|native-observed-2|ai-v15-port-2|fingerprint-policy-2|telemetry-5|arena%dx%d|river%.9g|bridges%.9g,%.9g|phase180,120|aether2.8,120,240|drain180|coreGuardOnly|pocket2,%.9g,2.25,%.9g|towers%.9g,%.9g,%.9g|layered-swept-disc-1|collisionSkin0.02|structureClearance0.22|"),
         rift::arena::Width,rift::arena::Height,rift::arena::RiverHalfWidth,rift::arena::BridgeCenterX,rift::arena::BridgeWidth,
         rift::arena::PocketOuterX,rift::arena::PocketMaxDepth,rift::arena::GuardX,rift::arena::GuardDepth,rift::arena::CoreDepth)
         +FS(rift::CardManifestHash());
@@ -396,9 +399,22 @@ bool FRiftMetaExpansionAttributionTest::RunTest(const FString&)
     for(int I=0;I<4;++I){rift::EntityTelemetry Child;Child.id=101+I;Child.parentEntityId=100;Child.playId=10;Child.cardId=Parent->deathSpawnId;Child.attributionCardId=Parent->id;Child.observed.spawns=1;Child.observed.deaths=I==0?1:0;Child.observed.surviving=I==0?0:1;Child.observed.troopDamage=10;Child.observed.lifetime=5;State.entityTelemetry[0].emplace(Child.id,Child);}
     auto& Shield=State.telemetry[0][Giant->id];Shield.plays=1;Shield.spent=Giant->cost;Shield.spawns=1;Shield.surviving=1;Shield.shieldDamageTaken=310;Shield.shieldAbsorbed=400;Shield.overflowPrevented=90;
     rift::EntityTelemetry Protected;Protected.id=200;Protected.playId=11;Protected.cardId=Protected.attributionCardId=Giant->id;Protected.observed.spawns=1;Protected.observed.surviving=1;Protected.observed.shieldDamageTaken=310;Protected.observed.shieldAbsorbed=400;Protected.observed.overflowPrevented=90;State.entityTelemetry[0].emplace(Protected.id,Protected);
-    State.spent[0]=Parent->cost+Giant->cost;auto Dataset=NewDataset();Aggregate(Dataset,State);auto Bucket=ReadObject(ReadObject(Dataset,TEXT("buckets")),TEXT("all|all"));
-    auto ParentRow=ReadObject(ReadObject(Bucket,TEXT("cards")),FS(Parent->id));auto ChildRow=ReadObject(ReadObject(Bucket,TEXT("entities")),FS(Parent->deathSpawnId));
-    TestEqual(TEXT("Expansion observations receive a distinct telemetry identity"),Number(Dataset,TEXT("telemetryRevision")),4.0);
+    State.decks[0][2]="twin_blades";State.decks[0][3]="blade_box";
+    const auto* Box=rift::FindCard("blade_box");const auto* Twin=rift::FindCard("twin_blades");
+    TestNotNull(TEXT("Periodic spawner exists"),Box);TestNotNull(TEXT("Shared troop definition exists"),Twin);if(!Box||!Twin)return false;
+    auto& Factory=State.telemetry[0][Box->id];Factory.plays=1;Factory.spent=Box->cost;Factory.spawns=1;Factory.surviving=1;Factory.childSpawns=2;Factory.childSurviving=2;Factory.troopDamage=20;
+    rift::EntityTelemetry Building;Building.id=300;Building.playId=12;Building.cardId=Building.attributionCardId=Box->id;Building.observed.spawns=1;Building.observed.surviving=1;State.entityTelemetry[0].emplace(Building.id,Building);
+    auto& PaidTwins=State.telemetry[0][Twin->id];PaidTwins.plays=1;PaidTwins.spent=Twin->cost;PaidTwins.spawns=2;PaidTwins.surviving=2;PaidTwins.troopDamage=14;
+    for(int I=0;I<2;++I){rift::EntityTelemetry Child;Child.id=301+I;Child.parentEntityId=300;Child.playId=12;Child.cardId=Twin->id;Child.attributionCardId=Box->id;Child.observed.spawns=1;Child.observed.surviving=1;Child.observed.troopDamage=10;State.entityTelemetry[0].emplace(Child.id,Child);
+        Child.id=400+I;Child.parentEntityId=0;Child.playId=13;Child.attributionCardId=Twin->id;Child.observed.troopDamage=7;State.entityTelemetry[0].emplace(Child.id,Child);}
+    State.spent[0]=Parent->cost+Giant->cost+Box->cost+Twin->cost;auto Dataset=NewDataset();Aggregate(Dataset,State);auto Bucket=ReadObject(ReadObject(Dataset,TEXT("buckets")),TEXT("all|all"));
+    const auto Observed=ReadObject(Bucket,TEXT("entities"));
+    TestEqual(TEXT("Paid Twin Blade bodies retain a distinct ledger"),Number(ReadObject(Observed,TEXT("twin_blades")),TEXT("spawns")),2.0);
+    TestEqual(TEXT("Summoned Twin Blade bodies retain a distinct ledger"),Number(ReadObject(Observed,TEXT("blade_box/twin_blades")),TEXT("spawns")),2.0);
+    TestEqual(TEXT("Summoned damage belongs to Blade Box"),Number(ReadObject(ReadObject(Bucket,TEXT("cards")),TEXT("blade_box")),TEXT("troopDamage")),20.0);
+    TestEqual(TEXT("Summons cannot inflate paid Twin Blade damage"),Number(ReadObject(ReadObject(Bucket,TEXT("cards")),TEXT("twin_blades")),TEXT("troopDamage")),14.0);
+    auto ParentRow=ReadObject(ReadObject(Bucket,TEXT("cards")),FS(Parent->id));auto ChildRow=ReadObject(ReadObject(Bucket,TEXT("entities")),FS(Parent->id)+TEXT("/")+FS(Parent->deathSpawnId));
+    TestEqual(TEXT("Expansion observations receive a distinct telemetry identity"),Number(Dataset,TEXT("telemetryRevision")),5.0);
     auto Old=Parse(Text(Dataset));Old->SetNumberField(TEXT("telemetryRevision"),3);TestFalse(TEXT("Same-hash prior telemetry cannot resume child/shield denominators"),DatasetCanResume(Old));
     TestEqual(TEXT("Children remain outside the paid card roster"),Number(ParentRow,TEXT("spawns")),1.0);TestFalse(TEXT("No manufactured child card appearances"),ReadObject(Bucket,TEXT("cards"))->HasField(FS(Parent->deathSpawnId)));
     TestEqual(TEXT("Four death summons remain separately observed"),Number(ChildRow,TEXT("observations")),4.0);TestEqual(TEXT("Child attribution retains actual paid parent"),String(ChildRow,TEXT("parentCardId")),FS(Parent->id));

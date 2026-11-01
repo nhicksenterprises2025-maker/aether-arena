@@ -8,10 +8,10 @@ import bpy
 from mathutils import Vector
 from mathutils.bvhtree import BVHTree
 from mathutils.kdtree import KDTree
-from upgrade_card_models import grip_center, bone_band, thin_cloth
+from upgrade_card_models import grip_center, bone_band, thin_cloth, remove
 
 
-CHARACTERS = frozenset(('ironclad', 'ember_archer', 'twin_blades', 'arc_mage',
+CHARACTERS = frozenset(('ironclad', 'ember_archer', 'tower_archer', 'twin_blades', 'arc_mage',
                         'bone_warden', 'bone_warden_skeleton', 'aether_reaper', 'iron_giant'))
 
 
@@ -185,6 +185,71 @@ def _expressive_face(f, k):
         for lock in _parts(f, 'single_mage_beard_lock'):
             lo,hi = _bounds(lock); x=(lo.x+hi.x)/2
             _line(f, lock, 'beard_division', [(x,lo.z+(hi.z-lo.z)*.18),(x,lo.z+(hi.z-lo.z)*.83)], 'ivory', .0018, 'head')
+
+
+def _archer_head(f, k):
+    # The old two-row fringe was a floating strip across the forehead. Fit a
+    # connected swept cap to the evaluated scalp, including its crown beneath
+    # the hood, so skin rounding cannot leave a bald gap above the fringe.
+    skin=next(p for p in f.parts if any(n in p.name for n in ('continuous_face','sculpted_face_planes')))
+    if f.name=='tower_archer':
+        # The following prop pass still owns its existing face union/details.
+        bpy.context.view_layer.objects.active=skin
+        smooth=skin.modifiers.new('Rounded archer facial sections','SUBSURF')
+        smooth.levels=2;smooth.render_levels=2
+        bpy.ops.object.modifier_apply(modifier=smooth.name)
+    remove(f,'single_connected_hair_fringe','subtle_hair_strand','single_expressive_brow',
+           'swept_auburn_ponytail')
+    # The legacy ponytail pierced the closed upper rear hood. Let a short tail
+    # emerge below its nape hem, retaining the existing secondary-motion joint.
+    tail=f.tube('detail_nape_ponytail',[(0,.135,1.565*k),(0,.205,1.525*k),
+                (.015,.265,1.475*k),(.022,.28,1.425*k)],
+                [.024,.029,.021,.001],'hair_auburn','crest_tip',16)
+    tip=tail.vertex_groups['crest_tip'];base=tail.vertex_groups.new(name='head')
+    for vertex in tail.data.vertices:
+        t=min(1.,max(0.,(1.56*k-(tail.matrix_world@vertex.co).z)/(.12*k)))
+        tip.add([vertex.index],t,'REPLACE');base.add([vertex.index],1-t,'REPLACE')
+    points=[skin.matrix_world@v.co for v in skin.data.vertices]
+    bvh=BVHTree.FromPolygons(points,[list(p.vertices) for p in skin.data.polygons])
+    origin=Vector((0,0,1.76*k))
+    def hairline(angle):
+        return .50+.11*math.sin(angle)+.032*math.cos(5*angle+.4)
+    def scalp(angle,elevation,lift=.008):
+        direction=Vector((math.sin(angle)*math.cos(elevation),-math.cos(angle)*math.cos(elevation),math.sin(elevation)))
+        point,normal,_,_=bvh.ray_cast(origin,direction,2)
+        if point is None:raise ValueError('Archer hair missed its scalp')
+        return point+normal*lift*k
+    vertices=[];faces=[]
+    columns,rows=41,17
+    for row in range(rows):
+        t=row/(rows-1)
+        for col in range(columns):
+            angle=-1.45+2.90*col/(columns-1)
+            line=hairline(angle)
+            lift=.008+.0035*math.sin(math.pi*t)*(.5+.5*math.cos(angle*15-t*1.8))
+            vertices.append(scalp(angle,line+(1.55-line)*t,lift))
+    for row in range(rows-1):
+        for col in range(columns-1):
+            q=row*columns+col;faces.append((q,q+1,q+columns+1,q+columns))
+    thin_cloth(f,'detail_fitted_swept_hair',vertices,faces,'hair_auburn','head',.005*k)
+    # Broad tapered locks share the same scalp projection and sweep. They grow
+    # from the cap instead of forming separate straight sticks across the face.
+    for angle in (-1.04,-.69,-.34,.01,.36,.71,1.06):
+        locks=[];quads=[]
+        for row in range(17):
+            t=row/16;a=angle+.24*(1-t);line=hairline(a)
+            elevation=1.35*(1-t)+(line+.008)*t
+            width=.082*math.sin(math.pi*(.04+.96*t))
+            for col in (-1,0,1):
+                lift=.009+(1-abs(col))*.006*math.sin(math.pi*t)
+                locks.append(scalp(a+col*width,elevation,lift))
+        for row in range(16):
+            for col in range(2):
+                q=row*3+col;quads.append((q,q+3,q+4,q+1))
+        thin_cloth(f,'detail_swept_forelock',locks,quads,'hair_auburn','head',.002*k)
+    for sign in (-1,1):
+        _line(f,skin,'fitted_archer_brow',[(sign*.037*k,1.827*k),
+              (sign*.072*k,1.838*k),(sign*.111*k,1.827*k)],'hair_auburn',.006*k,'head')
 
 
 def _cloth_finish(f, k):
@@ -451,10 +516,13 @@ def polish(f, skinned):
     before=len(f.parts)
     if f.name=='ironclad':
         _ironclad(f)
+    elif f.name=='tower_archer':
+        _archer_head(f,f.bones['head']['head'][2]/1.6)
     elif f.name in ('ember_archer','twin_blades','arc_mage'):
         k=f.bones['head']['head'][2]/1.6
         _expressive_face(f,k);_cloth_finish(f,k)
         {'ember_archer':_archer,'twin_blades':_twins,'arc_mage':_mage}[f.name](f,k)
+        if f.name=='ember_archer':_archer_head(f,k)
     else:
         {'bone_warden':_warden,'bone_warden_skeleton':_skeleton,
          'aether_reaper':_reaper,'iron_giant':_giant}[f.name](f)

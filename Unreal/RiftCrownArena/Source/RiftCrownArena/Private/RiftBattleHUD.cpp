@@ -41,7 +41,9 @@ FString ResultLabel(const std::string& Reason){
     FString Label=GameString(Reason).Replace(TEXT("_"),TEXT(" "));return Label.IsEmpty()?Label:Label.Left(1).ToUpper()+Label.Mid(1);
 }
 FString CardSummary(const rift::Card& C){
-    FString Result=C.spell?FString::Printf(TEXT("%d Aether · Spell\n%.0f damage · %.1f tile radius\n%.0f structure damage"),C.cost,C.damage,C.spellRadius,C.towerDamage):FString::Printf(TEXT("%d Aether · %s%s\n%.0f HP · %.0f damage / %.2fs\n%.1f range · %s"),C.cost,C.flying?TEXT("Air"):C.building?TEXT("Building"):TEXT("Ground"),C.count>1?*FString::Printf(TEXT(" ×%d"),C.count):TEXT(""),C.hp,C.damage,C.attackInterval,C.range,C.structuresOnly?TEXT("Structures"):C.canHitAir?TEXT("Ground + Air"):TEXT("Ground targets"));
+    if(!C.spawnId.empty())return FString::Printf(TEXT("%d Aether · Reinforcement building\n%g HP · %g-second lifetime\nOne Twin Blade every %g seconds\nStun pauses production"),C.cost,C.hp,C.lifetime,C.spawnInterval);
+    if(C.id=="thunderstorm")return FString::Printf(TEXT("%d Aether · Thunderstorm\n%d waves · %g-tile radius\n%g troop / %g structure per strike\n%.2fs first hit · %.2fs between\n%.2fs stun on each hit"),C.cost,C.rounds,C.spellRadius,C.damage,C.towerDamage,C.castDelay,C.dotInterval,C.stunDuration);
+    FString Result=C.spell?FString::Printf(TEXT("%d Aether · Spell\n%.0f damage · %.1f tile radius\n%.0f structure damage"),C.cost,C.damage,C.spellRadius,C.towerDamage):FString::Printf(TEXT("%d Aether · %s%s\n%g HP · %.0f damage / %.2fs\n%.1f range · %s"),C.cost,C.flying?TEXT("Air"):C.building?TEXT("Building"):TEXT("Ground"),C.count>1?*FString::Printf(TEXT(" ×%d"),C.count):TEXT(""),C.hp,C.damage,C.attackInterval,C.range,C.structuresOnly?TEXT("Structures"):C.canHitAir?TEXT("Ground + Air"):TEXT("Ground targets"));
     if(C.castDelay>0)Result+=FString::Printf(TEXT("\n%.2fs to impact · lead moving targets"),C.castDelay);
     if(C.dotDamage)Result+=FString::Printf(TEXT("\n%.0f troop / %.0f structure per %.1fs tick · %.1fs zone"),C.dotDamage,C.dotStructureDamage,C.dotInterval,C.dotDuration);
     if(C.slowPct)Result+=FString::Printf(TEXT("\n%.0f%% slow for %.1fs"),C.slowPct*100,C.slowDuration);

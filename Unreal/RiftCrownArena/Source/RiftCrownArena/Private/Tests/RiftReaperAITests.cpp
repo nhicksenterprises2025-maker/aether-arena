@@ -20,7 +20,7 @@ bool FRiftReaperCloakAITest::RunTest(const FString&) {
         if(!TestTrue(TEXT("Both compared AI hands originate from legal eight-card decks"),rift::ValidateDeck(Options.decks[0])))return false;
         rift::Match Match(Options);
         // Explicit observable-threat fixture: a wounded stationary ally and a
-        // real in-range enemy with a committed target, due to fire in .5s.
+        // real in-range enemy with a committed target, due to fire in1.1s.
         // Hold crowns quiet so only this public lock informs the AI choice.
         if(!TestTrue(TEXT("Actual friendly target spawns"),Match.Spawn(rift::Team::Player,"ironclad",{.5,8.5}))||
            !TestTrue(TEXT("Actual enemy ranged attacker spawns"),Match.Spawn(rift::Team::Enemy,"ember_archer",{6.5,8.5})))return false;
@@ -32,7 +32,7 @@ bool FRiftReaperCloakAITest::RunTest(const FString&) {
         }
         if(!TestTrue(TEXT("Threat fixture has two distinct real bodies"),Subject>0&&Attacker>0&&Subject!=Attacker))return false;
         for(auto& Body:const_cast<rift::Snapshot&>(Match.State()).entities)
-            if(Body.id==Attacker) {Body.target=Body.hardLock=Subject;Body.cooldown=.5;Body.scanClock=100;}
+            if(Body.id==Attacker) {Body.target=Body.hardLock=Subject;Body.cooldown=1.1;Body.scanClock=100;}
         Match.SetAether(rift::Team::Player,4);
         const auto Before=Match.State();
         Match.SetAIEnabled(rift::Team::Player,true);Match.Step(1./60.);
@@ -49,7 +49,7 @@ bool FRiftReaperCloakAITest::RunTest(const FString&) {
         });
         TestEqual(TEXT("Only the area spell makes a cloak-defense decision"),CloakDecision,AreaSpell);
         TestEqual(TEXT("Paid play distinguishes area protection from troop defense"),FString(UTF8_TO_TCHAR(Play.reason.c_str())),FString(AreaSpell?TEXT("cloak_defense"):TEXT("defend")));
-        Match.Step(.3);
+        Match.Step(AreaSpell?.8:.3);
         const auto Body=std::find_if(Match.State().entities.begin(),Match.State().entities.end(),[&](const rift::Entity& Entity){return Entity.id==Subject;});
         if(!TestTrue(TEXT("The protected target remains alive through the spell window"),Body!=Match.State().entities.end()&&!Body->dead))return false;
         const bool Applied=std::any_of(Match.Events().begin(),Match.Events().end(),[&](const rift::Event& Event) {

@@ -83,8 +83,7 @@ int32 URiftBattleOverlay::NativePaint(const FPaintArgs& Args,const FGeometry& Ge
         if(Entity.team==rift::Team::Enemy && Entity.invisibleUntil>State->elapsed)continue;
         const bool ShowHealth=Visual->HasBeenDamaged();
         if(!ShowHealth)++UndamagedCount;
-        const FString StatusText=Entity.stunUntil>State->elapsed?TEXT("STUN"):
-            Entity.charged?TEXT("CHARGE"):TEXT("");
+        const FString StatusText=Entity.charged && Entity.stunUntil<=State->elapsed?TEXT("CHARGE"):TEXT("");
         const auto* LifetimeCard=Entity.kind==rift::EntityKind::Building?rift::FindCard(Entity.cardId):nullptr;
         const bool ShowLifetime=LifetimeCard && LifetimeCard->lifetime>0;
         // First-damage visibility applies only to HP, not independent state

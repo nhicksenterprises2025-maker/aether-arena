@@ -82,6 +82,8 @@ PORTRAIT_MOODS = {
     'aether_reaper': ((.029,.020,.061), (.88,.86,1), (.63,.30,1)),
     'iron_giant': ((.041,.037,.033), (1,.85,.63), (.45,.67,.82)),
     'shadow_surge': ((.025,.016,.054), (.88,.85,1), (.56,.26,1)),
+    'thunderstorm': ((.018,.029,.052), (.78,.88,1), (.34,.58,1)),
+    'blade_box': ((.032,.023,.045), (.98,.88,.76), (.56,.38,.87)),
 }
 
 studio = bpy.data.collections.new('CardPortraitStudio')
@@ -211,6 +213,16 @@ for card in selected:
             angle=i*math.tau/7
             static('shadow_surge_wisp',(math.cos(angle)*.9,math.sin(angle)*.9,.02),1.6,
                    (0,0,angle))
+    elif card == 'blade_box':
+        frame=character('blade_box',action='Spawn',phase=.48)
+        character('twin_blades',(0,-1.02,.08),.44,action='Locomotion',phase=.18)
+    elif card == 'thunderstorm':
+        static('thunderstorm_cloud',(0,0,1.95),1.05)
+        for i in range(3):
+            static('thunderstorm_bolt',((i-1)*.52,-.10+i*.04,1.78),(.90,.90,1.58-i*.09),(0,0,(i-1)*.6))
+        for i in range(26):
+            angle=i*2.3999632297;radius=.95*math.sqrt((i+.5)/26.)
+            static('thunderstorm_rain',(math.cos(angle)*radius,math.sin(angle)*radius,.30+(i%7)*.20),(.65,.65,.25))
     elif 'skeletal' in binding:
         name = binding['skeletal']
         action = 'WingCycle' if name in ('sky_manta', 'storm_raven') else 'DrawRelease' if name=='ember_archer' else 'Cast' if name=='arc_mage' else 'Attack' if name=='ironclad' else 'Idle'

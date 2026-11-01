@@ -2,8 +2,8 @@
   "schema": 1,
   "source": {
     "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
-    "sha256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
-    "bytes": 34216728
+    "sha256": "7241261bbfdc77b78b1f1e921ea9a12a4676f2599dd266b64aee4e55ee9a996b",
+    "bytes": 35500862
   },
   "units": {
     "blender": "meter",
@@ -305,8 +305,8 @@
       "rigFamily": "humanoid",
       "mesh": {
         "file": "Assets/Export/Characters/ember_archer/SK_ember_archer.fbx",
-        "sha256": "ad35bcf6d9cd6a0ca2a8e2e20f8ca59066d55765ff4217657196cde229647fc7",
-        "bytes": 1263868
+        "sha256": "5e650547613d1a8d67f43cce303fcc4a141c779ebd6d47cc88d49f7d964b46af",
+        "bytes": 1374540
       },
       "bones": [
         "root",
@@ -396,7 +396,7 @@
           ]
         }
       },
-      "triangles": 46464,
+      "triangles": 50600,
       "materials": [
         "M_RiftSurface"
       ],
@@ -408,24 +408,24 @@
       "lods": [
         {
           "level": 1,
-          "triangles": 23231,
+          "triangles": 25300,
           "file": "Assets/Export/Characters/ember_archer/SK_ember_archer_LOD1.fbx",
-          "sha256": "394a8e3b2bfca69ec10de218a12f7792a0220bc158cc5647be104638ebdef09b",
-          "bytes": 734412
+          "sha256": "db0c51140d0cf405e204c3118fe959cc304a8fc414e1fb90ae59047869f0f2d5",
+          "bytes": 799820
         },
         {
           "level": 2,
-          "triangles": 11612,
+          "triangles": 12646,
           "file": "Assets/Export/Characters/ember_archer/SK_ember_archer_LOD2.fbx",
-          "sha256": "3ede7fb59549e4424d4ccaf51e7ed946421e4473bcbeb47b13a6a67db32a8096",
-          "bytes": 455308
+          "sha256": "9d516bf858b1dc8132bda16a0f33b20df0f657d109370900cb029dc4fb11a04e",
+          "bytes": 489532
         },
         {
           "level": 3,
-          "triangles": 5570,
+          "triangles": 6068,
           "file": "Assets/Export/Characters/ember_archer/SK_ember_archer_LOD3.fbx",
-          "sha256": "34ff1f8b018c0fc0feb6cecbf99cab6f126310d0d9319bbb6593afa32517615f",
-          "bytes": 277676
+          "sha256": "e4c5be98c284f7d2515bcf649af835502734cd36a0be3aff6c97fe8adefb94c4",
+          "bytes": 295068
         }
       ],
       "animations": [
@@ -439,7 +439,7 @@
           "loop": true,
           "strideMeters": null,
           "file": "Assets/Export/Characters/ember_archer/AN_ember_archer_Idle.fbx",
-          "sha256": "0683d73bbea41fd06ceab55b2e94803265fa5d583c1c96f15a56a37857444b6b",
+          "sha256": "a8b72e2608766f4bad93ec377599fb8dbb2af72a252507ef262f74d959a41d4d",
           "bytes": 378332
         },
         {
@@ -452,7 +452,7 @@
           "loop": true,
           "strideMeters": 1.05,
           "file": "Assets/Export/Characters/ember_archer/AN_ember_archer_Locomotion.fbx",
-          "sha256": "48679b7fa92dcfaa946a68c5cf3c4f1b4e677dc0a1dbf5fced3d39f557436e35",
+          "sha256": "cf4d76736d62c3b5ce5ed16c7dc50c2424a80ec369e441b843aff487e99efccc",
           "bytes": 300508
         },
         {
@@ -465,7 +465,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/ember_archer/AN_ember_archer_Attack.fbx",
-          "sha256": "cdb3edd9dfd474c6721bbf1a13a60a118434dc135a1cde0415aeca2439f39d32",
+          "sha256": "9e7414479a1f91eb99ba0664d8628b15888addd2e5b886526f57fbd236059dcc",
           "bytes": 296860
         },
         {
@@ -478,7 +478,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/ember_archer/AN_ember_archer_Hit.fbx",
-          "sha256": "bdbd5be0e6b34c6cff89f43d9fadef36cd0cb087abe96423d42ca90db2c51cb5",
+          "sha256": "c211441358e5c0ce8c541aafb0973e52628631bd0460775e7831c3ed1a3bb06b",
           "bytes": 263692
         },
         {
@@ -491,7 +491,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/ember_archer/AN_ember_archer_Death.fbx",
-          "sha256": "2d4d7a49a3b245d278ec7e1d0940fbf8df02232a24d649b229f67258b026bec5",
+          "sha256": "adee3fba73b4c2f9756187907e6aa004027faee3495179b74aafa938ca04266a",
           "bytes": 353900
         },
         {
@@ -504,7 +504,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/ember_archer/AN_ember_archer_Deploy.fbx",
-          "sha256": "06b20fd91b4a1ed96da05020493196c5a09e094950de3b85727f8700acc3902e",
+          "sha256": "998189f899cab3aa11712a11e2dc225fc90e60c247114266fa9c7e2b59f38df5",
           "bytes": 268732
         },
         {
@@ -517,7 +517,7 @@
           "loop": true,
           "strideMeters": null,
           "file": "Assets/Export/Characters/ember_archer/AN_ember_archer_Status.fbx",
-          "sha256": "bfaca229c5c19941e8bd624b6e9105ba423f8643eb7429ec474708148913ba69",
+          "sha256": "2d4881e9610ed985d9ee5d9262abd29ba6c127d0710e90f38ba2d2848cb74658",
           "bytes": 286332
         },
         {
@@ -530,7 +530,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/ember_archer/AN_ember_archer_Turn.fbx",
-          "sha256": "5c8b54c0e3067ea9c80a9eea175d9f50db6dd91ca7b9ab0c9ad5734beafcc66b",
+          "sha256": "e1ff3713b50af262108cbf4f1eceb37389044d952925fff1fb1c34a66f48af5c",
           "bytes": 273724
         },
         {
@@ -543,7 +543,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/ember_archer/AN_ember_archer_Acquire.fbx",
-          "sha256": "c239d6b75011fca6aec8ea016af705fb44ff27b8e404241120ed9f618f0f40a4",
+          "sha256": "939a5bd07acaa781da03ced8ac1b93feaa8ce7aa2b4755c8c349c77aac144258",
           "bytes": 247420
         },
         {
@@ -556,7 +556,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/ember_archer/AN_ember_archer_DrawRelease.fbx",
-          "sha256": "7726ff5570687a632ca0897cbebe4b9ce2b14d8b8a771a8103e3a64cd3a166e9",
+          "sha256": "37899b35fb26902d5fa27bbab97e95cb72f04846239a255a673a32dd77157d4e",
           "bytes": 353468
         }
       ],
@@ -1123,8 +1123,8 @@
       "rigFamily": "humanoid",
       "mesh": {
         "file": "Assets/Export/Characters/tower_archer/SK_tower_archer.fbx",
-        "sha256": "b6b5e018a4dd804301ad4e22f13f800351e98a75609c34db504b886903ba3131",
-        "bytes": 1821260
+        "sha256": "d5bc0126c5f2d0554caac30f432c5e7431b70bed74116b821e77619a5132fe18",
+        "bytes": 1903276
       },
       "bones": [
         "root",
@@ -1214,7 +1214,7 @@
           ]
         }
       },
-      "triangles": 68668,
+      "triangles": 71392,
       "materials": [
         "M_RiftSurface"
       ],
@@ -1226,24 +1226,24 @@
       "lods": [
         {
           "level": 1,
-          "triangles": 34334,
+          "triangles": 35696,
           "file": "Assets/Export/Characters/tower_archer/SK_tower_archer_LOD1.fbx",
-          "sha256": "6ed7e1c7121260893d67f02905fdb4e5a3ef72a06d81dc864d5dd8b3e5f6517a",
-          "bytes": 997644
+          "sha256": "bd1e0195dba0e5dda10cc51cc7e47af65cf28bcd298646b36c13d4b8d1498061",
+          "bytes": 1060972
         },
         {
           "level": 2,
-          "triangles": 17166,
+          "triangles": 17848,
           "file": "Assets/Export/Characters/tower_archer/SK_tower_archer_LOD2.fbx",
-          "sha256": "825cf9f8e9e352ab76f0bddf2c3ba36e8dfac2c9882af48450b760802f678501",
-          "bytes": 594636
+          "sha256": "c5a789649ba20550b80424ed8b8d281a9affa02fee6108ad95187c12a041d3cb",
+          "bytes": 628828
         },
         {
           "level": 3,
-          "triangles": 8240,
+          "triangles": 8566,
           "file": "Assets/Export/Characters/tower_archer/SK_tower_archer_LOD3.fbx",
-          "sha256": "0b0a7c08539bc2190cc8ce353074c84ab451761ff7f52a676f370b107088d636",
-          "bytes": 360460
+          "sha256": "e974a8c3f5114e87ed14fc6a60395101c19c58e9d62127addaf17355c13d243c",
+          "bytes": 375260
         }
       ],
       "animations": [
@@ -1257,7 +1257,7 @@
           "loop": true,
           "strideMeters": null,
           "file": "Assets/Export/Characters/tower_archer/AN_tower_archer_Idle.fbx",
-          "sha256": "80564f3b6e7e02268cfed76c01d3911945466fc0eb3413d00af29a36506402a8",
+          "sha256": "6c7110f3a0d2c7bf15c93744000e831b17c35fed9760556fb6efe23bbe090d37",
           "bytes": 378188
         },
         {
@@ -1270,7 +1270,7 @@
           "loop": true,
           "strideMeters": 1.05,
           "file": "Assets/Export/Characters/tower_archer/AN_tower_archer_Locomotion.fbx",
-          "sha256": "21e344bad145325b35c867d85d5a1395712483306aee7fc4c145344a573038c9",
+          "sha256": "1a3bce0ecd58316a0ba58a584075518c784eaaf29d32f3f5297a46697f6a68e1",
           "bytes": 300508
         },
         {
@@ -1283,7 +1283,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/tower_archer/AN_tower_archer_Attack.fbx",
-          "sha256": "6f2c4a80def1973c7532a2d3fa8d1d0c1133ba48d09db293477d0b6e22becc46",
+          "sha256": "719b467e6541581633480be12470662c36264b4a94d2294ae0deff11c696a800",
           "bytes": 296860
         },
         {
@@ -1296,7 +1296,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/tower_archer/AN_tower_archer_Hit.fbx",
-          "sha256": "4f5947c5859b38c500c77022002b54dc0a8d92a61133d510d52f56f11dddb15f",
+          "sha256": "1fd375f43b1add44ad939fad243d6080ae90f7bc0466ef34ec9ab96cb50b5d6c",
           "bytes": 263692
         },
         {
@@ -1309,7 +1309,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/tower_archer/AN_tower_archer_Death.fbx",
-          "sha256": "cbbd68738e0c690caf26563b32a78694842960003c5f11a1dcf5defad05cab74",
+          "sha256": "dbebbb1f8cb9332ba886e4695030105f584440b30c8312ea2238edb7c6fd3e45",
           "bytes": 353900
         },
         {
@@ -1322,7 +1322,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/tower_archer/AN_tower_archer_Deploy.fbx",
-          "sha256": "3a5d9846bf9c90582b43bb9cf3a28314ffd9a8e7694c0e6273b052a878fa55ba",
+          "sha256": "2f50f63ada4fafc5a5bb427040951b462df26e5bebd40c4444adcda852899257",
           "bytes": 268732
         },
         {
@@ -1335,7 +1335,7 @@
           "loop": true,
           "strideMeters": null,
           "file": "Assets/Export/Characters/tower_archer/AN_tower_archer_Status.fbx",
-          "sha256": "5bf79eb7ac70eeb50a8698e902dd1f94761da463f5d6652f40741ce638d6044f",
+          "sha256": "ccdf0f9bfb05b6d9d9767d2164b09a9d952142432d63becf5bd700ee3294367f",
           "bytes": 286332
         },
         {
@@ -1348,7 +1348,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/tower_archer/AN_tower_archer_Turn.fbx",
-          "sha256": "cb34837354a534580be08e305961da317d6ab3781c4f3653e9182622df12b877",
+          "sha256": "59fc03d024855ef6130fdcc7ae5fd594acbae047bafbfac492023b26976d3e37",
           "bytes": 273724
         },
         {
@@ -1361,7 +1361,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/tower_archer/AN_tower_archer_Acquire.fbx",
-          "sha256": "e4d474dc8a1b7fb34e349661ec46303d4438a8c39ab80f9feb629fc0b22f604c",
+          "sha256": "7d5257c8220579776c6e376cca357683a7035ad9e4c5568463849c6d155b0dae",
           "bytes": 247420
         },
         {
@@ -1374,7 +1374,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/tower_archer/AN_tower_archer_DrawRelease.fbx",
-          "sha256": "7170acee5396fe2747be68e02648d94c4e98e82da386741f1b8bf6286b626c6b",
+          "sha256": "9f6279b0495edff5017639f6a51fdb47a97e3b989cb6d8a4d657cf57acd54924",
           "bytes": 305692
         }
       ],
@@ -1397,8 +1397,8 @@
       "rigFamily": "quadruped",
       "mesh": {
         "file": "Assets/Export/Characters/boulderback/SK_boulderback.fbx",
-        "sha256": "14af9cb55a27bb5725e892f30b97b27232e9593dc83a748d052ebf172889654b",
-        "bytes": 1495196
+        "sha256": "64e82d544894b0980fd1ec3074cb067e2aac4757615ec74c54556a76e2edc7c9",
+        "bytes": 2043068
       },
       "bones": [
         "root",
@@ -1504,7 +1504,7 @@
           ]
         }
       },
-      "triangles": 43806,
+      "triangles": 43556,
       "materials": [
         "M_RiftSurface",
         "M_RiftGlow"
@@ -1517,24 +1517,24 @@
       "lods": [
         {
           "level": 1,
-          "triangles": 21902,
+          "triangles": 21778,
           "file": "Assets/Export/Characters/boulderback/SK_boulderback_LOD1.fbx",
-          "sha256": "f9cd9d87273aa40b535363f640b122426799848c12582ab9c4bc94ab9c345eb6",
-          "bytes": 862012
+          "sha256": "5c467f1d24cb1bb5114ff238fa8bd103e4ec4b5d8209643e12988beb47c37766",
+          "bytes": 1148556
         },
         {
           "level": 2,
-          "triangles": 10950,
+          "triangles": 10888,
           "file": "Assets/Export/Characters/boulderback/SK_boulderback_LOD2.fbx",
-          "sha256": "8b9cb14b0d4e6a6a3b9787abfbe0c19ceec6220ca21a9056d1e714107e4718c5",
-          "bytes": 481580
+          "sha256": "4a201c9d3e570772546db643c0e0a512a96e9e378c298390aaecffd9b27b1409",
+          "bytes": 629708
         },
         {
           "level": 3,
-          "triangles": 5256,
+          "triangles": 5226,
           "file": "Assets/Export/Characters/boulderback/SK_boulderback_LOD3.fbx",
-          "sha256": "f6f96d30c27ddeafda8d481a264c42a5395aa870cc80284166536e045ad4baac",
-          "bytes": 276172
+          "sha256": "2504d19603d06fc01d865d7205ec765fb7ec9e3b57030a3b25d231ed066de687",
+          "bytes": 353708
         }
       ],
       "animations": [
@@ -1548,7 +1548,7 @@
           "loop": true,
           "strideMeters": null,
           "file": "Assets/Export/Characters/boulderback/AN_boulderback_Idle.fbx",
-          "sha256": "f66c50b02f218ced87647622732206809053e3f7d9e07acdffd452d666b15ec1",
+          "sha256": "61d4c10b7e133b98d2273324d5413f8b8f5403fdcfe3895ca662072969a5fb4b",
           "bytes": 339356
         },
         {
@@ -1561,7 +1561,7 @@
           "loop": true,
           "strideMeters": 0.9,
           "file": "Assets/Export/Characters/boulderback/AN_boulderback_Locomotion.fbx",
-          "sha256": "78081d8d7f6fb81ba5cfd05c53e144a8da16bb2ca606d9d92e72900a358ba8f2",
+          "sha256": "cd92baa52997fac7801814171b01fed63eabe10ab91f809c6c5b0add48810d4b",
           "bytes": 276524
         },
         {
@@ -1574,7 +1574,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/boulderback/AN_boulderback_Attack.fbx",
-          "sha256": "3ad141d0c2f4537e412a94de964d8837fa14577bb3ae62e55982c9959bfcc28f",
+          "sha256": "ed9e8c93a97cae796c4549af71a8dfcb6600fa64c3d4a8267ab29f5129a1a3b6",
           "bytes": 266972
         },
         {
@@ -1587,7 +1587,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/boulderback/AN_boulderback_Hit.fbx",
-          "sha256": "f3598a1cbfb58446e99517b0803d3d921dc0b8d292de10829886daea5e4b09f5",
+          "sha256": "10ea2476c7b6bc826bf8c1433978c7ba5972daa5b2b021dc78621eef74764184",
           "bytes": 247020
         },
         {
@@ -1600,7 +1600,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/boulderback/AN_boulderback_Death.fbx",
-          "sha256": "d0560f51364c7c658ffaff69721ee6d9d562fc20b4968cd337b91693670cda97",
+          "sha256": "8ea66763ddc311bb653c19be94c9cfb0117a099f046a92dca86c0205f6cb8d52",
           "bytes": 316076
         },
         {
@@ -1613,7 +1613,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/boulderback/AN_boulderback_Deploy.fbx",
-          "sha256": "54952d3dcb6860ff76dbaab268270131f5c49a59a2d3a299c07458e344dac059",
+          "sha256": "e9cab504ddebd37cc36058d8a270b5c592e9cbf81ee120a041ae7e524e925a54",
           "bytes": 247004
         },
         {
@@ -1626,7 +1626,7 @@
           "loop": true,
           "strideMeters": null,
           "file": "Assets/Export/Characters/boulderback/AN_boulderback_Status.fbx",
-          "sha256": "92a3283187cea816104ca8461fde50491f63546bc1f6325308dc600d1c4ebc7e",
+          "sha256": "424b7df10c0101423fbc58cea26b97c55955ae6a6b8907c1fb0b16812a0bf53b",
           "bytes": 262316
         },
         {
@@ -1639,7 +1639,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/boulderback/AN_boulderback_Turn.fbx",
-          "sha256": "903df7f99e8c5e1be33225df3d6a95b4aa0cd03ea387fa67c89fc3aeb0db59a4",
+          "sha256": "94712ecdb72b2bbaf7f5fc0d441e763b0bab78584a792d95f72a44b821c8b1b0",
           "bytes": 254348
         },
         {
@@ -1652,7 +1652,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/boulderback/AN_boulderback_Acquire.fbx",
-          "sha256": "660ea9c9a4406f0c9b3aec33c9e2fae24750b1f57b537986318386cd966739c1",
+          "sha256": "6211b960140c1d86ab86b74067331d9fa3d49ed672d0dd42f1f8c496da00286d",
           "bytes": 228012
         },
         {
@@ -1665,7 +1665,7 @@
           "loop": false,
           "strideMeters": null,
           "file": "Assets/Export/Characters/boulderback/AN_boulderback_HeavyImpact.fbx",
-          "sha256": "1b0ed004668fc055e6ca6e927b0b619ce5f81ec63206d4442a3c1b71cd6abe28",
+          "sha256": "f4a56ade5128b7ba31422811767761612022209fd08b7e07971dca791cc5b052",
           "bytes": 349948
         }
       ],
@@ -9000,6 +9000,263 @@
         "contactNormalized": 0.48
       },
       "gaitStrideMeters": 0.54
+    },
+    "blade_box": {
+      "id": "blade_box",
+      "rigFamily": "mechanism",
+      "mesh": {
+        "file": "Assets/Export/Characters/blade_box/SK_blade_box.fbx",
+        "sha256": "be838792a028b530827831a5213a3356554303247e2c904741ffaf72cea079be",
+        "bytes": 422428
+      },
+      "bones": [
+        "root",
+        "door_l",
+        "door_r",
+        "latch",
+        "signal",
+        "spawn_origin",
+        "attack_origin",
+        "hp_anchor",
+        "status_anchor",
+        "impact_origin"
+      ],
+      "boneCount": 10,
+      "sockets": {
+        "spawn_origin": {
+          "bone": "spawn_origin",
+          "parent": "root",
+          "positionMeters": [
+            0,
+            -0.9,
+            0.12
+          ]
+        },
+        "attack_origin": {
+          "bone": "attack_origin",
+          "parent": "root",
+          "positionMeters": [
+            0,
+            -0.9,
+            0.12
+          ]
+        },
+        "hp_anchor": {
+          "bone": "hp_anchor",
+          "parent": "root",
+          "positionMeters": [
+            0,
+            0,
+            2.15
+          ]
+        },
+        "status_anchor": {
+          "bone": "status_anchor",
+          "parent": "root",
+          "positionMeters": [
+            0,
+            0,
+            1.96
+          ]
+        },
+        "impact_origin": {
+          "bone": "impact_origin",
+          "parent": "root",
+          "positionMeters": [
+            0,
+            -0.1,
+            0.9
+          ]
+        }
+      },
+      "triangles": 19636,
+      "materials": [
+        "M_RiftSurface",
+        "M_RiftGlow"
+      ],
+      "boundsMeters": [
+        1.6399999856948853,
+        1.5579999685287476,
+        1.9149999618530273
+      ],
+      "lods": [
+        {
+          "level": 1,
+          "triangles": 9818,
+          "file": "Assets/Export/Characters/blade_box/SK_blade_box_LOD1.fbx",
+          "sha256": "e6a364205990e3019b7287bc03edb92c043942c2766ea575e6e5301a51ab95b9",
+          "bytes": 309308
+        },
+        {
+          "level": 2,
+          "triangles": 4908,
+          "file": "Assets/Export/Characters/blade_box/SK_blade_box_LOD2.fbx",
+          "sha256": "1a3b6c6e0a8edbcfc04f806ac7af43e1999f9b508d2a7cbb5b99e7a895db28e6",
+          "bytes": 197820
+        },
+        {
+          "level": 3,
+          "triangles": 2356,
+          "file": "Assets/Export/Characters/blade_box/SK_blade_box_LOD3.fbx",
+          "sha256": "0196af8835ae7d32c73b4b68b139df42e3e797bd8612f7499c0bc702a0801f73",
+          "bytes": 120380
+        }
+      ],
+      "animations": [
+        {
+          "name": "Idle",
+          "action": "AN_blade_box_Idle",
+          "frames": 201,
+          "fps": 100,
+          "seconds": 2.0,
+          "releaseNormalized": null,
+          "loop": true,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/blade_box/AN_blade_box_Idle.fbx",
+          "sha256": "c766b24088f86265a37e78ee9a8525c1798b6b41ff93dbdeff196d9d33512c85",
+          "bytes": 180572
+        },
+        {
+          "name": "Locomotion",
+          "action": "AN_blade_box_Locomotion",
+          "frames": 201,
+          "fps": 100,
+          "seconds": 2.0,
+          "releaseNormalized": null,
+          "loop": true,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/blade_box/AN_blade_box_Locomotion.fbx",
+          "sha256": "e187f047e119ac6d13d4337f3da02860440f8d33b696b9e21a9d5e7ed4179d87",
+          "bytes": 180572
+        },
+        {
+          "name": "Attack",
+          "action": "AN_blade_box_Attack",
+          "frames": 61,
+          "fps": 100,
+          "seconds": 0.6,
+          "releaseNormalized": 0.26666666666666666,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/blade_box/AN_blade_box_Attack.fbx",
+          "sha256": "6f3c654988c28fb4b0701561df9b4d4d3c8587f4f0baacc191ee47ed14603244",
+          "bytes": 110108
+        },
+        {
+          "name": "Spawn",
+          "action": "AN_blade_box_Spawn",
+          "frames": 61,
+          "fps": 100,
+          "seconds": 0.6,
+          "releaseNormalized": 0.26666666666666666,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/blade_box/AN_blade_box_Spawn.fbx",
+          "sha256": "3887ce1d2a9ac0da69274d682c42f2740687269b9a7169617cc9ba814df2e9f4",
+          "bytes": 110108
+        },
+        {
+          "name": "Hit",
+          "action": "AN_blade_box_Hit",
+          "frames": 19,
+          "fps": 100,
+          "seconds": 0.18,
+          "releaseNormalized": null,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/blade_box/AN_blade_box_Hit.fbx",
+          "sha256": "a64f5f4b1992135c22d8c0a2d1c60f3c6d41c50ccf71ae5b90a23f2f7d8d259d",
+          "bytes": 92028
+        },
+        {
+          "name": "Death",
+          "action": "AN_blade_box_Death",
+          "frames": 81,
+          "fps": 100,
+          "seconds": 0.8,
+          "releaseNormalized": null,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/blade_box/AN_blade_box_Death.fbx",
+          "sha256": "3f54f3161202b0a578b987631f80a9e65d27bc36703c2fbcb3d11a73bcf3e153",
+          "bytes": 123036
+        },
+        {
+          "name": "Deploy",
+          "action": "AN_blade_box_Deploy",
+          "frames": 46,
+          "fps": 100,
+          "seconds": 0.45,
+          "releaseNormalized": null,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/blade_box/AN_blade_box_Deploy.fbx",
+          "sha256": "ff3b72b6a6cda8ff266c0097c459df63816240eaa04e873372a83a87a2d13258",
+          "bytes": 102380
+        },
+        {
+          "name": "Status",
+          "action": "AN_blade_box_Status",
+          "frames": 101,
+          "fps": 100,
+          "seconds": 1.0,
+          "releaseNormalized": null,
+          "loop": true,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/blade_box/AN_blade_box_Status.fbx",
+          "sha256": "fc3f3563e970a2b67e391891112bae596bfc9b5fa0cf2464234089e7dcc5a87e",
+          "bytes": 130636
+        },
+        {
+          "name": "Turn",
+          "action": "AN_blade_box_Turn",
+          "frames": 21,
+          "fps": 100,
+          "seconds": 0.2,
+          "releaseNormalized": null,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/blade_box/AN_blade_box_Turn.fbx",
+          "sha256": "13de1f249fc4565413fe7d8e8b0122e0b476402f39e52ea67feb24cc042580ed",
+          "bytes": 93916
+        },
+        {
+          "name": "Acquire",
+          "action": "AN_blade_box_Acquire",
+          "frames": 21,
+          "fps": 100,
+          "seconds": 0.2,
+          "releaseNormalized": null,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/blade_box/AN_blade_box_Acquire.fbx",
+          "sha256": "80ba1177eab4133b2cb07bc52d9cf5a8d43e189fb6458c92286a0e9bd735549b",
+          "bytes": 93916
+        }
+      ],
+      "modelDesign": {
+        "revision": "2.1.0",
+        "design": "Hollow purple assassin barracks; fitted twin sliding doors, recessed handles, real rail rollers and forged blade crest",
+        "animationContract": {
+          "spawnSeconds": 0.6,
+          "openAtSeconds": 0.16,
+          "closeStartsSeconds": 0.38,
+          "spawnContactNormalized": 0.26666666666666666,
+          "doorTravelMeters": 0.35
+        },
+        "gameplayOwnership": "Presentation only; simulation owns every three-second spawn, unit count and lifetime",
+        "rosterArtRevision": "crafted-roster-2"
+      },
+      "physics": {
+        "type": "capsule",
+        "simulationCollisionAuthoritative": false,
+        "autoCreatePhysicsAsset": true
+      },
+      "animationTiming": {
+        "anticipationSeconds": 0.16,
+        "recoverySeconds": 0.43999999999999995,
+        "contactNormalized": 0.26666666666666666
+      }
     }
   },
   "statics": {
@@ -9972,6 +10229,130 @@
           "bytes": 25292
         }
       ]
+    },
+    "stun_spark": {
+      "name": "stun_spark",
+      "file": "Assets/Export/Environment/SM_stun_spark.fbx",
+      "sha256": "2a0fbf71384994e8cd3e70167d7a775640b4ca3e3ef3909e0da4720835c81278",
+      "bytes": 21772,
+      "triangles": 32,
+      "boundsMeters": [
+        1.0,
+        1.0,
+        0.09000000357627869
+      ],
+      "materials": [
+        "M_RiftGlow"
+      ],
+      "lods": [
+        {
+          "level": 1,
+          "triangles": 16,
+          "file": "Assets/Export/Environment/SM_stun_spark_LOD1.fbx",
+          "sha256": "b50b2fca47c9efb6530bdaf65ce247f01c39a944680c7cb43e020f8839a36970",
+          "bytes": 21580
+        },
+        {
+          "level": 2,
+          "triangles": 6,
+          "file": "Assets/Export/Environment/SM_stun_spark_LOD2.fbx",
+          "sha256": "9aa6f40d00685e2222e3b16c45f75fc5b4d8ab84052fe974ba284c306102cd87",
+          "bytes": 21308
+        }
+      ]
+    },
+    "thunderstorm_bolt": {
+      "name": "thunderstorm_bolt",
+      "file": "Assets/Export/Environment/SM_thunderstorm_bolt.fbx",
+      "sha256": "b68fb0fcf70e3fe03c08bfd412f975ddc858c3e90d508bf57f4e6739ccd94466",
+      "bytes": 27180,
+      "triangles": 212,
+      "boundsMeters": [
+        0.3917485773563385,
+        0.05990029126405716,
+        1.0055012702941895
+      ],
+      "materials": [
+        "M_RiftGlow"
+      ],
+      "lods": [
+        {
+          "level": 1,
+          "triangles": 106,
+          "file": "Assets/Export/Environment/SM_thunderstorm_bolt_LOD1.fbx",
+          "sha256": "6374ca08861a466399cd9d671204acaca136d7a87da62210e1d21b577b8c934c",
+          "bytes": 24748
+        },
+        {
+          "level": 2,
+          "triangles": 46,
+          "file": "Assets/Export/Environment/SM_thunderstorm_bolt_LOD2.fbx",
+          "sha256": "c43385c4ee7cbb9f13a5315f12864dd1ad0b449bd3e2ba10014faabe3e616838",
+          "bytes": 22924
+        }
+      ]
+    },
+    "thunderstorm_cloud": {
+      "name": "thunderstorm_cloud",
+      "file": "Assets/Export/Environment/SM_thunderstorm_cloud.fbx",
+      "sha256": "34932ddf56c8b0a52ff22ee43171a81a68b6b4c9ed213df670264da3facf3742",
+      "bytes": 479404,
+      "triangles": 18020,
+      "boundsMeters": [
+        2.2054381370544434,
+        1.2224847078323364,
+        0.8836828470230103
+      ],
+      "materials": [
+        "M_RiftSurface"
+      ],
+      "lods": [
+        {
+          "level": 1,
+          "triangles": 9010,
+          "file": "Assets/Export/Environment/SM_thunderstorm_cloud_LOD1.fbx",
+          "sha256": "3b6b63051dc75b2b7c07721317bcdf80ae43614a4eeb6effbd489126160dac35",
+          "bytes": 276204
+        },
+        {
+          "level": 2,
+          "triangles": 3964,
+          "file": "Assets/Export/Environment/SM_thunderstorm_cloud_LOD2.fbx",
+          "sha256": "4daa9abdbb3bf060a7c7f3a46d05db919ad68b46599c88f49ea9083cf5fba861",
+          "bytes": 139948
+        }
+      ]
+    },
+    "thunderstorm_rain": {
+      "name": "thunderstorm_rain",
+      "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+      "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+      "bytes": 21644,
+      "triangles": 32,
+      "boundsMeters": [
+        0.012000000104308128,
+        0.010392304509878159,
+        1.0
+      ],
+      "materials": [
+        "M_RiftGlow"
+      ],
+      "lods": [
+        {
+          "level": 1,
+          "triangles": 16,
+          "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+          "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+          "bytes": 21420
+        },
+        {
+          "level": 2,
+          "triangles": 6,
+          "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+          "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+          "bytes": 21228
+        }
+      ]
     }
   },
   "illustrations": {
@@ -9983,9 +10364,9 @@
     },
     "ember_archer": {
       "file": "Assets/Source/CardArt/ember_archer.png",
-      "sha256": "66035b6c3d7a3efefadbf693de77f1c5d49cae2324e8075574f2c8bc90fdc569",
-      "bytes": 904553,
-      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4"
+      "sha256": "2745dd663e89790cb50203b0e32624eb96807de63756f561bfb94d7ab7e2f5e3",
+      "bytes": 900920,
+      "sourceSceneSHA256": "7241261bbfdc77b78b1f1e921ea9a12a4676f2599dd266b64aee4e55ee9a996b"
     },
     "twin_blades": {
       "file": "Assets/Source/CardArt/twin_blades.png",
@@ -9995,9 +10376,9 @@
     },
     "boulderback": {
       "file": "Assets/Source/CardArt/boulderback.png",
-      "sha256": "bbc2b15df5f1111a0cad4eb3ea29e4ee6fd9cd316fea23e9dabd32aaf8d4767f",
-      "bytes": 869765,
-      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4"
+      "sha256": "5220e8c49de9318176c50d37f8005d5c564dfbaee447dc1d04e7f26fdac3d0da",
+      "bytes": 844442,
+      "sourceSceneSHA256": "7241261bbfdc77b78b1f1e921ea9a12a4676f2599dd266b64aee4e55ee9a996b"
     },
     "arc_mage": {
       "file": "Assets/Source/CardArt/arc_mage.png",
@@ -10055,9 +10436,9 @@
     },
     "archer_tower": {
       "file": "Assets/Source/CardArt/archer_tower.png",
-      "sha256": "7295d53b3462a3d3eea44620b16c97f1e5cfdb4b83037b1eb276ccce799e4beb",
-      "bytes": 903953,
-      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4"
+      "sha256": "335d9adb6becb7acc048ee519cf988ced976281e90e99c6ffee4f76fb8949e6f",
+      "bytes": 903288,
+      "sourceSceneSHA256": "7241261bbfdc77b78b1f1e921ea9a12a4676f2599dd266b64aee4e55ee9a996b"
     },
     "bullet_burst": {
       "file": "Assets/Source/CardArt/bullet_burst.png",
@@ -10106,6 +10487,18 @@
       "sha256": "de3ad7909460eb767703c94222fed6881e0eae8a42a362518b0a6d281fce9ccb",
       "bytes": 854073,
       "sourceSceneSHA256": "1a283006f962b709076bdaf7d7c87dd94771a2bbcc0b963cdb7c12f48964c67b"
+    },
+    "thunderstorm": {
+      "file": "Assets/Source/CardArt/thunderstorm.png",
+      "sha256": "b2812a64ea9086655433c279885c0d90852c31e164378fc2426d095dabd0b027",
+      "bytes": 792014,
+      "sourceSceneSHA256": "7241261bbfdc77b78b1f1e921ea9a12a4676f2599dd266b64aee4e55ee9a996b"
+    },
+    "blade_box": {
+      "file": "Assets/Source/CardArt/blade_box.png",
+      "sha256": "a5c9062fb547ec6c08b8e319cfc4977d7d69d30a12cb14abd1ee9a743678a302",
+      "bytes": 937113,
+      "sourceSceneSHA256": "7241261bbfdc77b78b1f1e921ea9a12a4676f2599dd266b64aee4e55ee9a996b"
     }
   },
   "renders": [
@@ -10340,7 +10733,7 @@
       "bytes": 1147320
     }
   ],
-  "build": "UE-crafted-roster-2.0.0",
+  "build": "UE-thunderstorm-blade-box-2.1.0",
   "expansionMaterials": [
     {
       "name": "M_RiftExpansionSurface",
@@ -10516,6 +10909,19 @@
     },
     "dart_gun": {
       "skeletal": "dart_gun"
+    },
+    "blade_box": {
+      "skeletal": "blade_box",
+      "summon": "twin_blades"
+    },
+    "thunderstorm": {
+      "spell": true,
+      "static": "thunderstorm_cloud",
+      "effectStatics": [
+        "thunderstorm_bolt",
+        "thunderstorm_rain",
+        "stun_spark"
+      ]
     }
   },
   "entities": {
@@ -10569,8 +10975,8 @@
       "timeSource": "Native simulation-clock geometry only; no material Time",
       "shaderProducer": {
         "file": "Build/import_unreal_assets.py",
-        "bytes": 75233,
-        "sha256": "9dcf46634493e84279eb74e65ff6ccad821533fdc7496b7c2da2952a90746197"
+        "bytes": 76577,
+        "sha256": "32df0734c8e26286f1d29f499ee6e606e7e51c82f553ae55cc2e05f4bc6a2f40"
       },
       "contractProducer": {
         "file": "Build/generate_expansion_fx_contract.py",

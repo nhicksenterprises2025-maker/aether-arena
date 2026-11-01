@@ -1,7 +1,15 @@
 # Rift Crown Arena / Aether Arena
 
-Original Windows card battler: twenty-two cards, two lanes, deterministic combat,
+Original Windows card battler: twenty-four cards, two lanes, deterministic combat,
 seven AI personalities, deck workshop, Meta Lab, replays and developer training.
+
+Version 2.1.0 adds Thunderstorm (three timed lightning waves with visible stun)
+and Blade Box (one Twin Blade every three seconds), reworks Mini Stampede to
+4 Aether, and boosts both hog cards' health and damage by 20%. Archer hair and
+face placement and Boulderback's fitted stone shell are refined. See
+[the update notes](Docs/PATCH_NOTES_2.1.0.md),
+[spreadsheet-ready stats](Docs/CARD_STATS_2.1.0.tsv) and
+[audio credits](Docs/AUDIO_CREDITS_2.1.0.md).
 
 Version 2.0.0 moves both teams' Guard Towers exactly one tile inward and upgrades
 every other card's model detail and model-rendered portrait to follow Dart Gun's

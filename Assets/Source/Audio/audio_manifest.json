@@ -2069,6 +2069,139 @@
         "Tinysized_arrow-feathers-01.wav"
       ],
       "productionSource": "Build/generate_dart_gun_audio.py"
+    },
+    "spawn_thunderstorm": {
+      "file": "Assets/Source/Audio/spawn_thunderstorm.wav",
+      "duration": 0.75,
+      "sha256": "ddd5671e0697d36211ae30cab465755f7d990a30fa0fd61af4cef57e937bec51",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.46612548828125,
+      "rmsDbFS": -23.99998651872115,
+      "dcOffset": 1.457462325207861e-05,
+      "role": "deployment",
+      "sources": [
+        "Tinysized_wood-twigs-break-01.wav"
+      ],
+      "cardId": "thunderstorm",
+      "productionSource": "Build/generate_storm_blade_audio.py"
+    },
+    "spawn_thunderstorm_v2": {
+      "file": "Assets/Source/Audio/spawn_thunderstorm_v2.wav",
+      "duration": 0.75,
+      "sha256": "1d6d80d087d1db18638aab7d6e893f98ecdad1c049278c013c604a0a77b6207a",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.488128662109375,
+      "rmsDbFS": -24.00000835040061,
+      "dcOffset": 1.1905315511621316e-05,
+      "role": "deployment",
+      "sources": [
+        "Tinysized_wood-twigs-break-01.wav"
+      ],
+      "cardId": "thunderstorm",
+      "productionSource": "Build/generate_storm_blade_audio.py"
+    },
+    "spawn_thunderstorm_v3": {
+      "file": "Assets/Source/Audio/spawn_thunderstorm_v3.wav",
+      "duration": 0.75,
+      "sha256": "e9583309546d67b72198375b646adb07d02587c88e8d74e5623c0f5b8679e3a3",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.466033935546875,
+      "rmsDbFS": -24.00000399481933,
+      "dcOffset": 1.2834452357331822e-05,
+      "role": "deployment",
+      "sources": [
+        "Tinysized_wood-twigs-break-01.wav"
+      ],
+      "cardId": "thunderstorm",
+      "productionSource": "Build/generate_storm_blade_audio.py"
+    },
+    "spawn_blade_box": {
+      "file": "Assets/Source/Audio/spawn_blade_box.wav",
+      "duration": 0.72,
+      "sha256": "65620f9afc1d917d1a1a64e3db1e726a3f9d0b1902e9de1d6c50dff7b4c7a185",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.579986572265625,
+      "rmsDbFS": -30.749968839834775,
+      "dcOffset": 1.1893897370145974e-05,
+      "role": "deployment",
+      "sources": [
+        "Tinysized_handcuffs-metal-lock-01.wav",
+        "Tinysized_metal-knife-scrape-01.wav",
+        "Tinysized_quiver-leather-squeeze-01.wav"
+      ],
+      "cardId": "blade_box",
+      "productionSource": "Build/generate_storm_blade_audio.py"
+    },
+    "spawn_blade_box_v2": {
+      "file": "Assets/Source/Audio/spawn_blade_box_v2.wav",
+      "duration": 0.72,
+      "sha256": "b418a557f04f6cc8d5f681f3f0f0d6af42511a122e2314f68833137779b99a96",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.579986572265625,
+      "rmsDbFS": -30.901032600536894,
+      "dcOffset": 1.2333130590199043e-05,
+      "role": "deployment",
+      "sources": [
+        "Tinysized_handcuffs-metal-lock-02.wav",
+        "Tinysized_metal-knife-scrape-01.wav",
+        "Tinysized_quiver-leather-squeeze-01.wav"
+      ],
+      "cardId": "blade_box",
+      "productionSource": "Build/generate_storm_blade_audio.py"
+    },
+    "spawn_blade_box_v3": {
+      "file": "Assets/Source/Audio/spawn_blade_box_v3.wav",
+      "duration": 0.72,
+      "sha256": "00f406027ecf41dfbe432d2ca9fa53d18b34906e97e91a71e5221b8e8e81de53",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.579986572265625,
+      "rmsDbFS": -31.393002213846195,
+      "dcOffset": 1.195252587435437e-05,
+      "role": "deployment",
+      "sources": [
+        "Tinysized_handcuffs-metal-lock-01.wav",
+        "Tinysized_metal-knife-scrape-01.wav",
+        "Tinysized_quiver-leather-squeeze-01.wav"
+      ],
+      "cardId": "blade_box",
+      "productionSource": "Build/generate_storm_blade_audio.py"
+    },
+    "thunder_strike": {
+      "file": "Assets/Source/Audio/thunder_strike.wav",
+      "duration": 0.38,
+      "sha256": "32ca1c4149416d9443eb756bcc6b7a406a8d72d3a502d128f26d2b495854c6f6",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.222503662109375,
+      "rmsDbFS": -26.000000455020963,
+      "dcOffset": 1.7475037575337154e-05,
+      "role": "combat",
+      "sources": [
+        "Tinysized_wood-twigs-break-01.wav"
+      ],
+      "productionSource": "Build/generate_storm_blade_audio.py"
+    },
+    "blade_release": {
+      "file": "Assets/Source/Audio/blade_release.wav",
+      "duration": 0.25,
+      "sha256": "ce0d3bee0a27cdc31975ad36937691d7488e2181b2d23fd7523590f85670d8bb",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.449981689453125,
+      "rmsDbFS": -28.79694896542648,
+      "dcOffset": 1.3654713187358276e-05,
+      "role": "combat",
+      "sources": [
+        "Tinysized_handcuffs-metal-lock-01.wav",
+        "Tinysized_metal-knife-scrape-01.wav"
+      ],
+      "productionSource": "Build/generate_storm_blade_audio.py"
     }
   },
   "usedSourceFiles": [
@@ -2317,6 +2450,24 @@
         "spawn_dart_gun",
         "spawn_dart_gun_v2",
         "spawn_dart_gun_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    },
+    "thunderstorm": {
+      "identity": "Brief rising thunder and three distinct charged air signatures",
+      "takes": [
+        "spawn_thunderstorm",
+        "spawn_thunderstorm_v2",
+        "spawn_thunderstorm_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    },
+    "blade_box": {
+      "identity": "Fitted metal latches, short blade scrapes and a restrained Aether chime",
+      "takes": [
+        "spawn_blade_box",
+        "spawn_blade_box_v2",
+        "spawn_blade_box_v3"
       ],
       "trigger": "one card_play per playId; never entity_spawn"
     }

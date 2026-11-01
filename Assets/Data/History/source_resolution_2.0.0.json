@@ -1,0 +1,23 @@
+{
+  "schema": 2,
+  "status": "approved",
+  "unresolved": false,
+  "releaseBlocked": false,
+  "baseline": "Assets/Data/Baselines/1.9.0.json",
+  "baselineBalanceHash": "b452ca00abcb1097f552b6f99e4324a56c65c8bd1d61aacfd0989548329ee1c1",
+  "startingCommit": "27a7e300dd4aaf1469a9bb3638a02407bf219b56",
+  "version": "2.0.0",
+  "confirmation": {
+    "source": "User request: move both side towers toward the Core exactly one tile and make all other cards as detailed as Dart Gun",
+    "guardHorizontalInwardTiles": 1,
+    "existingCardStatsPreserved": true
+  },
+  "resolvedChoices": {},
+  "mechanicNotes": [
+    "Guard Towers: horizontal centers move from \u00b17.76 to \u00b16.76 tiles on both teams. Exact inward movement: one tile (125 world units). Core centers, tower depth, bridge positions and arena dimensions are unchanged.",
+    "All other card models receive fitted, character-specific anatomy, armor, clothing, weapon and mechanical detail; card art is rendered from the upgraded in-game models. Dart Gun is preserved as the visual reference.",
+    "All 22 playable card definitions and the subordinate skeleton definition retain their complete 1.9.0 stats and abilities. No audio changes.",
+    "Navigation revision13 distinguishes the new tower positions in Meta simulations and recorded mechanics snapshots."
+  ],
+  "priorResolution": "Assets/Data/History/source_resolution_1.9.0.json"
+}

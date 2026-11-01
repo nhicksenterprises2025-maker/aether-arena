@@ -837,6 +837,9 @@ void ARiftUnitVisual::Synchronize(const rift::Entity& Entity,const rift::Snapsho
     if (!Character->GetSkeletalMeshAsset()) return;
     if (Stunned) {SetClip(TEXT("Status"),FMath::Fmod(Time*1.5,1.),true);return;}
     if (Time-Born<.3 && LastAttack<Born) {SetClip(TEXT("Deploy"),(Time-Born)/.3);return;}
+    if(AssetId==TEXT("blade_box"))if(const auto* Definition=rift::FindEntityDefinition(Entity.cardId))
+        if(Entity.spawnClock>=Definition->spawnInterval-.16)
+        {SetClip(TEXT("Spawn"),FMath::Clamp((Entity.spawnClock-Definition->spawnInterval+.16)/.60,0.,.16/.60));return;}
     if (Time-SpecialTime<SpecialDuration) {SetClip(SpecialClip,(Time-SpecialTime)/SpecialDuration);return;}
     bool TargetInRange=false;
     if (Entity.target)

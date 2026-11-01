@@ -130,67 +130,143 @@ def _coat(f, rows, key, alternate, length=.12, width=.035):
 
 def _boulderback(f):
     remove(f, 'fitted_carapace_stone', 'single_carapace_crystal', 'single_stone_eye',
-           'single_stone_brow', 'hoof_or_paw', 'ear')
-    # Nine beveled, stepped scutes create deliberate courses over a dark shell.
-    for row in range(3):
-        for col in range(3):
-            x, y = (col-1)*.337, -.32+row*.40
-            z = 1.47 + .055*(col == 1)-.025*abs(row-1)
-            loft(f, 'detail_basalt_scute', [(z-.025,.172,.199,x,y),
-                 (z+.025,.180,.207,x,y), (z+.082,.151,.175,x,y),
-                 (z+.109,.120,.148,x-.012,y+.008)],
-                 'limestone' if (row+col)%2 else 'stone', 'spine', 8, False)
-            if col != 1:
-                f.tube('detail_scute_stratum', [(x-.10,y-.172,z+.070),
-                       (x,y-.182,z+.073),(x+.10,y-.172,z+.070)], .005, 'stone_dark', 'spine', 6)
+           'single_stone_brow', 'single_carapace_underlay', 'carved_stone_cheek', 'hoof_or_paw', 'ear')
+    anatomy=next(p for p in f.parts if 'continuous_anatomy' in p.name)
+    # The old nearest-three cutoff changes bone membership abruptly across the
+    # broad haunch. Fade eight influences continuously, as on the existing ram,
+    # so walking does not pull a narrow crease through its stone skin.
+    eligible={n:b for n,b in f.bones.items() if n not in f.sockets and n!='root'}
+    for group in list(anatomy.vertex_groups):anatomy.vertex_groups.remove(group)
+    groups={n:anatomy.vertex_groups.new(name=n) for n in eligible}
+    for vertex in anatomy.data.vertices:
+        p=anatomy.matrix_world@vertex.co;distances=[]
+        for name,bone in eligible.items():
+            a=Vector(bone['head']);line=Vector(bone['tail'])-a
+            t=max(0,min(1,(p-a).dot(line)/max(.00001,line.length_squared)))
+            distances.append(((p-a-line*t).length,name))
+        candidates=sorted(distances)[:8];cutoff=candidates[-1][0]+.0001
+        weights=[]
+        for distance,name in candidates:
+            fade=max(0,min(1,(cutoff-distance)/.25));fade=fade*fade*(3-2*fade)
+            weights.append(fade/(.018+distance)**4)
+        total=sum(weights)
+        for (_,name),weight in zip(candidates,weights):groups[name].add([vertex.index],weight/total,'REPLACE')
+    # Each course wraps the actual dorsal anatomy and descends into the flank.
+    # Its buried lip replaces the old floating flat shell and isolated diamonds.
+    from mathutils.bvhtree import BVHTree
+    def rock(name, edge, normals, anatomy, shade, bone=None, rise=.048):
+        center=sum(edge,Vector())/len(edge)
+        normal=sum(normals,Vector()).normalized();count=len(edge)
+        vertices=edge+[center+(p-center)*.72+normal*rise*.72 for p in edge]+[center+normal*rise]
+        vertices += [p-normal*.016 for p in edge]
+        faces=[]
+        for j in range(count):
+            k=(j+1)%count
+            faces += [(j,k,count+k,count+j),(count+j,count+k,count*2),
+                      (j,count*2+1+j,count*2+1+k,k)]
+        faces.append(tuple(count*2+1+j for j in reversed(range(count))))
+        volume=sum(Vector(vertices[face[0]]).dot(Vector(vertices[face[k]]).cross(Vector(vertices[face[k+1]])))
+                   for face in faces for k in range(1,len(face)-1))
+        if volume<0:faces=[tuple(reversed(face)) for face in faces]
+        part=f.mesh_data(name,vertices,faces,shade,bone,smooth=False)
+        if bone is None:_skin(f,part,anatomy)
+        return part
+    for row,y in enumerate((-.32,.085,.49)):
+        for col,angle in enumerate((-.98,-.49,0,.49,.98)):
+            edge=[];normals=[]
+            # Hexagonal courses share a coherent arched shell, with small seams.
+            for da,dy in ((-.237,-.13),(-.16,-.195),(.16,-.195),(.237,-.13),
+                          (.237,.13),(.15,.195),(-.15,.195),(-.237,.13)):
+                a=angle+da
+                p,n,anatomy=_surface(f,(0,y+dy,1.02),(math.sin(a),0,math.cos(a)),.009)
+                edge.append(p);normals.append(n)
+            part=rock('detail_integrated_carapace_course',edge,normals,anatomy,
+                      'limestone' if col==2 else 'stone',rise=.044 if col==2 else .034)
+            # Incised strata follow the actual raised facet, not floating bars.
+            if (row+col)%2==0:
+                verts=[part.matrix_world@v.co for v in part.data.vertices]
+                tree=BVHTree.FromPolygons(verts,[list(p.vertices) for p in part.data.polygons])
+                normal=sum(normals,Vector()).normalized()
+                center=sum(edge,Vector())/len(edge)
+                path=[]
+                for j in range(9):
+                    t=j/8
+                    q=edge[0].lerp(center,.20+.66*t)+Vector((0,.018*math.sin(t*math.pi),0))
+                    hit,n,_,_=tree.ray_cast(q+normal*.3,-normal,.6)
+                    if hit is not None:path.append(hit+n*.0015)
+                if len(path)>1:
+                    crack=f.tube('detail_carapace_stratum',path,[.001]+[.0028]*(len(path)-2)+[.0005],
+                                 'stone_dark',None,6)
+                    _skin(f,crack,anatomy)
     for x,y,height in ((-.295,0,.44),(0,.28,.53),(.295,.57,.36)):
-        z = 1.58
-        loft(f,'detail_crystal_socket',[(z-.02,.105,.105,x,y),(z+.025,.112,.112,x,y),
-             (z+.053,.080,.080,x,y)],'stone_dark','spine',8,False)
-        loft(f,'detail_prismatic_crystal',[(z+.015,.076,.076,x,y),(z+height*.67,.065,.065,x+.012,y+.03),
+        z=anatomy_height(f,x,y,1.45)+.055
+        height=1.58+height-z  # Preserve the original crystal-tip envelope.
+        # Low jagged roots grow out of the courses rather than mechanical cuffs.
+        root=loft(f,'detail_grown_crystal_root',[(z-.065,.135,.125,x,y),
+             (z-.012,.112,.105,x-.008,y+.008),(z+.026,.077,.076,x,y)],'stone',None,7,False)
+        for vertex in root.data.vertices[:7]:
+            p=root.matrix_world@vertex.co
+            p.z=anatomy_height(f,p.x,p.y,z-.065)+.003
+            vertex.co=root.matrix_world.inverted()@p
+        anatomy=next(p for p in f.parts if 'continuous_anatomy' in p.name)
+        _skin(f,root,anatomy)
+        # The buried edge follows skin; the top follows the unchanged crystal bone.
+        spine=root.vertex_groups.get('spine')
+        for vertex in root.data.vertices:
+            t=max(0.,min(1.,((root.matrix_world@vertex.co).z-(z-.065))/.075))
+            weights=[(g.group,g.weight) for g in vertex.groups]
+            for index,weight in weights:root.vertex_groups[index].add([vertex.index],weight*(1-t),'REPLACE')
+            old=next((weight for index,weight in weights if index==spine.index),0.)
+            spine.add([vertex.index],old*(1-t)+t,'REPLACE')
+        crystal=loft(f,'detail_prismatic_crystal',[(z+.015,.076,.076,x,y),
+             (z+height*.67,.065,.065,x+.012,y+.03),
              (z+height*.86,.043,.043,x+.018,y+.042),(z+height,.002,.002,x+.01,y+.05)],
              'violet','spine',6,False)
-        f.tube('detail_crystal_inner_facet',[(x-.022,y-.068,z+.10),
-               (x-.016,y-.044,z+height*.75)], [.006,.002], 'ivory','spine',6)
+        vertices=[crystal.matrix_world@v.co for v in crystal.data.vertices]
+        tree=BVHTree.FromPolygons(vertices,[list(p.vertices) for p in crystal.data.polygons])
+        seam=[]
+        for j in range(9):
+            t=j/8
+            hit,n,_,_=tree.ray_cast(Vector((x-.022+.006*t,y-1,z+.10+(height*.75-.10)*t)),Vector((0,1,0)),2)
+            if hit is None:raise ValueError('Crystal vein missed authored facet')
+            seam.append(hit+n*.001)
+        f.tube('detail_crystal_inner_facet',seam,[.0006]+[.0023]*7+[.0003],
+               'violet','spine',6,True)
     for s in (-1,1):
         _eye(f,(s*.222,-1.112,1.286),.038,'violet','stone')
         f.ellipsoid('detail_stone_nostril',(s*.050,-1.344,1.137),(.019,.008,.011),'black','jaw',16)
-        plate(f,'detail_stone_brow_shield',[(s*.12,-1.108,1.34),(s*.20,-1.10,1.405),
-              (s*.31,-1.053,1.38),(s*.30,-1.095,1.32)],'limestone','head',.026,.018)
-        plate(f,'detail_stone_jowl',[(s*.21,-1.10,1.17),(s*.34,-.99,1.22),
-              (s*.38,-.94,1.08),(s*.28,-1.05,1.02)],'stone','head',.018,.025)
-        f.tube('detail_mineral_cheek_seam',[(s*.26,-1.109,1.17),(s*.33,-1.02,1.13),
-               (s*.32,-1.04,1.08)],[.006,.008,.002],'violet','head',6,True)
-        for row,y in enumerate((-.32,.04,.40)):
+        # Low orbital ridges and cheek planes grow from the existing head.
+        for name,outline in (
+            ('brow',[(s*.13,1.34),(s*.18,1.405),(s*.29,1.38),(s*.32,1.33),(s*.23,1.32)]),
+            ('cheek',[(s*.23,1.23),(s*.33,1.24),(s*.38,1.17),(s*.33,1.09),(s*.25,1.13)])):
             edge=[];normals=[]
-            for j in range(7):
-                a=j*math.tau/7
-                p,n,anatomy=_surface(f,(0,y,1.00),(s,.36*math.cos(a),.34+.27*math.sin(a)),.003)
+            for x,z in outline:
+                p,n,anatomy=_surface(f,(x,-2,z),(0,1,0),.003)
                 edge.append(p);normals.append(n)
-            center=sum(edge,Vector())/7
-            normal=sum(normals,Vector()).normalized()
-            vertices=edge+[center+(p-center)*.82+normal*.027 for p in edge]+[center+normal*.049]
-            vertices += [p-normal*.015 for p in edge]
-            faces=[]
-            for j in range(7):
-                k=(j+1)%7
-                faces += [(j,k,7+k,7+j),(7+j,7+k,14),(j,15+j,15+k,k)]
-            faces.append(tuple(15+j for j in reversed(range(7))))
-            volume=sum(Vector(vertices[face[0]]).dot(Vector(vertices[face[k]]).cross(Vector(vertices[face[k+1]])))
-                       for face in faces for k in range(1,len(face)-1))
-            if volume<0:faces=[tuple(reversed(face)) for face in faces]
-            f.mesh_data('detail_fitted_flank_rock',vertices,faces,'stone' if row%2 else 'limestone',
-                        'pelvis' if row==2 else 'spine',smooth=False)
+            rock('detail_integrated_stone_'+name,edge,normals,anatomy,'stone','head',.022)
+        for y in (-.48,.40):
+            # Short stone skin folds connect exposed shoulder/haunch to shell.
+            path=[]
+            for j in range(11):
+                a=s*(1.20+j*.027)
+                p,n,anatomy=_surface(f,(0,y+j*.009,1.02),(math.sin(a),0,math.cos(a)),.001)
+                path.append(p)
+            crease=f.tube('detail_anatomical_stone_fold',path,[.0008]+[.0025]*9+[.0005],
+                          'stone_dark',None,6)
+            _skin(f,crease,anatomy)
         for y,leg in ((-.42,'front'),(.40,'back')):
             bone=leg+'_'+('l' if s<0 else 'r')+'_foot'
             for j in range(3):
                 x=s*.45+(j-1)*.105
-                loft(f,'detail_stone_toe',[(.012,.048,.12,x,y-.105),(.07,.058,.14,x,y-.12),
-                     (.13,.049,.105,x,y-.10)],'stone_dark' if j==1 else 'stone',bone,7,False)
-            plate(f,'detail_stone_knee',[(s*.43-.085,y-.10,.42),(s*.43,y-.13,.50),
-                  (s*.43+.085,y-.10,.42),(s*.43,y-.125,.32)],'limestone',leg+'_'+('l' if s<0 else 'r')+'_lower',.02,.014)
-    plate(f,'detail_forehead_keystone',[(-.13,-1.045,1.41),(0,-1.035,1.48),
-          (.13,-1.045,1.41),(0,-1.16,1.33)],'stone','head',.015,.028)
+                loft(f,'detail_stone_toe',[(.012,.048,.12,x,y-.105),
+                     (.065,.058,.14,x,y-.12),(.115,.052,.11,x,y-.10),(.16,.038,.064,x,y-.065)],
+                     'stone',bone,7,False)
+    # A restrained mineral split follows the forehead instead of a pasted gem.
+    path=[]
+    for x,z in ((0,1.47),(-.02,1.435),(.008,1.40),(0,1.355)):
+        p,n,_=_surface(f,(x,-2,z),(0,1,0),.002)
+        path.append(p)
+    f.tube('detail_forehead_mineral_split',path,[.001,.003,.002,.0005],'stone_dark','head',6)
 
 
 def _rambeast(f):

@@ -25,6 +25,7 @@ CARD_IDS = frozenset((
     "frost_fang", "storm_raven", "bullet_burst", "nova_flask",
     "meteor_shards", "mini_stampede", "stampede", "pulverizer",
     "bone_warden", "aether_reaper", "iron_giant", "shadow_surge", "dart_gun",
+    "thunderstorm", "blade_box",
 ))
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 
@@ -199,6 +200,8 @@ class PortraitAudit:
                 continue
             expected_models = {binding[key] for key in ("skeletal", "static", "skeletalDecoration") if key in binding}
             if card_id=='bone_warden':expected_models.add('bone_warden_skeleton')
+            if card_id=='blade_box':expected_models.add('twin_blades')
+            if card_id=='thunderstorm':expected_models={'thunderstorm_cloud','thunderstorm_bolt','thunderstorm_rain'}
             if card_id=='shadow_surge':
                 expected_models={'ironclad','twin_blades','bone_warden_skeleton','shadow_surge_wisp','shadow_surge_ribbon'}
             observed_models = set()
@@ -238,6 +241,11 @@ class PortraitAudit:
                 validated_sources.append(source)
             self.check(card_id + " subjects match native card model bindings", observed_models == expected_models,
                        {"expected": sorted(expected_models), "observed": sorted(observed_models)})
+            if card_id=='blade_box':
+                self.check('Blade Box depicts one existing Twin Blade leaving the animated building',
+                           len(sources)==2 and binding.get('summon')=='twin_blades' and
+                           sum(s['modelId']=='twin_blades' for s in validated_sources)==1 and
+                           sum(s['modelId']=='blade_box' and s.get('action')=='Spawn' for s in validated_sources)==1)
             if perspective:
                 count={"mini_stampede":5,"stampede":15,"pulverizer":1,"bone_warden":5,"aether_reaper":1,"iron_giant":1,"shadow_surge":7}.get(card_id)
                 if count is not None:

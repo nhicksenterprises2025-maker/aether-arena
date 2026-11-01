@@ -40,7 +40,8 @@ STATS = {
     "auraDamage": ("Aura damage", "damage", 1),
     "auraInterval": ("Aura interval", "s", -1),
     "auraRadius": ("Aura radius", "tiles", 1),
-    "stunDuration": ("Aura stun duration", "s", 1),
+    "stunDuration": ("Stun duration", "s", 1),
+    "spawnInterval": ("Time per summoned troop", "s", -1),
     "dotDamage": ("Troop damage per DOT tick", "damage", 1),
     "dotStructureDamage": ("Structure damage per DOT tick", "damage", 1),
     "dotDuration": ("DOT duration", "s", 1),
@@ -80,6 +81,9 @@ def derived(card):
         ticks = card["dotDuration"] / card["dotInterval"] if card.get("dotDuration", 0) > 0 else 0
         values["fullTroopExposure"] = card["damage"] + card.get("dotDamage", 0) * ticks
         values["fullStructureExposure"] = card["towerDamage"] + card.get("dotStructureDamage", 0) * ticks
+        if card["id"] == "thunderstorm":
+            values["fullTroopExposure"] = card["damage"] * card["rounds"]
+            values["fullStructureExposure"] = card["towerDamage"] * card["rounds"]
     return values
 
 
@@ -97,6 +101,8 @@ def mechanic_changes(previous, card):
         lines.append("Body HP and shield HP are separate. " + ("A shield-breaking damage event discards its overflow; the next event can damage the body." if card.get("shieldOverflowProtected") else "Shield-breaking damage can overflow into body HP.") + " No shield regeneration.")
     if card.get("deathSpawnCount", 0) > 0 and changed("deathSpawnId", "deathSpawnCount"):
         lines.append("On death, spawns exactly " + str(card["deathSpawnCount"]) + " subordinate units nearby. Children cost no additional Aether and occupy no hand or deck slot; their contribution is credited to the parent.")
+    if card.get("spawnId") and changed("spawnId", "spawnInterval", "lifetime"):
+        lines.append("Produces one " + card["spawnId"].replace("_", " ").title() + " member every " + format(card["spawnInterval"], ".9g") + " seconds, starting after one interval. Uses that troop's current stats; no additional Aether or deck slot. Stun pauses production, destruction stops it, and hard lifetime continues.")
     if card.get("invisibilityDuration", 0) > 0 and changed("invisibilityDuration", "globalFriendlyInvisibility", "breakExistingLocks", "healthCloakThreshold"):
         threshold = card.get("healthCloakThreshold", 0)
         scope = ("Once per deployment, this troop first surviving a hit at or below " + format(threshold * 100, ".9g") + "% maximum body HP") if threshold > 0 else "All friendly troops" if card.get("globalFriendlyInvisibility") else "Friendly troops inside the spell area at impact"
@@ -112,7 +118,10 @@ def mechanic_changes(previous, card):
                      + (" second. Each tick deals " if card["dotInterval"] == 1 else " seconds. Each tick deals ")
                      + format(card["dotDamage"], ".9g") + " troop damage and "
                      + format(card.get("dotStructureDamage", 0), ".9g") + " structure damage.")
-    if spell_changed and card.get("rounds", 0) > 1:
+    if spell_changed and card["id"] == "thunderstorm":
+        times = [card["castDelay"] + i*card["dotInterval"] for i in range(card["rounds"])]
+        lines.append("Lightning strikes at " + ", ".join(format(t, ".9g") for t in times) + " seconds after cast. Each wave hits current enemies inside the fixed radius for " + format(card["damage"], ".9g") + " troop damage or " + format(card["towerDamage"], ".9g") + " structure damage and refreshes a " + format(card["stunDuration"], ".9g") + "-second stun.")
+    elif spell_changed and card.get("rounds", 0) > 1:
         lines.append(format(card["rounds"], ".9g") + " visual rounds animate the burst. Each affected target receives one damage packet at impact: "
                      + format(card["damage"], ".9g") + " troop damage or "
                      + format(card["towerDamage"], ".9g") + " structure damage. Visual rounds do not multiply that damage.")

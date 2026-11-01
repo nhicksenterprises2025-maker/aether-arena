@@ -14,6 +14,7 @@ sys.path.insert(0, str(ROOT/'Build'))
 import expansion_asset_models as expansion_models
 import expansion_new_models as new_models
 import dart_gun_model as dart_model
+import thunder_blade_models as thunder_blade
 from roster_humanoid_detail import polish as detail_humanoids
 from roster_creature_detail import polish as detail_creatures
 from roster_prop_detail import polish as detail_props
@@ -144,7 +145,7 @@ if UPDATE:
             'frameStart':bpy.context.scene.frame_start,'frameEnd':bpy.context.scene.frame_end,
             'frameCurrent':bpy.context.scene.frame_current}
     if opts.production_proof:
-        if UPDATE.intersection(previous_manifest['characters']):raise ValueError('Additive proof cannot replace an existing character')
+        if UPDATE.intersection(set(previous_manifest['characters'])|set(previous_manifest['statics'])):raise ValueError('Additive proof cannot replace an existing character or static')
         preserved_signatures=source_signatures()
     # Preserve unchanged models, atlas, architectural meshes and named actions.
     # Rebuilding the selected collection also prevents .001 suffixes from
@@ -345,7 +346,7 @@ manifest=json.loads(json.dumps(previous_manifest)) if previous_manifest else {'s
                'normal':Path(TEX['Normal'].filepath_raw).relative_to(ROOT).as_posix(),
                'teamMask':Path(TEX['TeamMask'].filepath_raw).relative_to(ROOT).as_posix()} for m in (SURFACE,GLOW,GLASS)],
  'characters':{},'statics':{},'illustrations':{},'renders':[]}
-manifest['build']='UE-crafted-roster-2.0.0'
+manifest['build']='UE-thunderstorm-blade-box-2.1.0'
 if DART_MATERIALS:
     records={r['name']:r for r in manifest.get('expansionMaterials',[])}
     records.update({m.name:{'name':m.name,**{k:'Assets/Source/Textures/T_RiftDartGunAtlas_'+v+'.png' for k,v in
@@ -686,6 +687,7 @@ def pulverizer():
     return expansion_models.pulse_machine(Forge)
 
 def actions(f):
+    if f.name in thunder_blade.CHARACTERS:return thunder_blade.actions(f,scene)
     if f.name=='dart_gun':return dart_model.actions(f,scene,set_world_rotation,aim_leg,aim_arm)
     if f.name in new_models.CONTRACTS:return new_models.actions(f,scene,set_world_rotation,aim_leg,aim_arm)
     if hasattr(f,'expansion_design'):return expansion_models.actions(f,scene,set_world_rotation,aim_leg)
@@ -881,6 +883,10 @@ def export_character(f):
     if f.name=='dart_gun':
         rec['animationTiming']={'anticipationSeconds':.09,'recoverySeconds':.16,'contactNormalized':.48}
         rec['gaitStrideMeters']=.54
+    elif f.name=='blade_box':
+        rec['animationTiming']={'anticipationSeconds':thunder_blade.OPEN_SECONDS,
+            'recoverySeconds':thunder_blade.SPAWN_SECONDS-thunder_blade.OPEN_SECONDS,
+            'contactNormalized':thunder_blade.OPEN_SECONDS/thunder_blade.SPAWN_SECONDS}
     manifest['characters'][f.name]=rec
     return f
 
@@ -1061,9 +1067,13 @@ def render_asset(f,stage,camera):
     for o in f.collection.objects:
         if o in (f.mesh,getattr(f,'rig',None)):o.hide_render=False
     height=max(1.2,f.mesh.dimensions.z);width=max(f.mesh.dimensions.x,f.mesh.dimensions.y)
-    target=Vector((0,0,sum(corner[2] for corner in f.mesh.bound_box)/8 if f.name=='guard_cannon' else height*.48));camera.location=target+Vector((4.5,-7.0,4.0))
+    target=Vector((0,0,sum(corner[2] for corner in f.mesh.bound_box)/8 if f.name=='guard_cannon' or f.name in thunder_blade.STATICS else height*.48));camera.location=target+Vector((4.5,-7.0,4.0))
     camera.rotation_euler=(target-camera.location).to_track_quat('-Z','Y').to_euler();camera.data.ortho_scale=max(height*1.5,width*1.38)
+    floors=[o for o in stage.objects if o.type=='MESH'];floor_heights=[o.location.z for o in floors]
+    if f.name in thunder_blade.STATICS:
+        for floor in floors:floor.location.z=min(corner[2] for corner in f.mesh.bound_box)-.04
     path=RENDER/(f.name+'.png');scene.render.filepath=str(path);bpy.ops.render.render(write_still=True)
+    for floor,z in zip(floors,floor_heights):floor.location.z=z
     info=file_info(path)
     manifest['renders']=[entry for entry in manifest['renders'] if entry['file']!=info['file']]
     manifest['renders'].append(info);return path
@@ -1260,14 +1270,15 @@ forges=[]
 knownModels={'ironclad','ember_archer','twin_blades','arc_mage','tower_archer','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven','mini_stampede','stampede','pulverizer',
              'tower_guard','tower_core','archer_tower','nova_flask','bridge','floor_tile','lane_paver','bank_segment','boundary_stone','grass_tuft','shrub','tree','crystal_plinth','banner','ruin','distant_island','meteor_shard','bullet_round','tower_rubble','arrow_projectile','arc_projectile','manta_projectile','storm_projectile','projectile_trail'}
 knownModels.update(new_models.CONTRACTS);knownModels.update(new_models.STATIC_IDS);knownModels.update(dart_model.CHARACTERS|dart_model.STATICS)
+knownModels.update(thunder_blade.CHARACTERS|thunder_blade.STATICS)
 if PREVIEW and PREVIEW-knownModels:raise ValueError('Unknown preview models: '+', '.join(sorted(PREVIEW-knownModels)))
-characterIds=('ironclad','ember_archer','twin_blades','arc_mage','tower_archer','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven','mini_stampede','stampede','pulverizer')+tuple(new_models.CONTRACTS)+tuple(dart_model.CHARACTERS)
+characterIds=('ironclad','ember_archer','twin_blades','arc_mage','tower_archer','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven','mini_stampede','stampede','pulverizer')+tuple(new_models.CONTRACTS)+tuple(dart_model.CHARACTERS)+tuple(thunder_blade.CHARACTERS)
 if UPDATE and UPDATE-knownModels:raise ValueError('Unknown update models: '+', '.join(sorted(UPDATE-knownModels)))
 for name in characterIds:
     if PREVIEW and name not in PREVIEW:continue
     if UPDATE and name not in UPDATE:continue
     print('RIFT_ASSET_BEGIN',name,flush=True)
-    f=dart_model.build(Forge,humanoid_rig) if name=='dart_gun' else new_models.build(Forge,name) if name in new_models.CONTRACTS else pulverizer() if name=='pulverizer' else humanoid(name) if name in ('ironclad','ember_archer','twin_blades','arc_mage','tower_archer') else hog(name) if name in ('mini_stampede','stampede') else quadruped(name) if name in ('boulderback','rambeast','frost_fang') else flyer(name)
+    f=thunder_blade.build(Forge) if name in thunder_blade.CHARACTERS else dart_model.build(Forge,humanoid_rig) if name=='dart_gun' else new_models.build(Forge,name) if name in new_models.CONTRACTS else pulverizer() if name=='pulverizer' else humanoid(name) if name in ('ironclad','ember_archer','tower_archer','twin_blades','arc_mage') else hog(name) if name in ('mini_stampede','stampede') else quadruped(name) if name in ('boulderback','rambeast','frost_fang') else flyer(name)
     if PREVIEW:
         if opts.preview_action:
             clips=actions(f)
@@ -1291,10 +1302,10 @@ for name in ('tower_guard','tower_core','archer_tower','nova_flask','bridge','fl
     if cannon:
         if not PREVIEW:export_static(cannon)
         forges.append(cannon);print('RIFT_ASSET_COMPLETE','guard_cannon',flush=True)
-for name in tuple(new_models.STATIC_IDS)+tuple(dart_model.STATICS):
+for name in tuple(new_models.STATIC_IDS)+tuple(dart_model.STATICS)+tuple(sorted(thunder_blade.STATICS)):
     if PREVIEW and name not in PREVIEW:continue
     if UPDATE and name not in UPDATE:continue
-    f=dart_model.projectile(Forge) if name=='dart_projectile' else new_models.effect_static(Forge,name)
+    f=thunder_blade.effect_static(Forge,name) if name in thunder_blade.STATICS else dart_model.projectile(Forge) if name=='dart_projectile' else new_models.effect_static(Forge,name)
     if not PREVIEW:export_static(f)
     forges.append(f);print('RIFT_ASSET_COMPLETE',name,flush=True)
 if not opts.no_renders:
@@ -1351,6 +1362,11 @@ card_bindings={
 card_bindings.update({'bone_warden':{'skeletal':'bone_warden','summon':'bone_warden_skeleton'},
                      'aether_reaper':{'skeletal':'aether_reaper'},'iron_giant':{'skeletal':'iron_giant'},
                      'shadow_surge':{'spell':True,'effectStatics':['shadow_surge_wisp','shadow_surge_ribbon']}})
+if 'blade_box' in manifest['characters']:
+    card_bindings['blade_box']={'skeletal':'blade_box','summon':'twin_blades'}
+if thunder_blade.STATICS.issubset(manifest['statics']):
+    card_bindings['thunderstorm']={'spell':True,'static':'thunderstorm_cloud',
+        'effectStatics':['thunderstorm_bolt','thunderstorm_rain','stun_spark']}
 if previous_manifest:
     # Retain accepted binding details exactly; the source revision proves additions.
     card_bindings={**previous_manifest['cards'],**{name:value for name,value in card_bindings.items() if name not in previous_manifest['cards']}}
@@ -1374,10 +1390,10 @@ if opts.production_proof:
     if proof.exists():raise ValueError('Production preservation evidence cannot be overwritten')
     proof.write_text(json.dumps({'schema':1,'passed':True,'kind':'additive-model-production',
         'fromSource':previous_manifest['source'],'toSource':manifest['source'],
-        'addedCharacters':sorted(UPDATE.intersection(set(new_models.CONTRACTS)|dart_model.CHARACTERS)),
-        'addedStatics':sorted(UPDATE.intersection(set(new_models.STATIC_IDS)|dart_model.STATICS)),
+        'addedCharacters':sorted(UPDATE.intersection(set(new_models.CONTRACTS)|dart_model.CHARACTERS|thunder_blade.CHARACTERS)),
+        'addedStatics':sorted(UPDATE.intersection(set(new_models.STATIC_IDS)|dart_model.STATICS|thunder_blade.STATICS)),
         'before':preserved_signatures,'after':after,
-        'producer':file_info(Path(__file__)),'modelBuilder':file_info(ROOT/('Build/dart_gun_model.py' if UPDATE.intersection(dart_model.CHARACTERS|dart_model.STATICS) else 'Build/expansion_new_models.py'))},indent=2),encoding='utf-8')
+        'producer':file_info(Path(__file__)),'modelBuilder':file_info(ROOT/('Build/thunder_blade_models.py' if UPDATE.intersection(thunder_blade.CHARACTERS|thunder_blade.STATICS) else 'Build/dart_gun_model.py' if UPDATE.intersection(dart_model.CHARACTERS|dart_model.STATICS) else 'Build/expansion_new_models.py'))},indent=2),encoding='utf-8')
 if opts.replacement_proof:
     replacement_proof_path.parent.mkdir(parents=True,exist_ok=True)
     replacement_proof_path.write_text(json.dumps({'schema':1,'passed':True,'kind':'selected-model-replacement',

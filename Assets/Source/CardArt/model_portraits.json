@@ -56,15 +56,15 @@
     },
     "ember_archer": {
       "file": "Assets/Source/CardArt/ember_archer.png",
-      "sha256": "66035b6c3d7a3efefadbf693de77f1c5d49cae2324e8075574f2c8bc90fdc569",
-      "bytes": 904553,
-      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
+      "sha256": "2745dd663e89790cb50203b0e32624eb96807de63756f561bfb94d7ab7e2f5e3",
+      "bytes": 900920,
+      "sourceSceneSHA256": "7241261bbfdc77b78b1f1e921ea9a12a4676f2599dd266b64aee4e55ee9a996b",
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/ember_archer/SK_ember_archer.fbx",
-            "sha256": "ad35bcf6d9cd6a0ca2a8e2e20f8ca59066d55765ff4217657196cde229647fc7",
-            "bytes": 1263868
+            "sha256": "5e650547613d1a8d67f43cce303fcc4a141c779ebd6d47cc88d49f7d964b46af",
+            "bytes": 1374540
           },
           "action": "DrawRelease",
           "phase": 0.37,
@@ -109,9 +109,9 @@
     },
     "archer_tower": {
       "file": "Assets/Source/CardArt/archer_tower.png",
-      "sha256": "7295d53b3462a3d3eea44620b16c97f1e5cfdb4b83037b1eb276ccce799e4beb",
-      "bytes": 903953,
-      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
+      "sha256": "335d9adb6becb7acc048ee519cf988ced976281e90e99c6ffee4f76fb8949e6f",
+      "bytes": 903288,
+      "sourceSceneSHA256": "7241261bbfdc77b78b1f1e921ea9a12a4676f2599dd266b64aee4e55ee9a996b",
       "sources": [
         {
           "model": {
@@ -166,8 +166,8 @@
         {
           "model": {
             "file": "Assets/Export/Characters/tower_archer/SK_tower_archer.fbx",
-            "sha256": "b6b5e018a4dd804301ad4e22f13f800351e98a75609c34db504b886903ba3131",
-            "bytes": 1821260
+            "sha256": "d5bc0126c5f2d0554caac30f432c5e7431b70bed74116b821e77619a5132fe18",
+            "bytes": 1903276
           },
           "action": "DrawRelease",
           "phase": 0.37,
@@ -357,15 +357,15 @@
     },
     "boulderback": {
       "file": "Assets/Source/CardArt/boulderback.png",
-      "sha256": "bbc2b15df5f1111a0cad4eb3ea29e4ee6fd9cd316fea23e9dabd32aaf8d4767f",
-      "bytes": 869765,
-      "sourceSceneSHA256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
+      "sha256": "5220e8c49de9318176c50d37f8005d5c564dfbaee447dc1d04e7f26fdac3d0da",
+      "bytes": 844442,
+      "sourceSceneSHA256": "7241261bbfdc77b78b1f1e921ea9a12a4676f2599dd266b64aee4e55ee9a996b",
       "sources": [
         {
           "model": {
             "file": "Assets/Export/Characters/boulderback/SK_boulderback.fbx",
-            "sha256": "14af9cb55a27bb5725e892f30b97b27232e9593dc83a748d052ebf172889654b",
-            "bytes": 1495196
+            "sha256": "64e82d544894b0980fd1ec3074cb067e2aac4757615ec74c54556a76e2edc7c9",
+            "bytes": 2043068
           },
           "action": "Idle",
           "phase": 0.16,
@@ -383,7 +383,7 @@
         ],
         [
           0.6115458011627197,
-          0.8762241005897522,
+          0.8762224912643433,
           2.109999895095825
         ]
       ],
@@ -1959,13 +1959,1109 @@
           0.49
         ]
       }
+    },
+    "thunderstorm": {
+      "file": "Assets/Source/CardArt/thunderstorm.png",
+      "sha256": "b2812a64ea9086655433c279885c0d90852c31e164378fc2426d095dabd0b027",
+      "bytes": 792014,
+      "sourceSceneSHA256": "7241261bbfdc77b78b1f1e921ea9a12a4676f2599dd266b64aee4e55ee9a996b",
+      "sources": [
+        {
+          "model": {
+            "name": "thunderstorm_cloud",
+            "file": "Assets/Export/Environment/SM_thunderstorm_cloud.fbx",
+            "sha256": "34932ddf56c8b0a52ff22ee43171a81a68b6b4c9ed213df670264da3facf3742",
+            "bytes": 479404,
+            "triangles": 18020,
+            "boundsMeters": [
+              2.2054381370544434,
+              1.2224847078323364,
+              0.8836828470230103
+            ],
+            "materials": [
+              "M_RiftSurface"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 9010,
+                "file": "Assets/Export/Environment/SM_thunderstorm_cloud_LOD1.fbx",
+                "sha256": "3b6b63051dc75b2b7c07721317bcdf80ae43614a4eeb6effbd489126160dac35",
+                "bytes": 276204
+              },
+              {
+                "level": 2,
+                "triangles": 3964,
+                "file": "Assets/Export/Environment/SM_thunderstorm_cloud_LOD2.fbx",
+                "sha256": "4daa9abdbb3bf060a7c7f3a46d05db919ad68b46599c88f49ea9083cf5fba861",
+                "bytes": 139948
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_bolt",
+            "file": "Assets/Export/Environment/SM_thunderstorm_bolt.fbx",
+            "sha256": "b68fb0fcf70e3fe03c08bfd412f975ddc858c3e90d508bf57f4e6739ccd94466",
+            "bytes": 27180,
+            "triangles": 212,
+            "boundsMeters": [
+              0.3917485773563385,
+              0.05990029126405716,
+              1.0055012702941895
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 106,
+                "file": "Assets/Export/Environment/SM_thunderstorm_bolt_LOD1.fbx",
+                "sha256": "6374ca08861a466399cd9d671204acaca136d7a87da62210e1d21b577b8c934c",
+                "bytes": 24748
+              },
+              {
+                "level": 2,
+                "triangles": 46,
+                "file": "Assets/Export/Environment/SM_thunderstorm_bolt_LOD2.fbx",
+                "sha256": "c43385c4ee7cbb9f13a5315f12864dd1ad0b449bd3e2ba10014faabe3e616838",
+                "bytes": 22924
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_bolt",
+            "file": "Assets/Export/Environment/SM_thunderstorm_bolt.fbx",
+            "sha256": "b68fb0fcf70e3fe03c08bfd412f975ddc858c3e90d508bf57f4e6739ccd94466",
+            "bytes": 27180,
+            "triangles": 212,
+            "boundsMeters": [
+              0.3917485773563385,
+              0.05990029126405716,
+              1.0055012702941895
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 106,
+                "file": "Assets/Export/Environment/SM_thunderstorm_bolt_LOD1.fbx",
+                "sha256": "6374ca08861a466399cd9d671204acaca136d7a87da62210e1d21b577b8c934c",
+                "bytes": 24748
+              },
+              {
+                "level": 2,
+                "triangles": 46,
+                "file": "Assets/Export/Environment/SM_thunderstorm_bolt_LOD2.fbx",
+                "sha256": "c43385c4ee7cbb9f13a5315f12864dd1ad0b449bd3e2ba10014faabe3e616838",
+                "bytes": 22924
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_bolt",
+            "file": "Assets/Export/Environment/SM_thunderstorm_bolt.fbx",
+            "sha256": "b68fb0fcf70e3fe03c08bfd412f975ddc858c3e90d508bf57f4e6739ccd94466",
+            "bytes": 27180,
+            "triangles": 212,
+            "boundsMeters": [
+              0.3917485773563385,
+              0.05990029126405716,
+              1.0055012702941895
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 106,
+                "file": "Assets/Export/Environment/SM_thunderstorm_bolt_LOD1.fbx",
+                "sha256": "6374ca08861a466399cd9d671204acaca136d7a87da62210e1d21b577b8c934c",
+                "bytes": 24748
+              },
+              {
+                "level": 2,
+                "triangles": 46,
+                "file": "Assets/Export/Environment/SM_thunderstorm_bolt_LOD2.fbx",
+                "sha256": "c43385c4ee7cbb9f13a5315f12864dd1ad0b449bd3e2ba10014faabe3e616838",
+                "bytes": 22924
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "thunderstorm_rain",
+            "file": "Assets/Export/Environment/SM_thunderstorm_rain.fbx",
+            "sha256": "1a81b8a4fa29d55314e7c9dc5d0b0258fdf96f0c573fbcc458d11e199830a0d4",
+            "bytes": 21644,
+            "triangles": 32,
+            "boundsMeters": [
+              0.012000000104308128,
+              0.010392304509878159,
+              1.0
+            ],
+            "materials": [
+              "M_RiftGlow"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 16,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD1.fbx",
+                "sha256": "4676f7ecbd37594a7df3a2520c5959d4819d84e9b3747e539d0f21dd278262a1",
+                "bytes": 21420
+              },
+              {
+                "level": 2,
+                "triangles": 6,
+                "file": "Assets/Export/Environment/SM_thunderstorm_rain_LOD2.fbx",
+                "sha256": "fdbcc4c5ca1ee925e53d5538be28a1400d55e68dc3d01bdfd772a2a3396fefba",
+                "bytes": 21228
+              }
+            ]
+          }
+        }
+      ],
+      "boundsMeters": [
+        [
+          -1.1578011512756348,
+          -0.8845279812812805,
+          0.050000011920928955
+        ],
+        [
+          1.1579087972640991,
+          0.825223445892334,
+          2.597510814666748
+        ]
+      ],
+      "poseFrame": 1,
+      "cameraOrthoScale": 3.1163129806518555,
+      "composition": "Full silhouette",
+      "lighting": {
+        "backdrop": [
+          0.018,
+          0.029,
+          0.052
+        ],
+        "key": [
+          0.78,
+          0.88,
+          1
+        ],
+        "rim": [
+          0.34,
+          0.58,
+          1
+        ]
+      }
+    },
+    "blade_box": {
+      "file": "Assets/Source/CardArt/blade_box.png",
+      "sha256": "a5c9062fb547ec6c08b8e319cfc4977d7d69d30a12cb14abd1ee9a743678a302",
+      "bytes": 937113,
+      "sourceSceneSHA256": "7241261bbfdc77b78b1f1e921ea9a12a4676f2599dd266b64aee4e55ee9a996b",
+      "sources": [
+        {
+          "model": {
+            "file": "Assets/Export/Characters/blade_box/SK_blade_box.fbx",
+            "sha256": "be838792a028b530827831a5213a3356554303247e2c904741ffaf72cea079be",
+            "bytes": 422428
+          },
+          "action": "Spawn",
+          "phase": 0.48,
+          "phaseOffsetFrames": 29,
+          "poseSourceFrame": 30,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "SKEL_blade_box.001_PortraitPose"
+        },
+        {
+          "model": {
+            "file": "Assets/Export/Characters/twin_blades/SK_twin_blades.fbx",
+            "sha256": "af3fb4dc308dd7aa0359f973c71f6b0c8f083fc7401beced952eae885ce78b84",
+            "bytes": 955932
+          },
+          "action": "Locomotion",
+          "phase": 0.18,
+          "phaseOffsetFrames": 10,
+          "poseSourceFrame": 11,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "SKEL_twin_blades.001_PortraitPose"
+        }
+      ],
+      "boundsMeters": [
+        [
+          -0.8199999928474426,
+          -1.1867448091506958,
+          0.0
+        ],
+        [
+          0.8199999928474426,
+          0.7400000095367432,
+          1.9149999618530273
+        ]
+      ],
+      "poseFrame": 1,
+      "cameraOrthoScale": 3.0390267372131348,
+      "composition": "Full silhouette",
+      "lighting": {
+        "backdrop": [
+          0.032,
+          0.023,
+          0.045
+        ],
+        "key": [
+          0.98,
+          0.88,
+          0.76
+        ],
+        "rim": [
+          0.56,
+          0.38,
+          0.87
+        ]
+      }
     }
   },
   "method": "Actual production Blender mesh/rig render, exported to the native game",
   "sourceBlend": {
     "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
-    "sha256": "396a3bf41146d48aaeca9bef3e7b18e01281f50e52d1d4ec3795a3381520f6f4",
-    "bytes": 34216728
+    "sha256": "7241261bbfdc77b78b1f1e921ea9a12a4676f2599dd266b64aee4e55ee9a996b",
+    "bytes": 35500862
   },
   "resolution": [
     768,
@@ -1980,8 +3076,8 @@
   },
   "rendererScript": {
     "file": "Build/render_card_portraits.py",
-    "sha256": "b26618c643b009198ac0974ec68a39dc61f114a0e880eeedafe11296b588520b",
-    "bytes": 14885
+    "sha256": "e59af1ffee164e048e90eb1fb4d4c4414a9122f95818fa80e7f0fa4563d4a0f2",
+    "bytes": 15618
   },
   "masterResolution": [
     1024,

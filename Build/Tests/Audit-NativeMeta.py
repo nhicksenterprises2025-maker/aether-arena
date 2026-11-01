@@ -74,7 +74,7 @@ styles = ["beatdown", "aggro", "control", "cycle", "split", "spell_cycle", "coun
 revision = data["telemetryRevision"]
 legacy_exposure = []
 check(data["schemaVersion"] == 1 and data["model"] == "rift-native-1" and
-      data["deckPolicy"] == "native-observed-2" and revision in (2, 3, 4),
+      data["deckPolicy"] == "native-observed-2" and revision in (2, 3, 4, 5),
       "Unexpected dataset identity")
 navigation_revision = data["rulesSnapshot"].get("navigationRevision", 1)
 combat_revision = data["rulesSnapshot"].get("combatRevision", 0)
@@ -102,7 +102,7 @@ if "balanceHash" in data:
             else:
                 check(captured.get(key) == value, f"Captured identity mismatch: {expected['id']}.{key}")
     if revision >= 4:
-        check(manifest.get("schema") in (2, 3), "Expansion telemetry requires its matching schema2/3 mechanics manifest")
+        check(manifest.get("schema") in (2, 3, 4), "Expansion telemetry requires its matching schema2/3/4 mechanics manifest")
         expected_entities = {card["id"]: card for card in manifest.get("entities", [])}
         check(set(entity_definitions) == set(expected_entities) and len(data.get("entitySnapshot", [])) == len(expected_entities),
               "Captured subordinate definitions differ from matching canonical manifest")
@@ -126,7 +126,7 @@ if "balanceHash" in data:
     check(not isinstance(fingerprint_policy_revision, bool) and fingerprint_policy_revision in (1, 2),
           "Unsupported canonical fingerprint policy revision")
     if fingerprint_policy_revision == 2:
-        check(revision in (3, 4), "Policy2 requires captured telemetry3 or4")
+        check(revision in (3, 4, 5), "Policy2 requires captured telemetry3,4 or5")
         # Read the matching versioned manifest, never today's arena globals.
         # Policy1 archives had implicit30x44 geometry; policy2 captures it explicitly.
         for key in ("arenaWidth", "arenaHeight", "riverHalfWidth", "bridgeCenterX", "bridgeWidth", "coreDepth", "guardDepth"):
@@ -333,10 +333,12 @@ for bucket_id, bucket in buckets.items():
         if revision >= 4:
             children = number(stats, "childSpawns")
             near(children, number(stats, "childDeaths") + number(stats, "childSurviving"), f"{prefix}: child deaths/survivors")
-            check(children <= definition.get("deathSpawnCount", 0) * number(stats, "deaths") + 1e-5,
-                  f"{prefix}: children require actual parent deaths")
+            child_capacity = definition.get("deathSpawnCount", 0) * number(stats, "deaths")
+            if definition.get("spawnId"):
+                child_capacity += math.floor(definition["lifetime"] / definition["spawnInterval"] + 1e-9) * plays
+            check(children <= child_capacity + 1e-5, f"{prefix}: children exceed actual paid-parent production/deaths")
             shield_capacity = definition.get("shieldHP", 0) * spawns
-            child = entity_definitions.get(definition.get("deathSpawnId"), {})
+            child = definitions.get(definition.get("spawnId")) or entity_definitions.get(definition.get("deathSpawnId"), {})
             shield_capacity += child.get("shieldHP", 0) * children
             check(number(stats, "shieldDamageTaken") <= shield_capacity + 1e-5, f"{prefix}: shield loss exceeds actual shields")
             near(number(stats, "shieldAbsorbed"), number(stats, "shieldDamageTaken") + number(stats, "overflowPrevented"),
@@ -359,7 +361,7 @@ for bucket_id, bucket in buckets.items():
               number(stats, "stunTime") <= number(stats, "stunTrackedSeconds") + 1e-5,
               f"{prefix}: credited status exceeds affected exposure")
         child_spawns = number(stats, "childSpawns") if revision >= 4 else 0
-        child = entity_definitions.get(definition.get("deathSpawnId"), {})
+        child = definitions.get(definition.get("spawnId")) or entity_definitions.get(definition.get("deathSpawnId"), {})
         check(number(stats, "lifetime") <= 420 * (spawns + child_spawns) + 1e-5 and
               number(stats, "damageTaken") <= definition["hp"] * spawns + child.get("hp", 0) * child_spawns + 1e-5,
               f"{prefix}: member HP/lifetime limits")
@@ -392,16 +394,22 @@ for bucket_id, bucket in buckets.items():
             near(number(stats, "slowTime") + number(stats, "slowTrackedSeconds"), 0, f"{prefix}: no slow source")
         if card_id == "pulverizer":
             near(number(stats, "towerDamage") + number(stats, "buildingDamage"), 0, f"{prefix}: ground troop-only shockwave")
-        if card_id != "storm_raven":
+        if definition.get("stunDuration", 0) <= 0:
             near(number(stats, "stunTime") + number(stats, "stunTrackedSeconds") +
-                 number(stats, "auraDamage") + number(stats, "stunned"), 0, f"{prefix}: no aura/stun source")
+                 number(stats, "stunned"), 0, f"{prefix}: no stun source")
+        if definition.get("auraDamage", 0) <= 0:
+            near(number(stats, "auraDamage"), 0, f"{prefix}: no aura source")
         else:
             check(number(stats, "auraDamage") <= number(stats, "troopDamage"), f"{prefix}: troop-only aura")
         if definition["building"]:
             near(number(stats, "buildingCapacity"), definition["lifetime"] * spawns, f"{prefix}: building capacity")
             check(number(stats, "buildingLifetime") <= number(stats, "buildingCapacity") + 1e-5,
                   f"{prefix}: lifetime utilization")
-            near(number(stats, "prevented"), number(stats, "damageTaken"), f"{prefix}: building damage interception")
+            body_damage = number(stats, "damageTaken")
+            if revision >= 4:
+                body_damage = sum(number(body, "damageTaken") for body in bucket.get("entities", {}).values()
+                                  if body.get("parentCardId") == card_id and not body.get("subordinate"))
+            near(number(stats, "prevented"), body_damage, f"{prefix}: building body damage interception")
         else:
             near(sum(number(stats, key) for key in ("buildingLifetime", "buildingCapacity", "prevented", "pulls")),
                  0, f"{prefix}: no building attribution")
@@ -411,20 +419,25 @@ for bucket_id, bucket in buckets.items():
         all_entities = {**definitions, **entity_definitions}
         for identity, stats in observed.items():
             prefix = f"{bucket_id}/entity/{identity}"
-            definition = all_entities.get(identity)
-            check(definition is not None and stats.get("cardId") == identity, f"{prefix}: recorded entity identity")
+            card_id = stats.get("cardId") if revision >= 5 else identity
+            definition = all_entities.get(card_id)
+            check(definition is not None and stats.get("cardId") == card_id, f"{prefix}: recorded entity identity")
             if definition is None:
                 continue
             parent = stats.get("parentCardId")
-            subordinate = identity in entity_definitions
+            subordinate = parent != card_id if revision >= 5 else identity in entity_definitions
+            expected_key = parent + '/' + card_id if revision >= 5 and subordinate and isinstance(parent,str) and isinstance(card_id,str) else card_id
+            check(identity == expected_key, f"{prefix}: distinct paid/summoned observation key")
             check(stats.get("subordinate") is subordinate and parent in definitions and
-                  (definitions[parent].get("deathSpawnId") == identity if subordinate else parent == identity),
+                  (card_id in (definitions[parent].get("deathSpawnId"),definitions[parent].get("spawnId")) if subordinate else parent == card_id),
                   f"{prefix}: parent attribution")
             near(number(stats, "plays") + number(stats, "spent"), 0, f"{prefix}: bodies do not create paid casts or spend")
             near(number(stats, "observations"), number(stats, "spawns"), f"{prefix}: one stable body per observation")
             near(number(stats, "spawns"), number(stats, "deaths") + number(stats, "surviving"), f"{prefix}: body outcomes")
             check(number(stats, "damageTaken") <= definition["hp"] * number(stats, "spawns") + 1e-5,
                   f"{prefix}: body HP budget")
+            near(number(stats, "prevented"), number(stats, "damageTaken") if definition["building"] else 0,
+                 f"{prefix}: only building bodies intercept damage")
             check(number(stats, "shieldDamageTaken") <= definition.get("shieldHP", 0) * number(stats, "spawns") + 1e-5,
                   f"{prefix}: separate shield HP budget")
             near(number(stats, "shieldAbsorbed"), number(stats, "shieldDamageTaken") + number(stats, "overflowPrevented"),

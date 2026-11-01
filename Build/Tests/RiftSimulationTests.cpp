@@ -231,7 +231,7 @@ void Same(const Match &left, const Match &right) {
     for (std::size_t n = 0; n < x.spellCasts.size(); ++n) {
         const auto &c = x.spellCasts[n];
         const auto &d = y.spellCasts[n];
-        Check(c.playId == d.playId && c.team == d.team && c.cardId == d.cardId,
+        Check(c.playId == d.playId && c.team == d.team && c.cardId == d.cardId && c.round == d.round,
               "deterministic pending cast identity");
         Near(c.position.x, d.position.x, 0, "deterministic cast X");
         Near(c.position.z, d.position.z, 0, "deterministic cast Z");
@@ -265,6 +265,8 @@ void Same(const Match &left, const Match &right) {
         Near(e.shieldBrokenAt, f.shieldBrokenAt, 1e-9, "deterministic shield break time");
         Near(e.invisibleUntil, f.invisibleUntil, 1e-9, "deterministic cloak expiry");
         Near(e.chargeTime, f.chargeTime, 1e-9, "deterministic actual charge travel");
+        Near(e.spawnClock, f.spawnClock, 1e-9, "deterministic paused production clock");
+        Check(e.periodicSpawns == f.periodicSpawns, "deterministic periodic child count");
         Near(e.position.x, f.position.x, 1e-8, "deterministic X");
         Near(e.position.z, f.position.z, 1e-8, "deterministic Z");
         Check(e.slows.size() == f.slows.size(), "deterministic independent slow components");
@@ -323,6 +325,211 @@ int main(int argc, char **argv) {
         if (std::string(argv[argument]) == "--all-errors") continueAfterFailure = true;
         else scenarioFilter = argv[argument];
     try {
+        Test("shadow210 paid Surge waits three quarters then cloaks current friendly troops for two seconds", [] {
+            for (Team team : {Team::Player, Team::Enemy}) {
+                Match m(CollisionOptions("shadow_surge", "ironclad"));FreezeCrowns(m);
+                const Team foe = team == Team::Player ? Team::Enemy : Team::Player;
+                const double sign = team == Team::Player ? 1. : -1.;
+                const Vec2 center{.5, 7.5 * sign};
+                Check(m.Spawn(team, "ironclad", center), "friendly ground body");
+                Check(m.Spawn(team, "sky_manta", {4.5, center.z}), "friendly air body starts outside");
+                Check(m.Spawn(foe, "ironclad", {.5, 5.7 * sign}), "enemy inside impact area");
+                const auto ground = Unit(m, "ironclad", team).id;
+                const auto air = Unit(m, "sky_manta", team).id;
+                const auto enemy = Unit(m, "ironclad", foe).id;
+                for (auto &body : const_cast<Snapshot &>(m.State()).entities) body.stunUntil = 30;
+                const double enemyHP = ById(m, enemy).hp;
+                PaidCollisionCard(m, team, "shadow_surge", center);
+                m.Step(.5);
+                Near(ById(m, ground).invisibleUntil, 0, 0, "cast has no premature cloak");
+                MutableEntity(m, air).position = center;
+                m.Step(.25 - 1. / 60.);
+                Near(ById(m, enemy).hp, enemyHP, 0, "no damage one fixed tick before activation");
+                Near(ById(m, air).invisibleUntil, 0, 0, "no cloak one fixed tick before activation");
+                m.Step(1. / 60.);
+                Near(m.State().elapsed, .75, 1e-9, "activation occurs at exact authored delay");
+                Near(ById(m, enemy).hp, enemyHP - 100, 0, "preserved100 troop impact");
+                for (auto id : {ground, air}) Near(ById(m, id).invisibleUntil, 2.75, 1e-9, "two seconds from activation for current ground and air occupants");
+                Near(ById(m, ground).hp, 822, 0, "friendly damage immunity preserved");
+                Check(!m.CanTarget(ById(m, enemy), ById(m, ground)), "enemy cannot acquire cloaked troop");
+                m.Step(2 - 1. / 60.);
+                Check(!m.CanTarget(ById(m, enemy), ById(m, ground)), "cloak persists through its final fixed tick");
+                m.Step(1. / 60.);
+                for (auto id : {ground, air}) Near(ById(m, id).invisibleUntil, 0, 0, "cloak expires exactly at2.75");
+                Check(m.CanTarget(ById(m, enemy), ById(m, ground)), "enemy reacquires after two-second cloak");
+                int impacts = 0, applied = 0, expired = 0;
+                for (const auto &event : m.Events()) if (event.cardId == "shadow_surge") {
+                    if (event.type == "spell_impact") {++impacts;Near(event.time,.75,1e-9,"one impact event at activation");}
+                    if (event.type == "invisibility_apply") {++applied;Near(event.until,2.75,1e-9,"captured cloak deadline");}
+                    expired += event.type == "invisibility_expire";
+                }
+                Check(impacts == 1 && applied == 2 && expired == 2, "single paid impact and per-body apply/expiry events");
+                Near(m.State().spent[int(team)], 3, 0, "cost remains three Aether");
+            }
+        });
+        Test("storm210 Thunderstorm three exact waves damage every enemy category and stun survivors", [] {
+            Check(FindCard("thunderstorm") && FindCard("blade_box"), "new canonical cards exist");
+            for (Team team : {Team::Player, Team::Enemy})
+                for (const std::string kind : {"ground", "air", "building", "guard", "core"}) {
+                    Match m(CollisionOptions("thunderstorm", "blade_box"));
+                    const Team foe = team == Team::Player ? Team::Enemy : Team::Player;
+                    EntityId target = 0;
+                    if (kind == "guard" || kind == "core")
+                        target = Tower(m, foe, kind == "guard" ? EntityKind::Guard : EntityKind::Core,
+                                       kind == "guard" ? 1 : 0).id;
+                    else {
+                        const std::string id = kind == "ground" ? "boulderback" : kind == "air" ? "sky_manta" : "blade_box";
+                        Check(m.Spawn(foe, id, {.5, 8.5}), "real target body exists");
+                        target = Unit(m, id, foe).id;
+                    }
+                    for (auto &body : const_cast<Snapshot &>(m.State()).entities) body.cooldown = 100;
+                    const auto original = ById(m, target);
+                    PaidCollisionCard(m, team, "thunderstorm", original.position);
+                    const double hit = kind == "ground" || kind == "air" ? 65 : 33;
+                    for (int wave = 1; wave <= 3; ++wave) {
+                        m.Step(.45 - 1. / 60.);
+                        Near(ById(m, target).hp, original.hp - (wave - 1) * hit, 1e-8, "no early wave damage");
+                        m.Step(1. / 60.);
+                        Near(m.State().elapsed, wave * .45, 1e-9, "authored wave timestamp");
+                        Near(ById(m, target).hp, original.hp - wave * hit, 1e-8, "exact per-wave damage");
+                        Near(ById(m, target).stunUntil, wave * .45 + .25, 1e-9, "each survivor receives fresh quarter-second stun");
+                    }
+                    m.Step(.3);
+                    Check(m.State().spellCasts.empty() && m.State().hazards.empty(), "third wave retires pending cast without DOT");
+                    int casts = 0, impacts = 0, hits = 0, stuns = 0;
+                    for (const auto &event : m.Events()) if (event.cardId == "thunderstorm") {
+                        casts += event.type == "spell_cast";
+                        if (event.type == "spell_impact") {
+                            ++impacts;Check(event.count == impacts, "wave number is replayable");
+                            Near(event.time, .45 * impacts, 1e-9, "exact impact event time");
+                        }
+                        if (event.type == "damage" && event.target == target) {
+                            ++hits;Near(event.requested, hit, 0, "unscaled damage packet");
+                            Check(event.playId != 0 && event.attributionCardId == "thunderstorm", "paid spell attribution");
+                        }
+                        stuns += event.type == "stun" && event.target == target;
+                    }
+                    Check(casts == 1 && impacts == 3 && hits == 3 && stuns == 3, "one cast, three area waves and three survivor stuns");
+                    Near(m.State().spent[int(team)], 3, 0, "entire storm costs three once");
+                    Near(m.State().telemetry[int(team)].at("thunderstorm").stunTime, .75, 1e-8, "actual three stun intervals credited");
+                }
+        });
+        Test("storm210 Thunderstorm reacquires its exact radius and ignores friendly or dead bodies", [] {
+            for (double distance : {2.999, 3., 3.001}) {
+                Match m(CollisionOptions("thunderstorm", "blade_box"));FreezeCrowns(m);
+                Check(m.Spawn(Team::Enemy, "boulderback", {.5, 8.5}), "boundary enemy");
+                const auto enemy = Unit(m, "boulderback", Team::Enemy).id;
+                auto &body = MutableEntity(m, enemy);body.position = {.5 + distance, 8.5};body.stunUntil = 10;
+                Check(m.Spawn(Team::Player, "sky_manta", {.5, 8.5}), "friendly air target");
+                const auto friendly = Unit(m, "sky_manta", Team::Player).id;
+                MutableEntity(m, friendly).stunUntil = 10;
+                PaidCollisionCard(m, Team::Player, "thunderstorm", {.5, 8.5});
+                m.Step(.45);
+                Near(ById(m, enemy).hp, 1620 - (distance <= 3 ? 65 : 0), 0, "three-tile radius uses centers without invisible padding");
+                MutableEntity(m, enemy).position = {.5, 8.5};
+                m.Step(.45);Near(ById(m, enemy).hp, 1620 - (distance <= 3 ? 130 : 65), 0, "second wave observes current position");
+                MutableEntity(m, enemy).hp = 60;
+                m.Step(.45);Check(ById(m, enemy).dead, "third wave can kill entering survivor");
+                Near(ById(m, friendly).hp, FindCard("sky_manta")->hp, 0, "friendly units never damaged");
+                for (const auto &event : m.Events())
+                    Check(!(event.type == "stun" && event.target == enemy && event.time > 1.3), "lethal wave emits no stun for corpse");
+            }
+        });
+        Test("storm210 Thunderstorm refreshes overlapping stuns and cancels remaining waves at match end", [] {
+            Match m(CollisionOptions("thunderstorm", "blade_box"));FreezeCrowns(m);
+            Check(m.Spawn(Team::Enemy, "boulderback", {.5, 8.5}), "moving stun target");
+            const auto target = Unit(m, "boulderback", Team::Enemy).id;
+            PaidCollisionCard(m, Team::Player, "thunderstorm", {.5, 8.5});
+            m.Step(.1);Check(m.Spawn(Team::Player, "thunderstorm", {.5, 8.5}), "second actual cast for overlap");
+            m.Step(.35);const Vec2 stopped = ById(m,target).position;
+            m.Step(.1);Near(ById(m,target).stunUntil,.8,1e-9,"second hit refreshes expiry rather than adding duration");
+            m.Step(.25 - 1./60.);
+            Near(std::hypot(ById(m,target).position.x-stopped.x,ById(m,target).position.z-stopped.z),0,1e-9,"actual movement is suspended throughout refreshed stun");
+            m.Step(1./60.);
+            Check(std::hypot(ById(m,target).position.x-stopped.x,ById(m,target).position.z-stopped.z)>0,"movement resumes at stun expiry");
+            Match finish(CollisionOptions("thunderstorm", "blade_box"));
+            const auto core = Tower(finish, Team::Enemy, EntityKind::Core);
+            Check(finish.SetTowerHP(core.id,32),"low-HP core fixture");
+            PaidCollisionCard(finish,Team::Player,"thunderstorm",core.position);
+            finish.Step(.45);
+            Check(finish.State().phase==Phase::Finished&&finish.State().spellCasts.empty(),"lethal first wave clears remaining scheduled waves");
+            const auto events=finish.Events().size();finish.Step(3);
+            Check(finish.Events().size()==events,"finished match emits no later impacts");
+        });
+        Test("storm210 Blade Box releases ten single current Twin Blades before exact expiry", [] {
+            const Card *twin = FindCard("twin_blades");
+            Check(twin && FindCard("blade_box"), "canonical spawner and child exist");
+            for (Team team : {Team::Player, Team::Enemy}) for (int lane : {-1, 1}) {
+                Match m(CollisionOptions("blade_box", "thunderstorm"));FreezeCrowns(m);
+                const double sign = team == Team::Player ? 1 : -1;
+                const auto parent = PaidCollisionCard(m, team, "blade_box", {lane * 4.5, sign * 12.5})[0];
+                for (int step = 1; step <= 1800; ++step) {
+                    m.Step(1. / 60.);BodyClearance(m, "periodic child placement and movement");
+                    const auto &tele = m.State().telemetry[int(team)].at("blade_box");
+                    Check(tele.childSpawns == static_cast<unsigned>(step / 180), "exact single child at each three-second boundary");
+                    if (step < 1800) {Check(!ById(m, parent.id).dead, "box survives until thirty seconds");Near(ById(m,parent.id).hp,500,0,"no passive HP decay");}
+                }
+                Check(ById(m, parent.id).dead, "box expires exactly thirty seconds after tenth child");
+                int children = 0, openings = 0, childHits = 0;
+                for (const auto &event : m.Events()) {
+                    if (event.type == "building_spawn" && event.source == parent.id) ++openings;
+                    if (event.type == "damage" && event.cardId == "twin_blades" && event.playId == parent.playId) {
+                        ++childHits;Near(event.requested,twin->damage,0,"child attacks use current Twin damage");
+                        Check(event.attributionCardId=="blade_box", "child damage credits paid Box");
+                    }
+                    if (event.type != "entity_spawn" || event.parentEntityId != parent.id) continue;
+                    ++children;Near(event.time, 3. * children, 1e-8, "child absolute spawn timestamp");
+                    Check(event.cardId == "twin_blades" && event.attributionCardId == "blade_box" && event.count == 1 &&
+                          event.playId == parent.playId && event.reason == "periodic_spawn", "single current Twin inherits paid Box attribution");
+                    Near(event.maxHp, twin->hp, 0, "child uses current Twin HP");
+                    const auto &record = m.State().entityTelemetry[int(team)].at(event.source);
+                    Check(record.cardId == "twin_blades" && record.parentEntityId == parent.id, "persistent child record survives actor cleanup");
+                    if (const auto *child = FindEntity(m, event.source)) {
+                        Near(child->radius, twin->collisionRadius, 0, "current Twin collision radius");
+                        Check(child->memberCount == 1 && child->lane == (event.position.x < 0 ? -1 : 1), "single body chooses actual landing lane");
+                    }
+                }
+                Check(children == 10 && openings == 10, "ten bodies and ten presentation openings, never paired Twins");
+                Check(childHits>0 && m.State().telemetry[int(team)].at("blade_box").towerDamage>0,
+                      "actual spawned children attack and credit their owning building");
+                Check(TargetMaskFor(*FindCard("blade_box"))==0,"spawner has no fabricated basic attack targets");
+                Near(m.State().spent[int(team)], 5, 0, "children consume no additional aether");
+                m.Step(1.1);Check(!FindEntity(m, parent.id), "expired Box is cleaned up");
+                Check(m.State().telemetry[int(team)].at("blade_box").childSpawns == 10, "no death bonus or post-expiry spawn");
+            }
+        });
+        Test("storm210 Blade Box death cancels production and real storm stun pauses its clock", [] {
+            for (bool destroy : {false, true}) {
+                Match m(CollisionOptions("blade_box", "thunderstorm"));FreezeCrowns(m);
+                const auto box = PaidCollisionCard(m, Team::Player, "blade_box", {.5, 9.5})[0];
+                m.Step(2.5);
+                if (destroy) MutableEntity(m, box.id).hp = 30;
+                PaidCollisionCard(m, Team::Enemy, "thunderstorm", box.position);
+                m.Step(.5);
+                Check(m.State().telemetry[0].at("blade_box").childSpawns == 0, "hit before three seconds prevents scheduled release");
+                m.Step(1.5);
+                if (destroy) {
+                    Check(!FindEntity(m, box.id), "destroyed box removed");
+                    m.Step(27);Check(m.State().telemetry[0].at("blade_box").childSpawns == 0, "no future spawns after death");
+                } else {
+                    std::vector<double> times;
+                    for (const auto &event : m.Events()) if (event.type == "entity_spawn" && event.parentEntityId == box.id) times.push_back(event.time);
+                    Check(times.size() == 1, "paused production resumes one child without catch-up burst");
+                    Near(times[0], 3.25, 1e-8, "first quarter-second stun delays first child by quarter second");
+                    m.Step(25.5);
+                    Check(ById(m, box.id).dead && m.State().telemetry[0].at("blade_box").childSpawns == 9,
+                          "three quarter-second pauses reduce output to nine before unchanged hard expiry");
+                }
+            }
+        });
+        Test("storm210 periodic children and repeated spell waves remain fixed-step deterministic", [] {
+            Match a(CollisionOptions("blade_box", "thunderstorm")), b(CollisionOptions("blade_box", "thunderstorm"));
+            for (auto *m : {&a, &b}) {
+                FreezeCrowns(*m);PaidCollisionCard(*m, Team::Player, "blade_box", {.5, 9.5});
+                PaidCollisionCard(*m, Team::Enemy, "thunderstorm", {.5, 9.5});
+            }
+            for (int tick = 0; tick < 1900; ++tick) {a.Step(1./60.);b.Step(1./120.);b.Step(1./120.);Same(a,b);}
+        });
         Test("expansion shield protects breaking packet and preserves separate body telemetry", [] {
             Match m(CollisionOptions("iron_giant", "ember_archer"));FreezeCrowns(m);
             const auto giant = PaidCollisionCard(m, Team::Player, "iron_giant", {.5, 8.5})[0];
@@ -414,19 +621,23 @@ int main(int argc, char **argv) {
             Check(m.Spawn(Team::Player, "sky_manta", {4.5, 7.5}), "outside friendly troop");
             Check(m.Spawn(Team::Player, "archer_tower", {.5, 11.5}), "friendly building");
             Check(m.Spawn(Team::Enemy, "ember_archer", {.5, 4.5}), "actual enemy projectile source");
+            // Keep unrelated friendly attacks from killing the projectile source
+            // while observing the longer cloak through its exact expiry.
+            MutableEntity(m, Unit(m, "sky_manta", Team::Player).id).stunUntil = 30;
+            MutableEntity(m, Unit(m, "archer_tower", Team::Player).id).stunUntil = 30;
             const auto victim = Unit(m, "ironclad", Team::Player).id;
             MutableEntity(m, victim).stunUntil = 30;
             while (m.State().projectiles.empty() && m.State().elapsed < 1) m.Step(1. / 60.);
             Check(!m.State().projectiles.empty(), "real projectile exists before cloak");
             const auto attacker = m.State().projectiles[0].source;
             const double hp = ById(m, victim).hp;
-            auto &projectile = const_cast<Snapshot &>(m.State()).projectiles[0];projectile.remaining = .4;
+            auto &projectile = const_cast<Snapshot &>(m.State()).projectiles[0];projectile.remaining = .9;
             auto &enemy = MutableEntity(m, attacker);enemy.target = enemy.hardLock = enemy.forcedTarget = victim;
             enemy.cooldown = 30;
             auto &crown = MutableEntity(m, Tower(m, Team::Enemy, EntityKind::Guard, 1).id);
             crown.target = crown.hardLock = crown.forcedTarget = victim;
             PaidCollisionCard(m, Team::Player, "shadow_surge", {.5, 7.5});
-            m.Step(.25);
+            m.Step(.75);
             Check(ById(m, victim).invisibleUntil > m.State().elapsed, "local inside troop cloaked at impact");
             Near(Unit(m, "sky_manta", Team::Player).invisibleUntil, 0, 0, "outside local radius stays visible");
             Near(Unit(m, "archer_tower", Team::Player).invisibleUntil, 0, 0, "building is not cloaked");
@@ -435,7 +646,7 @@ int main(int argc, char **argv) {
                   "apply explicitly drops ordinary and Crown existing locks");
             Check(!m.CanTarget(ById(m, attacker), ById(m, victim)), "cloak denies new targets");
             m.Step(.2);Near(ById(m, victim).hp, hp - 152, 1e-9, "committed projectile still resolves");
-            m.Step(.8);Check(m.CanTarget(ById(m, attacker), ById(m, victim)), "exact one-second cloak expires");
+            m.Step(1.8);Check(m.CanTarget(ById(m, attacker), ById(m, victim)), "exact two-second cloak expires");
             int applied = 0, expired = 0, drops = 0;
             for (const auto &event : m.Events()) {
                 applied += event.type == "invisibility_apply" && event.target == victim;
@@ -517,10 +728,10 @@ int main(int argc, char **argv) {
             Check(ready==1&&spent==1,"exact charge entry and spend are replayable");
         });
         Test("complete exact roster and swarm DPS", [] {
-            Check(Cards().size() == 22 && EntityDefinitions().size() == 1 && !FindCard("bone_warden_skeleton"), "twenty-two playable cards and one subordinate outside decks");
-            const std::vector<double> hp{822, 374, 262, 1620, 512, 934, 480, 174, 1265, 1222, 0, 850, 0, 0, 111, 111, 700, 1526, 445, 1000, 0, 420},
-                damage{93, 152, 55, 118, 108, 156, 77, 86, 72, 251, 262, 75, 175, 375, 20, 20, 65, 101, 95, 85, 100, 50},
-                interval{1.1, 1.75, .75, 2, 1.15, 1.25, .92, 1.05, .75, 1.7, 0, .9, 0, 0, .9, 1, .9, 1.5, 1.05, 1.3, 0, .4};
+            Check(Cards().size() == 24 && EntityDefinitions().size() == 1 && !FindCard("bone_warden_skeleton"), "twenty-four playable cards and one subordinate outside decks");
+            const std::vector<double> hp{822, 374, 262, 1620, 512, 934, 480, 174, 1265, 1222, 0, 850, 0, 0, 133.2, 133.2, 700, 1526, 445, 1000, 0, 420, 0, 500},
+                damage{93, 152, 55, 118, 108, 156, 77, 86, 72, 251, 262, 75, 175, 375, 24, 24, 65, 101, 95, 85, 100, 50, 65, 0},
+                interval{1.1, 1.75, .75, 2, 1.15, 1.25, .92, 1.05, .75, 1.7, 0, .9, 0, 0, .9, 1, .9, 1.5, 1.05, 1.3, 0, .4, 0, 3};
             for (std::size_t n = 0; n < Cards().size(); ++n) {
                 Near(Cards()[n].hp, hp[n], 0, "roster HP");
                 Near(Cards()[n].damage, damage[n], 0, "roster damage");
@@ -529,22 +740,22 @@ int main(int argc, char **argv) {
             Near(FindCard("rambeast")->chargeDamage, 302, 0, "total charged packet");
             Check(FindCard("vampire_bats")->count == 5, "five Bats");
             Check(FindCard("twin_blades")->count == 2, "two Blades");
-            Check(FindCard("mini_stampede")->count == 5 && FindCard("mini_stampede")->cost == 2,
-                  "five ordinary hogs cost two Aether");
+            Check(FindCard("mini_stampede")->count == 5 && FindCard("mini_stampede")->cost == 4,
+                  "five ordinary hogs cost four Aether");
             Check(FindCard("stampede")->count == 15 && FindCard("stampede")->cost == 7 &&
                       FindCard("stampede")->structuresOnly && !FindCard("mini_stampede")->structuresOnly,
                   "fifteen royal hogs cost seven Aether and target structures");
-            Near(FindCard("mini_stampede")->damage / FindCard("mini_stampede")->attackInterval, 20/.9, 1e-12,
+            Near(FindCard("mini_stampede")->damage / FindCard("mini_stampede")->attackInterval, 24/.9, 1e-12,
                  "Mini Stampede correct derived per-hog DPS");
-            Near(FindCard("stampede")->damage / FindCard("stampede")->attackInterval * 15, 300, 1e-12,
-                 "Stampede has300 basic deployment DPS");
+            Near(FindCard("stampede")->damage / FindCard("stampede")->attackInterval * 15, 360, 1e-12,
+                 "Stampede has360 basic deployment DPS");
             Near(FindCard("archer_tower")->footprint, 1.65, 0, "building footprint");
             Near(FindCard("nova_flask")->towerDamage, 185, 0, "nova structures");
             for (const auto &card : Cards())
                 Near(card.castDelay,
                      card.id == "meteor_shards" ? .75 : card.id == "bullet_burst" ? .30 :
-                     card.id == "nova_flask" ? .85 : card.id == "shadow_surge" ? .25 : 0,
-                     0, "all four approved spell windups");
+                     card.id == "nova_flask" ? .85 : card.id == "shadow_surge" ? .75 : card.id=="thunderstorm" ? .45 : 0,
+                     0, "all five approved spell windups");
         });
         Test("Dart Gun pays three and fires travelling fifty damage darts every four tenths", [] {
             const auto *card = FindCard("dart_gun");
@@ -732,7 +943,7 @@ int main(int argc, char **argv) {
                 }
                 ++cards;
             }
-            Check(cards==18,"all eighteen physical cards keep explicit front range and strict five-tile rear sight");
+            Check(cards==19,"all nineteen physical cards keep explicit front range and strict five-tile rear sight");
             for(const auto&id:std::vector<std::string>{"ironclad","ember_archer","archer_tower","pulverizer","stampede"}){
                 Match a(Quiet());a.Spawn(Team::Player,id,{.5,8.5});
                 a.Spawn(Team::Enemy,id=="stampede"?"archer_tower":"ironclad",{.5,4.5});
@@ -1654,7 +1865,7 @@ int main(int argc, char **argv) {
                     const auto royal = PaidCollisionCard(*m, team, "stampede", {0, sign * 8.5});
                     const auto wild = PaidCollisionCard(*m, team, "mini_stampede", {0, sign * 8.5});
                     Check(royal.size() == 15 && wild.size() == 5, "both paid casts preserve their complete swarm");
-                    Near(m->State().spent[int(team)], 9, 0, "both swarms cost nine Aether total, paid once each");
+                    Near(m->State().spent[int(team)], 11, 0, "both swarms cost eleven Aether total, paid once each");
                     Check(m->State().telemetry[int(team)].at("stampede").plays == 1 &&
                               m->State().telemetry[int(team)].at("stampede").spawns == 15 &&
                               m->State().telemetry[int(team)].at("mini_stampede").plays == 1 &&
@@ -2119,8 +2330,8 @@ int main(int argc, char **argv) {
                 Check(match->Spawn(Team::Enemy, "bullet_burst", {-3.5, 7.5}), "controlled real child-spawn packet");
                 Check(match->Spawn(Team::Enemy, "nova_flask", {3.5, 7.5}), "controlled real shield-breaking packet");
             }
-            a.Step(2);
-            for (int tick = 0; tick < 240; ++tick) b.Step(1. / 120.);
+            a.Step(3);
+            for (int tick = 0; tick < 360; ++tick) b.Step(1. / 120.);
             Same(a, b);
             Check(Count(a, "bone_warden_skeleton", Team::Player) == 4, "all four real child bodies were compared");
             Check(Unit(a, "iron_giant", Team::Player).shieldBrokenAt >= 0, "actual shield transition was compared");
@@ -2133,7 +2344,7 @@ int main(int argc, char **argv) {
             BodyClearance(a, "expanded fixed-step final bodies");
         });
         Test("cloak AI values future enemy locks and excludes already committed or stunned damage", [] {
-            for (const std::string mode : {"future_lock", "no_lock", "outside_window", "committed_only", "stunned", "short_stun"}) {
+            for (const std::string mode : {"future_lock", "late_lock", "before_activation", "no_lock", "outside_window", "committed_only", "stunned", "short_stun"}) {
                 auto options = Quiet(); options.seed = 71217;
                 options.aiStyles[0] = "control";
                 options.decks[0] = {"shadow_surge", "bone_warden", "stampede", "meteor_shards",
@@ -2147,9 +2358,10 @@ int main(int argc, char **argv) {
                 MutableEntity(match, friendly).stunUntil = 30;
                 auto &attacker = MutableEntity(match, enemy);
                 attacker.target = mode == "no_lock" || mode == "committed_only" ? 0 : friendly;
-                attacker.cooldown = mode == "outside_window" || mode == "committed_only" ? 3 : .6;
+                attacker.cooldown = mode == "outside_window" || mode == "committed_only" ? 3 :
+                                    mode == "late_lock" ? 2.2 : mode == "before_activation" ? .6 : 1.1;
                 if (mode == "stunned") attacker.stunUntil = 30;
-                if (mode == "short_stun") {attacker.stunUntil = .6; attacker.cooldown = .1;}
+                if (mode == "short_stun") {attacker.stunUntil = 1.1; attacker.cooldown = .1;}
                 if (mode == "committed_only") {
                     Projectile projectile; projectile.id = 90000; projectile.source = enemy; projectile.target = friendly;
                     projectile.team = Team::Enemy; projectile.cardId = "ember_archer";
@@ -2168,7 +2380,7 @@ int main(int argc, char **argv) {
                         Near(event.amount, 3, 0, "AI cloak pays full Aether cost");
                     }
                 std::cout << "AI_CLOAK mode=" << mode << " paid_cloak_defense=" << cloakDefense << '\n';
-                Check(cloakDefense == (mode == "future_lock" || mode == "short_stun"),
+                Check(cloakDefense == (mode == "future_lock" || mode == "late_lock" || mode == "short_stun"),
                       "cloak prevents an actual future lock attack, not committed or disabled packets: " + mode);
             }
         });
@@ -2221,9 +2433,9 @@ int main(int argc, char **argv) {
                     }
             Check(plays == 32 && bodies == 96 && stampede == 60 && mini == 20,
                   "independent approved opening counts are32plays96bodies60hogs20mini");
-            Near(match.State().spent[0] + match.State().spent[1], 128, 0, "exact canonical paid opening Aether");
+            Near(match.State().spent[0] + match.State().spent[1], 136, 0, "exact canonical paid opening Aether");
             std::cout << "EXPANSION_PERF_OPENING paid_plays=" << plays << " bodies=" << bodies
-                      << " stampede=" << stampede << " mini=" << mini << " spent=128\n";
+                      << " stampede=" << stampede << " mini=" << mini << " spent=136\n";
         });
         Test("mechanical counters and all symmetric card pairs", [] {
             const auto *iron = FindCard("ironclad"), *bat = FindCard("vampire_bats"),
@@ -2239,7 +2451,7 @@ int main(int argc, char **argv) {
                     Near(PairSynergy(Cards()[a], Cards()[b]), PairSynergy(Cards()[b], Cards()[a]), 0,
                          "symmetric");
                 }
-            Check(pairs == 231, "all twenty-two-card pairs");
+            Check(pairs == 276, "all twenty-four-card pairs");
             auto d = AnalyzeDeck({"vampire_bats", "twin_blades", "nova_flask"});
             Near(d.averageHP, (174 * 5 + 262 * 2) / 2., 0, "swarm aggregate spell excluded");
             Near(d.deploymentDPS, (86 / 1.05 * 5 + 55 / .75 * 2) / 2., .0051, "aggregate DPS spell excluded");
@@ -2439,9 +2651,9 @@ int main(int argc, char **argv) {
                                  0, 0, "building stays fixed while nearby troops route around it");
                         }
                 }
-            Check(collisionPaidFixtures - fixtureStart == 36 && collisionPaidPlays - playStart == 72 &&
-                      collisionMembers - memberStart == 126,
-                  "all eighteen physical cards, both teams, seventy-two paid casts and126 actual members");
+            Check(collisionPaidFixtures - fixtureStart == 38 && collisionPaidPlays - playStart == 76 &&
+                      collisionMembers - memberStart == 130,
+                  "all nineteen physical cards, both teams, seventy-six paid casts and130 actual members");
         });
         Test("ground and air occupy distinct collision layers while spells have no body", [] {
             for (const Team team : {Team::Player, Team::Enemy}) {

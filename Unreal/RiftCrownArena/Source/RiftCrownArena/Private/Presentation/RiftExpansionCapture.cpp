@@ -133,7 +133,7 @@ bool ARiftExpansionCapture::Build(URiftMatchSubsystem* Match,const TSharedRef<FJ
         FParse::Value(FCommandLine::Get(),TEXT("RiftExpansionEffectStage="),EffectStage);
         if(EffectStage!=TEXT("cast")&&EffectStage!=TEXT("impact")&&EffectStage!=TEXT("shield"))
         {Report->SetBoolField(TEXT("passed"),false);RIFT_LOG(LogRift,Error,TEXT("Unknown expansion effect capture stage: %s"),*EffectStage);return false;}
-        EffectRequestedAdvance=EffectStage==TEXT("cast")?.12:EffectStage==TEXT("impact")?.37:.95;
+        EffectRequestedAdvance=EffectStage==TEXT("cast")?.12:EffectStage==TEXT("impact")?.80:.95;
         EffectAdvanceSteps=FMath::RoundToInt(EffectRequestedAdvance*60.);
     }
     ExpectedAge=.35+(EffectsCapture?double(EffectAdvanceSteps)/60.:0.);
