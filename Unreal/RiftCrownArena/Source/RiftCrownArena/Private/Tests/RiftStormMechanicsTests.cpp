@@ -56,7 +56,7 @@ bool FRiftStormMechanicsIntegrationTest::RunTest(const FString& Parameters) {
        !TestTrue(TEXT("Storm and Box archive reopens"),Replay->OpenReplay(Replay->LatestFilename))) {
         AddError(Replay->LastError);return false;
     }
-    TestEqual(TEXT("Captured mechanics schema4"),int32(Replay->ReconstructionDiagnostics()->GetNumberField(TEXT("balanceSchema"))),4);
+    TestEqual(TEXT("Captured mechanics schema5"),int32(Replay->ReconstructionDiagnostics()->GetNumberField(TEXT("balanceSchema"))),5);
     for(const auto& Probe:Probes) {
         Replay->Seek(float(Probe.elapsed));
         const auto* Live=FindStormBody(Probe,Box);const auto* Restored=FindStormBody(Replay->View,Box);

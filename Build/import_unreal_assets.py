@@ -140,7 +140,13 @@ def arena_tile_size():
 def material(name, base, normal, orm, mask, glow=False, glass=False):
     path = "/Game/Rift/Materials/" + name
     m = LIB.load_asset(path) if LIB.does_asset_exist(path) else TOOLS.create_asset(name, "/Game/Rift/Materials", unreal.Material, unreal.MaterialFactoryNew())
-    unreal.MaterialEditingLibrary.delete_all_material_expressions(m)
+    if name.startswith("M_RiftPlague"):
+        for expression in list(unreal.MaterialEditingLibrary.get_material_expressions(m)):
+            unreal.MaterialEditingLibrary.delete_material_expression(m, expression)
+        if unreal.MaterialEditingLibrary.get_num_material_expressions(m):
+            raise RuntimeError("Plague material cleanup left registered expressions")
+    else:
+        unreal.MaterialEditingLibrary.delete_all_material_expressions(m)
     unreal.MaterialEditingLibrary.set_base_material_usage(m, unreal.MaterialUsage.MATUSAGE_SKELETAL_MESH)
     unreal.MaterialEditingLibrary.set_base_material_usage(m, unreal.MaterialUsage.MATUSAGE_INSTANCED_STATIC_MESHES)
     def sample(tex, x, y):
@@ -637,7 +643,7 @@ def card_data(only=None, stats_only=False):
                        "globalFriendlyInvisibility":"GlobalFriendlyInvisibility", "breakExistingLocks":"BreakExistingLocks"})
     attacks.update({"bone_warden":"heavy_slam", "bone_warden_skeleton":"sword_attack",
                     "aether_reaper":"dual_attack", "iron_giant":"heavy_slam", "shadow_surge":"arc_cast", "dart_gun":"dart_fire",
-                    "thunderstorm":"thunder_strike", "blade_box":"blade_release"})
+                    "thunderstorm":"thunder_strike", "blade_box":"blade_release", "plague_queen":"poison_fire"})
     effects = ["Deploy","Impact","ArrowFlight","ArcFlight","MantaFlight","StormFlight","TowerFlight","BulletBurst","Nova","Meteor","MeteorTick","Frost","Slow","Stun","Aura","TowerDestroy","CoreAwaken"]
     for c in definitions:
         if only is not None and c["id"] not in only:
@@ -656,8 +662,8 @@ def card_data(only=None, stats_only=False):
         data.set_editor_property("Description", unreal.Text(c["name"] + " — " + role))
         for key, prop in properties.items():
             data.set_editor_property(prop, c[key])
-        data.set_editor_property("FrontSight", max(8, c["range"]) if c["projectileSpeed"] > 0 else 8)
-        data.set_editor_property("RearSight", 5)
+        data.set_editor_property("FrontSight", max(c["sightFront"], c["range"]) if c["projectileSpeed"] > 0 else c["sightFront"])
+        data.set_editor_property("RearSight", c["sightRear"])
         if c["id"] == "dart_gun":
             data.set_editor_property("Description", unreal.Text("An 81-year-old African American WWII veteran. Slow, steady steps; rapid, precise darts."))
         source_card = (MANIFEST.get("characters") or {}).get(c["id"]) or {}
@@ -682,7 +688,7 @@ def card_data(only=None, stats_only=False):
         data.set_editor_property("Effects", {key:LIB.load_asset("/Game/Rift/VFX/NS_Rift"+key) for key in effects})
         deploy_path = "/Game/Rift/Audio/SFX_spawn_" + c["id"]
         deploy = LIB.load_asset(deploy_path if LIB.does_asset_exist(deploy_path) else "/Game/Rift/Audio/SFX_deploy")
-        hit_sound = "dart_hit" if c["id"] == "dart_gun" else "building_hit" if c["id"] in ("pulverizer","blade_box") else "sword_hit"
+        hit_sound = "poison_pop" if c["id"] == "plague_queen" else "dart_hit" if c["id"] == "dart_gun" else "building_hit" if c["id"] in ("pulverizer","blade_box") else "sword_hit"
         sounds = {"Attack": LIB.load_asset("/Game/Rift/Audio/SFX_" + attacks[c["id"]]), "Deploy":deploy, "Hit":LIB.load_asset("/Game/Rift/Audio/SFX_" + hit_sound)}
         if any(v is None for v in sounds.values()):
             raise RuntimeError("Missing sound binding for " + c["id"])
@@ -772,6 +778,18 @@ def main():
             for card in sorted(model_ids)], True)
         # All numerical bindings follow the same compiled canonical definitions;
         # meshes, sound bindings and illustrations of other cards stay untouched.
+        if 'plague_queen' in selected:
+            audio_dir=ROOT/'Assets/Source/Audio'
+            audio_manifest=json.loads((audio_dir/'audio_manifest.json').read_text(encoding='utf-8'))
+            for name in ('spawn_plague_queen','spawn_plague_queen_v2','spawn_plague_queen_v3','poison_fire','poison_pop'):
+                spec=audio_manifest['sounds'][name]
+                if spec['loop']:raise RuntimeError('Plague cues must remain finite: '+name)
+                sound=import_file(ROOT/spec['file'],'/Game/Rift/Audio','SFX_'+name)
+                sound.set_editor_property('looping',False)
+                sound.set_editor_property('compression_quality',90)
+                sound.set_editor_property('priority',75. if spec.get('role')=='deployment' else 40.)
+                sound.set_editor_property('loading_behavior',unreal.SoundWaveLoadingBehavior.FORCE_INLINE)
+                save(sound)
         card_data(stats_only=True)
         card_data(set(selected))
         REPORT["validation"] = json.loads(unreal.RiftEditorAssetLibrary.inspect_imported_assets_json())

@@ -1,7 +1,14 @@
 # Rift Crown Arena / Aether Arena
 
-Original Windows card battler: twenty-four cards, two lanes, deterministic combat,
+Original Windows card battler: twenty-five cards, two lanes, deterministic combat,
 seven AI personalities, deck workshop, Meta Lab, replays and developer training.
+
+Version 2.2.0 adds Plague Queen: a 2-Aether slime queen with 20-tile range,
+poison arrows, a 6-tile poison splash and animated toxic bubbles. A direct hit
+deals 212 damage; affected enemies take two additional 60-damage ticks over
+2.5 seconds. See [the update notes](Docs/PATCH_NOTES_2.2.0.md),
+[spreadsheet-ready stats](Docs/CARD_STATS_2.2.0.tsv) and
+[audio credits](Docs/AUDIO_CREDITS_2.2.0.md).
 
 Version 2.1.0 adds Thunderstorm (three timed lightning waves with visible stun)
 and Blade Box (one Twin Blade every three seconds), reworks Mini Stampede to

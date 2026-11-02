@@ -25,7 +25,7 @@ CARD_IDS = frozenset((
     "frost_fang", "storm_raven", "bullet_burst", "nova_flask",
     "meteor_shards", "mini_stampede", "stampede", "pulverizer",
     "bone_warden", "aether_reaper", "iron_giant", "shadow_surge", "dart_gun",
-    "thunderstorm", "blade_box",
+    "thunderstorm", "blade_box", "plague_queen",
 ))
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 
@@ -201,6 +201,7 @@ class PortraitAudit:
             expected_models = {binding[key] for key in ("skeletal", "static", "skeletalDecoration") if key in binding}
             if card_id=='bone_warden':expected_models.add('bone_warden_skeleton')
             if card_id=='blade_box':expected_models.add('twin_blades')
+            if card_id=='plague_queen':expected_models={'plague_queen','toxic_bubble'}
             if card_id=='thunderstorm':expected_models={'thunderstorm_cloud','thunderstorm_bolt','thunderstorm_rain'}
             if card_id=='shadow_surge':
                 expected_models={'ironclad','twin_blades','bone_warden_skeleton','shadow_surge_wisp','shadow_surge_ribbon'}

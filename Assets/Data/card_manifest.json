@@ -1,8 +1,8 @@
 {
-  "schema": 4,
-  "version": "2.1.0",
+  "schema": 5,
+  "version": "2.2.0",
   "status": "approved",
-  "sourceCommit": "27a7e300dd4aaf1469a9bb3638a02407bf219b56",
+  "sourceCommit": "9d7eb18d5493a4ded415b40f85f38121a9779a10",
   "cards": [
     {
       "id": "ironclad",
@@ -56,7 +56,9 @@
       "deathSpawnId": "",
       "healthCloakThreshold": 0,
       "spawnId": "",
-      "spawnInterval": 0
+      "spawnInterval": 0,
+      "sightFront": 8,
+      "sightRear": 5
     },
     {
       "id": "ember_archer",
@@ -110,7 +112,9 @@
       "deathSpawnId": "",
       "healthCloakThreshold": 0,
       "spawnId": "",
-      "spawnInterval": 0
+      "spawnInterval": 0,
+      "sightFront": 8,
+      "sightRear": 5
     },
     {
       "id": "twin_blades",
@@ -164,7 +168,9 @@
       "deathSpawnId": "",
       "healthCloakThreshold": 0,
       "spawnId": "",
-      "spawnInterval": 0
+      "spawnInterval": 0,
+      "sightFront": 8,
+      "sightRear": 5
     },
     {
       "id": "boulderback",
@@ -218,7 +224,9 @@
       "deathSpawnId": "",
       "healthCloakThreshold": 0,
       "spawnId": "",
-      "spawnInterval": 0
+      "spawnInterval": 0,
+      "sightFront": 8,
+      "sightRear": 5
     },
     {
       "id": "arc_mage",
@@ -272,7 +280,9 @@
       "deathSpawnId": "",
       "healthCloakThreshold": 0,
       "spawnId": "",
-      "spawnInterval": 0
+      "spawnInterval": 0,
+      "sightFront": 8,
+      "sightRear": 5
     },
     {
       "id": "rambeast",
@@ -326,7 +336,9 @@
       "deathSpawnId": "",
       "healthCloakThreshold": 0,
       "spawnId": "",
-      "spawnInterval": 0
+      "spawnInterval": 0,
+      "sightFront": 8,
+      "sightRear": 5
     },
     {
       "id": "sky_manta",
@@ -380,7 +392,9 @@
       "deathSpawnId": "",
       "healthCloakThreshold": 0,
       "spawnId": "",
-      "spawnInterval": 0
+      "spawnInterval": 0,
+      "sightFront": 8,
+      "sightRear": 5
     },
     {
       "id": "vampire_bats",
@@ -434,7 +448,9 @@
       "deathSpawnId": "",
       "healthCloakThreshold": 0,
       "spawnId": "",
-      "spawnInterval": 0
+      "spawnInterval": 0,
+      "sightFront": 8,
+      "sightRear": 5
     },
     {
       "id": "frost_fang",
@@ -488,7 +504,9 @@
       "deathSpawnId": "",
       "healthCloakThreshold": 0,
       "spawnId": "",
-      "spawnInterval": 0
+      "spawnInterval": 0,
+      "sightFront": 8,
+      "sightRear": 5
     },
     {
       "id": "storm_raven",
@@ -542,7 +560,9 @@
       "deathSpawnId": "",
       "healthCloakThreshold": 0,
       "spawnId": "",
-      "spawnInterval": 0
+      "spawnInterval": 0,
+      "sightFront": 8,
+      "sightRear": 5
     },
     {
       "id": "meteor_shards",
@@ -596,7 +616,9 @@
       "deathSpawnId": "",
       "healthCloakThreshold": 0,
       "spawnId": "",
-      "spawnInterval": 0
+      "spawnInterval": 0,
+      "sightFront": 8,
+      "sightRear": 5
     },
     {
       "id": "archer_tower",
@@ -650,7 +672,9 @@
       "deathSpawnId": "",
       "healthCloakThreshold": 0,
       "spawnId": "",
-      "spawnInterval": 0
+      "spawnInterval": 0,
+      "sightFront": 8,
+      "sightRear": 5
     },
     {
       "id": "bullet_burst",
@@ -704,7 +728,9 @@
       "deathSpawnId": "",
       "healthCloakThreshold": 0,
       "spawnId": "",
-      "spawnInterval": 0
+      "spawnInterval": 0,
+      "sightFront": 8,
+      "sightRear": 5
     },
     {
       "id": "nova_flask",
@@ -758,7 +784,9 @@
       "deathSpawnId": "",
       "healthCloakThreshold": 0,
       "spawnId": "",
-      "spawnInterval": 0
+      "spawnInterval": 0,
+      "sightFront": 8,
+      "sightRear": 5
     },
     {
       "id": "mini_stampede",
@@ -812,7 +840,9 @@
       "deathSpawnId": "",
       "healthCloakThreshold": 0,
       "spawnId": "",
-      "spawnInterval": 0
+      "spawnInterval": 0,
+      "sightFront": 8,
+      "sightRear": 5
     },
     {
       "id": "stampede",
@@ -866,7 +896,9 @@
       "deathSpawnId": "",
       "healthCloakThreshold": 0,
       "spawnId": "",
-      "spawnInterval": 0
+      "spawnInterval": 0,
+      "sightFront": 8,
+      "sightRear": 5
     },
     {
       "id": "pulverizer",
@@ -920,7 +952,9 @@
       "deathSpawnId": "",
       "healthCloakThreshold": 0,
       "spawnId": "",
-      "spawnInterval": 0
+      "spawnInterval": 0,
+      "sightFront": 8,
+      "sightRear": 5
     },
     {
       "cost": 6,
@@ -974,7 +1008,9 @@
       "name": "Bone Warden",
       "healthCloakThreshold": 0,
       "spawnId": "",
-      "spawnInterval": 0
+      "spawnInterval": 0,
+      "sightFront": 8,
+      "sightRear": 5
     },
     {
       "cost": 4,
@@ -1028,7 +1064,9 @@
       "name": "Aether Reaper",
       "healthCloakThreshold": 0.5,
       "spawnId": "",
-      "spawnInterval": 0
+      "spawnInterval": 0,
+      "sightFront": 8,
+      "sightRear": 5
     },
     {
       "cost": 3,
@@ -1082,7 +1120,9 @@
       "name": "Iron Giant",
       "healthCloakThreshold": 0,
       "spawnId": "",
-      "spawnInterval": 0
+      "spawnInterval": 0,
+      "sightFront": 8,
+      "sightRear": 5
     },
     {
       "cost": 3,
@@ -1136,7 +1176,9 @@
       "name": "Shadow Surge",
       "healthCloakThreshold": 0,
       "spawnId": "",
-      "spawnInterval": 0
+      "spawnInterval": 0,
+      "sightFront": 8,
+      "sightRear": 5
     },
     {
       "id": "dart_gun",
@@ -1190,7 +1232,9 @@
       "deathSpawnId": "",
       "healthCloakThreshold": 0,
       "spawnId": "",
-      "spawnInterval": 0
+      "spawnInterval": 0,
+      "sightFront": 8,
+      "sightRear": 5
     },
     {
       "id": "thunderstorm",
@@ -1244,7 +1288,9 @@
       "deathSpawnId": "",
       "healthCloakThreshold": 0,
       "spawnId": "",
-      "spawnInterval": 0
+      "spawnInterval": 0,
+      "sightFront": 8,
+      "sightRear": 5
     },
     {
       "id": "blade_box",
@@ -1298,7 +1344,65 @@
       "deathSpawnId": "",
       "healthCloakThreshold": 0,
       "spawnId": "twin_blades",
-      "spawnInterval": 3
+      "spawnInterval": 3,
+      "sightFront": 8,
+      "sightRear": 5
+    },
+    {
+      "id": "plague_queen",
+      "name": "Plague Queen",
+      "cost": 2,
+      "count": 1,
+      "hp": 170,
+      "damage": 212,
+      "attackInterval": 2.7,
+      "moveSpeed": 1.25,
+      "range": 20,
+      "scale": 1.1,
+      "projectileSpeed": 30,
+      "shockwaveSpeed": 0,
+      "splash": 6,
+      "lifetime": 0,
+      "footprint": 0,
+      "towerDamage": 0,
+      "spellRadius": 0,
+      "castDelay": 0,
+      "chargeDamage": 0,
+      "slowPct": 0,
+      "slowDuration": 0,
+      "auraDamage": 0,
+      "auraInterval": 0,
+      "auraRadius": 0,
+      "stunDuration": 0,
+      "dotDamage": 60,
+      "dotDuration": 2.5,
+      "dotInterval": 1.25,
+      "rounds": 0,
+      "flying": false,
+      "canHitAir": true,
+      "structuresOnly": false,
+      "spell": false,
+      "building": false,
+      "collisionRadius": 0.42,
+      "targetMask": 7,
+      "chargeMoveSeconds": 0,
+      "chargedMoveSpeed": 0,
+      "hpDecayPerSecond": 0,
+      "initialAttackCooldown": 0,
+      "shieldHP": 0,
+      "deathSpawnCount": 0,
+      "invisibilityDuration": 0,
+      "dotStructureDamage": 60,
+      "hardExpiry": false,
+      "shieldOverflowProtected": false,
+      "globalFriendlyInvisibility": false,
+      "breakExistingLocks": false,
+      "deathSpawnId": "",
+      "healthCloakThreshold": 0,
+      "spawnId": "",
+      "spawnInterval": 0,
+      "sightFront": 20,
+      "sightRear": 20
     }
   ],
   "entities": [
@@ -1354,11 +1458,13 @@
       "name": "Bone Warden Skeleton",
       "healthCloakThreshold": 0,
       "spawnId": "",
-      "spawnInterval": 0
+      "spawnInterval": 0,
+      "sightFront": 8,
+      "sightRear": 5
     }
   ],
   "rules": {
-    "combatRevision": 5,
+    "combatRevision": 6,
     "navigationRevision": 13,
     "targetHardLock": "first authoritative attack against a Crown Tower",
     "frontSight": 8,
@@ -1373,10 +1479,12 @@
     "cloakLockException": "Approved Shadow Surge drops enemy locks, including committed Crown Tower locks; committed damage and projectiles still resolve",
     "guardCenterX": 6.76,
     "periodicSpawnPolicy": "One current referenced troop per completed spawn interval; stun pauses production; hard expiry continues; children retain parent paid-play attribution",
-    "lightningWavePolicy": "Fixed area; current enemy positions at each wave; castDelay + (wave-1)*dotInterval; stun refreshes per surviving target"
+    "lightningWavePolicy": "Fixed area; current enemy positions at each wave; castDelay + (wave-1)*dotInterval; stun refreshes per surviving target",
+    "poisonArrowPolicy": "Direct target takes impact damage; enemies in splash at impact receive two attached poison ticks; per-arrow effects retain source attribution after source death",
+    "cardSightPolicy": "Per-card front/rear detection; ranged forward detection covers attack range; old definitions retain 8/5 defaults"
   },
-  "balanceHash": "ad330d4a706a81c316225dcf04a469599ef9defa8331ea6e2b4ef4d02fdd2d49",
-  "baseline": "Assets/Data/Baselines/2.0.0.json",
+  "balanceHash": "59d8176296257c3959a71d4f3442adc82d2f046030f5564a0c023db3130f4b8e",
+  "baseline": "Assets/Data/Baselines/2.1.0.json",
   "approval": {
     "sourceResolution": "Assets/Data/source_resolution.json",
     "source": "User request: Archer face/hair repair, cohesive detailed Boulderback, +20% Stampede HP/damage, Mini Stampede cost4, Thunderstorm cost3, Blade Box cost5 confirmed; user follow-up: Shadow Surge 0.75s activation and 2s invisibility",

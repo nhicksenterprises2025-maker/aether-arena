@@ -31,6 +31,7 @@ struct Card {
     int cost = 0, count = 1;
     double hp = 0, damage = 0, attackInterval = 0, moveSpeed = 0, range = 0, scale = 1;
     double projectileSpeed = 0, splash = 0, lifetime = 0, footprint = 0, shockwaveSpeed = 0;
+    double sightFront = detection::Front, sightRear = detection::Rear;
     // Collision is gameplay data, independent of the displayed model scale.
     double collisionRadius = 0;
     std::uint8_t targetMask = 0;
@@ -119,6 +120,15 @@ struct Hazard {
     double radius = 0, born = 0, nextTick = 0, expires = 0;
     int ticks = 0;
 };
+// One arrow applies one independent two-tick poison to each hit victim.
+struct Poison {
+    EntityId source = 0, target = 0;
+    PlayId playId = 0;
+    Team team = Team::Player;
+    std::string cardId;
+    double born = 0, nextTick = 0, expires = 0;
+    int ticks = 0;
+};
 struct SpellCast {
     PlayId playId = 0;
     Team team = Team::Player;
@@ -186,6 +196,7 @@ struct Snapshot {
     std::vector<Projectile> projectiles;
     std::vector<Shockwave> shockwaves;
     std::vector<Hazard> hazards;
+    std::vector<Poison> poisons;
     std::vector<SpellCast> spellCasts;
     std::array<std::map<std::string, CardTelemetry>, 2> telemetry;
     std::array<std::map<EntityId, EntityTelemetry>, 2> entityTelemetry;

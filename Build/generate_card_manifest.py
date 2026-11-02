@@ -34,12 +34,13 @@ EXPANSION_STRING_FIELDS = ["deathSpawnId"]
 def fields_for(schema):
     if schema == 1:
         return NUMBER_FIELDS, BOOL_FIELDS, STRING_FIELDS
-    if schema in (2, 3, 4):
+    if schema in (2, 3, 4, 5):
         return (NUMBER_FIELDS + EXPANSION_NUMBER_FIELDS +
                 (["healthCloakThreshold"] if schema >= 3 else []) +
-                (["spawnInterval"] if schema >= 4 else []), BOOL_FIELDS + EXPANSION_BOOL_FIELDS,
+                (["spawnInterval"] if schema >= 4 else []) +
+                (["sightFront", "sightRear"] if schema >= 5 else []), BOOL_FIELDS + EXPANSION_BOOL_FIELDS,
                 STRING_FIELDS + EXPANSION_STRING_FIELDS + (["spawnId"] if schema >= 4 else []))
-    raise ValueError("Expected balance schema 1, 2, 3 or 4")
+    raise ValueError("Expected balance schema 1, 2, 3, 4 or 5")
 
 
 def balance_hash(manifest):
@@ -147,6 +148,11 @@ def validate(manifest):
                     raise ValueError("Periodic spawning requires a finite-lived building and an interval within its lifetime")
                 if card["id"] == "thunderstorm" and (not card["spell"] or card["rounds"] != int(card["rounds"]) or card["rounds"] < 1 or card["dotInterval"] <= 0 or card["castDelay"] <= 0 or card["dotDamage"] != 0):
                     raise ValueError("Thunderstorm requires delayed, discrete lightning waves without a lingering damage zone")
+            if manifest["schema"] >= 5:
+                if card["sightFront"] <= 0 or card["sightRear"] <= 0:
+                    raise ValueError("Card detection distances must be positive")
+                if card["id"] == "plague_queen" and (card["spell"] or card["building"] or card["projectileSpeed"] <= 0 or card["splash"] <= 0 or card["dotInterval"] <= 0 or not math.isclose(card["dotDuration"], 2 * card["dotInterval"])):
+                    raise ValueError("Plague Queen requires a projectile troop with splash-applied poison and exactly two timed ticks")
     if manifest["schema"] >= 2:
         children = {card["id"]: card for card in manifest.get("entities", [])}
         for card in manifest["cards"] + manifest.get("entities", []):

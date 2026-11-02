@@ -45,7 +45,8 @@ const FBalanceCard ExpectedCards[] = {
     {"shadow_surge",3,1,0,100,0,0,0,1,0,0,0,0,false,true,false,true,false,0},
     {"dart_gun",3,1,420,50,.4,1.5,8.5,1.05,22,0,0,0,false,true,false,false,false,125},
     {"thunderstorm",3,1,0,65,0,0,0,1,0,0,0,0,false,false,false,true,false,0},
-    {"blade_box",5,1,500,0,3,0,0,1,0,0,30,1.65,false,false,false,false,true,0}
+    {"blade_box",5,1,500,0,3,0,0,1,0,0,30,1.65,false,false,false,false,true,0},
+    {"plague_queen",2,1,170,212,2.7,1.25,20,1.1,30,6,0,0,false,true,false,false,false,212/2.7}
 };
 }
 
@@ -157,7 +158,7 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
         CHECK_IMPORTED(HealthCloakThreshold,healthCloakThreshold);
         CHECK_IMPORTED(SpawnInterval,spawnInterval);
 #undef CHECK_IMPORTED
-        Imported(TEXT("FrontSight"),A->FrontSight,C->projectileSpeed>0?FMath::Max(8.,C->range):8.);Imported(TEXT("RearSight"),A->RearSight,5);
+        Imported(TEXT("FrontSight"),A->FrontSight,C->projectileSpeed>0?FMath::Max(C->sightFront,C->range):C->sightFront);Imported(TEXT("RearSight"),A->RearSight,C->sightRear);
         TestEqual(*(Id+TEXT(" imported visual round count")),A->Rounds,C->rounds);
         TestEqual(*(Id+TEXT(" imported flying flag")),A->Flying,C->flying);
         TestEqual(*(Id+TEXT(" imported air targeting")),A->GroundAndAir,C->canHitAir);
@@ -184,6 +185,8 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
         const FString Id=UTF8_TO_TCHAR(C.id.c_str());
         auto Ability=[&](const TCHAR* Field,double Actual,double Expected)
         {TestTrue(*(Id+TEXT(" preserved ")+Field),std::abs(Actual-Expected)<.000001);};
+        Ability(TEXT("forward enemy awareness"),C.sightFront,C.id=="plague_queen"?20:8);
+        Ability(TEXT("rear enemy awareness"),C.sightRear,C.id=="plague_queen"?20:5);
         Ability(TEXT("charge damage"),C.chargeDamage,C.id=="rambeast"?302:0);
         Ability(TEXT("movement slow fraction"),C.slowPct,C.id=="frost_fang"?.30:0);
         Ability(TEXT("slow duration"),C.slowDuration,C.id=="frost_fang"?2:0);
@@ -191,10 +194,10 @@ bool FRiftBalancePatchTest::RunTest(const FString& Parameters)
         Ability(TEXT("aura interval"),C.auraInterval,C.id=="storm_raven"?3:0);
         Ability(TEXT("aura radius"),C.auraRadius,C.id=="storm_raven"?2:0);
         Ability(TEXT("stun duration"),C.stunDuration,C.id=="storm_raven"?.4:C.id=="thunderstorm"?.25:0);
-        Ability(TEXT("DOT damage"),C.dotDamage,C.id=="meteor_shards"?40:0);
-        Ability(TEXT("DOT duration"),C.dotDuration,C.id=="meteor_shards"?5:0);
-        Ability(TEXT("DOT or wave interval"),C.dotInterval,C.id=="meteor_shards"?1:C.id=="thunderstorm"?.45:0);
-        Ability(TEXT("structure DOT damage"),C.dotStructureDamage,C.id=="meteor_shards"?15:0);
+        Ability(TEXT("DOT damage"),C.dotDamage,C.id=="meteor_shards"?40:C.id=="plague_queen"?60:0);
+        Ability(TEXT("DOT duration"),C.dotDuration,C.id=="meteor_shards"?5:C.id=="plague_queen"?2.5:0);
+        Ability(TEXT("DOT or wave interval"),C.dotInterval,C.id=="meteor_shards"?1:C.id=="thunderstorm"?.45:C.id=="plague_queen"?1.25:0);
+        Ability(TEXT("structure DOT damage"),C.dotStructureDamage,C.id=="meteor_shards"?15:C.id=="plague_queen"?60:0);
         Ability(TEXT("charge movement threshold"),C.chargeMoveSeconds,C.id=="rambeast"?1.5:0);
         Ability(TEXT("charged movement speed"),C.chargedMoveSpeed,C.id=="rambeast"?3.2:0);
         Ability(TEXT("explicit Archer decay"),C.hpDecayPerSecond,C.id=="archer_tower"?25:0);

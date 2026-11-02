@@ -68,6 +68,9 @@ $riftUnapprovedChanges=@($riftChanges|Where-Object {
     if($CardIds -contains 'iron_giant'){$riftAllowed=$riftAllowed -or $riftPath -eq 'Unreal/RiftCrownArena/Content/Rift/Environment/SM_iron_shield_fragment.uasset'}
     if($CardIds -contains 'dart_gun'){$riftAllowed=$riftAllowed -or $riftPath -eq 'Unreal/RiftCrownArena/Content/Rift/Environment/SM_dart_projectile.uasset'}
     if($CardIds -contains 'dart_gun'){$riftAllowed=$riftAllowed -or $riftPath -match '^Unreal/RiftCrownArena/Content/Rift/(Materials/M_RiftDartGun|Textures/T_RiftDartGunAtlas_)'}
+    if($CardIds -contains 'plague_queen'){
+        $riftAllowed=$riftAllowed -or $riftPath -match '^Unreal/RiftCrownArena/Content/Rift/(Materials/M_RiftPlague(Surface|Glow|Glass)|Textures/T_RiftPlagueAtlas_(BaseColor|ORM|Normal|TeamMask)|Audio/SFX_(spawn_plague_queen(_v[23])?|poison_fire|poison_pop))\.uasset$'
+    }
     if($CardIds -contains 'shadow_surge'){$riftAllowed=$riftAllowed -or $riftPath -in @('Unreal/RiftCrownArena/Content/Rift/Materials/M_RiftCloak.uasset','Unreal/RiftCrownArena/Content/Rift/Environment/SM_shadow_surge_wisp.uasset','Unreal/RiftCrownArena/Content/Rift/Environment/SM_shadow_surge_ribbon.uasset')}
     $riftAllowed=$riftAllowed -or $riftPath -match '^Unreal/RiftCrownArena/Content/Rift/(Materials/M_RiftExpansion|Textures/T_RiftExpansionAtlas_)'
     if(@($CardIds|Where-Object {$_ -in @('bone_warden','bone_warden_skeleton','aether_reaper','iron_giant','shadow_surge')}).Count){$riftAllowed=$riftAllowed -or $riftPath -match '^Unreal/RiftCrownArena/Content/Rift/Textures/T_RiftAscensionAtlas_'}

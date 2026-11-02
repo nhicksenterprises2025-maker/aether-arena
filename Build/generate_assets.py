@@ -15,6 +15,7 @@ import expansion_asset_models as expansion_models
 import expansion_new_models as new_models
 import dart_gun_model as dart_model
 import thunder_blade_models as thunder_blade
+import plague_queen_model as plague_model
 from roster_humanoid_detail import polish as detail_humanoids
 from roster_creature_detail import polish as detail_creatures
 from roster_prop_detail import polish as detail_props
@@ -338,6 +339,15 @@ if not (UPDATE or PREVIEW) or (UPDATE or PREVIEW).intersection(dart_model.CHARAC
         ('M_RiftDartGunSurface',False,False),('M_RiftDartGunGlow',True,False),('M_RiftDartGunGlass',False,True)))
     PALETTE.clear();PALETTE.update(saved_palette);TEX=saved_tex
 
+PLAGUE_MATERIALS = None
+if not (UPDATE or PREVIEW) or (UPDATE or PREVIEW).intersection(plague_model.CHARACTERS|plague_model.STATICS):
+    saved_palette,saved_tex=dict(PALETTE),TEX
+    PALETTE.update(plague_model.PALETTE)
+    TEX=textures('T_RiftPlagueAtlas')
+    PLAGUE_MATERIALS=tuple(make_material(name,glow=glow,glass=glass) for name,glow,glass in (
+        ('M_RiftPlagueSurface',False,False),('M_RiftPlagueGlow',True,False),('M_RiftPlagueGlass',False,True)))
+    PALETTE.clear();PALETTE.update(saved_palette);TEX=saved_tex
+
 manifest=json.loads(json.dumps(previous_manifest)) if previous_manifest else {'schema':1,'source':'original procedural sculpt and rig authored for Rift Crown Arena',
  'units':{'blender':'meter','fbx':'meter','fbxCentimetersPerUnit':100,'unrealImportUniformScale':1,'convertSceneUnit':True,
           'exportAxisForward':'-Y','exportAxisUp':'Z','unrealForceFrontXAxis':True,'designForward':'-Y in Blender; +X in Unreal'},
@@ -346,7 +356,12 @@ manifest=json.loads(json.dumps(previous_manifest)) if previous_manifest else {'s
                'normal':Path(TEX['Normal'].filepath_raw).relative_to(ROOT).as_posix(),
                'teamMask':Path(TEX['TeamMask'].filepath_raw).relative_to(ROOT).as_posix()} for m in (SURFACE,GLOW,GLASS)],
  'characters':{},'statics':{},'illustrations':{},'renders':[]}
-manifest['build']='UE-thunderstorm-blade-box-2.1.0'
+manifest['build']='UE-plague-queen-2.2.0'
+if PLAGUE_MATERIALS:
+    records={r['name']:r for r in manifest.get('expansionMaterials',[])}
+    records.update({m.name:{'name':m.name,**{k:'Assets/Source/Textures/T_RiftPlagueAtlas_'+v+'.png' for k,v in
+        (('baseColor','BaseColor'),('orm','ORM'),('normal','Normal'),('teamMask','TeamMask'))}} for m in PLAGUE_MATERIALS})
+    manifest['expansionMaterials']=list(records.values())
 if DART_MATERIALS:
     records={r['name']:r for r in manifest.get('expansionMaterials',[])}
     records.update({m.name:{'name':m.name,**{k:'Assets/Source/Textures/T_RiftDartGunAtlas_'+v+'.png' for k,v in
@@ -373,7 +388,7 @@ class Forge:
     def __init__(self,name):
         self.name=name; self.collection=bpy.data.collections.new(name); scene.collection.children.link(self.collection)
         self.parts=[]; self.bones={}; self.sockets={}; self.rig=None; self.mesh=None; self.family='static'
-        self.materials=DART_MATERIALS if name in dart_model.CHARACTERS|dart_model.STATICS else NEW_MATERIALS if name in set(new_models.CONTRACTS)|set(new_models.STATIC_IDS) else EXPANSION_MATERIALS if name in expansion_models.CONTRACTS else (SURFACE,GLOW,GLASS)
+        self.materials=PLAGUE_MATERIALS if name in plague_model.CHARACTERS|plague_model.STATICS else DART_MATERIALS if name in dart_model.CHARACTERS|dart_model.STATICS else NEW_MATERIALS if name in set(new_models.CONTRACTS)|set(new_models.STATIC_IDS) else EXPANSION_MATERIALS if name in expansion_models.CONTRACTS else (SURFACE,GLOW,GLASS)
     def add(self,obj,key='steel',bone=None,bevel=0,smooth=True,glow=False):
         for c in list(obj.users_collection): c.objects.unlink(obj)
         self.collection.objects.link(obj); obj.name=self.name+'_'+obj.name
@@ -687,6 +702,7 @@ def pulverizer():
     return expansion_models.pulse_machine(Forge)
 
 def actions(f):
+    if f.name in plague_model.CHARACTERS:return plague_model.actions(f,scene,set_world_rotation,aim_leg,aim_arm)
     if f.name in thunder_blade.CHARACTERS:return thunder_blade.actions(f,scene)
     if f.name=='dart_gun':return dart_model.actions(f,scene,set_world_rotation,aim_leg,aim_arm)
     if f.name in new_models.CONTRACTS:return new_models.actions(f,scene,set_world_rotation,aim_leg,aim_arm)
@@ -880,7 +896,10 @@ def export_character(f):
         export_selected(p,[f.rig],True,1,clip['frames']);rec['animations'].append({k:v for k,v in clip.items() if k!='object'}|file_info(p))
     f.rig.animation_data.action=None;scene.render.fps=30;scene.frame_set(1)
     for pb in f.rig.pose.bones:pb.rotation_euler=(0,0,0);pb.location=(0,0,0);pb.scale=(1,1,1)
-    if f.name=='dart_gun':
+    if f.name=='plague_queen':
+        rec['animationTiming']={'anticipationSeconds':.18,'recoverySeconds':.30,'contactNormalized':plague_model.RELEASE}
+        rec['gaitStrideMeters']=.66
+    elif f.name=='dart_gun':
         rec['animationTiming']={'anticipationSeconds':.09,'recoverySeconds':.16,'contactNormalized':.48}
         rec['gaitStrideMeters']=.54
     elif f.name=='blade_box':
@@ -1271,14 +1290,15 @@ knownModels={'ironclad','ember_archer','twin_blades','arc_mage','tower_archer','
              'tower_guard','tower_core','archer_tower','nova_flask','bridge','floor_tile','lane_paver','bank_segment','boundary_stone','grass_tuft','shrub','tree','crystal_plinth','banner','ruin','distant_island','meteor_shard','bullet_round','tower_rubble','arrow_projectile','arc_projectile','manta_projectile','storm_projectile','projectile_trail'}
 knownModels.update(new_models.CONTRACTS);knownModels.update(new_models.STATIC_IDS);knownModels.update(dart_model.CHARACTERS|dart_model.STATICS)
 knownModels.update(thunder_blade.CHARACTERS|thunder_blade.STATICS)
+knownModels.update(plague_model.CHARACTERS|plague_model.STATICS)
 if PREVIEW and PREVIEW-knownModels:raise ValueError('Unknown preview models: '+', '.join(sorted(PREVIEW-knownModels)))
-characterIds=('ironclad','ember_archer','twin_blades','arc_mage','tower_archer','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven','mini_stampede','stampede','pulverizer')+tuple(new_models.CONTRACTS)+tuple(dart_model.CHARACTERS)+tuple(thunder_blade.CHARACTERS)
+characterIds=('ironclad','ember_archer','twin_blades','arc_mage','tower_archer','boulderback','rambeast','frost_fang','sky_manta','vampire_bats','storm_raven','mini_stampede','stampede','pulverizer')+tuple(new_models.CONTRACTS)+tuple(dart_model.CHARACTERS)+tuple(thunder_blade.CHARACTERS)+tuple(plague_model.CHARACTERS)
 if UPDATE and UPDATE-knownModels:raise ValueError('Unknown update models: '+', '.join(sorted(UPDATE-knownModels)))
 for name in characterIds:
     if PREVIEW and name not in PREVIEW:continue
     if UPDATE and name not in UPDATE:continue
     print('RIFT_ASSET_BEGIN',name,flush=True)
-    f=thunder_blade.build(Forge) if name in thunder_blade.CHARACTERS else dart_model.build(Forge,humanoid_rig) if name=='dart_gun' else new_models.build(Forge,name) if name in new_models.CONTRACTS else pulverizer() if name=='pulverizer' else humanoid(name) if name in ('ironclad','ember_archer','tower_archer','twin_blades','arc_mage') else hog(name) if name in ('mini_stampede','stampede') else quadruped(name) if name in ('boulderback','rambeast','frost_fang') else flyer(name)
+    f=plague_model.build(Forge,humanoid_rig) if name in plague_model.CHARACTERS else thunder_blade.build(Forge) if name in thunder_blade.CHARACTERS else dart_model.build(Forge,humanoid_rig) if name=='dart_gun' else new_models.build(Forge,name) if name in new_models.CONTRACTS else pulverizer() if name=='pulverizer' else humanoid(name) if name in ('ironclad','ember_archer','tower_archer','twin_blades','arc_mage') else hog(name) if name in ('mini_stampede','stampede') else quadruped(name) if name in ('boulderback','rambeast','frost_fang') else flyer(name)
     if PREVIEW:
         if opts.preview_action:
             clips=actions(f)
@@ -1302,10 +1322,10 @@ for name in ('tower_guard','tower_core','archer_tower','nova_flask','bridge','fl
     if cannon:
         if not PREVIEW:export_static(cannon)
         forges.append(cannon);print('RIFT_ASSET_COMPLETE','guard_cannon',flush=True)
-for name in tuple(new_models.STATIC_IDS)+tuple(dart_model.STATICS)+tuple(sorted(thunder_blade.STATICS)):
+for name in tuple(new_models.STATIC_IDS)+tuple(dart_model.STATICS)+tuple(sorted(thunder_blade.STATICS))+tuple(sorted(plague_model.STATICS)):
     if PREVIEW and name not in PREVIEW:continue
     if UPDATE and name not in UPDATE:continue
-    f=thunder_blade.effect_static(Forge,name) if name in thunder_blade.STATICS else dart_model.projectile(Forge) if name=='dart_projectile' else new_models.effect_static(Forge,name)
+    f=plague_model.effect_static(Forge,name) if name in plague_model.STATICS else thunder_blade.effect_static(Forge,name) if name in thunder_blade.STATICS else dart_model.projectile(Forge) if name=='dart_projectile' else new_models.effect_static(Forge,name)
     if not PREVIEW:export_static(f)
     forges.append(f);print('RIFT_ASSET_COMPLETE',name,flush=True)
 if not opts.no_renders:
@@ -1347,6 +1367,7 @@ blend=ROOT/previous_manifest['source']['file'] if opts.replacement_proof else SR
 bpy.ops.wm.save_as_mainfile(filepath=str(blend),compress=True)
 manifest['source']=file_info(blend)
 card_bindings={
+ 'plague_queen':{'skeletal':'plague_queen','effectStatics':['plague_arrow','toxic_bubble','poison_splash']},
  'dart_gun':{'skeletal':'dart_gun'},
  'ironclad':{'skeletal':'ironclad'},'ember_archer':{'skeletal':'ember_archer'},
  'twin_blades':{'skeletal':'twin_blades'},'boulderback':{'skeletal':'boulderback'},
@@ -1390,10 +1411,10 @@ if opts.production_proof:
     if proof.exists():raise ValueError('Production preservation evidence cannot be overwritten')
     proof.write_text(json.dumps({'schema':1,'passed':True,'kind':'additive-model-production',
         'fromSource':previous_manifest['source'],'toSource':manifest['source'],
-        'addedCharacters':sorted(UPDATE.intersection(set(new_models.CONTRACTS)|dart_model.CHARACTERS|thunder_blade.CHARACTERS)),
-        'addedStatics':sorted(UPDATE.intersection(set(new_models.STATIC_IDS)|dart_model.STATICS|thunder_blade.STATICS)),
+        'addedCharacters':sorted(UPDATE.intersection(set(new_models.CONTRACTS)|dart_model.CHARACTERS|thunder_blade.CHARACTERS|plague_model.CHARACTERS)),
+        'addedStatics':sorted(UPDATE.intersection(set(new_models.STATIC_IDS)|dart_model.STATICS|thunder_blade.STATICS|plague_model.STATICS)),
         'before':preserved_signatures,'after':after,
-        'producer':file_info(Path(__file__)),'modelBuilder':file_info(ROOT/('Build/thunder_blade_models.py' if UPDATE.intersection(thunder_blade.CHARACTERS|thunder_blade.STATICS) else 'Build/dart_gun_model.py' if UPDATE.intersection(dart_model.CHARACTERS|dart_model.STATICS) else 'Build/expansion_new_models.py'))},indent=2),encoding='utf-8')
+        'producer':file_info(Path(__file__)),'modelBuilder':file_info(ROOT/('Build/plague_queen_model.py' if UPDATE.intersection(plague_model.CHARACTERS|plague_model.STATICS) else 'Build/thunder_blade_models.py' if UPDATE.intersection(thunder_blade.CHARACTERS|thunder_blade.STATICS) else 'Build/dart_gun_model.py' if UPDATE.intersection(dart_model.CHARACTERS|dart_model.STATICS) else 'Build/expansion_new_models.py'))},indent=2),encoding='utf-8')
 if opts.replacement_proof:
     replacement_proof_path.parent.mkdir(parents=True,exist_ok=True)
     replacement_proof_path.write_text(json.dumps({'schema':1,'passed':True,'kind':'selected-model-replacement',

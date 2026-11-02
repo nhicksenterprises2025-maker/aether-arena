@@ -40,6 +40,81 @@
 
 namespace
 {
+// New-card capture follows real launches, impacts and attached poison clocks.
+// It never injects health, positions, animation frames or status effects.
+bool BuildPlagueCapture(URiftMatchSubsystem* Match,const TSharedRef<FJsonObject>& Report)
+{
+    auto* Sim=Match->Simulation();if(!Sim)return false;
+    FString Stage=TEXT("impact");FParse::Value(FCommandLine::Get(),TEXT("RiftPlagueStage="),Stage);
+    const TArray<FString> Stages={TEXT("deploy"),TEXT("moving"),TEXT("flight"),TEXT("impact"),TEXT("tick-one"),TEXT("tick-two"),TEXT("clear")};
+    if(!Stages.Contains(Stage))return false;
+    Match->SetSpeed(0);Sim->SetAIEnabled(rift::Team::Player,false);Sim->SetAIEnabled(rift::Team::Enemy,false);Sim->ClearField();Match->FlushEvents();
+    const double Started=Sim->State().elapsed;
+    const bool Portrait=Stage==TEXT("deploy")||Stage==TEXT("moving");
+    bool Deployed=Sim->Spawn(rift::Team::Player,"plague_queen",Portrait?rift::Vec2{-.5,10.5}:rift::Vec2{-3.5,6.5});
+    rift::EntityId Queen=0;for(const auto& E:Sim->State().entities)if(E.cardId=="plague_queen")Queen=E.id;
+    TArray<rift::EntityId> Victims;
+    if(!Portrait)
+    {
+        const char* Cards[]={"boulderback","ironclad","sky_manta","archer_tower"};
+        const rift::Vec2 Positions[]={{-3.5,-5.5},{-1.5,-5.5},{-5.5,-5.5},{-3.5,-8.5}};
+        for(int32 I=0;I<4;++I)
+        {
+            const size_t Before=Sim->State().entities.size();Deployed&=Sim->Spawn(rift::Team::Enemy,Cards[I],Positions[I]);
+            for(size_t J=Before;J<Sim->State().entities.size();++J)Victims.Add(Sim->State().entities[J].id);
+        }
+    }
+    double FirstLaunch=-1,FirstImpact=-1;TArray<rift::Event> Events;
+    auto Flush=[&]()
+    {
+        for(const auto& E:Sim->Events())if(E.cardId=="plague_queen")
+        {
+            Events.Add(E);if(E.type=="projectile_launch"&&FirstLaunch<0)FirstLaunch=E.time;
+            if(E.type=="poison_splash"&&FirstImpact<0)FirstImpact=E.time;
+        }
+        Match->FlushEvents();for(TActorIterator<ARiftArenaPresentation> It(Match->GetWorld());It;++It)It->Tick(0.f);
+    };
+    Flush();int32 Steps=0;
+    auto Step=[&](){Sim->Step(1./60.);++Steps;Flush();};
+    if(Portrait){const int32 Count=Stage==TEXT("deploy")?5:54;for(int32 I=0;I<Count;++I)Step();}
+    else
+    {
+        while((Stage==TEXT("flight")?FirstLaunch:FirstImpact)<0 && Sim->State().elapsed-Started<8.)Step();
+        if((Stage==TEXT("flight")?FirstLaunch:FirstImpact)<0)return false;
+        // The clear sample proves attached poison expires even after its source
+        // is killed by an ordinary enemy spell; no snapshot mutation is used.
+        if(Stage==TEXT("clear"))for(const auto& E:Sim->State().entities)if(E.id==Queen)
+        {Deployed&=Sim->Spawn(rift::Team::Enemy,"meteor_shards",E.position);break;}
+        const double Until=Stage==TEXT("flight")?FirstLaunch+.10:FirstImpact+(Stage==TEXT("impact")?.15:Stage==TEXT("tick-one")?1.30:Stage==TEXT("tick-two")?2.55:2.70);
+        while(Sim->State().elapsed+1.e-8<Until)Step();
+    }
+    int32 Applied=0,Ticks=0,LivePoison=0,LiveProjectiles=0;TArray<TSharedPtr<FJsonValue>> Rows;
+    for(const auto& E:Events)
+    {
+        Applied+=E.type=="poison_applied";Ticks+=E.type=="poison_tick";
+        if(E.type!="poison_splash"&&E.type!="poison_applied"&&E.type!="poison_tick"&&E.type!="projectile_launch"&&E.type!="damage")continue;
+        auto Row=MakeShared<FJsonObject>();Row->SetStringField(TEXT("type"),UTF8_TO_TCHAR(E.type.c_str()));Row->SetStringField(TEXT("damageKind"),UTF8_TO_TCHAR(E.damageKind.c_str()));
+        Row->SetNumberField(TEXT("time"),E.time);Row->SetNumberField(TEXT("source"),double(E.source));Row->SetNumberField(TEXT("target"),double(E.target));
+        Row->SetNumberField(TEXT("amount"),E.amount);Row->SetNumberField(TEXT("until"),E.until);Row->SetNumberField(TEXT("count"),E.count);Rows.Add(MakeShared<FJsonValueObject>(Row));
+    }
+    for(const auto& P:Sim->State().poisons)if(P.source==Queen)++LivePoison;
+    for(const auto& P:Sim->State().projectiles)if(P.source==Queen)++LiveProjectiles;
+    bool QueenAlive=false;for(const auto& E:Sim->State().entities)if(E.id==Queen)QueenAlive=!E.dead;
+    bool Passed=Deployed&&Queen&&Steps>0;
+    if(Stage==TEXT("flight"))Passed&=FirstLaunch>=0&&FirstImpact<0&&LiveProjectiles>0;
+    else if(!Portrait)Passed&=FirstImpact>=0&&Applied>=4;
+    if(Stage==TEXT("impact"))Passed&=LivePoison>=4&&Ticks==0;
+    if(Stage==TEXT("tick-one"))Passed&=Ticks>=4&&LivePoison>=4;
+    if(Stage==TEXT("tick-two"))Passed&=Ticks>=8;
+    if(Stage==TEXT("clear"))Passed&=Ticks>=8&&LivePoison==0&&!QueenAlive;
+    Report->SetNumberField(TEXT("schema"),1);Report->SetBoolField(TEXT("passed"),Passed);Report->SetStringField(TEXT("stage"),Stage);
+    Report->SetStringField(TEXT("provenance"),TEXT("ordinary Spawn / 60 Hz Step / FlushEvents"));Report->SetNumberField(TEXT("sourceId"),double(Queen));
+    Report->SetBoolField(TEXT("queenAlive"),QueenAlive);Report->SetNumberField(TEXT("fixedSteps"),Steps);Report->SetNumberField(TEXT("startedAt"),Started);
+    Report->SetNumberField(TEXT("simulationTime"),Sim->State().elapsed);Report->SetNumberField(TEXT("firstLaunch"),FirstLaunch);Report->SetNumberField(TEXT("firstImpact"),FirstImpact);
+    Report->SetNumberField(TEXT("applied"),Applied);Report->SetNumberField(TEXT("ticks"),Ticks);Report->SetNumberField(TEXT("livePoison"),LivePoison);Report->SetNumberField(TEXT("liveProjectiles"),LiveProjectiles);Report->SetArrayField(TEXT("events"),Rows);
+    return Passed;
+}
+
 // Reachable visual fixtures: ordinary developer deployments, fixed simulation
 // steps and forwarded events. No snapshots, HP, stun clocks or poses are injected.
 bool BuildThunderBladeCapture(URiftMatchSubsystem* Match,bool Storm,const TSharedRef<FJsonObject>& Report)
@@ -864,7 +939,7 @@ void ARiftGameMode::BeginPlay()
         auto SwarmSplitCapture=MakeShared<FJsonObject>();
         auto ExpansionRosterCapture=MakeShared<FJsonObject>();
         auto PulverizerCapture=MakeShared<FJsonObject>();
-        auto ThunderBladeCapture=MakeShared<FJsonObject>();
+        auto ThunderBladeCapture=MakeShared<FJsonObject>();auto PlagueCapture=MakeShared<FJsonObject>();
         GetWorld()->GetSubsystem<URiftMatchSubsystem>()->OnEvent.AddLambda([CapturedEvents](const rift::Event& Event){++CapturedEvents->FindOrAdd(UTF8_TO_TCHAR(Event.type.c_str()));});
         FTimerHandle SetupTimer;GetWorld()->GetTimerManager().SetTimer(SetupTimer,[this,Page,Scenario,RecordedCapture,RecordedDuration,TowerPathingCapture,UnitCollisionCapture,SwarmSplitCapture,ExpansionRosterCapture,PulverizerCapture]()
         {
@@ -1064,8 +1139,8 @@ void ARiftGameMode::BeginPlay()
                     if(!BuildSwarmSplitCapture(Match,SwarmSplitCapture))
                     {RIFT_LOG(LogRift,Error,TEXT("Swarm split capture failed paid formation/landing-lane/body/speed/progress checks"));FPlatformMisc::RequestExitWithStatus(false,2);return;}
                 }
-                else if(Scenario==TEXT("placement")||Scenario==TEXT("effects17")||Scenario==TEXT("storm_works")||Scenario==TEXT("blade_box"))Match->SetSpeed(0);
-                if(Scenario!=TEXT("roster")&&Scenario!=TEXT("expansion_roster")&&Scenario!=TEXT("expansion_new_roster")&&Scenario!=TEXT("expansion_effects")&&Scenario!=TEXT("expansion_warden_death")&&Scenario!=TEXT("reaper_design")&&Scenario!=TEXT("placement")&&Scenario!=TEXT("effects17")&&Scenario!=TEXT("projectiles")&&Scenario!=TEXT("spells")&&Scenario!=TEXT("tower_pathing")&&Scenario!=TEXT("unit_collision")&&Scenario!=TEXT("swarm_split")&&Scenario!=TEXT("pulverizer")&&Scenario!=TEXT("storm_works")&&Scenario!=TEXT("blade_box"))
+                else if(Scenario==TEXT("placement")||Scenario==TEXT("effects17")||Scenario==TEXT("storm_works")||Scenario==TEXT("blade_box")||Scenario==TEXT("plague_queen"))Match->SetSpeed(0);
+                if(Scenario!=TEXT("roster")&&Scenario!=TEXT("expansion_roster")&&Scenario!=TEXT("expansion_new_roster")&&Scenario!=TEXT("expansion_effects")&&Scenario!=TEXT("expansion_warden_death")&&Scenario!=TEXT("reaper_design")&&Scenario!=TEXT("placement")&&Scenario!=TEXT("effects17")&&Scenario!=TEXT("projectiles")&&Scenario!=TEXT("spells")&&Scenario!=TEXT("tower_pathing")&&Scenario!=TEXT("unit_collision")&&Scenario!=TEXT("swarm_split")&&Scenario!=TEXT("pulverizer")&&Scenario!=TEXT("storm_works")&&Scenario!=TEXT("blade_box")&&Scenario!=TEXT("plague_queen"))
                 {float CaptureSpeed=1;FParse::Value(FCommandLine::Get(),TEXT("RiftCaptureSpeed="),CaptureSpeed);Match->SetSpeed(FMath::Clamp(CaptureSpeed,.25f,4.f));}
                 Match->FlushEvents();
             }
@@ -1121,6 +1196,15 @@ void ARiftGameMode::BeginPlay()
             }
         },.5f,false);
         float Delay=6;FParse::Value(FCommandLine::Get(),TEXT("RiftCaptureDelay="),Delay);bool Quit=FParse::Param(FCommandLine::Get(),TEXT("RiftQuitAfterCapture"));
+        if(Scenario==TEXT("plague_queen"))
+        {
+            Delay=FMath::Max(1.5f,Delay);FTimerHandle PlagueTimer;
+            GetWorld()->GetTimerManager().SetTimer(PlagueTimer,FTimerDelegate::CreateWeakLambda(this,[this,PlagueCapture]()
+            {
+                if(!BuildPlagueCapture(GetWorld()->GetSubsystem<URiftMatchSubsystem>(),PlagueCapture))
+                {RIFT_LOG(LogRift,Error,TEXT("Plague Queen real deployment/projectile/poison fixture failed"));FPlatformMisc::RequestExitWithStatus(false,2);}
+            }),1.f,false);
+        }
         if(Scenario==TEXT("storm_works")||Scenario==TEXT("blade_box"))
         {
             Delay=FMath::Max(1.5f,Delay);FTimerHandle ThunderBladeTimer;
@@ -1189,7 +1273,7 @@ void ARiftGameMode::BeginPlay()
                 {It->ShowcaseNiagaraAtAge(Age);break;}
             }),FMath::Max(1.f,Delay)-.5f,false);
         }
-        FTimerHandle CaptureTimer;GetWorld()->GetTimerManager().SetTimer(CaptureTimer,FTimerDelegate::CreateWeakLambda(this,[this,CapturePath,Quit,CapturedEvents,RecordedCapture,RecordedDuration,TowerPathingCapture,UnitCollisionCapture,SwarmSplitCapture,ExpansionRosterCapture,PulverizerCapture,ThunderBladeCapture]()
+        FTimerHandle CaptureTimer;GetWorld()->GetTimerManager().SetTimer(CaptureTimer,FTimerDelegate::CreateWeakLambda(this,[this,CapturePath,Quit,CapturedEvents,RecordedCapture,RecordedDuration,TowerPathingCapture,UnitCollisionCapture,SwarmSplitCapture,ExpansionRosterCapture,PulverizerCapture,ThunderBladeCapture,PlagueCapture]()
         {
             IFileManager::Get().MakeDirectory(*FPaths::GetPath(CapturePath),true);
             auto Snapshot=MakeShared<FJsonObject>();auto EventCounts=MakeShared<FJsonObject>();
@@ -1200,6 +1284,7 @@ void ARiftGameMode::BeginPlay()
             if(TowerPathingCapture->HasField(TEXT("passed")))Snapshot->SetObjectField(TEXT("towerPathing"),TowerPathingCapture);
             if(UnitCollisionCapture->HasField(TEXT("passed")))Snapshot->SetObjectField(TEXT("unitCollision"),UnitCollisionCapture);
             if(PulverizerCapture->HasField(TEXT("passed")))Snapshot->SetObjectField(TEXT("pulverizerWitness"),PulverizerCapture);
+            if(PlagueCapture->HasField(TEXT("passed")))Snapshot->SetObjectField(TEXT("plagueWitness"),PlagueCapture);
             if(ThunderBladeCapture->HasField(TEXT("passed")))Snapshot->SetObjectField(TEXT("thunderBladeWitness"),ThunderBladeCapture);
             if(ExpansionRosterCapture->HasField(TEXT("passed")))
             {

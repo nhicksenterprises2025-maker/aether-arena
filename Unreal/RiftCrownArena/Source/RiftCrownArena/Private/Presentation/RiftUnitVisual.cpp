@@ -642,7 +642,7 @@ float ARiftUnitVisual::AnimationBlendAlpha()const
 FName ARiftUnitVisual::AttackClip()const
 {
     return AssetId==TEXT("frost_fang")?TEXT("FrostAttack"):AssetId==TEXT("arc_mage")?TEXT("Cast"):
-        AssetId==TEXT("ember_archer")||AssetId==TEXT("tower_archer")?TEXT("DrawRelease"):
+        AssetId==TEXT("ember_archer")||AssetId==TEXT("tower_archer")||AssetId==TEXT("plague_queen")?TEXT("DrawRelease"):
         AssetId==TEXT("twin_blades")?TEXT("AlternateStrike"):AssetId==TEXT("boulderback")?TEXT("HeavyImpact"):TEXT("Attack");
 }
 void ARiftUnitVisual::UpdateStructureAim(double Time)

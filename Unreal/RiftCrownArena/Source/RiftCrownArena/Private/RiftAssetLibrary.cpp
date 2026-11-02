@@ -14,7 +14,7 @@ FString SerializeDefinitions(const std::vector<rift::Card>& Definitions)
 #define RF(K) O->SetNumberField(TEXT(#K),double(C.K))
         RF(cost);RF(count);RF(hp);RF(damage);RF(attackInterval);RF(moveSpeed);RF(range);RF(scale);RF(collisionRadius);RF(targetMask);RF(projectileSpeed);RF(shockwaveSpeed);RF(splash);RF(lifetime);RF(footprint);RF(towerDamage);RF(spellRadius);RF(castDelay);RF(chargeDamage);RF(slowPct);RF(slowDuration);RF(auraDamage);RF(auraInterval);RF(auraRadius);RF(stunDuration);RF(dotDamage);RF(dotDuration);RF(dotInterval);RF(rounds);
         RF(chargeMoveSeconds);RF(chargedMoveSpeed);RF(hpDecayPerSecond);RF(initialAttackCooldown);
-        RF(shieldHP);RF(deathSpawnCount);RF(invisibilityDuration);RF(dotStructureDamage);RF(healthCloakThreshold);RF(spawnInterval);
+        RF(sightFront);RF(sightRear);RF(shieldHP);RF(deathSpawnCount);RF(invisibilityDuration);RF(dotStructureDamage);RF(healthCloakThreshold);RF(spawnInterval);
 #undef RF
 #define RB(K) O->SetBoolField(TEXT(#K),C.K)
         RB(flying);RB(canHitAir);RB(structuresOnly);RB(spell);RB(building);
@@ -73,7 +73,7 @@ bool URiftAssetCatalogSubsystem::Validate(FString& Error)const
         MATCH_STAT(ChargeMoveSeconds,chargeMoveSeconds);MATCH_STAT(ChargedMoveSpeed,chargedMoveSpeed);
         MATCH_STAT(HPDecayPerSecond,hpDecayPerSecond);MATCH_STAT(InitialAttackCooldown,initialAttackCooldown);
         MATCH_STAT(ShieldHP,shieldHP);MATCH_STAT(InvisibilityDuration,invisibilityDuration);MATCH_STAT(DotStructureDamage,dotStructureDamage);MATCH_STAT(HealthCloakThreshold,healthCloakThreshold);
-        Matches=Matches&&FMath::IsNearlyEqual(double(A->FrontSight),C.projectileSpeed>0?FMath::Max(8.,C.range):8.,.001)&&FMath::IsNearlyEqual(A->RearSight,5.f,.001f);
+        Matches=Matches&&FMath::IsNearlyEqual(double(A->FrontSight),C.projectileSpeed>0?FMath::Max(C.sightFront,C.range):C.sightFront,.001)&&FMath::IsNearlyEqual(double(A->RearSight),C.sightRear,.001);
 #undef MATCH_STAT
         if(!Matches)
         {Error=FString::Printf(TEXT("DataAsset does not match the locked roster: %s"),UTF8_TO_TCHAR(C.id.c_str()));return false;}

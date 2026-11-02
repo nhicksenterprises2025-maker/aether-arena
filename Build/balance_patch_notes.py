@@ -28,6 +28,8 @@ STATS = {
     "moveSpeed": ("Movement speed", "tiles/s", 1),
     "effectiveChargedMoveSpeed": ("Charged movement speed", "tiles/s", 1),
     "range": ("Attack range", "tiles", 1),
+    "sightFront": ("Forward enemy awareness", "tiles", 1),
+    "sightRear": ("Rear enemy awareness", "tiles", 1),
     "projectileSpeed": ("Projectile speed", "tiles/s", 1),
     "splash": ("Splash radius", "tiles", 1), "lifetime": ("Lifetime", "s", 1),
     "spellRadius": ("Spell radius", "tiles", 1),
@@ -67,6 +69,8 @@ STATS = {
 def derived(card):
     values = dict(card)
     values.setdefault("healthCloakThreshold", 0)
+    values.setdefault("sightFront", 8)
+    values.setdefault("sightRear", 5)
     interval = card["attackInterval"]
     if not card["spell"] and interval > 0:
         values.update(basicDPS=card["damage"] / interval,
@@ -84,6 +88,10 @@ def derived(card):
         if card["id"] == "thunderstorm":
             values["fullTroopExposure"] = card["damage"] * card["rounds"]
             values["fullStructureExposure"] = card["towerDamage"] * card["rounds"]
+    elif card.get("dotDamage", 0) > 0:
+        ticks = card["dotDuration"] / card["dotInterval"]
+        values["fullTroopExposure"] = card["damage"] + card["dotDamage"] * ticks
+        values["fullStructureExposure"] = card["damage"] + card.get("dotStructureDamage", 0) * ticks
     return values
 
 
@@ -91,6 +99,8 @@ def mechanic_changes(previous, card):
     def changed(*fields):
         return previous is None or any(previous.get(key) != card.get(key) for key in fields)
     lines = []
+    if card["id"] == "plague_queen" and changed("damage", "splash", "dotDamage", "dotDuration", "dotInterval"):
+        lines.append("Only the direct arrow target receives " + format(card["damage"], ".9g") + " impact damage. Enemies within " + format(card["splash"], ".9g") + " tiles at impact receive two attached poison ticks of " + format(card["dotDamage"], ".9g") + " damage, at " + format(card["dotInterval"], ".9g") + " and " + format(card["dotDuration"], ".9g") + " seconds. The direct target is included if alive. Poison follows affected enemies, persists after its Queen dies, and separate arrows apply separate two-tick effects; this is not a lingering ground damage zone.")
     if card.get("chargeDamage", 0) > 0 and changed("chargeMoveSeconds", "chargedMoveSpeed", "chargeDamage"):
         lines.append("Charge requires more than " + format(card["chargeMoveSeconds"], ".9g")
                      + " seconds of accumulated movement. Its total charged hit replaces the basic hit; it is not an additive bonus."

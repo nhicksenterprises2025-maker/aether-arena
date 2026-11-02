@@ -1954,8 +1954,8 @@ bool FRiftExpansionMechanicsIntegrationTest::RunTest(const FString& Parameters) 
         }
         Replay->EndRecording(Match.State(),true);
         if(!TestTrue(TEXT("Actual expansion recording writes"),Replay->FlushPendingWrites())||
-           !TestTrue(TEXT("Captured schema4 expansion recording opens"),Replay->OpenReplay(Replay->LatestFilename)))continue;
-        TestEqual(TEXT("Replay captured current expansion mechanics schema"),int32(Replay->ReconstructionDiagnostics()->GetNumberField(TEXT("balanceSchema"))),4);
+           !TestTrue(TEXT("Captured schema5 expansion recording opens"),Replay->OpenReplay(Replay->LatestFilename)))continue;
+        TestEqual(TEXT("Replay captured current expansion mechanics schema"),int32(Replay->ReconstructionDiagnostics()->GetNumberField(TEXT("balanceSchema"))),5);
         Replay->Seek(float(LiveProbe.elapsed));const auto* Live=Find(LiveProbe,Subject);const auto* Restored=Find(Replay->View,Subject);
         if(Scenario==0) {
             if(TestNotNull(TEXT("Shield live body remains"),Live)&&TestNotNull(TEXT("Shield replay body remains"),Restored)) {

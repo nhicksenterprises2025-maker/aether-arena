@@ -333,7 +333,7 @@ struct Reader {
 #define EXPANSION_CARD_FLAGS(X) X(hardExpiry) X(shieldOverflowProtected) X(globalFriendlyInvisibility) X(breakExistingLocks)
 TSharedRef<FJsonObject> BalanceJSON() {
     auto Balance=MakeShared<FJsonObject>();
-    Balance->SetNumberField(TEXT("schema"),4);
+    Balance->SetNumberField(TEXT("schema"),5);
     Balance->SetStringField(TEXT("manifestHash"),FS(rift::CardManifestHash()));
     Balance->SetStringField(TEXT("manifestVersion"),FS(rift::CardManifestVersion()));
     TArray<TSharedPtr<FJsonValue>> Cards;
@@ -343,6 +343,8 @@ TSharedRef<FJsonObject> BalanceJSON() {
         C->SetStringField(TEXT("deathSpawnId"),FS(Card.deathSpawnId));
         C->SetStringField(TEXT("spawnId"),FS(Card.spawnId));
         C->SetNumberField(TEXT("spawnInterval"),Card.spawnInterval);
+        C->SetNumberField(TEXT("sightFront"),Card.sightFront);
+        C->SetNumberField(TEXT("sightRear"),Card.sightRear);
 #define FIELD(K) C->SetNumberField(TEXT(#K),double(Card.K));
         CARD_NUMBERS(FIELD)
         EXPANSION_CARD_NUMBERS(FIELD)
@@ -365,7 +367,7 @@ bool ReadBalance(const TSharedPtr<FJsonObject>& Recording,FRiftReplayBalanceCont
     const TSharedPtr<FJsonObject>* B=nullptr;
     if (!Recording->TryGetObjectField(TEXT("balance"),B)) return false;
     Reader R(*B);int Schema=0;std::string Hash,Version;
-    R.Number(TEXT("schema"),Schema,1,4,true);R.Text(TEXT("manifestHash"),Hash,true);R.Text(TEXT("manifestVersion"),Version,true);
+    R.Number(TEXT("schema"),Schema,1,5,true);R.Text(TEXT("manifestHash"),Hash,true);R.Text(TEXT("manifestVersion"),Version,true);
     if (Hash.size()!=64||Version.empty()||Version.size()>128) return false;
     for (char C:Hash) if (!(C>='0'&&C<='9')&&!(C>='a'&&C<='f')) return false;
     const TArray<TSharedPtr<FJsonValue>>* Cards=nullptr;
@@ -385,6 +387,8 @@ bool ReadBalance(const TSharedPtr<FJsonObject>& Recording,FRiftReplayBalanceCont
         CR.Text(TEXT("deathSpawnId"),C.deathSpawnId,Schema>=2);
         CR.Text(TEXT("spawnId"),C.spawnId,Schema>=4);
         CR.Number(TEXT("spawnInterval"),C.spawnInterval,0,MaxTime,Schema>=4);
+        CR.Number(TEXT("sightFront"),C.sightFront,0,100,Schema>=5);
+        CR.Number(TEXT("sightRear"),C.sightRear,0,100,Schema>=5);
 #define FIELD(K) if (!CR.O||!CR.O->HasField(TEXT(#K))) CR.Valid=false;else CR.Flag(TEXT(#K),C.K);
         CARD_FLAGS(FIELD)
 #undef FIELD
@@ -593,6 +597,25 @@ bool ReadEvent(const TSharedPtr<FJsonObject> &O, rift::Event &E,const FRiftRepla
             if(E.type=="charge_ready"&&(E.requested<=Card->chargeMoveSeconds||E.requested>MaxTime||
                 FMath::Abs(E.amount-(Card->chargedMoveSpeed>0?Card->chargedMoveSpeed:Card->moveSpeed))>1e-6))R.Valid=false;
             if(E.type=="charge_spent"&&(E.target==0||FMath::Abs(E.amount-Card->chargeDamage)>1e-6))R.Valid=false;
+        }
+    }
+    if (E.type=="poison_splash"||E.type=="poison_applied"||E.type=="poison_tick") {
+        if (!Context||Context->Schema<5||!Card||Card->spell||Card->projectileSpeed<=0||Card->dotDamage<=0||
+            Card->dotInterval<=0||!E.source||!E.target||!E.playId||E.until<E.time-1e-7||E.until>MaxTime*2) R.Valid=false;
+        else {
+            const auto* Source=Context->Entities.Find(E.source);
+            const auto* Target=Context->Entities.Find(E.target);
+            if (!Source||Source->cardId!=E.cardId||Source->team!=E.team||Source->playId!=E.playId||
+                !Target||Target->team==E.team) R.Valid=false;
+            const int Count=FMath::FloorToInt(Card->dotDuration/Card->dotInterval+1e-9);
+            if (E.type=="poison_splash") {
+                if(FMath::Abs(E.amount-Card->splash)>1e-6||FMath::Abs(E.until-E.time-.5)>1e-6)R.Valid=false;
+            } else {
+                const double Damage=Target&&Target->kind!=rift::EntityKind::Troop?Card->dotStructureDamage:Card->dotDamage;
+                if(FMath::Abs(E.amount-Damage)>1e-6||!Target||E.targetTeam!=Target->team||E.targetKind!=Target->kind)R.Valid=false;
+                if(E.type=="poison_applied"&&(E.count!=Count||FMath::Abs(E.until-E.time-Card->dotDuration)>1e-6))R.Valid=false;
+                if(E.type=="poison_tick"&&(E.count<1||E.count>Count))R.Valid=false;
+            }
         }
     }
     if (E.type=="building_spawn") {
@@ -841,6 +864,16 @@ TSharedRef<FJsonObject> URiftReplaySubsystem::SnapshotJSON(const rift::Snapshot 
         Hazards.Add(MakeShared<FJsonValueObject>(R));
     }
     O->SetArrayField(TEXT("hazards"), Hazards);
+    TArray<TSharedPtr<FJsonValue>> Poisons;
+    for (const auto& P : State.poisons) {
+        auto V=MakeShared<FJsonObject>();
+#define POISON_FIELD(K) V->SetNumberField(TEXT(#K),double(P.K));
+        POISON_FIELD(source) POISON_FIELD(target) POISON_FIELD(playId) POISON_FIELD(team)
+        POISON_FIELD(born) POISON_FIELD(nextTick) POISON_FIELD(expires) POISON_FIELD(ticks)
+#undef POISON_FIELD
+        V->SetStringField(TEXT("cardId"),FS(P.cardId));Poisons.Add(MakeShared<FJsonValueObject>(V));
+    }
+    O->SetArrayField(TEXT("poisons"),Poisons);
     return O;
 }
 static bool ReadSnapshot(const TSharedPtr<FJsonObject> &O, rift::Snapshot &State,const FRiftReplayBalanceContext* Context=nullptr) {
@@ -1135,6 +1168,27 @@ static bool ReadSnapshot(const TSharedPtr<FJsonObject> &O, rift::Snapshot &State
             R.Valid &= T.Valid;
             Parsed.hazards.push_back(H);
         }
+    if (R.List(TEXT("poisons"),A,10000,Context&&Context->Schema>=5)) for (const auto& Value:*A) {
+        rift::Poison P;Reader T(Obj(Value));
+        T.Number(TEXT("source"),P.source,1,1e12,true);T.Number(TEXT("target"),P.target,1,1e12,true);
+        T.Number(TEXT("playId"),P.playId,1,1e12,true);T.Number(TEXT("team"),P.team,0,1,true);
+        T.Text(TEXT("cardId"),P.cardId,true);T.Number(TEXT("born"),P.born,0,MaxTime,true);
+        T.Number(TEXT("nextTick"),P.nextTick,0,MaxTime*2,true);T.Number(TEXT("expires"),P.expires,0,MaxTime*2,true);
+        T.Number(TEXT("ticks"),P.ticks,0,1000,true);
+        const auto* Card=Context?RecordedCard(Context,P.cardId):rift::FindEntityDefinition(P.cardId);
+        const auto Target=std::find_if(Parsed.entities.begin(),Parsed.entities.end(),[&](const auto& E){return E.id==P.target;});
+        const auto Source=Parsed.entityTelemetry[int(P.team)].find(P.source);
+        if ((Context&&Context->Schema<5)||!Card||Card->spell||Card->projectileSpeed<=0||Card->dotDamage<=0||Card->dotInterval<=0||
+            Target==Parsed.entities.end()||Target->dead||Target->team==P.team||
+            Source==Parsed.entityTelemetry[int(P.team)].end()||Source->second.cardId!=P.cardId||Source->second.playId!=P.playId||
+            P.born>Parsed.elapsed+1e-7||P.expires<Parsed.elapsed-1e-7||P.nextTick<=Parsed.elapsed-1e-7||
+            Parsed.phase==rift::Phase::Tiebreaker||Parsed.phase==rift::Phase::Finished||
+            (Card&&(P.ticks>=FMath::FloorToInt(Card->dotDuration/Card->dotInterval+1e-9)||
+                FMath::Abs(P.expires-P.born-Card->dotDuration)>1e-6||
+                FMath::Abs(P.nextTick-P.born-(P.ticks+1)*Card->dotInterval)>1e-6))||
+            std::any_of(Parsed.poisons.begin(),Parsed.poisons.end(),[&](const auto& Other){return Other.source==P.source&&Other.target==P.target&&Other.playId==P.playId&&FMath::Abs(Other.born-P.born)<1e-7;})) T.Valid=false;
+        R.Valid &= T.Valid;Parsed.poisons.push_back(P);
+    }
     if (!R.Valid)
         return false;
     State = MoveTemp(Parsed);
@@ -1177,7 +1231,12 @@ bool URiftReplaySubsystem::ValidateRecording(const TSharedPtr<FJsonObject> &O, F
         for(int Team=0;Team<2;++Team)for(const auto& Entry:State.entityTelemetry[Team])if(!Context.Entities.Contains(Entry.first)) {
             const auto& Body=Entry.second;rift::Entity Identity;Identity.id=Body.id;Identity.team=static_cast<rift::Team>(Team);
             Identity.cardId=Body.cardId;Identity.playId=Body.playId;Identity.parentEntityId=Body.parentEntityId;
-            Identity.attributionCardId=Body.attributionCardId;Context.Entities.Add(Identity.id,std::move(Identity));
+            Identity.attributionCardId=Body.attributionCardId;
+            if(const auto* Definition=RecordedCard(&Context,Body.cardId)) {
+                Identity.kind=Definition->building?rift::EntityKind::Building:rift::EntityKind::Troop;
+                Identity.flying=Definition->flying;
+            }
+            Context.Entities.Add(Identity.id,std::move(Identity));
         }
     }
     if (FMath::Abs(N(Obj((*States)[0]), TEXT("time"))) > 1e-7) {
@@ -1192,6 +1251,7 @@ bool URiftReplaySubsystem::ValidateRecording(const TSharedPtr<FJsonObject> &O, F
     Previous = -1;
     std::map<rift::PlayId,rift::SpellCast> RepeatedCasts;
     std::map<rift::EntityId,int> PeriodicCounts;
+    std::vector<rift::Poison> AppliedPoisons;
     TSet<uint64> DeadSources;
     for (const auto &V : *Events) {
         rift::Event E;
@@ -1224,6 +1284,20 @@ bool URiftReplaySubsystem::ValidateRecording(const TSharedPtr<FJsonObject> &O, F
                     E.time+1e-6>=Parent->born+E.count*Card->spawnInterval&&E.time<=Parent->born+Card->lifetime+1e-6;
             }
             if(!Valid){Error=TEXT("Replay storm waves or periodic spawn events contradict their captured source timeline.");return false;}
+        }
+        if(Context.Schema>=5&&(E.type=="poison_applied"||E.type=="poison_tick")) {
+            const auto* Definition=RecordedCard(&Context,E.cardId);
+            if(E.type=="poison_applied") {
+                rift::Poison P;P.source=E.source;P.target=E.target;P.playId=E.playId;P.team=E.team;P.cardId=E.cardId;
+                P.born=E.time;P.nextTick=E.time+Definition->dotInterval;P.expires=E.until;AppliedPoisons.push_back(P);
+            } else {
+                auto Found=std::find_if(AppliedPoisons.begin(),AppliedPoisons.end(),[&](const auto& P){
+                    return P.source==E.source&&P.target==E.target&&P.playId==E.playId&&P.team==E.team&&P.cardId==E.cardId&&FMath::Abs(P.expires-E.until)<1e-7;});
+                if(Found==AppliedPoisons.end()||E.count!=Found->ticks+1||E.time<Found->nextTick-1e-7||E.time>Found->nextTick+1./60.+1e-6) {
+                    Error=TEXT("Replay poison tick has no matching application or contradicts its captured timing.");return false;
+                }
+                ++Found->ticks;Found->nextTick=Found->born+(Found->ticks+1)*Definition->dotInterval;
+            }
         }
         Previous = E.time;
         Sequence = E.sequence;
@@ -1266,7 +1340,12 @@ void CaptureRecordedState(FRiftReplayBalanceContext& Context,const rift::Snapsho
     if(Context.Schema>=2)for(int Team=0;Team<2;++Team)for(const auto& Entry:State.entityTelemetry[Team])if(!Context.Entities.Contains(Entry.first)) {
         const auto& Body=Entry.second;rift::Entity Identity;Identity.id=Body.id;Identity.team=static_cast<rift::Team>(Team);
         Identity.cardId=Body.cardId;Identity.playId=Body.playId;Identity.parentEntityId=Body.parentEntityId;
-        Identity.attributionCardId=Body.attributionCardId;Context.Entities.Add(Identity.id,std::move(Identity));
+        Identity.attributionCardId=Body.attributionCardId;
+        if(const auto* Definition=RecordedCard(&Context,Body.cardId)) {
+            Identity.kind=Definition->building?rift::EntityKind::Building:rift::EntityKind::Troop;
+            Identity.flying=Definition->flying;
+        }
+        Context.Entities.Add(Identity.id,std::move(Identity));
     }
     for (const auto& P:State.projectiles) if (!Context.ProjectileIds.Contains(P.id)) {Context.ProjectileIds.Add(P.id);Context.Projectiles.Add(P);}
     for (const auto& Wave:State.shockwaves) if (!Context.WaveIds.Contains(Wave.id)) {Context.WaveIds.Add(Wave.id);Context.Waves.Add(Wave);}
@@ -1337,6 +1416,8 @@ void AdvanceSnapshot(rift::Snapshot &State, double To,FRiftReplayBalanceContext*
     State.projectiles.erase(std::remove_if(State.projectiles.begin(), State.projectiles.end(),
                                            [](const auto &P) { return P.remaining <= 0; }),
                             State.projectiles.end());
+    State.poisons.erase(std::remove_if(State.poisons.begin(),State.poisons.end(),
+        [&](const auto& P){const auto* Target=EntityById(State,P.target);return P.expires<To-1e-9||!Target||Target->dead;}),State.poisons.end());
     State.hazards.erase(std::remove_if(State.hazards.begin(), State.hazards.end(),
                                        [&](const auto &H) { return H.expires < To; }),
                         State.hazards.end());
@@ -1514,6 +1595,7 @@ void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E,FRiftReplayBal
             if(SourceRecord!=State.entityTelemetry[Team].end()) {++SourceRecord->second.observed.kills;SourceRecord->second.observed.killValue+=E.targetCost;}
         }
         Target->dead = true;
+        State.poisons.erase(std::remove_if(State.poisons.begin(),State.poisons.end(),[&](const auto& P){return P.target==E.target;}),State.poisons.end());
         Target->hp = 0;
         Target->died = E.time;
         if (E.type == "death")
@@ -1532,9 +1614,23 @@ void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E,FRiftReplayBal
                                             [](const auto &R) { return R.kind < rift::EntityKind::Guard; }),
                              State.entities.end());
         State.projectiles.clear();
+        State.poisons.clear();
         State.shockwaves.clear();
         State.spellCasts.clear();
         State.hazards.clear();
+    } else if (E.type=="poison_applied"&&Target&&Card) {
+        rift::Poison P;P.source=E.source;P.target=E.target;P.playId=E.playId;P.team=E.team;P.cardId=E.cardId;
+        P.born=E.time;P.nextTick=E.time+Card->dotInterval;P.expires=E.until;
+        State.poisons.push_back(P);
+    } else if (E.type=="poison_tick") {
+        const auto Found=std::find_if(State.poisons.begin(),State.poisons.end(),[&](const auto& P){
+            return P.source==E.source&&P.target==E.target&&P.playId==E.playId&&FMath::Abs(P.expires-E.until)<1e-7;});
+        if(Found!=State.poisons.end()&&Card) {
+            Found->ticks=E.count;Found->nextTick=Found->born+(E.count+1)*Card->dotInterval;
+            if(Found->nextTick>Found->expires+1e-7)State.poisons.erase(Found);
+        }
+        ++State.telemetry[Team][Credit].dotTicks;
+        if(SourceRecord!=State.entityTelemetry[Team].end())++SourceRecord->second.observed.dotTicks;
     } else if (E.type == "slow" && Target) {
         auto Existing=std::find_if(Target->slows.begin(),Target->slows.end(),[&](const auto& Slow){return Slow.cardId==E.cardId;});
         rift::SlowEffect Slow;Slow.source=E.source;Slow.playId=E.playId;Slow.team=E.team;
@@ -1630,6 +1726,7 @@ void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E,FRiftReplayBal
         State.timeRemaining = State.phase == rift::Phase::Overtime ? 120 : 0;
         if (State.phase == rift::Phase::Tiebreaker) {
             State.projectiles.clear();
+            State.poisons.clear();
             State.shockwaves.clear();
             State.spellCasts.clear();
             State.hazards.clear();
@@ -1644,6 +1741,7 @@ void ApplyReplayEvent(rift::Snapshot &State, const rift::Event &E,FRiftReplayBal
         }
         State.shockwaves.clear();
         State.spellCasts.clear();
+        State.poisons.clear();
         State.phase = rift::Phase::Finished;
         State.winner = int(E.amount);
         State.resultReason = E.reason;
