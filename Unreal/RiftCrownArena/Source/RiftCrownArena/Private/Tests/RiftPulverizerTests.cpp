@@ -43,7 +43,7 @@ bool FRiftPulverizerTest::RunTest(const FString& Parameters)
     {AddError(TEXT("Pulverizer fixture requires isolated RiftSaveRoot/UserDir and RiftAutomationSandbox."));return false;}
     const auto* C=rift::FindCard("pulverizer");
     if(!TestNotNull(TEXT("Pulverizer exists in authoritative gameplay"),C))return false;
-    TestEqual(TEXT("Current roster includes Thunderstorm and Blade Box"),int32(rift::Cards().size()),24);
+    TestEqual(TEXT("Current roster includes Plague Queen"),int32(rift::Cards().size()),25);
     TestEqual(TEXT("Pulverizer costs three Aether"),C->cost,3);
     TestEqual(TEXT("One building per paid Pulverizer cast"),C->count,1);
     auto Stat=[&](const TCHAR* Field,double Actual,double Expected)
@@ -183,12 +183,15 @@ bool FRiftPulverizerTest::RunTest(const FString& Parameters)
     {
         auto Source=Building;Source.cardId=CardDefinition.id;Source.facing={0,-1};Source.position={0,0};Source.radius=2;
         Source.target=Source.forcedTarget=Target.id;Source.forcedUntil=100;
-        const double Front=CardDefinition.projectileSpeed>0?FMath::Max(rift::detection::Front,CardDefinition.range):rift::detection::Front;
+        const double ExpectedFront=CardDefinition.id=="plague_queen"?20.:8.,ExpectedRear=CardDefinition.id=="plague_queen"?20.:5.;
+        TestEqual(TEXT("Only Plague Queen expands authored forward sight"),CardDefinition.sightFront,ExpectedFront);
+        TestEqual(TEXT("Only Plague Queen expands authored rear sight"),CardDefinition.sightRear,ExpectedRear);
+        const double Front=CardDefinition.projectileSpeed>0?FMath::Max(ExpectedFront,CardDefinition.range):ExpectedFront;
         Target.radius=2;Target.position={0,-Front};
         TestTrue(TEXT("Every card detects the exact front boundary"),Match.InSight(Source,Target));
         Target.position.z=-Front-.001;TestFalse(TEXT("No current target, forced pull or body radius enlarges front detection"),Match.InSight(Source,Target));
-        Target.position.z=5;TestTrue(TEXT("Every card detects the exact rear boundary"),Match.InSight(Source,Target));
-        Target.position.z=5.001;TestFalse(TEXT("No current target, forced pull or body radius enlarges rear detection"),Match.InSight(Source,Target));
+        Target.position.z=ExpectedRear;TestTrue(TEXT("Every card detects the exact rear boundary"),Match.InSight(Source,Target));
+        Target.position.z=ExpectedRear+.001;TestFalse(TEXT("No current target, forced pull or body radius enlarges rear detection"),Match.InSight(Source,Target));
     }
 
     // Native replay JSON retains in-flight rings and independently expiring

@@ -24,26 +24,27 @@ def main():
     assert expanded["schema"] == 2 and expanded["derivedFrom"]["balanceHash"] == baseline["balanceHash"]
     for before, derivative in zip(baseline["cards"], expanded["cards"]):
         assert all(derivative[key] == value for key, value in before.items())
-    assert len(current["cards"]) == 24 and len(current["entities"]) == 1
+    assert len(current["cards"]) == 25 and len(current["entities"]) == 1
     assert current["rules"]["arenaWidth"] == 22 and current["rules"]["arenaHeight"] == 40
     release_baseline = json.loads((ROOT / current["baseline"]).read_text())
     by_id = {card["id"]:card for card in current["cards"]}
     for before in release_baseline["cards"] + release_baseline["entities"]:
         after = by_id.get(before["id"]) or next(c for c in current["entities"] if c["id"] == before["id"])
-        expected = dict(before, spawnId="", spawnInterval=0)
-        if before["id"] in ("mini_stampede", "stampede"):
-            expected.update(hp=133.2, damage=24)
-            near(after["hp"] / before["hp"], 1.2)
-            near(after["damage"] / before["damage"], 1.2)
-        if before["id"] == "mini_stampede": expected["cost"] = 4
+        expected = dict(before, sightFront=8, sightRear=5)
         assert after == expected, before["id"]
+    assert set(by_id) - {c["id"] for c in release_baseline["cards"]} == {"plague_queen"}
+    queen = by_id["plague_queen"]
+    assert (queen["cost"], queen["count"], queen["hp"], queen["damage"], queen["attackInterval"], queen["moveSpeed"], queen["range"], queen["projectileSpeed"], queen["splash"], queen["sightFront"], queen["sightRear"]) == (2, 1, 170, 212, 2.7, 1.25, 20, 30, 6, 20, 20)
+    assert (queen["dotDamage"], queen["dotStructureDamage"], queen["dotInterval"], queen["dotDuration"]) == (60, 60, 1.25, 2.5)
+    near(queen["damage"] / queen["attackInterval"], 212 / 2.7)
+    near(queen["damage"] + queen["dotDamage"] * queen["dotDuration"] / queen["dotInterval"], 332)
     storm, box = by_id["thunderstorm"], by_id["blade_box"]
     assert (storm["cost"],storm["spellRadius"],storm["damage"],storm["towerDamage"],storm["rounds"],storm["castDelay"],storm["dotInterval"],storm["stunDuration"]) == (3,3,65,33,3,.45,.45,.25)
     assert (box["cost"],box["hp"],box["lifetime"],box["spawnId"],box["spawnInterval"],box["hardExpiry"],box["hpDecayPerSecond"]) == (5,500,30,"twin_blades",3,True,0)
     dart = next(card for card in current["cards"] if card["id"] == "dart_gun")
     assert (dart["cost"], dart["damage"], dart["attackInterval"], dart["range"]) == (3, 50, .4, 8.5)
     near(dart["damage"] / dart["attackInterval"], 125)
-    assert all(current["rules"][key] == (5 if key == "combatRevision" else value) for key,value in release_baseline["rules"].items())
+    assert all(current["rules"][key] == (6 if key == "combatRevision" else value) for key,value in release_baseline["rules"].items())
     assert current["balanceHash"] != release_baseline["balanceHash"]
     assert (ROOT / "Unreal/RiftCrownArena/Source/RiftCrownArena/Public/Simulation/RiftArenaRules.generated.inc").read_text() == generate_arena(current)
     assert (ROOT / "Unreal/RiftCrownArena/Source/RiftCrownArena/Private/Simulation/RiftCardManifest.generated.inc").read_text() == generate(current)
@@ -53,6 +54,8 @@ def main():
     assert balance_hash(visual) == current["balanceHash"]
     mechanics = copy.deepcopy(current); mechanics["cards"][0]["collisionRadius"] += .01
     assert balance_hash(mechanics) != current["balanceHash"]
+    def card(m, identity):
+        return next(c for c in m["cards"] if c["id"] == identity)
     mutations = [
         lambda m: m["cards"][0].update(shieldHP=-1),
         lambda m: m["cards"][0].update(shieldOverflowProtected=True),
@@ -75,14 +78,21 @@ def main():
         lambda m: m["rules"].update(guardCenterX=11),
         lambda m: m["rules"].update(coreDepth=m["rules"]["arenaHeight"] / 2 - 1),
         lambda m: m["rules"].pop("guardDepth"),
-        lambda m: m["cards"][-1].update(spawnId="missing_child"),
-        lambda m: m["cards"][-1].update(spawnId="blade_box"),
-        lambda m: m["cards"][-1].update(spawnId="meteor_shards"),
-        lambda m: m["cards"][-1].update(spawnInterval=0),
-        lambda m: m["cards"][-1].update(spawnInterval=31),
-        lambda m: m["cards"][-1].update(hardExpiry=False),
-        lambda m: m["cards"][-2].update(rounds=2.5),
-        lambda m: m["cards"][-2].update(dotInterval=0)]
+        lambda m: card(m,"blade_box").update(spawnId="missing_child"),
+        lambda m: card(m,"blade_box").update(spawnId="blade_box"),
+        lambda m: card(m,"blade_box").update(spawnId="meteor_shards"),
+        lambda m: card(m,"blade_box").update(spawnInterval=0),
+        lambda m: card(m,"blade_box").update(spawnInterval=31),
+        lambda m: card(m,"blade_box").update(hardExpiry=False),
+        lambda m: card(m,"thunderstorm").update(rounds=2.5),
+        lambda m: card(m,"thunderstorm").update(dotInterval=0),
+        lambda m: card(m,"plague_queen").update(sightFront=0),
+        lambda m: card(m,"plague_queen").update(sightRear=-1),
+        lambda m: card(m,"plague_queen").update(sightRear=float("nan")),
+        lambda m: card(m,"plague_queen").update(projectileSpeed=0),
+        lambda m: card(m,"plague_queen").update(splash=0),
+        lambda m: card(m,"plague_queen").update(dotInterval=0),
+        lambda m: card(m,"plague_queen").update(dotDuration=3.75)]
     for mutate in mutations:
         fixture = copy.deepcopy(current);mutate(fixture)
         try:

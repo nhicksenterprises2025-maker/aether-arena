@@ -51,6 +51,7 @@ bool CorpseVisualExpired(const rift::Entity& Entity,const URiftCardData* Card,do
 }
 FName FlightFor(const std::string& Card)
 {
+    if (Card=="plague_queen") return TEXT("MantaFlight");
     if (Card=="meteor_shards") return TEXT("Meteor");
     if (Card=="bullet_burst") return TEXT("BulletBurst");
     if (Card=="ember_archer" || Card=="archer_tower" || Card=="dart_gun") return TEXT("ArrowFlight");
@@ -62,6 +63,7 @@ FName FlightFor(const std::string& Card)
 }
 FName MissileFor(const std::string& Card)
 {
+    if (Card=="plague_queen") return TEXT("plague_arrow");
     if (Card=="dart_gun") return TEXT("dart_projectile");
     if (Card=="ember_archer" || Card=="archer_tower") return TEXT("arrow_projectile");
     if (Card=="arc_mage") return TEXT("arc_projectile");
@@ -110,6 +112,8 @@ FLinearColor EffectColor(FName Name,rift::Team Team)
     if (Name==TEXT("BulletBurst") || Name==TEXT("ArrowFlight") || Name==TEXT("TowerFlight")) return FLinearColor(.92f,.69f,.31f,1.f);
     return ARiftUnitVisual::TeamColor(Team);
 }
+FLinearColor MissileColor(const std::string& Card,rift::Team Team)
+{return Card=="plague_queen"?FLinearColor(.30f,.85f,.055f):EffectColor(FlightFor(Card),Team);}
 }
 
 FVector ARiftArenaPresentation::ProjectilePathPoint(const std::string& Card,FVector Source,FVector Target,double Progress)
@@ -124,7 +128,7 @@ FVector ARiftArenaPresentation::ProjectilePathPoint(const std::string& Card,FVec
     const double Distance=FVector::Dist2D(Source,Target);
     const double Envelope=FMath::Sin(T*UE_PI);
     const FVector Side=FVector::CrossProduct((Target-Source).GetSafeNormal(),FVector::UpVector).GetSafeNormal();
-    if (Card=="ember_archer" || Card=="archer_tower")
+    if (Card=="ember_archer" || Card=="archer_tower" || Card=="plague_queen")
         Position.Z+=Envelope*FMath::Clamp(Distance*.12,24.*RiftArenaGeometry::WorldScale,90.*RiftArenaGeometry::WorldScale);
     else if (Card=="arc_mage")
     {
@@ -512,7 +516,7 @@ void ARiftArenaPresentation::ClearVisuals()
     for (auto& Glow:SpellCastGlows) if (Glow) Glow->DestroyComponent();SpellCastGlows.Reset();
     for (auto& Ring:SpellCastRings) if (Ring.Value) Ring.Value->DestroyComponent();SpellCastRings.Reset();SpellCastMaterials.Reset();
     SpellImpactEffects.Reset();RecentSpellImpacts.Reset();RecentLightningHits.Reset();SpellImpactEvents=0;
-    RecentReaperAttacks.Reset();RecentCloakExpiries.Reset();ContactAccents.Reset();PresentationLag=0;
+    RecentReaperAttacks.Reset();RecentCloakExpiries.Reset();RecentPoisonSplashes.Reset();RecentPoisonTicks.Reset();ContactAccents.Reset();PresentationLag=0;
     for(auto& Pair:ExpansionBatches)if(Pair.Value)Pair.Value->DestroyComponent();ExpansionBatches.Reset();
     ProjectileBodiesCreated=0;ProjectileBodiesReleased=0;
     for (auto& Entry:Hazards) if (Entry.Value) Entry.Value->DestroyComponent();Hazards.Reset();
@@ -1011,7 +1015,7 @@ void ARiftArenaPresentation::SynchronizeProjectiles(const rift::Snapshot& State)
             ProjectilePathPoint(Projectile.cardId,Start,End,FMath::Max(0.,Progress-.003));
         Component->SetWorldLocation(Position);Component->SetWorldRotation(Tangent.Rotation());
         Component->SetWorldScale3D(FVector::OneVector);
-        SetEffectParameters(Component,Projectile.team,18*RiftArenaGeometry::WorldScale,Start,End,EffectColor(FlightFor(Projectile.cardId),Projectile.team));
+        SetEffectParameters(Component,Projectile.team,18*RiftArenaGeometry::WorldScale,Start,End,MissileColor(Projectile.cardId,Projectile.team));
         // A launch or paused replay seek can expose a new system before its
         // first world tick. Seed its real authored graph once, after assigning
         // the complete flight transform/parameters, so pausing cannot hide its
@@ -1080,7 +1084,7 @@ UStaticMeshComponent* ARiftArenaPresentation::MakeProjectileBody(const std::stri
 }
 UInstancedStaticMeshComponent* ARiftArenaPresentation::ProjectileTrail(const std::string& Card,rift::Team Team)
 {
-    const FName Flight=FlightFor(Card),Key(*FString::Printf(TEXT("ProjectileTrail_%s_%d"),*Flight.ToString(),int32(Team)));
+    const FName Flight=FlightFor(Card),Key(*FString::Printf(TEXT("ProjectileTrail_%s_%d"),Card=="plague_queen"?TEXT("PoisonArrow"):*Flight.ToString(),int32(Team)));
     if (auto* Existing=ProjectileTrails.Find(Key)) return Existing->Get();
     const FName MeshId(TEXT("projectile_trail"));UStaticMesh* Mesh=ProjectileAssets.FindRef(MeshId);
     if (!ProjectileAssets.Contains(MeshId))
@@ -1100,11 +1104,14 @@ UInstancedStaticMeshComponent* ARiftArenaPresentation::ProjectileTrail(const std
         // The authored glow atlas emits its baked blue RGB. Cast trails use
         // the existing surface shader's actual team-mask emissive input so
         // their warm color and luminance are real, rather than unused knobs.
+        if(Card=="plague_queen")if(auto* Poison=LoadObject<UMaterialInterface>(nullptr,TEXT("/Game/Rift/Materials/M_RiftExpansionFX.M_RiftExpansionFX")))Component->SetMaterial(Index,Poison);
         if (Spell) if (auto* Surface=LoadObject<UMaterialInterface>(nullptr,TEXT("/Game/Rift/Materials/M_RiftSurface.M_RiftSurface")))
             Component->SetMaterial(Index,Surface);
         if (auto* Material=Component->CreateDynamicMaterialInstance(Index))
         {
-            const FLinearColor Color=EffectColor(Flight,Team);
+            const FLinearColor Color=MissileColor(Card,Team);
+            if(Card=="plague_queen")
+            {Material->SetVectorParameterValue(TEXT("EffectColor"),Color);Material->SetScalarParameterValue(TEXT("EffectOpacity"),.50f);Material->SetScalarParameterValue(TEXT("EffectEmission"),.30f);}
             Material->SetVectorParameterValue(TEXT("Color"),Color);
             Material->SetVectorParameterValue(TEXT("TeamColor"),Color);
             Material->SetScalarParameterValue(TEXT("RiftTeamEmissive"),Spell?2.8f:.7f);
@@ -1351,8 +1358,9 @@ UInstancedStaticMeshComponent* ARiftArenaPresentation::ExpansionBatch(FName Key,
     const FString Path=FString::Printf(TEXT("/Game/Rift/Environment/SM_%s.SM_%s"),*MeshId.ToString(),*MeshId.ToString());
     auto* Mesh=LoadObject<UStaticMesh>(nullptr,*Path);
     const bool Cloud=Key==TEXT("StormCloud");
+    const bool PoisonBubble=MeshId==TEXT("toxic_bubble");
     const bool WeatherGlow=Key==TEXT("StormRain")||Key==TEXT("StormAreaFlash")||Key==TEXT("StormTargetLightning")||Key==TEXT("UniversalStunStars");
-    auto* Base=LoadObject<UMaterialInterface>(nullptr,Cloud?TEXT("/Game/Rift/Materials/M_RiftSurface.M_RiftSurface"):
+    auto* Base=LoadObject<UMaterialInterface>(nullptr,PoisonBubble?TEXT("/Game/Rift/Materials/M_RiftPlagueGlass.M_RiftPlagueGlass"):Cloud?TEXT("/Game/Rift/Materials/M_RiftSurface.M_RiftSurface"):
         WeatherGlow?TEXT("/Game/Rift/Materials/M_RiftGlow.M_RiftGlow"):TEXT("/Game/Rift/Materials/M_RiftExpansionFX.M_RiftExpansionFX"));
     if(!Mesh || !Base){RIFT_LOG(LogRift,Error,TEXT("Expansion effect asset is missing: %s"),*Path);return nullptr;}
     auto* Batch=NewObject<UInstancedStaticMeshComponent>(this,Key);Batch->SetupAttachment(Scene);
@@ -1362,10 +1370,11 @@ UInstancedStaticMeshComponent* ARiftArenaPresentation::ExpansionBatch(FName Key,
     if(WeatherGlow)Batch->SetForcedLodModel(1);
     Batch->SetGenerateOverlapEvents(false);Batch->SetCanEverAffectNavigation(false);Batch->SetCastShadow(false);Batch->bReceivesDecals=false;
     for(int32 I=0;I<Batch->GetNumMaterials();++I)
-    {Batch->SetMaterial(I,Base);if(auto* MID=Batch->CreateDynamicMaterialInstance(I))
+    {if(!PoisonBubble)Batch->SetMaterial(I,Base);if(auto* MID=Batch->CreateDynamicMaterialInstance(I))
         {if(Cloud)MID->SetScalarParameterValue(TEXT("RiftBaseColorGain"),1.2f);
          else if(WeatherGlow)MID->SetScalarParameterValue(TEXT("GlowStrength"),Key==TEXT("StormRain")?.45f:Key==TEXT("UniversalStunStars")?1.6f:2.f);
-         else MID->SetVectorParameterValue(TEXT("EffectColor"),Color);}}
+         else MID->SetVectorParameterValue(TEXT("EffectColor"),Color);
+         if(Key.ToString().StartsWith(TEXT("Poison"))){MID->SetScalarParameterValue(TEXT("EffectOpacity"),.42f);MID->SetScalarParameterValue(TEXT("EffectEmission"),.25f);}}}
     Batch->RegisterComponent();AddInstanceComponent(Batch);ExpansionBatches.Add(Key,Batch);return Batch;
 }
 void ARiftArenaPresentation::SynchronizeExpansionEffects(const rift::Snapshot& State)
@@ -1578,6 +1587,80 @@ void ARiftArenaPresentation::SynchronizeExpansionEffects(const rift::Snapshot& S
             Weather(TEXT("UniversalStunStars"),TEXT("stun_spark"),FLinearColor(.72f,.92f,1.f),Center+FVector(FMath::Cos(Angle)*.55,FMath::Sin(Angle)*.55,.05*FMath::Sin(Angle*2))*Tile,FVector(.32,.32,.045)*Tile,Angle*180./UE_PI);
         }
     }
+    // Poison attachment is authoritative snapshot state, so pause and replay
+    // seeking keep the same victims and expiry; bubbles never reveal a cloak.
+    const FLinearColor Venom(.26f,.78f,.045f);
+    for(const auto& Entity:State.entities)if(!Entity.dead && Entity.cardId=="plague_queen")
+    {
+        auto* Queen=Visual(Entity.id);if(!Queen || Queen->HiddenFromViewer())continue;
+        const FVector Center=Queen->GetActorLocation();
+        const double Ghost=Queen->IsCloaked()?.55:1.;
+        for(int32 I=0;I<7;++I)
+        {
+            const double Cycle=FMath::Fmod(State.elapsed*.62+I*.137,1.);
+            const double Angle=I*2.399963+State.elapsed*.68;
+            const double Radius=.40+.12*FMath::Sin(I+State.elapsed*1.7);
+            const double Size=(.065+.035*(I%3))*(.55+.45*FMath::Sin(Cycle*UE_PI))*Ghost;
+            Weather(TEXT("QueenToxicBubbles"),TEXT("toxic_bubble"),Venom,
+                Center+FVector(FMath::Cos(Angle)*Radius,FMath::Sin(Angle)*Radius,.18+Cycle*1.65)*Tile,
+                FVector(Size,Size,Size)*Tile);
+        }
+    }
+    TSet<rift::EntityId> Poisoned;
+    for(const auto& Poison:State.poisons)if(Poison.expires>State.elapsed && Poison.born<=State.elapsed)
+        Poisoned.Add(Poison.target);
+    for(const auto Id:Poisoned)
+    {
+        const auto* Body=FindEntity(State,Id);auto* Unit=Visual(Id);
+        if(!Body || Body->dead || !Unit || Unit->HiddenFromViewer())continue;
+        const FVector Center=Unit->ImpactLocation();
+        const double Radius=FMath::Clamp(Body->radius*.80,.28,.90)*Tile;
+        for(int32 I=0;I<5;++I)
+        {
+            const double Cycle=FMath::Fmod(State.elapsed*1.1+I*.19+Id*.071,1.);
+            const double Angle=I*UE_TWO_PI/5.+State.elapsed*1.8;
+            const double Size=(.065+.035*FMath::Sin(Cycle*UE_PI))*Tile;
+            Weather(TEXT("PoisonVictimBubbles"),TEXT("toxic_bubble"),Venom,
+                Center+FVector(FMath::Cos(Angle)*Radius,FMath::Sin(Angle)*Radius,(-.2+Cycle*.55)*Tile),FVector(Size));
+        }
+    }
+    RecentPoisonSplashes.RemoveAllSwap([&](const rift::Event& E){return State.elapsed-E.time>=.50 || State.elapsed<E.time;});
+    for(const auto& Splash:RecentPoisonSplashes)
+    {
+        const double T=(State.elapsed-Splash.time)/.50,Radius=Splash.amount*Tile;
+        const FVector Center=URiftMatchSubsystem::WorldPoint(Splash.position)+FVector(0,0,.04*Tile);
+        // Fine droplets and a broken low ribbon mark the full six-tile radius,
+        // leaving the tile grid and troop silhouettes readable underneath.
+        for(int32 I=0;I<36;++I)
+        {
+            const double Angle=I*2.3999632297,Distance=Radius*(.18+.82*FMath::Sqrt((I+.5)/36.))*FMath::Sqrt(T);
+            const FVector Direction(FMath::Cos(Angle),FMath::Sin(Angle),0);
+            const double Height=(.13+.65*(I%4)/3.)*FMath::Sin(T*UE_PI)*Tile;
+            const double Size=(.08+.035*(I%3))*(1.-T)*Tile;
+            Weather(TEXT("PoisonSplashDrops"),TEXT("toxic_bubble"),Venom,Center+Direction*Distance+FVector(0,0,Height),FVector(Size));
+        }
+        for(int32 I=0;I<32;I+=2)
+        {
+            const double A=I*UE_TWO_PI/32.,B=(I+1)*UE_TWO_PI/32.,R=Radius*(.15+.85*FMath::Sqrt(T));
+            Ribbon(TEXT("PoisonSplashRadius"),Venom,Center+FVector(FMath::Cos(A),FMath::Sin(A),0)*R,
+                Center+FVector(FMath::Cos(B),FMath::Sin(B),0)*R,(.035*(1.-T)+.004)*Tile);
+        }
+        Weather(TEXT("PoisonSplashCrown"),TEXT("poison_splash"),Venom,Center,FVector(1.4+T*1.3,1.4+T*1.3,.2*(1.-T))*Tile);
+    }
+    RecentPoisonTicks.RemoveAllSwap([&](const rift::Event& E){return State.elapsed-E.time>=.20 || State.elapsed<E.time;});
+    for(const auto& Hit:RecentPoisonTicks)
+    {
+        auto* Unit=Visual(Hit.target);if(!Unit || Unit->IsDead() || Unit->HiddenFromViewer())continue;
+        const double T=(State.elapsed-Hit.time)/.20;
+        const FVector Center=Unit->ImpactLocation();
+        for(int32 I=0;I<6;++I)
+        {
+            const double Angle=I*UE_TWO_PI/6.;
+            const FVector Direction(FMath::Cos(Angle),FMath::Sin(Angle),.35);
+            Piece(TEXT("PoisonTickBurst"),TEXT("projectile_trail"),Venom,Center+Direction*(.12+.35*T)*Tile,
+                Direction,FVector(.10*(1.-T),.025,.025)*Tile);
+        }
+    }
     for(auto& Pair:Transforms)Pair.Key->AddInstances(Pair.Value,false,true,false);
 
 }
@@ -1599,6 +1682,10 @@ void ARiftArenaPresentation::OnSimulationEvent(const rift::Event& Event)
         FindEntity(*State,Event.target)->team==rift::Team::Enemy && FindEntity(*State,Event.target)->invisibleUntil>State->elapsed;
     const bool HiddenSource=State && Event.source && FindEntity(*State,Event.source) &&
         FindEntity(*State,Event.source)->team==rift::Team::Enemy && FindEntity(*State,Event.source)->invisibleUntil>State->elapsed;
+    if(Event.type=="poison_splash")
+    {RecentPoisonSplashes.Add(Event);if(RecentPoisonSplashes.Num()>64)RecentPoisonSplashes.RemoveAt(0);PlayEventSound(TEXT("poison_pop"),URiftMatchSubsystem::WorldPoint(Event.position,25),.24f);}
+    if(Event.type=="poison_tick" && !HiddenTarget)
+    {RecentPoisonTicks.Add(Event);if(RecentPoisonTicks.Num()>256)RecentPoisonTicks.RemoveAt(0);}
     if(Event.cardId=="thunderstorm" && !HiddenTarget && (Event.type=="damage" || Event.type=="shield_damage"))
     {
         const bool Recorded=RecentLightningHits.ContainsByPredicate([&](const rift::Event& Hit){return Hit.playId==Event.playId && Hit.target==Event.target && FMath::Abs(Hit.time-Event.time)<1.e-7;});
@@ -1619,7 +1706,7 @@ void ARiftArenaPresentation::OnSimulationEvent(const rift::Event& Event)
             Source->AttackAt(Event.time,Event.amount);
         }
         const FVector Origin=Source?Source->AttackLocation():Position;
-        const FName Sound=Event.cardId=="dart_gun"?TEXT("dart_fire"):Event.cardId=="ironclad"?TEXT("sword_attack"):Event.cardId=="twin_blades"?TEXT("dual_attack"):
+        const FName Sound=Event.cardId=="plague_queen"?TEXT("poison_fire"):Event.cardId=="dart_gun"?TEXT("dart_fire"):Event.cardId=="ironclad"?TEXT("sword_attack"):Event.cardId=="twin_blades"?TEXT("dual_attack"):
             Event.cardId=="ember_archer"||Event.cardId=="archer_tower"?TEXT("bow_release"):Event.cardId=="boulderback"?TEXT("heavy_slam"):
             Event.cardId=="rambeast"?TEXT("charge"):Event.cardId=="arc_mage"?TEXT("arc_cast"):Event.cardId=="sky_manta"?TEXT("manta_cast"):
             Event.cardId=="vampire_bats"?TEXT("bat_bite"):Event.cardId=="frost_fang"?TEXT("frost_attack"):
@@ -1659,7 +1746,7 @@ void ARiftArenaPresentation::OnSimulationEvent(const rift::Event& Event)
             const float FlashSize=(Event.cardId=="dart_gun"?11.f:28.f)*RiftArenaGeometry::WorldScale;
             auto* Flash=SpawnEffect(TEXT("Impact"),Origin,Event.team,FlashSize);
             if (Flash) Flash->SetWorldRotation((Position-Origin).Rotation());
-            SetEffectParameters(Flash,Event.team,FlashSize,Origin,Position,EffectColor(FlightFor(Event.cardId),Event.team));
+            SetEffectParameters(Flash,Event.team,FlashSize,Origin,Position,MissileColor(Event.cardId,Event.team));
         }
     }
     else if (Event.type=="damage")
@@ -1683,12 +1770,12 @@ void ARiftArenaPresentation::OnSimulationEvent(const rift::Event& Event)
         const float Radius=(Event.cardId=="dart_gun"?22.f:ArcPrimary?155.f:Event.damageKind=="splash"?85.f:Event.cardId=="storm_raven"?80.f:Event.cardId=="sky_manta"?62.f:55.f)*RiftArenaGeometry::WorldScale;
         // The traveling ground front and short ankle ripple carry Pulverizer
         // contact; a full Nova cloud would obscure both the herd and tile grid.
-        if(Event.cardId!="pulverizer")
+        if(Event.cardId!="pulverizer" && Event.cardId!="plague_queen")
         {
             auto* Impact=SpawnEffect(FX,Position,Event.team,Radius);
-            SetEffectParameters(Impact,Event.team,Radius,Position,Position,EffectColor(FlightFor(Event.cardId),Event.team));
+            SetEffectParameters(Impact,Event.team,Radius,Position,Position,MissileColor(Event.cardId,Event.team));
         }
-        if (Event.damageKind!="initial" && Event.damageKind!="aura" && Event.damageKind!="dot")
+        if (Event.cardId!="plague_queen" && Event.damageKind!="initial" && Event.damageKind!="aura" && Event.damageKind!="dot")
         {
             // Contact has a material identity. Structures keep their stone/wood
             // impact; teeth, blunt strikes and elemental hits use matching cues.

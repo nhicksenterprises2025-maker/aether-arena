@@ -60,6 +60,7 @@ scene.world.node_tree.nodes['Background'].inputs[1].default_value = .45
 # photographic lighting. Close portraits put the face and held equipment in
 # the small hand image; creatures and structures retain their full silhouette.
 PORTRAIT_MOODS = {
+    'plague_queen': ((.019,.044,.025), (1,.93,.69), (.42,.83,.20)),
     'dart_gun': ((.033,.043,.026), (1,.91,.77), (.57,.72,.49)),
     'ironclad': ((.027,.042,.054), (1,.88,.70), (.40,.68,.84)),
     'ember_archer': ((.055,.028,.025), (1,.83,.66), (.62,.40,.26)),
@@ -223,6 +224,10 @@ for card in selected:
         for i in range(26):
             angle=i*2.3999632297;radius=.95*math.sqrt((i+.5)/26.)
             static('thunderstorm_rain',(math.cos(angle)*radius,math.sin(angle)*radius,.30+(i%7)*.20),(.65,.65,.25))
+    elif card == 'plague_queen':
+        frame=character(card,action='DrawRelease',phase=.34)
+        for loc,scale in (((.33,-.16,1.92),.11),((.42,.08,1.55),.16),((-.49,.04,2.05),.085)):
+            static('toxic_bubble',loc,scale)
     elif 'skeletal' in binding:
         name = binding['skeletal']
         action = 'WingCycle' if name in ('sky_manta', 'storm_raven') else 'DrawRelease' if name=='ember_archer' else 'Cast' if name=='arc_mage' else 'Attack' if name=='ironclad' else 'Idle'
@@ -252,7 +257,7 @@ for card in selected:
         obj.to_mesh_clear()
     lo = Vector(tuple(min(p[k] for p in points) for k in range(3)))
     hi = Vector(tuple(max(p[k] for p in points) for k in range(3)))
-    hero_crop = card in ('dart_gun', 'ironclad', 'ember_archer', 'twin_blades', 'arc_mage')
+    hero_crop = card in ('plague_queen', 'dart_gun', 'ironclad', 'ember_archer', 'twin_blades', 'arc_mage')
     framed_points = [p for p in points if p.z >= lo.z + (hi.z-lo.z)*.25] if hero_crop else points
     frame_lo = Vector(tuple(min(p[k] for p in framed_points) for k in range(3)))
     frame_hi = Vector(tuple(max(p[k] for p in framed_points) for k in range(3)))

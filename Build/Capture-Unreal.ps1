@@ -4,7 +4,8 @@ param(
     [string]$Page = 'Battle',
     [string]$MetaDataset = '',
     [ValidateSet('Cards','Matchups')][string]$MetaTab = 'Cards',
-    [ValidateSet('','roster','expansion_roster','expansion_new_roster','expansion_effects','expansion_warden_death','reaper_design','congestion','effects','effects17','placement','projectiles','spells','tower_pathing','unit_collision','swarm_split','pulverizer','storm_works','blade_box')][string]$Scenario = '',
+    [ValidateSet('','roster','expansion_roster','expansion_new_roster','expansion_effects','expansion_warden_death','reaper_design','congestion','effects','effects17','placement','projectiles','spells','tower_pathing','unit_collision','swarm_split','pulverizer','storm_works','blade_box','plague_queen')][string]$Scenario = '',
+    [ValidateSet('deploy','moving','flight','impact','tick-one','tick-two','clear')][string]$PlagueStage='impact',
     [ValidateRange(0,8)][float]$PulverizerAge = .35,
     [ValidateSet('crowd','contact','layers')][string]$CollisionCase = 'crowd',
     [ValidateRange(0,12)][float]$CollisionAge = 3,
@@ -59,7 +60,7 @@ if($Scenario -eq 'unit_collision' -and ($Page -ne 'Battle' -or $Phase -or $Recor
 if($Scenario -eq 'swarm_split' -and ($Page -ne 'Battle' -or $Phase -or $RecordedMatch -or $BreathSmoke)) { throw 'Swarm splitting requires its live paid Battle fixture without another phase, recorded-match or breath fixture.' }
 if($Scenario -eq 'expansion_warden_death' -and ($Page -ne 'Battle' -or $Phase -or $RecordedMatch -or $BreathSmoke -or $Developer)) { throw 'Warden death requires its isolated paid Battle fixture without another phase, replay, breath or developer fixture.' }
 if($Scenario -eq 'reaper_design' -and ($Page -ne 'Battle' -or $Phase -or $RecordedMatch -or $BreathSmoke -or $Developer)) { throw 'Reaper design requires its isolated Battle fixture without another phase, replay, breath or developer fixture.' }
-if($Scenario -in @('storm_works','blade_box') -and ($Page -ne 'Battle' -or $Phase -or $RecordedMatch -or $BreathSmoke -or $Developer)) { throw 'Thunderstorm and Blade Box require isolated live Battle fixtures without another phase, replay, breath or developer fixture.' }
+if($Scenario -in @('storm_works','blade_box','plague_queen') -and ($Page -ne 'Battle' -or $Phase -or $RecordedMatch -or $BreathSmoke -or $Developer)) { throw 'Thunderstorm and Blade Box require isolated live Battle fixtures without another phase, replay, breath or developer fixture.' }
 # A populated Meta capture uses an actual completed native dataset. The native
 # witness below must prove it was loaded rather than replaced by an empty default.
 $riftMetaCaptureInput=$null
@@ -165,6 +166,7 @@ if ($Phase) { $arguments += "-RiftCapturePhase=$Phase" }
 if ($Overlay) { $arguments += "-RiftCaptureOverlay=$Overlay" }
 $arguments += '-RiftCaptureUIScale=' + $UIScale.ToString([System.Globalization.CultureInfo]::InvariantCulture)
 if ($Zoom -ne -1) { $arguments += '-RiftCaptureZoom=' + $Zoom.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
+if($Scenario -eq 'plague_queen') { $arguments += '-RiftPlagueStage=' + $PlagueStage }
 if ($Scenario -in @('effects17','spells','storm_works','blade_box')) { $arguments += '-RiftEffectAge=' + $EffectAge.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
 if ($Scenario -in @('effects','congestion')) { $arguments += '-RiftCaptureSpeed=' + $Speed.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
 if ($PreviewCard) {
@@ -244,7 +246,7 @@ if($riftArenaGeometryRequired) {
         $riftArenaRules=$riftArenaManifest.rules
         $riftArenaHasGuardX=$riftArenaRules.PSObject.Properties.Name -contains 'guardCenterX'
         $riftArenaGuardCandidate=if($riftArenaHasGuardX){$riftArenaRules.guardCenterX}else{$riftArenaRules.bridgeCenterX}
-        $riftArenaManifestPassed=$riftArenaManifest.schema -in @(2,3,4) -and $riftArenaManifest.status -eq 'approved' -and
+        $riftArenaManifestPassed=$riftArenaManifest.schema -in @(2,3,4,5) -and $riftArenaManifest.status -eq 'approved' -and
             $riftArenaManifest.version -eq $ExpectedVersion -and $riftArenaManifestPin.Count -eq 1 -and
             $riftArenaManifestPin[0].sha256 -eq (Get-FileHash -LiteralPath $riftArenaManifestPath -Algorithm SHA256).Hash.ToLowerInvariant() -and
             ($riftArenaRules.navigationRevision -lt 13 -or $riftArenaHasGuardX) -and
@@ -702,14 +704,40 @@ function Test-RiftThunderBladeCapture($State,$Manifest,[string]$Fixture,[double]
     }
     return $true
 }
+function Test-RiftPlagueCapture($State,[string]$Stage) {
+    $w=$State.plagueWitness
+    if($null -eq $w -or $w.schema -ne 1 -or $w.passed -ne $true -or $w.stage -cne $Stage -or $w.provenance -cne 'ordinary Spawn / 60 Hz Step / FlushEvents' -or $State.speed -ne 0){return $false}
+    foreach($field in @('sourceId','fixedSteps','startedAt','simulationTime','firstLaunch','firstImpact','applied','ticks','livePoison','liveProjectiles')) {
+        $v=$w.$field;if($v -isnot [ValueType] -or $v -is [bool] -or ![double]::IsFinite([double]$v)){return $false}
+    }
+    if($w.sourceId -le 0 -or $w.fixedSteps -le 0 -or [math]::Abs($w.simulationTime-$State.elapsed) -gt .00001 -or [math]::Abs($w.simulationTime-$w.startedAt-$w.fixedSteps/60) -gt .00001){return $false}
+    $batches=@($State.niagara.expansionSurfaceEffects)
+    $queen=@($State.niagara.unitAnimations|Where-Object {$_.entityId -eq $w.sourceId -and $_.assetId -ceq 'plague_queen'})
+    $bubbles=@($batches|Where-Object name -CEQ 'QueenToxicBubbles');$poison=@($batches|Where-Object name -CEQ 'PoisonVictimBubbles')
+    if($w.queenAlive -eq $true -and ($queen.Count -ne 1 -or $queen[0].hiddenFromViewer -ne $false -or $bubbles.Count -ne 1 -or $bubbles[0].instances -ne 7)){return $false}
+    if($Stage -eq 'moving' -and $queen[0].clip -cne 'Locomotion'){return $false}
+    if($Stage -eq 'flight') {
+        $arrows=@($State.niagara.projectileVisuals|Where-Object {$_.cardId -ceq 'plague_queen' -and $_.sourceEntityId -eq $w.sourceId})
+        if($w.firstLaunch -lt 0 -or $w.firstImpact -ge 0 -or $w.liveProjectiles -lt 1 -or $arrows.Count -lt 1 -or $arrows[0].mesh -notlike '*/SM_plague_arrow.SM_plague_arrow'){return $false}
+    }
+    if($Stage -in @('impact','tick-one','tick-two','clear') -and ($w.firstImpact -lt 0 -or $w.applied -lt 4)){return $false}
+    if($Stage -eq 'impact' -and ($w.ticks -ne 0 -or $w.livePoison -lt 4 -or $poison.Count -ne 1 -or $poison[0].instances -lt 20)){return $false}
+    if($Stage -eq 'tick-one' -and ($w.ticks -lt 4 -or $w.livePoison -lt 4)){return $false}
+    if($Stage -in @('tick-two','clear') -and $w.ticks -lt 8){return $false}
+    if($Stage -eq 'clear' -and ($w.queenAlive -ne $false -or $w.livePoison -ne 0 -or @($bubbles|Where-Object instances -GT 0).Count -or @($poison|Where-Object instances -GT 0).Count)){return $false}
+    return $true
+}
+$riftPlaguePassed=$true
+if($Scenario -eq 'plague_queen') { $riftPlaguePassed=$stateCaptured -and (Test-RiftPlagueCapture $riftCaptureState $PlagueStage) }
 $riftThunderBladePassed=$true
 if($Scenario -in @('storm_works','blade_box')) { $riftThunderBladePassed=$stateCaptured -and (Test-RiftThunderBladeCapture $riftCaptureState $riftArenaManifest $Scenario $EffectAge) }
-$riftCapturePassed=!$timedOut -and $freshCapture -and $stateCaptured -and $riftMetaCapturePassed -and $resolutionMatches -and $riftCaptureQualityPassed -and $riftPhaseFixturePassed -and $riftCameraFramingPassed -and $riftModelEnvelopeCheckPassed -and $riftArenaGeometryPassed -and $riftTowerPathingPassed -and $riftUnitCollisionPassed -and $riftSwarmSplitPassed -and $riftExpansionRosterPassed -and $riftPulverizerWitnessPassed -and $riftThunderBladePassed -and $riftTowerSourcesUnchanged -and $riftCaptureExecutableUnchanged -and $process.ExitCode -eq 0 -and $errors.Count -eq 0
+$riftCapturePassed=$riftPlaguePassed -and !$timedOut -and $freshCapture -and $stateCaptured -and $riftMetaCapturePassed -and $resolutionMatches -and $riftCaptureQualityPassed -and $riftPhaseFixturePassed -and $riftCameraFramingPassed -and $riftModelEnvelopeCheckPassed -and $riftArenaGeometryPassed -and $riftTowerPathingPassed -and $riftUnitCollisionPassed -and $riftSwarmSplitPassed -and $riftExpansionRosterPassed -and $riftPulverizerWitnessPassed -and $riftThunderBladePassed -and $riftTowerSourcesUnchanged -and $riftCaptureExecutableUnchanged -and $process.ExitCode -eq 0 -and $errors.Count -eq 0
 $report = [ordered]@{
     schema = 1; version=$ExpectedVersion; passed=[bool]$riftCapturePassed; name = $Name; page = $Page; scenario = $Scenario; inspectCard = $InspectCard; speed = $Speed; breathSmoke = [bool]$BreathSmoke; uiScale=$UIScale; zoom=$Zoom;
     state = $statePath; stateCaptured = $stateCaptured; phaseFixture = $Phase; phaseFixturePassed = $riftPhaseFixturePassed; allowExternalInput = [bool]$AllowExternalInput;
     metaCapturePassed=[bool]$riftMetaCapturePassed;metaDataset=$riftMetaCaptureInput;
     expansionRosterPassed = [bool]$riftExpansionRosterPassed;
+    plaguePassed=[bool]$riftPlaguePassed; plagueStage=$(if($Scenario -eq 'plague_queen'){$PlagueStage}else{$null});
     thunderBladePassed = [bool]$riftThunderBladePassed; effectAge=$(if($Scenario -in @('storm_works','blade_box','spells','effects17')){$EffectAge}else{$null});
     pulverizerWitnessPassed = [bool]$riftPulverizerWitnessPassed; pulverizerAge=$(if($Scenario -eq 'pulverizer'){$PulverizerAge}else{$null});
     expansionEffectStage = $(if($Scenario -eq 'expansion_effects'){$ExpansionEffectStage}else{$null});

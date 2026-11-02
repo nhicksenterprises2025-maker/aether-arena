@@ -102,7 +102,7 @@ if "balanceHash" in data:
             else:
                 check(captured.get(key) == value, f"Captured identity mismatch: {expected['id']}.{key}")
     if revision >= 4:
-        check(manifest.get("schema") in (2, 3, 4), "Expansion telemetry requires its matching schema2/3/4 mechanics manifest")
+        check(manifest.get("schema") in (2, 3, 4, 5), "Expansion telemetry requires its matching schema2/3/4/5 mechanics manifest")
         expected_entities = {card["id"]: card for card in manifest.get("entities", [])}
         check(set(entity_definitions) == set(expected_entities) and len(data.get("entitySnapshot", [])) == len(expected_entities),
               "Captured subordinate definitions differ from matching canonical manifest")
@@ -387,6 +387,13 @@ for bucket_id, bucket in buckets.items():
                 exposure_capacity += plays / 60
             check(number(stats, "dotTicks") <= 5 * plays and number(stats, "zoneSeconds") <= exposure_capacity + 1e-5,
                   f"{prefix}: inclusive five-tick/five-second bounds")
+        elif card_id == "plague_queen":
+            for key in ("zoneSeconds", "zoneOccupancy"):
+                near(number(stats, key), 0, f"{prefix}: attached poison creates no ground zone {key}")
+            check(number(stats, "dotDamage") <= definition["dotDamage"] * number(stats, "dotTicks") + 1e-5,
+                  f"{prefix}: poison body damage cannot exceed tick capacity")
+            check(number(stats, "dotDamage") <= number(stats, "troopDamage") + number(stats, "towerDamage") + number(stats, "buildingDamage") + 1e-5,
+                  f"{prefix}: poison damage belongs to actual target damage totals")
         else:
             for key in ("dotDamage", "dotTicks", "zoneSeconds", "zoneOccupancy"):
                 near(number(stats, key), 0, f"{prefix}: no DOT/zone {key}")

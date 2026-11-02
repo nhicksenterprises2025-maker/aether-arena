@@ -91,8 +91,12 @@ double SpellBodyDamage(const Card &spell, const Card &victim, double dwell, doub
     return body;
 }
 double AttackDPS(const Card &a, const Card &b) {
-    double d =
-        Direct(a, b) ? DPS(a) * (Troop(b) && a.splash > 0 ? std::min<double>(b.count, 1 + a.splash) : 1) : 0;
+    const double victims = Troop(b) && a.splash > 0 ? std::min<double>(b.count, 1 + a.splash) : 1;
+    const bool poison = !a.spell && a.projectileSpeed > 0 && a.dotDamage > 0 && a.dotInterval > 0;
+    double d = Direct(a, b) ? DPS(a) * (poison ? 1 : victims) : 0;
+    if (poison && Direct(a, b) && a.attackInterval > 0)
+        d += (b.building ? a.dotStructureDamage : a.dotDamage) *
+             std::floor(a.dotDuration / a.dotInterval + 1e-9) * a.count / a.attackInterval * victims;
     if (a.auraInterval > 0 && Troop(b))
         d += a.auraDamage / a.auraInterval * std::min<double>(b.count, 1 + a.auraRadius);
     return d;
@@ -290,7 +294,7 @@ std::string CounterReason(const Card &d, const Card &t) {
     if (d.flying && !Direct(t, d) && !(t.auraDamage > 0 && Troop(d)))
         reasons.emplace_back("Flies above this card's ground attacks");
     if (t.count > 1 && d.splash > 0)
-        reasons.emplace_back("Splash hits clustered swarm members");
+        reasons.emplace_back(d.dotDamage>0&&d.projectileSpeed>0 ? "One target takes the arrow impact; clustered swarm members take two delayed poison ticks" : "Splash hits clustered swarm members");
     if (d.slowPct > 0 && !t.flying)
         reasons.emplace_back("Refreshing movement slow delays ground pressure");
     if (d.auraDamage > 0 && Troop(t))
@@ -385,6 +389,8 @@ CardIntelligence IntelligenceFor(const std::string &id) {
         intel.role = c.flying             ? "Flying structure pressure with a defensive ring"
                      : c.chargeDamage > 0 ? "Fast charging win condition"
                                           : "Durable structure-targeting tank";
+    else if (c.dotDamage > 0 && c.projectileSpeed > 0)
+        intel.role = "Long-range poison support and anti-air";
     else if (c.slowPct > 0)
         intel.role = "Ground control frontline";
     else if (c.count > 1)
@@ -419,6 +425,8 @@ CardIntelligence IntelligenceFor(const std::string &id) {
                                   ? "Time the friendly cloak to drop enemy target locks; launched attacks and spells still resolve."
                                   : "Cast around friendly troops within the spell area to hide them and drop enemy target locks; launched attacks and spells still resolve.");
     } else {
+        if (c.dotDamage > 0 && c.projectileSpeed > 0)
+            uses.emplace_back("Protect this fragile long-range archer. The direct arrow hits one target; nearby enemies carry two delayed poison ticks even after leaving the impact area.");
         if (c.healthCloakThreshold > 0)
             uses.emplace_back("The first surviving hit at half health gives one second of invisibility. Launched attacks and spells still hit; this is a one-time lock break, not damage immunity.");
         if (c.structuresOnly)

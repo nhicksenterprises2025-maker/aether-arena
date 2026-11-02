@@ -3,60 +3,45 @@
   "status": "approved",
   "unresolved": false,
   "releaseBlocked": false,
-  "baseline": "Assets/Data/Baselines/2.0.0.json",
-  "baselineBalanceHash": "8d4889796f5a1b9be3f91a3a11a0f0045c7e4a7c878e3ddb20fc50112a56951c",
-  "startingCommit": "68124ff8f405605bccafde462db1ec47de668012",
-  "version": "2.1.0",
+  "baseline": "Assets/Data/Baselines/2.1.0.json",
+  "baselineBalanceHash": "ad330d4a706a81c316225dcf04a469599ef9defa8331ea6e2b4ef4d02fdd2d49",
+  "startingCommit": "9d7eb18d5493a4ded415b40f85f38121a9779a10",
+  "version": "2.2.0",
   "confirmation": {
-    "source": "User request: Archer face/hair repair, cohesive detailed Boulderback, +20% Stampede HP/damage, Mini Stampede cost4, Thunderstorm cost3, Blade Box cost5 confirmed; user follow-up: Shadow Surge 0.75s activation and 2s invisibility",
-    "bladeBoxCost": 5,
-    "firstSpawnSeconds": 3,
-    "finalUninterruptedSpawnSeconds": 30
+    "source": "User Plague Queen request and explicit confirmation: two 60-damage poison ticks at 1.25 and 2.5 seconds after impact."
   },
   "resolvedChoices": {
-    "mini_stampede": {
-      "cost": 4,
-      "hp": 133.2,
-      "damage": 24
-    },
-    "stampede": {
-      "cost": 7,
-      "hp": 133.2,
-      "damage": 24
-    },
-    "thunderstorm": {
-      "cost": 3,
-      "damage": 65,
-      "towerDamage": 33,
-      "spellRadius": 3,
-      "castDelay": 0.45,
-      "dotInterval": 0.45,
-      "rounds": 3,
-      "stunDuration": 0.25
-    },
-    "blade_box": {
-      "cost": 5,
-      "hp": 500,
-      "spawnId": "twin_blades",
-      "spawnInterval": 3,
-      "lifetime": 30,
-      "hardExpiry": true,
-      "hpDecayPerSecond": 0,
-      "targetMask": 0
-    },
-    "shadow_surge": {
-      "castDelay": 0.75,
-      "invisibilityDuration": 2
+    "plague_queen": {
+      "cost": 2,
+      "count": 1,
+      "hp": 170,
+      "damage": 212,
+      "attackInterval": 2.7,
+      "moveSpeed": 1.25,
+      "range": 20,
+      "projectileSpeed": 30,
+      "splash": 6,
+      "dotDamage": 60,
+      "dotStructureDamage": 60,
+      "dotInterval": 1.25,
+      "dotDuration": 2.5,
+      "sightFront": 20,
+      "sightRear": 20,
+      "targetMask": 7
     }
   },
-  "mechanicNotes": [
-    "Archer face and hair fit repaired, including the Archer Tower archer; Boulderback receives connected layered rock armor and more cohesive anatomical detail. Updated portraits use the actual game models.",
-    "Mini Stampede costs 4 Aether instead of 2. Both Stampede cards gain exactly 20% body HP (111 to 133.2) and damage (20 to 24) per hog; Stampede remains 7 Aether. Hogs keep their existing models, count, scale, speed and attack intervals.",
-    "Thunderstorm costs 3 Aether. A dark cloud and rain mark its 3-tile radius. Three lightning waves strike current enemy ground/air units and structures at 0.45, 0.90 and 1.35 seconds: 65 damage per troop or 33 per structure each wave, with a 0.25-second refreshed stun. Maximum exposure: 195 troop damage or 99 structure damage.",
-    "Blade Box costs 5 Aether, has 500 HP and lasts 30 seconds. It produces one current Twin Blade every 3 seconds: ten at 3 through 30 seconds if uninterrupted. Stun pauses production while lifetime continues; destruction ends production. Each child uses the normal Twin Blades stats and costs no additional Aether or deck slot.",
-    "All stun sources share a visible animated status effect. New models, spell effects, illustrations, collection details, Meta definitions, replay state and spreadsheet statistics are updated together.",
-    "Shadow Surge now activates after 0.75 seconds (was 0.25) and gives friendly troops inside its 2-tile area 2 seconds of invisibility (was 1). Its purple area cue lasts 0.5 seconds; friendly cloaked troops retain a purple silhouette. Cost 3, 100 troop/50 structure damage, target eligibility and other balance stay unchanged.",
-    "Meta tables show compact 24-pixel card portraits beside names while preserving row height, sorting and filters. Stun uses animated stars instead of a text label; lightning remains visible at target edges and stops revealing an enemy immediately when it cloaks."
+  "newPlayableIds": [
+    "plague_queen"
   ],
-  "priorResolution": "Assets/Data/History/source_resolution_2.0.0.json"
+  "subordinateIds": [
+    "bone_warden_skeleton"
+  ],
+  "mechanicNotes": [
+    "Plague Queen: 2 Aether, 170 HP, one ground troop, 1.25 tiles/s movement, 20-tile attack range and circular 20-tile enemy awareness. Targets ground troops, air troops and structures.",
+    "Fires one poison arrow every 2.7 seconds at 30 tiles/s. Only the direct target takes 212 immediate damage.",
+    "At impact, enemies within 6 tiles receive poison: 60 damage at 1.25 seconds and 60 at 2.5 seconds. The direct target also receives poison if alive. Maximum exposure is 332 on the direct target and 120 on other splash victims, before mitigation and HP limits.",
+    "Poison follows each affected enemy after it leaves the splash area; entering the old impact area later does not apply poison. Separate arrows carry separate two-tick applications. Poison continues if its Queen dies and remains credited to her deployment.",
+    "Plague Queen has a detailed green slime-queen model, fitted crown and bow, model-rendered card portrait, poison arrows, spreading impact splashes and animated toxic bubbles.",
+    "All existing card stats, arena geometry, models and audio retain their 2.1.0 values. Existing card awareness retains its previous behavior."
+  ]
 }

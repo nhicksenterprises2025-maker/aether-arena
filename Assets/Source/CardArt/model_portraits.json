@@ -3055,13 +3055,168 @@
           0.87
         ]
       }
+    },
+    "plague_queen": {
+      "file": "Assets/Source/CardArt/plague_queen.png",
+      "sha256": "e20cac226eb96cad2f36c41ea5bfed6823f86514763c7a7c4f2b37bc44ca4ead",
+      "bytes": 1017118,
+      "sourceSceneSHA256": "83d4e56449f578546ac6882f85ca690a9db5867ab0af02059d4af0735d26c421",
+      "sources": [
+        {
+          "model": {
+            "file": "Assets/Export/Characters/plague_queen/SK_plague_queen.fbx",
+            "sha256": "8b6357a000599eb2bac87ba27606ea8859de1ceac378dd9447ebc02cd74529d6",
+            "bytes": 2621852
+          },
+          "action": "DrawRelease",
+          "phase": 0.34,
+          "phaseOffsetFrames": 20,
+          "poseSourceFrame": 21,
+          "evaluatedAtFrame": 1,
+          "stagedAction": "SKEL_plague_queen.001_PortraitPose"
+        },
+        {
+          "model": {
+            "name": "toxic_bubble",
+            "file": "Assets/Export/Environment/SM_toxic_bubble.fbx",
+            "sha256": "bfc9b50b03dacfa613d5c2f95617731e6835fc18f58f2bce9208e8006897bb22",
+            "bytes": 39612,
+            "triangles": 920,
+            "boundsMeters": [
+              0.9999996423721313,
+              0.9999998807907104,
+              1.0
+            ],
+            "materials": [
+              "M_RiftPlagueGlass",
+              "M_RiftPlagueSurface"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 460,
+                "file": "Assets/Export/Environment/SM_toxic_bubble_LOD1.fbx",
+                "sha256": "eab3e99f52b2f7670ce300feb573609af329fab67d3becf2ad0671db3e7b68c2",
+                "bytes": 33916
+              },
+              {
+                "level": 2,
+                "triangles": 202,
+                "file": "Assets/Export/Environment/SM_toxic_bubble_LOD2.fbx",
+                "sha256": "8a97b043e3fc2f03192bb568dc0cea174c6f8d2708800ba7d1b4d57da7b76fe3",
+                "bytes": 29020
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "toxic_bubble",
+            "file": "Assets/Export/Environment/SM_toxic_bubble.fbx",
+            "sha256": "bfc9b50b03dacfa613d5c2f95617731e6835fc18f58f2bce9208e8006897bb22",
+            "bytes": 39612,
+            "triangles": 920,
+            "boundsMeters": [
+              0.9999996423721313,
+              0.9999998807907104,
+              1.0
+            ],
+            "materials": [
+              "M_RiftPlagueGlass",
+              "M_RiftPlagueSurface"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 460,
+                "file": "Assets/Export/Environment/SM_toxic_bubble_LOD1.fbx",
+                "sha256": "eab3e99f52b2f7670ce300feb573609af329fab67d3becf2ad0671db3e7b68c2",
+                "bytes": 33916
+              },
+              {
+                "level": 2,
+                "triangles": 202,
+                "file": "Assets/Export/Environment/SM_toxic_bubble_LOD2.fbx",
+                "sha256": "8a97b043e3fc2f03192bb568dc0cea174c6f8d2708800ba7d1b4d57da7b76fe3",
+                "bytes": 29020
+              }
+            ]
+          }
+        },
+        {
+          "model": {
+            "name": "toxic_bubble",
+            "file": "Assets/Export/Environment/SM_toxic_bubble.fbx",
+            "sha256": "bfc9b50b03dacfa613d5c2f95617731e6835fc18f58f2bce9208e8006897bb22",
+            "bytes": 39612,
+            "triangles": 920,
+            "boundsMeters": [
+              0.9999996423721313,
+              0.9999998807907104,
+              1.0
+            ],
+            "materials": [
+              "M_RiftPlagueGlass",
+              "M_RiftPlagueSurface"
+            ],
+            "lods": [
+              {
+                "level": 1,
+                "triangles": 460,
+                "file": "Assets/Export/Environment/SM_toxic_bubble_LOD1.fbx",
+                "sha256": "eab3e99f52b2f7670ce300feb573609af329fab67d3becf2ad0671db3e7b68c2",
+                "bytes": 33916
+              },
+              {
+                "level": 2,
+                "triangles": 202,
+                "file": "Assets/Export/Environment/SM_toxic_bubble_LOD2.fbx",
+                "sha256": "8a97b043e3fc2f03192bb568dc0cea174c6f8d2708800ba7d1b4d57da7b76fe3",
+                "bytes": 29020
+              }
+            ]
+          }
+        }
+      ],
+      "boundsMeters": [
+        [
+          -0.5324999690055847,
+          -0.9457278251647949,
+          0.009999990463256836
+        ],
+        [
+          0.4999999701976776,
+          0.3082966208457947,
+          2.1849095821380615
+        ]
+      ],
+      "poseFrame": 1,
+      "cameraOrthoScale": 1.714402198791504,
+      "composition": "Upper-body hero portrait",
+      "lighting": {
+        "backdrop": [
+          0.019,
+          0.044,
+          0.025
+        ],
+        "key": [
+          1,
+          0.93,
+          0.69
+        ],
+        "rim": [
+          0.42,
+          0.83,
+          0.2
+        ]
+      }
     }
   },
   "method": "Actual production Blender mesh/rig render, exported to the native game",
   "sourceBlend": {
     "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
-    "sha256": "7241261bbfdc77b78b1f1e921ea9a12a4676f2599dd266b64aee4e55ee9a996b",
-    "bytes": 35500862
+    "sha256": "83d4e56449f578546ac6882f85ca690a9db5867ab0af02059d4af0735d26c421",
+    "bytes": 39816554
   },
   "resolution": [
     768,
@@ -3076,8 +3231,8 @@
   },
   "rendererScript": {
     "file": "Build/render_card_portraits.py",
-    "sha256": "e59af1ffee164e048e90eb1fb4d4c4414a9122f95818fa80e7f0fa4563d4a0f2",
-    "bytes": 15618
+    "sha256": "967094f432b63b806fdc8991d01eb271283086aa8195abf163a80a3f8b3ad0c9",
+    "bytes": 15935
   },
   "masterResolution": [
     1024,

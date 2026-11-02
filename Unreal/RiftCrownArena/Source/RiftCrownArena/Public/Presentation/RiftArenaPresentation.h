@@ -121,6 +121,7 @@ private:
     TArray<FSpellImpactEffect> SpellImpactEffects;
     TArray<rift::Event> RecentSpellImpacts;
     TArray<rift::Event> RecentLightningHits;
+    TArray<rift::Event> RecentPoisonSplashes, RecentPoisonTicks;
     TArray<rift::Event> RecentReaperAttacks;
     TArray<rift::Event> RecentCloakExpiries;
     struct FContactAccent {FVector Position,Direction;FLinearColor Color;double Born=0;bool Heavy=false;};

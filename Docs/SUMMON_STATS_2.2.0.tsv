@@ -1,0 +1,3 @@
+Parent card	Subordinate unit	Children per release	Body HP each	Damage each	Attack interval (s)	Basic DPS each	Release body HP	Release basic DPS	Movement (tiles/s)	Range (tiles)	Targets	Model scale	Collision radius (tiles)	Additional Aether cost	Additional deck slots	Parent ID	Entity ID	Release condition	Maximum children per deployment
+Bone Warden	Bone Warden Skeleton	4	50	36	0.75	48.00	200	192.00	2	0.7	Ground troops, Structures	0.65	0.286	0	0	bone_warden	bone_warden_skeleton	On death	4
+Blade Box	Twin Blades	1	262	55	0.75	73.33	262	73.33	3.35	1.2	Ground troops, Structures	0.82	0.3608	0	0	blade_box	twin_blades	Every 3 s while alive and unstunned	10

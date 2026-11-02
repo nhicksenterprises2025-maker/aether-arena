@@ -11,12 +11,12 @@ bool FRiftProjectilePresentationTest::RunTest(const FString& Parameters)
     const FVector Launch(-720.,410.,205.),GroundTarget(-580.,-160.,125.),FlyingTarget(-400.,-320.,310.);
     const std::pair<const char*,const TCHAR*> Bindings[]={
         {"dart_gun",TEXT("dart_projectile")},{"ember_archer",TEXT("arrow_projectile")},{"archer_tower",TEXT("arrow_projectile")},
-        {"arc_mage",TEXT("arc_projectile")},{"sky_manta",TEXT("manta_projectile")},
+        {"arc_mage",TEXT("arc_projectile")},{"sky_manta",TEXT("manta_projectile")},{"plague_queen",TEXT("plague_arrow")},
         {"storm_raven",TEXT("storm_projectile")},{"tower_guard",TEXT("bullet_round")},
         {"tower_core",TEXT("bullet_round")}};
     int32 RangedCards=0;
     for (const auto& Card:rift::Cards()) if (Card.projectileSpeed>0.) ++RangedCards;
-    TestEqual(TEXT("All six numerical ranged cards are bound, plus both crown towers"),RangedCards,6);
+    TestEqual(TEXT("All seven numerical ranged cards are bound, plus both crown towers"),RangedCards,7);
     for (const auto& Binding:Bindings)
     {
         const FString Label=UTF8_TO_TCHAR(Binding.first);

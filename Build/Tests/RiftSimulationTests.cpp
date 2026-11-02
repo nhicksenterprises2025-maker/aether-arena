@@ -238,6 +238,12 @@ void Same(const Match &left, const Match &right) {
         Near(c.born, d.born, 1e-9, "deterministic cast start");
         Near(c.impactAt, d.impactAt, 1e-9, "deterministic cast deadline");
     }
+    Check(x.poisons.size() == y.poisons.size(), "deterministic attached poison count");
+    for (std::size_t n = 0; n < x.poisons.size(); ++n) {
+        const auto &a=x.poisons[n], &b=y.poisons[n];
+        Check(a.source==b.source&&a.target==b.target&&a.playId==b.playId&&a.team==b.team&&a.cardId==b.cardId&&a.ticks==b.ticks,"deterministic poison identity and ticks");
+        Near(a.born,b.born,1e-9,"deterministic poison impact");Near(a.nextTick,b.nextTick,1e-9,"deterministic poison next tick");Near(a.expires,b.expires,1e-9,"deterministic poison expiry");
+    }
     Check(x.entities.size() == y.entities.size(), "deterministic entity count");
     Check(x.shockwaves.size() == y.shockwaves.size(), "deterministic shockwave count");
     for (std::size_t n = 0; n < x.shockwaves.size(); ++n) {
@@ -325,6 +331,107 @@ int main(int argc, char **argv) {
         if (std::string(argv[argument]) == "--all-errors") continueAfterFailure = true;
         else scenarioFilter = argv[argument];
     try {
+        Test("plague220 direct arrow and exact two poison ticks across enemy layers", [] {
+            const auto* card=FindCard("plague_queen");Check(card&&card->cost==2&&card->count==1,"new two-Aether single Queen");
+            Near(card->hp,170,0,"Queen health");Near(card->damage,212,0,"direct impact");Near(card->attackInterval,2.7,0,"arrow cadence");
+            Near(card->projectileSpeed,30,0,"arrow speed");Near(card->moveSpeed,1.25,0,"Queen movement");Near(card->range,20,0,"arrow range");
+            for(Team team:{Team::Player,Team::Enemy}) {
+                const Team foe=team==Team::Player?Team::Enemy:Team::Player;const double sign=team==Team::Player?1.:-1.;
+                Match m(CollisionOptions("plague_queen","ironclad"));FreezeCrowns(m);
+                auto spawn=[&](Team owner,const char* id,Vec2 point){Check(m.Spawn(owner,id,point),"poison fixture spawn");return m.State().entities.back().id;};
+                const auto direct=spawn(foe,"boulderback",{0,4*sign});
+                const auto ground=spawn(foe,"ironclad",{4,4*sign});
+                const auto air=spawn(foe,"sky_manta",{-4,4*sign});
+                const auto edge=spawn(foe,"ironclad",{6,4*sign});
+                const auto outside=spawn(foe,"sky_manta",{6.01,4*sign});
+                MutableEntity(m,outside).position={ById(m,direct).position.x+6.01,ById(m,direct).position.z};
+                const auto friendly=spawn(team,"ironclad",{-2,4*sign});
+                const auto queen=PaidCollisionCard(m,team,"plague_queen",{0,12*sign}).front().id;
+                for(auto& e:const_cast<Snapshot&>(m.State()).entities)e.stunUntil=100;
+                auto& q=MutableEntity(m,queen);q.stunUntil=0;q.cooldown=0;q.forcedTarget=direct;q.forcedUntil=100;
+                m.Step(1./60.);Check(m.State().projectiles.size()==1,"one actual traveling arrow");
+                const auto flight=m.State().projectiles.front();Near(flight.duration,std::hypot(8.,.49)/30.,1e-9,"authored speed drives flight duration");
+                MutableEntity(m,queen).stunUntil=100;
+                while(m.State().projectiles.size())m.Step(1./60.);
+                const double impact=m.State().elapsed;
+                Near(ById(m,direct).hp,1620-212,0,"only direct victim loses impact HP");
+                Near(ById(m,ground).hp,822,0,"splash has no premature direct damage");
+                Check(m.State().poisons.size()==4,"center-distance six-tile splash includes edge ground and air, excludes friendly/outside");
+                m.Step(1.25-1./60.);Near(ById(m,ground).hp,822,0,"no tick before1.25seconds");
+                m.Step(1./60.);Near(ById(m,direct).hp,1620-272,1e-8,"direct victim first60poison");
+                Near(ById(m,ground).hp,762,1e-8,"first splash60");Near(ById(m,air).hp,420,1e-8,"flying poison60");Near(ById(m,edge).hp,762,1e-8,"boundary poison60");
+                m.Step(1.25);Near(ById(m,direct).hp,1620-332,1e-8,"direct complete332");Near(ById(m,ground).hp,702,1e-8,"splash complete120");
+                Near(ById(m,outside).hp,480,0,"outside splash untouched");Near(ById(m,friendly).hp,822,0,"friendly untouched");
+                Check(m.State().poisons.empty(),"poison ends at2.5seconds");
+                int ticks=0;for(const auto& e:m.Events())if(e.type=="poison_tick") {++ticks;Near(e.time-impact,e.count*1.25,1e-8,"each pulse exact deadline");}
+                Check(ticks==8&&m.State().telemetry[int(team)].at("plague_queen").dotTicks==8,"two credited pulses per exposed body");
+                Near(m.State().spent[int(team)],2,0,"one paid Queen costs exactly2");
+            }
+        });
+        Test("plague220 attached poison survives source death movement and target cloak", [] {
+            Match m(CollisionOptions("plague_queen","ironclad"));FreezeCrowns(m);
+            Check(m.Spawn(Team::Enemy,"ironclad",{0,4}),"live poison victim");const auto victim=m.State().entities.back().id;
+            const auto queen=PaidCollisionCard(m,Team::Player,"plague_queen",{0,12}).front().id;
+            MutableEntity(m,victim).stunUntil=100;MutableEntity(m,queen).cooldown=0;
+            m.Step(1./60.);MutableEntity(m,queen).stunUntil=100;
+            while(m.State().projectiles.size())m.Step(1./60.);
+            const double impact=m.State().elapsed;Check(m.State().poisons.size()==1,"attached effect created");
+            Check(m.Spawn(Team::Enemy,"bullet_burst",{0,12}),"enemy bullet kills fragile Queen");
+            Check(m.Spawn(Team::Enemy,"shadow_surge",{0,4}),"enemy actually casts cloak after poison impact");
+            m.Step(.8);Check(!FindEntity(m,queen)||ById(m,queen).dead,"source dies and is retired before first poison pulse");
+            Check(ById(m,victim).invisibleUntil>m.State().elapsed,"real Shadow Surge hides poisoned victim");
+            MutableEntity(m,victim).position={9,9};
+            m.Step(.45);Near(ById(m,victim).hp,822-272,1e-7,"attached first tick follows movement outside original splash");
+            m.Step(1.25);Near(ById(m,victim).hp,822-332,1e-7,"second tick survives dead source and hidden moving target");
+            Check(ById(m,victim).invisibleUntil>m.State().elapsed,"poison never cancels invisibility");
+            const auto& body=m.State().entityTelemetry[0].at(queen);Near(body.observed.dotDamage,120,1e-7,"retired source body keeps true poison credit");
+            Near(m.State().telemetry[0].at("plague_queen").dotDamage,120,1e-7,"paid card rollup keeps120poison");
+            Near(m.State().elapsed-impact,2.5,1e-7,"source death does not reset poison timer");
+        });
+        Test("plague220 separate arrows retain independent poison schedules and shield packets", [] {
+            Match m(CollisionOptions("plague_queen","ironclad"));FreezeCrowns(m);
+            Check(m.Spawn(Team::Enemy,"iron_giant",{0,4}),"shielded poison target");const auto target=m.State().entities.back().id;
+            const auto a=PaidCollisionCard(m,Team::Player,"plague_queen",{-2,12}).front().id;
+            Check(m.Spawn(Team::Player,"plague_queen",{2,12}),"independent second Queen deployment");const auto b=m.State().entities.back().id;
+            for(auto& e:const_cast<Snapshot&>(m.State()).entities)e.stunUntil=100;
+            for(auto id:{a,b}){auto& e=MutableEntity(m,id);e.stunUntil=0;e.cooldown=0;e.forcedTarget=target;e.forcedUntil=100;}
+            m.Step(1./60.);for(auto id:{a,b})MutableEntity(m,id).stunUntil=100;
+            while(m.State().projectiles.size())m.Step(1./60.);
+            Near(ById(m,target).shieldHP,0,0,"two arrow impacts consume310shield, shield overflow discarded");
+            Near(ById(m,target).hp,1000,0,"impact overflow does not penetrate shield");Check(m.State().poisons.size()==2,"one independent poison per arrow");
+            m.Step(2.5);Near(ById(m,target).hp,760,1e-8,"two sources each deliver two60body packets");
+            Near(m.State().entityTelemetry[0].at(a).observed.dotDamage,120,1e-8,"first source120");Near(m.State().entityTelemetry[0].at(b).observed.dotDamage,120,1e-8,"second source120");
+        });
+        Test("plague220 exact radial20 sight and rear acquisition respect invisibility", [] {
+            Match m(Quiet());Entity queen,target;queen.id=999;queen.cardId="plague_queen";queen.facing={0,-1};target.id=998;target.team=Team::Enemy;
+            for(int angle=0;angle<16;++angle){const double r=angle*6.283185307179586/16;target.position={std::cos(r)*20,std::sin(r)*20};Check(m.InSight(queen,target),"twenty-tile boundary in every direction");target.position={std::cos(r)*20.00001,std::sin(r)*20.00001};Check(!m.InSight(queen,target),"strict radius no body-padding");}
+            Check(m.Spawn(Team::Player,"plague_queen",{0,4}),"Queen rear acquisition");const auto id=m.State().entities.back().id;
+            Check(m.Spawn(Team::Enemy,"boulderback",{0,12}),"enemy behind Queen");const auto foe=m.State().entities.back().id;
+            FreezeCrowns(m);MutableEntity(m,foe).stunUntil=100;MutableEntity(m,id).cooldown=0;
+            m.Step(1./60.);Check(!m.State().projectiles.empty()&&m.State().projectiles.back().target==foe,"rear enemy beyondold5tiles is genuinely acquired and shot");
+            MutableEntity(m,foe).invisibleUntil=10;Check(!m.CanTarget(ById(m,id),ById(m,foe)),"radial sight never acquires invisible opponents");
+        });
+        Test("plague220 structure impact and attached poison use full approved damage", [] {
+            for(const bool crown:{false,true}) {
+                Match m(CollisionOptions("plague_queen","ironclad"));FreezeCrowns(m);EntityId target;
+                if(crown)target=Tower(m,Team::Enemy,EntityKind::Guard,1).id;
+                else {Check(m.Spawn(Team::Enemy,"blade_box",{arena::GuardX,-10}),"building poison target");target=m.State().entities.back().id;MutableEntity(m,target).stunUntil=100;}
+                const auto q=PaidCollisionCard(m,Team::Player,"plague_queen",{arena::GuardX,3.5}).front().id;
+                auto& queen=MutableEntity(m,q);queen.cooldown=0;queen.forcedTarget=target;queen.forcedUntil=100;
+                const double hp=ById(m,target).hp;m.Step(1./60.);MutableEntity(m,q).stunUntil=100;
+                while(m.State().projectiles.size())m.Step(1./60.);Near(ById(m,target).hp,hp-212,1e-7,"structure direct212");
+                m.Step(2.5);Near(ById(m,target).hp,hp-332,1e-7,"structure two60ticks");
+            }
+        });
+        Test("plague220 dead flight targets fizzle and field clear cancels poison", [] {
+            Match m(Quiet());FreezeCrowns(m);m.Spawn(Team::Player,"plague_queen",{0,12});const auto queen=Unit(m,"plague_queen",Team::Player).id;
+            m.Spawn(Team::Enemy,"ironclad",{0,4});const auto target=Unit(m,"ironclad",Team::Enemy).id;MutableEntity(m,target).stunUntil=100;MutableEntity(m,queen).cooldown=0;
+            m.Step(1./60.);Check(m.State().projectiles.size()==1,"real arrow committed");MutableEntity(m,queen).stunUntil=100;MutableEntity(m,target).dead=true;MutableEntity(m,target).hp=0;
+            m.Step(.5);Check(m.State().projectiles.empty()&&m.State().poisons.empty(),"same arrow policy: dead flight target produces no fresh impact poison");
+            m.Spawn(Team::Enemy,"ironclad",{0,4});const auto fresh=m.State().entities.back().id;MutableEntity(m,fresh).stunUntil=100;MutableEntity(m,queen).stunUntil=0;MutableEntity(m,queen).cooldown=0;
+            m.Step(1./60.);MutableEntity(m,queen).stunUntil=100;while(m.State().projectiles.size())m.Step(1./60.);Check(!m.State().poisons.empty(),"second live target actually receives poison");
+            m.ClearField();Check(m.State().poisons.empty(),"clearfield removes all pending attached poison");
+        });
         Test("shadow210 paid Surge waits three quarters then cloaks current friendly troops for two seconds", [] {
             for (Team team : {Team::Player, Team::Enemy}) {
                 Match m(CollisionOptions("shadow_surge", "ironclad"));FreezeCrowns(m);
@@ -728,10 +835,10 @@ int main(int argc, char **argv) {
             Check(ready==1&&spent==1,"exact charge entry and spend are replayable");
         });
         Test("complete exact roster and swarm DPS", [] {
-            Check(Cards().size() == 24 && EntityDefinitions().size() == 1 && !FindCard("bone_warden_skeleton"), "twenty-four playable cards and one subordinate outside decks");
-            const std::vector<double> hp{822, 374, 262, 1620, 512, 934, 480, 174, 1265, 1222, 0, 850, 0, 0, 133.2, 133.2, 700, 1526, 445, 1000, 0, 420, 0, 500},
-                damage{93, 152, 55, 118, 108, 156, 77, 86, 72, 251, 262, 75, 175, 375, 24, 24, 65, 101, 95, 85, 100, 50, 65, 0},
-                interval{1.1, 1.75, .75, 2, 1.15, 1.25, .92, 1.05, .75, 1.7, 0, .9, 0, 0, .9, 1, .9, 1.5, 1.05, 1.3, 0, .4, 0, 3};
+            Check(Cards().size() == 25 && EntityDefinitions().size() == 1 && !FindCard("bone_warden_skeleton"), "twenty-five playable cards and one subordinate outside decks");
+            const std::vector<double> hp{822, 374, 262, 1620, 512, 934, 480, 174, 1265, 1222, 0, 850, 0, 0, 133.2, 133.2, 700, 1526, 445, 1000, 0, 420, 0, 500, 170},
+                damage{93, 152, 55, 118, 108, 156, 77, 86, 72, 251, 262, 75, 175, 375, 24, 24, 65, 101, 95, 85, 100, 50, 65, 0, 212},
+                interval{1.1, 1.75, .75, 2, 1.15, 1.25, .92, 1.05, .75, 1.7, 0, .9, 0, 0, .9, 1, .9, 1.5, 1.05, 1.3, 0, .4, 0, 3, 2.7};
             for (std::size_t n = 0; n < Cards().size(); ++n) {
                 Near(Cards()[n].hp, hp[n], 0, "roster HP");
                 Near(Cards()[n].damage, damage[n], 0, "roster damage");
@@ -936,14 +1043,14 @@ int main(int argc, char **argv) {
             for(const auto &card:Cards())if(!card.spell){
                 Entity source;source.id=901;source.cardId=card.id;source.facing={0,-1};source.radius=10;
                 for(const bool front:{true,false}){
-                    const double boundary=front?(card.id=="dart_gun"?8.5:8.):5.;
+                    const double boundary=front?(card.projectileSpeed>0?std::max(card.sightFront,card.range):card.sightFront):card.sightRear;
                     const double sign=front?-1:1;
                     target.position={0,sign*boundary};Check(m.InSight(source,target),"exact shared boundary inclusive");
                     target.position={0,sign*(boundary+.00001)};Check(!m.InSight(source,target),"no radius or pursuit bonus");
                 }
                 ++cards;
             }
-            Check(cards==19,"all nineteen physical cards keep explicit front range and strict five-tile rear sight");
+            Check(cards==20,"all twenty physical cards use captured front and rear sight");
             for(const auto&id:std::vector<std::string>{"ironclad","ember_archer","archer_tower","pulverizer","stampede"}){
                 Match a(Quiet());a.Spawn(Team::Player,id,{.5,8.5});
                 a.Spawn(Team::Enemy,id=="stampede"?"archer_tower":"ironclad",{.5,4.5});
@@ -1730,14 +1837,24 @@ int main(int argc, char **argv) {
                                     crossed[i] = crossed[i] || e.position.z * sign < -arena::RiverHalfWidth;
                                 }
                             }
-                            for (bool reached : crossed)
-                                Check(reached, "each ground member makes progress onto the enemy bank");
+                            for (std::size_t i=0;i<ids.size();++i) {
+                                if(crossed[i])continue;
+                                const auto& goal=ById(m,expected);
+                                const bool legalShot=card.projectileSpeed>0&&std::any_of(m.Events().begin(),m.Events().end(),[&](const auto& event){
+                                    return event.type=="attack"&&event.source==ids[i]&&event.target==expected&&
+                                        std::hypot(event.position.x-goal.position.x,event.position.z-goal.position.z)<=card.range+goal.radius+1e-7;
+                                });
+                                const bool connected=std::any_of(m.Events().begin(),m.Events().end(),[&](const auto& event){
+                                    return event.type=="damage"&&event.source==ids[i]&&event.target==expected&&event.amount>0;
+                                });
+                                Check(legalShot&&connected,"each member crosses the bank or lands a legal ranged hit on its intended Crown");
+                            }
                             Check(!ById(m, oppositeGuard).dead, "opposite Guard remains a real standing alternative");
                             fixtures++;
                             members += static_cast<int>(ids.size());
                         }
             }
-            Check(fixtures == 144 && members == 372, "all twelve ground cards, both teams, both lane states and pockets");
+            Check(fixtures == 156 && members == 384, "all thirteen ground cards, both teams, both lane states and pockets");
         });
         Test("continuous routes to an opposite target still use the current side bridge", [] {
             int routes = 0;
@@ -1777,7 +1894,7 @@ int main(int argc, char **argv) {
                         routes++;
                     }
             }
-            Check(routes == 48, "all twelve ground cards mirror the current-side route policy");
+            Check(routes == 52, "all thirteen ground cards mirror the current-side route policy");
         });
         Test("paid swarms split from each resolved landing side and advance through their own lane", [] {
             int fixtures = 0, members = 0, splitFixtures = 0;
@@ -2008,7 +2125,7 @@ int main(int argc, char **argv) {
                             ++fixtures;
                         }
             }
-            Check(fixtures == 144 && members == 372, "all twelve ground cards and every swarm member in the tower matrix");
+            Check(fixtures == 156 && members == 384, "all thirteen ground cards and every swarm member in the tower matrix");
         });
         Test("continuous tower perimeter paths clear corners and blocked rounded start cells", [] {
             int paths = 0;
@@ -2101,7 +2218,7 @@ int main(int argc, char **argv) {
                         ++fixtures;
                     }
             }
-            Check(fixtures == 168 && members == 434, "all twelve ground cards mirrored across rear/side/corner cases");
+            Check(fixtures == 182 && members == 448, "all thirteen ground cards mirrored across rear/side/corner cases");
         });
         Test("legal ground drops air spells buildings and DEV river fixtures retain their positions", [] {
             for (Team team : {Team::Player, Team::Enemy}) {
@@ -2451,7 +2568,7 @@ int main(int argc, char **argv) {
                     Near(PairSynergy(Cards()[a], Cards()[b]), PairSynergy(Cards()[b], Cards()[a]), 0,
                          "symmetric");
                 }
-            Check(pairs == 276, "all twenty-four-card pairs");
+            Check(pairs == 300, "all twenty-five-card pairs");
             auto d = AnalyzeDeck({"vampire_bats", "twin_blades", "nova_flask"});
             Near(d.averageHP, (174 * 5 + 262 * 2) / 2., 0, "swarm aggregate spell excluded");
             Near(d.deploymentDPS, (86 / 1.05 * 5 + 55 / .75 * 2) / 2., .0051, "aggregate DPS spell excluded");
@@ -2651,9 +2768,9 @@ int main(int argc, char **argv) {
                                  0, 0, "building stays fixed while nearby troops route around it");
                         }
                 }
-            Check(collisionPaidFixtures - fixtureStart == 38 && collisionPaidPlays - playStart == 76 &&
-                      collisionMembers - memberStart == 130,
-                  "all nineteen physical cards, both teams, seventy-six paid casts and130 actual members");
+            Check(collisionPaidFixtures - fixtureStart == 40 && collisionPaidPlays - playStart == 80 &&
+                      collisionMembers - memberStart == 134,
+                  "all twenty physical cards, both teams, eighty paid casts and134 actual members");
         });
         Test("ground and air occupy distinct collision layers while spells have no body", [] {
             for (const Team team : {Team::Player, Team::Enemy}) {

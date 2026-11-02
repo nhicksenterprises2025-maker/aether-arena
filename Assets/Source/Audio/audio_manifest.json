@@ -2202,6 +2202,86 @@
         "Tinysized_metal-knife-scrape-01.wav"
       ],
       "productionSource": "Build/generate_storm_blade_audio.py"
+    },
+    "spawn_plague_queen": {
+      "file": "Assets/Source/Audio/spawn_plague_queen.wav",
+      "duration": 0.62,
+      "sha256": "ff21f9f650933de8151f45a90c0ca90c8f9310b7905d71beac1c2e40a62f82db",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.20416259765625,
+      "rmsDbFS": -25.000010607602622,
+      "dcOffset": 1.513936177629654e-05,
+      "role": "deployment",
+      "sources": [
+        "Recorded CC0 palette and original synthesis; see Palette/sources.json"
+      ],
+      "productionSource": "Build/generate_plague_audio.py",
+      "cardId": "plague_queen"
+    },
+    "spawn_plague_queen_v2": {
+      "file": "Assets/Source/Audio/spawn_plague_queen_v2.wav",
+      "duration": 0.62,
+      "sha256": "1758e7b053e2891b1297f2635c0ce3759286a505cbe13be1dfa17e29ce57fd12",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.20361328125,
+      "rmsDbFS": -24.99999689852867,
+      "dcOffset": 8.239366605177017e-06,
+      "role": "deployment",
+      "sources": [
+        "Recorded CC0 palette and original synthesis; see Palette/sources.json"
+      ],
+      "productionSource": "Build/generate_plague_audio.py",
+      "cardId": "plague_queen"
+    },
+    "spawn_plague_queen_v3": {
+      "file": "Assets/Source/Audio/spawn_plague_queen_v3.wav",
+      "duration": 0.62,
+      "sha256": "4eeeff78decaee674e4c4ecd4c840b6c44d94a273424ad4d38b5b16933fc3537",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.218414306640625,
+      "rmsDbFS": -25.000003300750357,
+      "dcOffset": 2.736782296924146e-06,
+      "role": "deployment",
+      "sources": [
+        "Recorded CC0 palette and original synthesis; see Palette/sources.json"
+      ],
+      "productionSource": "Build/generate_plague_audio.py",
+      "cardId": "plague_queen"
+    },
+    "poison_fire": {
+      "file": "Assets/Source/Audio/poison_fire.wav",
+      "duration": 0.32,
+      "sha256": "3f146392eb9cbc3dfea225e431f089e758b5c5c538d2e6d784a6e3fdd3a7d563",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.46087646484375,
+      "rmsDbFS": -27.000028399200126,
+      "dcOffset": 1.3238989036369756e-05,
+      "role": "combat",
+      "sources": [
+        "Tinysized_arrow-feathers-01.wav",
+        "Tinysized_quiver-leather-squeeze-01.wav",
+        "Tinysized_wood-twigs-break-02.wav"
+      ],
+      "productionSource": "Build/generate_plague_audio.py"
+    },
+    "poison_pop": {
+      "file": "Assets/Source/Audio/poison_pop.wav",
+      "duration": 0.28,
+      "sha256": "1ec5d562fe1846b76c5aab816d38e07c25adae8e5f29f8946ecf6d9b45e1b3d9",
+      "loop": false,
+      "channels": 1,
+      "peak": 0.194488525390625,
+      "rmsDbFS": -27.00000752268204,
+      "dcOffset": 1.8175110911179947e-05,
+      "role": "combat",
+      "sources": [
+        "Recorded CC0 palette and original synthesis; see Palette/sources.json"
+      ],
+      "productionSource": "Build/generate_plague_audio.py"
     }
   },
   "usedSourceFiles": [
@@ -2468,6 +2548,15 @@
         "spawn_blade_box",
         "spawn_blade_box_v2",
         "spawn_blade_box_v3"
+      ],
+      "trigger": "one card_play per playId; never entity_spawn"
+    },
+    "plague_queen": {
+      "identity": "Three brief royal toxin signatures: rounded bubble pops and a restrained crown chime",
+      "takes": [
+        "spawn_plague_queen",
+        "spawn_plague_queen_v2",
+        "spawn_plague_queen_v3"
       ],
       "trigger": "one card_play per playId; never entity_spawn"
     }

@@ -2,8 +2,8 @@
   "schema": 1,
   "source": {
     "file": "Assets/Source/RiftCrown_ProductionAssets.blend",
-    "sha256": "7241261bbfdc77b78b1f1e921ea9a12a4676f2599dd266b64aee4e55ee9a996b",
-    "bytes": 35500862
+    "sha256": "83d4e56449f578546ac6882f85ca690a9db5867ab0af02059d4af0735d26c421",
+    "bytes": 39816554
   },
   "units": {
     "blender": "meter",
@@ -9257,6 +9257,288 @@
         "recoverySeconds": 0.43999999999999995,
         "contactNormalized": 0.26666666666666666
       }
+    },
+    "plague_queen": {
+      "id": "plague_queen",
+      "rigFamily": "humanoid",
+      "mesh": {
+        "file": "Assets/Export/Characters/plague_queen/SK_plague_queen.fbx",
+        "sha256": "8b6357a000599eb2bac87ba27606ea8859de1ceac378dd9447ebc02cd74529d6",
+        "bytes": 2621852
+      },
+      "bones": [
+        "root",
+        "pelvis",
+        "spine",
+        "chest",
+        "neck",
+        "head",
+        "upperarm_l",
+        "forearm_l",
+        "hand_l",
+        "thigh_l",
+        "shin_l",
+        "foot_l",
+        "foot_l_contact",
+        "upperarm_r",
+        "forearm_r",
+        "hand_r",
+        "thigh_r",
+        "shin_r",
+        "foot_r",
+        "foot_r_contact",
+        "cape",
+        "hp_anchor",
+        "status_anchor",
+        "attack_origin",
+        "impact_origin",
+        "skirt_l",
+        "skirt_r",
+        "slime_lock_l",
+        "slime_lock_r",
+        "arrow"
+      ],
+      "boneCount": 30,
+      "sockets": {
+        "foot_l_contact": {
+          "bone": "foot_l_contact",
+          "parent": "foot_l",
+          "positionMeters": [
+            -0.17,
+            -0.1,
+            0.035
+          ]
+        },
+        "foot_r_contact": {
+          "bone": "foot_r_contact",
+          "parent": "foot_r",
+          "positionMeters": [
+            0.17,
+            -0.1,
+            0.035
+          ]
+        },
+        "hp_anchor": {
+          "bone": "hp_anchor",
+          "parent": "head",
+          "positionMeters": [
+            0,
+            0,
+            2.43
+          ]
+        },
+        "status_anchor": {
+          "bone": "status_anchor",
+          "parent": "chest",
+          "positionMeters": [
+            0,
+            0,
+            1.76
+          ]
+        },
+        "attack_origin": {
+          "bone": "attack_origin",
+          "parent": "hand_l",
+          "positionMeters": [
+            -0.33,
+            -1.04,
+            1.3
+          ]
+        },
+        "impact_origin": {
+          "bone": "impact_origin",
+          "parent": "chest",
+          "positionMeters": [
+            0,
+            -0.18,
+            1.05
+          ]
+        }
+      },
+      "triangles": 109742,
+      "materials": [
+        "M_RiftPlagueSurface",
+        "M_RiftPlagueGlass"
+      ],
+      "boundsMeters": [
+        0.9139999747276306,
+        1.3549997806549072,
+        2.1679999828338623
+      ],
+      "lods": [
+        {
+          "level": 1,
+          "triangles": 54870,
+          "file": "Assets/Export/Characters/plague_queen/SK_plague_queen_LOD1.fbx",
+          "sha256": "55ec4c521642c6cbc6b6930687d4cb2d438824482c97504a6f80a34dcbb43cba",
+          "bytes": 1443596
+        },
+        {
+          "level": 2,
+          "triangles": 27434,
+          "file": "Assets/Export/Characters/plague_queen/SK_plague_queen_LOD2.fbx",
+          "sha256": "b9bbd09dc58fd8ce55771b68e1aeb027e6d2bff9294e8d73a0fcfef8468be62b",
+          "bytes": 827964
+        },
+        {
+          "level": 3,
+          "triangles": 13168,
+          "file": "Assets/Export/Characters/plague_queen/SK_plague_queen_LOD3.fbx",
+          "sha256": "4079cfb21d21b541478903963cc3473a8da93750f5180186f140e54e8fd2c7ed",
+          "bytes": 503724
+        }
+      ],
+      "animations": [
+        {
+          "name": "Idle",
+          "action": "AN_plague_queen_Idle",
+          "frames": 121,
+          "fps": 60,
+          "seconds": 2.0,
+          "releaseNormalized": null,
+          "loop": true,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/plague_queen/AN_plague_queen_Idle.fbx",
+          "sha256": "18d81b89ef9e8446add00a88804033daeb0436fb0e018260ea6c8e2ea118bd0b",
+          "bytes": 391340
+        },
+        {
+          "name": "Locomotion",
+          "action": "AN_plague_queen_Locomotion",
+          "frames": 97,
+          "fps": 60,
+          "seconds": 1.6,
+          "releaseNormalized": null,
+          "loop": true,
+          "strideMeters": 0.66,
+          "file": "Assets/Export/Characters/plague_queen/AN_plague_queen_Locomotion.fbx",
+          "sha256": "9057c87c419def92d2bddc735bb488f083b94eb2dbc60524e3daa642c5863bb3",
+          "bytes": 374668
+        },
+        {
+          "name": "Attack",
+          "action": "AN_plague_queen_Attack",
+          "frames": 61,
+          "fps": 60,
+          "seconds": 1.0,
+          "releaseNormalized": 0.42,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/plague_queen/AN_plague_queen_Attack.fbx",
+          "sha256": "8e7924c411b182c12e468edf684d5e918c2c3316d4cc807b280165866ea49dfd",
+          "bytes": 295580
+        },
+        {
+          "name": "DrawRelease",
+          "action": "AN_plague_queen_DrawRelease",
+          "frames": 61,
+          "fps": 60,
+          "seconds": 1.0,
+          "releaseNormalized": 0.42,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/plague_queen/AN_plague_queen_DrawRelease.fbx",
+          "sha256": "299d8a43402b3fca3fef1af958b13fd7535651d5cd8ec5db48d3bca2be3ae06f",
+          "bytes": 295580
+        },
+        {
+          "name": "Hit",
+          "action": "AN_plague_queen_Hit",
+          "frames": 19,
+          "fps": 60,
+          "seconds": 0.3,
+          "releaseNormalized": null,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/plague_queen/AN_plague_queen_Hit.fbx",
+          "sha256": "2e94371a8d18b767f5fcd8d58d17d65420d3489453856438c69e020f66a773d6",
+          "bytes": 238620
+        },
+        {
+          "name": "Death",
+          "action": "AN_plague_queen_Death",
+          "frames": 79,
+          "fps": 60,
+          "seconds": 1.3,
+          "releaseNormalized": null,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/plague_queen/AN_plague_queen_Death.fbx",
+          "sha256": "b08a64ccc977ccf2c4ce23cbce36042a11a54d464f4b971fb758585e4e8c294c",
+          "bytes": 348572
+        },
+        {
+          "name": "Deploy",
+          "action": "AN_plague_queen_Deploy",
+          "frames": 49,
+          "fps": 60,
+          "seconds": 0.8,
+          "releaseNormalized": null,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/plague_queen/AN_plague_queen_Deploy.fbx",
+          "sha256": "52a8f8c7e12dbc9896ffcd9d0770435ffa939c33132077eb1c15ac81ccee9f61",
+          "bytes": 281068
+        },
+        {
+          "name": "Status",
+          "action": "AN_plague_queen_Status",
+          "frames": 61,
+          "fps": 60,
+          "seconds": 1.0,
+          "releaseNormalized": null,
+          "loop": true,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/plague_queen/AN_plague_queen_Status.fbx",
+          "sha256": "8b0c8db2eb9c2b0aa94c472cd8e2a6b16a2edbb2c51854011e675664c31aa5f7",
+          "bytes": 297788
+        },
+        {
+          "name": "Turn",
+          "action": "AN_plague_queen_Turn",
+          "frames": 37,
+          "fps": 60,
+          "seconds": 0.6,
+          "releaseNormalized": null,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/plague_queen/AN_plague_queen_Turn.fbx",
+          "sha256": "8c8485c109fe26db424427a69c5c3432b3c14cbdd4c4e054141e875bf7c8ffa8",
+          "bytes": 258060
+        },
+        {
+          "name": "Acquire",
+          "action": "AN_plague_queen_Acquire",
+          "frames": 25,
+          "fps": 60,
+          "seconds": 0.4,
+          "releaseNormalized": null,
+          "loop": false,
+          "strideMeters": null,
+          "file": "Assets/Export/Characters/plague_queen/AN_plague_queen_Acquire.fbx",
+          "sha256": "00dcae1c8a4c9173d07a76c26bb3da16849d2e7c34efe9cb7ba2958582c6320e",
+          "bytes": 255356
+        }
+      ],
+      "modelDesign": {
+        "identity": "Original adult slime queen archer; emerald liquid skin, sculpted face and eight-point gold crown",
+        "surface": "Dedicated emerald/jade lacquer, polished antique gold and plum enamel PBR atlas",
+        "equipment": "Recurved venom bow with anatomical leather-wrap grip and deforming drawn string; quiver behind torso",
+        "gripPolicy": "Bow follows left hand, drawn string center follows right hand; release arrow uses independent bone",
+        "animationPolicy": "Foot-contact slow walk, flowing gown/locks, controlled draw-release, breathing and liquid collapse",
+        "rosterArtRevision": "crafted-roster-2"
+      },
+      "physics": {
+        "type": "capsule",
+        "simulationCollisionAuthoritative": false,
+        "autoCreatePhysicsAsset": true
+      },
+      "animationTiming": {
+        "anticipationSeconds": 0.18,
+        "recoverySeconds": 0.3,
+        "contactNormalized": 0.42
+      },
+      "gaitStrideMeters": 0.66
     }
   },
   "statics": {
@@ -10353,6 +10635,102 @@
           "bytes": 21228
         }
       ]
+    },
+    "plague_arrow": {
+      "name": "plague_arrow",
+      "file": "Assets/Export/Environment/SM_plague_arrow.fbx",
+      "sha256": "9ca9f716aa94cb437797137308dcb0fd87bb4331b1d62c5b32786a52e9befb03",
+      "bytes": 32780,
+      "triangles": 466,
+      "boundsMeters": [
+        0.1340000033378601,
+        0.8500000238418579,
+        0.1340000033378601
+      ],
+      "materials": [
+        "M_RiftPlagueSurface",
+        "M_RiftPlagueGlass"
+      ],
+      "lods": [
+        {
+          "level": 1,
+          "triangles": 232,
+          "file": "Assets/Export/Environment/SM_plague_arrow_LOD1.fbx",
+          "sha256": "b948507c4739e272ca3cbdd86d3bc272fec0ea73bc147cd1bc922a217d025edd",
+          "bytes": 29436
+        },
+        {
+          "level": 2,
+          "triangles": 102,
+          "file": "Assets/Export/Environment/SM_plague_arrow_LOD2.fbx",
+          "sha256": "59225a3e708cf95d6b5675b98f312dc65dfabacfa5d49b1929bc819b52fefa28",
+          "bytes": 26492
+        }
+      ]
+    },
+    "poison_splash": {
+      "name": "poison_splash",
+      "file": "Assets/Export/Environment/SM_poison_splash.fbx",
+      "sha256": "1186ab69b725d6a0d18a57a639f709acfab584191db5c769e3af9987683dd56f",
+      "bytes": 72620,
+      "triangles": 2700,
+      "boundsMeters": [
+        1.94407320022583,
+        1.973886489868164,
+        0.5206438302993774
+      ],
+      "materials": [
+        "M_RiftPlagueSurface",
+        "M_RiftPlagueGlass"
+      ],
+      "lods": [
+        {
+          "level": 1,
+          "triangles": 1350,
+          "file": "Assets/Export/Environment/SM_poison_splash_LOD1.fbx",
+          "sha256": "14c881fb1eb98b8862dfb5414d456e5b5b47c517e8cd3e425abffd750981bf9d",
+          "bytes": 59516
+        },
+        {
+          "level": 2,
+          "triangles": 594,
+          "file": "Assets/Export/Environment/SM_poison_splash_LOD2.fbx",
+          "sha256": "09b91e483aebe4725d8facbf0733d92b98bfe4e76d0818b48eee932cc81a5f8b",
+          "bytes": 42652
+        }
+      ]
+    },
+    "toxic_bubble": {
+      "name": "toxic_bubble",
+      "file": "Assets/Export/Environment/SM_toxic_bubble.fbx",
+      "sha256": "bfc9b50b03dacfa613d5c2f95617731e6835fc18f58f2bce9208e8006897bb22",
+      "bytes": 39612,
+      "triangles": 920,
+      "boundsMeters": [
+        0.9999996423721313,
+        0.9999998807907104,
+        1.0
+      ],
+      "materials": [
+        "M_RiftPlagueGlass",
+        "M_RiftPlagueSurface"
+      ],
+      "lods": [
+        {
+          "level": 1,
+          "triangles": 460,
+          "file": "Assets/Export/Environment/SM_toxic_bubble_LOD1.fbx",
+          "sha256": "eab3e99f52b2f7670ce300feb573609af329fab67d3becf2ad0671db3e7b68c2",
+          "bytes": 33916
+        },
+        {
+          "level": 2,
+          "triangles": 202,
+          "file": "Assets/Export/Environment/SM_toxic_bubble_LOD2.fbx",
+          "sha256": "8a97b043e3fc2f03192bb568dc0cea174c6f8d2708800ba7d1b4d57da7b76fe3",
+          "bytes": 29020
+        }
+      ]
     }
   },
   "illustrations": {
@@ -10499,6 +10877,12 @@
       "sha256": "a5c9062fb547ec6c08b8e319cfc4977d7d69d30a12cb14abd1ee9a743678a302",
       "bytes": 937113,
       "sourceSceneSHA256": "7241261bbfdc77b78b1f1e921ea9a12a4676f2599dd266b64aee4e55ee9a996b"
+    },
+    "plague_queen": {
+      "file": "Assets/Source/CardArt/plague_queen.png",
+      "sha256": "e20cac226eb96cad2f36c41ea5bfed6823f86514763c7a7c4f2b37bc44ca4ead",
+      "bytes": 1017118,
+      "sourceSceneSHA256": "83d4e56449f578546ac6882f85ca690a9db5867ab0af02059d4af0735d26c421"
     }
   },
   "renders": [
@@ -10733,7 +11117,7 @@
       "bytes": 1147320
     }
   ],
-  "build": "UE-thunderstorm-blade-box-2.1.0",
+  "build": "UE-plague-queen-2.2.0",
   "expansionMaterials": [
     {
       "name": "M_RiftExpansionSurface",
@@ -10797,6 +11181,27 @@
       "orm": "Assets/Source/Textures/T_RiftDartGunAtlas_ORM.png",
       "normal": "Assets/Source/Textures/T_RiftDartGunAtlas_Normal.png",
       "teamMask": "Assets/Source/Textures/T_RiftDartGunAtlas_TeamMask.png"
+    },
+    {
+      "name": "M_RiftPlagueSurface",
+      "baseColor": "Assets/Source/Textures/T_RiftPlagueAtlas_BaseColor.png",
+      "orm": "Assets/Source/Textures/T_RiftPlagueAtlas_ORM.png",
+      "normal": "Assets/Source/Textures/T_RiftPlagueAtlas_Normal.png",
+      "teamMask": "Assets/Source/Textures/T_RiftPlagueAtlas_TeamMask.png"
+    },
+    {
+      "name": "M_RiftPlagueGlow",
+      "baseColor": "Assets/Source/Textures/T_RiftPlagueAtlas_BaseColor.png",
+      "orm": "Assets/Source/Textures/T_RiftPlagueAtlas_ORM.png",
+      "normal": "Assets/Source/Textures/T_RiftPlagueAtlas_Normal.png",
+      "teamMask": "Assets/Source/Textures/T_RiftPlagueAtlas_TeamMask.png"
+    },
+    {
+      "name": "M_RiftPlagueGlass",
+      "baseColor": "Assets/Source/Textures/T_RiftPlagueAtlas_BaseColor.png",
+      "orm": "Assets/Source/Textures/T_RiftPlagueAtlas_ORM.png",
+      "normal": "Assets/Source/Textures/T_RiftPlagueAtlas_Normal.png",
+      "teamMask": "Assets/Source/Textures/T_RiftPlagueAtlas_TeamMask.png"
     }
   ],
   "cards": {
@@ -10922,6 +11327,14 @@
         "thunderstorm_rain",
         "stun_spark"
       ]
+    },
+    "plague_queen": {
+      "skeletal": "plague_queen",
+      "effectStatics": [
+        "plague_arrow",
+        "toxic_bubble",
+        "poison_splash"
+      ]
     }
   },
   "entities": {
@@ -10975,8 +11388,8 @@
       "timeSource": "Native simulation-clock geometry only; no material Time",
       "shaderProducer": {
         "file": "Build/import_unreal_assets.py",
-        "bytes": 76577,
-        "sha256": "32df0734c8e26286f1d29f499ee6e606e7e51c82f553ae55cc2e05f4bc6a2f40"
+        "bytes": 78005,
+        "sha256": "3331071e57e8ab1702a20ca386f2a08fb75bb16fa987101351e568fefa056110"
       },
       "contractProducer": {
         "file": "Build/generate_expansion_fx_contract.py",

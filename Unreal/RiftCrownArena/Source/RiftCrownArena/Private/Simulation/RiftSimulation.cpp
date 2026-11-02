@@ -318,8 +318,29 @@ void Match::FixedStep(double dt) {
                projectile.source);
         if (!Running(state_.phase))
             return;
-        if (projectile.splash > 0) {
-            const Card *card = FindEntityDefinition(projectile.cardId);
+        const Card *card = FindEntityDefinition(projectile.cardId);
+        if (card && !card->spell && card->dotDamage > 0 && card->dotInterval > 0) {
+            auto &splash = Emit("poison_splash", projectile.team);
+            splash.source = projectile.source; splash.target = projectile.target;
+            splash.playId = projectile.playId; splash.cardId = projectile.cardId;
+            splash.position = impact; splash.amount = projectile.splash; splash.until = state_.elapsed + .5;
+            for (const auto &victim : state_.entities) {
+                if (victim.dead || victim.team == projectile.team || !CanHit(*card, victim) ||
+                    Distance(victim.position, impact) > projectile.splash + Epsilon) continue;
+                Poison poison;
+                poison.source = projectile.source; poison.target = victim.id;
+                poison.playId = projectile.playId; poison.team = projectile.team; poison.cardId = projectile.cardId;
+                poison.born = state_.elapsed; poison.nextTick = state_.elapsed + card->dotInterval;
+                poison.expires = state_.elapsed + card->dotDuration;
+                state_.poisons.push_back(poison);
+                auto &applied = Emit("poison_applied", projectile.team);
+                applied.source = poison.source; applied.target = poison.target; applied.playId = poison.playId;
+                applied.cardId = poison.cardId; applied.position = victim.position; applied.until = poison.expires;
+                applied.targetTeam = victim.team; applied.targetKind = victim.kind;
+                applied.amount = Structure(victim) ? card->dotStructureDamage : card->dotDamage;
+                applied.count = int(std::floor(card->dotDuration / card->dotInterval + Epsilon));
+            }
+        } else if (projectile.splash > 0) {
             std::vector<EntityId> victims;
             for (const auto &e : state_.entities)
                 if (!e.dead && e.team != projectile.team && e.id != projectile.target && card &&
@@ -409,6 +430,35 @@ void Match::FixedStep(double dt) {
         else
             ++i;
     }
+    for (std::size_t i = 0; i < state_.poisons.size();) {
+        auto &poison = state_.poisons[i];
+        const Card *card = FindEntityDefinition(poison.cardId);
+        const Entity *victim = Get(poison.target);
+        if (!card || !victim || victim->dead) {
+            state_.poisons.erase(state_.poisons.begin() + i);
+            continue;
+        }
+        while (poison.nextTick <= state_.elapsed + Epsilon && poison.nextTick <= poison.expires + Epsilon) {
+            ++poison.ticks;
+            poison.nextTick = poison.born + (poison.ticks + 1) * card->dotInterval;
+            const Poison copy = poison;
+            auto &tick = Emit("poison_tick", poison.team);
+            tick.source = poison.source; tick.target = poison.target; tick.playId = poison.playId;
+            tick.cardId = poison.cardId; tick.position = victim->position; tick.until = poison.expires;
+            tick.targetTeam = victim->team; tick.targetKind = victim->kind; tick.count = poison.ticks;
+            tick.amount = Structure(*victim) ? card->dotStructureDamage : card->dotDamage;
+            ++state_.telemetry[Index(poison.team)][poison.cardId].dotTicks;
+            auto source = state_.entityTelemetry[Index(poison.team)].find(poison.source);
+            if (source != state_.entityTelemetry[Index(poison.team)].end()) ++source->second.observed.dotTicks;
+            Damage(copy.target, tick.amount, copy.team, copy.cardId, copy.playId, copy.source, "dot");
+            if (!Running(state_.phase)) return;
+            victim = Get(copy.target);
+            if (!victim || victim->dead) break;
+        }
+        if (!victim || victim->dead || state_.elapsed + Epsilon >= poison.expires)
+            state_.poisons.erase(state_.poisons.begin() + i);
+        else ++i;
+    }
     state_.entities.erase(std::remove_if(state_.entities.begin(), state_.entities.end(),
                                          [&](const Entity &e) {
                                              return e.dead && !Crown(e) &&
@@ -425,6 +475,7 @@ void Match::Finish(int winner, const std::string &reason) {
     state_.resultReason = reason;
     state_.timeRemaining = 0;
     state_.projectiles.clear();
+    state_.poisons.clear();
     state_.shockwaves.clear();
     state_.spellCasts.clear();
     for (auto &team : state_.telemetry)
@@ -450,6 +501,7 @@ void Match::BeginTiebreaker() {
     state_.phaseElapsed = 0;
     state_.timeRemaining = 0;
     state_.projectiles.clear();
+    state_.poisons.clear();
     state_.shockwaves.clear();
     state_.hazards.clear();
     state_.spellCasts.clear();
@@ -1241,6 +1293,7 @@ void Match::ClearField() {
                                          [](const Entity &e) { return !Crown(e); }),
                           state_.entities.end());
     state_.projectiles.clear();
+    state_.poisons.clear();
     state_.shockwaves.clear();
     state_.hazards.clear();
     state_.spellCasts.clear();
@@ -1306,9 +1359,10 @@ bool Match::InSight(const Entity &s, const Entity &t) const {
     const double length = std::hypot(delta.x, delta.z);
     const double dot = delta.x * s.facing.x + delta.z * s.facing.z;
     const auto *card = FindEntityDefinition(s.cardId);
-    const double front = card && card->projectileSpeed > 0
-        ? std::max(detection::Front, card->range) : detection::Front;
-    return length <= (dot >= 0 ? front : detection::Rear) + Epsilon;
+    const double front = card ? (card->projectileSpeed > 0 ? std::max(card->sightFront, card->range)
+                                                          : card->sightFront) : detection::Front;
+    const double rear = card ? card->sightRear : detection::Rear;
+    return length <= (dot >= 0 ? front : rear) + Epsilon;
 }
 double Match::CombatDistance(const Entity &s, const Entity &t) const {
     const double direct = Distance(s.position, t.position);

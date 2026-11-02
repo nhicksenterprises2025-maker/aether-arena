@@ -24,7 +24,7 @@ if not cards or len({c["id"] for c in cards}) != len(cards):
     raise ValueError("Expected a complete native card definition array")
 entities = [] if isinstance(data, list) else data.get("entities", data.get("entitySnapshot", []))
 rules = {} if isinstance(data, list) else data.get("rules", data.get("rulesSnapshot", {}))
-if isinstance(data, dict) and data.get("schema") in (1, 2, 3, 4) and data.get("balanceHash") and "cards" in data:
+if isinstance(data, dict) and data.get("schema") in (1, 2, 3, 4, 5) and data.get("balanceHash") and "cards" in data:
     from generate_card_manifest import validate
     validate(data)
     if data.get("version") != args.version:
@@ -77,8 +77,8 @@ for c in cards:
                   numeric(c.get("hpDecayPerSecond", 0)) if building else "N/A",
                   "Yes" if c.get("hardExpiry") else "No" if building and "hardExpiry" in c else "N/A",
                   numeric(c["initialAttackCooldown"]) if not spell and "initialAttackCooldown" in c else "N/A",
-                  numeric(max(rules["frontSight"], c["range"] if c["projectileSpeed"] > 0 else 0)) if not spell and "frontSight" in rules else "N/A",
-                  numeric(rules["rearSight"]) if not spell and "rearSight" in rules else "N/A", c["id"]])
+                  numeric(max(c.get("sightFront", rules.get("frontSight", 8)), c["range"] if c["projectileSpeed"] > 0 else 0)) if not spell else "N/A",
+                  numeric(c.get("sightRear", rules.get("rearSight", 5))) if not spell else "N/A", c["id"]])
     def ability(title, values, details):
         abilities.append([c["name"], title, values, details])
     if c["count"] > 1 and not spell:
@@ -93,7 +93,11 @@ for c in cards:
         ability("Movement slow", f"{numeric(c['slowPct']*100)}%; {numeric(c['slowDuration'])} s", "Each shockwave hit refreshes the slow; no stacking; stronger slows retain their own expiry" if c.get("shockwaveSpeed",0) else "Each melee hit refreshes the slow; no stacking")
     if c["auraDamage"]:
         ability("Electric aura", f"{numeric(c['auraDamage'])} damage; {numeric(c['auraInterval'])} s interval; {numeric(c['auraRadius'])} tile radius; {numeric(c['stunDuration'])} s stun", "Hits ground and air troops; basic attack remains structures-only")
-    if c["dotDamage"]:
+    if c["id"] == "plague_queen":
+        ticks = round(c["dotDuration"] / c["dotInterval"])
+        poison = c["dotDamage"] * ticks
+        ability("Poison arrows", f"Direct impact {numeric(c['damage'])}; poison radius {numeric(c['splash'])} tiles; {ticks} ticks of {numeric(c['dotDamage'])} at {numeric(c['dotInterval'])} and {numeric(c['dotDuration'])} s", f"Only direct target takes impact damage; all enemies in radius at impact receive attached poison, including direct target if alive. Maximum direct exposure {numeric(c['damage']+poison)}; other victims {numeric(poison)}. Poison follows affected targets, survives source death, and separate arrows apply separate two-tick effects. No lingering ground zone.")
+    elif c["dotDamage"]:
         ticks = int(c["dotDuration"] / c["dotInterval"])
         lingering = c["dotDamage"] * ticks
         structure_tick = c.get("dotStructureDamage",0)
